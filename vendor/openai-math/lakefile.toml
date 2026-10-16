@@ -1,0 +1,7 @@
+# Parent-project-only package: build from the repository root.
+# Uses the parent's pinned Lean v4.35.0 and Mathlib v4.35.0.
+name = "openai_math"
+version = "0.1.0"
+
+[[lean_lib]]
+name = "OAI"

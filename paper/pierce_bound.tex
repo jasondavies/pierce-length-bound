@@ -1,0 +1,507 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[margin=1.15in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\emergencystretch=2em
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\lean}[1]{\texttt{#1}}
+\DeclareMathOperator{\Good}{Good}
+\DeclareMathOperator{\Bad}{Bad}
+
+\title[A discrete iteration related to Pierce expansions]{The iteration $x\mapsto a \bmod x$ has length $O_\varepsilon(a^{3/10+\varepsilon})$}
+
+\author{Jason Davies}
+\email{jason@jasondavies.com}
+
+\date{October 2026}
+
+\begin{document}
+
+\begin{abstract}
+For integers $a>b>0$ let $b_1=b$, $b_{i+1}=a\bmod b_i$, and let $P(a,b)$ be the number of
+positive terms of this sequence. Shallit asked whether $P(a,b)=O((\log a)^2)$. The bound
+$P(a,b)\ll_\varepsilon a^{1/3+\varepsilon}$ of Erd\H{o}s and Shallit was improved by Chase and
+Pandey to $a^{1/3-2/177+\varepsilon}$. We prove $P(a,b)\ll_\varepsilon a^{3/10+\varepsilon}$
+by an elementary argument. The new ingredient is an exact identity for three consecutive steps
+of the iteration. It shows that a certain integer combination $D=dv-eu$ of the drops and
+quotient increments is always positive. It is also small whenever the three drops are small,
+and $D$ together with the two increments confines the block to a curve with few integer points.
+The whole proof is formalised in Lean~4 with Mathlib, without \lean{sorry}.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Let $a>b>0$ be integers. Put $b_1=b$ and $b_{i+1}=a \bmod b_i$ while $b_i>0$. The sequence is
+strictly decreasing until it reaches $0$; if $b_{n+1}=0$ we write $P(a,b)=n$. For example
+$P(35,22)=7$, from $22,13,9,8,3,2,1,0$. The number $P(a,b)$ is the length of the Pierce
+expansion of $b/a$~\cite{Pierce,Shallit86}, since
+\[
+\frac ba=\frac1{q_1}-\frac1{q_1q_2}+\frac1{q_1q_2q_3}-\cdots,\qquad q_i=\lfloor a/b_i\rfloor .
+\]
+Shallit~\cite{OPG} asked whether
+\begin{equation}\label{eq:conj}
+P(a,b)=O\bigl((\log a)^2\bigr).
+\end{equation}
+
+Shallit~\cite{Shallit86} proved $P(a,b)\ll a^{1/2}$ by ``Archimedean'' arguments.
+Erd\H{o}s and Shallit~\cite{ES} combined these with a divisor argument to get
+$P(a,b)\ll_\varepsilon a^{1/3+\varepsilon}$, and showed that $\max_b P(a,b)/\log a$ does not
+tend to $0$. Chase and Pandey~\cite{CP} went past the exponent $1/3$, proving
+$P(a,b)\ll_\varepsilon a^{1/3-2/177+\varepsilon}$ with exponential sum estimates
+(Bourgain's exponent pair), and showed that $\max_b P(a,b)\gg \log a/\log\log a$ for all large
+$a$. Shallit's talk pages~\cite{ShallitTalks} report a bound $n^{3/10}$, described as
+``LLM, unpublished so far''. We have not seen that argument. The result below has the same
+exponent up to $\varepsilon$, and we make no claim about how the two arguments are related.
+
+\begin{theorem}\label{thm:main}
+For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
+\[
+P(a,b)\le C_\varepsilon\, a^{3/10+\varepsilon}\qquad\text{for all integers }0<b<a .
+\]
+\end{theorem}
+
+The proof is elementary. It uses only the division equations
+$a=q_ib_i+b_{i+1}$ and the divisor bound $\tau(n)\ll_\delta n^\delta$. As usual, the remainders
+are split into dyadic windows $[A,2A)$, and we bound the number $T$ of remainders in one
+window. There are two bounds:
+\begin{align}
+T(T-1)&\le 4A\,\Delta, \label{eq:intro1}\\
+T^6A^2&\le 995328\, a^3\Delta \qquad(T\ge 12), \label{eq:intro2}
+\end{align}
+where $\Delta$ is the largest value of the divisor function on $[1,32a^7]$.
+Bound~\eqref{eq:intro1} is the Erd\H{o}s--Shallit argument. Bound~\eqref{eq:intro2} is new.
+Multiplying~\eqref{eq:intro2} by the square of~\eqref{eq:intro1} eliminates $A$ and gives
+$T^{10}\ll a^3\Delta^3$, which is the exponent $3/10$.
+
+The new bound comes from three consecutive steps $x=b_i$, $y=b_{i+1}$, $z=b_{i+2}$,
+$w=b_{i+3}$. Let $d,e,f$ be the drops, let $u,v$ be the increments of the quotients, and put
+$D=dv-eu$. Then
+\begin{equation}\label{eq:intro-curv}
+D\,z=df+ude+(u-1)e^2 .
+\end{equation}
+So $D$ is a \emph{positive} integer, even though $dv$ and $eu$ largely cancel, and it is small
+when the drops are small. Also $(q,x)=(\lfloor a/b_i\rfloor,b_i)$ lies on the curve
+$xM(q)=aN(q)+D$, where $M$ and $N$ are explicit polynomials depending on $(u,v)$
+(Lemma~\ref{lem:fiber-eq}). A resultant-type identity shows that each such curve has
+$a^{o(1)}$ admissible points (Lemma~\ref{lem:fiber}). The number of triples $(u,v,D)$ is
+$\ll (B/T)^2\cdot a/T^3$, where $B=a/A$, which gives~\eqref{eq:intro2}.
+
+\subsection*{Formal verification}
+Every step of the proof, including Theorem~\ref{thm:main} in the form stated above, has been
+formalised in Lean~4~\cite{Lean} using Mathlib~\cite{Mathlib}. Section~\ref{sec:lean}
+describes the formalisation. The constants in this paper are the constants in the Lean proof.
+
+\subsection*{What is not proved}
+Theorem~\ref{thm:main} is far from~\eqref{eq:conj}, and the method cannot reach it; see
+Section~\ref{sec:limits}.
+
+\section{Preliminaries}
+
+\subsection{Notation}
+Throughout, $a>b>0$ are integers, $b_1=b$, $b_{i+1}=a\bmod b_i$, and $P=P(a,b)$, so that
+$a>b_1>b_2>\dots>b_P>0=b_{P+1}$. Write $q_i=\lfloor a/b_i\rfloor$, so
+\[
+a=q_ib_i+b_{i+1},\qquad 0\le b_{i+1}<b_i\qquad(1\le i\le P).
+\]
+Let $\tau(n)$ be the number of positive divisors of $n$, and let
+\[
+\Delta=\Delta(a)=\max_{1\le n\le 32a^7}\tau(n).
+\]
+
+\begin{lemma}[Quotients increase]\label{lem:quot}
+If $b_{i+1}>0$ then $q_{i+1}\ge q_i+1$.
+\end{lemma}
+
+\begin{proof}
+Since $b_{i+1}<b_i$ we have $(q_i+1)b_{i+1}\le q_ib_i+b_{i+1}=a$, so
+$q_{i+1}=\lfloor a/b_{i+1}\rfloor\ge q_i+1$.
+\end{proof}
+
+\begin{lemma}[Divisor bound]\label{lem:div}
+For every integer $k\ge1$ there is $C_k$ with $\tau(n)^k\le C_k\,n$ for all $n\ge1$.
+\end{lemma}
+
+\begin{proof}
+This is standard: $\tau(n)^k/n=\prod_{p^\alpha\| n}(\alpha+1)^k/p^\alpha$. Each factor with
+$p\ge 2^k$ is at most $(\alpha+1)^k/2^{k\alpha}\le1$. Each of the fewer than $2^k$ factors with
+$p<2^k$ is at most $\sup_\alpha(\alpha+1)^k/2^\alpha<\infty$.
+\end{proof}
+
+\subsection{Window runs}
+
+\begin{definition}
+Let $A\ge1$. A \emph{window run} of length $T$ is a sequence $x_0,x_1,\dots,x_{T-1}$ of
+consecutive terms of the sequence $(b_i)$, so $x_{j+1}=a\bmod x_j$, all lying in $[A,2A)$.
+\end{definition}
+
+In a window run, $x_0>x_1>\dots>x_{T-1}$ and $x_j\le a$.
+
+\section{The curvature of three consecutive steps}
+
+Fix four consecutive terms
+\[
+x=b_i,\quad y=b_{i+1}=a\bmod x,\quad z=b_{i+2}=a\bmod y,\quad w=b_{i+3}=a\bmod z,
+\]
+with $x,y,z>0$ (and $w\ge0$). Write
+\[
+q=\left\lfloor \frac ax\right\rfloor,\quad
+u=\left\lfloor \frac ay\right\rfloor-q,\quad
+v=\left\lfloor \frac az\right\rfloor-\left\lfloor \frac ay\right\rfloor,\qquad
+d=x-y,\quad e=y-z,\quad f=z-w .
+\]
+By Lemma~\ref{lem:quot}, $u,v\ge1$, and clearly $d,e,f\ge1$. The division equations read
+\begin{equation}\label{eq:div}
+xq+y=a,\qquad y(q+u)+z=a,\qquad z(q+u+v)+w=a .
+\end{equation}
+
+\begin{definition}
+The \emph{curvature} of the block is $D=dv-eu$.
+\end{definition}
+
+\begin{lemma}[Curvature identity]\label{lem:curv}
+\[
+D\,z=df+ude+(u-1)e^2 .
+\]
+In particular $D\ge1$.
+\end{lemma}
+
+\begin{proof}
+Subtracting the first two equations of~\eqref{eq:div} gives $uy=qd+e$, hence
+$uz=uy-ue=qd+(1-u)e$. Subtracting the last two gives $vz=(q+u)e+f$. Therefore
+\[
+(dv-eu)z=d\bigl((q+u)e+f\bigr)-e\bigl(qd+(1-u)e\bigr)=df+ude+(u-1)e^2 .
+\]
+The right-hand side is at least $df\ge1$, and $z>0$, so $D>0$.
+\end{proof}
+
+Equivalently, the identity is the linear combination
+\[
+Dz-\bigl(df+ude+(u-1)e^2\bigr)=d\,E_3+(a-qx-x-y+z)\,E_2+(-a+(q+u)y+y)\,E_1
+\]
+of the three division equations $E_1,E_2,E_3$ of~\eqref{eq:div} (each written as
+$\text{left}-\text{right}=0$). This is how it is checked in Lean.
+
+\begin{lemma}[The fiber equation]\label{lem:fiber-eq}
+Put $M(q)=uq^2+(u^2+u+v)q+v$ and $N(q)=uq+u^2+v$. Then
+\[
+x\,M(q)=a\,N(q)+D .
+\]
+\end{lemma}
+
+\begin{proof}
+From~\eqref{eq:div}, $d=(q+1)x-a$ and $e=y-z=(q+u+1)y-a=a(q+u)-q(q+u+1)x$. Substituting
+these into $D=dv-eu$ gives
+$D=x\bigl(uq(q+u+1)+v(q+1)\bigr)-a\bigl(u(q+u)+v\bigr)$, which is the claim.
+\end{proof}
+
+\begin{lemma}[Size of the parameters]\label{lem:size}
+If $x\le a$ then
+\[
+u\,yx\le a(d+e),\qquad v\,zy\le a(e+f),\qquad D\,z\le (u+1)(d+e+f)^2 .
+\]
+\end{lemma}
+
+\begin{proof}
+From $uy=qd+e$ we get $uyx=(qx)d+ex\le ad+ae$, since $qx\le a$ and $x\le a$. Similarly
+$vz=(q+u)e+f$ with $(q+u)y\le a$ and $y\le a$ gives the second bound. For the third, by
+Lemma~\ref{lem:curv},
+$Dz=df+ude+(u-1)e^2\le df+u\,e(d+e)\le (1+u)(d+e+f)^2$.
+\end{proof}
+
+\section{Few blocks share a triple $(u,v,D)$}
+
+\begin{lemma}[Fiber count]\label{lem:fiber}
+Let $a\ge1$, $1\le u,v\le a$ and $1\le D\le 2a$. Let $M(q)=uq^2+pq+v$ with $p=u^2+u+v$, and
+let $L(q)=cq+\ell$ with $c=au$ and $\ell=a(u^2+v)+D$. Then the set
+\[
+Q=\{q\ge 0:\ xM(q)=L(q)\text{ for some integer }x\ge1\}
+\]
+has at most $\Delta=\max_{n\le 32a^7}\tau(n)$ elements.
+\end{lemma}
+
+\begin{proof}
+Put $U(q)=ucq+cp-u\ell$ and $R=u\ell^2-cp\ell+c^2v$. Expanding shows
+\begin{equation}\label{eq:resultant}
+c^2M(q)-U(q)L(q)=R
+\end{equation}
+identically in $q$. If $q\in Q$ with witness $x$, substituting $L(q)=xM(q)$
+into~\eqref{eq:resultant} gives
+\begin{equation}\label{eq:R}
+R=M(q)\bigl(c^2-U(q)x\bigr).
+\end{equation}
+We bound the sizes first. From $u,v\le a$ and $D\le 2a$ we get $\ell\le 4a^3$, $p\le 3a^2$
+and $c\le a^2$, so
+\[
+|R|\le u\ell^2+cp\ell+c^2v\le 16a^7+12a^7+a^5\le 32a^7,\qquad c^2\le a^4\le 32a^7 .
+\]
+
+\emph{Case $R\ne0$.} By~\eqref{eq:R}, $M(q)$ is a positive divisor of $|R|$. Since $u,p\ge1$,
+the map $q\mapsto M(q)$ is strictly increasing on $q\ge0$, hence injective. Therefore
+$|Q|\le\tau(|R|)\le\Delta$.
+
+\emph{Case $R=0$.} Since $M(q)>0$, \eqref{eq:R} gives $U(q)x=c^2$. Here $c^2>0$ and $x\ge1$,
+so $U(q)$ is a positive divisor of $c^2$. Since $U$ is linear with positive leading
+coefficient $uc$, it is injective. Therefore $|Q|\le\tau(c^2)\le\Delta$.
+\end{proof}
+
+The case $R=0$ cannot be dropped: it is the case in which $M$ and $L$ might share a factor.
+
+\section{Counting visits to a window}
+
+In this section $x_0,\dots,x_{T-1}$ is a window run in $[A,2A)$, and
+$\Delta=\max_{n\le 32a^7}\tau(n)$.
+
+\begin{proposition}[Drop bound; after Erd\H{o}s--Shallit]\label{prop:drop}
+If $T\ge2$ then $T(T-1)\le 4A\Delta$.
+\end{proposition}
+
+\begin{proof}
+Let $h_j=x_j-x_{j+1}\ge1$ for $0\le j\le T-2$. By telescoping,
+$\sum_j h_j=x_0-x_{T-1}\le (2A-1)-A=A-1$. Call $j$ \emph{good} if $h_j(T-1)\le 2A$ and
+\emph{bad} otherwise. Each bad $j$ has $h_j(T-1)\ge 2A+1$, so
+\[
+|\Bad|\,(2A+1)\le (T-1)\textstyle\sum_j h_j\le (T-1)(A-1).
+\]
+If $2|\Bad|\ge T-1$ this would give $(T-1)(2A+1)\le 2(T-1)(A-1)$, which is false. Hence
+$2|\Bad|<T-1$, and since $|\Good|+|\Bad|=T-1$ we get $2|\Good|\ge T$.
+
+For good $j$ we have $1\le h_j\le H:=\lfloor 2A/(T-1)\rfloor$. Also
+$a+h_j=q_jx_j+x_{j+1}+x_j-x_{j+1}=(q_j+1)x_j$, so $x_j\mid a+h_j$. Moreover
+$a+h_j\le 2a\le 32a^7$. Since $j\mapsto x_j$ is injective, at most $\tau(a+h)\le\Delta$ good
+indices have $h_j=h$. Hence $|\Good|\le H\Delta$, and
+\[
+T(T-1)\le 2|\Good|(T-1)\le 2\Delta\,H(T-1)\le 4A\Delta. \qedhere
+\]
+\end{proof}
+
+\begin{proposition}[Curvature bound]\label{prop:curv}
+If $T\ge12$ then $T^6A^2\le 995328\,a^3\Delta$.
+\end{proposition}
+
+\begin{proof}
+For $0\le j\le T-4$ let $s_j=x_j-x_{j+3}$ be the total drop of the block
+$x_j,x_{j+1},x_{j+2},x_{j+3}$. By telescoping,
+\[
+\sum_{j=0}^{T-4}s_j=(x_0+x_1+x_2)-(x_{T-3}+x_{T-2}+x_{T-1})\le 3(2A-1)-3A=3A-3 .
+\]
+Call $j$ \emph{good} if $s_jT\le 12A$ and \emph{bad} otherwise. Then
+$|\Bad|(12A+1)\le T(3A-3)$. If $4|\Bad|\ge T$ this would give $T(12A+1)\le 4T(3A-3)$, which is
+false. So $4|\Bad|\le T-1$. Since $|\Good|=T-3-|\Bad|$ and $T\ge12$,
+\[
+2|\Good|\ge 2T-6-\tfrac{T-1}2\ge T .
+\]
+
+Fix a good $j$. Apply Section~3 to $x=x_j$, so that $y,z,w=x_{j+1},x_{j+2},x_{j+3}$, all
+in $[A,2A)$. Write $s=s_j=d+e+f$. Lemma~\ref{lem:size} gives $uA^2\le uyx\le a(d+e)\le as$.
+Multiplying by $T$ and using $sT\le 12A$ gives $uA^2T\le 12aA$, that is,
+\[
+u\,AT\le 12a,\qquad\text{and likewise}\qquad v\,AT\le 12a .
+\]
+Also $DA\le Dz\le(u+1)s^2\le 2us^2$. Multiplying by $T^2$ gives
+$DAT^2\le 2u(sT)^2\le 288uA^2$, so $DT^2\le 288uA$, and then
+\[
+D\,T^3\le 288\,u\,AT\le 3456\,a .
+\]
+Thus the triple $(u,v,D)$ of a good block lies in $[1,U]^2\times[1,D^*]$, where
+\[
+U=\lfloor 12a/(AT)\rfloor\le a,\qquad D^*=\lfloor 3456a/T^3\rfloor\le 2a .
+\]
+The inequalities $U\le a$ and $D^*\le 2a$ hold because $AT\ge12$ and $T^3\ge1728$.
+
+Now fix such a triple and consider the good blocks that have it. By Lemma~\ref{lem:fiber-eq},
+each one gives a point $q=q_j=\lfloor a/x_j\rfloor$ of the set $Q$ of Lemma~\ref{lem:fiber}.
+The map $j\mapsto q_j$ is injective on these blocks: $q_j$ determines $x_j=L(q_j)/M(q_j)$, and
+$x_j$ determines $j$. By Lemma~\ref{lem:fiber}, at most $\Delta$ good blocks share a triple.
+So $|\Good|\le U^2D^*\Delta$, and
+\[
+T^6A^2=T\,(AT)^2\,T^3\le 2\Delta\,(U\,AT)^2\,(D^*T^3)\le 2\Delta(12a)^2(3456a)=995328\,a^3\Delta.
+\qedhere
+\]
+\end{proof}
+
+\begin{corollary}[Window bound]\label{cor:window}
+If $T\ge12$ then $T^{10}\le 63700992\,a^3\Delta^3$.
+\end{corollary}
+
+\begin{proof}
+Using $T\le 2(T-1)$ and the two propositions,
+\[
+T^{10}A^2\le 4\,(T^6A^2)\,\bigl(T(T-1)\bigr)^2\le 4\cdot 995328\,a^3\Delta\cdot(4A\Delta)^2
+=63700992\,a^3\Delta^3A^2 .
+\]
+Divide by $A^2$.
+\end{proof}
+
+\begin{remark}
+In terms of $B=a/A$, Propositions~\ref{prop:drop} and~\ref{prop:curv} say
+$T\ll a^{1/2+o(1)}B^{-1/2}$ and $T\ll a^{1/6+o(1)}B^{1/3}$. The first is better when
+$B>a^{2/5}$, and both equal $a^{3/10+o(1)}$ at $B=a^{2/5}$. Corollary~\ref{cor:window} takes
+the product of the two bounds, so no case split is needed.
+\end{remark}
+
+\section{Proof of Theorem~\ref{thm:main}}
+
+Let $0<b<a$. For $0\le k\le\log_2 a$ let $T_k$ be the number of indices $i\le P$ with
+$2^k\le b_i<2^{k+1}$. Every $b_i$ with $i\le P$ lies in $[1,a)$, so
+$P=\sum_{0\le k\le \log_2 a}T_k$. Since $(b_i)$ is decreasing, the indices counted by $T_k$
+are consecutive. So when $T_k>0$ they form a window run in $[A,2A)$ with $A=2^k$.
+
+Let $\varepsilon>0$. Choose an integer $m>7/(5\varepsilon)$, and let $C_{3m}$ be the constant of
+Lemma~\ref{lem:div} with $k=3m$. The maximum $\Delta$ is attained at some $n_0\le 32a^7$, so
+$\Delta^{3m}\le C_{3m}\cdot 32a^7$. If $T_k\ge12$, Corollary~\ref{cor:window} gives
+\[
+T_k^{10m}\le 63700992^m\,a^{3m}\,\Delta^{3m}\le K\,a^{3m+7},\qquad K=63700992^m\cdot C_{3m}\cdot 32,
+\]
+and hence
+\[
+T_k\le K^{1/(10m)}\,a^{3/10+7/(10m)}\le K^{1/(10m)}\,a^{3/10+\varepsilon/2}.
+\]
+If $T_k\le11$ this bound holds with $11$ in place of $K^{1/(10m)}$. Finally
+$\lfloor\log_2a\rfloor+1\le C'_\varepsilon a^{\varepsilon/2}$. Summing over $k$,
+\[
+P(a,b)\le (\lfloor\log_2 a\rfloor+1)\bigl(11+K^{1/(10m)}\bigr)a^{3/10+\varepsilon/2}
+\le C_\varepsilon\, a^{3/10+\varepsilon}. \qquad\qed
+\]
+
+\section{The Lean formalisation}\label{sec:lean}
+
+The repository accompanying this paper contains a Lean~4 project (toolchain
+\lean{v4.35.0}, Mathlib \lean{v4.35.0}) that proves Theorem~\ref{thm:main}. The final
+statement is
+\begin{quote}\ttfamily\small
+theorem P\_le : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
+\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((3 : $\mathbb R$) / 10 + $\varepsilon$)
+\end{quote}
+where \lean{P a b} is defined by well-founded recursion as the number of positive terms
+($P(a,0)=0$, $P(a,b)=P(a,a\bmod b)+1$ for $b>0$), and the file checks $P(35,22)=7$.
+The command \lean{\#print axioms P\_le} reports only \lean{propext}, \lean{Classical.choice}
+and \lean{Quot.sound}. There is no \lean{sorry} and no \lean{native\_decide}.
+
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Paper & Lean & File \\
+\midrule
+Definition of $P(a,b)$ & \lean{P}, \lean{orb} & \lean{Defs.lean}\\
+Lemma~\ref{lem:quot} & \lean{div\_lt\_div\_mod} & \lean{Block.lean}\\
+Lemma~\ref{lem:curv} & \lean{curvature\_identity}, \lean{one\_le\_bD} & \lean{Block.lean}\\
+Lemma~\ref{lem:fiber-eq} & \lean{fiber\_identity}, \lean{block\_fiber\_eq} & \lean{Block.lean}\\
+Lemma~\ref{lem:size} & \lean{bu\_mul\_le}, \lean{bv\_mul\_le}, \lean{bD\_mul\_le} & \lean{Block.lean}\\
+Lemma~\ref{lem:fiber} & \lean{fiber\_poly\_identity}, \lean{fiber\_card\_le} & \lean{Fiber.lean}\\
+Window runs & \lean{Window}, \lean{DivBound} & \lean{Window.lean}\\
+Proposition~\ref{prop:drop} & \lean{drop\_bound} & \lean{Window.lean}\\
+Proposition~\ref{prop:curv} & \lean{curvature\_bound} & \lean{Window.lean}\\
+Corollary~\ref{cor:window} & \lean{window\_bound} & \lean{Window.lean}\\
+Dyadic decomposition & \lean{P\_eq\_sum\_visits}, \lean{visits\_window} & \lean{Main.lean}\\
+Theorem~\ref{thm:main} & \lean{P\_le} & \lean{Main.lean}\\
+Lemma~\ref{lem:div} & \lean{exists\_divisors\_power\_bound} & \lean{DivisorPowerBound.lean}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Some details of the formalisation:
+\begin{itemize}
+\item The algebraic identities (Lemmas~\ref{lem:curv}, \ref{lem:fiber-eq}
+and~\eqref{eq:resultant}) are proved over $\mathbb Z$ by the tactic
+\lean{linear\_combination}, using the explicit coefficients above. They are then transferred to $\mathbb N$ by writing
+$z=w+f$, $y=z+e$, $x=y+d$, which avoids truncated subtraction.
+\item The curvature is the natural number $\lean{bD}\,a\,x=(x-y)v-(y-z)u$. Lean first proves
+$eu<dv$, so this truncated subtraction is the true value.
+\item The counting arguments use \lean{Finset.card\_le\_mul\_card\_image\_of\_maps\_to}: the
+number of good indices is at most the size of the parameter box times the largest fiber.
+\item The divisor bound $\tau(n)^k\le C_kn$ (Lemma~\ref{lem:div}) is the file
+\lean{DivisorPowerBound.lean} from the \lean{openai/math} repository~\cite{OAIMath}
+(Apache-2.0), vendored unchanged except for its import lines.
+\item The project has about 1000 lines of Lean. \lean{lake build} rebuilds it in under a
+minute once Mathlib is built.
+\end{itemize}
+
+\section{Limits of the method}\label{sec:limits}
+
+The argument counts the triples $(u,v,D)$ independently over their ranges. Even if the divisor
+loss in Lemma~\ref{lem:fiber} were replaced by an absolute constant, the bound would still be
+$T\ll(B/T)^2\,a/T^3$. Combined with $T\ll A^{1/2}$, this still gives the exponent $3/10$. So
+removing the $\varepsilon$, sharpening constants or improving the divisor count cannot give
+a logarithmic bound. Further progress needs to restrict \emph{which} triples can occur together
+along a single orbit.
+
+There is no obvious monotonicity to exploit. The curvatures $D_i$ of successive blocks need
+not decrease. For $a=13242$ the orbit of $255$ begins
+\[
+255,\ 237,\ 207,\ 201,\ 177,\ 144,\ 138,\ 132,\ \dots
+\]
+with quotients $51,55,63,65,74,91,95,100,\dots$. The curvatures of the first five blocks are
+$24,12,6,111,30$, all for blocks that lie within a factor of two.
+
+\subsection*{Acknowledgements}
+The argument was developed with the help of AI language models. All proofs were then verified
+in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \lean{openai/math}
+for the formalised divisor bound.
+
+\begin{thebibliography}{99}
+
+\bibitem{CP}
+Z.~Chase and M.~Pandey,
+\emph{On the length of Pierce expansions},
+arXiv:2211.08374 (2022).
+
+\bibitem{ES}
+P.~Erd\H{o}s and J.~O.~Shallit,
+\emph{New bounds on the length of finite Pierce and Engel series},
+S\'em.\ Th\'eor.\ Nombres Bordeaux (2) \textbf{3} (1991), 43--53.
+
+\bibitem{Lean}
+L.~de~Moura and S.~Ullrich,
+\emph{The Lean~4 theorem prover and programming language},
+in: Automated Deduction -- CADE 28, Lecture Notes in Comput.\ Sci.\ \textbf{12699},
+Springer, 2021, 625--635.
+
+\bibitem{Mathlib}
+The mathlib Community,
+\emph{The Lean mathematical library},
+in: Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and
+Proofs (CPP 2020), 367--381.
+
+\bibitem{OAIMath}
+OpenAI,
+\texttt{openai/math}, \url{https://github.com/openai/math}.
+
+\bibitem{OPG}
+J.~O.~Shallit,
+\emph{A discrete iteration related to Pierce expansions},
+Open Problem Garden,
+\url{https://www.openproblemgarden.org/op/a_discrete_iteration_related_to_pierce_expansions}.
+
+\bibitem{Pierce}
+T.~A.~Pierce,
+\emph{On an algorithm and its use in approximating roots of algebraic equations},
+Amer.\ Math.\ Monthly \textbf{36} (1929), 523--525.
+
+\bibitem{Shallit86}
+J.~O.~Shallit,
+\emph{Metric theory of Pierce expansions},
+Fibonacci Quart.\ \textbf{24} (1986), 22--40.
+
+\bibitem{ShallitTalks}
+J.~O.~Shallit,
+\emph{Talks}, \url{https://cs.uwaterloo.ca/~shallit/talks.html}
+(accessed October 2026).
+
+\end{thebibliography}
+
+\end{document}
