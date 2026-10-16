@@ -43,9 +43,12 @@ A second identity, for six consecutive steps, produces a further positive intege
 three overlapping curvatures. It gives the local bound $T\ll a^{1/2}A^{-1/3}$ for the number $T$
 of remainders in $[A,2A)$, with no divisor-function loss. Combined with results of Nair--Tenenbaum
 and de la Bret\`eche--Tenenbaum on the Erd\H{o}s--Hooley $\Delta$-function, it gives
-$P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$. Everything is formalised in Lean~4 with Mathlib,
-without \lean{sorry}. The last bound is formalised conditionally on the two cited theorems,
-which are stated in Lean as explicit hypotheses.
+$P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$. We also show that $P(a,b)\ll a^{1/4}\sqrt R$, where
+$R-1$ is the number of rises in the sequence of quotient increments. Finally, $D$ and $L$ are the
+third and fourth members of an infinite hierarchy of positive integers: Hankel determinants of
+an exact positive moment model of the orbit. Everything is formalised in Lean~4 with Mathlib,
+without \lean{sorry}. The $\sqrt{\log\log 3a}$ bound is formalised conditionally on the two
+cited theorems, which are stated in Lean as explicit hypotheses.
 \end{abstract}
 
 \maketitle
@@ -144,15 +147,37 @@ can be used in their place. For example, Shiu's theorem~\cite{Shiu} gives
 $\sum_{x<n\le x+y}\tau(n)\ll y\log x$ for $y\ge x^{1/4}$, and hence
 $P(a,b)\ll a^{3/10}(\log a)^{1/5}$; we have not formalised that either.
 
+\subsection*{Structured trajectories and the Hankel hierarchy}
+Write $k_i=q_{i+1}-q_i$ for the quotient increments, and let $R-1$ be the number of indices with
+$k_i<k_{i+1}$.
+
+\begin{theorem}\label{thm:rises}
+$P(a,b)\ll a^{1/4}\sqrt R$ uniformly for $0<b<a$. In particular, if the quotient increments
+never rise, then $P(a,b)\ll a^{1/4}$.
+\end{theorem}
+
+The proof (Section~\ref{sec:rises}) combines three facts. First, $D\ge1$ says that $d_i/k_i$ is
+strictly decreasing, so the drops strictly decrease along every stretch without a rise. Second,
+the six-step integer $L$ gives an exact identity for six quotients in arithmetic progression,
+which forces their common difference to be large (Lemma~\ref{lem:ap}). Third, a counting lemma
+for sequences in which no value occurs too often. So an orbit of length about $a^{3/10}$ must
+contain $\gg a^{1/10}$ rises.
+
+Finally, both $D$ and $L$ fit into a single structure (Section~\ref{sec:hankel}). The orbit
+carries an exact finite model by positive measures $\nu_i$ with $\int d\nu_i=b_i/a$. The Hankel
+determinants $I_r(i)=a\det\bigl(\int x^{j+l}\,d\nu_i\bigr)_{j,l<r}$ are positive integers, and
+$I_1,I_2,I_3,I_4$ are $b_i$, $b_i-b_{i+1}$, $D$ and $L$ (Theorem~\ref{thm:hankel}).
+
 \subsection*{Formal verification}
 Every step of the proof of Theorem~\ref{thm:main} has been formalised in Lean~4~\cite{Lean}
 using Mathlib~\cite{Mathlib}. So have Proposition~\ref{prop:six}, Theorem~\ref{thm:generic},
-and the deduction of Theorem~\ref{thm:loglog} from~\eqref{eq:NT} and~\eqref{eq:BT}.
+the deduction of Theorem~\ref{thm:loglog} from~\eqref{eq:NT} and~\eqref{eq:BT},
+Theorem~\ref{thm:rises} and Theorem~\ref{thm:hankel}.
 Section~\ref{sec:lean} describes the formalisation. The constants in this paper are the
 constants in the Lean proof.
 
 \subsection*{What is not proved}
-Both theorems are far from~\eqref{eq:conj}, and the method cannot reach it; see
+These results are far from~\eqref{eq:conj}, and the method cannot reach it; see
 Section~\ref{sec:limits}.
 
 \section{Preliminaries}
@@ -601,6 +626,182 @@ $\mathrm{SD}(G)$ holds with $G=\ell^{5/2}$, which satisfies $G\ge1$ and $G(x)\ll
 Theorem~\ref{thm:generic} gives $P(a,b)\ll a^{3/10}\ell(a)^{1/2}\ll a^{3/10}\sqrt{\log\log3a}$.
 \end{proof}
 
+\section{Rises in the quotient increments}\label{sec:rises}
+
+Throughout this section $k_i=q_{i+1}-q_i\ge1$, $d_i=b_i-b_{i+1}\ge1$, and a \emph{rise} is an
+index with $k_i<k_{i+1}$.
+
+\begin{lemma}[Six quotients in arithmetic progression]\label{lem:ap}
+Let $q,h\ge1$ and $x_0>x_1>\dots>x_6\ge0$ satisfy $x_j(q+jh)+x_{j+1}=a$ for $0\le j\le5$. Then
+$q^4\le 324\,h^3a$.
+\end{lemma}
+
+\begin{proof}
+Let $f_j=x_j-x_{j+1}$, and let $E=(f_1-f_2)h$ and $F=(f_2-f_3)h$ be the curvatures of the blocks
+starting at $x_1$ and $x_2$ (all their increments equal $h$). With $U=f_0-2f_1+f_2$, the
+division equations $e_j$ give the exact identity
+\[
+qhU=(3h-1)E+F,\qquad\text{namely}\qquad qhU-(3h-1)E-F=h(e_0-3e_1+3e_2-e_3).
+\]
+This is the case $u=v=w=z=h$ of Lemma~\ref{lem:six}, where $L=2h^3U$. By
+Lemma~\ref{lem:curv}, $E,F\ge1$, so the integer $U$ is at least $1$.
+
+Now bound $E$ and $F$. Subtracting consecutive division equations gives
+$q_jf_j\le hx_{j+1}$, where $q_j=q+jh$. Since $x_{j+1}q_{j+1}\le a$, this yields
+$q^2f_j\le ha$ for $1\le j\le4$. By Lemma~\ref{lem:size},
+$Ex_3\le(h+1)(f_1+f_2+f_3)^2\le 9h^2(h+1)a^2/q^4$. Also $a<x_3(q+3h+1)$, so
+$Eq^4\le 9h^2(h+1)(q+3h+1)a$, and likewise $Fq^4\le 9h^2(h+1)(q+4h+1)a$. Hence
+\[
+q^5h\le q^4\bigl((3h-1)E+F\bigr)\le 27h^3(h+1)(q+4h+1)a .
+\]
+If $q\ge h$ this gives $q^4\le 324h^3a$. If $q<h$ then $q^4<h^4\le h^3a$.
+\end{proof}
+
+\begin{remark}
+The source of this section proved a version of Lemma~\ref{lem:ap} for seven quotients by an
+analytic argument: it represents a periodic continuation of the orbit by integrals of
+positive functions, and compares finite differences. The identity above gives an algebraic
+proof with one fewer quotient.
+\end{remark}
+
+\begin{lemma}\label{lem:norise}
+Whenever $b_{i+2}>0$, $d_{i+1}k_i<d_ik_{i+1}$. In particular, if $k_{i+1}\le k_i$ then
+$d_{i+1}<d_i$.
+\end{lemma}
+
+\begin{proof}
+This is $D=d_ik_{i+1}-d_{i+1}k_i\ge1$ (Lemma~\ref{lem:curv}). If $k_{i+1}\le k_i$ and
+$d_{i+1}\ge d_i$, then $d_ik_{i+1}\le d_{i+1}k_i$, which is a contradiction.
+\end{proof}
+
+\begin{lemma}\label{lem:mult}
+Let $c_j\ge1$ be integers, $j\in J$, such that no value occurs more than $M$ times. Then
+$|J|^2\le 2M\sum_{j\in J}c_j$.
+\end{lemma}
+
+\begin{proof}
+Induct on $|J|$. Let $c_{j_0}$ be the largest value. The values lie in $[1,c_{j_0}]$, so
+$|J|\le Mc_{j_0}$. Removing $j_0$ and using $|J|^2=(|J|-1)^2+2|J|-1$ completes the induction.
+\end{proof}
+
+\begin{proposition}\label{prop:rises}
+Let $x_0,\dots,x_{T-1}$ be a window run in $[A,2A)$ with $T\ge2$, and let $\rho$ be the number
+of rises among its $T-1$ increments. Then:
+\begin{enumerate}
+\item $(T-1)^2\le 2(\rho+1)(A-1)$;
+\item $T-1\le\lfloor a/A\rfloor$;
+\item if $6A\le a$, then $T-1=\ell+s$ with $\ell^2\le 8(\rho+1)\lfloor a/A\rfloor$ and
+$s^3\le 26244\,A$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Split the increments into \emph{runs}: maximal stretches containing no rise. There are at most
+$\rho+1$ runs. Map each index to the end of its run.
+
+(1) By Lemma~\ref{lem:norise}, the drops strictly decrease along a run, so each value of $d_j$
+occurs at most once per run, hence at most $\rho+1$ times. Lemma~\ref{lem:mult} and
+$\sum_jd_j=x_0-x_{T-1}\le A-1$ give the claim.
+
+(2) The increments are $\ge1$, and they sum to $q_{T-1}-q_0\le\lfloor a/A\rfloor$.
+
+(3) Call an increment $h$ \emph{low} if $26244h^3A^4<a^3$. Five consecutive equal increments
+$h$ inside the run give six quotients in arithmetic progression. Lemma~\ref{lem:ap} then
+gives $q^4\le324h^3a$. On the other hand, $a<3Aq$, which follows from $a=qx_0+x_1$,
+$x_1<x_0<2A$ and $6A\le a$. Together these give $a^3\le26244h^3A^4$, so $h$ is not low.
+Within a run the increments are nonincreasing, so equal values are consecutive. Hence each
+low value occurs at most $4$ times per run, and at most $4(\rho+1)$ times in all.
+Lemma~\ref{lem:mult} bounds the number $\ell$ of low increments by
+$\ell^2\le8(\rho+1)\sum_jk_j\le8(\rho+1)\lfloor a/A\rfloor$. Let $s$ be the number of high
+increments, with smallest value $h_*$. Then $sh_*\le\lfloor a/A\rfloor$ and
+$a^3\le26244h_*^3A^4$, so $s^3a^3\le26244A^4(a/A)^3\le26244Aa^3$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:rises}]
+The rises inside a window are rises of the orbit, so $\rho+1\le R$. Combining the three parts
+of Proposition~\ref{prop:rises}, as in the proof of Theorem~\ref{thm:generic}, gives for the
+window $[2^k,2^{k+1})$
+\[
+T_k\le 1+\sqrt R\,\min\bigl(\sqrt{8a}\,2^{-k/2},\ \sqrt2\,2^{k/2}\bigr)
++\min\bigl(a\,2^{-k},\ 30\cdot2^{k/3}\bigr).
+\]
+The geometric-sum lemma, in its general form
+$\sum_k\min(\alpha2^{-sk},\beta2^{tk})\ll_{s,t}\alpha^{t/(s+t)}\beta^{s/(s+t)}$, gives
+$\sum_k\min(\sqrt{8a}\,2^{-k/2},\sqrt2\,2^{k/2})\ll(\sqrt{8a}\sqrt2)^{1/2}=2a^{1/4}$. It also gives
+$\sum_k\min(a2^{-k},30\cdot2^{k/3})\ll a^{1/4}$. Since $\log_2a+1\ll a^{1/4}$, summing over $k$
+gives the theorem.
+\end{proof}
+
+\begin{remark}
+By Theorem~\ref{thm:rises}, an orbit with $P(a,b)\asymp a^{3/10}$ must have $R\gg a^{1/10}$.
+Proposition~\ref{prop:rises}(3) says more: inside the critical window $A\asymp a^{3/5}$, a
+run of $T\asymp a^{3/10}$ remainders must contain $\gg a^{1/5}$ rises.
+\end{remark}
+
+\section{The Hankel hierarchy}\label{sec:hankel}
+
+Let $b_0>b_1>\dots>b_{N-1}>0$ be the positive part of an orbit (indexed from $0$, so
+$N=P(a,b)$), with quotients $q_i$. Put $p_i(j)=q_{i+j}-q_i$ for $j<N-i$. Define weights
+$w_i(j)$ backwards by $w_{N-1}=\delta_0$ and
+\[
+w_i(0)=1-\sum_{j}\frac{w_{i+1}(j)}{p_i(j+1)},\qquad w_i(j+1)=\frac{w_{i+1}(j)}{p_i(j+1)} .
+\]
+Let $\mu_i$ be the measure with mass $w_i(j)$ at $p_i(j)$, and let
+$\nu_i=\mu_i/(q_i+x)$. Write $h_i(s)=\int x^s\,d\nu_i=\sum_jw_i(j)p_i(j)^s/q_{i+j}$.
+
+\begin{lemma}\label{lem:moments}
+\begin{enumerate}
+\item The weights are positive and sum to $1$.
+\item $h_i(0)=b_i/a$, that is, $b_i/a=\mathbb E\bigl[1/(q_i+X_i)\bigr]$ for $X_i\sim\mu_i$.
+\item $h_i(s+1)=\sum_{t\le s}\binom st k_i^{s-t}h_{i+1}(t)$ for $i+1<N$.
+\item $h_i(s)=(-q_i)^sb_i/a+z$ with $z\in\mathbb Z$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) Since $p_i(j+1)\ge1$, the sum defining $w_i(0)$ is at most $1$. It is strictly less: if
+$N-i-1\ge2$, the term $j=1$ has $p_i(2)\ge2$; if $i=N-2$, the last gap satisfies
+$q_{N-1}\ge q_{N-2}+2$. (2) Since $p_i(j+1)=q_{i+j+1}-q_i$, the definitions give
+$q_ih_i(0)+h_{i+1}(0)=1$, which is the normalised division equation; and
+$h_{N-1}(0)=1/q_{N-1}=b_{N-1}/a$. (3) Use $p_i(j+1)=k_i+p_{i+1}(j)$ and the binomial theorem.
+(4) Induct backwards on $i$ using (3), $b_{i+1}/a=1-q_ib_i/a$ and $k_i-q_{i+1}=-q_i$.
+\end{proof}
+
+\begin{theorem}\label{thm:hankel}
+For $1\le r\le N-i$, the number $I_r(i)=a\det\bigl(h_i(j+l)\bigr)_{0\le j,l<r}$ is a positive
+integer. Moreover $I_1(i)=b_i$, $I_2(i)=d_i$ (if $i+1<N$), $I_3(i)=D_i$ (if $i+3<N$), and
+$I_4(i)=L_i$ (if $i+5<N$), where $D_i$ and $L_i$ are the curvature and the six-step integer
+of the blocks starting at $b_i$.
+\end{theorem}
+
+\begin{proof}
+\emph{Integrality.} By Lemma~\ref{lem:moments}(4),
+$h_i(s+1)+q_ih_i(s)\in\mathbb Z$. Multiply the Hankel matrix on the left by the unit lower
+triangular matrix that adds $q_i$ times row $j-1$ to row $j$. This makes rows
+$1,\dots,r-1$ integral and leaves the determinant unchanged. Expand along row $0$, whose entries
+are $(-q_i)^lb_i/a+(\text{integer})$; then $a\det$ is an integer.
+
+\emph{Positivity.} The Hankel matrix is the Gram matrix of $1,x,\dots,x^{r-1}$ in $L^2(\nu_i)$.
+Its quadratic form is $\sum_jw_i(j)q_{i+j}^{-1}\bigl(\sum_lc_lp_i(j)^l\bigr)^2$. If this
+vanishes, the polynomial $\sum_lc_lx^l$ vanishes at the $N-i\ge r$ distinct points $p_i(j)$, so
+it is zero, by the invertibility of the Vandermonde matrix. So the matrix is positive definite.
+
+\emph{The first four.} By Lemma~\ref{lem:moments}(2),(3), the entries $h_i(s)$, $s\le2r-2$, are
+explicit polynomials in $\beta_j=b_{i+j}/a$ and $k_i,\dots,k_{i+2r-3}$. The claimed values are
+linear in the $b_{i+j}$. So each identity holds modulo the relations
+$q_{i+j}\beta_j+\beta_{j+1}=1$, with explicit certificates of at most $156$ terms per
+coefficient.
+\end{proof}
+
+\begin{remark}
+So the positivity of $D$ and $L$, proved earlier by explicit identities, is an instance of the
+positivity of Gram determinants. The integrality of $L$ (Lemma~\ref{lem:six}(1)) is an instance
+of the integrality of $I_4$. A priori $I_r(i)$ involves the moments $h_i(s)$ for $s\le2r-2$,
+and hence $b_i,\dots,b_{i+2r-2}$. In fact $I_3(i)$ depends only on $b_i,b_{i+1},b_{i+2}$ and
+$q_i,q_{i+1},q_{i+2}$. Similarly $I_4(i)$ depends only on $b_i,\dots,b_{i+3}$ and
+$q_i,\dots,q_{i+4}$: the later remainders cancel.
+\end{remark}
+
 \section{The Lean formalisation}\label{sec:lean}
 
 The repository accompanying this paper contains a Lean~4 project (toolchain
@@ -620,11 +821,23 @@ theorem P\_le\_loglog (hNT : NairTenenbaumDelta)\\
 \hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} (3 / 10 : $\mathbb R$)\\
 \hspace*{4em}* $\surd$(Real.log (Real.log (3 * a)))
 \end{quote}
+Theorems~\ref{thm:rises} and~\ref{thm:hankel} are formalised as
+\begin{quote}\ttfamily\small
+theorem P\_le\_rises : $\exists$ C > 0, $\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
+\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} (1 / 4 : $\mathbb R$) * $\surd$(rises a b + 1)\\[2pt]
+theorem hankelInv\_pos\_int (hba : b < a) (hi : i < P a b)\\
+\hspace*{2em}(hr : r $\le$ P a b - i) :\\
+\hspace*{2em}$\exists$ n : $\mathbb N$, 0 < n $\wedge$ hankelInv a b i r = n
+\end{quote}
+together with \lean{hankelInv\_one}, \dots, \lean{hankelInv\_four}; the last states
+\lean{hankelInv a b i 4} $=$ \lean{sixL $\dots$}, the six-step integer of
+Lemma~\ref{lem:six}.
 Here \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean} are Lean propositions stating
 \eqref{eq:NT} (with $\varepsilon=1/4$) and~\eqref{eq:BT}, with existential constants and
 thresholds. \lean{hooleyDelta} is defined as the supremum over $u\in\mathbb R$, exactly as
-above. For \lean{P\_le}, \lean{six\_step\_bound}, \lean{P\_le\_of\_shortDivisorBound} and
-\lean{P\_le\_loglog}, the command \lean{\#print axioms} reports only \lean{propext},
+above. For \lean{P\_le}, \lean{six\_step\_bound}, \lean{P\_le\_of\_shortDivisorBound},
+\lean{P\_le\_loglog}, \lean{P\_le\_rises}, \lean{hankelInv\_pos\_int} and
+\lean{hankelInv\_four}, the command \lean{\#print axioms} reports only \lean{propext},
 \lean{Classical.choice} and \lean{Quot.sound}. There is no \lean{sorry} and no
 \lean{native\_decide}.
 
@@ -656,6 +869,17 @@ $\Delta_{\mathrm H}$, $\tau_A\le\Delta_{\mathrm H}$ & \lean{hooleyDelta}, \lean{
 \eqref{eq:NT}, \eqref{eq:BT} & \lean{NairTenenbaumDelta}, \lean{BretecheTenenbaumMean} & \lean{Hooley.lean}\\
 Lemma~\ref{lem:partial} & \lean{sum\_hooleyDelta\_div\_le} & \lean{Hooley.lean}\\
 Theorem~\ref{thm:loglog} & \lean{P\_le\_loglog} & \lean{Hooley.lean}\\
+Lemma~\ref{lem:ap} & \lean{ap\_identity}, \lean{ap\_bound} & \lean{Rises.lean}\\
+Lemma~\ref{lem:norise} & \lean{drop\_lt\_of\_not\_rise} & \lean{Rises.lean}\\
+Lemma~\ref{lem:mult} & \lean{sq\_card\_le\_of\_fiber} & \lean{Rises.lean}\\
+Proposition~\ref{prop:rises} & \lean{rises\_drop\_bound}, \lean{rises\_quot\_bound}, & \lean{Rises.lean}\\
+ & \lean{rises\_incr\_bound} & \\
+General geometric sum & \lean{sum\_min\_le\_gen} & \lean{Geometric.lean}\\
+Theorem~\ref{thm:rises} & \lean{P\_le\_rises}, \lean{P\_le\_of\_no\_rises} & \lean{RisesMain.lean}\\
+Lemma~\ref{lem:moments} & \lean{wt\_spec}, \lean{hm\_zero}, & \lean{Hankel.lean}\\
+ & \lean{hm\_succ}, \lean{hm\_int} & \\
+Theorem~\ref{thm:hankel} & \lean{hankelInv\_pos\_int}, & \lean{Hankel.lean}\\
+ & \lean{hankelInv\_one}, \dots, \lean{hankelInv\_four} & \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -676,7 +900,10 @@ number of good indices is at most the size of the parameter box times the larges
 \item Lemma~\ref{lem:six}(2) is checked by \lean{linear\_combination} with the coefficients
 given in its proof, which were found by polynomial division. Corollary~\ref{cor:six} proves
 $L\ge1$ directly from the identity, since $L$ is an integer by definition.
-\item The project has about 2500 lines of Lean. \lean{lake build} rebuilds it in under a
+\item The identities $I_2=d$, $I_3=D$, $I_4=L$ are checked by \lean{linear\_combination}, with
+certificates generated by polynomial division. The moment entries $h_i(s)$ are computed in Lean
+from the recursion of Lemma~\ref{lem:moments}(3).
+\item The project has about 4100 lines of Lean. \lean{lake build} rebuilds it in under a
 minute once Mathlib is built.
 \end{itemize}
 
@@ -688,7 +915,9 @@ the divisor factor) both allow $T\asymp a^{3/10}$ at $A\asymp a^{3/5}$. Even an 
 short-interval divisor estimate with $G$ constant leaves this balance unchanged. So sharpening
 constants or improving the divisor counts cannot give a logarithmic bound. Further progress
 needs to restrict \emph{which} configurations of the parameters $(u,v,w,z,D,E,F)$ can occur
-together along a single orbit.
+together along a single orbit. Theorem~\ref{thm:rises} is one restriction of this kind: a long
+orbit must have many rises in its quotient increments. Theorem~\ref{thm:hankel} supplies the
+natural candidates for further ones, the higher invariants $I_r$.
 
 There is no obvious monotonicity to exploit. The curvatures $D_i$ of successive blocks need
 not decrease. For $a=13242$ the orbit of $255$ begins

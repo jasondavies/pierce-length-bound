@@ -166,4 +166,79 @@ theorem sum_min_le {α β : ℝ} (hα : 0 < α) (hβ : 0 < β) (L : ℕ) :
         linarith
     _ = 9 * M := by ring
 
+/-- **The dyadic min-sum, general exponents.** For `α, β, s, t > 0`,
+`∑_{k < L} min(α (2^k)^{-s}, β (2^k)^t) ≤ C_{s,t} α^{t/(s+t)} β^{s/(s+t)}` with
+`C_{s,t} = 1/(1 - 2^{-s}) + 2^t/(2^t - 1)`. -/
+theorem sum_min_le_gen {α β s t : ℝ} (hα : 0 < α) (hβ : 0 < β) (hs : 0 < s) (ht : 0 < t)
+    (L : ℕ) :
+    ∑ k ∈ range L, min (α * ((2 : ℝ) ^ k) ^ (-s)) (β * ((2 : ℝ) ^ k) ^ t) ≤
+      (1 / (1 - (2 : ℝ) ^ (-s)) + (2 : ℝ) ^ t / ((2 : ℝ) ^ t - 1)) *
+        (α ^ (t / (s + t)) * β ^ (s / (s + t))) := by
+  set M := α ^ (t / (s + t)) * β ^ (s / (s + t)) with hM
+  have hst : 0 < s + t := by linarith
+  have hMpos : 0 < M := by positivity
+  set ρ : ℝ := (2 : ℝ) ^ t with hρ
+  set σ : ℝ := (2 : ℝ) ^ (-s) with hσ
+  have hρk : ∀ k : ℕ, ((2 : ℝ) ^ k) ^ t = ρ ^ k := fun k => by
+    rw [hρ, ← Real.rpow_pow_comm (by norm_num)]
+  have hσk : ∀ k : ℕ, ((2 : ℝ) ^ k) ^ (-s) = σ ^ k := fun k => by
+    rw [hσ, ← Real.rpow_pow_comm (by norm_num)]
+  have hρ1 : 1 < ρ := Real.one_lt_rpow (by norm_num) ht
+  have hσ0 : 0 < σ := by positivity
+  have hσ1 : σ < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)
+  -- `M^{s+t} = α^t β^s` and `(σ^k)^t (ρ^k)^s = 1`
+  have hMst : M ^ (s + t) = α ^ t * β ^ s := by
+    rw [hM, Real.mul_rpow (by positivity) (by positivity), ← Real.rpow_mul hα.le,
+      ← Real.rpow_mul hβ.le, div_mul_cancel₀ _ hst.ne', div_mul_cancel₀ _ hst.ne']
+  have hρσ : ∀ k : ℕ, (σ ^ k) ^ t * (ρ ^ k) ^ s = 1 := by
+    intro k
+    rw [← hσk, ← hρk, ← Real.rpow_mul (by positivity), ← Real.rpow_mul (by positivity),
+      ← Real.rpow_add (by positivity)]
+    rw [show -s * t + t * s = 0 by ring, Real.rpow_zero]
+  have hpt : ∀ k : ℕ, min (α * σ ^ k) (β * ρ ^ k) ≤
+      (if σ ^ k ≤ M / α then α * σ ^ k else 0) + (if ρ ^ k ≤ M / β then β * ρ ^ k else 0) := by
+    intro k
+    have hX : 0 < α * σ ^ k := by positivity
+    have hY : 0 < β * ρ ^ k := by positivity
+    by_cases hYM : β * ρ ^ k ≤ M
+    · have h1 : ρ ^ k ≤ M / β := by rw [le_div_iff₀ hβ]; linarith
+      rw [if_pos h1]
+      have : 0 ≤ (if σ ^ k ≤ M / α then α * σ ^ k else 0) := by split_ifs <;> positivity
+      linarith [min_le_right (α * σ ^ k) (β * ρ ^ k)]
+    · push Not at hYM
+      have hXM : α * σ ^ k < M := by
+        by_contra h; push Not at h
+        have h3 : M ^ t ≤ (α * σ ^ k) ^ t := Real.rpow_le_rpow hMpos.le h ht.le
+        have h2 : M ^ s < (β * ρ ^ k) ^ s := Real.rpow_lt_rpow hMpos.le hYM hs
+        have hlt : M ^ t * M ^ s < (α * σ ^ k) ^ t * (β * ρ ^ k) ^ s := by
+          calc M ^ t * M ^ s ≤ (α * σ ^ k) ^ t * M ^ s := by gcongr
+            _ < (α * σ ^ k) ^ t * (β * ρ ^ k) ^ s := by gcongr
+        have e : (α * σ ^ k) ^ t * (β * ρ ^ k) ^ s = M ^ t * M ^ s := by
+          rw [Real.mul_rpow hα.le (by positivity), Real.mul_rpow hβ.le (by positivity),
+            ← Real.rpow_add hMpos, add_comm t s, hMst]
+          calc α ^ t * (σ ^ k) ^ t * (β ^ s * (ρ ^ k) ^ s)
+              = α ^ t * β ^ s * ((σ ^ k) ^ t * (ρ ^ k) ^ s) := by ring
+            _ = α ^ t * β ^ s := by rw [hρσ, mul_one]
+        linarith
+      have h1 : σ ^ k ≤ M / α := by rw [le_div_iff₀ hα]; linarith
+      rw [if_pos h1]
+      have : 0 ≤ (if ρ ^ k ≤ M / β then β * ρ ^ k else 0) := by split_ifs <;> positivity
+      linarith [min_le_left (α * σ ^ k) (β * ρ ^ k)]
+  have hlow := geom_low hρ1 (div_pos hMpos hβ).le L
+  have hhigh := geom_high hσ0 hσ1 (div_pos hMpos hα).le L
+  calc ∑ k ∈ range L, min (α * ((2 : ℝ) ^ k) ^ (-s)) (β * ((2 : ℝ) ^ k) ^ t)
+      = ∑ k ∈ range L, min (α * σ ^ k) (β * ρ ^ k) := by
+        refine sum_congr rfl fun k _ => ?_; rw [hσk, hρk]
+    _ ≤ ∑ k ∈ range L, ((if σ ^ k ≤ M / α then α * σ ^ k else 0) +
+          (if ρ ^ k ≤ M / β then β * ρ ^ k else 0)) := sum_le_sum fun k _ => hpt k
+    _ = α * ∑ k ∈ range L, (if σ ^ k ≤ M / α then σ ^ k else 0) +
+          β * ∑ k ∈ range L, (if ρ ^ k ≤ M / β then ρ ^ k else 0) := by
+        rw [sum_add_distrib, mul_sum, mul_sum]
+        congr 1 <;> refine sum_congr rfl fun k _ => ?_ <;> split_ifs <;> simp
+    _ ≤ α * ((M / α) / (1 - σ)) + β * (ρ * (M / β) / (ρ - 1)) := by gcongr
+    _ = (1 / (1 - σ) + ρ / (ρ - 1)) * M := by
+        have : (1 : ℝ) - σ ≠ 0 := by linarith
+        have : ρ - 1 ≠ 0 := by linarith
+        field_simp
+
 end PierceBound

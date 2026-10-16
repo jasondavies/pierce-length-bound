@@ -12,6 +12,12 @@ proves, uniformly in `0 < b < a`:
   Nair–Tenenbaum, Acta Math. 180 (1998), on short sums of the Erdős–Hooley `Δ`-function, and
   de la Bretèche–Tenenbaum, Acta Arith. 219 (2025), Thm 1.1, `∑_{n≤x} Δ(n) ≪ x (log log x)^{5/2}`.
   Both are stated in Lean as explicit hypotheses. Their proofs are not formalised.
+* **Structured trajectories:** `P(a, b) ≪ a^{1/4} √R`, where `R − 1` is the number of rises
+  `kᵢ < k_{i+1}` in the quotient increments. In particular nonincreasing increments give
+  `P(a, b) ≪ a^{1/4}`.
+* **The Hankel hierarchy:** an exact positive moment model of the orbit gives positive integer
+  invariants `I_r(i)` (Hankel determinants) for every `r`, with `I₁ = bᵢ`, `I₂ = dᵢ`, `I₃ = D`
+  and `I₄ = L`.
 
 The main ingredients are two exact identities. The first, for three consecutive steps, shows
 that the curvature `D = dv − eu` is a positive integer. The second, for six consecutive steps,
@@ -32,9 +38,15 @@ theorem PierceBound.P_le : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b �
 theorem PierceBound.P_le_loglog (hNT : NairTenenbaumDelta) (hBT : BretecheTenenbaumMean) :
     ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
       (P a b : ℝ) ≤ C * (a : ℝ) ^ (3 / 10 : ℝ) * √(Real.log (Real.log (3 * a)))
+
+theorem PierceBound.P_le_rises : ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ (1 / 4 : ℝ) * √(rises a b + 1)
+
+theorem PierceBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr : r ≤ P a b - i) :
+    ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n
 ```
 
-`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for both. The second
+`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all four. The second
 theorem's dependence on the two papers is entirely through its hypotheses.
 
 | File | Contents |
@@ -48,6 +60,9 @@ theorem's dependence on the two papers is entirely through its hypotheses.
 | `ShortSum.lean` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
 | `Geometric.lean` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}` |
 | `Conditional.lean` | any short-interval divisor bound `≪ y G(x)` gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
+| `Rises.lean` | the arithmetic-progression bound `q⁴ ≤ 324 h³ a`, runs, the multiplicity lemma, and the three window bounds |
+| `RisesMain.lean` | `P_le_rises`: `P ≪ a^{1/4} √R` |
+| `Hankel.lean` | the moment model, `I_r(i) ∈ ℤ_{>0}` (`hankelInv_pos_int`), and `I₁ = b`, `I₂ = d`, `I₃ = D`, `I₄ = L` |
 | `Hooley.lean` | Erdős–Hooley `Δ`, the hypotheses `NairTenenbaumDelta` and `BretecheTenenbaumMean`, partial summation, and `P_le_loglog` |
 
 ## Vendored code

@@ -8,3 +8,6 @@ import PierceBound.ShortSum
 import PierceBound.Geometric
 import PierceBound.Conditional
 import PierceBound.Hooley
+import PierceBound.Rises
+import PierceBound.RisesMain
+import PierceBound.Hankel
