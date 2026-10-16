@@ -39,7 +39,13 @@ by an elementary argument. The new ingredient is an exact identity for three con
 of the iteration. It shows that a certain integer combination $D=dv-eu$ of the drops and
 quotient increments is always positive. It is also small whenever the three drops are small,
 and $D$ together with the two increments confines the block to a curve with few integer points.
-The whole proof is formalised in Lean~4 with Mathlib, without \lean{sorry}.
+A second identity, for six consecutive steps, produces a further positive integer $L$ built from
+three overlapping curvatures. It gives the local bound $T\ll a^{1/2}A^{-1/3}$ for the number $T$
+of remainders in $[A,2A)$, with no divisor-function loss. Combined with results of Nair--Tenenbaum
+and de la Bret\`eche--Tenenbaum on the Erd\H{o}s--Hooley $\Delta$-function, it gives
+$P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$. Everything is formalised in Lean~4 with Mathlib,
+without \lean{sorry}. The last bound is formalised conditionally on the two cited theorems,
+which are stated in Lean as explicit hypotheses.
 \end{abstract}
 
 \maketitle
@@ -101,13 +107,52 @@ $xM(q)=aN(q)+D$, where $M$ and $N$ are explicit polynomials depending on $(u,v)$
 $a^{o(1)}$ admissible points (Lemma~\ref{lem:fiber}). The number of triples $(u,v,D)$ is
 $\ll (B/T)^2\cdot a/T^3$, where $B=a/A$, which gives~\eqref{eq:intro2}.
 
+\subsection*{A second positive integer}
+Six consecutive terms carry three overlapping curvatures $D,E,F$ and four quotient increments
+$u,v,w,z$. In Section~\ref{sec:six} we show that the integer
+\[
+L=\frac{S(v,w,z)\,D-S(u,v,w)\,E}{v},\qquad S(u,v,w)=u^2v+(u-1)v^2+uw,
+\]
+satisfies the exact identity $qwL=J(u,v,w,z)\,E+S(u,v,w)\,F$, where $J$ is a polynomial with
+positive values (Lemma~\ref{lem:six}). Hence $L\ge1$, and $q\asymp a/A$ is bounded by a
+polynomial in the small parameters $u,v,w,z,E,F$. A single window of six terms with small total
+drop then gives
+\begin{equation}\label{eq:intro3}
+T^6A^2\le 96\cdot10^6\,a^3\qquad(T\ge10),
+\end{equation}
+with no divisor function at all (Proposition~\ref{prop:six}).
+
+With~\eqref{eq:intro3} in hand, the only remaining loss is in the drop bound~\eqref{eq:intro1}. That
+loss comes from the number of divisors of $a+h$ in $[A,2A)$ as $h$ ranges over a short interval.
+Section~\ref{sec:short} shows that any bound $\ll y\,G(x)$ for such counts over intervals
+$(x,x+y]$ with $y\ge x^{1/4}$ gives $P(a,b)\ll a^{3/10}G(a)^{1/5}$ (Theorem~\ref{thm:generic}).
+The counts are majorised by the Erd\H{o}s--Hooley function. Combining the short-sum theorem of
+Nair and Tenenbaum~\cite{NT} with the recent mean-value bound of de la Bret\`eche and
+Tenenbaum~\cite{BT} gives $G(x)=(\log\log x)^{5/2}$, and hence the following.
+
+\begin{theorem}\label{thm:loglog}
+Assume the theorem of Nair--Tenenbaum stated as~\eqref{eq:NT} and the theorem of de la
+Bret\`eche--Tenenbaum stated as~\eqref{eq:BT} below. Then
+\[
+P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}\qquad\text{uniformly for integers }0<b<a .
+\]
+\end{theorem}
+
+Both hypotheses are published theorems. They are hypotheses only in the sense of the
+formalisation: we have not formalised their proofs. Any other short-interval divisor bound
+can be used in their place. For example, Shiu's theorem~\cite{Shiu} gives
+$\sum_{x<n\le x+y}\tau(n)\ll y\log x$ for $y\ge x^{1/4}$, and hence
+$P(a,b)\ll a^{3/10}(\log a)^{1/5}$; we have not formalised that either.
+
 \subsection*{Formal verification}
-Every step of the proof, including Theorem~\ref{thm:main} in the form stated above, has been
-formalised in Lean~4~\cite{Lean} using Mathlib~\cite{Mathlib}. Section~\ref{sec:lean}
-describes the formalisation. The constants in this paper are the constants in the Lean proof.
+Every step of the proof of Theorem~\ref{thm:main} has been formalised in Lean~4~\cite{Lean}
+using Mathlib~\cite{Mathlib}. So have Proposition~\ref{prop:six}, Theorem~\ref{thm:generic},
+and the deduction of Theorem~\ref{thm:loglog} from~\eqref{eq:NT} and~\eqref{eq:BT}.
+Section~\ref{sec:lean} describes the formalisation. The constants in this paper are the
+constants in the Lean proof.
 
 \subsection*{What is not proved}
-Theorem~\ref{thm:main} is far from~\eqref{eq:conj}, and the method cannot reach it; see
+Both theorems are far from~\eqref{eq:conj}, and the method cannot reach it; see
 Section~\ref{sec:limits}.
 
 \section{Preliminaries}
@@ -378,6 +423,184 @@ P(a,b)\le (\lfloor\log_2 a\rfloor+1)\bigl(11+K^{1/(10m)}\bigr)a^{3/10+\varepsilo
 \le C_\varepsilon\, a^{3/10+\varepsilon}. \qquad\qed
 \]
 
+\section{Six consecutive steps}\label{sec:six}
+
+Fix six consecutive terms $x_0>x_1>\dots>x_5\ge0$ of the sequence $(b_i)$ with $x_4>0$, and
+write their quotients as
+\begin{gather*}
+\lfloor a/x_0\rfloor=q,\quad \lfloor a/x_1\rfloor=q+u,\quad \lfloor a/x_2\rfloor=q+u+v,\\
+\lfloor a/x_3\rfloor=q+u+v+w,\quad \lfloor a/x_4\rfloor=q+u+v+w+z .
+\end{gather*}
+(In this section $w$ is a quotient increment, not a term of the sequence.) By
+Lemma~\ref{lem:quot}, $u,v,w,z\ge1$. Let $f_k=x_k-x_{k+1}\ge1$ be the drops, and let
+\[
+D=f_0v-f_1u,\qquad E=f_1w-f_2v,\qquad F=f_2z-f_3w
+\]
+be the curvatures of the blocks starting at $x_0$, $x_1$ and $x_2$. Write $E_k$ for the division
+equation $x_kq_k+x_{k+1}-a=0$, where $q_k=\lfloor a/x_k\rfloor$. Put
+\begin{align*}
+S(u,v,w)&=u^2v+(u-1)v^2+uw,\\
+J(u,v,w,z)&=\bigl(u^2+(u-1)v\bigr)z+w\bigl(u^3+uv(2u-1)+(u-1)v^2\bigr)+w^2\bigl((u-1)(u+v)+1\bigr),\\
+L&=(vw+w^2+z)\,D-\bigl(u^2+(u-1)v\bigr)E-w\,(wf_0-uf_2).
+\end{align*}
+
+\begin{lemma}[The six-step identity]\label{lem:six}
+\begin{enumerate}
+\item $S(v,w,z)\,D-S(u,v,w)\,E=v\,L$.
+\item $q\,w\,L=J(u,v,w,z)\,E+S(u,v,w)\,F$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Part~(1) is a polynomial identity: since $S(v,w,z)\equiv-w^2$ and $S(u,v,w)\equiv uw\pmod v$,
+and $wD+uE=v(wf_0-uf_2)$, the difference is divisible by $v$, and expanding gives $L$. Part~(2)
+holds modulo the division equations. Explicitly, $qwL-JE-S(u,v,w)F$ equals
+\begin{align*}
+&w(v^2w+vw^2+vz-w^2)\,E_0-w(u^2w+2uvw+uw^2+uz+v^2w+vw^2-vw+vz-w^2)\,E_1\\
+&+w(u^2v+u^2w+uv^2+2uvw+uw^2+uw+uz-v^2-vw)\,E_2-w(u^2v+uv^2+uw-v^2)\,E_3 .
+\end{align*}
+This is an identity of polynomials in $a$, $q$, the $x_k$ and the increments, checked by expansion.
+\end{proof}
+
+\begin{corollary}\label{cor:six}
+Suppose $q\ge1$ and $u,v,w,z\le m$. Then $E,F\ge1$, $L\ge1$, and
+\[
+q\le 9m^3E+3m^3F .
+\]
+\end{corollary}
+
+\begin{proof}
+Lemma~\ref{lem:curv}, applied to the blocks starting at $x_1$ and $x_2$, gives $E,F\ge1$.
+Clearly $J>0$ and $S\ge0$, so by Lemma~\ref{lem:six}(2) $qwL>0$. Since $L$ is an integer,
+$L\ge1$ and $qw\le JE+SF$. Bounding each monomial gives $J\le 9m^3w$ and $S(u,v,w)\le 3m^3w$.
+Dividing by $w$ gives the claim.
+\end{proof}
+
+So the quotient $q$, which is about $a/A$, is controlled by the small parameters of a single block
+of six terms. No counting over many blocks is needed.
+
+\begin{proposition}[Six-step window bound]\label{prop:six}
+For a window run of length $T\ge10$,
+\[
+T^6A^2\le 96\cdot10^6\,a^3 .
+\]
+\end{proposition}
+
+\begin{proof}
+For $0\le j\le T-6$ let $s_j=x_j-x_{j+5}$. By telescoping,
+$\sum_{j\le T-6}s_j\le 5(2A-1)-5A=5A-5$. So some $j$ has $s_j(T-5)\le 5A-5$, and since
+$T\le 2(T-5)$, we get $s:=s_j$ with $sT\le 10A$. Apply Corollary~\ref{cor:six} to
+$x_j,\dots,x_{j+5}$, all of which lie in $[A,2A)$, with $m=\max(u,v,w,z)$.
+
+By Lemma~\ref{lem:size} at $x_j,\dots,x_{j+3}$, each increment satisfies
+$(\text{increment})\cdot A^2\le a s$. Multiplying by $T$ gives $mAT\le 10a$. By
+Lemma~\ref{lem:size} again, $EA\le Ex_{j+3}\le(v+1)s^2\le 2ms^2$, and likewise $FA\le 2ms^2$.
+Hence $qA\le 24m^4s^2$. Also $a=qx_j+x_{j+1}<(q+1)x_j<2A(q+1)\le 4Aq$. Therefore
+\[
+qA\cdot A^4T^6\le 24\,(mAT)^4(sT)^2\le 24\cdot10^6\,a^4A^2,
+\]
+so $qA^3T^6\le 24\cdot 10^6a^4$, and $aA^2T^6\le 4qA^3T^6\le 96\cdot10^6\,a^4$.
+\end{proof}
+
+\begin{remark}
+In terms of $B=a/A$, Proposition~\ref{prop:six} reads $T\ll a^{1/6}B^{1/3}$. This is
+Proposition~\ref{prop:curv} without the factor $\Delta^{1/6}$. Combined with
+Proposition~\ref{prop:drop} as in Corollary~\ref{cor:window}, it gives $T^{10}\ll a^3\Delta^2$
+and another proof of Theorem~\ref{thm:main}. The Lean proof of Theorem~\ref{thm:main} uses
+Corollary~\ref{cor:window}.
+\end{remark}
+
+\section{Divisors over short intervals}\label{sec:short}
+
+For $A\ge1$ let $\tau_A(n)=\#\{d\mid n:\ A\le d<2A\}$.
+
+\begin{proposition}[Drop count]\label{prop:dropcount}
+For a window run of length $T\ge2$ and any $Y\ge\lfloor 2A/(T-1)\rfloor$,
+\[
+T\le 2\sum_{a<n\le a+Y}\tau_A(n).
+\]
+\end{proposition}
+
+\begin{proof}
+This is the proof of Proposition~\ref{prop:drop}, stopped before the divisor bound. The good
+indices $j$ have $1\le h_j\le\lfloor 2A/(T-1)\rfloor$, and $j\mapsto x_j$ maps those with $h_j=h$
+injectively into the divisors of $a+h$ in $[A,2A)$.
+\end{proof}
+
+\begin{definition}
+Let $G\colon\mathbb N\to\mathbb R$. We say that $\mathrm{SD}(G)$ holds if there are $C,x_0$ such
+that for all integers $x\ge x_0$, $x^{1/4}\le y\le x$ and $A\ge1$,
+\[
+\sum_{x<n\le x+y}\tau_A(n)\le C\,y\,G(x).
+\]
+\end{definition}
+
+\begin{theorem}\label{thm:generic}
+Suppose $\mathrm{SD}(G)$ holds, $G\ge1$, and $G(x)\ll x^{1/40}$. Then
+$P(a,b)\ll a^{3/10}\,G(a)^{1/5}$ uniformly for $0<b<a$.
+\end{theorem}
+
+\begin{proof}
+Small $a$ are handled by $P(a,b)\le b<a$. Fix a dyadic window $[A,2A)$, $A=2^k$, with
+$T\ge20$ visits. Proposition~\ref{prop:six} gives $T\le\alpha A^{-1/3}$, where
+$\alpha=(96\cdot10^6)^{1/6}a^{1/2}$. Take $Y=\max(\lfloor 2A/(T-1)\rfloor,\lceil a^{1/4}\rceil)\le a$
+in Proposition~\ref{prop:dropcount}. With $H=\lfloor 2A/(T-1)\rfloor$, $\mathrm{SD}(G)$ gives
+$T\le 2CG(a)(H+a^{1/4}+1)$. Multiplying by $T-1$, using $H(T-1)\le2A$, and solving the quadratic
+gives $T\le\gamma+\beta A^{1/2}$, where $\beta=4\sqrt{CG(a)}$ and $\gamma=4CG(a)(a^{1/4}+1)$. So
+every window satisfies
+\[
+T_k\le 19+\gamma+\min\bigl(\alpha\,2^{-k/3},\ \beta\,2^{k/2}\bigr).
+\]
+Let $M=\alpha^{3/5}\beta^{2/5}$. Since $X^3Y^2=M^5$ for $X=\alpha2^{-k/3}$ and $Y=\beta2^{k/2}$,
+for each $k$ either $Y\le M$ or $X<M$. So the minimum is at most the sum of a geometric series
+with ratio $\sqrt2$ capped at $M$, plus one with ratio $2^{-1/3}$ capped at $M$. This gives
+\[
+\sum_{k}\min\bigl(\alpha\,2^{-k/3},\ \beta\,2^{k/2}\bigr)\le 9\,\alpha^{3/5}\beta^{2/5}\ll a^{3/10}G(a)^{1/5},
+\]
+with no factor $\log a$. The remaining terms contribute
+$(\log_2a+1)(19+\gamma)\ll a^{1/100}\cdot a^{1/4}G(a)$. This is
+$\ll a^{3/10}G(a)^{1/5}$, because $G(a)^{4/5}\ll a^{1/50}$.
+\end{proof}
+
+\subsection*{The Erd\H{o}s--Hooley function}
+Let $\Delta_{\mathrm H}(n)=\max_{u\in\mathbb R}\#\{d\mid n:\ e^u<d\le e^{u+1}\}$. Taking
+$e^{u+1}=2A$, and using $e>2$, gives $\tau_A(n)\le\Delta_{\mathrm H}(n)$. We use two published
+theorems.
+
+\begin{enumerate}
+\item[(NT)] Nair and Tenenbaum~\cite{NT} prove a general upper bound for short sums of
+functions $F$ satisfying $F(mn)\le\min(A^{\Omega(m)},Bm^\varepsilon)F(n)$ for $(m,n)=1$. They
+note that $\Delta_{\mathrm H}$ is such a function. In their introduction they record the
+consequence, for $Q(X)=X$ and $t=1$, that for $x$ large and $x^{\varepsilon}\le y\le x$
+\begin{equation}\label{eq:NT}
+\sum_{x<n\le x+y}\Delta_{\mathrm H}(n)\ll_\varepsilon\frac{y}{\log x}\sum_{n\le x}\frac{\Delta_{\mathrm H}(n)}{n}.
+\end{equation}
+We use it with $\varepsilon=1/4$.
+\item[(BT)] de la Bret\`eche and Tenenbaum~\cite[Theorem~1.1]{BT} prove that for large $x$
+\begin{equation}\label{eq:BT}
+\sum_{n\le x}\Delta_{\mathrm H}(n)\ll x\,(\log\log x)^{5/2}.
+\end{equation}
+\end{enumerate}
+
+\begin{lemma}\label{lem:partial}
+Assume~\eqref{eq:BT}, and let $\ell(x)=\max(1,\log\log x)$. Then
+$\sum_{n\le x}\Delta_{\mathrm H}(n)/n\ll\log x\cdot\ell(x)^{5/2}$ for large $x$.
+\end{lemma}
+
+\begin{proof}
+Split $n$ into dyadic blocks $2^j\le n<2^{j+1}\le 2x$. The terms with $n$ below the threshold
+of~\eqref{eq:BT} contribute $O(1)$, since $\Delta_{\mathrm H}(n)\le n$. Each remaining block
+contributes at most $2^{-j}\sum_{n\le 2^{j+1}}\Delta_{\mathrm H}(n)\ll\ell(2x)^{5/2}$, and
+$\ell(2x)\le2\ell(x)$. There are at most $\log_2x+1\le 3\log x$ blocks.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:loglog}]
+By~\eqref{eq:NT} and Lemma~\ref{lem:partial}, $\sum_{x<n\le x+y}\tau_A(n)\le
+\sum_{x<n\le x+y}\Delta_{\mathrm H}(n)\ll y\,\ell(x)^{5/2}$ for $x^{1/4}\le y\le x$. So
+$\mathrm{SD}(G)$ holds with $G=\ell^{5/2}$, which satisfies $G\ge1$ and $G(x)\ll x^{1/40}$.
+Theorem~\ref{thm:generic} gives $P(a,b)\ll a^{3/10}\ell(a)^{1/2}\ll a^{3/10}\sqrt{\log\log3a}$.
+\end{proof}
+
 \section{The Lean formalisation}\label{sec:lean}
 
 The repository accompanying this paper contains a Lean~4 project (toolchain
@@ -389,8 +612,21 @@ theorem P\_le : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\
 \end{quote}
 where \lean{P a b} is defined by well-founded recursion as the number of positive terms
 ($P(a,0)=0$, $P(a,b)=P(a,a\bmod b)+1$ for $b>0$), and the file checks $P(35,22)=7$.
-The command \lean{\#print axioms P\_le} reports only \lean{propext}, \lean{Classical.choice}
-and \lean{Quot.sound}. There is no \lean{sorry} and no \lean{native\_decide}.
+Theorem~\ref{thm:loglog} is formalised as
+\begin{quote}\ttfamily\small
+theorem P\_le\_loglog (hNT : NairTenenbaumDelta)\\
+\hspace*{2em}(hBT : BretecheTenenbaumMean) :\\
+\hspace*{2em}$\exists$ C > 0, $\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
+\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} (3 / 10 : $\mathbb R$)\\
+\hspace*{4em}* $\surd$(Real.log (Real.log (3 * a)))
+\end{quote}
+Here \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean} are Lean propositions stating
+\eqref{eq:NT} (with $\varepsilon=1/4$) and~\eqref{eq:BT}, with existential constants and
+thresholds. \lean{hooleyDelta} is defined as the supremum over $u\in\mathbb R$, exactly as
+above. For \lean{P\_le}, \lean{six\_step\_bound}, \lean{P\_le\_of\_shortDivisorBound} and
+\lean{P\_le\_loglog}, the command \lean{\#print axioms} reports only \lean{propext},
+\lean{Classical.choice} and \lean{Quot.sound}. There is no \lean{sorry} and no
+\lean{native\_decide}.
 
 \begin{center}\small
 \begin{tabular}{@{}lll@{}}
@@ -410,6 +646,16 @@ Corollary~\ref{cor:window} & \lean{window\_bound} & \lean{Window.lean}\\
 Dyadic decomposition & \lean{P\_eq\_sum\_visits}, \lean{visits\_window} & \lean{Main.lean}\\
 Theorem~\ref{thm:main} & \lean{P\_le} & \lean{Main.lean}\\
 Lemma~\ref{lem:div} & \lean{exists\_divisors\_power\_bound} & \lean{DivisorPowerBound.lean}\\
+Lemma~\ref{lem:six} & \lean{six\_divisibility}, \lean{six\_identity} & \lean{SixStep.lean}\\
+Corollary~\ref{cor:six} & \lean{six\_core} & \lean{SixStep.lean}\\
+Proposition~\ref{prop:six} & \lean{six\_step\_bound} & \lean{SixStep.lean}\\
+Proposition~\ref{prop:dropcount} & \lean{drop\_count\_bound'} & \lean{ShortSum.lean}\\
+Geometric sum & \lean{sum\_min\_le} & \lean{Geometric.lean}\\
+Theorem~\ref{thm:generic} & \lean{P\_le\_of\_shortDivisorBound} & \lean{Conditional.lean}\\
+$\Delta_{\mathrm H}$, $\tau_A\le\Delta_{\mathrm H}$ & \lean{hooleyDelta}, \lean{dcount\_le\_hooleyDelta} & \lean{Hooley.lean}\\
+\eqref{eq:NT}, \eqref{eq:BT} & \lean{NairTenenbaumDelta}, \lean{BretecheTenenbaumMean} & \lean{Hooley.lean}\\
+Lemma~\ref{lem:partial} & \lean{sum\_hooleyDelta\_div\_le} & \lean{Hooley.lean}\\
+Theorem~\ref{thm:loglog} & \lean{P\_le\_loglog} & \lean{Hooley.lean}\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -427,18 +673,22 @@ number of good indices is at most the size of the parameter box times the larges
 \item The divisor bound $\tau(n)^k\le C_kn$ (Lemma~\ref{lem:div}) is the file
 \lean{DivisorPowerBound.lean} from the \lean{openai/math} repository~\cite{OAIMath}
 (Apache-2.0), vendored unchanged except for its import lines.
-\item The project has about 1000 lines of Lean. \lean{lake build} rebuilds it in under a
+\item Lemma~\ref{lem:six}(2) is checked by \lean{linear\_combination} with the coefficients
+given in its proof, which were found by polynomial division. Corollary~\ref{cor:six} proves
+$L\ge1$ directly from the identity, since $L$ is an integer by definition.
+\item The project has about 2500 lines of Lean. \lean{lake build} rebuilds it in under a
 minute once Mathlib is built.
 \end{itemize}
 
 \section{Limits of the method}\label{sec:limits}
 
-The argument counts the triples $(u,v,D)$ independently over their ranges. Even if the divisor
-loss in Lemma~\ref{lem:fiber} were replaced by an absolute constant, the bound would still be
-$T\ll(B/T)^2\,a/T^3$. Combined with $T\ll A^{1/2}$, this still gives the exponent $3/10$. So
-removing the $\varepsilon$, sharpening constants or improving the divisor count cannot give
-a logarithmic bound. Further progress needs to restrict \emph{which} triples can occur together
-along a single orbit.
+Proposition~\ref{prop:six} removes the divisor loss from the local bound, but the exponent is
+still $3/10$. The local bound $T\ll a^{1/2}A^{-1/3}$ and the drop bound $T\ll A^{1/2}$ (up to
+the divisor factor) both allow $T\asymp a^{3/10}$ at $A\asymp a^{3/5}$. Even an ideal
+short-interval divisor estimate with $G$ constant leaves this balance unchanged. So sharpening
+constants or improving the divisor counts cannot give a logarithmic bound. Further progress
+needs to restrict \emph{which} configurations of the parameters $(u,v,w,z,D,E,F)$ can occur
+together along a single orbit.
 
 There is no obvious monotonicity to exploit. The curvatures $D_i$ of successive blocks need
 not decrease. For $a=13242$ the orbit of $255$ begins
@@ -454,6 +704,11 @@ in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \l
 for the formalised divisor bound.
 
 \begin{thebibliography}{99}
+
+\bibitem{BT}
+R.~de~la~Bret\`eche and G.~Tenenbaum,
+\emph{Note on the mean value of the Erd\H{o}s--Hooley Delta-function},
+Acta Arith.\ \textbf{219} (2025), 379--394.
 
 \bibitem{CP}
 Z.~Chase and M.~Pandey,
@@ -477,6 +732,11 @@ The mathlib Community,
 in: Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and
 Proofs (CPP 2020), 367--381.
 
+\bibitem{NT}
+M.~Nair and G.~Tenenbaum,
+\emph{Short sums of certain arithmetic functions},
+Acta Math.\ \textbf{180} (1998), 119--144.
+
 \bibitem{OAIMath}
 OpenAI,
 \texttt{openai/math}, \url{https://github.com/openai/math}.
@@ -496,6 +756,11 @@ Amer.\ Math.\ Monthly \textbf{36} (1929), 523--525.
 J.~O.~Shallit,
 \emph{Metric theory of Pierce expansions},
 Fibonacci Quart.\ \textbf{24} (1986), 22--40.
+
+\bibitem{Shiu}
+P.~Shiu,
+\emph{A Brun--Titchmarsh theorem for multiplicative functions},
+J.\ Reine Angew.\ Math.\ \textbf{313} (1980), 161--170.
 
 \bibitem{ShallitTalks}
 J.~O.~Shallit,

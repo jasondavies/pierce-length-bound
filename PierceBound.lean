@@ -3,3 +3,8 @@ import PierceBound.Block
 import PierceBound.Fiber
 import PierceBound.Window
 import PierceBound.Main
+import PierceBound.SixStep
+import PierceBound.ShortSum
+import PierceBound.Geometric
+import PierceBound.Conditional
+import PierceBound.Hooley
