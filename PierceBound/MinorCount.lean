@@ -10,7 +10,7 @@ form two vectors `u, v ∈ ℤ³` (Cramer's rule), and the remaining three minor
 `m ∣ u × v`. For fixed `m` and `u` there are at most `27 m g²` such `v` in the box, where
 `g = gcd(m, u)` (`card_cross_fiber`): `v` is a multiple of `u/g` modulo `m/g`. Summing,
 `#{(u, v)} ≤ 729 m⁴ τ(m)` (`card_crossSet`), and there are at most
-`1 + 20 · 729 Y⁵ max_{m ≤ Y} τ(m)` minor vectors of height `≤ Y` (`minor_vector_count`).
+`1 + 20 ∑_{m ≤ Y} 729 m⁴ τ(m)` minor vectors of height `≤ Y` (`minor_vector_count`).
 -/
 
 namespace PierceBound

@@ -1,4 +1,4 @@
-import PierceBound.RisesMain
+import PierceBound.SixStep
 
 /-!
 # The moment model and the Hankel hierarchy
@@ -259,7 +259,7 @@ theorem hm_zero (hba : b < a) : ∀ m i, i + m + 1 = P a b → hm a b i 0 = orb 
 lemma pt_zero (i : ℕ) : pt a b i 0 = 0 := by simp [pt]
 
 /-- **The moment recursion** `hᵢ(s+1) = ∑_t C(s,t) kᵢ^{s-t} h_{i+1}(t)`. -/
-theorem hm_succ (_hba : b < a) {i : ℕ} (hl : i + 1 < P a b) (s : ℕ) :
+theorem hm_succ {i : ℕ} (hl : i + 1 < P a b) (s : ℕ) :
     hm a b i (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
       ((qq a b (i + 1) : ℝ) - qq a b i) ^ (s - t) * hm a b (i + 1) t := by
   have hpt : ∀ j' < P a b - (i + 1), 0 < pt a b i (j' + 1) := fun j' hj' => by
@@ -294,7 +294,7 @@ theorem hm_last {i : ℕ} (hi : i + 1 = P a b) (s : ℕ) : hm a b i (s + 1) = 0 
 /-- `hᵢ(1) = b_{i+1} / a`. -/
 theorem hm_one (hba : b < a) {i : ℕ} (hi : i < P a b) : hm a b i 1 = orb a b (i + 1) / a := by
   by_cases hl : i + 1 < P a b
-  · rw [hm_succ hba hl 0]
+  · rw [hm_succ hl 0]
     simp [hm_zero hba (P a b - (i + 1) - 1) (i + 1) (by omega)]
   · have h1 : i + 1 = P a b := by omega
     rw [hm_last h1 0, h1, orb_P]; simp
@@ -328,7 +328,7 @@ theorem hm_int (hba : b < a) : ∀ m i, i + m + 1 = P a b → ∀ s, ∃ z : ℤ
     · exact ⟨0, by rw [hm_zero hba (m + 1) i hi]; simp⟩
     · refine ⟨(-(qq a b i : ℤ)) ^ s + ∑ t ∈ range (s + 1), (s.choose t : ℤ) *
           ((qq a b (i + 1) : ℤ) - qq a b i) ^ (s - t) * z t, ?_⟩
-      rw [hm_succ hba hl s]
+      rw [hm_succ hl s]
       simp only [hz]
       have e := orb_div (a := a) (b := b) (i := i) (by omega)
       have hβ' : (orb a b (i + 1) : ℝ) / a = 1 - qq a b i * (orb a b i / a) := by
@@ -561,7 +561,7 @@ theorem hankelInv_one (hba : b < a) {i : ℕ} (hi : i < P a b) : hankelInv a b i
   field_simp
 
 /-- The rank-2 Hankel determinant, as an identity modulo the division relations. -/
-theorem hankel2_alg (b0 b1 b2 q k0 _k1 : ℝ)
+theorem hankel2_alg (b0 b1 b2 q k0 : ℝ)
     (f0 : (q) * b0 + b1 = 1)
     (f1 : (q + k0) * b1 + b2 = 1) :
     Matrix.det !![(b0), (b1); (b1), (b1*k0 + b2)] = b0 - b1 := by
@@ -569,7 +569,7 @@ theorem hankel2_alg (b0 b1 b2 q k0 _k1 : ℝ)
   linear_combination (b0) * f1 + (-b1) * f0
 
 /-- The rank-3 Hankel determinant, as an identity modulo the division relations. -/
-theorem hankel3_alg (b0 b1 b2 b3 b4 q k0 k1 k2 _k3 : ℝ)
+theorem hankel3_alg (b0 b1 b2 b3 b4 q k0 k1 k2 : ℝ)
     (f0 : (q) * b0 + b1 = 1)
     (f1 : (q + k0) * b1 + b2 = 1)
     (f2 : (q + k0 + k1) * b2 + b3 = 1)
@@ -579,7 +579,7 @@ theorem hankel3_alg (b0 b1 b2 b3 b4 q k0 k1 k2 _k3 : ℝ)
   linear_combination (b0*b1*k0 + b0*b2 - b1^2) * f3 + (b0*b1*k0*k1 - b0*b1*k0*q - b0*b2*k0 - b0*b3 - b0 - b1^2*k1 + b1^2*q + 2*b1*b2) * f2 + (b0*b2*k0*q + b0*k0*q + b0*k1 + b0*q + b0 - b1*b2*q + b1*k0 + 2*b1 - b2^2 - b2 - k0 - 1) * f1 + (-b1*k0^2 - b1*k0*q - 2*b1*k0 - b1*k1 - b1*q - b1 + k0 + 1) * f0
 
 /-- The rank-4 Hankel determinant, as an identity modulo the division relations. -/
-theorem hankel4_alg (b0 b1 b2 b3 b4 b5 b6 q k0 k1 k2 k3 k4 _k5 : ℝ)
+theorem hankel4_alg (b0 b1 b2 b3 b4 b5 b6 q k0 k1 k2 k3 k4 : ℝ)
     (f0 : (q) * b0 + b1 = 1)
     (f1 : (q + k0) * b1 + b2 = 1)
     (f2 : (q + k0 + k1) * b2 + b3 = 1)
@@ -593,7 +593,7 @@ theorem hankel4_alg (b0 b1 b2 b3 b4 b5 b6 q k0 k1 k2 k3 k4 _k5 : ℝ)
 theorem hankelInv_two (hba : b < a) {i : ℕ} (hi : i + 1 < P a b) :
     hankelInv a b i 2 = (orb a b i : ℝ) - orb a b (i + 1) := by
   have r0 : ∀ s, hm a b i (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 0 ^ (s - t) * hm a b (i + 1) t := fun s => hm_succ hba (i := i) (by omega) s
+      kv a b i 0 ^ (s - t) * hm a b (i + 1) t := fun s => hm_succ (i := i) (by omega) s
   have g1_0 : hm a b (i + 1) 0 = βv a b i 1 := hm_zero hba (P a b - ((i + 1)) - 1) (i + 1) (by omega)
   have g1_1 : hm a b (i + 1) 1 = βv a b i 2 := hm_one hba (i := (i + 1)) (by omega)
   have g0_0 : hm a b i 0 = βv a b i 0 := hm_zero hba (P a b - (i) - 1) i (by omega)
@@ -609,7 +609,7 @@ theorem hankelInv_two (hba : b < a) {i : ℕ} (hi : i + 1 < P a b) :
     ext j l; fin_cases j <;> fin_cases l <;> simp [hankel, g0_0, g0_1, g0_2]
   have ha : (a : ℝ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
   unfold hankelInv
-  rw [hH, hankel2_alg (βv a b i 0) (βv a b i 1) (βv a b i 2) (qq a b i : ℝ) (kv a b i 0) (kv a b i 1) f0 f1]
+  rw [hH, hankel2_alg (βv a b i 0) (βv a b i 1) (βv a b i 2) (qq a b i : ℝ) (kv a b i 0) f0 f1]
   unfold βv
   simp only [add_zero]
   field_simp
@@ -618,11 +618,11 @@ theorem hankelInv_three (hba : b < a) {i : ℕ} (hi : i + 3 < P a b) :
     hankelInv a b i 3 = ((orb a b i : ℝ) - orb a b (i + 1)) * kv a b i 1 -
       ((orb a b (i + 1) : ℝ) - orb a b (i + 2)) * kv a b i 0 := by
   have r0 : ∀ s, hm a b i (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 0 ^ (s - t) * hm a b (i + 1) t := fun s => hm_succ hba (i := i) (by omega) s
+      kv a b i 0 ^ (s - t) * hm a b (i + 1) t := fun s => hm_succ (i := i) (by omega) s
   have r1 : ∀ s, hm a b (i + 1) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 1 ^ (s - t) * hm a b (i + 2) t := fun s => hm_succ hba (i := (i + 1)) (by omega) s
+      kv a b i 1 ^ (s - t) * hm a b (i + 2) t := fun s => hm_succ (i := (i + 1)) (by omega) s
   have r2 : ∀ s, hm a b (i + 2) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 2 ^ (s - t) * hm a b (i + 3) t := fun s => hm_succ hba (i := (i + 2)) (by omega) s
+      kv a b i 2 ^ (s - t) * hm a b (i + 3) t := fun s => hm_succ (i := (i + 2)) (by omega) s
   have g3_0 : hm a b (i + 3) 0 = βv a b i 3 := hm_zero hba (P a b - ((i + 3)) - 1) (i + 3) (by omega)
   have g3_1 : hm a b (i + 3) 1 = βv a b i 4 := hm_one hba (i := (i + 3)) (by omega)
   have g2_0 : hm a b (i + 2) 0 = βv a b i 2 := hm_zero hba (P a b - ((i + 2)) - 1) (i + 2) (by omega)
@@ -663,7 +663,7 @@ theorem hankelInv_three (hba : b < a) {i : ℕ} (hi : i + 3 < P a b) :
     ext j l; fin_cases j <;> fin_cases l <;> simp [hankel, g0_0, g0_1, g0_2, g0_3, g0_4]
   have ha : (a : ℝ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
   unfold hankelInv
-  rw [hH, hankel3_alg (βv a b i 0) (βv a b i 1) (βv a b i 2) (βv a b i 3) (βv a b i 4) (qq a b i : ℝ) (kv a b i 0) (kv a b i 1) (kv a b i 2) (kv a b i 3) f0 f1 f2 f3]
+  rw [hH, hankel3_alg (βv a b i 0) (βv a b i 1) (βv a b i 2) (βv a b i 3) (βv a b i 4) (qq a b i : ℝ) (kv a b i 0) (kv a b i 1) (kv a b i 2) f0 f1 f2 f3]
   unfold βv
   simp only [add_zero]
   field_simp
@@ -675,15 +675,15 @@ theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
       ((orb a b i : ℤ) - orb a b (i + 1)) ((orb a b (i + 1) : ℤ) - orb a b (i + 2))
       ((orb a b (i + 2) : ℤ) - orb a b (i + 3)) : ℤ) : ℝ) := by
   have r0 : ∀ s, hm a b i (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 0 ^ (s - t) * hm a b (i + 1) t := fun s => hm_succ hba (i := i) (by omega) s
+      kv a b i 0 ^ (s - t) * hm a b (i + 1) t := fun s => hm_succ (i := i) (by omega) s
   have r1 : ∀ s, hm a b (i + 1) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 1 ^ (s - t) * hm a b (i + 2) t := fun s => hm_succ hba (i := (i + 1)) (by omega) s
+      kv a b i 1 ^ (s - t) * hm a b (i + 2) t := fun s => hm_succ (i := (i + 1)) (by omega) s
   have r2 : ∀ s, hm a b (i + 2) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 2 ^ (s - t) * hm a b (i + 3) t := fun s => hm_succ hba (i := (i + 2)) (by omega) s
+      kv a b i 2 ^ (s - t) * hm a b (i + 3) t := fun s => hm_succ (i := (i + 2)) (by omega) s
   have r3 : ∀ s, hm a b (i + 3) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 3 ^ (s - t) * hm a b (i + 4) t := fun s => hm_succ hba (i := (i + 3)) (by omega) s
+      kv a b i 3 ^ (s - t) * hm a b (i + 4) t := fun s => hm_succ (i := (i + 3)) (by omega) s
   have r4 : ∀ s, hm a b (i + 4) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 4 ^ (s - t) * hm a b (i + 5) t := fun s => hm_succ hba (i := (i + 4)) (by omega) s
+      kv a b i 4 ^ (s - t) * hm a b (i + 5) t := fun s => hm_succ (i := (i + 4)) (by omega) s
   have g5_0 : hm a b (i + 5) 0 = βv a b i 5 := hm_zero hba (P a b - ((i + 5)) - 1) (i + 5) (by omega)
   have g5_1 : hm a b (i + 5) 1 = βv a b i 6 := hm_one hba (i := (i + 5)) (by omega)
   have g4_0 : hm a b (i + 4) 0 = βv a b i 4 := hm_zero hba (P a b - ((i + 4)) - 1) (i + 4) (by omega)
@@ -761,7 +761,7 @@ theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
     ext j l; fin_cases j <;> fin_cases l <;> simp [hankel, g0_0, g0_1, g0_2, g0_3, g0_4, g0_5, g0_6]
   have ha : (a : ℝ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
   unfold hankelInv
-  rw [hH, hankel4_alg (βv a b i 0) (βv a b i 1) (βv a b i 2) (βv a b i 3) (βv a b i 4) (βv a b i 5) (βv a b i 6) (qq a b i : ℝ) (kv a b i 0) (kv a b i 1) (kv a b i 2) (kv a b i 3) (kv a b i 4) (kv a b i 5) f0 f1 f2 f3 f4 f5]
+  rw [hH, hankel4_alg (βv a b i 0) (βv a b i 1) (βv a b i 2) (βv a b i 3) (βv a b i 4) (βv a b i 5) (βv a b i 6) (qq a b i : ℝ) (kv a b i 0) (kv a b i 1) (kv a b i 2) (kv a b i 3) (kv a b i 4) f0 f1 f2 f3 f4 f5]
   unfold βv kv sixL
   simp only [add_zero]
   push_cast

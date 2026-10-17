@@ -18,21 +18,6 @@ def incrO (a b i : ℕ) : ℕ := a / orb a b (i + 1) - a / orb a b i
 /-- The number of rises `kᵢ < k_{i+1}` in the quotient increments of the orbit of `b`. -/
 def rises (a b : ℕ) : ℕ := ((range (P a b - 2)).filter fun i => incrO a b i < incrO a b (i + 1)).card
 
-lemma orb_P (a b : ℕ) : orb a b (P a b) = 0 := by
-  induction b using Nat.strong_induction_on with
-  | _ b ih =>
-    by_cases hb : b = 0
-    · subst hb; simp [orb]
-    · rw [P_of_ne hb, orb_succ', step_of_ne hb]
-      exact ih _ (Nat.mod_lt _ (Nat.pos_of_ne_zero hb))
-
-lemma lt_P_of_orb_pos {a b i : ℕ} (h : 0 < orb a b i) : i < P a b := by
-  by_contra hle
-  push Not at hle
-  have := orb_antitone a b hle
-  rw [orb_P] at this
-  omega
-
 /-- The rises inside a window are rises of the orbit. -/
 lemma windowRises_le {a b k : ℕ} (hba : b ≤ a) (h : (visits a b k).Nonempty) :
     windowRises a (fun j => orb a b ((visits a b k).min' h + j)) (visits a b k).card ≤
@@ -98,8 +83,8 @@ theorem visits_real_rises {a b k : ℕ} (hba : b ≤ a) :
   have hAcast : ((2 ^ k : ℕ) : ℝ) = Ar := by push_cast; rfl
   have hT1 : ((T - 1 : ℕ) : ℝ) = (T : ℝ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
   have hsqA : Real.sqrt Ar = Ar ^ (1 / 2 : ℝ) := Real.sqrt_eq_rpow Ar
-  -- bound (16): `T - 1 ≤ √R Y`
-  have b16 : (T : ℝ) - 1 ≤ Real.sqrt R * Y := by
+  -- Proposition 9.5(1): `T - 1 ≤ √R Y`
+  have hdrop : (T : ℝ) - 1 ≤ Real.sqrt R * Y := by
     have h := W.rises_drop_bound (by omega)
     have h' : (((T - 1) ^ 2 : ℕ) : ℝ) ≤ ((2 * (ρ + 1) * (2 ^ k - 1) : ℕ) : ℝ) := by
       exact_mod_cast h
@@ -120,8 +105,8 @@ theorem visits_real_rises {a b k : ℕ} (hba : b ≤ a) :
         simp only [Y]
         rw [show 2 * R * Ar = R * (2 * Ar) by ring, Real.sqrt_mul (by linarith),
           Real.sqrt_mul (by norm_num), hsqA]
-  -- bound (18): `T - 1 ≤ a / A`
-  have b18 : (T : ℝ) - 1 ≤ Wr := by
+  -- Proposition 9.5(2): `T - 1 ≤ a / A`
+  have hquot : (T : ℝ) - 1 ≤ Wr := by
     have h := W.rises_quot_bound (by omega)
     have : ((T - 1 : ℕ) : ℝ) ≤ ((a / 2 ^ k : ℕ) : ℝ) := by exact_mod_cast h
     rw [hT1] at this
@@ -130,7 +115,7 @@ theorem visits_real_rises {a b k : ℕ} (hba : b ≤ a) :
       _ = Wr := by rw [hAcast]; simp only [Wr, Real.rpow_neg_one, div_eq_mul_inv]
   have hgoal : (T : ℝ) - 1 ≤ Real.sqrt R * min X Y + min Wr Z := by
     by_cases h6 : 6 * 2 ^ k ≤ a
-    · -- bound (17)
+    · -- Proposition 9.5(3)
       obtain ⟨l, s, hls, hl, hs⟩ := W.rises_incr_bound (by omega) h6
       have hl' : (l : ℝ) ≤ Real.sqrt R * X := by
         have : ((l ^ 2 : ℕ) : ℝ) ≤ ((8 * (ρ + 1) * (a / 2 ^ k) : ℕ) : ℝ) := by exact_mod_cast hl
@@ -184,7 +169,7 @@ theorem visits_real_rises {a b k : ℕ} (hba : b ≤ a) :
       linarith
   linarith
 
-/-- **Theorem A.** `P(a, b) ≪ a^{1/4} √R`, with `R` one more than the number of rises in the
+/-- **Theorem 1.3.** `P(a, b) ≪ a^{1/4} √R`, with `R` one more than the number of rises in the
 quotient increments. -/
 theorem P_le_rises : ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ (1 / 4 : ℝ) * Real.sqrt (rises a b + 1) := by

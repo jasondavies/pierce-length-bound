@@ -69,6 +69,21 @@ lemma orb_antitone (a b : ℕ) : Antitone (orb a b) :=
 lemma orb_le (a b i : ℕ) : orb a b i ≤ b := by
   simpa using orb_antitone a b (Nat.zero_le i)
 
+lemma orb_P (a b : ℕ) : orb a b (P a b) = 0 := by
+  induction b using Nat.strong_induction_on with
+  | _ b ih =>
+    by_cases hb : b = 0
+    · subst hb; simp [orb]
+    · rw [P_of_ne hb, orb_succ', step_of_ne hb]
+      exact ih _ (Nat.mod_lt _ (Nat.pos_of_ne_zero hb))
+
+lemma lt_P_of_orb_pos {a b i : ℕ} (h : 0 < orb a b i) : i < P a b := by
+  by_contra hle
+  push Not at hle
+  have := orb_antitone a b hle
+  rw [orb_P] at this
+  omega
+
 /-- The example on the Open Problem Garden page: `22, 13, 9, 8, 3, 2, 1, 0`. -/
 example : P 35 22 = 7 := by simp [P_of_ne]
 

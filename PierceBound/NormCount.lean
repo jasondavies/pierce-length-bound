@@ -33,7 +33,7 @@ lemma eq_emod_of_dvd {M s c : ℤ} (h0 : 0 ≤ s) (hs : s < M) (h : M ∣ s - c)
   exact h1.symm
 
 /-- If `h ∣ s - c` and `0 ≤ s < 2h`, then `s ≡ c` or `s ≡ c + h (mod 2h)`. -/
-lemma eq_emod_of_dvd_half {h s c : ℤ} (_hh : 0 < h) (h0 : 0 ≤ s) (hs : s < 2 * h)
+lemma eq_emod_of_dvd_half {h s c : ℤ} (h0 : 0 ≤ s) (hs : s < 2 * h)
     (hd : h ∣ s - c) : s = c % (2 * h) ∨ s = (c + h) % (2 * h) := by
   obtain ⟨j, hj⟩ := hd
   rcases Int.even_or_odd j with ⟨q, hq⟩ | ⟨q, hq⟩
@@ -145,10 +145,10 @@ theorem card_sqRoots_prime_pow {p e : ℕ} (hp : p.Prime) (he : 1 ≤ e) {d : �
       have e2 : ((2 : ℕ) : ℤ) ^ e = 2 * h0 := by push_cast at hpe ⊢; exact hpe
       rw [e2]
       rcases hhalf with h | h
-      · rcases eq_emod_of_dvd_half hh0 hs0 hsM2 h with h' | h'
+      · rcases eq_emod_of_dvd_half hs0 hsM2 h with h' | h'
         · exact Or.inl h'
         · exact Or.inr (Or.inr (Or.inl h'))
-      · rcases eq_emod_of_dvd_half hh0 hs0 hsM2 (c := -(r : ℤ)) (by rwa [sub_neg_eq_add]) with
+      · rcases eq_emod_of_dvd_half hs0 hsM2 (c := -(r : ℤ)) (by rwa [sub_neg_eq_add]) with
           h' | h'
         · exact Or.inr (Or.inl h')
         · exact Or.inr (Or.inr (Or.inr h'))

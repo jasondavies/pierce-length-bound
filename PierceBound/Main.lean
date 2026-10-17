@@ -7,8 +7,8 @@ import OAI.NumberTheory.Ostmann.Preliminaries.DivisorPowerBound
 Split the positive terms of the orbit according to `⌊log₂ bᵢ⌋ = k`. The terms with a given
 `k` are consecutive and lie in `[2^k, 2^{k+1})`, so they form a window run
 (`visits_window`), and `window_bound` gives `T¹⁰ ≪ a³ Δ³` when `T ≥ 12`, where
-`Δ = max_{n ≤ 32 a⁷} τ(n)`. The divisor bound `τ(n)^k ≪_k n` turns this into
-`T ≪ a^{3/10 + 7/(10m)}`, and there are `≤ log₂ a + 1` values of `k`.
+`Δ = max_{n ≤ 32 a⁷} τ(n)`. The divisor bound `τ(n)^k ≪_k n` with `k = 3m` turns this into
+`T ≪ a^{3/10 + 7/(10m)}` for every `m ≥ 1`, and there are `≤ log₂ a + 1` values of `k`.
 -/
 
 namespace PierceBound
@@ -100,7 +100,7 @@ lemma le_rpow_inv_of_pow_le {T X n : ℕ} (hn : n ≠ 0) (h : T ^ n ≤ X) :
   rw [← Real.pow_rpow_inv_natCast (Nat.cast_nonneg T) hn]
   exact Real.rpow_le_rpow (by positivity) (by exact_mod_cast h) (by positivity)
 
-/-- **Main theorem.** `P(a, b) ≪_ε a^{3/10 + ε}` uniformly in `0 < b < a`. -/
+/-- **Theorem 1.1 (the `3/10` bound).** `P(a, b) ≪_ε a^{3/10 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((3 : ℝ) / 10 + ε) := by
   intro ε hε

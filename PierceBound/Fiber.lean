@@ -23,10 +23,10 @@ theorem fiber_poly_identity (u v c ℓ q : ℤ) :
   ring
 
 /-- **Fiber count.** If `Δ` bounds the divisor function on `[1, 32 a⁷]`, a fixed triple
-`(u, v, D)` with `u, v ≤ a`, `1 ≤ D ≤ 2a` admits at most `Δ` quotients `q` for which the
+`(u, v, D)` with `u, v ≤ a`, `D ≤ 2a` admits at most `Δ` quotients `q` for which the
 fiber equation `x M(q) = L(q)` has a positive solution `x`. -/
 theorem fiber_card_le (a u v D Δ : ℕ) (ha : 1 ≤ a) (hu : 1 ≤ u) (hua : u ≤ a) (hv : 1 ≤ v)
-    (hva : v ≤ a) (hD : 1 ≤ D) (hDa : D ≤ 2 * a)
+    (hva : v ≤ a) (hDa : D ≤ 2 * a)
     (hΔ : ∀ n : ℕ, 0 < n → n ≤ 32 * a ^ 7 → n.divisors.card ≤ Δ) (Q : Finset ℕ)
     (hQ : ∀ q ∈ Q, ∃ x : ℕ, 0 < x ∧
       x * (u * q ^ 2 + (u ^ 2 + u + v) * q + v) = a * u * q + (a * (u ^ 2 + v) + D)) :

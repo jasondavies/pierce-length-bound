@@ -25,36 +25,6 @@ theorem theta_eq (i : ℕ) : theta a b i = projθ (plk (Mi a b i)) := by
   simp [theta, projθ, plk, Mi, trip, minor3, Lz, U1z, U2z, sixL, pU1, pU2, rq, sq, kq, dq,
     Nat.add_assoc] <;> ring
 
-set_option exponentiation.threshold 400 in
-/-- The polynomial range bound for patterns of height `≤ 10¹⁶ a⁷`. -/
-lemma pbig_bounds16 {a M H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hM : M ≤ 10 ^ 16 * a ^ 7) :
-    116 * (4 * M ^ 2) ^ 4 * H ^ 2 ≤ Pbig a ∧
-      (11 * (4 * M ^ 2) ^ 2 * H * (3 * (4 * M ^ 2) + 2)) ^ 2 ≤ Pbig a ∧ M ≤ Pbig a := by
-  have hK : 4 * M ^ 2 ≤ 4 * 10 ^ 32 * a ^ 14 := by
-    calc 4 * M ^ 2 ≤ 4 * (10 ^ 16 * a ^ 7) ^ 2 := by gcongr
-      _ = 4 * 10 ^ 32 * a ^ 14 := by ring
-  have ha1 : 1 ≤ a ^ 14 := Nat.one_le_pow _ _ ha
-  have hP : Pbig a = 10 ^ 300 * a ^ 100 := rfl
-  have hmono : ∀ k, k ≤ 100 → a ^ k ≤ a ^ 100 := fun k hk => Nat.pow_le_pow_right ha hk
-  refine ⟨?_, ?_, ?_⟩
-  · calc 116 * (4 * M ^ 2) ^ 4 * H ^ 2 ≤ 116 * (4 * 10 ^ 32 * a ^ 14) ^ 4 * (29 * a) ^ 2 := by
-          gcongr
-      _ = (116 * 4 ^ 4 * 10 ^ 128 * 29 ^ 2) * a ^ 58 := by ring
-      _ ≤ 10 ^ 300 * a ^ 100 := Nat.mul_le_mul (by norm_num) (hmono 58 (by norm_num))
-      _ = Pbig a := hP.symm
-  · have h3 : 3 * (4 * M ^ 2) + 2 ≤ 5 * (4 * 10 ^ 32 * a ^ 14) := by
-      have : 1 ≤ 4 * 10 ^ 32 * a ^ 14 := by nlinarith
-      omega
-    calc (11 * (4 * M ^ 2) ^ 2 * H * (3 * (4 * M ^ 2) + 2)) ^ 2
-        ≤ (11 * (4 * 10 ^ 32 * a ^ 14) ^ 2 * (29 * a) * (5 * (4 * 10 ^ 32 * a ^ 14))) ^ 2 := by
-          gcongr
-      _ = (11 * 16 * 10 ^ 64 * 29 * 20 * 10 ^ 32) ^ 2 * a ^ 86 := by ring
-      _ ≤ 10 ^ 300 * a ^ 100 := Nat.mul_le_mul (by norm_num) (hmono 86 (by norm_num))
-      _ = Pbig a := hP.symm
-  · calc M ≤ 10 ^ 16 * a ^ 7 := hM
-      _ ≤ 10 ^ 300 * a ^ 100 := Nat.mul_le_mul (by norm_num) (hmono 7 (by norm_num))
-      _ = Pbig a := hP.symm
-
 lemma tau_le_tauMax {n X : ℕ} (h : n ≤ X) : n.divisors.card ≤ tauMax X :=
   le_sup (f := fun n => n.divisors.card) (mem_range.mpr (by omega))
 
@@ -98,7 +68,7 @@ theorem two_state_window_eight (hba : b < a) {s T A : ℕ} (hA : 1 ≤ A)
         _ = 2147074259481600 * a ^ 7 * a ^ 3 := by ring
         _ ≤ (10 ^ 16 * a ^ 7) * a ^ 3 := by gcongr; norm_num
     exact Nat.le_of_mul_le_mul_right h3 (by positivity)
-  obtain ⟨P1, P2, P3⟩ := pbig_bounds16 (by omega) hH29 hMb
+  obtain ⟨P1, P2, P3⟩ := pbig_bounds (by omega) hH29 hMb
   -- every minor is bounded by `M`
   have hminor : ∀ i ∈ G, ∀ t, |plk (Mi a b i) t| ≤ M := by
     intro i hi t

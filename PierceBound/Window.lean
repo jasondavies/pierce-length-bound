@@ -79,6 +79,26 @@ lemma sum_triple_drops (W : Window a A T g) :
     have := (W.lt_of_lt (i := m) (j := m + 3) (by omega) (by omega)).le
     omega
 
+lemma le_of_le (W : Window a A T g) {i j : ℕ} (hij : i ≤ j) (hj : j < T) : g j ≤ g i := by
+  rcases hij.lt_or_eq with h | rfl
+  · exact (W.lt_of_lt h hj).le
+  · exact le_rfl
+
+/-- Telescoping for five-step drops. -/
+lemma sum_five_drops (W : Window a A T g) :
+    ∀ m, m + 5 ≤ T → ∑ j ∈ range m, (g j - g (j + 5)) + g m + g (m + 1) + g (m + 2) + g (m + 3) +
+      g (m + 4) = g 0 + g 1 + g 2 + g 3 + g 4 := by
+  intro m
+  induction m with
+  | zero => simp
+  | succ m ih =>
+    intro hm
+    rw [sum_range_succ, show m + 1 + 1 = m + 2 by ring, show m + 1 + 2 = m + 3 by ring,
+      show m + 1 + 3 = m + 4 by ring, show m + 1 + 4 = m + 5 by ring]
+    have := ih (by omega)
+    have := (W.lt_of_lt (i := m) (j := m + 5) (by omega) (by omega)).le
+    omega
+
 end Window
 
 /-- **The drop bound** (Erdős–Shallit). `T (T - 1) ≤ 4 A Δ`. -/
@@ -342,7 +362,7 @@ theorem curvature_bound {a A T Δ : ℕ} {g : ℕ → ℕ} (W : Window a A T g) 
       exact W.injOn (by simp; have := (hFj i hi).1; omega)
         (by simp; have := (hFj j hj).1; omega) hg
     rw [← card_image_of_injOn hinj]
-    apply fiber_card_le a u v D Δ ha hu1 (huU.trans hUa) hv1 (hvU.trans hUa) hD1
+    apply fiber_card_le a u v D Δ ha hu1 (huU.trans hUa) hv1 (hvU.trans hUa)
       (hDD.trans hDma) hΔ
     intro q hq
     obtain ⟨j, hj, rfl⟩ := mem_image.mp hq

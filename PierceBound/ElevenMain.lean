@@ -26,30 +26,33 @@ def tauMax (X : ℕ) : ℕ := (range (X + 1)).sup fun n => n.divisors.card
 def Xi (a : ℕ) : ℕ := 2 * tauMax (Pbig a) ^ 3 * (Nat.log 3 (Pbig a) + 1) + 4
 
 set_option exponentiation.threshold 400 in
-/-- The two quantities controlled by `Ξ(a)` lie in `[1, P(a)]`. -/
-lemma pbig_bounds {a M H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hM : M ≤ 10 ^ 15 * a ^ 7) :
+/-- The quantities controlled by `Ξ(a)` lie in `[1, P(a)]`, for patterns of height `≤ 10¹⁶ a⁷`. -/
+lemma pbig_bounds {a M H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hM : M ≤ 10 ^ 16 * a ^ 7) :
     116 * (4 * M ^ 2) ^ 4 * H ^ 2 ≤ Pbig a ∧
-      (11 * (4 * M ^ 2) ^ 2 * H * (3 * (4 * M ^ 2) + 2)) ^ 2 ≤ Pbig a := by
-  have hK : 4 * M ^ 2 ≤ 4 * 10 ^ 30 * a ^ 14 := by
-    calc 4 * M ^ 2 ≤ 4 * (10 ^ 15 * a ^ 7) ^ 2 := by gcongr
-      _ = 4 * 10 ^ 30 * a ^ 14 := by ring
+      (11 * (4 * M ^ 2) ^ 2 * H * (3 * (4 * M ^ 2) + 2)) ^ 2 ≤ Pbig a ∧ M ≤ Pbig a := by
+  have hK : 4 * M ^ 2 ≤ 4 * 10 ^ 32 * a ^ 14 := by
+    calc 4 * M ^ 2 ≤ 4 * (10 ^ 16 * a ^ 7) ^ 2 := by gcongr
+      _ = 4 * 10 ^ 32 * a ^ 14 := by ring
   have ha1 : 1 ≤ a ^ 14 := Nat.one_le_pow _ _ ha
   have hP : Pbig a = 10 ^ 300 * a ^ 100 := rfl
   have hmono : ∀ k, k ≤ 100 → a ^ k ≤ a ^ 100 := fun k hk => Nat.pow_le_pow_right ha hk
-  constructor
-  · calc 116 * (4 * M ^ 2) ^ 4 * H ^ 2 ≤ 116 * (4 * 10 ^ 30 * a ^ 14) ^ 4 * (29 * a) ^ 2 := by
+  refine ⟨?_, ?_, ?_⟩
+  · calc 116 * (4 * M ^ 2) ^ 4 * H ^ 2 ≤ 116 * (4 * 10 ^ 32 * a ^ 14) ^ 4 * (29 * a) ^ 2 := by
           gcongr
-      _ = (116 * 4 ^ 4 * 10 ^ 120 * 29 ^ 2) * a ^ 58 := by ring
+      _ = (116 * 4 ^ 4 * 10 ^ 128 * 29 ^ 2) * a ^ 58 := by ring
       _ ≤ 10 ^ 300 * a ^ 100 := Nat.mul_le_mul (by norm_num) (hmono 58 (by norm_num))
       _ = Pbig a := hP.symm
-  · have h3 : 3 * (4 * M ^ 2) + 2 ≤ 5 * (4 * 10 ^ 30 * a ^ 14) := by
-      have : 1 ≤ 4 * 10 ^ 30 * a ^ 14 := by nlinarith
+  · have h3 : 3 * (4 * M ^ 2) + 2 ≤ 5 * (4 * 10 ^ 32 * a ^ 14) := by
+      have : 1 ≤ 4 * 10 ^ 32 * a ^ 14 := by nlinarith
       omega
     calc (11 * (4 * M ^ 2) ^ 2 * H * (3 * (4 * M ^ 2) + 2)) ^ 2
-        ≤ (11 * (4 * 10 ^ 30 * a ^ 14) ^ 2 * (29 * a) * (5 * (4 * 10 ^ 30 * a ^ 14))) ^ 2 := by
+        ≤ (11 * (4 * 10 ^ 32 * a ^ 14) ^ 2 * (29 * a) * (5 * (4 * 10 ^ 32 * a ^ 14))) ^ 2 := by
           gcongr
-      _ = (11 * 16 * 10 ^ 60 * 29 * 20 * 10 ^ 30) ^ 2 * a ^ 86 := by ring
+      _ = (11 * 16 * 10 ^ 64 * 29 * 20 * 10 ^ 32) ^ 2 * a ^ 86 := by ring
       _ ≤ 10 ^ 300 * a ^ 100 := Nat.mul_le_mul (by norm_num) (hmono 86 (by norm_num))
+      _ = Pbig a := hP.symm
+  · calc M ≤ 10 ^ 16 * a ^ 7 := hM
+      _ ≤ 10 ^ 300 * a ^ 100 := Nat.mul_le_mul (by norm_num) (hmono 7 (by norm_num))
       _ = Pbig a := hP.symm
 
 section Window
@@ -170,7 +173,8 @@ theorem two_state_window_eleven (hba : b < a) {s T A : ℕ} (hA : 1 ≤ A)
     have hH29 : H ≤ 29 * a := by
       have : 28 * a / (A * T) ≤ 28 * a := Nat.div_le_self _ _
       omega
-    obtain ⟨P1, P2⟩ := pbig_bounds (by omega) hH29 hMb
+    obtain ⟨P1, P2, -⟩ := pbig_bounds (by omega) hH29
+      (hMb.trans (Nat.mul_le_mul_right _ (by norm_num)))
     have hτ : M'.natAbs.divisors.card ≤ tauMax (Pbig a) := by
       unfold tauMax
       refine le_sup (f := fun n => n.divisors.card) (mem_range.mpr ?_)
@@ -191,9 +195,6 @@ section Exponent
 /-- The constant in `window_74`. -/
 def C74 : ℕ := 122449 ^ 19 + (8 * 237568 * 56 ^ 5) ^ 11 + 10752 ^ 19 +
   8 ^ 15 * (24 * 3 ^ 7 * 172032 ^ 7) * 56 ^ 43
-
-private lemma pow_cancel' {x y z : ℕ} (hz : 0 < z) (h : x * z ≤ y * z) : x ≤ y :=
-  Nat.le_of_mul_le_mul_right h hz
 
 /-- **The exponent arithmetic.** Every window run satisfies `T⁷⁴ ≤ C₇₄ Δ¹⁹ Ξ¹⁹ a²²`. -/
 theorem window_74 {a A T Δ X : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X)
@@ -234,7 +235,7 @@ theorem window_74 {a A T Δ X : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ 
         calc (784 * T ^ 4) * a ^ 2 = (28 * a) ^ 2 * T ^ 4 := by ring
           _ ≤ 96000000 * a ^ 3 := h1
           _ ≤ (784 * (122449 * a)) * a ^ 2 := by ring_nf; omega
-      have := pow_cancel' (by positivity) this
+      have := Nat.le_of_mul_le_mul_right this (by positivity)
       omega
     calc T ^ 74 ≤ T ^ 76 := hT74
       _ = (T ^ 4) ^ 19 := by ring
@@ -289,7 +290,7 @@ theorem window_74 {a A T Δ X : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ 
           _ = 24 * 3 ^ 7 * 172032 ^ 7 * A ^ 28 * X * (H * (A * T)) ^ 43 := by ring
           _ ≤ 24 * 3 ^ 7 * 172032 ^ 7 * A ^ 28 * X * (56 * a) ^ 43 := by gcongr
           _ = (24 * 3 ^ 7 * 172032 ^ 7 * 56 ^ 43 * X * a ^ 22) * (A ^ 28 * a ^ 21) := by ring
-      have h3 := pow_cancel' (by positivity) h2
+      have h3 := Nat.le_of_mul_le_mul_right h2 (by positivity)
       calc T ^ 74 = T ^ 44 * (T ^ 2) ^ 15 := by ring
         _ ≤ T ^ 44 * (8 * A * Δ) ^ 15 := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hT2 15)
         _ = 8 ^ 15 * Δ ^ 15 * (T ^ 44 * A ^ 15) := by ring
@@ -304,7 +305,7 @@ theorem window_74 {a A T Δ X : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ 
         _ = 237568 * A ^ 4 * (H * (A * T)) ^ 5 := by ring
         _ ≤ 237568 * A ^ 4 * (56 * a) ^ 5 := by gcongr
         _ = (237568 * 56 ^ 5 * a ^ 2) * (A ^ 4 * a ^ 3) := by ring
-    have h2 := pow_cancel' (by positivity) h1
+    have h2 := Nat.le_of_mul_le_mul_right h1 (by positivity)
     have h3 : T ^ 7 ≤ 8 * 237568 * 56 ^ 5 * Δ * a ^ 2 := by
       calc T ^ 7 = T ^ 5 * T ^ 2 := by ring
         _ ≤ T ^ 5 * (8 * A * Δ) := Nat.mul_le_mul_left _ hT2

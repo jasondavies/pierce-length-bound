@@ -5,7 +5,7 @@ positive terms ([Open Problem Garden](https://www.openproblemgarden.org/op/a_dis
 Shallit asked whether `P(a, b) = O((log a)²)`. That question is **still open**. This repository
 proves, uniformly in `0 < b < a`:
 
-* **Main theorem:** `P(a, b) ≤ C_ε · a^{45/152 + ε}`, where `45/152 = 0.29605…`. This goes below
+* **Strongest bound:** `P(a, b) ≤ C_ε · a^{45/152 + ε}`, where `45/152 = 0.29605…`. This goes below
   the exponent `3/10` of the unpublished `n^{3/10}` bound reported on Shallit's talks page.
 * **Earlier steps:** `P(a, b) ≤ C_ε · a^{8/27 + ε}`, before that `a^{11/37 + ε}`, and before
   that `a^{23/77 + ε}`.
@@ -39,8 +39,8 @@ bounded via Hadamard's inequality on the moment model. States with a given patte
 So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷⁷ ≪ Δ²²a²³` (exponent 23/77).
 
 For `11/37`, exact Cramer identities give `U₁ > 0 > U₂`, so the quadric in `(k₁, k₂, k₃)` is
-nonsingular with an indefinite binary section. Each slice is a norm equation `x² − Dy² = m`, which
-has `≤ 2τ(|m|)³(log₃ (B(⌊√D⌋ + 2))² + 1)` solutions in `[−B, B]²`, uniformly in the
+nonsingular with an indefinite binary section. Each slice is a norm equation `x² − δy² = m`, which
+has `≤ 2τ(|m|)³(log₃((B(⌊√δ⌋ + 2))²) + 1)` solutions in `[−B, B]²`, uniformly in the
 coefficients. This is proved in
 full: square roots modulo prime powers, CRT, and the separation `ε ≥ 3` of norm-one numbers. So
 each pattern covers `O(H a^η)` states, `T ≪ a^η X⁷ H`, and `T⁷⁴ ≪ a^{22+O(η)}`.
@@ -65,7 +65,8 @@ summation gives `T ≪ a^η (H X^{14/3} + X⁵)`, hence `T¹⁵² ≪ a^{45+O(η
 
 ## Lean
 
-Build with `lake build` (Lean `v4.35.0`, Mathlib `v4.35.0`). The main theorems are
+Build with `lake exe cache get` (to download the compiled Mathlib) and then `lake build`
+(Lean `v4.35.0`, Mathlib `v4.35.0`). The main theorems are
 
 ```lean
 theorem PierceBound.P_le_45_152 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
@@ -103,12 +104,12 @@ papers only through its hypotheses.
 | `Defs.lean` | `P`, the orbit `orb`; check `P 35 22 = 7` |
 | `Block.lean` | curvature `D = dv − eu`: identity `Dz = df + ude + (u−1)e²`, `D ≥ 1`, fiber equation `x M(q) = a N(q) + D`, size bounds |
 | `Fiber.lean` | a fixed `(u, v, D)` allows at most `max_{n ≤ 32a⁷} τ(n)` starting points |
-| `Window.lean` | for a run of `T` terms in `[A, 2A)`: `T(T−1) ≤ 4AΔ`, `T⁶A² ≤ 995328 a³Δ`, hence `T¹⁰ ≤ 63700992 a³Δ³` |
+| `Window.lean` | for a run of `T` terms in `[A, 2A)`: `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
 | `Main.lean` | dyadic decomposition and the unconditional theorem `P_le` |
-| `SixStep.lean` | the six-step identity `q w L = J E + S F`, `L ≥ 1`, and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` |
+| `SixStep.lean` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `TwoStateMain.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10` |
 | `ShortSum.lean` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
-| `Geometric.lean` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}` |
-| `Conditional.lean` | any short-interval divisor bound `≪ y G(x)` gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
+| `Geometric.lean` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}`, and the general form `∑_k min(α 2^{−sk}, β 2^{tk}) ≪ α^{t/(s+t)} β^{s/(s+t)}` (`sum_min_le_gen`) |
+| `Conditional.lean` | any short-interval divisor bound `≪ y G(x)` for `x^{1/4} ≤ y ≤ x`, with `1 ≤ G(x) ≪ x^{1/40}`, gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
 | `Rises.lean` | the arithmetic-progression bound `q⁴ ≤ 324 h³ a`, runs, the multiplicity lemma, and the three window bounds |
 | `RisesMain.lean` | `P_le_rises`: `P ≪ a^{1/4} √R` |
 | `Hankel.lean` | the moment model, `I_r(i) ∈ ℤ_{>0}` (`hankelInv_pos_int`), and `I₁ = b`, `I₂ = d`, `I₃ = D`, `I₄ = L` |
@@ -126,7 +127,7 @@ papers only through its hypotheses.
 | `MinorCount.lean` | the Plücker relations, the congruence count `27 m g²`, and `minor_vector_count` |
 | `MinorHeight.lean` | the expansion of `b/a` (`nu_expand`) and the uniform bound on all ten minors |
 | `EightMain.lean` | the pattern as signed minors, the window bound, `T⁵⁴ ≤ C Δ¹⁴ Ξ²⁸ a¹⁶`, and `P_le_8_27` |
-| `DefiniteNorm.lean` | the definite norm count: `U² + D V² = N` has `≤ 4τ(|N|)³` solutions |
+| `DefiniteNorm.lean` | the definite norm count: `x² + δy² = m` has `≤ 4τ(|m|)³` solutions |
 | `Reduce3.lean` | reduced bases of lattices in `ℤ³`: `27 |b₁|²|b₂|²|b₃|² ≤ 64 det²`, and coordinate bounds |
 | `TernComp.lean` | ternary quadratics under substitution, the plane choice, and the slice count for a coefficient vector |
 | `ShortVec.lean` | the lifting identities, the lattice `Λ_p`, the pigeonhole bound, and `short_count` |

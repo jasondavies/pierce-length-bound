@@ -15,7 +15,7 @@ In a window run of `T ≥ 36` terms in `[A, 2A)` take `H = ⌊28a/(AT)⌋ + 1`. 
 starts have their next seven increments `≤ H` (`good_card`). If `237568 A⁴ H⁵ ≤ a³`, their
 patterns are bounded by `M = ⌊172032 A⁴ H⁶ / a³⌋` (`state_bound`), so the counting lemma gives
 `T ≤ 16 (2M+1)⁷ H²` (`two_state_window`). Combined with the six-step bound and the drop bound,
-every window has `T⁷⁷ ≤ C₀ Δ²² a²³` (`window_77`), and the dyadic decomposition gives the
+every window has `T⁷⁷ ≤ C₇₇ Δ²² a²³` (`window_77`), and the dyadic decomposition gives the
 theorem (`P_le_23_77`).
 -/
 
@@ -354,9 +354,6 @@ section Exponent
 def C77 : ℕ := 122449 ^ 20 + (8 * 237568 * 56 ^ 5) ^ 11 + (64 * 50176) ^ 11 +
   8 ^ 16 * (16 * 3 ^ 7 * 172032 ^ 7) * 56 ^ 44
 
-private lemma pow_cancel {x y z : ℕ} (hz : 0 < z) (h : x * z ≤ y * z) : x ≤ y :=
-  Nat.le_of_mul_le_mul_right h hz
-
 /-- **The exponent arithmetic.** Every window run satisfies `T⁷⁷ ≤ C₇₇ Δ²² a²³`. -/
 theorem window_77 {a A T Δ : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ) (hT : 36 ≤ T)
     (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hdrop : T * (T - 1) ≤ 4 * A * Δ)
@@ -393,7 +390,7 @@ theorem window_77 {a A T Δ : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ
         calc (784 * T ^ 4) * a ^ 2 = (28 * a) ^ 2 * T ^ 4 := by ring
           _ ≤ 96000000 * a ^ 3 := h1
           _ ≤ (784 * (122449 * a)) * a ^ 2 := by ring_nf; omega
-      have := pow_cancel (by positivity) this
+      have := Nat.le_of_mul_le_mul_right this (by positivity)
       omega
     have h3 : T ≤ 122449 * a :=
       (Nat.le_self_pow (by norm_num) T).trans h2
@@ -452,7 +449,7 @@ theorem window_77 {a A T Δ : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ
           _ = 16 * 3 ^ 7 * 172032 ^ 7 * A ^ 28 * (H * (A * T)) ^ 44 := by ring
           _ ≤ 16 * 3 ^ 7 * 172032 ^ 7 * A ^ 28 * (56 * a) ^ 44 := by gcongr
           _ = (16 * 3 ^ 7 * 172032 ^ 7 * 56 ^ 44 * a ^ 23) * (A ^ 28 * a ^ 21) := by ring
-      have h3 := pow_cancel (by positivity) h2
+      have h3 := Nat.le_of_mul_le_mul_right h2 (by positivity)
       refine hC (8 ^ 16 * (16 * 3 ^ 7 * 172032 ^ 7) * 56 ^ 44) (by unfold C77; omega) _ ?_
       calc T ^ 77 = T ^ 45 * (T ^ 2) ^ 16 := by ring
         _ ≤ T ^ 45 * (8 * A * Δ) ^ 16 := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hT2 16)
@@ -470,7 +467,7 @@ theorem window_77 {a A T Δ : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ
         _ = 237568 * A ^ 4 * (H * (A * T)) ^ 5 := by ring
         _ ≤ 237568 * A ^ 4 * (56 * a) ^ 5 := by gcongr
         _ = (237568 * 56 ^ 5 * a ^ 2) * (A ^ 4 * a ^ 3) := by ring
-    have h2 := pow_cancel (by positivity) h1
+    have h2 := Nat.le_of_mul_le_mul_right h1 (by positivity)
     have h3 : T ^ 7 ≤ 8 * 237568 * 56 ^ 5 * Δ * a ^ 2 := by
       calc T ^ 7 = T ^ 5 * T ^ 2 := by ring
         _ ≤ T ^ 5 * (8 * A * Δ) := Nat.mul_le_mul_left _ hT2

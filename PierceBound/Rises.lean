@@ -4,12 +4,12 @@ import PierceBound.Conditional
 # Trajectories with few rises in the quotient increments
 
 Let `kᵢ = q_{i+1} - qᵢ` be the quotient increments and `R = 1 + #{i : k_{i+1} > kᵢ}`.
-We prove `P(a, b) ≪ a^{1/4} √R` (`P_le_rises`).
+This file proves the window bounds; `RisesMain.lean` deduces `P(a, b) ≪ a^{1/4} √R` (`P_le_rises`).
 
 * `ap_bound`: six quotients in arithmetic progression `q, q+h, …, q+5h` force
   `q⁴ ≤ 324 h³ a`. The key is the exact identity `q h U = (3h-1) E + F` for the integer
   third difference `U = d₀ - 2d₁ + d₂`, so `U ≥ 1`.
-* `drops_of_no_rise`: if `k_{i+1} ≤ kᵢ` then `d_{i+1} < dᵢ` (from the curvature `D ≥ 1`).
+* `drop_lt_of_not_rise`: if `k_{i+1} ≤ kᵢ` then `d_{i+1} < dᵢ` (from the curvature `D ≥ 1`).
 * window bounds: `T - 1 ≤ √(2R'A)`, `T - 1 ≤ √(8R'a/A) + (26244 A)^{1/3}` and `T - 1 ≤ a/A`.
 -/
 
@@ -438,7 +438,7 @@ private lemma incr_le_of_lt_wEnd {j m : ℕ} (hjm : j ≤ m) (hm : m < wEnd a g 
     hjm hm
   exact ⟨not_lt.mp this.1, by omega⟩
 
-/-- **Proposition rises (1).** `(T - 1)² ≤ 2 (ρ + 1)(A - 1)`. -/
+/-- **Proposition 9.5(1).** `(T - 1)² ≤ 2 (ρ + 1)(A - 1)`. -/
 theorem rises_drop_bound (W : Window a A T g) (hT : 2 ≤ T) :
     (T - 1) ^ 2 ≤ 2 * (windowRises a g T + 1) * (A - 1) := by
   classical
@@ -476,7 +476,7 @@ theorem rises_drop_bound (W : Window a A T g) (hT : 2 ≤ T) :
   calc (T - 1) ^ 2 ≤ 2 * M * ∑ j ∈ range (T - 1), drop g j := hsq
     _ ≤ 2 * (windowRises a g T + 1) * (A - 1) := by gcongr
 
-/-- **Proposition rises (2).** `T - 1 ≤ a / A`. -/
+/-- **Proposition 9.5(2).** `T - 1 ≤ a / A`. -/
 theorem rises_quot_bound (W : Window a A T g) (hT : 1 ≤ T) : T - 1 ≤ a / A := by
   have h1 : (range (T - 1)).card • 1 ≤ ∑ j ∈ range (T - 1), incr a g j :=
     card_nsmul_le_sum _ _ _ fun j hj => W.one_le_incr (by have := mem_range.mp hj; omega)
@@ -528,7 +528,7 @@ private lemma not_low_of_five (W : Window a A T g) (h6 : 6 * A ≤ a) {j h : ℕ
   have h3 := lt_three_mul e0 l0 (W.mem j (by omega)).2 h6
   exact low_contra hq4 h3 hlow
 
-/-- **Proposition rises (3).** If `6A ≤ a` then `T - 1 = ℓ + s` with `ℓ² ≤ 8(ρ+1)(a/A)` and
+/-- **Proposition 9.5(3).** If `6A ≤ a` then `T - 1 = ℓ + s` with `ℓ² ≤ 8(ρ+1)(a/A)` and
 `s³ ≤ 26244 A`. -/
 theorem rises_incr_bound (W : Window a A T g) (hT : 2 ≤ T) (h6 : 6 * A ≤ a) :
     ∃ l s : ℕ, T - 1 = l + s ∧ l ^ 2 ≤ 8 * (windowRises a g T + 1) * (a / A) ∧

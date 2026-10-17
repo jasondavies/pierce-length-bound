@@ -4,3 +4,8 @@ paper/*.log
 paper/*.out
 paper/*.fls
 paper/*.fdb_latexmk
+paper/*.synctex.gz
+paper/*.toc
+paper/*.bbl
+paper/*.blg
+paper/*.xdv

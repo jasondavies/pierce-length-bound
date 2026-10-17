@@ -7,11 +7,11 @@ For the moment model of `Hankel.lean` put, for a real polynomial `f`,
 `μᵢ(f) = ∑ⱼ wᵢ(j) f(pᵢ(j))` and `νᵢ(f) = ∑ⱼ wᵢ(j) f(pᵢ(j)) / q_{i+j}`, so `νᵢ(Xˢ) = hᵢ(s)`.
 With `kᵢ = q_{i+1} - qᵢ` and the Newton basis `Fᵢ,ⱼ = ∏_{l<j} (X - pᵢ(l))`:
 
-* `μᵢ(1) = 1`, `νᵢ(1) = bᵢ/a`, `νᵢ((X + qᵢ) f) = μᵢ(f)`;
-* the shift `μᵢ(X g) = μ_{i+1}(g(X + kᵢ))`, and the same for `ν`;
-* hence `μᵢ(Fᵢ,ⱼ g) = μ_{i+j}(g(X + pᵢ(j)))` and `νᵢ(Fᵢ,ⱼ g) = ν_{i+j}(g(X + pᵢ(j)))`;
+* `μᵢ(1) = 1`, `νᵢ(1) = bᵢ/a`;
+* the shift `μᵢ(X g) = μ_{i+1}(g(X + kᵢ))`;
+* hence `μᵢ(Fᵢ,ⱼ g) = μ_{i+j}(g(X + pᵢ(j)))`;
 * `μᵢ(X) = 1`, `μᵢ(X²) = kᵢ + 1`, `μᵢ(X³) = kᵢ² + 2kᵢ + k_{i+1} + 1`;
-* `νᵢ(f²) > 0` for `0 ≠ f` of degree `< N - i`, and `νᵢ(f²) ≤ μᵢ(f²)/qᵢ`.
+* `0 ≤ νᵢ(f²) ≤ μᵢ(f²)/qᵢ`.
 -/
 
 namespace PierceBound
@@ -74,16 +74,6 @@ lemma nuF_one (hba : b < a) {i : ℕ} (hi : i < P a b) : nuF a b i 1 = orb a b i
 lemma qq_eq_add_pt (i j : ℕ) : (qq a b (i + j) : ℝ) = pt a b i j + qq a b i := by
   simp [pt]
 
-/-- `νᵢ((X + qᵢ) f) = μᵢ(f)`. -/
-lemma nuF_mul_X_add (hba : b < a) {i : ℕ} (f : ℝ[X]) :
-    nuF a b i ((X + C (qq a b i : ℝ)) * f) = muF a b i f := by
-  unfold nuF muF
-  refine sum_congr rfl fun j hj => ?_
-  have hq : (0 : ℝ) < qq a b (i + j) := by
-    exact_mod_cast qq_pos hba (by have := mem_range.mp hj; omega)
-  rw [eval_mul, eval_add, eval_X, eval_C, ← qq_eq_add_pt]
-  field_simp
-
 /-- **The shift** `μᵢ(X g) = μ_{i+1}(g(X + kᵢ))`. -/
 lemma muF_X_mul {i : ℕ} (hl : i + 1 < P a b) (g : ℝ[X]) :
     muF a b i (X * g) = muF a b (i + 1) (g.comp (X + C (kk a b i))) := by
@@ -96,22 +86,6 @@ lemma muF_X_mul {i : ℕ} (hl : i + 1 < P a b) (g : ℝ[X]) :
     push_cast at this; linarith
   rw [wt_of_lt a b hl, ite_eq_right (Nat.succ_ne_zero j), Nat.add_sub_cancel, eval_comp, eval_add, eval_X,
     eval_C, pt_succ, kk]
-  rw [pt_succ] at hp
-  field_simp
-  ring_nf
-
-/-- **The shift** `νᵢ(X g) = ν_{i+1}(g(X + kᵢ))`. -/
-lemma nuF_X_mul {i : ℕ} (hl : i + 1 < P a b) (g : ℝ[X]) :
-    nuF a b i (X * g) = nuF a b (i + 1) (g.comp (X + C (kk a b i))) := by
-  unfold nuF
-  rw [show P a b - i = (P a b - (i + 1)) + 1 by omega, sum_range_succ', pt_zero]
-  simp only [eval_mul, eval_X, zero_mul, mul_zero, add_zero, zero_div]
-  refine sum_congr rfl fun j hj => ?_
-  have hp : 0 < pt a b i (j + 1) := by
-    have := pt_ge (a := a) (b := b) (i := i) (j := j + 1) (by have := mem_range.mp hj; omega)
-    push_cast at this; linarith
-  rw [wt_of_lt a b hl, ite_eq_right (Nat.succ_ne_zero j), Nat.add_sub_cancel, eval_comp, eval_add, eval_X,
-    eval_C, pt_succ, kk, show i + (j + 1) = i + 1 + j by ring]
   rw [pt_succ] at hp
   field_simp
   ring_nf
@@ -136,19 +110,6 @@ lemma muF_nb_mul : ∀ (j i : ℕ), i + j < P a b → ∀ g : ℝ[X],
   | succ j ih =>
     intro i hij g
     rw [nb_succ, mul_assoc, muF_X_mul (by omega), mul_comp, comp_shift_cancel,
-      ih (i + 1) (by omega), show i + 1 + j = i + (j + 1) by ring, comp_assoc]
-    congr 2
-    simp only [add_comp, X_comp, C_comp, pt_succ, kk, map_add]
-    ring
-
-lemma nuF_nb_mul : ∀ (j i : ℕ), i + j < P a b → ∀ g : ℝ[X],
-    nuF a b i (nb a b i j * g) = nuF a b (i + j) (g.comp (X + C (pt a b i j))) := by
-  intro j
-  induction j with
-  | zero => intro i _ g; simp [nb, pt]
-  | succ j ih =>
-    intro i hij g
-    rw [nb_succ, mul_assoc, nuF_X_mul (by omega), mul_comp, comp_shift_cancel,
       ih (i + 1) (by omega), show i + 1 + j = i + (j + 1) by ring, comp_assoc]
     congr 2
     simp only [add_comp, X_comp, C_comp, pt_succ, kk, map_add]
@@ -185,42 +146,6 @@ lemma nuF_sq_nonneg (hba : b < a) {i : ℕ} (hi : i < P a b) (f : ℝ[X]) :
   have h2 : (0 : ℝ) < qq a b (i + j) := by exact_mod_cast qq_pos hba (by omega)
   rw [eval_mul]
   exact div_nonneg (mul_nonneg h1.le (mul_self_nonneg _)) h2.le
-
-lemma nuF_sq_pos (hba : b < a) {i : ℕ} (hi : i < P a b) {f : ℝ[X]} (hf : f ≠ 0)
-    (hdeg : f.natDegree < P a b - i) : 0 < nuF a b i (f * f) := by
-  obtain ⟨hw, -⟩ := wt_spec hba (P a b - 1 - i) i (by omega)
-  have hterm : ∀ j ∈ range (P a b - i),
-      0 ≤ wt a b i j * (f * f).eval (pt a b i j) / qq a b (i + j) := by
-    intro j hj
-    have hj' := mem_range.mp hj
-    have h1 := hw j hj'
-    have h2 : (0 : ℝ) < qq a b (i + j) := by exact_mod_cast qq_pos hba (by omega)
-    rw [eval_mul]
-    exact div_nonneg (mul_nonneg h1.le (mul_self_nonneg _)) h2.le
-  rcases (sum_nonneg hterm).lt_or_eq with h | h
-  · exact h
-  exfalso
-  have hz := (sum_eq_zero_iff_of_nonneg hterm).mp h.symm
-  apply hf
-  set v : Fin (P a b - i) → ℝ := fun n => pt a b i n
-  have hinj : Function.Injective v := by
-    intro n n' hnn
-    by_contra hne
-    rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hne) with h' | h'
-    · exact (pt_strictMono (a := a) (b := b) h' (by omega)).ne hnn
-    · exact (pt_strictMono (a := a) (b := b) h' (by omega)).ne hnn.symm
-  refine eq_zero_of_natDegree_lt_card_of_eval_eq_zero f hinj (fun n => ?_) (by simpa using hdeg)
-  have := hz n (mem_range.mpr n.2)
-  have hwn := hw n n.2
-  have hq : (0 : ℝ) < qq a b (i + n) := by exact_mod_cast qq_pos hba (by omega)
-  rw [eval_mul] at this
-  have : f.eval (pt a b i n) * f.eval (pt a b i n) = 0 := by
-    rcases div_eq_zero_iff.mp this with h1 | h1
-    · rcases mul_eq_zero.mp h1 with h2 | h2
-      · exact absurd h2 hwn.ne'
-      · exact h2
-    · exact absurd h1 hq.ne'
-  exact mul_self_eq_zero.mp this
 
 /-- `νᵢ(f²) ≤ μᵢ(f²)/qᵢ`. -/
 lemma nuF_sq_le (hba : b < a) {i : ℕ} (hi : i < P a b) (f : ℝ[X]) :

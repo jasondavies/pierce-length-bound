@@ -226,32 +226,6 @@ theorem six_core (a q u v w z x0 x1 x2 x3 x4 x5 m : ℕ)
   rw [← hEz, ← hFz] at this
   exact_mod_cast this
 
-namespace Window
-
-variable {a A T : ℕ} {g : ℕ → ℕ}
-
-lemma le_of_le (W : Window a A T g) {i j : ℕ} (hij : i ≤ j) (hj : j < T) : g j ≤ g i := by
-  rcases hij.lt_or_eq with h | rfl
-  · exact (W.lt_of_lt h hj).le
-  · exact le_rfl
-
-/-- Telescoping for five-step drops. -/
-lemma sum_five_drops (W : Window a A T g) :
-    ∀ m, m + 5 ≤ T → ∑ j ∈ range m, (g j - g (j + 5)) + g m + g (m + 1) + g (m + 2) + g (m + 3) +
-      g (m + 4) = g 0 + g 1 + g 2 + g 3 + g 4 := by
-  intro m
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    intro hm
-    rw [sum_range_succ, show m + 1 + 1 = m + 2 by ring, show m + 1 + 2 = m + 3 by ring,
-      show m + 1 + 3 = m + 4 by ring, show m + 1 + 4 = m + 5 by ring]
-    have := ih (by omega)
-    have := (W.lt_of_lt (i := m) (j := m + 5) (by omega) (by omega)).le
-    omega
-
-end Window
-
 /-- `a ≤ 4 A q` from `a = x q + y` with `y < x < 2A` and `q ≥ 1`. -/
 private lemma le_four_mul {a x y q A : ℕ} (h0 : x * q + y = a) (hyx : y < x) (hx : x < 2 * A)
     (hq : 1 ≤ q) : a ≤ 4 * A * q := by
