@@ -554,7 +554,7 @@ lemma reduced_size {d f B : ℕ} {N : ℤ} {p : ℤ × ℤ} {g : ℕ} {u w n : �
         add_le_add_right (mul_le_mul_of_nonneg_left hsq.le (Nat.cast_nonneg _)) _
     _ = B * (Nat.sqrt (f ^ 2 * d) + 2) := by ring
 
-/-- **The norm count** (Lemma 7). For `D ≥ 1`, `N ≠ 0` the equation `U² - D V² = N` has at most
+/-- **The norm count.** For `D ≥ 1`, `N ≠ 0` the equation `U² - D V² = N` has at most
 `2 τ(|N|)³ (log₃ L² + 1)` solutions with `|U|, |V| ≤ B`, where `L = B (⌊√D⌋ + 2)`. -/
 theorem norm_count {D : ℕ} {N : ℤ} (B : ℕ) (hD : 1 ≤ D) (hN : N ≠ 0) :
     (normSols D N B).card ≤

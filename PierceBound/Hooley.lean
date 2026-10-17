@@ -8,7 +8,8 @@ exactly this definition). Two published theorems are stated as propositions:
 
 * `NairTenenbaumDelta`: Nair–Tenenbaum, *Short sums of certain arithmetic functions*,
   Acta Math. 180 (1998), the displayed consequence of their Theorem 1 for `F = Δ`, `t = 1`,
-  `Q(X) = X` (so `ρ = 1`), with `ε = 1/4`:
+  `Q(X) = X` (so `ρ = 1`), with short-interval exponent `1/4` (their `y ≥ x^ε` with `ε = 1/4`;
+  `Δ` lies in their class `M(A, B, ε)` for every `ε > 0`):
   `∑_{x<n≤x+y} Δ(n) ≪ (y / log x) ∑_{n≤x} Δ(n)/n` for `x^{1/4} ≤ y ≤ x`, `x` large.
 * `BretecheTenenbaumMean`: de la Bretèche–Tenenbaum, *Note on the mean value of the
   Erdős–Hooley Delta-function*, Acta Arith. 219 (2025), Theorem 1.1:

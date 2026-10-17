@@ -329,42 +329,32 @@ noncomputable def piv (p : Fin 10 → ℤ) : Fin 10 :=
 lemma piv_max (p : Fin 10 → ℤ) (t : Fin 10) : |p t| ≤ |p (piv p)| :=
   (Classical.choose_spec (exists_max_image univ (fun t => |p t|) univ_nonempty)).2 t (mem_univ t)
 
-/-- **The minor-vector lemma.** Vectors of height `≤ Y` satisfying the Plücker relations number
-at most `1 + 20 ∑_{m ≤ Y} 729 m⁴ τ(m)`. -/
-theorem minor_vector_count {S : Finset (Fin 10 → ℤ)} {Y : ℕ}
-    (hS : ∀ p ∈ S, (∀ t, |p t| ≤ Y) ∧ PluckerRel p) :
-    S.card ≤ 1 + 20 * ∑ m ∈ Icc 1 Y, 729 * m ^ 4 * m.divisors.card := by
+/-- **The minor-vector count, refined.** Vectors of height `≤ Y` satisfying the Plücker relations,
+with nonzero pivot `m` and `P |m| u` for the first row `u` of the pivot, number at most
+`20 ∑_{m ≤ Y} #{(u, v) ∈ crossSet m : P m u}`. -/
+theorem minor_vector_count_of (P : ℕ → (Fin 3 → ℤ) → Prop) [∀ m u, Decidable (P m u)]
+    {S : Finset (Fin 10 → ℤ)} {Y : ℕ}
+    (hS : ∀ p ∈ S, (∀ t, |p t| ≤ Y) ∧ PluckerRel p ∧ p (piv p) ≠ 0 ∧
+      P (p (piv p)).natAbs (uVec p (piv p))) :
+    S.card ≤ 20 * ∑ m ∈ Icc 1 Y, ((crossSet m).filter fun uv => P m uv.1).card := by
   classical
-  rw [← card_filter_add_card_filter_not (s := S) (p := fun p => p = 0)]
-  have h0 : (S.filter fun p => p = 0).card ≤ 1 := by
-    refine (card_le_card (s := S.filter fun p => p = 0) (t := {0}) fun p hp => ?_).trans (by simp)
-    rw [(mem_filter.mp hp).2]; exact mem_singleton_self _
-  set S1 := S.filter fun p => ¬ p = 0
-  have hm0 : ∀ p ∈ S1, p (piv p) ≠ 0 := by
-    intro p hp h
-    apply (mem_filter.mp hp).2
-    funext t
-    have := piv_max p t
-    rw [h, abs_zero] at this
-    exact abs_nonpos_iff.mp this
   set key : (Fin 10 → ℤ) → Fin 10 × Bool × ℕ × (Fin 3 → ℤ) × (Fin 3 → ℤ) := fun p =>
     (piv p, decide (0 < p (piv p)), (p (piv p)).natAbs, uVec p (piv p), vVec p (piv p))
   set Bm : Finset (ℕ × (Fin 3 → ℤ) × (Fin 3 → ℤ)) :=
-    (Icc 1 Y).biUnion fun m => (crossSet m).image fun uv => (m, uv.1, uv.2)
+    (Icc 1 Y).biUnion fun m => ((crossSet m).filter fun uv => P m uv.1).image
+      fun uv => (m, uv.1, uv.2)
   set KS : Finset (Fin 10 × Bool × ℕ × (Fin 3 → ℤ) × (Fin 3 → ℤ)) := univ ×ˢ univ ×ˢ Bm
-  have hKS : KS.card ≤ 20 * ∑ m ∈ Icc 1 Y, 729 * m ^ 4 * m.divisors.card := by
-    have h1 : Bm.card ≤ ∑ m ∈ Icc 1 Y, 729 * m ^ 4 * m.divisors.card :=
-      card_biUnion_le.trans (sum_le_sum fun m hm => card_image_le.trans
-        (card_crossSet (by have := (mem_Icc.mp hm).1; omega)))
+  have hKS : KS.card ≤ 20 * ∑ m ∈ Icc 1 Y, ((crossSet m).filter fun uv => P m uv.1).card := by
+    have h1 : Bm.card ≤ ∑ m ∈ Icc 1 Y, ((crossSet m).filter fun uv => P m uv.1).card :=
+      card_biUnion_le.trans (sum_le_sum fun m _ => card_image_le)
     have e : KS.card = 10 * (2 * Bm.card) := by
       simp only [KS, card_product, card_univ, Fintype.card_fin, Fintype.card_bool]
     rw [e]; omega
-  have hmaps : ∀ p ∈ S1, key p ∈ KS := by
+  have hmaps : ∀ p ∈ S, key p ∈ KS := by
     intro p hp
-    obtain ⟨hb, hpl⟩ := hS p (mem_filter.mp hp).1
+    obtain ⟨hb, hpl, hm, hP⟩ := hS p hp
     set τ := piv p
     set m := p τ
-    have hm := hm0 p hp
     have hmY : m.natAbs ≤ Y := by
       have h1 : ((m.natAbs : ℕ) : ℤ) ≤ Y := by rw [Int.natCast_natAbs]; exact hb τ
       exact_mod_cast h1
@@ -382,23 +372,23 @@ theorem minor_vector_count {S : Finset (Fin 10 → ℤ)} {Y : ℕ}
       have : |pvS τ a| = 1 := by
         rcases Int.eq_one_or_neg_one_of_mul_eq_one hs with h | h <;> simp [h]
       simp only [vVec, abs_mul, this, one_mul]; exact piv_max p _
-    refine mem_filter.mpr ⟨mem_product.mpr ⟨Fintype.mem_piFinset.mpr fun a => mem_Icc.mpr
-      (by rw [hcast]; exact abs_le.mp (hu a)), Fintype.mem_piFinset.mpr fun a => mem_Icc.mpr
-      (by rw [hcast]; exact abs_le.mp (hv a))⟩, fun a => ?_⟩
+    refine mem_filter.mpr ⟨mem_filter.mpr ⟨mem_product.mpr ⟨Fintype.mem_piFinset.mpr fun a =>
+      mem_Icc.mpr (by rw [hcast]; exact abs_le.mp (hu a)), Fintype.mem_piFinset.mpr fun a =>
+      mem_Icc.mpr (by rw [hcast]; exact abs_le.mp (hv a))⟩, fun a => ?_⟩, hP⟩
     rw [Int.natCast_natAbs]
     refine (abs_dvd m _).mpr ⟨pwS τ a * p (pwX τ a), ?_⟩
     have h1 := hpl τ a
     have h2 := (sign_sq τ a).2.2
     simp only
     linear_combination (-pwS τ a) * h1 - cross3 (uVec p τ) (vVec p τ) a * h2
-  have hinj : Set.InjOn key S1 := by
+  have hinj : Set.InjOn key S := by
     intro p hp p' hp' h
     simp only [key, Prod.mk.injEq] at h
     obtain ⟨hτ, hsg, hab, hu, hv⟩ := h
     have hp1 := mem_coe.mp hp
     have hp1' := mem_coe.mp hp'
-    have hm := hm0 p hp1
-    have hm' := hm0 p' hp1'
+    have hm := (hS p hp1).2.2.1
+    have hm' := (hS p' hp1').2.2.1
     rw [← hτ] at hsg hab hu hv hm'
     set τ := piv p
     have hmm : p τ = p' τ := by
@@ -407,8 +397,8 @@ theorem minor_vector_count {S : Finset (Fin 10 → ℤ)} {Y : ℕ}
         omega
       · have : ¬ 0 < p' τ := by simpa [hpos] using hsg
         omega
-    have hpl := (hS p (mem_filter.mp hp1).1).2
-    have hpl' := (hS p' (mem_filter.mp hp1').1).2
+    have hpl := (hS p hp1).2.1
+    have hpl' := (hS p' hp1').2.1
     funext s
     rcases cover τ s with h | ⟨a, h⟩ | ⟨a, h⟩ | ⟨a, h⟩
     · rw [h, hmm]
@@ -427,8 +417,28 @@ theorem minor_vector_count {S : Finset (Fin 10 → ℤ)} {Y : ℕ}
       rw [← hmm, ← hu, ← hv] at e2
       rw [h]
       exact mul_left_cancel₀ hm (e1.trans e2.symm)
-  calc (S.filter fun p => p = 0).card + S1.card ≤ 1 + KS.card :=
-        add_le_add h0 (card_le_card_of_injOn key hmaps hinj)
-    _ ≤ _ := Nat.add_le_add_left hKS 1
+  exact (card_le_card_of_injOn key hmaps hinj).trans hKS
+
+/-- **The minor-vector lemma.** Vectors of height `≤ Y` satisfying the Plücker relations number
+at most `1 + 20 ∑_{m ≤ Y} 729 m⁴ τ(m)`. -/
+theorem minor_vector_count {S : Finset (Fin 10 → ℤ)} {Y : ℕ}
+    (hS : ∀ p ∈ S, (∀ t, |p t| ≤ Y) ∧ PluckerRel p) :
+    S.card ≤ 1 + 20 * ∑ m ∈ Icc 1 Y, 729 * m ^ 4 * m.divisors.card := by
+  classical
+  rw [← card_filter_add_card_filter_not (s := S) (p := fun p => p = 0)]
+  have h0 : (S.filter fun p => p = 0).card ≤ 1 := by
+    refine (card_le_card (s := S.filter fun p => p = 0) (t := {0}) fun p hp => ?_).trans (by simp)
+    rw [(mem_filter.mp hp).2]; exact mem_singleton_self _
+  have hm0 : ∀ p ∈ S.filter (fun p => ¬ p = 0), p (piv p) ≠ 0 := by
+    intro p hp h
+    apply (mem_filter.mp hp).2
+    funext t
+    have := piv_max p t
+    rw [h, abs_zero] at this
+    exact abs_nonpos_iff.mp this
+  refine add_le_add h0 ((minor_vector_count_of (fun _ _ => True) fun p hp =>
+    ⟨(hS p (mem_filter.mp hp).1).1, (hS p (mem_filter.mp hp).1).2, hm0 p hp, trivial⟩).trans ?_)
+  exact Nat.mul_le_mul_left _ (sum_le_sum fun m hm => (card_filter_le _ _).trans
+    (card_crossSet (by have := (mem_Icc.mp hm).1; omega)))
 
 end PierceBound

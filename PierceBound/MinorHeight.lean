@@ -248,7 +248,7 @@ theorem minor_height (hba : b < a) {A H i : ℕ} (hP : i + 8 < P a b) (hb : orb 
     rw [abs_le]; constructor <;> linarith
   have hK : ∀ c : Fin 5, |((Mi a b i 1 c : ℤ) : ℝ)| ≤ H := by
     intro c
-    simp only [Mi, Matrix.cons_val_one, Matrix.head_cons]
+    simp only [Mi, Matrix.cons_val_one]
     obtain ⟨h1, h2⟩ := hk c (by have := c.2; omega)
     rw [abs_of_pos (by exact_mod_cast (show (0 : ℤ) < kq a b (i + c) by omega))]
     exact_mod_cast h2

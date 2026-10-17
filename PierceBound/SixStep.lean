@@ -88,21 +88,21 @@ lemma sixJ_le {u v w z m : ℤ} (hu : 1 ≤ u) (hv : 1 ≤ v) (hw : 1 ≤ w) (hz
   have hm3 : (0 : ℤ) ≤ m ^ 3 := by positivity
   have b1 : m ^ 3 ≤ m ^ 3 * w := le_mul_of_one_le_right hm3 hw
   have a1 : u ^ 2 * z ≤ m ^ 3 := by
-    calc u ^ 2 * z ≤ m ^ 2 * m := by gcongr <;> linarith
+    calc u ^ 2 * z ≤ m ^ 2 * m := by gcongr
       _ = m ^ 3 := by ring
   have a2 : (u - 1) * v * z ≤ m ^ 3 := by
-    calc (u - 1) * v * z ≤ m * m * m := by gcongr <;> linarith
+    calc (u - 1) * v * z ≤ m * m * m := by gcongr; linarith
       _ = m ^ 3 := by ring
   have a3 : u ^ 3 + u * v * (2 * u - 1) + (u - 1) * v ^ 2 ≤ 4 * m ^ 3 := by
     have c1 : u ^ 3 ≤ m ^ 3 := pow_le_pow_left₀ (by linarith) hum 3
     have c2 : u * v * (2 * u - 1) ≤ m * m * (2 * m) := by gcongr <;> linarith
-    have c3 : (u - 1) * v ^ 2 ≤ m * m ^ 2 := by gcongr <;> linarith
+    have c3 : (u - 1) * v ^ 2 ≤ m * m ^ 2 := by gcongr; linarith
     linarith
   have a4 : w * ((u - 1) * (u + v) + 1) ≤ 2 * m ^ 3 := by
-    have c1 : (u - 1) * (u + v) ≤ (m - 1) * (2 * m) := by gcongr <;> linarith
+    have c1 : (u - 1) * (u + v) ≤ (m - 1) * (2 * m) := by gcongr; linarith
     have c0 : (0 : ℤ) ≤ (u - 1) * (u + v) := mul_nonneg hu0 (by linarith)
     have c2 : w * ((u - 1) * (u + v) + 1) ≤ m * ((m - 1) * (2 * m) + 1) := by
-      gcongr <;> linarith
+      gcongr
     nlinarith
   calc sixJ u v w z = u ^ 2 * z + (u - 1) * v * z +
         w * (u ^ 3 + u * v * (2 * u - 1) + (u - 1) * v ^ 2) +
@@ -123,13 +123,13 @@ lemma sixS_le {u v w m : ℤ} (hu : 1 ≤ u) (hv : 1 ≤ v) (hw : 1 ≤ w)
   have hm3 : (0 : ℤ) ≤ m ^ 3 := by positivity
   have b1 : m ^ 3 ≤ m ^ 3 * w := le_mul_of_one_le_right hm3 hw
   have c1 : u ^ 2 * v ≤ m ^ 3 := by
-    calc u ^ 2 * v ≤ m ^ 2 * m := by gcongr <;> linarith
+    calc u ^ 2 * v ≤ m ^ 2 * m := by gcongr
       _ = m ^ 3 := by ring
   have c2 : (u - 1) * v ^ 2 ≤ m ^ 3 := by
-    calc (u - 1) * v ^ 2 ≤ m * m ^ 2 := by gcongr <;> linarith
+    calc (u - 1) * v ^ 2 ≤ m * m ^ 2 := by gcongr; linarith
       _ = m ^ 3 := by ring
   have c3 : u * w ≤ m ^ 3 := by
-    calc u * w ≤ m * m := by gcongr <;> linarith
+    calc u * w ≤ m * m := by gcongr
       _ ≤ m * m * m := le_mul_of_one_le_right (by positivity) hm1
       _ = m ^ 3 := by ring
   unfold sixS
@@ -141,7 +141,7 @@ they satisfy the curvature bounds, and `q ≤ 9 m³ E + 3 m³ F`. -/
 theorem six_core (a q u v w z x0 x1 x2 x3 x4 x5 m : ℕ)
     (h0 : x0 * q + x1 = a) (h1 : x1 * (q + u) + x2 = a) (h2 : x2 * (q + u + v) + x3 = a)
     (h3 : x3 * (q + u + v + w) + x4 = a) (h4 : x4 * (q + u + v + w + z) + x5 = a)
-    (h01 : x1 < x0) (h12 : x2 < x1) (h23 : x3 < x2) (h34 : x4 < x3) (h45 : x5 < x4)
+    (_h01 : x1 < x0) (h12 : x2 < x1) (h23 : x3 < x2) (h34 : x4 < x3) (h45 : x5 < x4)
     (hq : 1 ≤ q) (hu : 1 ≤ u) (hv : 1 ≤ v) (hw : 1 ≤ w) (hz : 1 ≤ z)
     (hum : u ≤ m) (hvm : v ≤ m) (hwm : w ≤ m) (hzm : z ≤ m) :
     ((x1 - x2) * w - (x2 - x3) * v) * x3 ≤ (v + 1) * (x1 - x4) ^ 2 ∧
@@ -391,10 +391,10 @@ theorem six_step_bound {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT 
     rcases le_total u v with h | h <;> rcases le_total w z with h' | h' <;>
       simp only [max_eq_left, max_eq_right, h, h'] <;>
       first
-      | (rcases le_total v z with h'' | h'' <;> simp [max_eq_left, max_eq_right, h''] <;> assumption)
-      | (rcases le_total v w with h'' | h'' <;> simp [max_eq_left, max_eq_right, h''] <;> assumption)
-      | (rcases le_total u z with h'' | h'' <;> simp [max_eq_left, max_eq_right, h''] <;> assumption)
-      | (rcases le_total u w with h'' | h'' <;> simp [max_eq_left, max_eq_right, h''] <;> assumption)
+      | (rcases le_total v z with h'' | h'' <;> simp [h''] <;> assumption)
+      | (rcases le_total v w with h'' | h'' <;> simp [h''] <;> assumption)
+      | (rcases le_total u z with h'' | h'' <;> simp [h''] <;> assumption)
+      | (rcases le_total u w with h'' | h'' <;> simp [h''] <;> assumption)
   -- `E A ≤ 2 m s²`, `F A ≤ 2 m s²`
   have hvm : v ≤ m := by simp [m]
   have hwm : w ≤ m := by simp [m]

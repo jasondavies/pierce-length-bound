@@ -348,72 +348,77 @@ lemma root_le {x D c e k a : ℕ} (hk : k ≠ 0) (ha : 1 ≤ a) (h : x ^ k ≤ D
   exact h1.trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le ha' hη)
     (by positivity))
 
-set_option exponentiation.threshold 400 in
-/-- **The slack factors are `O_η(a^η)`.** -/
-lemma slack_le (η : ℝ) (hη : 0 < η) : ∃ C > 0, ∀ a : ℕ, 1 ≤ a →
-    (tauMax (32 * a ^ 7) : ℝ) ≤ C * (a : ℝ) ^ η ∧ (Xi a : ℝ) ≤ C * (a : ℝ) ^ η := by
-  obtain ⟨k, hk⟩ := exists_nat_gt (600 / η)
+/-- **The slack factor of the polynomial range `10ᶜ aᵉ` is `O_η(a^η)`.** -/
+lemma xi_le (c e : ℕ) (he : 1 ≤ e) (η : ℝ) (hη : 0 < η) : ∃ C > 0, ∀ a : ℕ, 1 ≤ a →
+    ((2 * tauMax (10 ^ c * a ^ e) ^ 3 * (Nat.log 3 (10 ^ c * a ^ e) + 1) + 4 : ℕ) : ℝ) ≤
+      C * (a : ℝ) ^ η := by
+  have he' : (0 : ℝ) < e := by exact_mod_cast he
+  obtain ⟨k, hk⟩ := exists_nat_gt (6 * e / η)
   have hk0 : (0 : ℝ) < k := lt_of_le_of_lt (by positivity) hk
   have hk1 : k ≠ 0 := by rintro rfl; simp at hk0
-  have hkη : (600 : ℝ) / k < η := by
-    rw [div_lt_iff₀ hk0]; rw [div_lt_iff₀ hη] at hk; linarith
+  have hkη : (e : ℝ) / k ≤ η / 6 := by
+    rw [div_le_iff₀ hk0]; rw [div_lt_iff₀ hη] at hk; linarith
   obtain ⟨Dc, hDc, hdiv⟩ := OAI.Ostmann.exists_divisors_power_bound k
-  obtain ⟨CL, hCL, hlog⟩ := log_add_one_le_rpow (η / 200) (by positivity)
-  set C1 : ℝ := ((Dc * 32 : ℕ) : ℝ) ^ ((k : ℝ)⁻¹)
-  set C2 : ℝ := ((Dc * 10 ^ 300 : ℕ) : ℝ) ^ ((k : ℝ)⁻¹)
-  set C3 : ℝ := CL * ((10 : ℝ) ^ 300) ^ (η / 200)
-  refine ⟨C1 + 2 * C2 ^ 3 * C3 + 4, by positivity, fun a ha => ?_⟩
+  obtain ⟨CL, hCL, hlog⟩ := log_add_one_le_rpow (η / (2 * e)) (by positivity)
+  set C2 : ℝ := ((Dc * 10 ^ c : ℕ) : ℝ) ^ ((k : ℝ)⁻¹)
+  set C3 : ℝ := CL * ((10 : ℝ) ^ c) ^ (η / (2 * e))
+  refine ⟨2 * C2 ^ 3 * C3 + 4, by positivity, fun a ha => ?_⟩
   have ha' : (1 : ℝ) ≤ a := by exact_mod_cast ha
   have haη : (1 : ℝ) ≤ (a : ℝ) ^ η := Real.one_le_rpow ha' hη.le
-  have hC1 : 0 ≤ C1 := by positivity
   have hC2 : 0 ≤ C2 := by positivity
   have hC3 : 0 ≤ C3 := by positivity
-  -- the divisor maximum on `[1, 32 a⁷]`
-  have b1 : (tauMax (32 * a ^ 7) : ℝ) ≤ C1 * (a : ℝ) ^ η :=
-    root_le hk1 ha (tauMax_pow_le hk1 hdiv _) (by
-      have : (7 : ℝ) / k ≤ 600 / k := by gcongr; norm_num
-      linarith)
-  -- the divisor maximum on `[1, P(a)]`, cubed
-  have b2 : (tauMax (Pbig a) : ℝ) ≤ C2 * (a : ℝ) ^ (η / 6) := by
-    refine root_le hk1 ha (by simpa [Pbig] using tauMax_pow_le hk1 hdiv (Pbig a)) ?_
-    push_cast
-    have : (100 : ℝ) / k = 600 / k / 6 := by ring
-    rw [this]; linarith
-  have b2' : (tauMax (Pbig a) : ℝ) ^ 3 ≤ C2 ^ 3 * (a : ℝ) ^ (η / 2) := by
-    calc (tauMax (Pbig a) : ℝ) ^ 3 ≤ (C2 * (a : ℝ) ^ (η / 6)) ^ 3 :=
+  -- the divisor maximum, cubed
+  have b2 : (tauMax (10 ^ c * a ^ e) : ℝ) ≤ C2 * (a : ℝ) ^ (η / 6) :=
+    root_le hk1 ha (tauMax_pow_le hk1 hdiv _) hkη
+  have b2' : (tauMax (10 ^ c * a ^ e) : ℝ) ^ 3 ≤ C2 ^ 3 * (a : ℝ) ^ (η / 2) := by
+    calc (tauMax (10 ^ c * a ^ e) : ℝ) ^ 3 ≤ (C2 * (a : ℝ) ^ (η / 6)) ^ 3 :=
           pow_le_pow_left₀ (Nat.cast_nonneg _) b2 3
       _ = C2 ^ 3 * (a : ℝ) ^ (η / 2) := by
           rw [mul_pow, ← Real.rpow_natCast ((a : ℝ) ^ (η / 6)) 3, ← Real.rpow_mul (by positivity)]
           congr 2; push_cast; ring
   -- the logarithm
-  have b3 : ((Nat.log 3 (Pbig a) + 1 : ℕ) : ℝ) ≤ C3 * (a : ℝ) ^ (η / 2) := by
-    have hP1 : 1 ≤ Pbig a := Nat.one_le_iff_ne_zero.mpr (by unfold Pbig; positivity)
-    have h1 : Nat.log 3 (Pbig a) + 1 ≤ Nat.log 2 (Pbig a) + 1 :=
+  have b3 : ((Nat.log 3 (10 ^ c * a ^ e) + 1 : ℕ) : ℝ) ≤ C3 * (a : ℝ) ^ (η / 2) := by
+    have hP1 : 1 ≤ 10 ^ c * a ^ e := Nat.mul_pos (by positivity) (pow_pos ha e)
+    have h1 : Nat.log 3 (10 ^ c * a ^ e) + 1 ≤ Nat.log 2 (10 ^ c * a ^ e) + 1 :=
       Nat.succ_le_succ (Nat.log_anti_left (by norm_num) (by norm_num))
-    have h2 := hlog (Pbig a) hP1
-    have e : ((Pbig a : ℕ) : ℝ) ^ (η / 200) = ((10 : ℝ) ^ 300) ^ (η / 200) * (a : ℝ) ^ (η / 2) := by
-      unfold Pbig
+    have h2 := hlog _ hP1
+    have e1 : ((10 ^ c * a ^ e : ℕ) : ℝ) ^ (η / (2 * e)) =
+        ((10 : ℝ) ^ c) ^ (η / (2 * e)) * (a : ℝ) ^ (η / 2) := by
       push_cast
-      rw [Real.mul_rpow (by positivity) (by positivity), ← Real.rpow_natCast (a : ℝ) 100,
+      rw [Real.mul_rpow (by positivity) (by positivity), ← Real.rpow_natCast (a : ℝ) e,
         ← Real.rpow_mul (by positivity)]
-      ring_nf
-    calc ((Nat.log 3 (Pbig a) + 1 : ℕ) : ℝ) ≤ ((Nat.log 2 (Pbig a) + 1 : ℕ) : ℝ) := by
+      congr 2; field_simp
+    calc ((Nat.log 3 (10 ^ c * a ^ e) + 1 : ℕ) : ℝ) ≤ ((Nat.log 2 (10 ^ c * a ^ e) + 1 : ℕ) : ℝ) := by
           exact_mod_cast h1
-      _ ≤ CL * ((Pbig a : ℕ) : ℝ) ^ (η / 200) := h2
-      _ = C3 * (a : ℝ) ^ (η / 2) := by rw [e]; simp only [C3]; ring
-  have hXi : (Xi a : ℝ) ≤ 2 * C2 ^ 3 * C3 * (a : ℝ) ^ η + 4 := by
-    unfold Xi
-    push_cast
-    have := mul_le_mul b2' (by exact_mod_cast b3) (by positivity) (by positivity)
-    have e : C2 ^ 3 * (a : ℝ) ^ (η / 2) * (C3 * (a : ℝ) ^ (η / 2)) = C2 ^ 3 * C3 * (a : ℝ) ^ η := by
-      rw [show C2 ^ 3 * (a : ℝ) ^ (η / 2) * (C3 * (a : ℝ) ^ (η / 2)) =
-        C2 ^ 3 * C3 * ((a : ℝ) ^ (η / 2) * (a : ℝ) ^ (η / 2)) by ring, ← Real.rpow_add (by positivity)]
-      ring_nf
-    push_cast at this
-    nlinarith
-  constructor
-  · nlinarith [mul_nonneg (by positivity : (0 : ℝ) ≤ 2 * C2 ^ 3 * C3 + 4) (by positivity : (0 : ℝ) ≤ (a : ℝ) ^ η)]
-  · nlinarith [mul_nonneg hC1 (by positivity : (0 : ℝ) ≤ (a : ℝ) ^ η)]
+      _ ≤ CL * ((10 ^ c * a ^ e : ℕ) : ℝ) ^ (η / (2 * e)) := h2
+      _ = C3 * (a : ℝ) ^ (η / 2) := by rw [e1]; simp only [C3]; ring
+  push_cast
+  have := mul_le_mul b2' (by exact_mod_cast b3) (by positivity) (by positivity)
+  have e2 : C2 ^ 3 * (a : ℝ) ^ (η / 2) * (C3 * (a : ℝ) ^ (η / 2)) = C2 ^ 3 * C3 * (a : ℝ) ^ η := by
+    rw [show C2 ^ 3 * (a : ℝ) ^ (η / 2) * (C3 * (a : ℝ) ^ (η / 2)) =
+      C2 ^ 3 * C3 * ((a : ℝ) ^ (η / 2) * (a : ℝ) ^ (η / 2)) by ring, ← Real.rpow_add (by positivity)]
+    ring_nf
+  push_cast at this
+  nlinarith
+
+/-- **The slack factors are `O_η(a^η)`.** -/
+lemma slack_le (η : ℝ) (hη : 0 < η) : ∃ C > 0, ∀ a : ℕ, 1 ≤ a →
+    (tauMax (32 * a ^ 7) : ℝ) ≤ C * (a : ℝ) ^ η ∧ (Xi a : ℝ) ≤ C * (a : ℝ) ^ η := by
+  obtain ⟨k, hk⟩ := exists_nat_gt (7 / η)
+  have hk0 : (0 : ℝ) < k := lt_of_le_of_lt (by positivity) hk
+  have hk1 : k ≠ 0 := by rintro rfl; simp at hk0
+  have hkη : (7 : ℝ) / k ≤ η := by
+    rw [div_le_iff₀ hk0]; rw [div_lt_iff₀ hη] at hk; linarith
+  obtain ⟨Dc, hDc, hdiv⟩ := OAI.Ostmann.exists_divisors_power_bound k
+  obtain ⟨CX, hCX, hX⟩ := xi_le 300 100 (by norm_num) η hη
+  set C1 : ℝ := ((Dc * 32 : ℕ) : ℝ) ^ ((k : ℝ)⁻¹)
+  have hC1 : 0 ≤ C1 := by positivity
+  refine ⟨C1 + CX, by positivity, fun a ha => ⟨?_, ?_⟩⟩
+  · have b1 : (tauMax (32 * a ^ 7) : ℝ) ≤ C1 * (a : ℝ) ^ η :=
+      root_le hk1 ha (tauMax_pow_le hk1 hdiv _) (by exact_mod_cast hkη)
+    nlinarith [mul_nonneg hCX.le (by positivity : (0 : ℝ) ≤ (a : ℝ) ^ η)]
+  · have : (Xi a : ℝ) ≤ CX * (a : ℝ) ^ η := hX a ha
+    nlinarith [mul_nonneg hC1 (by positivity : (0 : ℝ) ≤ (a : ℝ) ^ η)]
 
 /-- Every dyadic window satisfies `T ≤ 35` or `T⁷⁴ ≤ C₇₄ Δ¹⁹ Ξ(a)¹⁹ a²²`. -/
 theorem visits_74 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) (hΔ1 : 1 ≤ Δ) :

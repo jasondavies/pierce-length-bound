@@ -20,7 +20,7 @@ open Finset
 def Pbig2 (a : ℕ) : ℕ := 10 ^ 1000 * a ^ 400
 
 /-- The slack factor of the lattice count. -/
-def Xi2 (a : ℕ) : ℕ := 4 * tauMax (Pbig2 a) ^ 3 * (Nat.log 3 (Pbig2 a) + 1) + 4
+def Xi2 (a : ℕ) : ℕ := 2 * tauMax (Pbig2 a) ^ 3 * (Nat.log 3 (Pbig2 a) + 1) + 4
 
 set_option exponentiation.threshold 2000 in
 /-- The polynomial range bound. -/
@@ -55,59 +55,9 @@ lemma pbig2_bounds {a X H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hX : X ≤ 
       _ ≤ 10 ^ 1000 * a ^ 400 := Nat.mul_le_mul (by norm_num) (hmono 7 (by norm_num))
       _ = Pbig2 a := hP.symm
 
-set_option exponentiation.threshold 2000 in
 /-- **The slack factor is `O_η(a^η)`.** -/
-lemma slack_le2 (η : ℝ) (hη : 0 < η) : ∃ C > 0, ∀ a : ℕ, 1 ≤ a → (Xi2 a : ℝ) ≤ C * (a : ℝ) ^ η := by
-  obtain ⟨k, hk⟩ := exists_nat_gt (2400 / η)
-  have hk0 : (0 : ℝ) < k := lt_of_le_of_lt (by positivity) hk
-  have hk1 : k ≠ 0 := by rintro rfl; simp at hk0
-  have hkη : (2400 : ℝ) / k < η := by
-    rw [div_lt_iff₀ hk0]; rw [div_lt_iff₀ hη] at hk; linarith
-  obtain ⟨Dc, hDc, hdiv⟩ := OAI.Ostmann.exists_divisors_power_bound k
-  obtain ⟨CL, hCL, hlog⟩ := log_add_one_le_rpow (η / 800) (by positivity)
-  set C2 : ℝ := ((Dc * 10 ^ 1000 : ℕ) : ℝ) ^ ((k : ℝ)⁻¹)
-  set C3 : ℝ := CL * ((10 : ℝ) ^ 1000) ^ (η / 800)
-  refine ⟨4 * C2 ^ 3 * C3 + 4, by positivity, fun a ha => ?_⟩
-  have ha' : (1 : ℝ) ≤ a := by exact_mod_cast ha
-  have haη : (1 : ℝ) ≤ (a : ℝ) ^ η := Real.one_le_rpow ha' hη.le
-  have hC2 : 0 ≤ C2 := by positivity
-  have hC3 : 0 ≤ C3 := by positivity
-  have b2 : (tauMax (Pbig2 a) : ℝ) ≤ C2 * (a : ℝ) ^ (η / 6) := by
-    refine root_le hk1 ha (by simpa [Pbig2] using tauMax_pow_le hk1 hdiv (Pbig2 a)) ?_
-    push_cast
-    have : (400 : ℝ) / k = 2400 / k / 6 := by ring
-    rw [this]; linarith
-  have b2' : (tauMax (Pbig2 a) : ℝ) ^ 3 ≤ C2 ^ 3 * (a : ℝ) ^ (η / 2) := by
-    calc (tauMax (Pbig2 a) : ℝ) ^ 3 ≤ (C2 * (a : ℝ) ^ (η / 6)) ^ 3 :=
-          pow_le_pow_left₀ (Nat.cast_nonneg _) b2 3
-      _ = C2 ^ 3 * (a : ℝ) ^ (η / 2) := by
-          rw [mul_pow, ← Real.rpow_natCast ((a : ℝ) ^ (η / 6)) 3, ← Real.rpow_mul (by positivity)]
-          congr 2; push_cast; ring
-  have b3 : ((Nat.log 3 (Pbig2 a) + 1 : ℕ) : ℝ) ≤ C3 * (a : ℝ) ^ (η / 2) := by
-    have hP1 : 1 ≤ Pbig2 a := Nat.one_le_iff_ne_zero.mpr (by unfold Pbig2; positivity)
-    have h1 : Nat.log 3 (Pbig2 a) + 1 ≤ Nat.log 2 (Pbig2 a) + 1 :=
-      Nat.succ_le_succ (Nat.log_anti_left (by norm_num) (by norm_num))
-    have h2 := hlog (Pbig2 a) hP1
-    have e : ((Pbig2 a : ℕ) : ℝ) ^ (η / 800) =
-        ((10 : ℝ) ^ 1000) ^ (η / 800) * (a : ℝ) ^ (η / 2) := by
-      unfold Pbig2
-      push_cast
-      rw [Real.mul_rpow (by positivity) (by positivity), ← Real.rpow_natCast (a : ℝ) 400,
-        ← Real.rpow_mul (by positivity)]
-      ring_nf
-    calc ((Nat.log 3 (Pbig2 a) + 1 : ℕ) : ℝ) ≤ ((Nat.log 2 (Pbig2 a) + 1 : ℕ) : ℝ) := by
-          exact_mod_cast h1
-      _ ≤ CL * ((Pbig2 a : ℕ) : ℝ) ^ (η / 800) := h2
-      _ = C3 * (a : ℝ) ^ (η / 2) := by rw [e]; simp only [C3]; ring
-  unfold Xi2
-  push_cast
-  have := mul_le_mul b2' (by exact_mod_cast b3) (by positivity) (by positivity)
-  have e : C2 ^ 3 * (a : ℝ) ^ (η / 2) * (C3 * (a : ℝ) ^ (η / 2)) = C2 ^ 3 * C3 * (a : ℝ) ^ η := by
-    rw [show C2 ^ 3 * (a : ℝ) ^ (η / 2) * (C3 * (a : ℝ) ^ (η / 2)) =
-      C2 ^ 3 * C3 * ((a : ℝ) ^ (η / 2) * (a : ℝ) ^ (η / 2)) by ring, ← Real.rpow_add (by positivity)]
-    ring_nf
-  push_cast at this
-  nlinarith
+lemma slack_le2 (η : ℝ) (hη : 0 < η) : ∃ C > 0, ∀ a : ℕ, 1 ≤ a → (Xi2 a : ℝ) ≤ C * (a : ℝ) ^ η :=
+  xi_le 1000 400 (by norm_num) η hη
 
 /-- `1/r = 1/L + ∑_{r ≤ j < L} 1/(j(j+1))`. -/
 lemma inv_telescope {r L : ℕ} (hr : 1 ≤ r) (hrL : r ≤ L) :
@@ -330,7 +280,7 @@ theorem two_state_window_45 (hba : b < a) {s T A : ℕ} (hA : 1 ≤ A)
     have h' : ((M : ℕ) : ℤ) ≤ (X : ℤ) := by exact_mod_cast (show M ≤ X by omega)
     exact this.trans h'
   set τ0 := tauMax (Pbig2 a)
-  set W := 4 * τ0 ^ 3 * (Nat.log 3 (Pbig2 a) + 1)
+  set W := 2 * τ0 ^ 3 * (Nat.log 3 (Pbig2 a) + 1)
   have hXi : W + 4 = Xi2 a := rfl
   have hτ1 : 1 ≤ τ0 := by
     have : (1 : ℕ).divisors.card ≤ τ0 := tau_le_tauMax (Nat.one_le_iff_ne_zero.mpr
@@ -339,8 +289,8 @@ theorem two_state_window_45 (hba : b < a) {s T A : ℕ} (hA : 1 ≤ A)
   have hτΞ : τ0 ≤ Xi2 a := by
     rw [← hXi]
     have h1 : τ0 ≤ τ0 ^ 3 := Nat.le_self_pow (by norm_num) _
-    have h2 : τ0 ^ 3 ≤ 4 * τ0 ^ 3 * (Nat.log 3 (Pbig2 a) + 1) :=
-      calc τ0 ^ 3 ≤ 4 * τ0 ^ 3 := by omega
+    have h2 : τ0 ^ 3 ≤ 2 * τ0 ^ 3 * (Nat.log 3 (Pbig2 a) + 1) :=
+      calc τ0 ^ 3 ≤ 2 * τ0 ^ 3 := by omega
         _ ≤ _ := Nat.le_mul_of_pos_right _ (by omega)
     simp only [W]; omega
   set pm : ℕ → Fin 10 → ℤ := fun i => plk (Mi a b i)
@@ -389,16 +339,10 @@ theorem two_state_window_45 (hba : b < a) {s T A : ℕ} (hA : 1 ≤ A)
       omega
     have hlog : Nat.log 3 ((11 * (248832 * X ^ 8) ^ 2 * (12 * H + 1) *
         (3 * (248832 * X ^ 8) + 2)) ^ 2) ≤ Nat.log 3 (Pbig2 a) := Nat.log_mono_right P2
-    constructor
-    · have : 4 * M'.natAbs.divisors.card ^ 3 ≤ 4 * τ0 ^ 3 := by gcongr
-      calc 4 * M'.natAbs.divisors.card ^ 3 ≤ 4 * τ0 ^ 3 := this
-        _ ≤ W := Nat.le_mul_of_pos_right _ (by omega)
-    · calc 2 * M'.natAbs.divisors.card ^ 3 * (Nat.log 3 ((11 * (248832 * X ^ 8) ^ 2 *
+    calc 2 * M'.natAbs.divisors.card ^ 3 * (Nat.log 3 ((11 * (248832 * X ^ 8) ^ 2 *
             (12 * H + 1) * (3 * (248832 * X ^ 8) + 2)) ^ 2) + 1)
           ≤ 2 * τ0 ^ 3 * (Nat.log 3 (Pbig2 a) + 1) := by gcongr
-        _ ≤ W := by
-            have : 2 * τ0 ^ 3 ≤ 4 * τ0 ^ 3 := by omega
-            exact Nat.mul_le_mul_right _ this
+        _ = W := rfl
   -- the minor vectors
   have hS : ∀ p ∈ S, (∀ t, |p t| ≤ X) ∧ PluckerRel p ∧ p (piv p) ≠ 0 := by
     intro p hp
@@ -461,7 +405,137 @@ def cAw : ℕ := 2 ^ 15 * C3w * 3609600 ^ 14 * 56 ^ 87
 def cBw : ℕ := 2 ^ 16 * C3w * 3609600 ^ 15 * 56 ^ 90
 def C152 : ℕ := 122449 ^ 38 + c0w ^ 13 + 8 ^ 31 * cAw + 8 ^ 30 * cBw
 
-set_option maxHeartbeats 4000000 in
+lemma mono_152 {Δ X a c e f g : ℕ} (hΔ : 1 ≤ Δ) (hX : 1 ≤ X) (ha : 1 ≤ a) (hc : c ≤ C152)
+    (he : e ≤ 39) (hf : f ≤ 117) (hg : g ≤ 45) :
+    c * Δ ^ e * X ^ f * a ^ g ≤ C152 * Δ ^ 39 * X ^ 117 * a ^ 45 :=
+  Nat.mul_le_mul (Nat.mul_le_mul (Nat.mul_le_mul hc (Nat.pow_le_pow_right hΔ he))
+    (Nat.pow_le_pow_right hX hf)) (Nat.pow_le_pow_right ha hg)
+
+/-- The case `AT > 28a`: then `T⁴ ≤ 122449 a`. -/
+lemma window_152_big {a A T Δ X : ℕ} (ha : 1 ≤ a) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X)
+    (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hbig : 28 * a < A * T) :
+    T ^ 152 ≤ C152 * Δ ^ 39 * X ^ 117 * a ^ 45 := by
+  have hC1 : 122449 ^ 38 ≤ C152 := by unfold C152; omega
+  have h1 : (28 * a) ^ 2 * T ^ 4 ≤ 96000000 * a ^ 3 := by
+    calc (28 * a) ^ 2 * T ^ 4 ≤ (A * T) ^ 2 * T ^ 4 :=
+          Nat.mul_le_mul_right _ (Nat.pow_le_pow_left hbig.le 2)
+      _ = T ^ 6 * A ^ 2 := by ring
+      _ ≤ _ := hsix
+  have h2 : T ^ 4 ≤ 122449 * a := by
+    have : (784 * T ^ 4) * a ^ 2 ≤ (784 * (122449 * a)) * a ^ 2 := by
+      calc (784 * T ^ 4) * a ^ 2 = (28 * a) ^ 2 * T ^ 4 := by ring
+        _ ≤ 96000000 * a ^ 3 := h1
+        _ ≤ (784 * (122449 * a)) * a ^ 2 := by ring_nf; omega
+    have := Nat.le_of_mul_le_mul_right this (by positivity)
+    omega
+  calc T ^ 152 = (T ^ 4) ^ 38 := by ring
+    _ ≤ (122449 * a) ^ 38 := Nat.pow_le_pow_left h2 38
+    _ = 122449 ^ 38 * Δ ^ 0 * X ^ 0 * a ^ 38 := by ring
+    _ ≤ _ := mono_152 hΔ hX ha hC1 (by norm_num) (by norm_num) (by norm_num)
+
+/-- The case `X = 0` of the minor height: `T³ ≤ C (H³ + 1)`. -/
+lemma window_152_zero {a A T Δ X H : ℕ} (ha : 1 ≤ a) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X) (hT : 36 ≤ T)
+    (hH1 : 1 ≤ H) (hT2 : T ^ 2 ≤ 8 * A * Δ) (hHAT : H * (A * T) ≤ 56 * a)
+    (hwin : T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 + 1)) :
+    T ^ 152 ≤ C152 * Δ ^ 39 * X ^ 117 * a ^ 45 := by
+  have hC2 : c0w ^ 13 ≤ C152 := by unfold C152; omega
+  have h1 : T ^ 3 ≤ 2 * C3w * X ^ 9 * H ^ 3 := by
+    have : H ^ 3 + 1 ≤ 2 * H ^ 3 := by
+      have : 1 ≤ H ^ 3 := Nat.one_le_pow _ _ hH1
+      omega
+    calc T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 + 1) := hwin
+      _ ≤ C3w * X ^ 9 * (2 * H ^ 3) := Nat.mul_le_mul_left _ this
+      _ = 2 * C3w * X ^ 9 * H ^ 3 := by ring
+  have h2 : T ^ 6 * A ^ 3 ≤ 2 * C3w * 56 ^ 3 * X ^ 9 * a ^ 3 := by
+    calc T ^ 6 * A ^ 3 = T ^ 3 * (A * T) ^ 3 := by ring
+      _ ≤ 2 * C3w * X ^ 9 * H ^ 3 * (A * T) ^ 3 := Nat.mul_le_mul_right _ h1
+      _ = 2 * C3w * X ^ 9 * (H * (A * T)) ^ 3 := by ring
+      _ ≤ 2 * C3w * X ^ 9 * (56 * a) ^ 3 := by gcongr
+      _ = 2 * C3w * 56 ^ 3 * X ^ 9 * a ^ 3 := by ring
+  have h3 : T ^ 12 ≤ c0w * Δ ^ 3 * X ^ 9 * a ^ 3 := by
+    calc T ^ 12 = T ^ 6 * (T ^ 2) ^ 3 := by ring
+      _ ≤ T ^ 6 * (8 * A * Δ) ^ 3 := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hT2 3)
+      _ = 512 * Δ ^ 3 * (T ^ 6 * A ^ 3) := by ring
+      _ ≤ 512 * Δ ^ 3 * (2 * C3w * 56 ^ 3 * X ^ 9 * a ^ 3) := Nat.mul_le_mul_left _ h2
+      _ = c0w * Δ ^ 3 * X ^ 9 * a ^ 3 := by unfold c0w; ring
+  calc T ^ 152 ≤ T ^ 156 := Nat.pow_le_pow_right (by omega) (by norm_num)
+    _ = (T ^ 12) ^ 13 := by ring
+    _ ≤ (c0w * Δ ^ 3 * X ^ 9 * a ^ 3) ^ 13 := Nat.pow_le_pow_left h3 13
+    _ = c0w ^ 13 * Δ ^ 39 * X ^ 117 * a ^ 39 := by ring
+    _ ≤ _ := mono_152 hΔ hX ha hC2 (by norm_num) (by norm_num) (by norm_num)
+
+/-- The case `2Y ≤ H³`: `T³ ≪ H³ Y¹⁴`. -/
+lemma window_152_A {a A T Δ X H Y : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X)
+    (hT2 : T ^ 2 ≤ 8 * A * Δ) (hHAT : H * (A * T) ≤ 56 * a)
+    (hYa : Y * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6)
+    (hw1 : T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 * (2 * Y) ^ 14 + (2 * Y) ^ 15)) (hc : 2 * Y ≤ H ^ 3) :
+    T ^ 152 ≤ C152 * Δ ^ 39 * X ^ 117 * a ^ 45 := by
+  have hC3 : 8 ^ 31 * cAw ≤ C152 := by unfold C152; omega
+  have hAa : 0 < A ^ 56 * a ^ 42 := by positivity
+  have h1 : T ^ 3 ≤ 2 * C3w * X ^ 9 * H ^ 3 * (2 * Y) ^ 14 := by
+    have : (2 * Y) ^ 15 ≤ H ^ 3 * (2 * Y) ^ 14 := by
+      calc (2 * Y) ^ 15 = (2 * Y) * (2 * Y) ^ 14 := by ring
+        _ ≤ H ^ 3 * (2 * Y) ^ 14 := Nat.mul_le_mul_right _ hc
+    calc T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 * (2 * Y) ^ 14 + (2 * Y) ^ 15) := hw1
+      _ ≤ C3w * X ^ 9 * (H ^ 3 * (2 * Y) ^ 14 + H ^ 3 * (2 * Y) ^ 14) := by gcongr
+      _ = 2 * C3w * X ^ 9 * H ^ 3 * (2 * Y) ^ 14 := by ring
+  have h2 : T ^ 3 * a ^ 42 ≤ 2 ^ 15 * C3w * 3609600 ^ 14 * X ^ 9 * A ^ 56 * H ^ 87 := by
+    calc T ^ 3 * a ^ 42 ≤ 2 * C3w * X ^ 9 * H ^ 3 * (2 * Y) ^ 14 * a ^ 42 :=
+          Nat.mul_le_mul_right _ h1
+      _ = 2 ^ 15 * C3w * X ^ 9 * H ^ 3 * (Y * a ^ 3) ^ 14 := by ring
+      _ ≤ 2 ^ 15 * C3w * X ^ 9 * H ^ 3 * (3609600 * A ^ 4 * H ^ 6) ^ 14 := by gcongr
+      _ = 2 ^ 15 * C3w * 3609600 ^ 14 * X ^ 9 * A ^ 56 * H ^ 87 := by ring
+  have h3 : (T ^ 90 * A ^ 31) * (A ^ 56 * a ^ 42) ≤ (cAw * X ^ 9 * a ^ 45) * (A ^ 56 * a ^ 42) := by
+    calc (T ^ 90 * A ^ 31) * (A ^ 56 * a ^ 42) = T ^ 3 * a ^ 42 * (A * T) ^ 87 := by ring
+      _ ≤ 2 ^ 15 * C3w * 3609600 ^ 14 * X ^ 9 * A ^ 56 * H ^ 87 * (A * T) ^ 87 :=
+          Nat.mul_le_mul_right _ h2
+      _ = 2 ^ 15 * C3w * 3609600 ^ 14 * X ^ 9 * A ^ 56 * (H * (A * T)) ^ 87 := by ring
+      _ ≤ 2 ^ 15 * C3w * 3609600 ^ 14 * X ^ 9 * A ^ 56 * (56 * a) ^ 87 := by gcongr
+      _ = (cAw * X ^ 9 * a ^ 45) * (A ^ 56 * a ^ 42) := by unfold cAw; ring
+  have h4 := Nat.le_of_mul_le_mul_right h3 hAa
+  calc T ^ 152 = T ^ 90 * (T ^ 2) ^ 31 := by ring
+    _ ≤ T ^ 90 * (8 * A * Δ) ^ 31 := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hT2 31)
+    _ = 8 ^ 31 * Δ ^ 31 * (T ^ 90 * A ^ 31) := by ring
+    _ ≤ 8 ^ 31 * Δ ^ 31 * (cAw * X ^ 9 * a ^ 45) := Nat.mul_le_mul_left _ h4
+    _ = 8 ^ 31 * cAw * Δ ^ 31 * X ^ 9 * a ^ 45 := by ring
+    _ ≤ _ := mono_152 hΔ hX ha hC3 (by norm_num) (by norm_num) (by norm_num)
+
+/-- The case `2Y ≥ H³`: `T³ ≪ Y¹⁵`. -/
+lemma window_152_B {a A T Δ X H Y : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X)
+    (hT : 36 ≤ T) (hT2 : T ^ 2 ≤ 8 * A * Δ) (hHAT : H * (A * T) ≤ 56 * a)
+    (hYa : Y * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6)
+    (hw1 : T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 * (2 * Y) ^ 14 + (2 * Y) ^ 15)) (hc : H ^ 3 ≤ 2 * Y) :
+    T ^ 152 ≤ C152 * Δ ^ 39 * X ^ 117 * a ^ 45 := by
+  have hC4 : 8 ^ 30 * cBw ≤ C152 := by unfold C152; omega
+  have h1 : T ^ 3 ≤ 2 * C3w * X ^ 9 * (2 * Y) ^ 15 := by
+    have : H ^ 3 * (2 * Y) ^ 14 ≤ (2 * Y) ^ 15 := by
+      calc H ^ 3 * (2 * Y) ^ 14 ≤ (2 * Y) * (2 * Y) ^ 14 := Nat.mul_le_mul_right _ hc
+        _ = (2 * Y) ^ 15 := by ring
+    calc T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 * (2 * Y) ^ 14 + (2 * Y) ^ 15) := hw1
+      _ ≤ C3w * X ^ 9 * ((2 * Y) ^ 15 + (2 * Y) ^ 15) := by gcongr
+      _ = 2 * C3w * X ^ 9 * (2 * Y) ^ 15 := by ring
+  have h2 : T ^ 3 * a ^ 45 ≤ 2 ^ 16 * C3w * 3609600 ^ 15 * X ^ 9 * A ^ 60 * H ^ 90 := by
+    calc T ^ 3 * a ^ 45 ≤ 2 * C3w * X ^ 9 * (2 * Y) ^ 15 * a ^ 45 := Nat.mul_le_mul_right _ h1
+      _ = 2 ^ 16 * C3w * X ^ 9 * (Y * a ^ 3) ^ 15 := by ring
+      _ ≤ 2 ^ 16 * C3w * X ^ 9 * (3609600 * A ^ 4 * H ^ 6) ^ 15 := by gcongr
+      _ = 2 ^ 16 * C3w * 3609600 ^ 15 * X ^ 9 * A ^ 60 * H ^ 90 := by ring
+  have hAa' : 0 < A ^ 60 * a ^ 45 := by positivity
+  have h3 : (T ^ 93 * A ^ 30) * (A ^ 60 * a ^ 45) ≤ (cBw * X ^ 9 * a ^ 45) * (A ^ 60 * a ^ 45) := by
+    calc (T ^ 93 * A ^ 30) * (A ^ 60 * a ^ 45) = T ^ 3 * a ^ 45 * (A * T) ^ 90 := by ring
+      _ ≤ 2 ^ 16 * C3w * 3609600 ^ 15 * X ^ 9 * A ^ 60 * H ^ 90 * (A * T) ^ 90 :=
+          Nat.mul_le_mul_right _ h2
+      _ = 2 ^ 16 * C3w * 3609600 ^ 15 * X ^ 9 * A ^ 60 * (H * (A * T)) ^ 90 := by ring
+      _ ≤ 2 ^ 16 * C3w * 3609600 ^ 15 * X ^ 9 * A ^ 60 * (56 * a) ^ 90 := by gcongr
+      _ = (cBw * X ^ 9 * a ^ 45) * (A ^ 60 * a ^ 45) := by unfold cBw; ring
+  have h4 := Nat.le_of_mul_le_mul_right h3 hAa'
+  calc T ^ 152 ≤ T ^ 153 := Nat.pow_le_pow_right (by omega) (by norm_num)
+    _ = T ^ 93 * (T ^ 2) ^ 30 := by ring
+    _ ≤ T ^ 93 * (8 * A * Δ) ^ 30 := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hT2 30)
+    _ = 8 ^ 30 * Δ ^ 30 * (T ^ 93 * A ^ 30) := by ring
+    _ ≤ 8 ^ 30 * Δ ^ 30 * (cBw * X ^ 9 * a ^ 45) := Nat.mul_le_mul_left _ h4
+    _ = 8 ^ 30 * cBw * Δ ^ 30 * X ^ 9 * a ^ 45 := by ring
+    _ ≤ _ := mono_152 hΔ hX ha hC4 (by norm_num) (by norm_num) (by norm_num)
+
 /-- **The exponent arithmetic.** Every window run satisfies `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`. -/
 theorem window_152 {a A T Δ X : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X)
     (hT : 36 ≤ T) (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hdrop : T * (T - 1) ≤ 4 * A * Δ)
@@ -471,7 +545,6 @@ theorem window_152 {a A T Δ X : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤
     T ^ 152 ≤ C152 * Δ ^ 39 * X ^ 117 * a ^ 45 := by
   set H := 28 * a / (A * T) + 1 with hH
   set Y := 3609600 * A ^ 4 * H ^ 6 / a ^ 3 with hY
-  have ha0 : 0 < a := by omega
   have hH1 : 1 ≤ H := by rw [hH]; exact Nat.le_add_left 1 _
   have hT2 : T ^ 2 ≤ 8 * A * Δ := by
     have : T ^ 2 ≤ 2 * (T * (T - 1)) := by
@@ -482,34 +555,8 @@ theorem window_152 {a A T Δ X : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤
     calc T ^ 2 ≤ 2 * (T * (T - 1)) := this
       _ ≤ 2 * (4 * A * Δ) := Nat.mul_le_mul_left _ hdrop
       _ = 8 * A * Δ := by ring
-  have hmono : ∀ c : ℕ, c ≤ C152 → ∀ e f g : ℕ, e ≤ 39 → f ≤ 117 → g ≤ 45 →
-      c * Δ ^ e * X ^ f * a ^ g ≤ C152 * Δ ^ 39 * X ^ 117 * a ^ 45 := by
-    intro c hc e f g he hf hg
-    have e1 : Δ ^ e ≤ Δ ^ 39 := Nat.pow_le_pow_right hΔ he
-    have e2 : X ^ f ≤ X ^ 117 := Nat.pow_le_pow_right hX hf
-    have e3 : a ^ g ≤ a ^ 45 := Nat.pow_le_pow_right ha hg
-    exact Nat.mul_le_mul (Nat.mul_le_mul (Nat.mul_le_mul hc e1) e2) e3
-  have hC1 : 122449 ^ 38 ≤ C152 := by unfold C152; omega
-  have hC2 : c0w ^ 13 ≤ C152 := by unfold C152; omega
-  have hC3 : 8 ^ 31 * cAw ≤ C152 := by unfold C152; omega
-  have hC4 : 8 ^ 30 * cBw ≤ C152 := by unfold C152; omega
   by_cases hbig : 28 * a < A * T
-  · have h1 : (28 * a) ^ 2 * T ^ 4 ≤ 96000000 * a ^ 3 := by
-      calc (28 * a) ^ 2 * T ^ 4 ≤ (A * T) ^ 2 * T ^ 4 :=
-            Nat.mul_le_mul_right _ (Nat.pow_le_pow_left hbig.le 2)
-        _ = T ^ 6 * A ^ 2 := by ring
-        _ ≤ _ := hsix
-    have h2 : T ^ 4 ≤ 122449 * a := by
-      have : (784 * T ^ 4) * a ^ 2 ≤ (784 * (122449 * a)) * a ^ 2 := by
-        calc (784 * T ^ 4) * a ^ 2 = (28 * a) ^ 2 * T ^ 4 := by ring
-          _ ≤ 96000000 * a ^ 3 := h1
-          _ ≤ (784 * (122449 * a)) * a ^ 2 := by ring_nf; omega
-      have := Nat.le_of_mul_le_mul_right this (by positivity)
-      omega
-    calc T ^ 152 = (T ^ 4) ^ 38 := by ring
-      _ ≤ (122449 * a) ^ 38 := Nat.pow_le_pow_left h2 38
-      _ = 122449 ^ 38 * Δ ^ 0 * X ^ 0 * a ^ 38 := by ring
-      _ ≤ _ := hmono _ hC1 _ _ _ (by norm_num) (by norm_num) (by norm_num)
+  · exact window_152_big ha hΔ hX hsix hbig
   push Not at hbig
   have hHAT : H * (A * T) ≤ 56 * a := by
     have := Nat.div_mul_le_self (28 * a) (A * T)
@@ -518,92 +565,15 @@ theorem window_152 {a A T Δ X : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤
   rcases Nat.eq_zero_or_pos Y with hY0 | hY1
   · rw [hY0] at hwin
     simp only [zero_add, one_pow, mul_one] at hwin
-    have h1 : T ^ 3 ≤ 2 * C3w * X ^ 9 * H ^ 3 := by
-      have : H ^ 3 + 1 ≤ 2 * H ^ 3 := by
-        have : 1 ≤ H ^ 3 := Nat.one_le_pow _ _ hH1
-        omega
-      calc T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 + 1) := hwin
-        _ ≤ C3w * X ^ 9 * (2 * H ^ 3) := Nat.mul_le_mul_left _ this
-        _ = 2 * C3w * X ^ 9 * H ^ 3 := by ring
-    have h2 : T ^ 6 * A ^ 3 ≤ 2 * C3w * 56 ^ 3 * X ^ 9 * a ^ 3 := by
-      calc T ^ 6 * A ^ 3 = T ^ 3 * (A * T) ^ 3 := by ring
-        _ ≤ 2 * C3w * X ^ 9 * H ^ 3 * (A * T) ^ 3 := Nat.mul_le_mul_right _ h1
-        _ = 2 * C3w * X ^ 9 * (H * (A * T)) ^ 3 := by ring
-        _ ≤ 2 * C3w * X ^ 9 * (56 * a) ^ 3 := by gcongr
-        _ = 2 * C3w * 56 ^ 3 * X ^ 9 * a ^ 3 := by ring
-    have h3 : T ^ 12 ≤ c0w * Δ ^ 3 * X ^ 9 * a ^ 3 := by
-      calc T ^ 12 = T ^ 6 * (T ^ 2) ^ 3 := by ring
-        _ ≤ T ^ 6 * (8 * A * Δ) ^ 3 := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hT2 3)
-        _ = 512 * Δ ^ 3 * (T ^ 6 * A ^ 3) := by ring
-        _ ≤ 512 * Δ ^ 3 * (2 * C3w * 56 ^ 3 * X ^ 9 * a ^ 3) := Nat.mul_le_mul_left _ h2
-        _ = c0w * Δ ^ 3 * X ^ 9 * a ^ 3 := by unfold c0w; ring
-    calc T ^ 152 ≤ T ^ 156 := Nat.pow_le_pow_right (by omega) (by norm_num)
-      _ = (T ^ 12) ^ 13 := by ring
-      _ ≤ (c0w * Δ ^ 3 * X ^ 9 * a ^ 3) ^ 13 := Nat.pow_le_pow_left h3 13
-      _ = c0w ^ 13 * Δ ^ 39 * X ^ 117 * a ^ 39 := by ring
-      _ ≤ _ := hmono _ hC2 _ _ _ (by norm_num) (by norm_num) (by norm_num)
+    exact window_152_zero ha hΔ hX hT hH1 hT2 hHAT hwin
   · have hYa : Y * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6 := Nat.div_mul_le_self _ _
     have hw1 : T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 * (2 * Y) ^ 14 + (2 * Y) ^ 15) := by
       have : Y + 1 ≤ 2 * Y := by omega
       calc T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 * (Y + 1) ^ 14 + (Y + 1) ^ 15) := hwin
         _ ≤ C3w * X ^ 9 * (H ^ 3 * (2 * Y) ^ 14 + (2 * Y) ^ 15) := by gcongr
-    have hAa : 0 < A ^ 56 * a ^ 42 := by positivity
     rcases le_total (2 * Y) (H ^ 3) with hc | hc
-    · have h1 : T ^ 3 ≤ 2 * C3w * X ^ 9 * H ^ 3 * (2 * Y) ^ 14 := by
-        have : (2 * Y) ^ 15 ≤ H ^ 3 * (2 * Y) ^ 14 := by
-          calc (2 * Y) ^ 15 = (2 * Y) * (2 * Y) ^ 14 := by ring
-            _ ≤ H ^ 3 * (2 * Y) ^ 14 := Nat.mul_le_mul_right _ hc
-        calc T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 * (2 * Y) ^ 14 + (2 * Y) ^ 15) := hw1
-          _ ≤ C3w * X ^ 9 * (H ^ 3 * (2 * Y) ^ 14 + H ^ 3 * (2 * Y) ^ 14) := by gcongr
-          _ = 2 * C3w * X ^ 9 * H ^ 3 * (2 * Y) ^ 14 := by ring
-      have h2 : T ^ 3 * a ^ 42 ≤ 2 ^ 15 * C3w * 3609600 ^ 14 * X ^ 9 * A ^ 56 * H ^ 87 := by
-        calc T ^ 3 * a ^ 42 ≤ 2 * C3w * X ^ 9 * H ^ 3 * (2 * Y) ^ 14 * a ^ 42 :=
-              Nat.mul_le_mul_right _ h1
-          _ = 2 ^ 15 * C3w * X ^ 9 * H ^ 3 * (Y * a ^ 3) ^ 14 := by ring
-          _ ≤ 2 ^ 15 * C3w * X ^ 9 * H ^ 3 * (3609600 * A ^ 4 * H ^ 6) ^ 14 := by gcongr
-          _ = 2 ^ 15 * C3w * 3609600 ^ 14 * X ^ 9 * A ^ 56 * H ^ 87 := by ring
-      have h3 : (T ^ 90 * A ^ 31) * (A ^ 56 * a ^ 42) ≤ (cAw * X ^ 9 * a ^ 45) * (A ^ 56 * a ^ 42) := by
-        calc (T ^ 90 * A ^ 31) * (A ^ 56 * a ^ 42) = T ^ 3 * a ^ 42 * (A * T) ^ 87 := by ring
-          _ ≤ 2 ^ 15 * C3w * 3609600 ^ 14 * X ^ 9 * A ^ 56 * H ^ 87 * (A * T) ^ 87 :=
-              Nat.mul_le_mul_right _ h2
-          _ = 2 ^ 15 * C3w * 3609600 ^ 14 * X ^ 9 * A ^ 56 * (H * (A * T)) ^ 87 := by ring
-          _ ≤ 2 ^ 15 * C3w * 3609600 ^ 14 * X ^ 9 * A ^ 56 * (56 * a) ^ 87 := by gcongr
-          _ = (cAw * X ^ 9 * a ^ 45) * (A ^ 56 * a ^ 42) := by unfold cAw; ring
-      have h4 := Nat.le_of_mul_le_mul_right h3 hAa
-      calc T ^ 152 = T ^ 90 * (T ^ 2) ^ 31 := by ring
-        _ ≤ T ^ 90 * (8 * A * Δ) ^ 31 := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hT2 31)
-        _ = 8 ^ 31 * Δ ^ 31 * (T ^ 90 * A ^ 31) := by ring
-        _ ≤ 8 ^ 31 * Δ ^ 31 * (cAw * X ^ 9 * a ^ 45) := Nat.mul_le_mul_left _ h4
-        _ = 8 ^ 31 * cAw * Δ ^ 31 * X ^ 9 * a ^ 45 := by ring
-        _ ≤ _ := hmono _ hC3 _ _ _ (by norm_num) (by norm_num) (by norm_num)
-    · have h1 : T ^ 3 ≤ 2 * C3w * X ^ 9 * (2 * Y) ^ 15 := by
-        have : H ^ 3 * (2 * Y) ^ 14 ≤ (2 * Y) ^ 15 := by
-          calc H ^ 3 * (2 * Y) ^ 14 ≤ (2 * Y) * (2 * Y) ^ 14 := Nat.mul_le_mul_right _ hc
-            _ = (2 * Y) ^ 15 := by ring
-        calc T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 * (2 * Y) ^ 14 + (2 * Y) ^ 15) := hw1
-          _ ≤ C3w * X ^ 9 * ((2 * Y) ^ 15 + (2 * Y) ^ 15) := by gcongr
-          _ = 2 * C3w * X ^ 9 * (2 * Y) ^ 15 := by ring
-      have h2 : T ^ 3 * a ^ 45 ≤ 2 ^ 16 * C3w * 3609600 ^ 15 * X ^ 9 * A ^ 60 * H ^ 90 := by
-        calc T ^ 3 * a ^ 45 ≤ 2 * C3w * X ^ 9 * (2 * Y) ^ 15 * a ^ 45 := Nat.mul_le_mul_right _ h1
-          _ = 2 ^ 16 * C3w * X ^ 9 * (Y * a ^ 3) ^ 15 := by ring
-          _ ≤ 2 ^ 16 * C3w * X ^ 9 * (3609600 * A ^ 4 * H ^ 6) ^ 15 := by gcongr
-          _ = 2 ^ 16 * C3w * 3609600 ^ 15 * X ^ 9 * A ^ 60 * H ^ 90 := by ring
-      have hAa' : 0 < A ^ 60 * a ^ 45 := by positivity
-      have h3 : (T ^ 93 * A ^ 30) * (A ^ 60 * a ^ 45) ≤ (cBw * X ^ 9 * a ^ 45) * (A ^ 60 * a ^ 45) := by
-        calc (T ^ 93 * A ^ 30) * (A ^ 60 * a ^ 45) = T ^ 3 * a ^ 45 * (A * T) ^ 90 := by ring
-          _ ≤ 2 ^ 16 * C3w * 3609600 ^ 15 * X ^ 9 * A ^ 60 * H ^ 90 * (A * T) ^ 90 :=
-              Nat.mul_le_mul_right _ h2
-          _ = 2 ^ 16 * C3w * 3609600 ^ 15 * X ^ 9 * A ^ 60 * (H * (A * T)) ^ 90 := by ring
-          _ ≤ 2 ^ 16 * C3w * 3609600 ^ 15 * X ^ 9 * A ^ 60 * (56 * a) ^ 90 := by gcongr
-          _ = (cBw * X ^ 9 * a ^ 45) * (A ^ 60 * a ^ 45) := by unfold cBw; ring
-      have h4 := Nat.le_of_mul_le_mul_right h3 hAa'
-      calc T ^ 152 ≤ T ^ 153 := Nat.pow_le_pow_right (by omega) (by norm_num)
-        _ = T ^ 93 * (T ^ 2) ^ 30 := by ring
-        _ ≤ T ^ 93 * (8 * A * Δ) ^ 30 := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hT2 30)
-        _ = 8 ^ 30 * Δ ^ 30 * (T ^ 93 * A ^ 30) := by ring
-        _ ≤ 8 ^ 30 * Δ ^ 30 * (cBw * X ^ 9 * a ^ 45) := Nat.mul_le_mul_left _ h4
-        _ = 8 ^ 30 * cBw * Δ ^ 30 * X ^ 9 * a ^ 45 := by ring
-        _ ≤ _ := hmono _ hC4 _ _ _ (by norm_num) (by norm_num) (by norm_num)
+    · exact window_152_A ha hA hΔ hX hT2 hHAT hYa hw1 hc
+    · exact window_152_B ha hA hΔ hX hT hT2 hHAT hYa hw1 hc
 
 end Exponent
 

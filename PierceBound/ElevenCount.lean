@@ -42,7 +42,7 @@ lemma eF_pos {a b c d : ℤ} (ha : 1 ≤ a) (hb : 1 ≤ b) (hc : 1 ≤ c) (hd : 
   have h4 : 0 < a * d := by positivity
   linarith
 
-/-- **The signs** (Lemma 6): `U > 0` and `V < 0`. -/
+/-- **The signs**: `U > 0` and `V < 0`. -/
 theorem pattern_signs {A A' U V k0 k1 k2 k3 k4 : ℤ} (hA : 1 ≤ A) (hA' : 1 ≤ A')
     (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 ≤ k2) (h3 : 1 ≤ k3) (h4 : 1 ≤ k4)
     (e0 : -A' * k0 + U * k1 + V * k2 + A * k3 = 0)

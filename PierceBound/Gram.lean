@@ -121,7 +121,7 @@ lemma muF_nb_sq (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
   have h2 : (X + C (kk a b i + kk a b (i + 1))) * (X + C (kk a b i + kk a b (i + 1)) - C (kk a b i)) =
       X ^ 2 + C (2 * kk a b (i + 1) + kk a b i) * X +
         C ((kk a b i + kk a b (i + 1)) * kk a b (i + 1)) * 1 := by
-    simp only [map_add, map_mul, map_ofNat, map_one]; ring
+    simp only [map_add, map_mul, map_ofNat]; ring
   have h3 : (X + C (kk a b i + kk a b (i + 1) + kk a b (i + 2))) *
       (X + C (kk a b i + kk a b (i + 1) + kk a b (i + 2)) - C (kk a b i)) *
       (X + C (kk a b i + kk a b (i + 1) + kk a b (i + 2)) - C (kk a b i + kk a b (i + 1))) =
@@ -132,7 +132,7 @@ lemma muF_nb_sq (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
           (kk a b (i + 1) + kk a b (i + 2)) * kk a b (i + 2)) * X +
         C ((kk a b i + kk a b (i + 1) + kk a b (i + 2)) * (kk a b (i + 1) + kk a b (i + 2)) *
           kk a b (i + 2)) * 1 := by
-    simp only [map_add, map_mul, map_ofNat, map_one, map_sub]; ring
+    simp only [map_add, map_mul, map_ofNat, map_sub]; ring
   rw [h2, h3]
   simp only [muF_add, muF_C_mul]
   rw [muF_X_sq hba (by omega), muF_X hba (by omega), muF_one hba (by omega),

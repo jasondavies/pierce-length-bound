@@ -45,15 +45,6 @@ section Linear
 lemma muF_add (i : ℕ) (f g : ℝ[X]) : muF a b i (f + g) = muF a b i f + muF a b i g := by
   simp [muF, mul_add, sum_add_distrib]
 
-lemma nuF_add (i : ℕ) (f g : ℝ[X]) : nuF a b i (f + g) = nuF a b i f + nuF a b i g := by
-  simp [nuF, mul_add, add_div, sum_add_distrib]
-
-lemma muF_sub (i : ℕ) (f g : ℝ[X]) : muF a b i (f - g) = muF a b i f - muF a b i g := by
-  simp [muF, mul_sub, sum_sub_distrib]
-
-lemma nuF_sub (i : ℕ) (f g : ℝ[X]) : nuF a b i (f - g) = nuF a b i f - nuF a b i g := by
-  simp [nuF, mul_sub, sub_div, sum_sub_distrib]
-
 lemma muF_C_mul (i : ℕ) (c : ℝ) (f : ℝ[X]) : muF a b i (C c * f) = c * muF a b i f := by
   simp [muF, mul_sum]; refine sum_congr rfl fun j _ => ?_; ring
 
@@ -62,17 +53,6 @@ lemma nuF_C_mul (i : ℕ) (c : ℝ) (f : ℝ[X]) : nuF a b i (C c * f) = c * nuF
 
 lemma muF_C (i : ℕ) (c : ℝ) : muF a b i (C c) = c * muF a b i 1 := by
   rw [← mul_one (C c), muF_C_mul]
-
-lemma nuF_C (i : ℕ) (c : ℝ) : nuF a b i (C c) = c * nuF a b i 1 := by
-  rw [← mul_one (C c), nuF_C_mul]
-
-lemma muF_zero (i : ℕ) : muF a b i 0 = 0 := by simp [muF]
-
-lemma nuF_zero (i : ℕ) : nuF a b i 0 = 0 := by simp [nuF]
-
-lemma muF_sum {ι : Type*} (s : Finset ι) (i : ℕ) (f : ι → ℝ[X]) :
-    muF a b i (∑ t ∈ s, f t) = ∑ t ∈ s, muF a b i (f t) := by
-  simp only [muF, eval_finsetSum, mul_sum]; exact sum_comm
 
 lemma nuF_sum {ι : Type*} (s : Finset ι) (i : ℕ) (f : ι → ℝ[X]) :
     nuF a b i (∑ t ∈ s, f t) = ∑ t ∈ s, nuF a b i (f t) := by

@@ -55,9 +55,6 @@ lemma pbig_bounds16 {a M H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hM : M ≤
       _ ≤ 10 ^ 300 * a ^ 100 := Nat.mul_le_mul (by norm_num) (hmono 7 (by norm_num))
       _ = Pbig a := hP.symm
 
-lemma tauMax_mono {X Y : ℕ} (h : X ≤ Y) : tauMax X ≤ tauMax Y :=
-  sup_mono (range_subset_range.mpr (by omega))
-
 lemma tau_le_tauMax {n X : ℕ} (h : n ≤ X) : n.divisors.card ≤ tauMax X :=
   le_sup (f := fun n => n.divisors.card) (mem_range.mpr (by omega))
 

@@ -53,7 +53,7 @@ theorem ap_bound {a q h x0 x1 x2 x3 x4 x5 x6 : ℕ} (hq : 1 ≤ q) (hh : 1 ≤ h
     (e0 : x0 * q + x1 = a) (e1 : x1 * (q + h) + x2 = a) (e2 : x2 * (q + 2 * h) + x3 = a)
     (e3 : x3 * (q + 3 * h) + x4 = a) (e4 : x4 * (q + 4 * h) + x5 = a)
     (e5 : x5 * (q + 5 * h) + x6 = a)
-    (h01 : x1 < x0) (h12 : x2 < x1) (h23 : x3 < x2) (h34 : x4 < x3) (h45 : x5 < x4)
+    (_h01 : x1 < x0) (h12 : x2 < x1) (h23 : x3 < x2) (h34 : x4 < x3) (h45 : x5 < x4)
     (h56 : x6 < x5) :
     q ^ 4 ≤ 324 * h ^ 3 * a := by
   -- the curvatures `E` (block at `x₁`) and `F` (block at `x₂`)

@@ -32,12 +32,12 @@ def pcol (τ : Fin 10) : Fin 3 → Fin 5 := ![(trip τ).1, (trip τ).2.1, (trip 
 def Lrow (p : Fin 10 → ℤ) (τ : Fin 10) (c : Fin 5) : Fin 3 → ℤ :=
   ![![p τ, 0, 0], ![0, p τ, 0], ![0, 0, p τ], uVec p τ, vVec p τ] (role τ c)
 
-set_option maxHeartbeats 4000000 in
 /-- **Lifting.** Each row of the matrix is recovered from its pivot columns. -/
 theorem lift_row (M : Fin 3 → Fin 5 → ℤ) (τ : Fin 10) (r : Fin 3) (c : Fin 5) :
     plk M τ * M r c = dot3 (Lrow (plk M) τ c) (fun a => M r (pcol τ a)) := by
-  fin_cases τ <;> fin_cases c <;> fin_cases r <;>
-    simp [Lrow, role, pcol, dot3, plk, trip, minor3, uVec, vVec, puX, puS, pvX, pvS] <;> ring
+  fin_cases τ <;> fin_cases c <;>
+    simp [Lrow, role, pcol, dot3, plk, trip, minor3, uVec, vVec, puX, puS, pvX, pvS] <;>
+    fin_cases r <;> simp only [Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, Fin.isValue] <;> ring
 
 /-- **The determinant of the rows `1, 2, 3`.** -/
 theorem lift_det (M : Fin 3 → Fin 5 → ℤ) (τ : Fin 10) :
@@ -67,9 +67,6 @@ def pivLat (p : Fin 10 → ℤ) : AddSubgroup (Fin 3 → ℤ) where
     intro x hx
     simp only [Set.mem_ofPred_eq, dot3_neg_right, dvd_neg] at hx ⊢
     exact hx
-
-lemma mem_pivLat {p : Fin 10 → ℤ} {x : Fin 3 → ℤ} : x ∈ pivLat p ↔
-    p (piv p) ∣ dot3 (uVec p (piv p)) x ∧ p (piv p) ∣ dot3 (vVec p (piv p)) x := Iff.rfl
 
 lemma dvd_dot3_of_dvd {d : ℤ} {x : Fin 3 → ℤ} (h : ∀ j, d ∣ x j) (w : Fin 3 → ℤ) :
     d ∣ dot3 w x := by
@@ -545,86 +542,9 @@ theorem card_crossSet_dot {m : ℕ} (hm : 0 < m) (x : Fin 3 → ℤ) :
 theorem minor_vector_count_dot {S : Finset (Fin 10 → ℤ)} {Y : ℕ} (x : Fin 3 → ℤ)
     (hS : ∀ p ∈ S, (∀ t, |p t| ≤ Y) ∧ PluckerRel p ∧ p (piv p) ≠ 0 ∧
       p (piv p) ∣ dot3 (uVec p (piv p)) x) :
-    S.card ≤ 20 * ∑ m ∈ Icc 1 Y, ((crossSet m).filter fun uv => (m : ℤ) ∣ dot3 uv.1 x).card := by
-  classical
-  set key : (Fin 10 → ℤ) → Fin 10 × Bool × ℕ × (Fin 3 → ℤ) × (Fin 3 → ℤ) := fun p =>
-    (piv p, decide (0 < p (piv p)), (p (piv p)).natAbs, uVec p (piv p), vVec p (piv p))
-  set Bm : Finset (ℕ × (Fin 3 → ℤ) × (Fin 3 → ℤ)) :=
-    (Icc 1 Y).biUnion fun m => ((crossSet m).filter fun uv => (m : ℤ) ∣ dot3 uv.1 x).image
-      fun uv => (m, uv.1, uv.2)
-  set KS : Finset (Fin 10 × Bool × ℕ × (Fin 3 → ℤ) × (Fin 3 → ℤ)) := univ ×ˢ univ ×ˢ Bm
-  have hKS : KS.card ≤ 20 * ∑ m ∈ Icc 1 Y,
-      ((crossSet m).filter fun uv => (m : ℤ) ∣ dot3 uv.1 x).card := by
-    have h1 : Bm.card ≤ ∑ m ∈ Icc 1 Y,
-        ((crossSet m).filter fun uv => (m : ℤ) ∣ dot3 uv.1 x).card :=
-      card_biUnion_le.trans (sum_le_sum fun m _ => card_image_le)
-    have e : KS.card = 10 * (2 * Bm.card) := by
-      simp only [KS, card_product, card_univ, Fintype.card_fin, Fintype.card_bool]
-    rw [e]; omega
-  have hmaps : ∀ p ∈ S, key p ∈ KS := by
-    intro p hp
-    obtain ⟨hb, hpl, hm, hdot⟩ := hS p hp
-    set τ := piv p
-    set m := p τ
-    have hmY : m.natAbs ≤ Y := by
-      have h1 : ((m.natAbs : ℕ) : ℤ) ≤ Y := by rw [Int.natCast_natAbs]; exact hb τ
-      exact_mod_cast h1
-    have hm1 : 1 ≤ m.natAbs := Nat.one_le_iff_ne_zero.mpr (Int.natAbs_ne_zero.mpr hm)
-    refine mem_product.mpr ⟨mem_univ _, mem_product.mpr ⟨mem_univ _, mem_biUnion.mpr
-      ⟨m.natAbs, mem_Icc.mpr ⟨hm1, hmY⟩, mem_image.mpr ⟨(uVec p τ, vVec p τ), ?_, rfl⟩⟩⟩⟩
-    have hcast : ((m.natAbs : ℕ) : ℤ) = |m| := Int.natCast_natAbs m
-    have hu : ∀ a, |uVec p τ a| ≤ |m| := fun a => by
-      have hs := (sign_sq τ a).1
-      have : |puS τ a| = 1 := by
-        rcases Int.eq_one_or_neg_one_of_mul_eq_one hs with h | h <;> simp [h]
-      simp only [uVec, abs_mul, this, one_mul]; exact piv_max p _
-    have hv : ∀ a, |vVec p τ a| ≤ |m| := fun a => by
-      have hs := (sign_sq τ a).2.1
-      have : |pvS τ a| = 1 := by
-        rcases Int.eq_one_or_neg_one_of_mul_eq_one hs with h | h <;> simp [h]
-      simp only [vVec, abs_mul, this, one_mul]; exact piv_max p _
-    refine mem_filter.mpr ⟨mem_filter.mpr ⟨mem_product.mpr ⟨Fintype.mem_piFinset.mpr fun a =>
-      mem_Icc.mpr (by rw [hcast]; exact abs_le.mp (hu a)), Fintype.mem_piFinset.mpr fun a =>
-      mem_Icc.mpr (by rw [hcast]; exact abs_le.mp (hv a))⟩, fun a => ?_⟩, ?_⟩
-    · exact Int.natAbs_dvd.mpr (piv_cross hpl a)
-    · exact Int.natAbs_dvd.mpr hdot
-  have hinj : Set.InjOn key S := by
-    intro p hp p' hp' h
-    simp only [key, Prod.mk.injEq] at h
-    obtain ⟨hτ, hsg, hab, hu, hv⟩ := h
-    have hp1 := mem_coe.mp hp
-    have hp1' := mem_coe.mp hp'
-    have hm := (hS p hp1).2.2.1
-    have hm' := (hS p' hp1').2.2.1
-    rw [← hτ] at hsg hab hu hv hm'
-    set τ := piv p
-    have hmm : p τ = p' τ := by
-      by_cases hpos : 0 < p τ
-      · have : 0 < p' τ := by simpa [hpos] using hsg
-        omega
-      · have : ¬ 0 < p' τ := by simpa [hpos] using hsg
-        omega
-    have hpl := (hS p hp1).2.1
-    have hpl' := (hS p' hp1').2.1
-    funext s
-    rcases cover τ s with h | ⟨a, h⟩ | ⟨a, h⟩ | ⟨a, h⟩
-    · rw [h, hmm]
-    · have e := congrFun hu a
-      simp only [uVec] at e
-      have hs := (sign_sq τ a).1
-      rw [h]
-      linear_combination puS τ a * e + (p' (puX τ a) - p (puX τ a)) * hs
-    · have e := congrFun hv a
-      simp only [vVec] at e
-      have hs := (sign_sq τ a).2.1
-      rw [h]
-      linear_combination pvS τ a * e + (p' (pvX τ a) - p (pvX τ a)) * hs
-    · have e1 := hpl τ a
-      have e2 := hpl' τ a
-      rw [← hmm, ← hu, ← hv] at e2
-      rw [h]
-      exact mul_left_cancel₀ hm (e1.trans e2.symm)
-  exact (card_le_card_of_injOn key hmaps hinj).trans hKS
+    S.card ≤ 20 * ∑ m ∈ Icc 1 Y, ((crossSet m).filter fun uv => (m : ℤ) ∣ dot3 uv.1 x).card :=
+  minor_vector_count_of (fun m u => (m : ℤ) ∣ dot3 u x) fun p hp =>
+    ⟨(hS p hp).1, (hS p hp).2.1, (hS p hp).2.2.1, Int.natAbs_dvd.mpr (hS p hp).2.2.2⟩
 
 /-- **Few patterns have a short vector.** -/
 theorem short_count {S : Finset (Fin 10 → ℤ)} {Y R τ0 : ℕ}

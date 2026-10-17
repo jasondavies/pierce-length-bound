@@ -27,7 +27,7 @@ that the curvature `D = dv − eu` is a positive integer. The second, for six co
 produces a further positive integer `L` with `q w L = J E + S F`. That gives the local bound
 `T⁶ A² ≤ 96·10⁶ a³` for the number `T` of remainders in `[A, 2A)`, with no divisor-function loss.
 
-The main theorem uses `L = I₄` as an integer, not just as a positive number. A 3×4 integer matrix
+The bounds below `3/10` use `L = I₄` as an integer, not just as a positive number. A 3×4 integer matrix
 built from four drops and five increments has cofactors `(-L(i+1), U₁, U₂, L(i))`. The seven
 integers `L(i), L(i+1), L(i+2), U₁(i), U₂(i), U₁(i+1), U₂(i+1)` form a *pattern*. Its size is
 bounded via Hadamard's inequality on the moment model. States with a given pattern satisfy:
@@ -40,7 +40,8 @@ So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷�
 
 For `11/37`, exact Cramer identities give `U₁ > 0 > U₂`, so the quadric in `(k₁, k₂, k₃)` is
 nonsingular with an indefinite binary section. Each slice is a norm equation `V² − ΔU² = N`, which
-has `≤ 2τ(|N|)³(log₃ L² + 1)` solutions in a box, uniformly in the coefficients. This is proved in
+has `≤ 2τ(|N|)³(log₃ L² + 1)` solutions in `[−B, B]²`, where `L = B(⌊√Δ⌋ + 2)`, uniformly in the
+coefficients. This is proved in
 full: square roots modulo prime powers, CRT, and the separation `ε ≥ 3` of norm-one numbers. So
 each pattern covers `O(H a^η)` states, `T ≪ a^η X⁷ H`, and `T⁷⁴ ≪ a^{22+O(η)}`.
 
@@ -93,8 +94,9 @@ theorem PierceBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr : r ≤
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n
 ```
 
-`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all eight. The second
-theorem's dependence on the two papers is entirely through its hypotheses.
+`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all eight;
+`lake env lean Axioms.lean` checks this with `#guard_msgs`. `P_le_loglog` depends on the two
+papers only through its hypotheses.
 
 | File | Contents |
 |---|---|
@@ -117,8 +119,8 @@ theorem's dependence on the two papers is entirely through its hypotheses.
 | `PatternBound.lean` | the seven pattern integers are `≤ 172032 A⁴H⁶/a³` under the scale condition |
 | `PatternCount.lean` | the counting lemma `#G ≤ 8 (2M+1)⁷ H²` |
 | `TwoStateMain.lean` | good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
-| `NormCount.lean` | Lemma 7: square roots mod `m` (`≤ τ(m)²`), norm-one separation, and `norm_count` |
-| `SliceCount.lean` | Lemma 8: slices of a ternary quadratic via completing squares (`slice_count`) |
+| `NormCount.lean` | the norm-equation lemma: square roots mod `m` (`≤ τ(m)²`), norm-one separation, and `norm_count` |
+| `SliceCount.lean` | the slice lemma: slices of a ternary quadratic via completing squares, for either sign of the binary discriminant (`slice_count_ne`, `slice_count`) |
 | `ElevenCount.lean` | the sign identities, the ternary relation `F_θ(k₁,k₂,k₃) = 0`, and the refined count |
 | `ElevenMain.lean` | the window bound, `T⁷⁴ ≤ C Δ¹⁹ Ξ¹⁹ a²²`, slack factors `≪ a^η`, and `P_le_11_37` |
 | `MinorCount.lean` | the Plücker relations, the congruence count `27 m g²`, and `minor_vector_count` |
@@ -126,9 +128,9 @@ theorem's dependence on the two papers is entirely through its hypotheses.
 | `EightMain.lean` | the pattern as signed minors, the window bound, `T⁵⁴ ≤ C Δ¹⁴ Ξ²⁸ a¹⁶`, and `P_le_8_27` |
 | `DefiniteNorm.lean` | the definite norm count: `U² + D V² = N` has `≤ 4τ(|N|)³` solutions |
 | `Reduce3.lean` | reduced bases of lattices in `ℤ³`: `27 |b₁|²|b₂|²|b₃|² ≤ 64 det²`, and coordinate bounds |
-| `TernComp.lean` | ternary quadratics under substitution, the plane choice, and the slice count for either sign |
+| `TernComp.lean` | ternary quadratics under substitution, the plane choice, and the slice count for a coefficient vector |
 | `ShortVec.lean` | the lifting identities, the lattice `Λ_p`, the pigeonhole bound, and `short_count` |
-| `LatticeCount.lean` | the gap vectors of one minor vector (`lattice_fiber_count`) and `pattern_count_lattice` |
+| `LatticeCount.lean` | coordinates in a reduced basis (`ycoord_spec`), the gap vectors of one minor vector (`lattice_fiber_count`), and `pattern_count_lattice` |
 | `FortyFiveMain.lean` | partial summation, the window bound `T³ ≤ C Ξ⁹ (H³X¹⁴ + X¹⁵)`, `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`, and `P_le_45_152` |
 | `Hooley.lean` | Erdős–Hooley `Δ`, the hypotheses `NairTenenbaumDelta` and `BretecheTenenbaumMean`, partial summation, and `P_le_loglog` |
 

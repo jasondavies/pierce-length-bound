@@ -34,7 +34,7 @@ noncomputable def pt (i j : ℕ) : ℝ := (qq a b (i + j) : ℝ) - qq a b i
 
 /-- The weights of the moment model. -/
 noncomputable def wt (i : ℕ) : ℕ → ℝ :=
-  if h : i + 1 < P a b then
+  if _h : i + 1 < P a b then
     fun j => if j = 0 then 1 - ∑ j' ∈ range (P a b - (i + 1)), wt (i + 1) j' / pt a b i (j' + 1)
       else wt (i + 1) (j - 1) / pt a b i j
   else fun j => if j = 0 then 1 else 0
@@ -140,7 +140,7 @@ theorem wt_spec (hba : b < a) : ∀ m i, i + m + 1 = P a b →
     have hnl : ¬ i + 1 < P a b := by omega
     rw [show P a b - i = 1 by omega]
     refine ⟨fun j hj => ?_, ?_⟩
-    · rw [wt_of_not_lt a b hnl, if_pos (by omega)]; norm_num
+    · rw [wt_of_not_lt a b hnl, ite_eq_left (by omega)]; norm_num
     · simp [wt_of_not_lt a b hnl]
   | succ m ih =>
     intro i hi
@@ -181,17 +181,17 @@ theorem wt_spec (hba : b < a) : ∀ m i, i + m + 1 = P a b →
     refine ⟨fun j hj => ?_, ?_⟩
     · rw [wt_of_lt a b hl]
       rcases Nat.eq_zero_or_pos j with rfl | hj0
-      · rw [if_pos rfl]; linarith
-      · rw [if_neg (by omega)]
+      · rw [ite_eq_left rfl]; linarith
+      · rw [ite_eq_right (by omega)]
         have := hpos (j - 1) (by omega)
         have := hpt (j - 1) (by omega)
         rw [show j - 1 + 1 = j by omega] at this
         positivity
     · rw [show P a b - i = (P a b - (i + 1)) + 1 by omega, sum_range_succ', wt_of_lt a b hl 0,
-        if_pos rfl]
+        ite_eq_left rfl]
       have : ∀ j' ∈ range (P a b - (i + 1)), wt a b i (j' + 1) =
           wt a b (i + 1) j' / pt a b i (j' + 1) := fun j' _ => by
-        rw [wt_of_lt a b hl, if_neg (by omega), Nat.add_sub_cancel]
+        rw [wt_of_lt a b hl, ite_eq_right (by omega), Nat.add_sub_cancel]
       rw [sum_congr rfl this]
       ring
 
@@ -206,7 +206,7 @@ theorem hm_zero (hba : b < a) : ∀ m i, i + m + 1 = P a b → hm a b i 0 = orb 
     have hiN : i = P a b - 1 := by omega
     unfold hm
     rw [show P a b - i = 1 by omega]
-    simp only [range_one, sum_singleton, wt_of_not_lt a b hnl, if_true, pow_zero, add_zero]
+    simp only [range_one, sum_singleton, wt_of_not_lt a b hnl, ite_true, pow_zero, add_zero]
     have e := orb_last (a := a) (b := b) (by omega)
     rw [← hiN] at e
     have hq : (0 : ℝ) < qq a b i := by exact_mod_cast (qq_pos hba (by omega))
@@ -234,18 +234,17 @@ theorem hm_zero (hba : b < a) : ∀ m i, i + m + 1 = P a b → hm a b i 0 = orb 
         ∑ j' ∈ range (P a b - (i + 1)), wt a b (i + 1) j' / qq a b (i + 1 + j') := by
       unfold hm; simp only [pow_zero, mul_one]
     have h3 : wt a b i 0 = 1 - ∑ j' ∈ range (P a b - (i + 1)), wt a b (i + 1) j' /
-        pt a b i (j' + 1) := by rw [wt_of_lt a b hl 0, if_pos rfl]
+        pt a b i (j' + 1) := by rw [wt_of_lt a b hl 0, ite_eq_left rfl]
     have hterm : ∀ j' ∈ range (P a b - (i + 1)),
         (qq a b i : ℝ) * (wt a b i (j' + 1) / qq a b (i + (j' + 1))) +
           wt a b (i + 1) j' / qq a b (i + 1 + j') = wt a b (i + 1) j' / pt a b i (j' + 1) := by
       intro j' hj'
-      rw [wt_of_lt a b hl, if_neg (by omega), Nat.add_sub_cancel]
+      rw [wt_of_lt a b hl, ite_eq_right (by omega), Nat.add_sub_cancel]
       have hp := hpt j' (mem_range.mp hj')
       have hQ : (qq a b (i + (j' + 1)) : ℝ) = qq a b i + pt a b i (j' + 1) := by unfold pt; ring
       rw [show i + 1 + j' = i + (j' + 1) by ring, hQ]
       have : (0 : ℝ) < qq a b i + pt a b i (j' + 1) := by linarith
       field_simp
-      try ring
     have key : (qq a b i : ℝ) * hm a b i 0 + hm a b (i + 1) 0 = 1 := by
       rw [h1, h2, mul_add, mul_div_cancel₀ _ hq.ne', mul_sum, add_assoc, ← sum_add_distrib,
         sum_congr rfl hterm, h3]
@@ -260,7 +259,7 @@ theorem hm_zero (hba : b < a) : ∀ m i, i + m + 1 = P a b → hm a b i 0 = orb 
 lemma pt_zero (i : ℕ) : pt a b i 0 = 0 := by simp [pt]
 
 /-- **The moment recursion** `hᵢ(s+1) = ∑_t C(s,t) kᵢ^{s-t} h_{i+1}(t)`. -/
-theorem hm_succ (hba : b < a) {i : ℕ} (hl : i + 1 < P a b) (s : ℕ) :
+theorem hm_succ (_hba : b < a) {i : ℕ} (hl : i + 1 < P a b) (s : ℕ) :
     hm a b i (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
       ((qq a b (i + 1) : ℝ) - qq a b i) ^ (s - t) * hm a b (i + 1) t := by
   have hpt : ∀ j' < P a b - (i + 1), 0 < pt a b i (j' + 1) := fun j' hj' => by
@@ -272,7 +271,7 @@ theorem hm_succ (hba : b < a) {i : ℕ} (hl : i + 1 < P a b) (s : ℕ) :
     rw [show P a b - i = (P a b - (i + 1)) + 1 by omega, sum_range_succ', pt_zero,
       zero_pow (Nat.succ_ne_zero s), mul_zero, zero_div, add_zero]
     refine sum_congr rfl fun j' hj' => ?_
-    rw [wt_of_lt a b hl, if_neg (by omega), Nat.add_sub_cancel]
+    rw [wt_of_lt a b hl, ite_eq_right (by omega), Nat.add_sub_cancel]
     have hp := hpt j' (mem_range.mp hj')
     field_simp
     ring
@@ -394,24 +393,24 @@ theorem hankelInv_int (hba : b < a) {i : ℕ} (hi : i < P a b) (r : ℕ) :
     · intro j l hjl
       have : (j : ℕ) < l := hjl
       simp only [E, Matrix.of_apply]
-      rw [if_neg (by intro h; rw [h] at this; omega), if_neg (by omega)]
+      rw [ite_eq_right (by intro h; rw [h] at this; omega), ite_eq_right (by omega)]
   have hEH0 : ∀ l, (E * H) 0 l = H 0 l := by
     intro l
     rw [Matrix.mul_apply, Fintype.sum_eq_single 0]
     · simp [E]
     · intro l' hl'
       simp only [E, Matrix.of_apply]
-      rw [if_neg (Ne.symm hl'), if_neg (by simp)]
+      rw [ite_eq_right (Ne.symm hl'), ite_eq_right (by simp)]
       ring
   have hEHs : ∀ (j : Fin k) l, (E * H) j.succ l = H j.succ l + q * H j.castSucc l := by
     intro j l
     have hne : j.succ ≠ j.castSucc := (Fin.castSucc_lt_succ (i := j)).ne'
     rw [Matrix.mul_apply, Fintype.sum_eq_add j.succ j.castSucc hne ?_]
     · have hc : ((j.succ : Fin (k + 1)) : ℕ) = (j.castSucc : ℕ) + 1 := by simp
-      simp only [E, Matrix.of_apply, if_neg hne, hc, if_true, one_mul]
+      simp only [E, Matrix.of_apply, ite_eq_right hne, hc, ite_true, one_mul]
     · intro l' ⟨h1, h2⟩
       simp only [E, Matrix.of_apply]
-      rw [if_neg (Ne.symm h1), if_neg ?_]
+      rw [ite_eq_right (Ne.symm h1), ite_eq_right ?_]
       · ring
       · intro h; apply h2; ext; simp at h ⊢; omega
   have hdet : H.det = (E * H).det := by rw [Matrix.det_mul, hEdet, one_mul]
@@ -426,7 +425,7 @@ theorem hankelInv_int (hba : b < a) {i : ℕ} (hi : i < P a b) (r : ℕ) :
     ext j l'
     simp only [Matrix.submatrix_apply, hEHs, Matrix.map_apply,
       Matrix.of_apply, Int.cast_add, Int.cast_mul, Int.cast_natCast]
-    simp only [H, hankel, Matrix.of_apply, Fin.val_succ, Fin.coe_castSucc]
+    simp only [H, hankel, Matrix.of_apply, Fin.val_succ, Fin.val_castSucc]
     rw [hzz, hzz, show (j : ℕ) + 1 + (l.succAbove l' : ℕ) = (j : ℕ) + (l.succAbove l' : ℕ) + 1 by
       ring]
     rw [pow_succ]
@@ -562,7 +561,7 @@ theorem hankelInv_one (hba : b < a) {i : ℕ} (hi : i < P a b) : hankelInv a b i
   field_simp
 
 /-- The rank-2 Hankel determinant, as an identity modulo the division relations. -/
-theorem hankel2_alg (b0 b1 b2 q k0 k1 : ℝ)
+theorem hankel2_alg (b0 b1 b2 q k0 _k1 : ℝ)
     (f0 : (q) * b0 + b1 = 1)
     (f1 : (q + k0) * b1 + b2 = 1) :
     Matrix.det !![(b0), (b1); (b1), (b1*k0 + b2)] = b0 - b1 := by
@@ -570,7 +569,7 @@ theorem hankel2_alg (b0 b1 b2 q k0 k1 : ℝ)
   linear_combination (b0) * f1 + (-b1) * f0
 
 /-- The rank-3 Hankel determinant, as an identity modulo the division relations. -/
-theorem hankel3_alg (b0 b1 b2 b3 b4 q k0 k1 k2 k3 : ℝ)
+theorem hankel3_alg (b0 b1 b2 b3 b4 q k0 k1 k2 _k3 : ℝ)
     (f0 : (q) * b0 + b1 = 1)
     (f1 : (q + k0) * b1 + b2 = 1)
     (f2 : (q + k0 + k1) * b2 + b3 = 1)
@@ -580,7 +579,7 @@ theorem hankel3_alg (b0 b1 b2 b3 b4 q k0 k1 k2 k3 : ℝ)
   linear_combination (b0*b1*k0 + b0*b2 - b1^2) * f3 + (b0*b1*k0*k1 - b0*b1*k0*q - b0*b2*k0 - b0*b3 - b0 - b1^2*k1 + b1^2*q + 2*b1*b2) * f2 + (b0*b2*k0*q + b0*k0*q + b0*k1 + b0*q + b0 - b1*b2*q + b1*k0 + 2*b1 - b2^2 - b2 - k0 - 1) * f1 + (-b1*k0^2 - b1*k0*q - 2*b1*k0 - b1*k1 - b1*q - b1 + k0 + 1) * f0
 
 /-- The rank-4 Hankel determinant, as an identity modulo the division relations. -/
-theorem hankel4_alg (b0 b1 b2 b3 b4 b5 b6 q k0 k1 k2 k3 k4 k5 : ℝ)
+theorem hankel4_alg (b0 b1 b2 b3 b4 b5 b6 q k0 k1 k2 k3 k4 _k5 : ℝ)
     (f0 : (q) * b0 + b1 = 1)
     (f1 : (q + k0) * b1 + b2 = 1)
     (f2 : (q + k0 + k1) * b2 + b3 = 1)
@@ -600,11 +599,11 @@ theorem hankelInv_two (hba : b < a) {i : ℕ} (hi : i + 1 < P a b) :
   have g0_0 : hm a b i 0 = βv a b i 0 := hm_zero hba (P a b - (i) - 1) i (by omega)
   have g0_1 : hm a b i 1 = βv a b i 1 := by
     rw [r0 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0]
-    norm_num [Nat.choose]; try ring
+    norm_num [Nat.choose]
   have g0_2 : hm a b i 2 = βv a b i 1*kv a b i 0 + βv a b i 2 := by
     rw [r0 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1]
     norm_num [Nat.choose]; try ring
-  have f0 : ((qq a b i : ℝ)) * βv a b i 0 + βv a b i 1 = 1 := rel_at hba (i := i) (j := 0) (by omega) (by simp only [kv, add_zero]; try ring_nf)
+  have f0 : ((qq a b i : ℝ)) * βv a b i 0 + βv a b i 1 = 1 := rel_at hba (i := i) (j := 0) (by omega) (by simp only [add_zero])
   have f1 : ((qq a b i : ℝ) + kv a b i 0) * βv a b i 1 + βv a b i 2 = 1 := rel_at hba (i := i) (j := 1) (by omega) (by simp only [kv, add_zero]; try ring_nf)
   have hH : hankel a b i 2 = !![(βv a b i 0), (βv a b i 1); (βv a b i 1), (βv a b i 1*kv a b i 0 + βv a b i 2)] := by
     ext j l; fin_cases j <;> fin_cases l <;> simp [hankel, g0_0, g0_1, g0_2]
@@ -629,14 +628,14 @@ theorem hankelInv_three (hba : b < a) {i : ℕ} (hi : i + 3 < P a b) :
   have g2_0 : hm a b (i + 2) 0 = βv a b i 2 := hm_zero hba (P a b - ((i + 2)) - 1) (i + 2) (by omega)
   have g2_1 : hm a b (i + 2) 1 = βv a b i 3 := by
     rw [r2 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g3_0]
-    norm_num [Nat.choose]; try ring
+    norm_num [Nat.choose]
   have g2_2 : hm a b (i + 2) 2 = βv a b i 3*kv a b i 2 + βv a b i 4 := by
     rw [r2 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g3_0, g3_1]
     norm_num [Nat.choose]; try ring
   have g1_0 : hm a b (i + 1) 0 = βv a b i 1 := hm_zero hba (P a b - ((i + 1)) - 1) (i + 1) (by omega)
   have g1_1 : hm a b (i + 1) 1 = βv a b i 2 := by
     rw [r1 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0]
-    norm_num [Nat.choose]; try ring
+    norm_num [Nat.choose]
   have g1_2 : hm a b (i + 1) 2 = βv a b i 2*kv a b i 1 + βv a b i 3 := by
     rw [r1 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0, g2_1]
     norm_num [Nat.choose]; try ring
@@ -646,7 +645,7 @@ theorem hankelInv_three (hba : b < a) {i : ℕ} (hi : i + 3 < P a b) :
   have g0_0 : hm a b i 0 = βv a b i 0 := hm_zero hba (P a b - (i) - 1) i (by omega)
   have g0_1 : hm a b i 1 = βv a b i 1 := by
     rw [r0 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0]
-    norm_num [Nat.choose]; try ring
+    norm_num [Nat.choose]
   have g0_2 : hm a b i 2 = βv a b i 1*kv a b i 0 + βv a b i 2 := by
     rw [r0 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1]
     norm_num [Nat.choose]; try ring
@@ -656,7 +655,7 @@ theorem hankelInv_three (hba : b < a) {i : ℕ} (hi : i + 3 < P a b) :
   have g0_4 : hm a b i 4 = βv a b i 1*kv a b i 0^3 + 3*βv a b i 2*kv a b i 0^2 + 3*βv a b i 2*kv a b i 0*kv a b i 1 + βv a b i 2*kv a b i 1^2 + 3*βv a b i 3*kv a b i 0 + 2*βv a b i 3*kv a b i 1 + βv a b i 3*kv a b i 2 + βv a b i 4 := by
     rw [r0 3]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1, g1_2, g1_3]
     norm_num [Nat.choose]; try ring
-  have f0 : ((qq a b i : ℝ)) * βv a b i 0 + βv a b i 1 = 1 := rel_at hba (i := i) (j := 0) (by omega) (by simp only [kv, add_zero]; try ring_nf)
+  have f0 : ((qq a b i : ℝ)) * βv a b i 0 + βv a b i 1 = 1 := rel_at hba (i := i) (j := 0) (by omega) (by simp only [add_zero])
   have f1 : ((qq a b i : ℝ) + kv a b i 0) * βv a b i 1 + βv a b i 2 = 1 := rel_at hba (i := i) (j := 1) (by omega) (by simp only [kv, add_zero]; try ring_nf)
   have f2 : ((qq a b i : ℝ) + kv a b i 0 + kv a b i 1) * βv a b i 2 + βv a b i 3 = 1 := rel_at hba (i := i) (j := 2) (by omega) (by simp only [kv, add_zero]; try ring_nf)
   have f3 : ((qq a b i : ℝ) + kv a b i 0 + kv a b i 1 + kv a b i 2) * βv a b i 3 + βv a b i 4 = 1 := rel_at hba (i := i) (j := 3) (by omega) (by simp only [kv, add_zero]; try ring_nf)
@@ -690,14 +689,14 @@ theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
   have g4_0 : hm a b (i + 4) 0 = βv a b i 4 := hm_zero hba (P a b - ((i + 4)) - 1) (i + 4) (by omega)
   have g4_1 : hm a b (i + 4) 1 = βv a b i 5 := by
     rw [r4 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g5_0]
-    norm_num [Nat.choose]; try ring
+    norm_num [Nat.choose]
   have g4_2 : hm a b (i + 4) 2 = βv a b i 5*kv a b i 4 + βv a b i 6 := by
     rw [r4 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g5_0, g5_1]
     norm_num [Nat.choose]; try ring
   have g3_0 : hm a b (i + 3) 0 = βv a b i 3 := hm_zero hba (P a b - ((i + 3)) - 1) (i + 3) (by omega)
   have g3_1 : hm a b (i + 3) 1 = βv a b i 4 := by
     rw [r3 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g4_0]
-    norm_num [Nat.choose]; try ring
+    norm_num [Nat.choose]
   have g3_2 : hm a b (i + 3) 2 = βv a b i 4*kv a b i 3 + βv a b i 5 := by
     rw [r3 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g4_0, g4_1]
     norm_num [Nat.choose]; try ring
@@ -707,7 +706,7 @@ theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
   have g2_0 : hm a b (i + 2) 0 = βv a b i 2 := hm_zero hba (P a b - ((i + 2)) - 1) (i + 2) (by omega)
   have g2_1 : hm a b (i + 2) 1 = βv a b i 3 := by
     rw [r2 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g3_0]
-    norm_num [Nat.choose]; try ring
+    norm_num [Nat.choose]
   have g2_2 : hm a b (i + 2) 2 = βv a b i 3*kv a b i 2 + βv a b i 4 := by
     rw [r2 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g3_0, g3_1]
     norm_num [Nat.choose]; try ring
@@ -720,7 +719,7 @@ theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
   have g1_0 : hm a b (i + 1) 0 = βv a b i 1 := hm_zero hba (P a b - ((i + 1)) - 1) (i + 1) (by omega)
   have g1_1 : hm a b (i + 1) 1 = βv a b i 2 := by
     rw [r1 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0]
-    norm_num [Nat.choose]; try ring
+    norm_num [Nat.choose]
   have g1_2 : hm a b (i + 1) 2 = βv a b i 2*kv a b i 1 + βv a b i 3 := by
     rw [r1 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0, g2_1]
     norm_num [Nat.choose]; try ring
@@ -736,7 +735,7 @@ theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
   have g0_0 : hm a b i 0 = βv a b i 0 := hm_zero hba (P a b - (i) - 1) i (by omega)
   have g0_1 : hm a b i 1 = βv a b i 1 := by
     rw [r0 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0]
-    norm_num [Nat.choose]; try ring
+    norm_num [Nat.choose]
   have g0_2 : hm a b i 2 = βv a b i 1*kv a b i 0 + βv a b i 2 := by
     rw [r0 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1]
     norm_num [Nat.choose]; try ring
@@ -752,7 +751,7 @@ theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
   have g0_6 : hm a b i 6 = βv a b i 1*kv a b i 0^5 + 5*βv a b i 2*kv a b i 0^4 + 10*βv a b i 2*kv a b i 0^3*kv a b i 1 + 10*βv a b i 2*kv a b i 0^2*kv a b i 1^2 + 5*βv a b i 2*kv a b i 0*kv a b i 1^3 + βv a b i 2*kv a b i 1^4 + 10*βv a b i 3*kv a b i 0^3 + 20*βv a b i 3*kv a b i 0^2*kv a b i 1 + 10*βv a b i 3*kv a b i 0^2*kv a b i 2 + 15*βv a b i 3*kv a b i 0*kv a b i 1^2 + 15*βv a b i 3*kv a b i 0*kv a b i 1*kv a b i 2 + 5*βv a b i 3*kv a b i 0*kv a b i 2^2 + 4*βv a b i 3*kv a b i 1^3 + 6*βv a b i 3*kv a b i 1^2*kv a b i 2 + 4*βv a b i 3*kv a b i 1*kv a b i 2^2 + βv a b i 3*kv a b i 2^3 + 10*βv a b i 4*kv a b i 0^2 + 15*βv a b i 4*kv a b i 0*kv a b i 1 + 10*βv a b i 4*kv a b i 0*kv a b i 2 + 5*βv a b i 4*kv a b i 0*kv a b i 3 + 6*βv a b i 4*kv a b i 1^2 + 8*βv a b i 4*kv a b i 1*kv a b i 2 + 4*βv a b i 4*kv a b i 1*kv a b i 3 + 3*βv a b i 4*kv a b i 2^2 + 3*βv a b i 4*kv a b i 2*kv a b i 3 + βv a b i 4*kv a b i 3^2 + 5*βv a b i 5*kv a b i 0 + 4*βv a b i 5*kv a b i 1 + 3*βv a b i 5*kv a b i 2 + 2*βv a b i 5*kv a b i 3 + βv a b i 5*kv a b i 4 + βv a b i 6 := by
     rw [r0 5]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1, g1_2, g1_3, g1_4, g1_5]
     norm_num [Nat.choose]; try ring
-  have f0 : ((qq a b i : ℝ)) * βv a b i 0 + βv a b i 1 = 1 := rel_at hba (i := i) (j := 0) (by omega) (by simp only [kv, add_zero]; try ring_nf)
+  have f0 : ((qq a b i : ℝ)) * βv a b i 0 + βv a b i 1 = 1 := rel_at hba (i := i) (j := 0) (by omega) (by simp only [add_zero])
   have f1 : ((qq a b i : ℝ) + kv a b i 0) * βv a b i 1 + βv a b i 2 = 1 := rel_at hba (i := i) (j := 1) (by omega) (by simp only [kv, add_zero]; try ring_nf)
   have f2 : ((qq a b i : ℝ) + kv a b i 0 + kv a b i 1) * βv a b i 2 + βv a b i 3 = 1 := rel_at hba (i := i) (j := 2) (by omega) (by simp only [kv, add_zero]; try ring_nf)
   have f3 : ((qq a b i : ℝ) + kv a b i 0 + kv a b i 1 + kv a b i 2) * βv a b i 3 + βv a b i 4 = 1 := rel_at hba (i := i) (j := 3) (by omega) (by simp only [kv, add_zero]; try ring_nf)

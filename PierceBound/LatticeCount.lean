@@ -206,7 +206,102 @@ lemma liftv_bound {p : Fin 10 → ℤ} {b : Fin 3 → ℤ} (hb : b ∈ pivLat p)
     linarith [t 0, t 1, t 2]
   exact le_of_mul_le_mul_left h hm0
 
-set_option maxHeartbeats 4000000 in
+/-- The coordinates of `x` in the basis `b₁, b₂, b₃`, by Cramer's rule. -/
+def ycoord (b1 b2 b3 x : Fin 3 → ℤ) : Fin 3 → ℤ :=
+  ![det3 x b2 b3 / det3 b1 b2 b3, det3 b1 x b3 / det3 b1 b2 b3, det3 b1 b2 x / det3 b1 b2 b3]
+
+/-- **Coordinates in a reduced basis.** If every basis vector has length `≥ R` and `|xₐ| ≤ H`,
+then `R |yᵢ| ≤ 3H`. -/
+lemma ycoord_spec {b1 b2 b3 x : Fin 3 → ℤ} {R H : ℕ} (hD : det3 b1 b2 b3 ≠ 0)
+    (hdvd : det3 b1 b2 b3 ∣ det3 x b2 b3 ∧ det3 b1 b2 b3 ∣ det3 b1 x b3 ∧
+      det3 b1 b2 b3 ∣ det3 b1 b2 x)
+    (hred : 27 * (nrm3 b1 * nrm3 b2 * nrm3 b3) ≤ 64 * det3 b1 b2 b3 ^ 2) (hR : (0 : ℤ) < R)
+    (n1 : (R : ℤ) ^ 2 ≤ nrm3 b1) (n2 : (R : ℤ) ^ 2 ≤ nrm3 b2) (n3 : (R : ℤ) ^ 2 ≤ nrm3 b3)
+    (hx : ∀ a, |x a| ≤ H) :
+    (∀ j, x j = ycoord b1 b2 b3 x 0 * b1 j + ycoord b1 b2 b3 x 1 * b2 j +
+      ycoord b1 b2 b3 x 2 * b3 j) ∧ ∀ i, (R : ℤ) * |ycoord b1 b2 b3 x i| ≤ 3 * H := by
+  obtain ⟨y, hy, hy0, hy1, hy2⟩ := reduced_coords hD hdvd hred
+  have hyj : ∀ j, x j = y 0 * b1 j + y 1 * b2 j + y 2 * b3 j := fun j => by
+    rw [hy]; simp [mul_comm]
+  have hyc : ycoord b1 b2 b3 x = y := by
+    have d0 : det3 x b2 b3 = y 0 * det3 b1 b2 b3 := by
+      simp only [det3]; rw [hyj 0, hyj 1, hyj 2]; ring
+    have d1 : det3 b1 x b3 = y 1 * det3 b1 b2 b3 := by
+      simp only [det3]; rw [hyj 0, hyj 1, hyj 2]; ring
+    have d2 : det3 b1 b2 x = y 2 * det3 b1 b2 b3 := by
+      simp only [det3]; rw [hyj 0, hyj 1, hyj 2]; ring
+    funext i
+    fin_cases i
+    · simp [ycoord, d0, Int.mul_ediv_cancel _ hD]
+    · simp [ycoord, d1, Int.mul_ediv_cancel _ hD]
+    · simp [ycoord, d2, Int.mul_ediv_cancel _ hD]
+  rw [hyc]
+  refine ⟨hyj, fun i => ?_⟩
+  have hnk : nrm3 x ≤ 3 * (H : ℤ) ^ 2 := by
+    have e : ∀ a, x a ^ 2 ≤ (H : ℤ) ^ 2 := fun a => by
+      rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (hx a) 2
+    have := e 0; have := e 1; have := e 2
+    simp only [nrm3, dot3] at *
+    nlinarith
+  have key : 27 * ((R : ℤ) * y i) ^ 2 ≤ 27 * (3 * (H : ℤ)) ^ 2 := by
+    have hb : 27 * (nrm3 (![b1, b2, b3] i) * y i ^ 2) ≤ 64 * nrm3 x := by
+      fin_cases i
+      · exact hy0
+      · exact hy1
+      · exact hy2
+    have hnb : (R : ℤ) ^ 2 ≤ nrm3 (![b1, b2, b3] i) := by
+      fin_cases i
+      · exact n1
+      · exact n2
+      · exact n3
+    have : (R : ℤ) ^ 2 * y i ^ 2 ≤ nrm3 (![b1, b2, b3] i) * y i ^ 2 :=
+      mul_le_mul_of_nonneg_right hnb (sq_nonneg _)
+    nlinarith
+  have := sq_le_sq.mp (le_of_mul_le_mul_left key (by norm_num))
+  rw [abs_mul, abs_of_pos hR, abs_of_nonneg (by positivity : (0 : ℤ) ≤ 3 * H)] at this
+  exact this
+
+/-- In a basis with `27 |b₁|²|b₂|²|b₃|² ≤ 64 D²`, `D² ≤ B` and all `|bᵢ|² ≥ 1`, each
+`27 |bᵢ|² ≤ 64 B`. -/
+lemma basis_nrm_le {n1 n2 n3 D B : ℤ} (h1 : 1 ≤ n1) (h2 : 1 ≤ n2) (h3 : 1 ≤ n3)
+    (hred : 27 * (n1 * n2 * n3) ≤ 64 * D ^ 2) (hD : D ^ 2 ≤ B) :
+    27 * n1 ≤ 64 * B ∧ 27 * n2 ≤ 64 * B ∧ 27 * n3 ≤ 64 * B := by
+  have e1 : n1 ≤ n1 * n2 * n3 := by
+    have : 1 ≤ n2 * n3 := by nlinarith
+    nlinarith
+  have e2 : n2 ≤ n1 * n2 * n3 := by
+    have : 1 ≤ n1 * n3 := by nlinarith
+    nlinarith
+  have e3 : n3 ≤ n1 * n2 * n3 := by
+    have : 1 ≤ n1 * n2 := by nlinarith
+    nlinarith
+  refine ⟨?_, ?_, ?_⟩ <;> linarith
+
+/-- The lifted basis: rows `1, 2, 3` of the five gaps of `b₁, b₂, b₃`. -/
+noncomputable def liftM (p : Fin 10 → ℤ) (b1 b2 b3 : Fin 3 → ℤ) : Matrix (Fin 3) (Fin 3) ℤ :=
+  !![liftv p b1 1, liftv p b2 1, liftv p b3 1; liftv p b1 2, liftv p b2 2, liftv p b3 2;
+    liftv p b1 3, liftv p b2 3, liftv p b3 3]
+
+/-- `m · det B̂ = p₁₂₃ · det(b₁, b₂, b₃) ≠ 0`. -/
+lemma liftM_det_ne {p : Fin 10 → ℤ} {Mx : Fin 3 → Fin 5 → ℤ} {b1 b2 b3 : Fin 3 → ℤ}
+    (hMx : plk Mx = p) (hm : p (piv p) ≠ 0) (h6 : p 6 ≠ 0) (h1 : b1 ∈ pivLat p)
+    (h2 : b2 ∈ pivLat p) (h3 : b3 ∈ pivLat p) (hD : det3 b1 b2 b3 ≠ 0) :
+    (liftM p b1 b2 b3).det ≠ 0 := by
+  set τ := piv p
+  have hE : p τ • liftM p b1 b2 b3 = Matrix.of ![![dot3 (Lrow p τ 1) b1, dot3 (Lrow p τ 1) b2,
+      dot3 (Lrow p τ 1) b3], ![dot3 (Lrow p τ 2) b1, dot3 (Lrow p τ 2) b2, dot3 (Lrow p τ 2) b3],
+      ![dot3 (Lrow p τ 3) b1, dot3 (Lrow p τ 3) b2, dot3 (Lrow p τ 3) b3]] := by
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp [liftM, liftv_spec h1, liftv_spec h2, liftv_spec h3, τ]
+  have e := det3_mul (Lrow p τ 1) (Lrow p τ 2) (Lrow p τ 3) b1 b2 b3
+  rw [← hE, Matrix.det_smul, Fintype.card_fin] at e
+  have hL := lift_det Mx τ
+  rw [hMx] at hL
+  rw [hL] at e
+  intro h0
+  rw [h0, mul_zero] at e
+  exact mul_ne_zero (mul_ne_zero (pow_ne_zero 2 hm) h6) hD e.symm
+
 /-- **The gap vectors of one minor vector.** -/
 theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (hpM : ∀ t, |p t| ≤ M)
     (hA : 1 ≤ p 0) (hA' : 1 ≤ p 6) (hU : 0 < p 3) (hV : 0 < p 1)
@@ -216,7 +311,6 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
       ternθ (p 0) (p 6) (p 9) (p 3) (-p 1) (p 8) (-p 7) (k 1) (k 2) (k 3) = 0)
     (hW : ∀ M' : ℤ, M' ≠ 0 →
       |M'| ≤ 116 * ((248832 * M ^ 8 : ℕ) : ℤ) ^ 4 * ((12 * H + 1 : ℕ) : ℤ) ^ 2 →
-      4 * M'.natAbs.divisors.card ^ 3 ≤ W ∧
       2 * M'.natAbs.divisors.card ^ 3 * (Nat.log 3 ((11 * (248832 * M ^ 8) ^ 2 * (12 * H + 1) *
         (3 * (248832 * M ^ 8) + 2)) ^ 2) + 1) ≤ W) :
     Vs.card ≤ (2 * (4 * (3 * H / shortR p) + 1) + 1) * (W + 4) := by
@@ -257,49 +351,17 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
     have e2 : |D| ≤ (M : ℤ) ^ 3 := e1.trans (pow_le_pow_left₀ (abs_nonneg _) hmM 3)
     rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) e2 2
   have hM0 : (0 : ℤ) ≤ M := by linarith
-  have nn1 := nrm3_nonneg b1
-  have nn2 := nrm3_nonneg b2
-  have nn3 := nrm3_nonneg b3
-  have l1 : 27 * nrm3 b1 ≤ 64 * ((M : ℤ) ^ 3) ^ 2 := by
-    have : nrm3 b1 ≤ nrm3 b1 * nrm3 b2 * nrm3 b3 := by
-      have : 1 ≤ nrm3 b2 * nrm3 b3 := by nlinarith
-      nlinarith
-    linarith
-  have l2 : 27 * nrm3 b2 ≤ 64 * ((M : ℤ) ^ 3) ^ 2 := by
-    have : nrm3 b2 ≤ nrm3 b1 * nrm3 b2 * nrm3 b3 := by
-      have : 1 ≤ nrm3 b1 * nrm3 b3 := by nlinarith
-      nlinarith
-    linarith
-  have l3 : 27 * nrm3 b3 ≤ 64 * ((M : ℤ) ^ 3) ^ 2 := by
-    have : nrm3 b3 ≤ nrm3 b1 * nrm3 b2 * nrm3 b3 := by
-      have : 1 ≤ nrm3 b1 * nrm3 b2 := by nlinarith
-      nlinarith
-    linarith
+  obtain ⟨l1, l2, l3⟩ := basis_nrm_le (by linarith) (by linarith) (by linarith) hred hD2
   -- the lifted basis
-  set Bh : Matrix (Fin 3) (Fin 3) ℤ := !![liftv p b1 1, liftv p b2 1, liftv p b3 1;
-    liftv p b1 2, liftv p b2 2, liftv p b3 2; liftv p b1 3, liftv p b2 3, liftv p b3 3] with hBh
+  set Bh := liftM p b1 b2 b3 with hBh
   have hBb : ∀ i j, |Bh i j| ≤ 6 * (M : ℤ) ^ 3 := by
     have q1 := liftv_bound h1 hm (entry_bound hM0 l1)
     have q2 := liftv_bound h2 hm (entry_bound hM0 l2)
     have q3 := liftv_bound h3 hm (entry_bound hM0 l3)
     intro i j
-    fin_cases i <;> fin_cases j <;> simp [Bh] <;> linarith [q1 1, q1 2, q1 3, q2 1, q2 2, q2 3,
+    fin_cases i <;> fin_cases j <;> simp [Bh, liftM] <;> linarith [q1 1, q1 2, q1 3, q2 1, q2 2, q2 3,
       q3 1, q3 2, q3 3]
-  have hdetB : Bh.det ≠ 0 := by
-    have hE : m • Bh = Matrix.of ![![dot3 (Lrow p τ 1) b1, dot3 (Lrow p τ 1) b2,
-        dot3 (Lrow p τ 1) b3], ![dot3 (Lrow p τ 2) b1, dot3 (Lrow p τ 2) b2, dot3 (Lrow p τ 2) b3],
-        ![dot3 (Lrow p τ 3) b1, dot3 (Lrow p τ 3) b2, dot3 (Lrow p τ 3) b3]] := by
-      ext i j
-      fin_cases i <;> fin_cases j <;> simp [Bh, liftv_spec h1, liftv_spec h2, liftv_spec h3, m, τ]
-    have e := det3_mul (Lrow p τ 1) (Lrow p τ 2) (Lrow p τ 3) b1 b2 b3
-    rw [← hE, Matrix.det_smul, Fintype.card_fin] at e
-    have hL := lift_det Mx τ
-    rw [hMx] at hL
-    rw [hL] at e
-    intro h0
-    rw [h0, mul_zero] at e
-    have : p τ ^ 2 * p 6 * D ≠ 0 := mul_ne_zero (mul_ne_zero (pow_ne_zero 2 hm) (by omega)) hD
-    exact this e.symm
+  have hdetB : Bh.det ≠ 0 := liftM_det_ne hMx hm (by omega) h1 h2 h3 hD
   -- the quadratic in basis coordinates
   set Fθ := thetaCoef (p 0) (p 6) (p 9) (p 3) (-p 1) (p 8) (-p 7)
   have hFD : disc3 Fθ ≠ 0 := disc3_thetaCoef (by omega) (by omega) hU (by linarith)
@@ -334,8 +396,7 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
       _ = 248832 * (M : ℤ) ^ 8 := by ring
   -- coordinates of a gap vector
   set kp : (Fin 5 → ℤ) → Fin 3 → ℤ := fun k a => k (pcol τ a)
-  set yc : (Fin 5 → ℤ) → Fin 3 → ℤ := fun k =>
-    ![det3 (kp k) b2 b3 / D, det3 b1 (kp k) b3 / D, det3 b1 b2 (kp k) / D]
+  set yc : (Fin 5 → ℤ) → Fin 3 → ℤ := fun k => ycoord b1 b2 b3 (kp k)
   have hlift : ∀ k ∈ Vs, ∀ c, m * k c = dot3 (Lrow p τ c) (kp k) := by
     intro k hk c
     obtain ⟨-, ⟨Mk, hMk, hrow⟩, -⟩ := hVs k hk
@@ -349,50 +410,10 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
     · have := hlift k hk (restc τ 0); rw [Lrow_rest0] at this; exact this.symm
     · have := hlift k hk (restc τ 1); rw [Lrow_rest1] at this; exact this.symm
   have hcoord : ∀ k ∈ Vs, (∀ j, kp k j = yc k 0 * b1 j + yc k 1 * b2 j + yc k 2 * b3 j) ∧
-      ∀ i, (R : ℤ) * |yc k i| ≤ 3 * H := by
-    intro k hk
-    obtain ⟨y, hy, hy0, hy1, hy2⟩ := reduced_coords hD (hbas _ (hmem k hk)) hred
-    have hyj : ∀ j, kp k j = y 0 * b1 j + y 1 * b2 j + y 2 * b3 j := fun j => by
-      rw [hy]; simp [mul_comm]
-    have hyc : yc k = y := by
-      have d0 : det3 (kp k) b2 b3 = y 0 * D := by
-        simp only [hDdef, det3]; rw [hyj 0, hyj 1, hyj 2]; ring
-      have d1 : det3 b1 (kp k) b3 = y 1 * D := by
-        simp only [hDdef, det3]; rw [hyj 0, hyj 1, hyj 2]; ring
-      have d2 : det3 b1 b2 (kp k) = y 2 * D := by
-        simp only [hDdef, det3]; rw [hyj 0, hyj 1, hyj 2]; ring
-      funext i
-      fin_cases i
-      · simp [yc, d0, Int.mul_ediv_cancel _ hD]
-      · simp [yc, d1, Int.mul_ediv_cancel _ hD]
-      · simp [yc, d2, Int.mul_ediv_cancel _ hD]
-    rw [hyc]
-    refine ⟨hyj, fun i => ?_⟩
-    have hk := (hVs k hk).1
-    have hnk : nrm3 (kp k) ≤ 3 * (H : ℤ) ^ 2 := by
-      have e : ∀ a, kp k a ^ 2 ≤ (H : ℤ) ^ 2 := fun a => by
-        have := hk (pcol τ a)
-        exact pow_le_pow_left₀ (by linarith) this.2 2
-      have := e 0; have := e 1; have := e 2
-      simp only [nrm3, dot3] at *
-      nlinarith
-    have key : 27 * ((R : ℤ) * y i) ^ 2 ≤ 27 * (3 * (H : ℤ)) ^ 2 := by
-      have hb : 27 * (nrm3 (![b1, b2, b3] i) * y i ^ 2) ≤ 64 * nrm3 (kp k) := by
-        fin_cases i
-        · exact hy0
-        · exact hy1
-        · exact hy2
-      have hnb : (R : ℤ) ^ 2 ≤ nrm3 (![b1, b2, b3] i) := by
-        fin_cases i
-        · exact n1
-        · exact n2
-        · exact n3
-      have : (R : ℤ) ^ 2 * y i ^ 2 ≤ nrm3 (![b1, b2, b3] i) * y i ^ 2 :=
-        mul_le_mul_of_nonneg_right hnb (sq_nonneg _)
-      nlinarith
-    have := sq_le_sq.mp (le_of_mul_le_mul_left key (by norm_num))
-    rw [abs_mul, abs_of_pos hRpos, abs_of_nonneg (by positivity : (0 : ℤ) ≤ 3 * H)] at this
-    exact this
+      ∀ i, (R : ℤ) * |yc k i| ≤ 3 * H := fun k hk =>
+    ycoord_spec hD (hbas _ (hmem k hk)) hred hRpos n1 n2 n3 fun a => by
+      have := (hVs k hk).1 (pcol τ a)
+      exact abs_le.mpr ⟨by linarith, this.2⟩
   have hexp : ∀ k ∈ Vs, ∀ c, k c = yc k 0 * liftv p b1 c + yc k 1 * liftv p b2 c +
       yc k 2 * liftv p b3 c := by
     intro k hk c
@@ -430,7 +451,7 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
         have e2 := hexp k hk 2
         have e3 := hexp k hk 3
         funext i
-        fin_cases i <;> simp [Bh, Matrix.mulVec, dotProduct, Fin.sum_univ_three] <;> linarith
+        fin_cases i <;> simp [Bh, liftM, Matrix.mulVec, dotProduct, Fin.sum_univ_three] <;> linarith
       simp only [G2, G1, ternv_tcomp]
       rw [hPQ, ternv_tcomp, hB]
       show ternv (thetaCoef _ _ _ _ _ _ _) _ = 0
@@ -442,8 +463,8 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
     funext c
     rw [hexp k hk c, hexp k' hk' c, hy]
   refine (card_le_card_of_injOn f hmaps hinj).trans ?_
-  refine slice_count_tv (by omega) hQα hQΔ hG2D hG2b fun M' hM' hb => hW M' hM' (hb.trans ?_) |>.imp
-    id (fun h => le_trans (Nat.mul_le_mul_left _ (Nat.succ_le_succ (Nat.log_mono_right ?_))) h)
+  refine slice_count_tv (by omega) hQα hQΔ hG2D hG2b fun M' hM' hb => (hW M' hM' (hb.trans ?_)).trans'
+    (Nat.mul_le_mul_left _ (Nat.succ_le_succ (Nat.log_mono_right ?_)))
   · have : (Y : ℤ) ≤ (12 * H + 1 : ℕ) := by
       have : Y0 * R ≤ 3 * H := Nat.div_mul_le_self _ _
       have : Y0 ≤ 3 * H := by nlinarith
@@ -473,7 +494,6 @@ theorem pattern_count_lattice {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ 
       a * muH4 (κ i 0) (κ i 1) (κ i 2) (κ i 3) (κ i 4))
     (hW : ∀ M' : ℤ, M' ≠ 0 →
       |M'| ≤ 116 * ((248832 * M ^ 8 : ℕ) : ℤ) ^ 4 * ((12 * H + 1 : ℕ) : ℤ) ^ 2 →
-      4 * M'.natAbs.divisors.card ^ 3 ≤ W ∧
       2 * M'.natAbs.divisors.card ^ 3 * (Nat.log 3 ((11 * (248832 * M ^ 8) ^ 2 * (12 * H + 1) *
         (3 * (248832 * M ^ 8) + 2)) ^ 2) + 1) ≤ W) :
     G.card ≤ ∑ p ∈ G.image pm, 4 * ((2 * (4 * (3 * H / shortR p) + 1) + 1) * (W + 4)) := by

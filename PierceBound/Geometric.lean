@@ -36,7 +36,7 @@ lemma geom_low {ρ : ℝ} (hρ : 1 < ρ) {X : ℝ} (hX : 0 ≤ X) (L : ℕ) :
         _ ≤ ρ * X / (ρ - 1) := by gcongr
     · refine ⟨?_, by linarith⟩
       have : (ρ ^ L - 1) / (ρ - 1) ≤ (ρ ^ (L + 1) - 1) / (ρ - 1) := by
-        gcongr <;> first | linarith | omega
+        gcongr <;> linarith
       linarith
 
 /-- Decreasing geometric terms below `Y` sum to at most `Y / (1 - σ)`. -/
@@ -66,15 +66,15 @@ lemma geom_high {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) {Y : ℝ} (hY : 0 ≤
     have hle : σ ^ (L + 1) ≤ σ ^ L := by rw [hpow]; nlinarith
     refine ⟨fun h => ?_, fun h => ?_⟩
     · have hL : Y < σ ^ L := lt_of_lt_of_le h hle
-      rw [hstep, ih.1 hL, if_neg (not_le.mpr hL)]; simp
+      rw [hstep, ih.1 hL, ite_eq_right (not_le.mpr hL)]; simp
     · rw [hstep]
       by_cases hL : σ ^ L ≤ Y
-      · rw [if_pos hL]
+      · rw [ite_eq_left hL]
         have := ih.2 hL
         have e : (Y - σ ^ L) / (1 - σ) + σ ^ L = (Y - σ ^ (L + 1)) / (1 - σ) := by
           rw [hpow]; field_simp; ring
         linarith
-      · rw [if_neg hL, ih.1 (lt_of_not_ge hL)]
+      · rw [ite_eq_right hL, ih.1 (lt_of_not_ge hL)]
         simp only [zero_add]
         exact div_nonneg (by linarith) h1σ.le
 
@@ -123,7 +123,7 @@ theorem sum_min_le {α β : ℝ} (hα : 0 < α) (hβ : 0 < β) (L : ℕ) :
     have hY : 0 < β * ρ ^ k := by positivity
     by_cases hYM : β * ρ ^ k ≤ M
     · have h1 : ρ ^ k ≤ M / β := by rw [le_div_iff₀ hβ]; linarith
-      rw [if_pos h1]
+      rw [ite_eq_left h1]
       have : 0 ≤ (if σ ^ k ≤ M / α then α * σ ^ k else 0) := by split_ifs <;> positivity
       linarith [min_le_right (α * σ ^ k) (β * ρ ^ k)]
     · push Not at hYM
@@ -141,7 +141,7 @@ theorem sum_min_le {α β : ℝ} (hα : 0 < α) (hβ : 0 < β) (L : ℕ) :
             _ = α ^ 3 * β ^ 2 := by rw [hρσ, mul_one]
         linarith
       have h1 : σ ^ k ≤ M / α := by rw [le_div_iff₀ hα]; linarith
-      rw [if_pos h1]
+      rw [ite_eq_left h1]
       have : 0 ≤ (if ρ ^ k ≤ M / β then β * ρ ^ k else 0) := by split_ifs <;> positivity
       linarith [min_le_left (α * σ ^ k) (β * ρ ^ k)]
   have hlow := geom_low (by linarith : 1 < ρ) (div_pos hMpos hβ).le L
@@ -202,7 +202,7 @@ theorem sum_min_le_gen {α β s t : ℝ} (hα : 0 < α) (hβ : 0 < β) (hs : 0 <
     have hY : 0 < β * ρ ^ k := by positivity
     by_cases hYM : β * ρ ^ k ≤ M
     · have h1 : ρ ^ k ≤ M / β := by rw [le_div_iff₀ hβ]; linarith
-      rw [if_pos h1]
+      rw [ite_eq_left h1]
       have : 0 ≤ (if σ ^ k ≤ M / α then α * σ ^ k else 0) := by split_ifs <;> positivity
       linarith [min_le_right (α * σ ^ k) (β * ρ ^ k)]
     · push Not at hYM
@@ -221,7 +221,7 @@ theorem sum_min_le_gen {α β s t : ℝ} (hα : 0 < α) (hβ : 0 < β) (hs : 0 <
             _ = α ^ t * β ^ s := by rw [hρσ, mul_one]
         linarith
       have h1 : σ ^ k ≤ M / α := by rw [le_div_iff₀ hα]; linarith
-      rw [if_pos h1]
+      rw [ite_eq_left h1]
       have : 0 ≤ (if ρ ^ k ≤ M / β then β * ρ ^ k else 0) := by split_ifs <;> positivity
       linarith [min_le_left (α * σ ^ k) (β * ρ ^ k)]
   have hlow := geom_low hρ1 (div_pos hMpos hβ).le L
