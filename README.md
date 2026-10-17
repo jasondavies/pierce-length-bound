@@ -5,9 +5,10 @@ positive terms ([Open Problem Garden](https://www.openproblemgarden.org/op/a_dis
 Shallit asked whether `P(a, b) = O((log a)²)`. That question is **still open**. This repository
 proves, uniformly in `0 < b < a`:
 
-* **Unconditionally:** `P(a, b) ≤ C_ε · a^{3/10 + ε}`. This improves on Chase–Pandey's
-  `a^{1/3 − 2/177 + ε}`, and has the same exponent as the unpublished `n^{3/10}` bound reported on
-  Shallit's talks page.
+* **Main theorem:** `P(a, b) ≤ C_ε · a^{23/77 + ε}`, where `23/77 = 0.29870…`. This goes below the
+  exponent `3/10` of the unpublished `n^{3/10}` bound reported on Shallit's talks page.
+* **The `3/10` bound:** `P(a, b) ≤ C_ε · a^{3/10 + ε}`, improving Chase–Pandey's
+  `a^{1/3 − 2/177 + ε}`. Its six-step identity is an ingredient of the main theorem.
 * **Assuming two published theorems:** `P(a, b) ≪ a^{3/10} √(log log 3a)`. The theorems are
   Nair–Tenenbaum, Acta Math. 180 (1998), on short sums of the Erdős–Hooley `Δ`-function, and
   de la Bretèche–Tenenbaum, Acta Arith. 219 (2025), Thm 1.1, `∑_{n≤x} Δ(n) ≪ x (log log x)^{5/2}`.
@@ -19,10 +20,21 @@ proves, uniformly in `0 < b < a`:
   invariants `I_r(i)` (Hankel determinants) for every `r`, with `I₁ = bᵢ`, `I₂ = dᵢ`, `I₃ = D`
   and `I₄ = L`.
 
-The main ingredients are two exact identities. The first, for three consecutive steps, shows
+The `3/10` bound rests on two exact identities. The first, for three consecutive steps, shows
 that the curvature `D = dv − eu` is a positive integer. The second, for six consecutive steps,
 produces a further positive integer `L` with `q w L = J E + S F`. That gives the local bound
 `T⁶ A² ≤ 96·10⁶ a³` for the number `T` of remainders in `[A, 2A)`, with no divisor-function loss.
+
+The main theorem uses `L = I₄` as an integer, not just as a positive number. A 3×4 integer matrix
+built from four drops and five increments has cofactors `(-L(i+1), U₁, U₂, L(i))`. The seven
+integers `L(i), L(i+1), L(i+2), U₁(i), U₂(i), U₁(i+1), U₂(i+1)` form a *pattern*. Its size is
+bounded via Hadamard's inequality on the moment model. States with a given pattern satisfy:
+
+* two linear equations and one quadratic in five consecutive increments, with leading
+  coefficient `L(i)L(i+1)(L(i)+L(i+1)) > 0`;
+* the quartic identity `I₄(i) pᵢ(-qᵢ) = a det(μᵢ(x^{j+l}))`, so at most four states share a point.
+
+So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷⁷ ≪ Δ²²a²³`.
 
 * `paper/pierce_bound.tex` (and `.pdf`): the paper.
 * `PierceBound/`: Lean 4 / Mathlib formalisation of all of the above, with no `sorry`.
@@ -32,6 +44,9 @@ produces a further positive integer `L` with `q w L = J E + S F`. That gives the
 Build with `lake build` (Lean `v4.35.0`, Mathlib `v4.35.0`). The main theorems are
 
 ```lean
+theorem PierceBound.P_le_23_77 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((23 : ℝ) / 77 + ε)
+
 theorem PierceBound.P_le : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((3 : ℝ) / 10 + ε)
 
@@ -46,7 +61,7 @@ theorem PierceBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr : r ≤
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n
 ```
 
-`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all four. The second
+`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all five. The second
 theorem's dependence on the two papers is entirely through its hypotheses.
 
 | File | Contents |
@@ -63,6 +78,13 @@ theorem's dependence on the two papers is entirely through its hypotheses.
 | `Rises.lean` | the arithmetic-progression bound `q⁴ ≤ 324 h³ a`, runs, the multiplicity lemma, and the three window bounds |
 | `RisesMain.lean` | `P_le_rises`: `P ≪ a^{1/4} √R` |
 | `Hankel.lean` | the moment model, `I_r(i) ∈ ℤ_{>0}` (`hankelInv_pos_int`), and `I₁ = b`, `I₂ = d`, `I₃ = D`, `I₄ = L` |
+| `Hadamard.lean` | Hadamard's inequality `det G ≤ ∏ Gᵢᵢ` for positive definite real matrices |
+| `Functional.lean` | the moment functionals `μᵢ`, `νᵢ` on polynomials, the Newton basis, shift rules, `νᵢ(f²) ≤ μᵢ(f²)/qᵢ` |
+| `Gram.lean` | `Iᵣ(i) ≤ a ∏ⱼ μᵢ(Fⱼ²)/qᵢʳ`, and the label bound `L(i) qᵢ⁴ ≤ a · gramP` |
+| `TwoState.lean` | the cofactors, null relations, reduced quadratic, the multiplicity identity, root counting |
+| `PatternBound.lean` | the seven pattern integers are `≤ 172032 A⁴H⁶/a³` under the scale condition |
+| `PatternCount.lean` | the counting lemma `#G ≤ 8 (2M+1)⁷ H²` |
+| `TwoStateMain.lean` | good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
 | `Hooley.lean` | Erdős–Hooley `Δ`, the hypotheses `NairTenenbaumDelta` and `BretecheTenenbaumMean`, partial summation, and `P_le_loglog` |
 
 ## Vendored code

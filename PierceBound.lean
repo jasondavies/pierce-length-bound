@@ -11,3 +11,10 @@ import PierceBound.Hooley
 import PierceBound.Rises
 import PierceBound.RisesMain
 import PierceBound.Hankel
+import PierceBound.Hadamard
+import PierceBound.Functional
+import PierceBound.Gram
+import PierceBound.TwoState
+import PierceBound.PatternBound
+import PierceBound.PatternCount
+import PierceBound.TwoStateMain

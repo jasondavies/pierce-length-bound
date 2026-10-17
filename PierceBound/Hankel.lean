@@ -445,10 +445,9 @@ theorem hankelInv_int (hba : b < a) {i : ℕ} (hi : i < P a b) (r : ℕ) :
   field_simp
   ring
 
-/-- **Positivity.** For `r ≤ N - i`, the Hankel matrix is positive definite, so `Iᵣ(i) > 0`. -/
-theorem hankelInv_pos (hba : b < a) {i r : ℕ} (hi : i < P a b) (hr : r ≤ P a b - i) :
-    0 < hankelInv a b i r := by
-  have ha : (0 : ℝ) < a := by exact_mod_cast (show 0 < a by omega)
+/-- **Positivity.** For `r ≤ N - i`, the Hankel matrix is positive definite. -/
+theorem hankel_posDef (hba : b < a) {i r : ℕ} (hi : i < P a b) (hr : r ≤ P a b - i) :
+    (hankel a b i r).PosDef := by
   obtain ⟨hwpos, -⟩ := wt_spec hba (P a b - 1 - i) i (by omega)
   set M := P a b - i
   set c : ℕ → ℝ := fun n => wt a b i n / qq a b (i + n)
@@ -474,41 +473,45 @@ theorem hankelInv_pos (hba : b < a) {i r : ℕ} (hi : i < P a b) (hr : r ≤ P a
           simp only [sq, sum_mul, mul_sum, c]
           refine sum_congr rfl fun j _ => sum_congr rfl fun l _ => ?_
           rw [pow_add]; ring
-  have hPD : (hankel a b i r).PosDef := by
-    refine Matrix.PosDef.of_dotProduct_mulVec_pos ?_ ?_
-    · ext j l; simp [hankel, add_comm]
-    · intro x hx
-      simp only [star_trivial]
-      rw [hquad]
-      have hnn : ∀ n ∈ range M, 0 ≤ c n * (∑ j, x j * pt a b i n ^ (j : ℕ)) ^ 2 :=
-        fun n hn => mul_nonneg (hc n (mem_range.mp hn)).le (sq_nonneg _)
-      by_contra hle
-      push Not at hle
-      have hzero := (sum_eq_zero_iff_of_nonneg hnn).mp (le_antisymm hle (sum_nonneg hnn))
-      -- the Vandermonde system at the first `r` points forces `x = 0`
-      set v : Fin r → ℝ := fun n => pt a b i n
-      have hinj : Function.Injective v := by
-        intro n n' h
-        by_contra hne
-        rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hne) with h' | h'
-        · exact (pt_strictMono (a := a) (b := b) h' (by omega)).ne h
-        · exact (pt_strictMono (a := a) (b := b) h' (by omega)).ne h.symm
-      have hV : (Matrix.vandermonde v).det ≠ 0 := Matrix.det_vandermonde_ne_zero_iff.mpr hinj
-      apply hx
-      apply Matrix.eq_zero_of_mulVec_eq_zero hV
-      ext n
-      have := hzero n (mem_range.mpr (by omega))
-      have hcn := hc n (by omega)
-      have : (∑ j, x j * pt a b i n ^ (j : ℕ)) = 0 := by
-        rcases mul_eq_zero.mp this with h | h
-        · exact absurd h hcn.ne'
-        · exact pow_eq_zero_iff (two_ne_zero) |>.mp h
-      simp only [Matrix.mulVec, dotProduct, Matrix.vandermonde_apply, Pi.zero_apply, v]
-      rw [← this]
-      refine sum_congr rfl fun j _ => ?_
-      ring
+  refine Matrix.PosDef.of_dotProduct_mulVec_pos ?_ ?_
+  · ext j l; simp [hankel, add_comm]
+  · intro x hx
+    simp only [star_trivial]
+    rw [hquad]
+    have hnn : ∀ n ∈ range M, 0 ≤ c n * (∑ j, x j * pt a b i n ^ (j : ℕ)) ^ 2 :=
+      fun n hn => mul_nonneg (hc n (mem_range.mp hn)).le (sq_nonneg _)
+    by_contra hle
+    push Not at hle
+    have hzero := (sum_eq_zero_iff_of_nonneg hnn).mp (le_antisymm hle (sum_nonneg hnn))
+    -- the Vandermonde system at the first `r` points forces `x = 0`
+    set v : Fin r → ℝ := fun n => pt a b i n
+    have hinj : Function.Injective v := by
+      intro n n' h
+      by_contra hne
+      rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hne) with h' | h'
+      · exact (pt_strictMono (a := a) (b := b) h' (by omega)).ne h
+      · exact (pt_strictMono (a := a) (b := b) h' (by omega)).ne h.symm
+    have hV : (Matrix.vandermonde v).det ≠ 0 := Matrix.det_vandermonde_ne_zero_iff.mpr hinj
+    apply hx
+    apply Matrix.eq_zero_of_mulVec_eq_zero hV
+    ext n
+    have := hzero n (mem_range.mpr (by omega))
+    have hcn := hc n (by omega)
+    have : (∑ j, x j * pt a b i n ^ (j : ℕ)) = 0 := by
+      rcases mul_eq_zero.mp this with h | h
+      · exact absurd h hcn.ne'
+      · exact pow_eq_zero_iff (two_ne_zero) |>.mp h
+    simp only [Matrix.mulVec, dotProduct, Matrix.vandermonde_apply, Pi.zero_apply, v]
+    rw [← this]
+    refine sum_congr rfl fun j _ => ?_
+    ring
+
+/-- Hence `Iᵣ(i) > 0`. -/
+theorem hankelInv_pos (hba : b < a) {i r : ℕ} (hi : i < P a b) (hr : r ≤ P a b - i) :
+    0 < hankelInv a b i r := by
+  have ha : (0 : ℝ) < a := by exact_mod_cast (show 0 < a by omega)
   unfold hankelInv
-  exact mul_pos ha hPD.det_pos
+  exact mul_pos ha (hankel_posDef hba hi hr).det_pos
 
 /-- **The Hankel invariants are positive integers.** For `1 ≤ r ≤ N - i`, `Iᵣ(i) ∈ ℤ_{>0}`. -/
 theorem hankelInv_pos_int (hba : b < a) {i r : ℕ} (hi : i < P a b) (hr : r ≤ P a b - i) :

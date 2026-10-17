@@ -21,7 +21,7 @@
 \DeclareMathOperator{\Good}{Good}
 \DeclareMathOperator{\Bad}{Bad}
 
-\title[A discrete iteration related to Pierce expansions]{The iteration $x\mapsto a \bmod x$ has length $O_\varepsilon(a^{3/10+\varepsilon})$}
+\title[A discrete iteration related to Pierce expansions]{The iteration $x\mapsto a \bmod x$ has length $O_\varepsilon(a^{23/77+\varepsilon})$}
 
 \author{Jason Davies}
 \email{jason@jasondavies.com}
@@ -34,21 +34,25 @@
 For integers $a>b>0$ let $b_1=b$, $b_{i+1}=a\bmod b_i$, and let $P(a,b)$ be the number of
 positive terms of this sequence. Shallit asked whether $P(a,b)=O((\log a)^2)$. The bound
 $P(a,b)\ll_\varepsilon a^{1/3+\varepsilon}$ of Erd\H{o}s and Shallit was improved by Chase and
-Pandey to $a^{1/3-2/177+\varepsilon}$. We prove $P(a,b)\ll_\varepsilon a^{3/10+\varepsilon}$
-by an elementary argument. The new ingredient is an exact identity for three consecutive steps
-of the iteration. It shows that a certain integer combination $D=dv-eu$ of the drops and
-quotient increments is always positive. It is also small whenever the three drops are small,
-and $D$ together with the two increments confines the block to a curve with few integer points.
-A second identity, for six consecutive steps, produces a further positive integer $L$ built from
-three overlapping curvatures. It gives the local bound $T\ll a^{1/2}A^{-1/3}$ for the number $T$
-of remainders in $[A,2A)$, with no divisor-function loss. Combined with results of Nair--Tenenbaum
-and de la Bret\`eche--Tenenbaum on the Erd\H{o}s--Hooley $\Delta$-function, it gives
-$P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$. We also show that $P(a,b)\ll a^{1/4}\sqrt R$, where
-$R-1$ is the number of rises in the sequence of quotient increments. Finally, $D$ and $L$ are the
-third and fourth members of an infinite hierarchy of positive integers: Hankel determinants of
-an exact positive moment model of the orbit. Everything is formalised in Lean~4 with Mathlib,
-without \lean{sorry}. The $\sqrt{\log\log 3a}$ bound is formalised conditionally on the two
-cited theorems, which are stated in Lean as explicit hypotheses.
+Pandey to $a^{1/3-2/177+\varepsilon}$. We prove $P(a,b)\ll_\varepsilon a^{23/77+\varepsilon}$,
+where $23/77=0.29870\ldots$, by an elementary argument. We first prove
+$P(a,b)\ll_\varepsilon a^{3/10+\varepsilon}$. The new ingredient there is an exact identity for
+three consecutive steps of the iteration. It shows that a certain integer combination
+$D=dv-eu$ of the drops and quotient increments is always positive and is small when the drops
+are small. A second identity, for six consecutive steps, produces a further positive integer
+$L$. It gives the local bound $T\ll a^{1/2}A^{-1/3}$ for the number $T$ of remainders in
+$[A,2A)$, with no divisor-function loss. Then $D$ and $L$ turn out to be the third and fourth
+members of an infinite hierarchy of positive integers: the Hankel determinants of an exact
+positive moment model of the orbit. To go below $3/10$ we use the arithmetic of $L$ itself. At
+the critical scale $L$ is a positive integer of bounded size. Seven such integers at two
+consecutive states form a pattern, and the states with a given pattern lie on a quadric surface
+in the quotient increments, with at most four states per point. Along the way we show
+$P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$, assuming results of Nair--Tenenbaum and de la
+Bret\`eche--Tenenbaum on the Erd\H{o}s--Hooley $\Delta$-function. We also show
+$P(a,b)\ll a^{1/4}\sqrt R$, where $R-1$ is the number of rises in the sequence of quotient
+increments. Everything is formalised in Lean~4 with Mathlib, without \lean{sorry}. The
+$\sqrt{\log\log 3a}$ bound is formalised conditionally on the two cited theorems, which are
+stated in Lean as explicit hypotheses.
 \end{abstract}
 
 \maketitle
@@ -168,8 +172,37 @@ carries an exact finite model by positive measures $\nu_i$ with $\int d\nu_i=b_i
 determinants $I_r(i)=a\det\bigl(\int x^{j+l}\,d\nu_i\bigr)_{j,l<r}$ are positive integers, and
 $I_1,I_2,I_3,I_4$ are $b_i$, $b_i-b_{i+1}$, $D$ and $L$ (Theorem~\ref{thm:hankel}).
 
+\subsection*{Below \texorpdfstring{$3/10$}{3/10}}
+Our main result goes past the exponent $3/10$.
+
+\begin{theorem}\label{thm:2377}
+For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
+\[
+P(a,b)\le C_\varepsilon\, a^{23/77+\varepsilon}\qquad\text{for all integers }0<b<a .
+\]
+\end{theorem}
+
+Here $23/77=0.298701\ldots$, a saving of $1/770$ over $3/10$. The proof (Section~\ref{sec:2377})
+uses the fourth Hankel invariant $I_4=L$ as an integer, not only as a positive number. At the
+critical configuration $L$ has bounded size. The labels $L(i),L(i+1),L(i+2)$ and four
+cofactors of an explicit $3\times4$ integer matrix form a \emph{pattern} of seven integers. Two
+consecutive states give two linear equations and one quadratic equation in five consecutive
+quotient increments, and the quadratic has a positive leading coefficient. An exact identity
+$I_4(i)\,p_i(-q_i)=a\det(\mu_i(x^{j+l}))_{j,l<4}$, with $p_i$ the degree-four orthogonal
+polynomial of the moment model, makes $q_i$ a root of a quartic that is fixed by the pattern and
+the increments. So each pattern accounts for $O(H^2)$ states, where $H$ bounds the increments.
+The number of patterns is controlled by Hadamard's inequality applied to the moment model.
+
+The idea of encoding states by the coefficients of the degree-four orthogonal polynomial is due
+to an AI-assisted exploration (see the acknowledgements). It first gave a bound
+$a^{3/10-\delta}$ for a small $\delta>0$, through the resultant identity
+$\operatorname{Res}(I_4p_4,I_5p_5)=aI_5^8$ for the orthogonal polynomials of degrees four and
+five, together with the dimension-growth bounds of Cluckers, D\`ebes, Hendel, Nguyen and
+Vermeulen~\cite{CDHNV}. The two-state count of Section~\ref{sec:2377} replaces both by
+elementary algebra.
+
 \subsection*{Formal verification}
-Every step of the proof of Theorem~\ref{thm:main} has been formalised in Lean~4~\cite{Lean}
+Every step of the proofs of Theorems~\ref{thm:main} and~\ref{thm:2377} has been formalised in Lean~4~\cite{Lean}
 using Mathlib~\cite{Mathlib}. So have Proposition~\ref{prop:six}, Theorem~\ref{thm:generic},
 the deduction of Theorem~\ref{thm:loglog} from~\eqref{eq:NT} and~\eqref{eq:BT},
 Theorem~\ref{thm:rises} and Theorem~\ref{thm:hankel}.
@@ -802,6 +835,290 @@ $q_i,q_{i+1},q_{i+2}$. Similarly $I_4(i)$ depends only on $b_i,\dots,b_{i+3}$ an
 $q_i,\dots,q_{i+4}$: the later remainders cancel.
 \end{remark}
 
+\section{Breaking the exponent \texorpdfstring{$3/10$}{3/10}}\label{sec:2377}
+
+In this section we prove Theorem~\ref{thm:2377}. We keep the notation of
+Section~\ref{sec:hankel}: $b_0>b_1>\dots>b_{N-1}>0$ is the positive part of the orbit,
+$N=P(a,b)$, and $q_i=\lfloor a/b_i\rfloor$.
+
+\subsection{Heuristics}
+The exponent $3/10$ of Theorem~\ref{thm:main} comes from a single balanced configuration:
+$T\asymp a^{3/10}$ remainders in a window $[A,2A)$ with $A\asymp a^{3/5}$, quotients
+$q\asymp a^{2/5}$ and typical increments $k\asymp a^{1/10}$. At this scale the four-term Hankel
+invariant $I_4(i)=L(i)$ has size $\asymp aH^6/q^4\asymp 1$, where $H$ bounds the increments.
+The idea is that a positive integer of bounded size carries information. The labels
+$I_4(i),I_4(i+1),I_4(i+2)$, together with four further integers of the same size, determine a
+\emph{pattern}. States with a given pattern satisfy two linear equations and one quadratic
+equation in five consecutive increments. So a pattern accounts for at most $O(H^2)$
+increment tuples, and each tuple for at most four states. At the balanced point this
+gives $T\ll H^2\asymp a^{1/5}$, a large saving. Moving away from the balanced point costs a
+power of the pattern size, and optimising gives the exponent $23/77$.
+
+\subsection{The pattern matrix}
+Fix a state $i$ with $i+6<N$ and write, for $m\ge0$,
+\begin{gather*}
+k_m=q_{i+m+1}-q_{i+m},\qquad d_m=b_{i+m}-b_{i+m+1},\\
+s_m=k_0+\dots+k_{m-1},\qquad r_m=k_m(s_m+s_{m+1})+k_{m+1}.
+\end{gather*}
+So $s_m=q_{i+m}-q_i$, $r_0=k_0^2+k_1$, $r_1=k_1(2k_0+k_1)+k_2$, and so on. Consider the
+$3\times4$ integer matrix
+\[
+\mathcal M_i=\begin{pmatrix} d_0&d_1&d_2&d_3\\ k_0&k_1&k_2&k_3\\ r_0&r_1&r_2&r_3\end{pmatrix},
+\]
+and let $U_m(i)=(-1)^{m+1}\det(\mathcal M_i\text{ with column $m$ deleted})$ for
+$0\le m\le3$.
+
+\begin{lemma}\label{lem:pattern}
+\begin{enumerate}
+\item $U_3(i)=L(i)=I_4(i)$ and $U_0(i)=-L(i+1)=-I_4(i+1)$, where $L$ is the six-step integer of
+Lemma~\ref{lem:six}.
+\item $\sum_m U_m(i)\,d_m=\sum_m U_m(i)\,k_m=\sum_m U_m(i)\,r_m=0$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(2) is the Laplace expansion of a $4\times4$ determinant with a repeated row. For (1), the
+identity $\det(\text{columns }0,1,2)=L(i)$ holds as a polynomial identity in
+$d_0,d_1,d_2,k_0,\dots,k_3$, by direct expansion; and $L(i)=I_4(i)$ by
+Theorem~\ref{thm:hankel}. Passing from $i$ to $i+1$ shifts the $d$- and $k$-rows by one
+column, and, since $s_m(i+1)=s_{m+1}(i)-k_0$, it replaces $r_m$ by $r_{m+1}-2k_0k_{m+1}$. This
+row operation does not change the determinant, so $\det(\text{columns }1,2,3)=L(i+1)$.
+\end{proof}
+
+\begin{remark}
+The vector $C_m=U_m/U_3$ has a meaning: $p_i=\sum_{m\le3}C_m(F_{m+1}-F_m)$, with Newton
+polynomials $F_m(x)=\prod_{l<m}(x-s_l)$, is the monic orthogonal polynomial of degree four for
+the measure $\nu_i$ of Section~\ref{sec:hankel}. The three rows of $\mathcal M_i$ encode
+$\nu_i(p_i)=0$ and $\mu_i(xp_i)=\mu_i(x^2p_i)=0$, and $\nu_i(xf)=\mu_i(f)-q_i\nu_i(f)$ turns these
+into $\nu_i(x^jp_i)=0$ for $j\le3$. In particular $U_m(i)/I_4(i)$ are the partial sums of the
+Newton coefficients of $p_i$, and $c_0=-C_0=I_4(i+1)/I_4(i)$. None of this is used below.
+\end{remark}
+
+The \emph{pattern} of $i$ is the vector of seven integers
+\[
+\theta(i)=\bigl(L(i),\,L(i+1),\,L(i+2),\,U_1(i),\,U_2(i),\,U_1(i+1),\,U_2(i+1)\bigr),
+\]
+and its \emph{gaps} are $\kappa(i)=(k_0,\dots,k_4)$. By Lemma~\ref{lem:pattern},
+$\theta(i)$ determines $U(i)$ and $U(i+1)$ completely.
+
+\subsection{Three consequences}
+
+\begin{lemma}[The reduced quadratic]\label{lem:quad}
+Write $\theta(i)=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)$ and $\kappa(i)=(k_0,\dots,k_4)$. Then
+\[
+N_1N_0(N_1+N_0)\,k_3^2+\beta\,k_3+\gamma=0,
+\]
+where $\beta$ and $\gamma$ are polynomials in $\theta(i)$, $k_1$ and $k_2$ alone.
+\end{lemma}
+
+\begin{proof}
+Lemma~\ref{lem:pattern}(2) for the $k$-row at $i$ and at $i+1$ gives
+\[
+N_1k_0=u_1k_1+u_2k_2+N_0k_3,\qquad N_1k_4=N_2k_1-v_1k_2-v_2k_3 .
+\]
+Substitute these into $N_1^2\sum_mU_m(i)r_m=0$. Since $k_0$ enters the $r_m$ at most
+quadratically and $k_4$ only linearly, the result is a polynomial in $(\theta,k_1,k_2,k_3)$.
+The coefficient of $k_3^2$ comes from $-N_1\cdot N_1^2k_0^2$, from $N_0\cdot N_1^2\cdot 2k_0k_3$ and
+from $N_0\cdot N_1^2k_3^2$, and it equals
+$-N_1N_0^2+2N_1N_0^2+N_1^2N_0=N_1N_0(N_1+N_0)$. Explicitly
+$\beta=2N_1^2N_0(k_1+k_2)+N_1^2u_2+2N_1N_0(u_1k_1+u_2k_2)-N_1N_0v_2$, and $\gamma$ is given in
+the Lean file \lean{TwoState.lean}.
+\end{proof}
+
+\begin{lemma}[The multiplicity identity]\label{lem:multid}
+Let $F_m(Y)=\prod_{l<m}(Y-s_l)$ and $\mathcal Q_i(Y)=\sum_{m=0}^{3}U_m(i)\,F_m(Y)\,(Y-s_m-1)$.
+Then
+\[
+\mathcal Q_i(-q_i)=a\,H_4(k_0,\dots,k_4),
+\]
+where $H_4$ is an explicit polynomial with $43$ terms, independent of $i$. As a polynomial in
+$q$, $\mathcal Q_i(-q)$ has degree four and leading coefficient $U_3(i)=L(i)\ge1$.
+\end{lemma}
+
+\begin{proof}
+The division equations read $b_{i+m+1}=a-(q_i+s_m)b_{i+m}$. Use them to eliminate
+$b_{i+1},\dots,b_{i+4}$ from both sides. The difference becomes the zero polynomial in
+$a,q_i,b_i,k_0,\dots,k_4$; explicit certificates are in the Lean proof. The polynomial $H_4$ is
+the Hankel determinant $\det\bigl(\mu_i(x^{j+l})\bigr)_{j,l<4}$, and the identity is
+$I_4(i)\,p_i(-q_i)=a\det\bigl(\mu_i(x^{j+l})\bigr)$. This follows from the determinant formula for
+$p_i$, since $\nu_i(x^{s+1})+q_i\nu_i(x^s)=\mu_i(x^s)$; we do not need this interpretation. The
+leading coefficient comes from the term $m=3$.
+\end{proof}
+
+\begin{lemma}[Labels]\label{lem:labels}
+Let $i+6<N$ and put
+\[
+G(k_0,\dots,k_4)=(k_0+1)\bigl(k_1s_2+s_2+k_1+k_2+1\bigr)
+\bigl(k_2(k_1+k_2)s_3+e_3\bigr),
+\]
+where $e_3=s_3(k_1+k_2)+s_3k_2+(k_1+k_2)k_2+(k_0+2k_1+3k_2)(k_3+1)+k_3^2+2k_3+k_4+1$. Then
+$L(i)\,q_i^4\le a\,G(k_0,\dots,k_4)$. If moreover $b_i<2A$, then
+$L(i)\,a^3\le 256A^4\,G(k_0,\dots,k_4)$.
+\end{lemma}
+
+\begin{proof}
+The Newton polynomials $F_0,\dots,F_3$ are monic of degrees $0,\dots,3$. So the matrix
+$\bigl(\nu_i(F_jF_l)\bigr)$ is $UHU^{\mathsf T}$, where $H$ is the Hankel matrix of $\nu_i$ and $U$ is unit
+lower triangular. Hence it has determinant $I_4(i)/a$, and it is positive definite, as in the
+proof of Theorem~\ref{thm:hankel}. By Hadamard's inequality,
+\[
+\frac{I_4(i)}a\le\prod_{j<4}\nu_i(F_j^2)\le\prod_{j<4}\frac{\mu_i(F_j^2)}{q_i},
+\]
+since $\nu_i=\mu_i/(q_i+x)\le\mu_i/q_i$ on the nonnegative support. By the shift rule
+$\mu_i(F_jg)=\mu_{i+j}\bigl(g(x+s_j)\bigr)$ and the moments $\mu_m(1)=\mu_m(x)=1$,
+$\mu_m(x^2)=k_m+1$, $\mu_m(x^3)=k_m^2+2k_m+k_{m+1}+1$, the product equals $G$. For the second
+claim, $a=q_ib_i+b_{i+1}<2A(q_i+1)\le4Aq_i$, so $L(i)a^4\le256A^4L(i)q_i^4\le 256A^4aG$.
+\end{proof}
+
+\subsection{The size of a pattern}
+
+\begin{lemma}\label{lem:psize}
+Let $1\le k_0,\dots,k_5\le H$ and $A\ge1$. Suppose $N_0=L(i)$ and $N_1=L(i+1)$ satisfy
+$N_0a^3\le256A^4G(k_0,\dots,k_4)$ and $N_1a^3\le256A^4G(k_1,\dots,k_5)$, and that the
+\emph{scale condition}
+\begin{equation}\label{eq:scale}
+237568\,A^4H^5\le a^3
+\end{equation}
+holds. Then $L(i)$, $L(i+1)$, $|U_1(i)|$ and $|U_2(i)|$ are all at most $172032\,A^4H^6/a^3$.
+\end{lemma}
+
+\begin{proof}
+Put $V=k_1k_2(k_1+k_2)$ and $\Delta_4=k_0\cdot k_1s_2\cdot k_2(k_1+k_2)s_3$. Expanding $G$ and
+bounding each of the three error terms by $56H^5$, $170H^5$ and $238H^5$ gives
+$G(k_0,\dots,k_4)\le\Delta_4+464H^5$. Also $\Delta_4\le 6H^3V$, because
+$\Delta_4=k_0s_2s_3\cdot V$. Similarly $G(k_1,\dots,k_5)\le 6H^3V+464H^5$, because the
+corresponding product is $V\cdot k_3(k_2+k_3)(k_1+k_2+k_3)$. By~\eqref{eq:scale} and $N\ge1$,
+$256A^4\cdot464H^5\le Na^3/2$, so
+\[
+N_0a^3,\ N_1a^3\le 3072\,A^4H^3V .
+\]
+Since $N_0\ge1$, this and~\eqref{eq:scale} give $V\ge 77H^2$.
+
+Now solve for $(u_1,u_2)=(U_1(i),U_2(i))$ from the $k$- and $r$-relations of
+Lemma~\ref{lem:pattern}. These read $u_1k_1+u_2k_2=N_1k_0-N_0k_3$ and
+$u_1r_1+u_2r_2=N_1r_0-N_0r_3$. The determinant is
+\[
+\delta=k_1r_2-k_2r_1=k_1k_2(k_1+k_2)+k_1k_3-k_2^2\ \ge\ V-H^2\ \ge\ V/2 .
+\]
+Using $r_m\le (2m+2)H^2$, Cramer's rule gives $|u_j|\delta\le 14(N_0+N_1)H^3$, hence
+\[
+|u_j|\,V a^3\le 28H^3(N_0+N_1)a^3\le 28H^3\cdot 6144A^4H^3V ,
+\]
+that is, $|u_j|a^3\le172032A^4H^6$. Finally $N_ja^3\le3072A^4H^3V\le6144A^4H^6$, since
+$V\le2H^3$.
+\end{proof}
+
+The point of the argument is in the first paragraph. The two adjacent labels share the
+Vandermonde factor $V$, so the ratio $L(i+1)/L(i)$ never enters the bound.
+
+\subsection{The counting lemma}
+
+\begin{proposition}\label{prop:pcount}
+Let $\mathcal G$ be a set of states $i$ with $i+8<N$. Suppose that for each $i\in\mathcal G$
+all entries of $\theta(i)$ have absolute value at most $M$, and all entries of $\kappa(i)$ lie
+in $[1,H]$. Then $|\mathcal G|\le 8(2M+1)^7H^2$.
+\end{proposition}
+
+\begin{proof}
+\emph{(i) At most four states per $(\theta,\kappa)$.} If $\theta(i)=\theta$ and
+$\kappa(i)=\kappa$, then by Lemma~\ref{lem:multid} $q_i$ is a root of the polynomial
+$\mathcal Q(-q)-aH_4(\kappa)$. This polynomial depends only on $(\theta,\kappa)$, and it has
+degree four and leading coefficient $\theta_0\ge1$. Since $q_i$ is strictly increasing in $i$,
+there are at most four such states.
+
+\emph{(ii) At most two values of $\kappa$ per $(\theta,k_1,k_2)$.} By Lemma~\ref{lem:quad},
+$k_3$ is a root of a quadratic whose coefficients depend only on $(\theta,k_1,k_2)$. The
+leading coefficient is $N_1N_0(N_1+N_0)>0$. The two linear relations then determine $k_0$ and
+$k_4$, because $N_1\ne0$.
+
+\emph{(iii)} There are at most $(2M+1)^7H^2$ values of $(\theta,k_1,k_2)$.
+\end{proof}
+
+\subsection{The window bound}
+
+\begin{proposition}\label{prop:twostate}
+Let $b_s,\dots,b_{s+T-1}$ be a window run in $[A,2A)$ with $T\ge36$, and put
+$H=\lfloor 28a/(AT)\rfloor+1$ and $M=\lfloor172032A^4H^6/a^3\rfloor$. If~\eqref{eq:scale}
+holds, then
+\[
+T\le 16\,(2M+1)^7H^2 .
+\]
+\end{proposition}
+
+\begin{proof}
+Call a start $i$ \emph{good} if $s\le i$, $i+9\le s+T$ and $k_i,\dots,k_{i+6}\le H$.
+
+\emph{Most starts are good.} Let $\mathcal B$ be the set of $m\in[s,s+T-1)$ with $k_m>H$. Then
+$|\mathcal B|(H+1)\le\sum_mk_m=q_{s+T-1}-q_s\le a/A$. Since $H\cdot AT>28a$, this gives
+$28|\mathcal B|\le T$. Each $m\in\mathcal B$ spoils at most seven starts, so at least
+$T-9-7|\mathcal B|\ge T/2$ starts are good, as $T\ge36$.
+
+\emph{Good starts satisfy Proposition~\ref{prop:pcount}.} Let $i$ be good. Then $i+8<N$, and
+$b_i,b_{i+1},b_{i+2}<2A$. So Lemma~\ref{lem:labels} applies at $i$, $i+1$ and $i+2$.
+Lemma~\ref{lem:psize} at $i$ and at $i+1$ bounds all seven entries of $\theta(i)$ by $M$.
+Therefore $T/2\le 8(2M+1)^7H^2$.
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{thm:2377}}
+
+\begin{proposition}\label{prop:77}
+Let $T\ge36$ be the length of a window run in $[A,2A)$. Then $T^{77}\le C_{77}\Delta^{22}a^{23}$,
+where
+\[
+C_{77}=122449^{20}+(8\cdot237568\cdot56^5)^{11}+(64\cdot50176)^{11}
++8^{16}\cdot16\cdot3^7\cdot172032^7\cdot56^{44}.
+\]
+\end{proposition}
+
+\begin{proof}
+We use Proposition~\ref{prop:six}, $T^6A^2\le96\cdot10^6a^3$, and
+Proposition~\ref{prop:drop}, which gives $T^2\le 2T(T-1)\le 8A\Delta$.
+
+\emph{Case $AT>28a$.} Then $784a^2T^4\le T^6A^2\le96\cdot10^6a^3$, so $T^4\le122449\,a$ and
+$T^{77}\le 122449^{20}a^{20}$.
+
+From now on $AT\le28a$, so $H\cdot AT\le 28a+AT\le 56a$.
+
+\emph{Case~\eqref{eq:scale} fails.} Then $a^3(AT)^5<237568A^4(H\,AT)^5\le 237568\cdot56^5A^4a^5$,
+so $AT^5\le237568\cdot56^5a^2$. Hence $T^7=T^5T^2\le 8\Delta\,AT^5\le 8\cdot237568\cdot56^5\,\Delta a^2$.
+Raise this to the eleventh power.
+
+\emph{Case~\eqref{eq:scale} holds and $M=0$.} Then $T\le16H^2$, so
+$T(AT)^2\le16(56a)^2$. Hence $T^7=T^3(T^2)^2\le 64\Delta^2\,T^3A^2\le 64\cdot50176\,\Delta^2a^2$.
+
+\emph{Case~\eqref{eq:scale} holds and $M\ge1$.} Then $2M+1\le3M$ and $Ma^3\le172032A^4H^6$, so
+\[
+T\,a^{21}\le 16\cdot3^7\,(Ma^3)^7H^2\le 16\cdot3^7\cdot172032^7\,A^{28}H^{44}.
+\]
+Multiplying by $(AT)^{44}$ and using $H\cdot AT\le56a$ gives
+$T^{45}A^{16}\le 16\cdot3^7\cdot172032^7\cdot56^{44}\,a^{23}$. Finally
+\[
+T^{77}=T^{45}(T^2)^{16}\le 8^{16}\Delta^{16}\,T^{45}A^{16}
+\le 8^{16}\cdot16\cdot3^7\cdot172032^7\cdot56^{44}\,\Delta^{16}a^{23}.
+\]
+In every case $T^{77}\le C_{77}\Delta^{22}a^{23}$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:2377}]
+This is the argument of Theorem~\ref{thm:main}, with Proposition~\ref{prop:77} in place of
+Corollary~\ref{cor:window}. Let $\varepsilon>0$ and choose an integer $m>1/\varepsilon$. By
+Lemma~\ref{lem:div}, $\Delta^{22m}\le C_{22m}\cdot32a^7$, so every dyadic window has
+$T\le35$ or
+\[
+T^{77m}\le C_{77}^m\,C_{22m}\,32\;a^{23m+7}.
+\]
+Since $(23m+7)/(77m)=23/77+1/(11m)\le23/77+\varepsilon/2$, each of the $\lfloor\log_2a\rfloor+1$
+windows has $T\ll_\varepsilon a^{23/77+\varepsilon/2}$, and the theorem follows.
+\end{proof}
+
+\begin{remark}\label{rem:2377}
+In terms of the scales, Proposition~\ref{prop:twostate} says $T\ll X^7H^2$, where
+$X=A^4H^6/a^3$ bounds the seven pattern integers and $H\asymp a/(AT)$. Thus
+$X\asymp a^3/(A^2T^6)$ and $T^{45}A^{16}\ll a^{23}$. The drop bound $A\gg T^2/\Delta$ then gives
+$T^{77}\ll\Delta^{16}a^{23}$. The scale condition~\eqref{eq:scale} says $Q^4\gg aH^5$, where
+$Q=a/A$, and its failure gives the stronger bound $T\ll a^{2/7+o(1)}$.
+\end{remark}
+
 \section{The Lean formalisation}\label{sec:lean}
 
 The repository accompanying this paper contains a Lean~4 project (toolchain
@@ -811,7 +1128,12 @@ statement is
 theorem P\_le : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
 \hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((3 : $\mathbb R$) / 10 + $\varepsilon$)
 \end{quote}
-where \lean{P a b} is defined by well-founded recursion as the number of positive terms
+and Theorem~\ref{thm:2377} is
+\begin{quote}\ttfamily\small
+theorem P\_le\_23\_77 : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
+\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((23 : $\mathbb R$) / 77 + $\varepsilon$)
+\end{quote}
+Here \lean{P a b} is defined by well-founded recursion as the number of positive terms
 ($P(a,0)=0$, $P(a,b)=P(a,a\bmod b)+1$ for $b>0$), and the file checks $P(35,22)=7$.
 Theorem~\ref{thm:loglog} is formalised as
 \begin{quote}\ttfamily\small
@@ -835,7 +1157,7 @@ Lemma~\ref{lem:six}.
 Here \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean} are Lean propositions stating
 \eqref{eq:NT} (with $\varepsilon=1/4$) and~\eqref{eq:BT}, with existential constants and
 thresholds. \lean{hooleyDelta} is defined as the supremum over $u\in\mathbb R$, exactly as
-above. For \lean{P\_le}, \lean{six\_step\_bound}, \lean{P\_le\_of\_shortDivisorBound},
+above. For \lean{P\_le}, \lean{P\_le\_23\_77}, \lean{six\_step\_bound}, \lean{P\_le\_of\_shortDivisorBound},
 \lean{P\_le\_loglog}, \lean{P\_le\_rises}, \lean{hankelInv\_pos\_int} and
 \lean{hankelInv\_four}, the command \lean{\#print axioms} reports only \lean{propext},
 \lean{Classical.choice} and \lean{Quot.sound}. There is no \lean{sorry} and no
@@ -880,6 +1202,17 @@ Lemma~\ref{lem:moments} & \lean{wt\_spec}, \lean{hm\_zero}, & \lean{Hankel.lean}
  & \lean{hm\_succ}, \lean{hm\_int} & \\
 Theorem~\ref{thm:hankel} & \lean{hankelInv\_pos\_int}, & \lean{Hankel.lean}\\
  & \lean{hankelInv\_one}, \dots, \lean{hankelInv\_four} & \\
+Hadamard's inequality & \lean{det\_le\_prod\_diag} & \lean{Hadamard.lean}\\
+$\mu_i$, $\nu_i$, shift rule & \lean{muF}, \lean{nuF}, \lean{muF\_nb\_mul} & \lean{Functional.lean}\\
+Lemma~\ref{lem:labels} & \lean{hankelInv\_le\_prod}, \lean{label\_bound} & \lean{Gram.lean}\\
+Lemma~\ref{lem:pattern} & \lean{null\_k}, \lean{null\_r} & \lean{TwoState.lean}\\
+Lemma~\ref{lem:quad} & \lean{quad\_root} & \lean{TwoState.lean}\\
+Lemma~\ref{lem:multid} & \lean{mult\_identity}, \lean{quart\_eq} & \lean{TwoState.lean}\\
+Lemma~\ref{lem:psize} & \lean{gramP\_le}, \lean{state\_bound} & \lean{PatternBound.lean}\\
+Proposition~\ref{prop:pcount} & \lean{pattern\_count} & \lean{PatternCount.lean}\\
+Proposition~\ref{prop:twostate} & \lean{good\_card}, \lean{two\_state\_window} & \lean{TwoStateMain.lean}\\
+Proposition~\ref{prop:77} & \lean{window\_77}, \lean{visits\_77} & \lean{TwoStateMain.lean}\\
+Theorem~\ref{thm:2377} & \lean{P\_le\_23\_77} & \lean{TwoStateMain.lean}\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -903,21 +1236,41 @@ $L\ge1$ directly from the identity, since $L$ is an integer by definition.
 \item The identities $I_2=d$, $I_3=D$, $I_4=L$ are checked by \lean{linear\_combination}, with
 certificates generated by polynomial division. The moment entries $h_i(s)$ are computed in Lean
 from the recursion of Lemma~\ref{lem:moments}(3).
-\item The project has about 4100 lines of Lean. \lean{lake build} rebuilds it in under a
-minute once Mathlib is built.
+\item Mathlib has no Hadamard inequality for determinants, so \lean{Hadamard.lean} proves it:
+rescale to unit diagonal, and use $\prod\lambda_j\le\prod e^{\lambda_j-1}=e^{\operatorname{tr}-n}=1$
+for the eigenvalues.
+\item The identities of Lemmas~\ref{lem:pattern}, \ref{lem:quad} and~\ref{lem:multid} are
+checked by the tactics \lean{ring} and \lean{linear\_combination}. The certificate for
+Lemma~\ref{lem:multid} has about $350$ terms and was found by polynomial division. Root
+counting uses the Mathlib lemma \lean{card\_roots'}.
+\item The project has about 5800 lines of Lean. \lean{lake build} rebuilds it in a few
+minutes once Mathlib is built.
 \end{itemize}
 
 \section{Limits of the method}\label{sec:limits}
 
-Proposition~\ref{prop:six} removes the divisor loss from the local bound, but the exponent is
-still $3/10$. The local bound $T\ll a^{1/2}A^{-1/3}$ and the drop bound $T\ll A^{1/2}$ (up to
+Proposition~\ref{prop:six} removes the divisor loss from the local bound, but on its own the
+exponent is still $3/10$. The local bound $T\ll a^{1/2}A^{-1/3}$ and the drop bound $T\ll A^{1/2}$ (up to
 the divisor factor) both allow $T\asymp a^{3/10}$ at $A\asymp a^{3/5}$. Even an ideal
 short-interval divisor estimate with $G$ constant leaves this balance unchanged. So sharpening
 constants or improving the divisor counts cannot give a logarithmic bound. Further progress
 needs to restrict \emph{which} configurations of the parameters $(u,v,w,z,D,E,F)$ can occur
 together along a single orbit. Theorem~\ref{thm:rises} is one restriction of this kind: a long
 orbit must have many rises in its quotient increments. Theorem~\ref{thm:hankel} supplies the
-natural candidates for further ones, the higher invariants $I_r$.
+natural candidates for further ones, the higher invariants $I_r$. Section~\ref{sec:2377} uses
+$I_4$ in exactly this way.
+
+The two-state count of Section~\ref{sec:2377} loses only through the number $X^7$ of patterns.
+With patterns at four consecutive states one has thirteen integers and as many equations as
+unknown increments. If each such pattern allowed only $O(1)$ configurations, the same
+optimisation would give the exponent $39/131$. But the four-state equations have
+positive-dimensional families of solutions. For instance, the Newton coefficients
+$(\alpha,-3\alpha-1,3\alpha+3,-\alpha-3,1)$, with coefficient polynomial $(z-1)^3(z-\alpha)$, at
+every state, together with constant increments $k_j=t$, satisfy all the linear and quadratic
+relations for every $t$. Such families are excluded only by the remainder equations, which the
+count above discards. A refinement through the degree-five orthogonal polynomial and the
+curve bounds of~\cite{CDHNV} has been proposed to reach the exponent $14/47$. We have not
+checked its case analysis and do not include it.
 
 There is no obvious monotonicity to exploit. The curvatures $D_i$ of successive blocks need
 not decrease. For $a=13242$ the orbit of $255$ begins
@@ -928,8 +1281,10 @@ with quotients $51,55,63,65,74,91,95,100,\dots$. The curvatures of the first fiv
 $24,12,6,111,30$, all for blocks that lie within a factor of two.
 
 \subsection*{Acknowledgements}
-The argument was developed with the help of AI language models. All proofs were then verified
-in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \lean{openai/math}
+The argument was developed with the help of AI language models. This includes the use of
+orthogonal polynomials and adjacent labels behind Section~\ref{sec:2377}, the first proof of a
+bound $a^{3/10-\delta}$ through resultants, and the bounded-multiplicity form of
+Lemma~\ref{lem:multid}. All proofs were then verified in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \lean{openai/math}
 for the formalised divisor bound.
 
 \begin{thebibliography}{99}
@@ -938,6 +1293,11 @@ for the formalised divisor bound.
 R.~de~la~Bret\`eche and G.~Tenenbaum,
 \emph{Note on the mean value of the Erd\H{o}s--Hooley Delta-function},
 Acta Arith.\ \textbf{219} (2025), 379--394.
+
+\bibitem{CDHNV}
+R.~Cluckers, P.~D\`ebes, Y.~I.~Hendel, K.~H.~Nguyen and F.~Vermeulen,
+\emph{Improvements on dimension growth results and effective Hilbert's irreducibility theorem},
+Forum Math.\ Sigma \textbf{13} (2025), e153.
 
 \bibitem{CP}
 Z.~Chase and M.~Pandey,
