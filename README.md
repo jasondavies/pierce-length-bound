@@ -5,9 +5,10 @@ positive terms ([Open Problem Garden](https://www.openproblemgarden.org/op/a_dis
 Shallit asked whether `P(a, b) = O((log a)²)`. That question is **still open**. This repository
 proves, uniformly in `0 < b < a`:
 
-* **Main theorem:** `P(a, b) ≤ C_ε · a^{11/37 + ε}`, where `11/37 = 0.29729…`. This goes below the
+* **Main theorem:** `P(a, b) ≤ C_ε · a^{8/27 + ε}`, where `8/27 = 0.29629…`. This goes below the
   exponent `3/10` of the unpublished `n^{3/10}` bound reported on Shallit's talks page.
-* **The first step below `3/10`:** `P(a, b) ≤ C_ε · a^{23/77 + ε}`.
+* **Earlier steps:** `P(a, b) ≤ C_ε · a^{11/37 + ε}`, and before that
+  `P(a, b) ≤ C_ε · a^{23/77 + ε}`.
 * **The `3/10` bound:** `P(a, b) ≤ C_ε · a^{3/10 + ε}`, improving Chase–Pandey's
   `a^{1/3 − 2/177 + ε}`. Its six-step identity is an ingredient of the main theorem.
 * **Assuming two published theorems:** `P(a, b) ≪ a^{3/10} √(log log 3a)`. The theorems are
@@ -43,6 +44,11 @@ has `≤ 2τ(|N|)³(log₃ L² + 1)` solutions in a box, uniformly in the coeffi
 full: square roots modulo prime powers, CRT, and the separation `ε ≥ 3` of norm-one numbers. So
 each pattern covers `O(H a^η)` states, `T ≪ a^η X⁷ H`, and `T⁷⁴ ≪ a^{22+O(η)}`.
 
+For `8/27`, the seven pattern integers are signed `3×3` minors of one `3×5` integer matrix. An exact
+expansion of `b/a` with a positive remainder bounds all ten minors by `X`. Minor vectors of height `≤ Y`
+number `≤ 1 + 20 ∑_{m≤Y} 729 m⁴ τ(m)`, via a maximal pivot, the Plücker relations, and the congruence
+`v ≡ λu₀ (mod m/g)`. So `T ≪ a^η X⁵ H` and `T⁵⁴ ≪ a^{16+O(η)}`.
+
 * `paper/pierce_bound.tex` (and `.pdf`): the paper.
 * `PierceBound/`: Lean 4 / Mathlib formalisation of all of the above, with no `sorry`.
 
@@ -51,6 +57,9 @@ each pattern covers `O(H a^η)` states, `T ≪ a^η X⁷ H`, and `T⁷⁴ ≪ a^
 Build with `lake build` (Lean `v4.35.0`, Mathlib `v4.35.0`). The main theorems are
 
 ```lean
+theorem PierceBound.P_le_8_27 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((8 : ℝ) / 27 + ε)
+
 theorem PierceBound.P_le_11_37 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((11 : ℝ) / 37 + ε)
 
@@ -71,7 +80,7 @@ theorem PierceBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr : r ≤
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n
 ```
 
-`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all six. The second
+`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all seven. The second
 theorem's dependence on the two papers is entirely through its hypotheses.
 
 | File | Contents |
@@ -99,6 +108,9 @@ theorem's dependence on the two papers is entirely through its hypotheses.
 | `SliceCount.lean` | Lemma 8: slices of a ternary quadratic via completing squares (`slice_count`) |
 | `ElevenCount.lean` | the sign identities, the ternary relation `F_θ(k₁,k₂,k₃) = 0`, and the refined count |
 | `ElevenMain.lean` | the window bound, `T⁷⁴ ≤ C Δ¹⁹ Ξ¹⁹ a²²`, slack factors `≪ a^η`, and `P_le_11_37` |
+| `MinorCount.lean` | the Plücker relations, the congruence count `27 m g²`, and `minor_vector_count` |
+| `MinorHeight.lean` | the expansion of `b/a` (`nu_expand`) and the uniform bound on all ten minors |
+| `EightMain.lean` | the pattern as signed minors, the window bound, `T⁵⁴ ≤ C Δ¹⁴ Ξ²⁸ a¹⁶`, and `P_le_8_27` |
 | `Hooley.lean` | Erdős–Hooley `Δ`, the hypotheses `NairTenenbaumDelta` and `BretecheTenenbaumMean`, partial summation, and `P_le_loglog` |
 
 ## Vendored code

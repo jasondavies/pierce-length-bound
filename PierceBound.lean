@@ -22,3 +22,6 @@ import PierceBound.NormCount
 import PierceBound.SliceCount
 import PierceBound.ElevenCount
 import PierceBound.ElevenMain
+import PierceBound.MinorCount
+import PierceBound.MinorHeight
+import PierceBound.EightMain

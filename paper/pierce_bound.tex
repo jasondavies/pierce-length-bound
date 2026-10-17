@@ -7,6 +7,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
 \emergencystretch=2em
+\raggedbottom
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -21,7 +22,7 @@
 \DeclareMathOperator{\Good}{Good}
 \DeclareMathOperator{\Bad}{Bad}
 
-\title[A discrete iteration related to Pierce expansions]{The iteration $x\mapsto a \bmod x$ has length $O_\varepsilon(a^{11/37+\varepsilon})$}
+\title[A discrete iteration related to Pierce expansions]{The iteration $x\mapsto a \bmod x$ has length $O_\varepsilon(a^{8/27+\varepsilon})$}
 
 \author{Jason Davies}
 \email{jason@jasondavies.com}
@@ -34,20 +35,21 @@
 For integers $a>b>0$ let $b_1=b$, $b_{i+1}=a\bmod b_i$, and let $P(a,b)$ be the number of
 positive terms of this sequence. Shallit asked whether $P(a,b)=O((\log a)^2)$. The bound
 $P(a,b)\ll_\varepsilon a^{1/3+\varepsilon}$ of Erd\H{o}s and Shallit was improved by Chase and
-Pandey to $a^{1/3-2/177+\varepsilon}$. We prove $P(a,b)\ll_\varepsilon a^{11/37+\varepsilon}$,
-where $11/37=0.29729\ldots$, by an elementary argument. We first prove
+Pandey to $a^{1/3-2/177+\varepsilon}$. We prove $P(a,b)\ll_\varepsilon a^{8/27+\varepsilon}$,
+where $8/27=0.29629\ldots$, by an elementary argument. We first prove
 $P(a,b)\ll_\varepsilon a^{3/10+\varepsilon}$. The new ingredient there is an exact identity for
 three consecutive steps of the iteration. It shows that a certain integer combination
 $D=dv-eu$ of the drops and quotient increments is always positive and is small when the drops
 are small. A second identity, for six consecutive steps, produces a further positive integer
 $L$. It gives the local bound $T\ll a^{1/2}A^{-1/3}$ for the number $T$ of remainders in
-$[A,2A)$, with no divisor-function loss. Then $D$ and $L$ turn out to be the third and fourth
-members of an infinite hierarchy of positive integers: the Hankel determinants of an exact
-positive moment model of the orbit. To go below $3/10$ we use the arithmetic of $L$ itself. At
+$[A,2A)$, with no divisor-function loss. Then $D$ and $L$ are the third and fourth members of a
+hierarchy of positive integers, the Hankel determinants of an exact positive moment model of the
+orbit. To go below $3/10$ we use the arithmetic of $L$ itself. At
 the critical scale $L$ is a positive integer of bounded size. Seven such integers at two
 consecutive states form a pattern, and the states with a given pattern lie on a nonsingular
 quadric surface in the quotient increments, with at most four states per point. Counting its
-points by binary slices and norm equations gives the exponent $11/37$. Along the way we show
+points by binary slices and norm equations gives the exponent $11/37$. Finally the seven integers
+are Pl\"ucker coordinates of one matrix, and counting vectors of minors gives $8/27$. Along the way we show
 $P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$, assuming results of Nair--Tenenbaum and de la
 Bret\`eche--Tenenbaum on the Erd\H{o}s--Hooley $\Delta$-function. We also show
 $P(a,b)\ll a^{1/4}\sqrt R$, where $R-1$ is the number of rises in the sequence of quotient
@@ -57,6 +59,7 @@ stated in Lean as explicit hypotheses.
 \end{abstract}
 
 \maketitle
+\enlargethispage{\baselineskip}
 
 \section{Introduction}
 
@@ -196,7 +199,18 @@ P(a,b)\le C_\varepsilon\, a^{11/37+\varepsilon}\qquad\text{for all integers }0<b
 Here $11/37=0.297297\ldots$, a saving of $1/370$ over $3/10$. The extra input
 (Section~\ref{sec:1137}) is that the quadric is nonsingular with an indefinite binary section,
 by exact sign identities for the cofactors. So each slice is a norm equation
-$V^2-\Delta U^2=N$, which has $a^{o(1)}$ solutions uniformly in its coefficients. The proof (Section~\ref{sec:2377})
+$V^2-\Delta U^2=N$, which has $a^{o(1)}$ solutions uniformly in its coefficients.
+
+\begin{theorem}\label{thm:827}
+For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
+\[
+P(a,b)\le C_\varepsilon\, a^{8/27+\varepsilon}\qquad\text{for all integers }0<b<a .
+\]
+\end{theorem}
+
+Here $8/27=0.296296\ldots$. The seven pattern integers are signed coordinates of the vector of
+$3\times3$ minors of a $3\times5$ integer matrix (Section~\ref{sec:827}). All ten minors are
+bounded by $X$, and such minor vectors number $X^{5+o(1)}$ rather than $X^7$. The proof (Section~\ref{sec:2377})
 uses the fourth Hankel invariant $I_4=L$ as an integer, not only as a positive number. At the
 critical configuration $L$ has bounded size. The labels $L(i),L(i+1),L(i+2)$ and four
 cofactors of an explicit $3\times4$ integer matrix form a \emph{pattern} of seven integers. Two
@@ -214,10 +228,12 @@ $\operatorname{Res}(I_4p_4,I_5p_5)=aI_5^8$ for the orthogonal polynomials of deg
 five, together with the dimension-growth bounds of Cluckers, D\`ebes, Hendel, Nguyen and
 Vermeulen~\cite{CDHNV}. The two-state count of Section~\ref{sec:2377} replaces both by
 elementary algebra. The refinement to $11/37$, with the sign identities and the slice count, was
-also found in that exploration.
+also found in that exploration, as was the observation that the seven integers form a
+Pl\"ucker vector.
 
 \subsection*{Formal verification}
-Every step of the proofs of Theorems~\ref{thm:main}, \ref{thm:2377} and~\ref{thm:1137} has been formalised in Lean~4~\cite{Lean}
+Every step of the proofs of Theorems~\ref{thm:main}, \ref{thm:2377}, \ref{thm:1137}
+and~\ref{thm:827} has been formalised in Lean~4~\cite{Lean}
 using Mathlib~\cite{Mathlib}. So have Proposition~\ref{prop:six}, Theorem~\ref{thm:generic},
 the deduction of Theorem~\ref{thm:loglog} from~\eqref{eq:NT} and~\eqref{eq:BT},
 Theorem~\ref{thm:rises} and Theorem~\ref{thm:hankel}.
@@ -1298,6 +1314,106 @@ bound $T^{74}\ll a^{22+O(\eta)}$. At the critical point $T\approx a^{11/37}$, $Q
 a^{15/37}$, $H\approx a^{4/37}$ and $X\approx a^{1/37}$.
 \end{remark}
 
+\section{Ten minors and the exponent \texorpdfstring{$8/27$}{8/27}}\label{sec:827}
+
+The seven pattern integers of Section~\ref{sec:1137} were counted as if they were independent.
+They are not: they are coordinates of a single vector of $3\times3$ minors. Counting such vectors
+directly saves a factor $X^2$ and proves Theorem~\ref{thm:827}.
+
+\subsection{The full minor vector}
+Let $\mathcal M_i$ now be the $3\times5$ matrix with rows $(d_0,\dots,d_4)$, $(k_0,\dots,k_4)$
+and $(r_0,\dots,r_4)$, and let $p_{c_1c_2c_3}$ be its minor on columns $c_1<c_2<c_3$. Expanding
+the cofactors of Section~\ref{sec:2377} gives
+\[
+\theta(i)=(p_{012},\,p_{123},\,p_{234},\,p_{023},\,-p_{013},\,p_{134},\,-p_{124}).
+\]
+
+\begin{lemma}[Expansion]\label{lem:expand}
+Let $q=q_i$ and $s_j=q_{i+j}-q$. If $i+j+3<N$ then
+\[
+\frac{b_{i+j}}a=\frac1q-\frac{1+s_j}{q^2}+\frac{s_j^2+2s_j+k_j+1}{q^3}-e_j,\qquad
+0\le e_j\le\frac{\mu_{i+j}\bigl((x+s_j)^3\bigr)}{q^4}.
+\]
+\end{lemma}
+
+\begin{proof}
+Apply $\mu_{i+j}$ to $\frac1{q+y}=\frac1q-\frac y{q^2}+\frac{y^2}{q^3}-\frac{y^3}{q^3(q+y)}$ with
+$y=s_j+x\ge0$, using $b_{i+j}/a=\nu_{i+j}(1)=\mu_{i+j}\bigl(1/(q+s_j+x)\bigr)$, $\mu(1)=\mu(x)=1$
+and $\mu(x^2)=k+1$.
+\end{proof}
+
+\begin{proposition}[All minors]\label{prop:allminors}
+Let $i+8<N$, $b_i<2A$ and $1\le k_{i},\dots,k_{i+6}\le H$. Then every minor of $\mathcal M_i$
+satisfies $|p|\,a^3\le3609600\,A^4H^6$.
+\end{proposition}
+
+\begin{proof}
+Subtracting the expansions for $j$ and $j+1$ gives
+$d_j/a=k_j/q^2-(r_j+k_j)/q^3+e_{j+1}-e_j$. So replacing the first row by
+$d'_j=d_j-a(q^{-2}-q^{-3})k_j+aq^{-3}r_j=a(e_{j+1}-e_j)$ changes no minor. Now
+$|d'_j|\le235aH^3/q^4$, $|k_j|\le H$ and $|r_j|\le10H^2$, so $|p|\le14100\,aH^6/q^4$. Finally
+$a\le4Aq$.
+\end{proof}
+
+This replaces Lemma~\ref{lem:psize}, and the scale condition~\eqref{eq:scale} is no longer
+needed.
+
+\subsection{Counting minor vectors}
+
+\begin{proposition}[Minor vectors]\label{prop:minorvec}
+The number of vectors of minors of integer $3\times5$ matrices with all coordinates in $[-Y,Y]$ is
+at most $1+20\sum_{m\le Y}729\,m^4\tau(m)\ll Y^{5+o(1)}$.
+\end{proposition}
+
+\begin{proof}
+For a nonzero vector $p$ choose a pivot $\tau$ with $|p_\tau|=|m|$ maximal, and let $c_4,c_5$ be
+the two columns outside $\tau$. Let $u_a$ ($v_a$) be the minor with the $a$-th pivot column replaced
+by $c_4$ ($c_5$), with the sign of the column permutation. By Cramer's rule and the Pl\"ucker
+relations, the remaining three minors satisfy $m\,p_{w_a}=\pm(u\times v)_a$ (thirty polynomial
+identities, checked symbolically). So $p$ is determined by $(\tau,\operatorname{sgn}m,|m|,u,v)$,
+where $|u_a|,|v_a|\le|m|$ and $|m|$ divides every coordinate of $u\times v$.
+
+Fix $m\ge1$ and $u$, and let $g=\gcd(m,u_1,u_2,u_3)$, $n=m/g$, $u=gu_0$. By B\'ezout there are
+$c\in\mathbb Z^3$ and $x\in\mathbb Z$ with $c\cdot u_0+xn=1$. If $m\mid u\times v$, then
+$n\mid u_0\times v$, and the identity
+$v-(c\cdot v)u_0=xn\,v+c\times(v\times u_0)$ shows $v\equiv(c\cdot v)u_0\pmod n$. Hence $v$ lies
+in one of $n$ classes modulo $n$, each meeting $[-m,m]^3$ in at most $(3g)^3$ points: at most
+$27mg^2$ choices. Summing over $u$, grouped by $g=d\mid m$, gives
+$\sum_u g^2\le\sum_{d\mid m}d^2(3m/d)^3\le27m^3\tau(m)$, so at most $729m^4\tau(m)$ pairs
+$(u,v)$. There are ten pivots and two signs.
+\end{proof}
+
+\subsection{The bound}
+
+\begin{proposition}\label{prop:twostate3}
+For a window run in $[A,2A)$ with $T\ge36$, let $H=\lfloor28a/(AT)\rfloor+1$ and
+$M=\lfloor3609600A^4H^6/a^3\rfloor$. Then $T\le24\cdot14581\,(M+1)^5H\,\Xi(a)^2$, and
+\[
+T^{54}\le C_{54}\Delta^{14}\Xi(a)^{28}a^{16}
+\]
+with $C_{54}=122449^{14}+(448\cdot24\cdot14581)^{14}+8^{11}\cdot32\cdot24\cdot14581\cdot3609600^5\cdot56^{31}$.
+\end{proposition}
+
+\begin{proof}
+As in Proposition~\ref{prop:pcount2}, at least $T/2$ starts are good. A good start has at most four
+companions with the same $(\theta,\kappa)$, and at most $(2H+1)(W+4)$ gap triples per pattern.
+Since $\theta$ is a function of the minor vector, there are at most
+$14581(M+1)^5\tau^*(M)\le14581(M+1)^5\Xi(a)$ patterns, by Propositions~\ref{prop:allminors}
+and~\ref{prop:minorvec}. For the second bound, if $AT>28a$ then $T^4\le122449a$. If $M=0$ then
+$T^4\le448\cdot24\cdot14581\,\Delta\Xi^2a$. Otherwise $Ta^{15}\le32\cdot24\cdot14581\cdot3609600^5
+A^{20}H^{31}\Xi^2$, hence $T^{32}A^{11}\ll\Xi^2a^{16}$ and $T^{54}\le(8A\Delta)^{11}T^{32}$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:827}]
+Since $\Delta,\Xi(a)\ll_\eta a^\eta$, every window has $T\ll a^{(16+42\eta)/54}$, and $16/54=8/27$.
+\end{proof}
+
+\begin{remark}
+In terms of the scales, $T\ll a^\eta X^5H$, so $T^{32}\ll a^{5+\eta}Q^{11}$ and $T^{54}\ll
+a^{16+O(\eta)}$. At the critical point $T\approx a^{8/27}$, $Q\approx a^{11/27}$, $H\approx a^{3/27}$
+and $X\approx a^{1/27}$.
+\end{remark}
+
 \section{The Lean formalisation}\label{sec:lean}
 
 The repository accompanying this paper contains a Lean~4 project (toolchain
@@ -1316,6 +1432,11 @@ and Theorem~\ref{thm:1137} is
 \begin{quote}\ttfamily\small
 theorem P\_le\_11\_37 : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
 \hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((11 : $\mathbb R$) / 37 + $\varepsilon$)
+\end{quote}
+and Theorem~\ref{thm:827} is
+\begin{quote}\ttfamily\small
+theorem P\_le\_8\_27 : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
+\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((8 : $\mathbb R$) / 27 + $\varepsilon$)
 \end{quote}
 Here \lean{P a b} is defined by well-founded recursion as the number of positive terms
 ($P(a,0)=0$, $P(a,b)=P(a,a\bmod b)+1$ for $b>0$), and the file checks $P(35,22)=7$.
@@ -1342,7 +1463,8 @@ Here \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean} are Lean proposi
 \eqref{eq:NT} (with $\varepsilon=1/4$) and~\eqref{eq:BT}, with existential constants and
 thresholds. \lean{hooleyDelta} is defined as the supremum over $u\in\mathbb R$, exactly as
 above. The command \lean{\#print axioms} was run on \lean{P\_le}, \lean{P\_le\_23\_77},
-\lean{P\_le\_11\_37}, \lean{norm\_count}, \lean{six\_step\_bound},
+\lean{P\_le\_11\_37}, \lean{P\_le\_8\_27}, \lean{norm\_count}, \lean{minor\_vector\_count},
+\lean{six\_step\_bound},
 \lean{P\_le\_of\_shortDivisorBound}, \lean{P\_le\_loglog}, \lean{P\_le\_rises}, \lean{hankelInv\_pos\_int} and
 \lean{hankelInv\_four}; for each it reports only \lean{propext},
 \lean{Classical.choice} and \lean{Quot.sound}. There is no \lean{sorry} and no
@@ -1387,6 +1509,15 @@ Lemma~\ref{lem:moments} & \lean{wt\_spec}, \lean{hm\_zero}, & \lean{Hankel.lean}
  & \lean{hm\_succ}, \lean{hm\_int} & \\
 Theorem~\ref{thm:hankel} & \lean{hankelInv\_pos\_int}, & \lean{Hankel.lean}\\
  & \lean{hankelInv\_one}, \dots, \lean{hankelInv\_four} & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}lll@{}}
+\toprule
+Paper & Lean & File \\
+\midrule
 Hadamard's inequality & \lean{det\_le\_prod\_diag} & \lean{Hadamard.lean}\\
 $\mu_i$, $\nu_i$, shift rule & \lean{muF}, \lean{nuF}, \lean{muF\_nb\_mul} & \lean{Functional.lean}\\
 Lemma~\ref{lem:labels} & \lean{hankelInv\_le\_prod}, \lean{label\_bound} & \lean{Gram.lean}\\
@@ -1406,6 +1537,12 @@ Proposition~\ref{prop:pcount2} & \lean{pattern\_count\_eleven} & \lean{ElevenCou
 Proposition~\ref{prop:twostate2} & \lean{two\_state\_window\_eleven} & \lean{ElevenMain.lean}\\
 Proposition~\ref{prop:74} & \lean{window\_74}, \lean{visits\_74} & \lean{ElevenMain.lean}\\
 Theorem~\ref{thm:1137} & \lean{slack\_le}, \lean{P\_le\_11\_37} & \lean{ElevenMain.lean}\\
+Lemma~\ref{lem:expand} & \lean{nu\_expand} & \lean{MinorHeight.lean}\\
+Proposition~\ref{prop:allminors} & \lean{minor\_height} & \lean{MinorHeight.lean}\\
+Pattern as minors & \lean{theta\_eq} & \lean{EightMain.lean}\\
+Proposition~\ref{prop:minorvec} & \lean{plucker}, \lean{card\_cross\_fiber}, \lean{minor\_vector\_count} & \lean{MinorCount.lean}\\
+Proposition~\ref{prop:twostate3} & \lean{two\_state\_window\_eight}, \lean{window\_54} & \lean{EightMain.lean}\\
+Theorem~\ref{thm:827} & \lean{P\_le\_8\_27} & \lean{EightMain.lean}\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -1439,7 +1576,7 @@ counting uses the Mathlib lemma \lean{card\_roots'}.
 \item Lemma~\ref{lem:norm} is proved in full in \lean{NormCount.lean}: the prime-power root
 count, the Chinese remainder theorem, irrationality of $\sqrt d$ (\lean{irrational\_sqrt\_natCast\_iff})
 and the separation $\varepsilon\ge3$.
-\item The project has about 7600 lines of Lean. \lean{lake build} rebuilds it in a few
+\item The project has about 8900 lines of Lean. \lean{lake build} rebuilds it in a few
 minutes once Mathlib is built.
 \end{itemize}
 
@@ -1456,7 +1593,8 @@ orbit must have many rises in its quotient increments. Theorem~\ref{thm:hankel} 
 natural candidates for further ones, the higher invariants $I_r$. Section~\ref{sec:2377} uses
 $I_4$ in exactly this way.
 
-The count of Section~\ref{sec:1137} loses only through the number $X^7$ of patterns.
+The count of Section~\ref{sec:1137} loses through the number of patterns, $X^7$, reduced to
+$X^5$ in Section~\ref{sec:827}.
 With patterns at four consecutive states one has thirteen integers and as many equations as
 unknown increments. If each such pattern allowed only $O(1)$ configurations, the optimisation of Section~\ref{sec:2377} would give the exponent $39/131$. But the four-state equations have
 positive-dimensional families of solutions. For instance, the Newton coefficients
@@ -1464,9 +1602,9 @@ $(\alpha,-3\alpha-1,3\alpha+3,-\alpha-3,1)$, with coefficient polynomial $(z-1)^
 every state, together with constant increments $k_j=t$, satisfy all the linear and quadratic
 relations for every $t$. Such families are excluded only by the remainder equations, which the
 count above discards. Two further refinements have been proposed. One, through the degree-five orthogonal polynomial
-and the curve bounds of~\cite{CDHNV}, reaches $14/47$. The other counts the seven pattern
-integers as one vector of Pl\"ucker coordinates, with $O(X^5)$ values, weighted by the shortest
-vector of the lattice they determine; it reaches $45/152$. We do not include either here.
+and the curve bounds of~\cite{CDHNV}, reaches $14/47$. The other weights each minor vector by the
+shortest vector of the rank-three lattice it determines, which contains the gap vector, and
+reaches $45/152$. We do not include either here.
 
 There is no obvious monotonicity to exploit. The curvatures $D_i$ of successive blocks need
 not decrease. For $a=13242$ the orbit of $255$ begins
