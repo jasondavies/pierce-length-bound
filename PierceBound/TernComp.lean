@@ -83,7 +83,12 @@ lemma mulVec_abs_le {M : Matrix (Fin 3) (Fin 3) ℤ} {k : ℤ} (hM : ∀ i, ∑ 
 
 /-- A substitution with a small inverse. -/
 def GoodSub (C Ci : Matrix (Fin 3) (Fin 3) ℤ) : Prop :=
-  C * Ci = 1 ∧ (∀ i, ∑ j, |Ci i j| ≤ 2) ∧ C.det ^ 2 = 1 ∧ ∀ i j, |C i j| ≤ 1
+  C * Ci = 1 ∧ (∀ i, ∑ j, |Ci i j| ≤ 2) ∧ ∀ i j, |C i j| ≤ 1
+
+/-- An integer matrix with an integer inverse has determinant `±1`. -/
+lemma GoodSub.det_sq {C Ci : Matrix (Fin 3) (Fin 3) ℤ} (h : GoodSub C Ci) : C.det ^ 2 = 1 := by
+  have h1 : C.det * Ci.det = 1 := by rw [← Matrix.det_mul, h.1, Matrix.det_one]
+  rcases Int.eq_one_or_neg_one_of_mul_eq_one h1 with h2 | h2 <;> rw [h2] <;> norm_num
 
 /-- **Choosing the plane.** -/
 lemma plane_one (c : Fin 10 → ℤ) (hD : disc3 c ≠ 0) :
@@ -98,31 +103,27 @@ lemma plane_one (c : Fin 10 → ℤ) (hD : disc3 c ≠ 0) :
     unfold disc3
     linear_combination 2 * c 7 * h1 - 2 * c 0 * h3 - 2 * c 2 * h2 + c 1 * (h4 - h2 - h3)
   rcases key with h | h | h | h
-  · refine ⟨!![1, 0, 0; 0, 1, 0; 0, 0, 1], !![1, 0, 0; 0, 1, 0; 0, 0, 1], ⟨?_, ?_, ?_, ?_⟩, ?_⟩
+  · refine ⟨!![1, 0, 0; 0, 1, 0; 0, 0, 1], !![1, 0, 0; 0, 1, 0; 0, 0, 1], ⟨?_, ?_, ?_⟩, ?_⟩
     · ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three]
     · intro i; fin_cases i <;> simp [Fin.sum_univ_three]
-    · simp [Matrix.det_fin_three]
     · intro i j; fin_cases i <;> fin_cases j <;> simp
     · convert h using 1
       simp [bdisc, tcomp, quadv, bilv]
-  · refine ⟨!![1, 0, 0; 0, 0, 1; 0, 1, 0], !![1, 0, 0; 0, 0, 1; 0, 1, 0], ⟨?_, ?_, ?_, ?_⟩, ?_⟩
+  · refine ⟨!![1, 0, 0; 0, 0, 1; 0, 1, 0], !![1, 0, 0; 0, 0, 1; 0, 1, 0], ⟨?_, ?_, ?_⟩, ?_⟩
     · ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three]
     · intro i; fin_cases i <;> simp [Fin.sum_univ_three]
-    · simp [Matrix.det_fin_three]
     · intro i j; fin_cases i <;> fin_cases j <;> simp
     · convert h using 1
       simp [bdisc, tcomp, quadv, bilv]
-  · refine ⟨!![0, 0, 1; 1, 0, 0; 0, 1, 0], !![0, 1, 0; 0, 0, 1; 1, 0, 0], ⟨?_, ?_, ?_, ?_⟩, ?_⟩
+  · refine ⟨!![0, 0, 1; 1, 0, 0; 0, 1, 0], !![0, 1, 0; 0, 0, 1; 1, 0, 0], ⟨?_, ?_, ?_⟩, ?_⟩
     · ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three]
     · intro i; fin_cases i <;> simp [Fin.sum_univ_three]
-    · simp [Matrix.det_fin_three]
     · intro i j; fin_cases i <;> fin_cases j <;> simp
     · convert h using 1
       simp [bdisc, tcomp, quadv, bilv]
-  · refine ⟨!![1, 0, 0; 1, 0, 1; 0, 1, 0], !![1, 0, 0; 0, 0, 1; -1, 1, 0], ⟨?_, ?_, ?_, ?_⟩, ?_⟩
+  · refine ⟨!![1, 0, 0; 1, 0, 1; 0, 1, 0], !![1, 0, 0; 0, 0, 1; -1, 1, 0], ⟨?_, ?_, ?_⟩, ?_⟩
     · ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three]
     · intro i; fin_cases i <;> simp [Fin.sum_univ_three]
-    · simp [Matrix.det_fin_three]
     · intro i j; fin_cases i <;> fin_cases j <;> simp
     · convert h using 1
       simp [bdisc, tcomp, quadv, bilv]
@@ -131,20 +132,18 @@ lemma plane_one (c : Fin 10 → ℤ) (hD : disc3 c ≠ 0) :
 lemma plane_two (c : Fin 10 → ℤ) (hΔ : bdisc c ≠ 0) :
     ∃ C Ci, GoodSub C Ci ∧ tcomp c C 0 ≠ 0 ∧ bdisc (tcomp c C) ≠ 0 := by
   by_cases h0 : c 0 ≠ 0
-  · refine ⟨!![1, 0, 0; 0, 1, 0; 0, 0, 1], !![1, 0, 0; 0, 1, 0; 0, 0, 1], ⟨?_, ?_, ?_, ?_⟩, ?_, ?_⟩
+  · refine ⟨!![1, 0, 0; 0, 1, 0; 0, 0, 1], !![1, 0, 0; 0, 1, 0; 0, 0, 1], ⟨?_, ?_, ?_⟩, ?_, ?_⟩
     · ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three]
     · intro i; fin_cases i <;> simp [Fin.sum_univ_three]
-    · simp [Matrix.det_fin_three]
     · intro i j; fin_cases i <;> fin_cases j <;> simp
     · simpa [tcomp, quadv] using h0
     · convert hΔ using 1
       simp [bdisc, tcomp, quadv, bilv]
   push Not at h0
   by_cases h2 : c 2 ≠ 0
-  · refine ⟨!![0, 1, 0; 1, 0, 0; 0, 0, 1], !![0, 1, 0; 1, 0, 0; 0, 0, 1], ⟨?_, ?_, ?_, ?_⟩, ?_, ?_⟩
+  · refine ⟨!![0, 1, 0; 1, 0, 0; 0, 0, 1], !![0, 1, 0; 1, 0, 0; 0, 0, 1], ⟨?_, ?_, ?_⟩, ?_, ?_⟩
     · ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three]
     · intro i; fin_cases i <;> simp [Fin.sum_univ_three]
-    · simp [Matrix.det_fin_three]
     · intro i j; fin_cases i <;> fin_cases j <;> simp
     · simpa [tcomp, quadv] using h2
     · convert hΔ using 1
@@ -152,10 +151,9 @@ lemma plane_two (c : Fin 10 → ℤ) (hΔ : bdisc c ≠ 0) :
   push Not at h2
   have h1 : c 1 ≠ 0 := by
     intro h1; apply hΔ; unfold bdisc; rw [h0, h1]; ring
-  refine ⟨!![1, 0, 0; 1, 1, 0; 0, 0, 1], !![1, 0, 0; -1, 1, 0; 0, 0, 1], ⟨?_, ?_, ?_, ?_⟩, ?_, ?_⟩
+  refine ⟨!![1, 0, 0; 1, 1, 0; 0, 0, 1], !![1, 0, 0; -1, 1, 0; 0, 0, 1], ⟨?_, ?_, ?_⟩, ?_, ?_⟩
   · ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three]
   · intro i; fin_cases i <;> simp [Fin.sum_univ_three]
-  · simp [Matrix.det_fin_three]
   · intro i j; fin_cases i <;> fin_cases j <;> simp
   · simp [tcomp, quadv, h0, h2]; exact h1
   · convert hΔ using 1

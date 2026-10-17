@@ -174,11 +174,12 @@ lemma sum_kq (s n : ℕ) : ∑ m ∈ Ico s (s + n), kq a b m = (qq a b (s + n) :
 
 /-- **Most starts are good.** In a run of `T ≥ 36` terms in `[A, 2A)`, at least `T/2` starts
 `i` have `i + 9 ≤ s + T` and `k_{i}, …, k_{i+6} ≤ H`, where `H = ⌊28a/(AT)⌋ + 1`. -/
-theorem good_card (hba : b < a) {s T A : ℕ} (hA : 1 ≤ A)
+theorem good_card (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T) :
     T ≤ 2 * ((Ico s (s + T)).filter fun i => i + 9 ≤ s + T ∧
       ∀ m ∈ range 7, kq a b (i + m) ≤ (28 * a / (A * T) + 1 : ℕ)).card := by
+  have hA : 1 ≤ A := by have := (hmem 0 (by omega)).2; omega
   set H : ℕ := 28 * a / (A * T) + 1 with hH
   set G := (Ico s (s + T)).filter fun i => i + 9 ≤ s + T ∧ ∀ m ∈ range 7, kq a b (i + m) ≤ (H : ℤ)
   set Big := (Ico s (s + (T - 1))).filter fun m => (H : ℤ) < kq a b m
@@ -257,17 +258,18 @@ lemma abs_le_div {z : ℤ} {C n : ℕ} (hn : 0 < n) (h : |z| * n ≤ C) : |z| �
 
 /-- **The window theorem.** Under the scale condition `237568 A⁴ H⁵ ≤ a³`,
 `T ≤ 16 (2M + 1)⁷ H²` with `M = ⌊172032 A⁴ H⁶ / a³⌋`. -/
-theorem two_state_window (hba : b < a) {s T A : ℕ} (hA : 1 ≤ A)
+theorem two_state_window (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T)
     (hc : 237568 * A ^ 4 * (28 * a / (A * T) + 1) ^ 5 ≤ a ^ 3) :
     T ≤ 16 * (2 * (172032 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3) + 1) ^ 7 *
       (28 * a / (A * T) + 1) ^ 2 := by
+  have hA : 1 ≤ A := by have := (hmem 0 (by omega)).2; omega
   set H : ℕ := 28 * a / (A * T) + 1 with hH
   set M : ℕ := 172032 * A ^ 4 * H ^ 6 / a ^ 3 with hM
   set G := (Ico s (s + T)).filter fun i => i + 9 ≤ s + T ∧
     ∀ m ∈ range 7, kq a b (i + m) ≤ (H : ℤ)
-  have hgood := good_card hba hA hmem hsT hT
+  have hgood := good_card hba hmem hsT hT
   have ha : 0 < a := by omega
   have ha3 : 0 < a ^ 3 := by positivity
   have hcZ : (237568 : ℤ) * (A : ℤ) ^ 4 * (H : ℤ) ^ 5 ≤ (a : ℤ) ^ 3 := by exact_mod_cast hc
@@ -355,12 +357,15 @@ def C77 : ℕ := 122449 ^ 20 + (8 * 237568 * 56 ^ 5) ^ 11 + (64 * 50176) ^ 11 +
   8 ^ 16 * (16 * 3 ^ 7 * 172032 ^ 7) * 56 ^ 44
 
 /-- **The exponent arithmetic.** Every window run satisfies `T⁷⁷ ≤ C₇₇ Δ²² a²³`. -/
-theorem window_77 {a A T Δ : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ) (hT : 36 ≤ T)
+theorem window_77 {a A T Δ : ℕ} (hT : 36 ≤ T)
     (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hdrop : T * (T - 1) ≤ 4 * A * Δ)
     (hwin : 237568 * A ^ 4 * (28 * a / (A * T) + 1) ^ 5 ≤ a ^ 3 →
       T ≤ 16 * (2 * (172032 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3) + 1) ^ 7 *
         (28 * a / (A * T) + 1) ^ 2) :
     T ^ 77 ≤ C77 * Δ ^ 22 * a ^ 23 := by
+  have hA : 1 ≤ A := Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega
+  have hΔ : 1 ≤ Δ := Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega
+  have ha : 1 ≤ a := Nat.pos_of_ne_zero fun h => by simp [h] at hsix; omega
   set H := 28 * a / (A * T) + 1 with hH
   set M := 172032 * A ^ 4 * H ^ 6 / a ^ 3 with hM
   have ha0 : 0 < a := by omega
@@ -482,7 +487,7 @@ theorem window_77 {a A T Δ : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ
           gcongr <;> norm_num
 
 /-- Every dyadic window satisfies `T ≤ 35` or `T⁷⁷ ≤ C₇₇ Δ²² a²³`. -/
-theorem visits_77 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) (hΔ1 : 1 ≤ Δ) :
+theorem visits_77 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
     (visits a b k).card ≤ 35 ∨ (visits a b k).card ^ 77 ≤ C77 * Δ ^ 22 * a ^ 23 := by
   by_cases hT : (visits a b k).card ≤ 35
   · exact Or.inl hT
@@ -497,86 +502,22 @@ theorem visits_77 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) (hΔ1 : 1
     have := lt_P_of_orb_pos (a := a) (b := b) (i := s + (T - 1))
       (lt_of_lt_of_le (Nat.two_pow_pos k) h)
     omega
-  exact window_77 (by omega) Nat.one_le_two_pow hΔ1 (by omega) (six_step_bound W (by omega))
+  exact window_77 (by omega) (six_step_bound W (by omega))
     (drop_bound W hΔ (by omega))
-    (fun hc => two_state_window hba Nat.one_le_two_pow hmem hsT (by omega) hc)
+    (fun hc => two_state_window hba hmem hsT (by omega) hc)
 
 /-- **Theorem.** `P(a, b) ≪_ε a^{23/77 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le_23_77 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((23 : ℝ) / 77 + ε) := by
+  have h := P_le_of_visits (N := 77) (r := 23) (K := C77) (by norm_num)
+    ((tauMax_slow 32 7).pow 22) fun a b k _ hba =>
+      visits_77 (k := k) hba (tauMax_divBound a)
   intro ε hε
-  obtain ⟨m, hm⟩ := exists_nat_gt (1 / ε)
-  have hm0 : (0 : ℝ) < m := lt_of_le_of_lt (by positivity) hm
-  have hm1 : m ≠ 0 := by rintro rfl; simp at hm0
-  have hexp : ((23 * m + 7 : ℕ) : ℝ) * ((77 * m : ℕ) : ℝ)⁻¹ ≤ 23 / 77 + ε / 2 := by
-    push_cast
-    rw [← div_eq_mul_inv, div_le_iff₀ (by positivity)]
-    have : 1 < ε * m := by rwa [div_lt_iff₀ hε, mul_comm] at hm
-    nlinarith
-  obtain ⟨Dc, hDc, hdiv⟩ := OAI.Ostmann.exists_divisors_power_bound (22 * m)
-  obtain ⟨CL, hCL, hlog⟩ := log_add_one_le_rpow (ε / 2) (by positivity)
-  set K : ℕ := C77 ^ m * Dc * 32
-  set C2 : ℝ := (K : ℝ) ^ (((77 * m : ℕ) : ℝ)⁻¹)
-  have hC2 : 0 ≤ C2 := by positivity
-  refine ⟨CL * (35 + C2), by positivity, fun a b hb hba => ?_⟩
-  have ha1 : 1 ≤ a := by omega
-  have ha : (1 : ℝ) ≤ a := by exact_mod_cast ha1
-  set Δ := (range (32 * a ^ 7 + 1)).sup fun n => n.divisors.card
-  have hΔ : DivBound a Δ := fun n _ hn =>
-    le_sup (f := fun n => n.divisors.card) (mem_range.mpr (by omega))
-  have hΔ1 : 1 ≤ Δ := by
-    have h7 : 1 ≤ a ^ 7 := Nat.one_le_pow _ _ ha1
-    have h1 : (1 : ℕ).divisors.card ≤ Δ :=
-      le_sup (f := fun n => n.divisors.card) (mem_range.mpr (by omega))
-    rw [Nat.divisors_one, card_singleton] at h1
-    exact h1
-  have hΔpow : Δ ^ (22 * m) ≤ Dc * (32 * a ^ 7) := by
-    obtain ⟨n0, hn0, he⟩ := exists_mem_eq_sup (range (32 * a ^ 7 + 1)) nonempty_range_add_one
-      fun n => n.divisors.card
-    rw [show Δ = n0.divisors.card from he]
-    have hn0' : n0 ≤ 32 * a ^ 7 := by have := mem_range.mp hn0; omega
-    by_cases h0 : n0 = 0
-    · subst h0; simp [zero_pow (show 22 * m ≠ 0 by omega)]
-    · exact (hdiv n0 h0).trans (Nat.mul_le_mul_left _ hn0')
-  set β : ℝ := 23 / 77 + ε / 2
-  have hβ : 1 ≤ (a : ℝ) ^ β := Real.one_le_rpow ha (by positivity)
-  have hwin : ∀ k, ((visits a b k).card : ℝ) ≤ (35 + C2) * (a : ℝ) ^ β := by
-    intro k
-    rcases visits_77 (k := k) hba hΔ hΔ1 with h | h
-    · have : ((visits a b k).card : ℝ) ≤ 35 := by exact_mod_cast h
-      nlinarith
-    · set T := (visits a b k).card
-      have hpow : T ^ (77 * m) ≤ K * a ^ (23 * m + 7) := by
-        calc T ^ (77 * m) = (T ^ 77) ^ m := by rw [pow_mul]
-          _ ≤ (C77 * Δ ^ 22 * a ^ 23) ^ m := Nat.pow_le_pow_left h m
-          _ = C77 ^ m * a ^ (23 * m) * Δ ^ (22 * m) := by ring
-          _ ≤ C77 ^ m * a ^ (23 * m) * (Dc * (32 * a ^ 7)) := by gcongr
-          _ = K * a ^ (23 * m + 7) := by simp only [K]; ring
-      have hroot := le_rpow_inv_of_pow_le (by omega) hpow
-      have hsplit : ((K * a ^ (23 * m + 7) : ℕ) : ℝ) ^ (((77 * m : ℕ) : ℝ)⁻¹) =
-          C2 * (a : ℝ) ^ (((23 * m + 7 : ℕ) : ℝ) * ((77 * m : ℕ) : ℝ)⁻¹) := by
-        rw [Nat.cast_mul, Real.mul_rpow (by positivity) (by positivity), Nat.cast_pow,
-          ← Real.rpow_natCast (a : ℝ) (23 * m + 7), ← Real.rpow_mul (by positivity)]
-      rw [hsplit] at hroot
-      have : (a : ℝ) ^ (((23 * m + 7 : ℕ) : ℝ) * ((77 * m : ℕ) : ℝ)⁻¹) ≤ (a : ℝ) ^ β :=
-        Real.rpow_le_rpow_of_exponent_le ha hexp
-      nlinarith [mul_le_mul_of_nonneg_left this hC2]
-  have hP : (P a b : ℝ) ≤ ((Nat.log 2 a + 1 : ℕ) : ℝ) * ((35 + C2) * (a : ℝ) ^ β) := by
-    rw [P_eq_sum_visits hba.le]
-    push_cast
-    calc ∑ k ∈ range (Nat.log 2 a + 1), ((visits a b k).card : ℝ)
-        ≤ ∑ _k ∈ range (Nat.log 2 a + 1), (35 + C2) * (a : ℝ) ^ β :=
-          sum_le_sum fun k _ => hwin k
-      _ = _ := by simp
-  have hL := hlog a ha1
-  calc (P a b : ℝ) ≤ ((Nat.log 2 a + 1 : ℕ) : ℝ) * ((35 + C2) * (a : ℝ) ^ β) := hP
-    _ ≤ (CL * (a : ℝ) ^ (ε / 2)) * ((35 + C2) * (a : ℝ) ^ β) :=
-        mul_le_mul_of_nonneg_right hL (by positivity)
-    _ = CL * (35 + C2) * ((a : ℝ) ^ (ε / 2) * (a : ℝ) ^ β) := by ring
-    _ = CL * (35 + C2) * (a : ℝ) ^ ((23 : ℝ) / 77 + ε) := by
-        rw [← Real.rpow_add (by positivity)]
-        congr 2
-        simp only [β]; ring
+  obtain ⟨C, hC, hP⟩ := h ε hε
+  refine ⟨C, hC, fun a b hb hba => ?_⟩
+  have := hP a b hb hba
+  norm_num at this ⊢
+  exact this
 
 end Exponent
 

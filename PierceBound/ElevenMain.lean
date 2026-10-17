@@ -19,9 +19,6 @@ open Finset
 /-- The polynomial range `P(a) = 10³⁰⁰ a¹⁰⁰` containing all norm-equation right sides. -/
 def Pbig (a : ℕ) : ℕ := 10 ^ 300 * a ^ 100
 
-/-- `max_{n ≤ X} τ(n)`. -/
-def tauMax (X : ℕ) : ℕ := (range (X + 1)).sup fun n => n.divisors.card
-
 /-- The slack factor `Ξ(a)`. -/
 def Xi (a : ℕ) : ℕ := 2 * tauMax (Pbig a) ^ 3 * (Nat.log 3 (Pbig a) + 1) + 4
 
@@ -59,17 +56,18 @@ section Window
 
 variable {a b : ℕ}
 
-theorem two_state_window_eleven (hba : b < a) {s T A : ℕ} (hA : 1 ≤ A)
+theorem two_state_window_eleven (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T)
     (hc : 237568 * A ^ 4 * (28 * a / (A * T) + 1) ^ 5 ≤ a ^ 3) :
     T ≤ 24 * (2 * (172032 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3) + 1) ^ 7 *
       (28 * a / (A * T) + 1) * Xi a := by
+  have hA : 1 ≤ A := by have := (hmem 0 (by omega)).2; omega
   set H : ℕ := 28 * a / (A * T) + 1 with hH
   set M : ℕ := 172032 * A ^ 4 * H ^ 6 / a ^ 3 with hM
   set G := (Ico s (s + T)).filter fun i => i + 9 ≤ s + T ∧
     ∀ m ∈ range 7, kq a b (i + m) ≤ (H : ℤ)
-  have hgood := good_card hba hA hmem hsT hT
+  have hgood := good_card hba hmem hsT hT
   have ha : 0 < a := by omega
   have ha3 : 0 < a ^ 3 := by positivity
   have hcZ : (237568 : ℤ) * (A : ℤ) ^ 4 * (H : ℤ) ^ 5 ≤ (a : ℤ) ^ 3 := by exact_mod_cast hc
@@ -197,12 +195,15 @@ def C74 : ℕ := 122449 ^ 19 + (8 * 237568 * 56 ^ 5) ^ 11 + 10752 ^ 19 +
   8 ^ 15 * (24 * 3 ^ 7 * 172032 ^ 7) * 56 ^ 43
 
 /-- **The exponent arithmetic.** Every window run satisfies `T⁷⁴ ≤ C₇₄ Δ¹⁹ Ξ¹⁹ a²²`. -/
-theorem window_74 {a A T Δ X : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X)
+theorem window_74 {a A T Δ X : ℕ} (hX : 1 ≤ X)
     (hT : 36 ≤ T) (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hdrop : T * (T - 1) ≤ 4 * A * Δ)
     (hwin : 237568 * A ^ 4 * (28 * a / (A * T) + 1) ^ 5 ≤ a ^ 3 →
       T ≤ 24 * (2 * (172032 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3) + 1) ^ 7 *
         (28 * a / (A * T) + 1) * X) :
     T ^ 74 ≤ C74 * Δ ^ 19 * X ^ 19 * a ^ 22 := by
+  have hA : 1 ≤ A := Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega
+  have hΔ : 1 ≤ Δ := Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega
+  have ha : 1 ≤ a := Nat.pos_of_ne_zero fun h => by simp [h] at hsix; omega
   set H := 28 * a / (A * T) + 1 with hH
   set M := 172032 * A ^ 4 * H ^ 6 / a ^ 3 with hM
   have ha0 : 0 < a := by omega
@@ -322,33 +323,6 @@ end Exponent
 
 section Global
 
-/-- `max_{n ≤ X} τ(n)^k ≤ D X` from the divisor bound. -/
-lemma tauMax_pow_le {k D : ℕ} (hk : k ≠ 0) (hdiv : ∀ n : ℕ, n ≠ 0 → n.divisors.card ^ k ≤ D * n)
-    (X : ℕ) : tauMax X ^ k ≤ D * X := by
-  obtain ⟨n0, hn0, he⟩ := exists_mem_eq_sup (range (X + 1)) nonempty_range_add_one
-    fun n => n.divisors.card
-  unfold tauMax
-  rw [he]
-  have hn0' : n0 ≤ X := by have := mem_range.mp hn0; omega
-  by_cases h0 : n0 = 0
-  · subst h0; simp [zero_pow hk]
-  · exact (hdiv n0 h0).trans (Nat.mul_le_mul_left _ hn0')
-
-/-- A root bound: `x^k ≤ D c a^e` gives `x ≤ (D c)^{1/k} a^η` once `e/k ≤ η`. -/
-lemma root_le {x D c e k a : ℕ} (hk : k ≠ 0) (ha : 1 ≤ a) (h : x ^ k ≤ D * (c * a ^ e))
-    {η : ℝ} (hη : (e : ℝ) / k ≤ η) :
-    (x : ℝ) ≤ ((D * c : ℕ) : ℝ) ^ ((k : ℝ)⁻¹) * (a : ℝ) ^ η := by
-  have ha' : (1 : ℝ) ≤ a := by exact_mod_cast ha
-  have h1 := le_rpow_inv_of_pow_le hk h
-  have e1 : ((D * (c * a ^ e) : ℕ) : ℝ) ^ ((k : ℝ)⁻¹) =
-      ((D * c : ℕ) : ℝ) ^ ((k : ℝ)⁻¹) * (a : ℝ) ^ ((e : ℝ) / k) := by
-    rw [show D * (c * a ^ e) = D * c * a ^ e by ring, Nat.cast_mul,
-      Real.mul_rpow (by positivity) (by positivity), Nat.cast_pow,
-      ← Real.rpow_natCast (a : ℝ) e, ← Real.rpow_mul (by positivity), div_eq_mul_inv]
-  rw [e1] at h1
-  exact h1.trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le ha' hη)
-    (by positivity))
-
 /-- **The slack factor of the polynomial range `10ᶜ aᵉ` is `O_η(a^η)`.** -/
 lemma xi_le (c e : ℕ) (he : 1 ≤ e) (η : ℝ) (hη : 0 < η) : ∃ C > 0, ∀ a : ℕ, 1 ≤ a →
     ((2 * tauMax (10 ^ c * a ^ e) ^ 3 * (Nat.log 3 (10 ^ c * a ^ e) + 1) + 4 : ℕ) : ℝ) ≤
@@ -402,27 +376,11 @@ lemma xi_le (c e : ℕ) (he : 1 ≤ e) (η : ℝ) (hη : 0 < η) : ∃ C > 0, �
   push_cast at this
   nlinarith
 
-/-- **The slack factors are `O_η(a^η)`.** -/
-lemma slack_le (η : ℝ) (hη : 0 < η) : ∃ C > 0, ∀ a : ℕ, 1 ≤ a →
-    (tauMax (32 * a ^ 7) : ℝ) ≤ C * (a : ℝ) ^ η ∧ (Xi a : ℝ) ≤ C * (a : ℝ) ^ η := by
-  obtain ⟨k, hk⟩ := exists_nat_gt (7 / η)
-  have hk0 : (0 : ℝ) < k := lt_of_le_of_lt (by positivity) hk
-  have hk1 : k ≠ 0 := by rintro rfl; simp at hk0
-  have hkη : (7 : ℝ) / k ≤ η := by
-    rw [div_le_iff₀ hk0]; rw [div_lt_iff₀ hη] at hk; linarith
-  obtain ⟨Dc, hDc, hdiv⟩ := OAI.Ostmann.exists_divisors_power_bound k
-  obtain ⟨CX, hCX, hX⟩ := xi_le 300 100 (by norm_num) η hη
-  set C1 : ℝ := ((Dc * 32 : ℕ) : ℝ) ^ ((k : ℝ)⁻¹)
-  have hC1 : 0 ≤ C1 := by positivity
-  refine ⟨C1 + CX, by positivity, fun a ha => ⟨?_, ?_⟩⟩
-  · have b1 : (tauMax (32 * a ^ 7) : ℝ) ≤ C1 * (a : ℝ) ^ η :=
-      root_le hk1 ha (tauMax_pow_le hk1 hdiv _) (by exact_mod_cast hkη)
-    nlinarith [mul_nonneg hCX.le (by positivity : (0 : ℝ) ≤ (a : ℝ) ^ η)]
-  · have : (Xi a : ℝ) ≤ CX * (a : ℝ) ^ η := hX a ha
-    nlinarith [mul_nonneg hC1 (by positivity : (0 : ℝ) ≤ (a : ℝ) ^ η)]
+/-- **The slack factor `Ξ(a)` is `O_η(a^η)`.** -/
+lemma slack_le : SlowGrowth Xi := fun η hη => xi_le 300 100 (by norm_num) η hη
 
 /-- Every dyadic window satisfies `T ≤ 35` or `T⁷⁴ ≤ C₇₄ Δ¹⁹ Ξ(a)¹⁹ a²²`. -/
-theorem visits_74 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) (hΔ1 : 1 ≤ Δ) :
+theorem visits_74 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
     (visits a b k).card ≤ 35 ∨ (visits a b k).card ^ 74 ≤ C74 * Δ ^ 19 * Xi a ^ 19 * a ^ 22 := by
   by_cases hT : (visits a b k).card ≤ 35
   · exact Or.inl hT
@@ -437,92 +395,22 @@ theorem visits_74 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) (hΔ1 : 1
     have := lt_P_of_orb_pos (a := a) (b := b) (i := s + (T - 1))
       (lt_of_lt_of_le (Nat.two_pow_pos k) h)
     omega
-  exact window_74 (by omega) Nat.one_le_two_pow hΔ1 (by unfold Xi; omega) (by omega)
+  exact window_74 (by unfold Xi; omega) (by omega)
     (six_step_bound W (by omega)) (drop_bound W hΔ (by omega))
-    (fun hc => two_state_window_eleven hba Nat.one_le_two_pow hmem hsT (by omega) hc)
+    (fun hc => two_state_window_eleven hba hmem hsT (by omega) hc)
 
 /-- **Theorem.** `P(a, b) ≪_ε a^{11/37 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le_11_37 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((11 : ℝ) / 37 + ε) := by
+  have h := P_le_of_visits (N := 74) (r := 22) (K := C74) (by norm_num)
+    (((tauMax_slow 32 7).pow 19).mul (slack_le.pow 19)) fun a b k _ hba =>
+      (visits_74 (k := k) hba (tauMax_divBound a)).imp id fun h => h.trans_eq (by ring)
   intro ε hε
-  obtain ⟨Cs, hCs, hslack⟩ := slack_le (ε / 4) (by positivity)
-  obtain ⟨CL, hCL, hlog⟩ := log_add_one_le_rpow (ε / 2) (by positivity)
-  set K : ℝ := (C74 : ℝ) * Cs ^ 38
-  set C2 : ℝ := K ^ ((74 : ℝ)⁻¹)
-  have hK : 0 < K := by have : (0 : ℝ) < C74 := by unfold C74; positivity
-                        positivity
-  have hC2 : 0 ≤ C2 := by positivity
-  refine ⟨CL * (35 + C2), by positivity, fun a b hb hba => ?_⟩
-  have ha1 : 1 ≤ a := by omega
-  have ha : (1 : ℝ) ≤ a := by exact_mod_cast ha1
-  set Δ := tauMax (32 * a ^ 7)
-  have hΔ : DivBound a Δ := fun n _ hn =>
-    le_sup (f := fun n => n.divisors.card) (mem_range.mpr (by omega))
-  have hΔ1 : 1 ≤ Δ := by
-    have h7 : 1 ≤ a ^ 7 := Nat.one_le_pow _ _ ha1
-    have h1 : (1 : ℕ).divisors.card ≤ Δ :=
-      le_sup (f := fun n => n.divisors.card) (mem_range.mpr (by omega))
-    rw [Nat.divisors_one, card_singleton] at h1
-    exact h1
-  obtain ⟨hsΔ, hsX⟩ := hslack a ha1
-  set β : ℝ := 11 / 37 + ε / 2
-  have hβ : 1 ≤ (a : ℝ) ^ β := Real.one_le_rpow ha (by positivity)
-  have hwin : ∀ k, ((visits a b k).card : ℝ) ≤ (35 + C2) * (a : ℝ) ^ β := by
-    intro k
-    rcases visits_74 (k := k) hba hΔ hΔ1 with h | h
-    · have : ((visits a b k).card : ℝ) ≤ 35 := by exact_mod_cast h
-      nlinarith
-    · set T := (visits a b k).card
-      have hTr : (T : ℝ) ^ 74 ≤ K * (a : ℝ) ^ (22 + 38 * (ε / 4)) := by
-        have h' : (T : ℝ) ^ 74 ≤ (C74 : ℝ) * (Δ : ℝ) ^ 19 * (Xi a : ℝ) ^ 19 * (a : ℝ) ^ 22 := by
-          exact_mod_cast h
-        have p1 : (Δ : ℝ) ^ 19 ≤ (Cs * (a : ℝ) ^ (ε / 4)) ^ 19 :=
-          pow_le_pow_left₀ (Nat.cast_nonneg _) hsΔ 19
-        have p2 : (Xi a : ℝ) ^ 19 ≤ (Cs * (a : ℝ) ^ (ε / 4)) ^ 19 :=
-          pow_le_pow_left₀ (Nat.cast_nonneg _) hsX 19
-        have e : (C74 : ℝ) * (Cs * (a : ℝ) ^ (ε / 4)) ^ 19 * (Cs * (a : ℝ) ^ (ε / 4)) ^ 19 *
-            (a : ℝ) ^ 22 = K * (a : ℝ) ^ (22 + 38 * (ε / 4)) := by
-          have q1 : ((a : ℝ) ^ (ε / 4)) ^ 38 = (a : ℝ) ^ (38 * (ε / 4)) := by
-            rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity)]; norm_num; ring_nf
-          have q2 : (a : ℝ) ^ (22 : ℕ) = (a : ℝ) ^ (22 : ℝ) := by
-            rw [← Real.rpow_natCast]; norm_num
-          calc (C74 : ℝ) * (Cs * (a : ℝ) ^ (ε / 4)) ^ 19 * (Cs * (a : ℝ) ^ (ε / 4)) ^ 19 *
-                (a : ℝ) ^ 22 = (C74 : ℝ) * Cs ^ 38 * ((a : ℝ) ^ (ε / 4)) ^ 38 * (a : ℝ) ^ (22 : ℕ) := by
-                ring
-            _ = K * (a : ℝ) ^ (22 + 38 * (ε / 4)) := by
-                rw [q1, q2, Real.rpow_add (by positivity)]; simp only [K]; ring
-        calc (T : ℝ) ^ 74 ≤ (C74 : ℝ) * (Δ : ℝ) ^ 19 * (Xi a : ℝ) ^ 19 * (a : ℝ) ^ 22 := h'
-          _ ≤ (C74 : ℝ) * (Cs * (a : ℝ) ^ (ε / 4)) ^ 19 * (Cs * (a : ℝ) ^ (ε / 4)) ^ 19 *
-              (a : ℝ) ^ 22 := by gcongr
-          _ = _ := e
-      have hroot : (T : ℝ) ≤ C2 * (a : ℝ) ^ ((22 + 38 * (ε / 4)) / 74) := by
-        have h1 : ((T : ℝ) ^ 74) ^ ((74 : ℝ)⁻¹) ≤ (K * (a : ℝ) ^ (22 + 38 * (ε / 4))) ^ ((74 : ℝ)⁻¹) :=
-          Real.rpow_le_rpow (by positivity) hTr (by positivity)
-        rw [show (74 : ℝ) = ((74 : ℕ) : ℝ) by norm_num, Real.pow_rpow_inv_natCast (Nat.cast_nonneg _)
-          (by norm_num), Real.mul_rpow hK.le (by positivity), ← Real.rpow_mul (by positivity)] at h1
-        simp only [C2]
-        convert h1 using 2
-        all_goals norm_num
-        all_goals (congr 1; ring)
-      have hexp : (22 + 38 * (ε / 4)) / 74 ≤ β := by simp only [β]; nlinarith
-      have := Real.rpow_le_rpow_of_exponent_le ha hexp
-      nlinarith [mul_le_mul_of_nonneg_left this hC2]
-  have hP : (P a b : ℝ) ≤ ((Nat.log 2 a + 1 : ℕ) : ℝ) * ((35 + C2) * (a : ℝ) ^ β) := by
-    rw [P_eq_sum_visits hba.le]
-    push_cast
-    calc ∑ k ∈ range (Nat.log 2 a + 1), ((visits a b k).card : ℝ)
-        ≤ ∑ _k ∈ range (Nat.log 2 a + 1), (35 + C2) * (a : ℝ) ^ β :=
-          sum_le_sum fun k _ => hwin k
-      _ = _ := by simp
-  have hL := hlog a ha1
-  calc (P a b : ℝ) ≤ ((Nat.log 2 a + 1 : ℕ) : ℝ) * ((35 + C2) * (a : ℝ) ^ β) := hP
-    _ ≤ (CL * (a : ℝ) ^ (ε / 2)) * ((35 + C2) * (a : ℝ) ^ β) :=
-        mul_le_mul_of_nonneg_right hL (by positivity)
-    _ = CL * (35 + C2) * ((a : ℝ) ^ (ε / 2) * (a : ℝ) ^ β) := by ring
-    _ = CL * (35 + C2) * (a : ℝ) ^ ((11 : ℝ) / 37 + ε) := by
-        rw [← Real.rpow_add (by positivity)]
-        congr 2
-        simp only [β]; ring
+  obtain ⟨C, hC, hP⟩ := h ε hε
+  refine ⟨C, hC, fun a b hb hba => ?_⟩
+  have := hP a b hb hba
+  norm_num at this ⊢
+  exact this
 
 end Global
 

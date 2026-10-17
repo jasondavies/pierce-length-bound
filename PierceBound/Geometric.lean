@@ -4,6 +4,8 @@ import Mathlib
 # Geometric sums of `min(α 2^{-k/3}, β 2^{k/2})`
 
 `sum_min_le`: `∑_{k < L} min(α (2^k)^{-1/3}, β (2^k)^{1/2}) ≤ 9 α^{3/5} β^{2/5}`, uniformly in `L`.
+It is the case `s = 1/3`, `t = 1/2` of `sum_min_le_gen`, which bounds
+`∑_{k < L} min(α (2^k)^{-s}, β (2^k)^t)` by `C_{s,t} α^{t/(s+t)} β^{s/(s+t)}`.
 This is the reason no factor `log a` appears when the two window bounds are summed over the
 dyadic ranges.
 -/
@@ -77,94 +79,6 @@ lemma geom_high {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) {Y : ℝ} (hY : 0 ≤
       · rw [ite_eq_right hL, ih.1 (lt_of_not_ge hL)]
         simp only [zero_add]
         exact div_nonneg (by linarith) h1σ.le
-
-/-- **The dyadic min-sum.** For `α, β > 0`,
-`∑_{k < L} min(α (2^k)^{-1/3}, β (2^k)^{1/2}) ≤ 9 α^{3/5} β^{2/5}`. -/
-theorem sum_min_le {α β : ℝ} (hα : 0 < α) (hβ : 0 < β) (L : ℕ) :
-    ∑ k ∈ range L, min (α * ((2 : ℝ) ^ k) ^ (-(1 / 3 : ℝ))) (β * ((2 : ℝ) ^ k) ^ (1 / 2 : ℝ)) ≤
-      9 * (α ^ (3 / 5 : ℝ) * β ^ (2 / 5 : ℝ)) := by
-  set M := α ^ (3 / 5 : ℝ) * β ^ (2 / 5 : ℝ) with hM
-  have hMpos : 0 < M := by positivity
-  set ρ : ℝ := (2 : ℝ) ^ (1 / 2 : ℝ) with hρ
-  set σ : ℝ := (2 : ℝ) ^ (-(1 / 3 : ℝ)) with hσ
-  have hρk : ∀ k : ℕ, ((2 : ℝ) ^ k) ^ (1 / 2 : ℝ) = ρ ^ k := by
-    intro k
-    rw [hρ, ← Real.rpow_natCast, ← Real.rpow_natCast, ← Real.rpow_mul (by norm_num),
-      ← Real.rpow_mul (by norm_num), mul_comm]
-  have hσk : ∀ k : ℕ, ((2 : ℝ) ^ k) ^ (-(1 / 3 : ℝ)) = σ ^ k := by
-    intro k
-    rw [hσ, ← Real.rpow_natCast, ← Real.rpow_natCast, ← Real.rpow_mul (by norm_num),
-      ← Real.rpow_mul (by norm_num), mul_comm]
-  -- `ρ > 1`, `ρ/(ρ-1) ≤ 4`, `0 < σ ≤ 4/5`
-  have hρ2 : ρ ^ 2 = 2 := by
-    rw [hρ, ← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]; norm_num
-  have hρ0 : 0 < ρ := by positivity
-  have hρ1 : 4 / 3 ≤ ρ := by nlinarith
-  have hσ3 : σ ^ 3 = 1 / 2 := by
-    rw [hσ, ← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]; norm_num
-  have hσ0 : 0 < σ := by positivity
-  have hσ1 : σ ≤ 4 / 5 := by
-    by_contra h; push Not at h
-    have : (4 / 5 : ℝ) ^ 3 < σ ^ 3 := by gcongr
-    rw [hσ3] at this; norm_num at this
-  -- the key relation `X³ Y² = M⁵`
-  have hM5 : M ^ 5 = α ^ 3 * β ^ 2 := by
-    rw [hM, mul_pow, ← Real.rpow_natCast (α ^ (3 / 5 : ℝ)), ← Real.rpow_natCast (β ^ (2 / 5 : ℝ)),
-      ← Real.rpow_mul hα.le, ← Real.rpow_mul hβ.le]
-    norm_num
-  have hρσ : ∀ k : ℕ, (σ ^ k) ^ 3 * (ρ ^ k) ^ 2 = 1 := by
-    intro k
-    rw [← pow_mul, ← pow_mul, mul_comm k 3, mul_comm k 2, pow_mul, pow_mul, hσ3, hρ2,
-      ← mul_pow]; norm_num
-  have hpt : ∀ k : ℕ, min (α * σ ^ k) (β * ρ ^ k) ≤
-      (if σ ^ k ≤ M / α then α * σ ^ k else 0) + (if ρ ^ k ≤ M / β then β * ρ ^ k else 0) := by
-    intro k
-    have hX : 0 < α * σ ^ k := by positivity
-    have hY : 0 < β * ρ ^ k := by positivity
-    by_cases hYM : β * ρ ^ k ≤ M
-    · have h1 : ρ ^ k ≤ M / β := by rw [le_div_iff₀ hβ]; linarith
-      rw [ite_eq_left h1]
-      have : 0 ≤ (if σ ^ k ≤ M / α then α * σ ^ k else 0) := by split_ifs <;> positivity
-      linarith [min_le_right (α * σ ^ k) (β * ρ ^ k)]
-    · push Not at hYM
-      have hXM : α * σ ^ k < M := by
-        by_contra h; push Not at h
-        have : M ^ 3 * M ^ 2 < (α * σ ^ k) ^ 3 * (β * ρ ^ k) ^ 2 := by
-          have h3 : M ^ 3 ≤ (α * σ ^ k) ^ 3 := by gcongr
-          have h2 : M ^ 2 < (β * ρ ^ k) ^ 2 := by gcongr
-          calc M ^ 3 * M ^ 2 ≤ (α * σ ^ k) ^ 3 * M ^ 2 := by gcongr
-            _ < (α * σ ^ k) ^ 3 * (β * ρ ^ k) ^ 2 := by gcongr
-        have e : (α * σ ^ k) ^ 3 * (β * ρ ^ k) ^ 2 = M ^ 3 * M ^ 2 := by
-          rw [mul_pow, mul_pow, show M ^ 3 * M ^ 2 = M ^ 5 by ring, hM5]
-          calc α ^ 3 * (σ ^ k) ^ 3 * (β ^ 2 * (ρ ^ k) ^ 2)
-              = α ^ 3 * β ^ 2 * ((σ ^ k) ^ 3 * (ρ ^ k) ^ 2) := by ring
-            _ = α ^ 3 * β ^ 2 := by rw [hρσ, mul_one]
-        linarith
-      have h1 : σ ^ k ≤ M / α := by rw [le_div_iff₀ hα]; linarith
-      rw [ite_eq_left h1]
-      have : 0 ≤ (if ρ ^ k ≤ M / β then β * ρ ^ k else 0) := by split_ifs <;> positivity
-      linarith [min_le_left (α * σ ^ k) (β * ρ ^ k)]
-  have hlow := geom_low (by linarith : 1 < ρ) (div_pos hMpos hβ).le L
-  have hhigh := geom_high hσ0 (by linarith : σ < 1) (div_pos hMpos hα).le L
-  calc ∑ k ∈ range L, min (α * ((2 : ℝ) ^ k) ^ (-(1 / 3 : ℝ))) (β * ((2 : ℝ) ^ k) ^ (1 / 2 : ℝ))
-      = ∑ k ∈ range L, min (α * σ ^ k) (β * ρ ^ k) := by
-        refine sum_congr rfl fun k _ => ?_; rw [hσk, hρk]
-    _ ≤ ∑ k ∈ range L, ((if σ ^ k ≤ M / α then α * σ ^ k else 0) +
-          (if ρ ^ k ≤ M / β then β * ρ ^ k else 0)) := sum_le_sum fun k _ => hpt k
-    _ = α * ∑ k ∈ range L, (if σ ^ k ≤ M / α then σ ^ k else 0) +
-          β * ∑ k ∈ range L, (if ρ ^ k ≤ M / β then ρ ^ k else 0) := by
-        rw [sum_add_distrib, mul_sum, mul_sum]
-        congr 1 <;> refine sum_congr rfl fun k _ => ?_ <;> split_ifs <;> simp
-    _ ≤ α * ((M / α) / (1 - σ)) + β * (ρ * (M / β) / (ρ - 1)) := by gcongr
-    _ = M * (1 / (1 - σ) + ρ / (ρ - 1)) := by field_simp
-    _ ≤ M * 9 := by
-        gcongr
-        have h1 : 1 / (1 - σ) ≤ 5 := by
-          rw [div_le_iff₀ (by linarith)]; linarith
-        have h2 : ρ / (ρ - 1) ≤ 4 := by
-          rw [div_le_iff₀ (by linarith)]; linarith
-        linarith
-    _ = 9 * M := by ring
 
 /-- **The dyadic min-sum, general exponents.** For `α, β, s, t > 0`,
 `∑_{k < L} min(α (2^k)^{-s}, β (2^k)^t) ≤ C_{s,t} α^{t/(s+t)} β^{s/(s+t)}` with
@@ -240,5 +154,31 @@ theorem sum_min_le_gen {α β s t : ℝ} (hα : 0 < α) (hβ : 0 < β) (hs : 0 <
         have : (1 : ℝ) - σ ≠ 0 := by linarith
         have : ρ - 1 ≠ 0 := by linarith
         field_simp
+
+/-- **The dyadic min-sum.** For `α, β > 0`,
+`∑_{k < L} min(α (2^k)^{-1/3}, β (2^k)^{1/2}) ≤ 9 α^{3/5} β^{2/5}`. -/
+theorem sum_min_le {α β : ℝ} (hα : 0 < α) (hβ : 0 < β) (L : ℕ) :
+    ∑ k ∈ range L, min (α * ((2 : ℝ) ^ k) ^ (-(1 / 3 : ℝ))) (β * ((2 : ℝ) ^ k) ^ (1 / 2 : ℝ)) ≤
+      9 * (α ^ (3 / 5 : ℝ) * β ^ (2 / 5 : ℝ)) := by
+  have h := sum_min_le_gen hα hβ (by norm_num : (0 : ℝ) < 1 / 3) (by norm_num : (0 : ℝ) < 1 / 2) L
+  rw [show (1 / 2 : ℝ) / (1 / 3 + 1 / 2) = 3 / 5 by norm_num,
+    show (1 / 3 : ℝ) / (1 / 3 + 1 / 2) = 2 / 5 by norm_num] at h
+  refine h.trans (mul_le_mul_of_nonneg_right ?_ (by positivity))
+  -- the constant `1/(1 - 2^{-1/3}) + √2/(√2 - 1) ≈ 8.26`
+  set u : ℝ := (2 : ℝ) ^ (1 / 3 : ℝ)
+  set v : ℝ := (2 : ℝ) ^ (1 / 2 : ℝ)
+  have hu0 : 0 < u := by positivity
+  have hv0 : 0 < v := by positivity
+  have hu3 : u ^ 3 = 2 := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]; norm_num
+  have hv2 : v ^ 2 = 2 := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]; norm_num
+  have hu : 5 / 4 < u := by
+    by_contra h; push Not at h; nlinarith [pow_le_pow_left₀ hu0.le h 3]
+  have hv : 7 / 5 < v := by
+    by_contra h; push Not at h; nlinarith [pow_le_pow_left₀ hv0.le h 2]
+  rw [Real.rpow_neg (by norm_num), show 1 / (1 - u⁻¹) = u / (u - 1) by
+    field_simp, div_add_div _ _ (by linarith) (by linarith), div_le_iff₀ (by nlinarith)]
+  nlinarith [mul_pos (sub_pos.mpr hu) (sub_pos.mpr hv)]
 
 end PierceBound

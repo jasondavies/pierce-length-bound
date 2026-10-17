@@ -1797,6 +1797,7 @@ Proposition~\ref{prop:drop} & \lean{drop\_bound} & \lean{Window.lean}\\
 Proposition~\ref{prop:curv} & \lean{curvature\_bound} & \lean{Window.lean}\\
 Corollary~\ref{cor:window} & \lean{window\_bound} & \lean{Window.lean}\\
 Dyadic decomposition & \lean{P\_eq\_sum\_visits}, \lean{visits\_window} & \lean{Main.lean}\\
+Summing the windows & \lean{SlowGrowth}, \lean{tauMax\_slow}, \lean{P\_le\_of\_visits} & \lean{Main.lean}\\
 Theorem~\ref{thm:main} & \lean{P\_le} & \lean{Main.lean}\\
 Lemma~\ref{lem:div} & \lean{exists\_divisors\_power\_bound} & \lean{DivisorPowerBound.lean}\\
 Lemma~\ref{lem:six} & \lean{six\_divisibility}, \lean{six\_identity} & \lean{SixStep.lean}\\
@@ -1915,7 +1916,7 @@ and the separation $\varepsilon\ge3$.
 \item Lemma~\ref{lem:reduce} is proved with integer arithmetic only: the minimal
 determinant and the lexicographic minimum are taken with \lean{Nat.find}, and the rounding steps
 use Euclidean division.
-\item The project has about 11400 lines of Lean. \lean{lake build} rebuilds it in a few
+\item The project has about 11100 lines of Lean. \lean{lake build} rebuilds it in a few
 minutes once Mathlib is built.
 \end{itemize}
 

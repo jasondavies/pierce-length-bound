@@ -56,8 +56,7 @@ lemma pbig2_bounds {a X H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hX : X ≤ 
       _ = Pbig2 a := hP.symm
 
 /-- **The slack factor is `O_η(a^η)`.** -/
-lemma slack_le2 (η : ℝ) (hη : 0 < η) : ∃ C > 0, ∀ a : ℕ, 1 ≤ a → (Xi2 a : ℝ) ≤ C * (a : ℝ) ^ η :=
-  xi_le 1000 400 (by norm_num) η hη
+lemma slack_le2 : SlowGrowth Xi2 := fun η hη => xi_le 1000 400 (by norm_num) η hη
 
 /-- `1/r = 1/L + ∑_{r ≤ j < L} 1/(j(j+1))`. -/
 lemma inv_telescope {r L : ℕ} (hr : 1 ≤ r) (hrL : r ≤ L) :
@@ -229,19 +228,20 @@ section Window
 variable {a b : ℕ}
 
 /-- **The window bound through the pattern lattices.** -/
-theorem two_state_window_45 (hba : b < a) {s T A : ℕ} (hA : 1 ≤ A)
+theorem two_state_window_45 (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T) :
     T ^ 3 ≤ C3w * Xi2 a ^ 9 * ((28 * a / (A * T) + 1) ^ 3 *
       (3609600 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3 + 1) ^ 14 +
       (3609600 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3 + 1) ^ 15) := by
+  have hA : 1 ≤ A := by have := (hmem 0 (by omega)).2; omega
   classical
   set H : ℕ := 28 * a / (A * T) + 1 with hH
   set M : ℕ := 3609600 * A ^ 4 * H ^ 6 / a ^ 3 with hM
   set X := M + 1 with hXdef
   set G := (Ico s (s + T)).filter fun i => i + 9 ≤ s + T ∧
     ∀ m ∈ range 7, kq a b (i + m) ≤ (H : ℤ)
-  have hgood := good_card hba hA hmem hsT hT
+  have hgood := good_card hba hmem hsT hT
   have ha : 0 < a := by omega
   have ha3 : 0 < a ^ 3 := by positivity
   have facts : ∀ i ∈ G, i + 8 < P a b ∧ (∀ m, m < 7 → 1 ≤ kq a b (i + m) ∧ kq a b (i + m) ≤ H) ∧
@@ -537,12 +537,16 @@ lemma window_152_B {a A T Δ X H Y : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1
     _ ≤ _ := mono_152 hΔ hX ha hC4 (by norm_num) (by norm_num) (by norm_num)
 
 /-- **The exponent arithmetic.** Every window run satisfies `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`. -/
-theorem window_152 {a A T Δ X : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X)
+theorem window_152 {a A T Δ X : ℕ}
     (hT : 36 ≤ T) (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hdrop : T * (T - 1) ≤ 4 * A * Δ)
     (hwin : T ^ 3 ≤ C3w * X ^ 9 * ((28 * a / (A * T) + 1) ^ 3 *
       (3609600 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3 + 1) ^ 14 +
       (3609600 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3 + 1) ^ 15)) :
     T ^ 152 ≤ C152 * Δ ^ 39 * X ^ 117 * a ^ 45 := by
+  have hA : 1 ≤ A := Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega
+  have hΔ : 1 ≤ Δ := Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega
+  have ha : 1 ≤ a := Nat.pos_of_ne_zero fun h => by simp [h] at hsix; omega
+  have hX : 1 ≤ X := Nat.pos_of_ne_zero fun h => by simp [h] at hwin; omega
   set H := 28 * a / (A * T) + 1 with hH
   set Y := 3609600 * A ^ 4 * H ^ 6 / a ^ 3 with hY
   have hH1 : 1 ≤ H := by rw [hH]; exact Nat.le_add_left 1 _
@@ -580,7 +584,7 @@ end Exponent
 section Global
 
 /-- Every dyadic window satisfies `T ≤ 35` or `T¹⁵² ≤ C Δ³⁹ Ξ(a)¹¹⁷ a⁴⁵`. -/
-theorem visits_152 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) (hΔ1 : 1 ≤ Δ) :
+theorem visits_152 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
     (visits a b k).card ≤ 35 ∨
       (visits a b k).card ^ 152 ≤ C152 * Δ ^ 39 * Xi2 a ^ 117 * a ^ 45 := by
   by_cases hT : (visits a b k).card ≤ 35
@@ -596,93 +600,22 @@ theorem visits_152 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) (hΔ1 : 
     have := lt_P_of_orb_pos (a := a) (b := b) (i := s + (T - 1))
       (lt_of_lt_of_le (Nat.two_pow_pos k) h)
     omega
-  exact window_152 (by omega) Nat.one_le_two_pow hΔ1 (by unfold Xi2; omega) (by omega)
+  exact window_152 (by omega)
     (six_step_bound W (by omega)) (drop_bound W hΔ (by omega))
-    (two_state_window_45 hba Nat.one_le_two_pow hmem hsT (by omega))
+    (two_state_window_45 hba hmem hsT (by omega))
 
 /-- **Theorem.** `P(a, b) ≪_ε a^{45/152 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le_45_152 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((45 : ℝ) / 152 + ε) := by
+  have h := P_le_of_visits (N := 152) (r := 45) (K := C152) (by norm_num)
+    (((tauMax_slow 32 7).pow 39).mul (slack_le2.pow 117)) fun a b k _ hba =>
+      (visits_152 (k := k) hba (tauMax_divBound a)).imp id fun h => h.trans_eq (by ring)
   intro ε hε
-  obtain ⟨Cs, hCs, hslack⟩ := slack_le (ε / 312) (by positivity)
-  obtain ⟨Cs2, hCs2, hslack2⟩ := slack_le2 (ε / 312) (by positivity)
-  obtain ⟨CL, hCL, hlog⟩ := log_add_one_le_rpow (ε / 2) (by positivity)
-  set K : ℝ := (C152 : ℝ) * Cs ^ 39 * Cs2 ^ 117
-  set C2 : ℝ := K ^ ((152 : ℝ)⁻¹)
-  have hK : 0 < K := by
-    have : (0 : ℝ) < C152 := by unfold C152; positivity
-    positivity
-  have hC2 : 0 ≤ C2 := by positivity
-  refine ⟨CL * (35 + C2), by positivity, fun a b hb hba => ?_⟩
-  have ha1 : 1 ≤ a := by omega
-  have ha : (1 : ℝ) ≤ a := by exact_mod_cast ha1
-  set Δ := tauMax (32 * a ^ 7)
-  have hΔ : DivBound a Δ := fun n _ hn =>
-    le_sup (f := fun n => n.divisors.card) (mem_range.mpr (by omega))
-  have hΔ1 : 1 ≤ Δ := by
-    have h7 : 1 ≤ a ^ 7 := Nat.one_le_pow _ _ ha1
-    have h1 : (1 : ℕ).divisors.card ≤ Δ :=
-      le_sup (f := fun n => n.divisors.card) (mem_range.mpr (by omega))
-    rw [Nat.divisors_one, card_singleton] at h1
-    exact h1
-  have hsΔ := (hslack a ha1).1
-  have hsX := hslack2 a ha1
-  set β : ℝ := 45 / 152 + ε / 2
-  have hβ : 1 ≤ (a : ℝ) ^ β := Real.one_le_rpow ha (by positivity)
-  have hwin : ∀ k, ((visits a b k).card : ℝ) ≤ (35 + C2) * (a : ℝ) ^ β := by
-    intro k
-    rcases visits_152 (k := k) hba hΔ hΔ1 with h | h
-    · have : ((visits a b k).card : ℝ) ≤ 35 := by exact_mod_cast h
-      nlinarith
-    · set T := (visits a b k).card
-      have hTr : (T : ℝ) ^ 152 ≤ K * (a : ℝ) ^ (45 + 156 * (ε / 312)) := by
-        have h' : (T : ℝ) ^ 152 ≤ (C152 : ℝ) * (Δ : ℝ) ^ 39 * (Xi2 a : ℝ) ^ 117 * (a : ℝ) ^ 45 := by
-          exact_mod_cast h
-        have p1 : (Δ : ℝ) ^ 39 ≤ (Cs * (a : ℝ) ^ (ε / 312)) ^ 39 :=
-          pow_le_pow_left₀ (Nat.cast_nonneg _) hsΔ 39
-        have p2 : (Xi2 a : ℝ) ^ 117 ≤ (Cs2 * (a : ℝ) ^ (ε / 312)) ^ 117 :=
-          pow_le_pow_left₀ (Nat.cast_nonneg _) hsX 117
-        have q1 : ((a : ℝ) ^ (ε / 312)) ^ 156 = (a : ℝ) ^ (156 * (ε / 312)) := by
-          rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity)]; norm_num; ring_nf
-        have q2 : (a : ℝ) ^ (45 : ℕ) = (a : ℝ) ^ (45 : ℝ) := by
-          rw [← Real.rpow_natCast]; norm_num
-        calc (T : ℝ) ^ 152 ≤ (C152 : ℝ) * (Δ : ℝ) ^ 39 * (Xi2 a : ℝ) ^ 117 * (a : ℝ) ^ 45 := h'
-          _ ≤ (C152 : ℝ) * (Cs * (a : ℝ) ^ (ε / 312)) ^ 39 * (Cs2 * (a : ℝ) ^ (ε / 312)) ^ 117 *
-              (a : ℝ) ^ 45 := by gcongr
-          _ = (C152 : ℝ) * Cs ^ 39 * Cs2 ^ 117 * ((a : ℝ) ^ (ε / 312)) ^ 156 *
-              (a : ℝ) ^ (45 : ℕ) := by ring
-          _ = K * (a : ℝ) ^ (45 + 156 * (ε / 312)) := by
-              rw [q1, q2, Real.rpow_add (by positivity)]; simp only [K]; ring
-      have hroot : (T : ℝ) ≤ C2 * (a : ℝ) ^ ((45 + 156 * (ε / 312)) / 152) := by
-        have h1 : ((T : ℝ) ^ 152) ^ ((152 : ℝ)⁻¹) ≤
-            (K * (a : ℝ) ^ (45 + 156 * (ε / 312))) ^ ((152 : ℝ)⁻¹) :=
-          Real.rpow_le_rpow (by positivity) hTr (by positivity)
-        rw [show (152 : ℝ) = ((152 : ℕ) : ℝ) by norm_num,
-          Real.pow_rpow_inv_natCast (Nat.cast_nonneg _) (by norm_num),
-          Real.mul_rpow hK.le (by positivity), ← Real.rpow_mul (by positivity)] at h1
-        simp only [C2]
-        convert h1 using 2
-        all_goals norm_num
-        all_goals (congr 1; ring)
-      have hexp : (45 + 156 * (ε / 312)) / 152 ≤ β := by simp only [β]; nlinarith
-      have := Real.rpow_le_rpow_of_exponent_le ha hexp
-      nlinarith [mul_le_mul_of_nonneg_left this hC2]
-  have hP : (P a b : ℝ) ≤ ((Nat.log 2 a + 1 : ℕ) : ℝ) * ((35 + C2) * (a : ℝ) ^ β) := by
-    rw [P_eq_sum_visits hba.le]
-    push_cast
-    calc ∑ k ∈ range (Nat.log 2 a + 1), ((visits a b k).card : ℝ)
-        ≤ ∑ _k ∈ range (Nat.log 2 a + 1), (35 + C2) * (a : ℝ) ^ β :=
-          sum_le_sum fun k _ => hwin k
-      _ = _ := by simp
-  have hL := hlog a ha1
-  calc (P a b : ℝ) ≤ ((Nat.log 2 a + 1 : ℕ) : ℝ) * ((35 + C2) * (a : ℝ) ^ β) := hP
-    _ ≤ (CL * (a : ℝ) ^ (ε / 2)) * ((35 + C2) * (a : ℝ) ^ β) :=
-        mul_le_mul_of_nonneg_right hL (by positivity)
-    _ = CL * (35 + C2) * ((a : ℝ) ^ (ε / 2) * (a : ℝ) ^ β) := by ring
-    _ = CL * (35 + C2) * (a : ℝ) ^ ((45 : ℝ) / 152 + ε) := by
-        rw [← Real.rpow_add (by positivity)]
-        congr 2
-        simp only [β]; ring
+  obtain ⟨C, hC, hP⟩ := h ε hε
+  refine ⟨C, hC, fun a b hb hba => ?_⟩
+  have := hP a b hb hba
+  norm_num at this ⊢
+  exact this
 
 end Global
 

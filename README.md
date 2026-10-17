@@ -105,7 +105,7 @@ papers only through its hypotheses.
 | `Block.lean` | curvature `D = dv − eu`: identity `Dz = df + ude + (u−1)e²`, `D ≥ 1`, fiber equation `x M(q) = a N(q) + D`, size bounds |
 | `Fiber.lean` | a fixed `(u, v, D)` allows at most `max_{n ≤ 32a⁷} τ(n)` starting points |
 | `Window.lean` | for a run of `T` terms in `[A, 2A)`: `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
-| `Main.lean` | dyadic decomposition and the unconditional theorem `P_le` |
+| `Main.lean` | dyadic decomposition, `P_le_of_visits` (window bounds `T^N ≤ K S(a) aʳ` with `S(a) ≪ a^η` give `P ≪ a^{r/N+ε}`), and the unconditional theorem `P_le` |
 | `SixStep.lean` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `TwoStateMain.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10` |
 | `ShortSum.lean` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
 | `Geometric.lean` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}`, and the general form `∑_k min(α 2^{−sk}, β 2^{tk}) ≪ α^{t/(s+t)} β^{s/(s+t)}` (`sum_min_le_gen`) |
@@ -141,3 +141,9 @@ papers only through its hypotheses.
 [openai/math](https://github.com/openai/math) (Apache-2.0): the divisor bound
 `τ(n)^k ≤ C_k n` (`exists_divisors_power_bound`). The file is unchanged except for its import
 lines; the upstream commit is recorded in [UPSTREAM.md](vendor/openai-math/UPSTREAM.md).
+
+## Licence
+
+Copyright 2026 Jason Davies. Licensed under the Apache License, Version 2.0; see
+[LICENSE](LICENSE). The vendored file keeps its own Apache-2.0 licence
+([vendor/openai-math/LICENSE](vendor/openai-math/LICENSE)).

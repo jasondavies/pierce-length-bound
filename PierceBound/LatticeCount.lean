@@ -368,9 +368,13 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
   set G := tcomp Fθ Bh
   have hGD : disc3 G ≠ 0 := by
     rw [disc3_tcomp]; exact mul_ne_zero hFD (pow_ne_zero 2 hdetB)
-  obtain ⟨P, Pi, ⟨hPP, hPi, hPdet, hPb⟩, hPΔ⟩ := plane_one G hGD
+  obtain ⟨P, Pi, hPg, hPΔ⟩ := plane_one G hGD
+  have hPdet := hPg.det_sq
+  obtain ⟨hPP, hPi, hPb⟩ := hPg
   set G1 := tcomp G P
-  obtain ⟨Q, Qi, ⟨hQQ, hQi, hQdet, hQb⟩, hQα, hQΔ⟩ := plane_two G1 hPΔ
+  obtain ⟨Q, Qi, hQg, hQα, hQΔ⟩ := plane_two G1 hPΔ
+  have hQdet := hQg.det_sq
+  obtain ⟨hQQ, hQi, hQb⟩ := hQg
   set G2 := tcomp G1 Q
   have hG2D : disc3 G2 ≠ 0 := by
     simp only [G2, G1, disc3_tcomp, hPdet, hQdet, mul_one]; exact hGD
