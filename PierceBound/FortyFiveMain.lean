@@ -433,7 +433,7 @@ lemma window_152_big {a A T Δ X : ℕ} (ha : 1 ≤ a) (hΔ : 1 ≤ Δ) (hX : 1 
     _ = 122449 ^ 38 * Δ ^ 0 * X ^ 0 * a ^ 38 := by ring
     _ ≤ _ := mono_152 hΔ hX ha hC1 (by norm_num) (by norm_num) (by norm_num)
 
-/-- The case `X = 0` of the minor height: `T³ ≤ C (H³ + 1)`. -/
+/-- The case `Y = 0` (minor height `1`): `T³ ≤ C (H³ + 1)`. -/
 lemma window_152_zero {a A T Δ X H : ℕ} (ha : 1 ≤ a) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X) (hT : 36 ≤ T)
     (hH1 : 1 ≤ H) (hT2 : T ^ 2 ≤ 8 * A * Δ) (hHAT : H * (A * T) ≤ 56 * a)
     (hwin : T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 + 1)) :

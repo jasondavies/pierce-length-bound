@@ -11,8 +11,8 @@ cofactor null vector `(U₀, U₁, U₂, U₃)`, where
 * `U₀ = -det(columns 1,2,3) = -L(i+1)`;
 * `U₁ = pU1`, `U₂ = pU2`.
 
-The null-vector relations `∑ Uₘ kₘ = 0` and `∑ Uₘ rₘ = 0` are polynomial identities (`null_k`,
-`null_r`). They give the two counting facts:
+The null-vector relations `∑ Uₘ dₘ = ∑ Uₘ kₘ = ∑ Uₘ rₘ = 0` are polynomial identities
+(`null_d`, `null_k`, `null_r`). The last two give the two counting facts:
 
 * `quad_root`: if two states share `(U(i), U(i+1))`, the linear relations at `i` and `i+1`
   eliminate `k₀` and `k₄`, and the quadratic relation at `i` becomes
@@ -35,13 +35,19 @@ def pU1 (d0 d2 d3 k0 k1 k2 k3 k4 : ℤ) : ℤ :=
 def pU2 (d0 d1 d3 k0 k1 k2 k3 k4 : ℤ) : ℤ :=
   -d0*k1^2*k3 - 2*d0*k1*k2*k3 - d0*k1*k3^2 - d0*k1*k4 + d0*k2*k3 + d1*k0^2*k3 + 2*d1*k0*k1*k3 + 2*d1*k0*k2*k3 + d1*k0*k3^2 + d1*k0*k4 - d1*k1*k3 - d3*k0^2*k1 - d3*k0*k1^2 - d3*k0*k2 + d3*k1^2
 
-/-- **First null-vector relation** `∑ Uₘ kₘ = 0`. -/
+/-- **The null-vector relation for the drops** `∑ Uₘ dₘ = 0`. -/
+theorem null_d (d0 d1 d2 d3 k0 k1 k2 k3 k4 : ℤ) :
+    -sixL k1 k2 k3 k4 d1 d2 d3 * d0 + pU1 d0 d2 d3 k0 k1 k2 k3 k4 * d1 +
+      pU2 d0 d1 d3 k0 k1 k2 k3 k4 * d2 + sixL k0 k1 k2 k3 d0 d1 d2 * d3 = 0 := by
+  unfold sixL pU1 pU2; ring
+
+/-- **The null-vector relation for the increments** `∑ Uₘ kₘ = 0`. -/
 theorem null_k (d0 d1 d2 d3 k0 k1 k2 k3 k4 : ℤ) :
     -sixL k1 k2 k3 k4 d1 d2 d3 * k0 + pU1 d0 d2 d3 k0 k1 k2 k3 k4 * k1 +
       pU2 d0 d1 d3 k0 k1 k2 k3 k4 * k2 + sixL k0 k1 k2 k3 d0 d1 d2 * k3 = 0 := by
   unfold sixL pU1 pU2; ring
 
-/-- **Second null-vector relation** `∑ Uₘ rₘ = 0`. -/
+/-- **The null-vector relation for the quadratic row** `∑ Uₘ rₘ = 0`. -/
 theorem null_r (d0 d1 d2 d3 k0 k1 k2 k3 k4 : ℤ) :
     -sixL k1 k2 k3 k4 d1 d2 d3 * (k0 ^ 2 + k1) +
       pU1 d0 d2 d3 k0 k1 k2 k3 k4 * (k1 * (2 * k0 + k1) + k2) +

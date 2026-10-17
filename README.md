@@ -40,7 +40,7 @@ So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷�
 
 For `11/37`, exact Cramer identities give `U₁ > 0 > U₂`, so the quadric in `(k₁, k₂, k₃)` is
 nonsingular with an indefinite binary section. Each slice is a norm equation `V² − ΔU² = N`, which
-has `≤ 2τ(|N|)³(log₃ L² + 1)` solutions in `[−B, B]²`, where `L = B(⌊√Δ⌋ + 2)`, uniformly in the
+has `≤ 2τ(|N|)³(log₃ (B(⌊√Δ⌋ + 2))² + 1)` solutions in `[−B, B]²`, uniformly in the
 coefficients. This is proved in
 full: square roots modulo prime powers, CRT, and the separation `ε ≥ 3` of norm-one numbers. So
 each pattern covers `O(H a^η)` states, `T ≪ a^η X⁷ H`, and `T⁷⁴ ≪ a^{22+O(η)}`.
@@ -48,7 +48,7 @@ each pattern covers `O(H a^η)` states, `T ≪ a^η X⁷ H`, and `T⁷⁴ ≪ a^
 For `8/27`, the seven pattern integers are signed `3×3` minors of one `3×5` integer matrix. An exact
 expansion of `b/a` with a positive remainder bounds all ten minors by `X`. Minor vectors of height `≤ Y`
 number `≤ 1 + 20 ∑_{m≤Y} 729 m⁴ τ(m)`, via a maximal pivot, the Plücker relations, and the congruence
-`v ≡ λu₀ (mod m/g)`. So `T ≪ a^η X⁵ H` and `T⁵⁴ ≪ a^{16+O(η)}`.
+`v ≡ μu₀ (mod m/g)`. So `T ≪ a^η X⁵ H` and `T⁵⁴ ≪ a^{16+O(η)}`.
 
 For `45/152`, the pivot gaps `k'` of a state lie in the lattice
 `Λ_p = {x ∈ ℤ³ : m ∣ u·x, m ∣ v·x}` of its minor vector, and `m kᶜ = Lᶜ · k'` recovers all five gaps.

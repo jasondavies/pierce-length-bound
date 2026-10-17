@@ -139,7 +139,8 @@ with no divisor function at all (Proposition~\ref{prop:six}).
 With~\eqref{eq:intro3} in hand, the only remaining loss is in the drop bound~\eqref{eq:intro1}. That
 loss comes from the number of divisors of $a+h$ in $[A,2A)$ as $h$ ranges over a short interval.
 Section~\ref{sec:short} shows that any bound $\ll y\,G(x)$ for such counts over intervals
-$(x,x+y]$ with $y\ge x^{1/4}$ gives $P(a,b)\ll a^{3/10}G(a)^{1/5}$ (Theorem~\ref{thm:generic}).
+$(x,x+y]$ with $y\ge x^{1/4}$, uniform in $A$ and with $G(x)\ll x^{1/40}$, gives
+$P(a,b)\ll a^{3/10}G(a)^{1/5}$ (Theorem~\ref{thm:generic}).
 The counts are majorised by the Erd\H{o}s--Hooley function. Combining the short-sum theorem of
 Nair and Tenenbaum~\cite{NT} with the recent mean-value bound of de la Bret\`eche and
 Tenenbaum~\cite{BT} gives $G(x)=(\log\log x)^{5/2}$, and hence the following.
@@ -298,7 +299,7 @@ $p<2^k$ is at most $\sup_\alpha(\alpha+1)^k/2^\alpha<\infty$.
 \subsection{Window runs}
 
 \begin{definition}
-Let $A\ge1$. A \emph{window run} of length $T$ is a sequence $x_0,x_1,\dots,x_{T-1}$ of
+Let $A\ge1$ be an integer. A \emph{window run} of length $T$ is a sequence $x_0,x_1,\dots,x_{T-1}$ of
 consecutive terms of the sequence $(b_i)$, so $x_{j+1}=a\bmod x_j$, all lying in $[A,2A)$.
 \end{definition}
 
@@ -600,7 +601,7 @@ $\sum_{j\le T-6}s_j\le 5(2A-1)-5A=5A-5$. So some $j$ has $s_j(T-5)\le 5A-5$, and
 $T\le 2(T-5)$, we get $s:=s_j$ with $sT\le 10A$. Apply Corollary~\ref{cor:six} to
 $x_j,\dots,x_{j+5}$, all of which lie in $[A,2A)$, with $m=\max(u,v,w,z)$.
 
-By Lemma~\ref{lem:size} at $x_j,\dots,x_{j+3}$, each increment satisfies
+By Lemma~\ref{lem:size} at $x_j$, $x_{j+1}$ and $x_{j+2}$, each increment satisfies
 $(\text{increment})\cdot A^2\le a s$. Multiplying by $T$ gives $mAT\le 10a$. By
 Lemma~\ref{lem:size} again, $EA\le Ex_{j+3}\le(v+1)s^2\le 2ms^2$, and likewise $FA\le 2ms^2$.
 Hence $qA\le 24m^4s^2$. Also $a=qx_j+x_{j+1}<(q+1)x_j<2A(q+1)\le 4Aq$. Therefore
@@ -654,7 +655,8 @@ $T\ge20$ visits. Proposition~\ref{prop:six} gives $T\le\alpha A^{-1/3}$, where
 $\alpha=(96\cdot10^6)^{1/6}a^{1/2}$. Take $Y=\max(\lfloor 2A/(T-1)\rfloor,\lceil a^{1/4}\rceil)\le a$
 in Proposition~\ref{prop:dropcount}. With $H=\lfloor 2A/(T-1)\rfloor$, $\mathrm{SD}(G)$ gives
 $T\le 2CG(a)(H+a^{1/4}+1)$. Multiplying by $T-1$, using $H(T-1)\le2A$, and solving the quadratic
-gives $T\le\gamma+\beta A^{1/2}$, where $\beta=4\sqrt{CG(a)}$ and $\gamma=4CG(a)(a^{1/4}+1)$. So
+gives $T\le1+2CG(a)(a^{1/4}+1)+2\sqrt{CG(a)A}$, hence, as $T\ge20$, $T\le\gamma+\beta A^{1/2}$,
+where $\beta=4\sqrt{CG(a)}$ and $\gamma=4CG(a)(a^{1/4}+1)$. So
 every window satisfies
 \[
 T_k\le 19+\gamma+\min\bigl(\alpha\,2^{-k/3},\ \beta\,2^{k/2}\bigr).
@@ -677,13 +679,14 @@ theorems.
 
 \begin{enumerate}
 \item[(NT)] Nair and Tenenbaum~\cite{NT} prove a general upper bound for short sums of
-functions $F$ satisfying $F(mn)\le\min(A^{\Omega(m)},Bm^\varepsilon)F(n)$ for $(m,n)=1$. They
-note that $\Delta_{\mathrm H}$ is such a function. In their introduction they record the
-consequence, for $Q(X)=X$ and $t=1$, that for $x$ large and $x^{\varepsilon}\le y\le x$
+functions $F$ satisfying $F(mn)\le\min(A^{\Omega(m)},Bm^\varepsilon)F(n)$ for $(m,n)=1$. Since
+$\Delta_{\mathrm H}(mn)\le\tau(m)\Delta_{\mathrm H}(n)$ for $(m,n)=1$, the function
+$\Delta_{\mathrm H}$ satisfies this with $A=2$ for every $\varepsilon>0$. Their bound, for the
+polynomial $Q(X)=X$, gives for every fixed $\alpha>0$, $x$ large and $x^{\alpha}\le y\le x$
 \begin{equation}\label{eq:NT}
-\sum_{x<n\le x+y}\Delta_{\mathrm H}(n)\ll_\varepsilon\frac{y}{\log x}\sum_{n\le x}\frac{\Delta_{\mathrm H}(n)}{n}.
+\sum_{x<n\le x+y}\Delta_{\mathrm H}(n)\ll_\alpha\frac{y}{\log x}\sum_{n\le x}\frac{\Delta_{\mathrm H}(n)}{n}.
 \end{equation}
-We use it with $\varepsilon=1/4$.
+We use it with $\alpha=1/4$.
 \item[(BT)] de la Bret\`eche and Tenenbaum~\cite[Theorem~1.1]{BT} prove that for large $x$
 \begin{equation}\label{eq:BT}
 \sum_{n\le x}\Delta_{\mathrm H}(n)\ll x\,(\log\log x)^{5/2}.
@@ -737,11 +740,11 @@ $Eq^4\le 9h^2(h+1)(q+3h+1)a$, and likewise $Fq^4\le 9h^2(h+1)(q+4h+1)a$. Hence
 \[
 q^5h\le q^4\bigl((3h-1)E+F\bigr)\le 27h^3(h+1)(q+4h+1)a .
 \]
-If $q\ge h$ this gives $q^4\le 324h^3a$. If $q<h$ then $q^4<h^4\le h^3a$.
+If $q\ge h$ this gives $q^4\le 324h^3a$. If $q<h$ then $q^4<h^4\le h^3a$, since $h\le q_1\le a$.
 \end{proof}
 
 \begin{remark}
-The source of this section proved a version of Lemma~\ref{lem:ap} for seven quotients by an
+An earlier version of this argument proved Lemma~\ref{lem:ap} for seven quotients by an
 analytic argument: it represents a periodic continuation of the orbit by integrals of
 positive functions, and compares finite differences. The identity above gives an algebraic
 proof with one fewer quotient.
@@ -803,7 +806,7 @@ $a^3\le26244h_*^3A^4$, so $s^3a^3\le26244A^4(a/A)^3\le26244Aa^3$.
 \begin{proof}[Proof of Theorem~\ref{thm:rises}]
 The rises inside a window are rises of the orbit, so $\rho+1\le R$. Combining the three parts
 of Proposition~\ref{prop:rises}, as in the proof of Theorem~\ref{thm:generic}, gives for the
-window $[2^k,2^{k+1})$
+window $[2^k,2^{k+1})$ (when $6A>a$, part (2) gives $T-1\le a/A<6\le30A^{1/3}$)
 \[
 T_k\le 1+\sqrt R\,\min\bigl(\sqrt{8a}\,2^{-k/2},\ \sqrt2\,2^{k/2}\bigr)
 +\min\bigl(a\,2^{-k},\ 30\cdot2^{k/3}\bigr).
@@ -823,8 +826,9 @@ run of $T\asymp a^{3/10}$ remainders must contain $\gg a^{1/5}$ rises.
 
 \section{The Hankel hierarchy}\label{sec:hankel}
 
-Let $b_0>b_1>\dots>b_{N-1}>0$ be the positive part of an orbit (indexed from $0$, so
-$N=P(a,b)$), with quotients $q_i$. Put $p_i(j)=q_{i+j}-q_i$ for $j<N-i$. Define weights
+Let $b_0>b_1>\dots>b_{N-1}>0$ be the positive part of an orbit, with quotients $q_i$. From
+here on the orbit is indexed from $0$, so $b_0=b$, $N=P(a,b)$ and $b_N=0$; the symbols $p_i$,
+$w_i$ below are unrelated to $p$ and $w$ of the earlier sections. Put $p_i(j)=q_{i+j}-q_i$ for $j<N-i$. Define weights
 $w_i(j)$ backwards by $w_{N-1}=\delta_0$ and
 \[
 w_i(0)=1-\sum_{j}\frac{w_{i+1}(j)}{p_i(j+1)},\qquad w_i(j+1)=\frac{w_{i+1}(j)}{p_i(j+1)} .
@@ -844,7 +848,8 @@ $\nu_i=\mu_i/(q_i+x)$. Write $h_i(s)=\int x^s\,d\nu_i=\sum_jw_i(j)p_i(j)^s/q_{i+
 \begin{proof}
 (1) Since $p_i(j+1)\ge1$, the sum defining $w_i(0)$ is at most $1$. It is strictly less: if
 $N-i-1\ge2$, the term $j=1$ has $p_i(2)\ge2$; if $i=N-2$, the last gap satisfies
-$q_{N-1}\ge q_{N-2}+2$. (2) Since $p_i(j+1)=q_{i+j+1}-q_i$, the definitions give
+$q_{N-1}\ge q_{N-2}+2$, because $b_{N-1}\mid a$ gives
+$q_{N-1}-q_{N-2}-1=q_{N-2}(b_{N-2}-b_{N-1})/b_{N-1}\ge1$. (2) Since $p_i(j+1)=q_{i+j+1}-q_i$, the definitions give
 $q_ih_i(0)+h_{i+1}(0)=1$, which is the normalised division equation; and
 $h_{N-1}(0)=1/q_{N-1}=b_{N-1}/a$. (3) Use $p_i(j+1)=k_i+p_{i+1}(j)$ and the binomial theorem.
 (4) Induct backwards on $i$ using (3), $b_{i+1}/a=1-q_ib_i/a$ and $k_i-q_{i+1}=-q_i$.
@@ -870,11 +875,14 @@ vanishes, the polynomial $\sum_lc_lx^l$ vanishes at the $N-i\ge r$ distinct poin
 it is zero, by the invertibility of the Vandermonde matrix. So the matrix is positive definite.
 
 \emph{The first four.} By Lemma~\ref{lem:moments}(2),(3), the entries $h_i(s)$, $s\le2r-2$, are
-explicit polynomials in $\beta_j=b_{i+j}/a$ and $k_i,\dots,k_{i+2r-3}$. The claimed values are
+explicit polynomials in $\beta_j=b_{i+j}/a$ (with $b_N=0$) and $k_i,\dots,k_{i+2r-4}$. The claimed values are
 linear in the $b_{i+j}$. So each identity holds modulo the relations
 $q_{i+j}\beta_j+\beta_{j+1}=1$, with explicit certificates of at most $156$ terms per
 coefficient.
 \end{proof}
+
+The ranges $i+3<N$ and $i+5<N$ cannot be relaxed to all $i$ at which $D_i$ or $L_i$ is defined.
+For $a=926$ and $b=229$ the orbit is $229,10,6,2$, so $N=4$, and $I_3(1)=984$ while $D_1=988$.
 
 \begin{remark}
 So the positivity of $D$ and $L$, proved earlier by explicit identities, is an instance of the
@@ -940,8 +948,9 @@ The vector $C_m=U_m/U_3$ has a meaning: $p_i=\sum_{m\le3}C_m(F_{m+1}-F_m)$, with
 polynomials $F_m(x)=\prod_{l<m}(x-s_l)$, is the monic orthogonal polynomial of degree four for
 the measure $\nu_i$ of Section~\ref{sec:hankel}. The three rows of $\mathcal M_i$ encode
 $\nu_i(p_i)=0$ and $\mu_i(xp_i)=\mu_i(x^2p_i)=0$, and $\nu_i(xf)=\mu_i(f)-q_i\nu_i(f)$ turns these
-into $\nu_i(x^jp_i)=0$ for $j\le3$. In particular $U_m(i)/I_4(i)$ are the partial sums of the
-Newton coefficients of $p_i$, and $c_0=-C_0=I_4(i+1)/I_4(i)$. None of this is used below.
+into $\nu_i(x^jp_i)=0$ for $j\le3$. In particular $U_m(i)/I_4(i)$ are tail sums of the
+Newton coefficients of $p_i$: writing $p_i=\sum_{l\le4}c_lF_l$, one has $U_m(i)/I_4(i)=c_{m+1}+\dots+c_4$,
+and $c_0=-C_0=I_4(i+1)/I_4(i)$. None of this is used below.
 \end{remark}
 
 The \emph{pattern} of $i$ is the vector of seven integers
@@ -1037,7 +1046,7 @@ Put $V=k_1k_2(k_1+k_2)$ and $\Delta_4=k_0\cdot k_1s_2\cdot k_2(k_1+k_2)s_3$. Exp
 bounding each of the three error terms by $56H^5$, $170H^5$ and $238H^5$ gives
 $G(k_0,\dots,k_4)\le\Delta_4+464H^5$. Also $\Delta_4\le 6H^3V$, because
 $\Delta_4=k_0s_2s_3\cdot V$. Similarly $G(k_1,\dots,k_5)\le 6H^3V+464H^5$, because the
-corresponding product is $V\cdot k_3(k_2+k_3)(k_1+k_2+k_3)$. By~\eqref{eq:scale} and $N\ge1$,
+corresponding product is $V\cdot k_3(k_2+k_3)(k_1+k_2+k_3)$. By~\eqref{eq:scale} and $N_0,N_1\ge1$,
 $256A^4\cdot464H^5\le Na^3/2$, so
 \[
 N_0a^3,\ N_1a^3\le 3072\,A^4H^3V .
@@ -1202,7 +1211,7 @@ F_\theta(x,y,z)={}&(Ux+Vy+Az)^2+A'Ux^2+A'Vy^2+AA'z^2+2A'Vxy+2AA'xz+2AA'yz\\
 \end{align*}
 
 \begin{lemma}\label{lem:tern}
-At every state, $F_{\theta(i)}(k_1,k_2,k_3)=0$. Write $F_\theta=\alpha x^2+\beta xy+\gamma
+At every state $i$ with $i+7<N$, $F_{\theta(i)}(k_1,k_2,k_3)=0$. Write $F_\theta=\alpha x^2+\beta xy+\gamma
 y^2+d(z)x+e(z)y+f(z)$. Then $\alpha=U(U+A')$,
 $\beta^2-4\alpha\gamma=-4A'V(A'+U)(U-V)$, and
 \[
@@ -1218,14 +1227,13 @@ quantity is nonzero.
 The identity
 $A'F_\theta(k_1,k_2,k_3)=A'^2R+(AA'k_3-A'^2k_0+A'Uk_1+A'Vk_2)K_0-AA'K_1$, where $K_0$, $K_1$
 and $R$ are the $k$-relations at $i$, $i+1$ and the $r$-relation at $i$, gives the first claim.
-The rest is expansion. This is $AA'$ times the quadratic obtained by substituting the two
-linear relations into the $r$-relation.
+The rest is expansion. So $F_\theta\equiv A'R$ modulo the two linear relations.
 \end{proof}
 
 \subsection{Norm equations}
 
 \begin{lemma}[Norm equations]\label{lem:norm}
-Let $D\ge1$, $N\ne0$, $B\ge0$ be integers and $L=B(\lfloor\sqrt D\rfloor+2)$. The number of
+Let $D\ge1$, $N\ne0$, $B\ge1$ be integers and $L=B(\lfloor\sqrt D\rfloor+2)$. The number of
 $(U,V)\in[-B,B]^2$ with $U^2-DV^2=N$ is at most $2\tau(|N|)^3(\log_3L^2+1)$.
 \end{lemma}
 
@@ -1251,7 +1259,7 @@ $r^2-ds^2=1$. If $|\xi|>|\xi'|$ then $\varepsilon>1$, and then $\varepsilon\ge3$
 $\varepsilon^{-1}=r-s\sqrt d\in(0,1)$, so $2r=\varepsilon+\varepsilon^{-1}>2$, hence $r\ge2$, and
 $\varepsilon<3$ would give $\varepsilon+\varepsilon^{-1}<4$. Now $|u|+|w|\sqrt d\le|U|+|V|\sqrt
 D\le L$, so $|\xi|,|\bar\xi|\le L$, and $|\xi\bar\xi|=|n|\ge1$ gives $L|\xi|\ge1$. Hence the map
-$\xi\mapsto\log_3\lfloor L|\xi|\rfloor$ is injective on the class, with values in
+$\xi\mapsto\lfloor\log_3(L|\xi|)\rfloor$ is injective on the class, with values in
 $[0,\log_3L^2]$.
 
 There are at most $\tau(|N|)$ values of $g$, $\tau(|N|)^2$ of $t$ and two signs.
@@ -1296,8 +1304,9 @@ $4M^2$, and Lemmas~\ref{lem:signs} and~\ref{lem:tern} give the nondegeneracy hyp
 Lemma~\ref{lem:slice}.
 \end{proof}
 
-Let $P(a)=10^{300}a^{100}$, $\tau^*(X)=\max_{n\le X}\tau(n)$, and
-$\Xi(a)=2\tau^*(P(a))^3(\log_3P(a)+1)+4$. In a window $H\le29a$ and $M\le10^{15}a^7$, so
+Let $P(a)=10^{300}a^{100}$, let $\tau^*(X)=\max_{n\le X}\tau(n)$ with the convention
+$\tau(0)=0$, and let $\Xi(a)=2\tau^*(P(a))^3(\log_3P(a)+1)+4$. In a window $H\le29a$ and $M\le10^{16}a^7$, also for
+the larger $M$ of Proposition~\ref{prop:twostate3} below, so
 $116K^4H^2\le P(a)$ and $(11K^2H(3K+2))^2\le P(a)$. Thus $W=\Xi(a)-4$ is admissible, and the
 argument of Proposition~\ref{prop:twostate} gives:
 
@@ -1414,11 +1423,13 @@ with $C_{54}=122449^{14}+(448\cdot24\cdot14581)^{14}+8^{11}\cdot32\cdot24\cdot14
 \end{proposition}
 
 \begin{proof}
-As in Proposition~\ref{prop:pcount2}, at least $T/2$ starts are good. A good start has at most four
-companions with the same $(\theta,\kappa)$, and at most $(2H+1)(W+4)$ gap triples per pattern.
+As in Propositions~\ref{prop:twostate} and~\ref{prop:pcount2}, at least $T/2$ starts are good, at
+most four good starts share $(\theta,\kappa)$, and there are at most $(2H+1)(W+4)$ gap triples per
+pattern.
 Since $\theta$ is a function of the minor vector, there are at most
 $14581(M+1)^5\tau^*(M)\le14581(M+1)^5\Xi(a)$ patterns, by Propositions~\ref{prop:allminors}
-and~\ref{prop:minorvec}. For the second bound, if $AT>28a$ then $T^4\le122449a$. If $M=0$ then
+and~\ref{prop:minorvec}. For the second bound, if $AT>28a$ then $T^4\le122449a$. Otherwise
+$HAT\le56a$. If $M=0$ then
 $T^4\le448\cdot24\cdot14581\,\Delta\Xi^2a$. Otherwise $Ta^{15}\le32\cdot24\cdot14581\cdot3609600^5
 A^{20}H^{31}\Xi^2$, hence $T^{32}A^{11}\ll\Xi^2a^{16}$ and $T^{54}\le(8A\Delta)^{11}T^{32}$.
 \end{proof}
@@ -1473,7 +1484,7 @@ If $(s+1)^3>|m|$ then $\lambda(p)\le s$.
 
 \begin{proof}
 Write $g=\gcd(|m|,u)$, $n=|m|/g$ and $u=gu_0$. The proof of Proposition~\ref{prop:minorvec}
-gives $v=\mu u_0+nw$ with $\mu\in\mathbb Z$ (the $\lambda$ there) and $w\in\mathbb Z^3$. Put
+gives $v=\mu u_0+nw$ with $\mu=c\cdot v\in\mathbb Z$ and $w\in\mathbb Z^3$. Put
 $\psi(x)=\bigl(u_0\cdot x\bmod n,\ (\mu\lfloor u_0\cdot x/n\rfloor+w\cdot x)\bmod g\bigr)$,
 which takes at most $ng=|m|$ values. Two points $x\ne y$ of $[0,s]^3$ with
 $\psi(x)=\psi(y)$ exist. Then $u_0\cdot(x-y)=n(q-q')$ with $q,q'$ the two floors, so
@@ -1584,7 +1595,7 @@ $\langle e_1+e_2,e_3\rangle$: if all four binary discriminants vanished then $\d
 vanish, by an explicit linear combination. Then choose $f$, $g$ or $f+g$ in the plane. With this, Lemma~\ref{lem:slice} holds
 for $\alpha\ne0$ and $\Delta\ne0$ of either sign, under the same hypothesis on $W$. When
 $\Delta<0$ each slice uses Lemma~\ref{lem:defnorm}, whose bound $4\tau(|N|)^3$ is at most
-$2\tau(|N|)^3(\log_3L^2+1)$ because $L\ge3$.
+$2\tau(|N|)^3(\log_3(11K^2H(3K+2))^2+1)$ because $11K^2H(3K+2)\ge3$.
 
 \begin{proposition}[One minor vector]\label{prop:fibre}
 Let $p$ be a minor vector with all coordinates in $[-X,X]$, $X\ge1$, and suppose $W$ satisfies
@@ -1597,8 +1608,8 @@ gap vectors $\kappa$.
 \end{proposition}
 
 \begin{proof}
-At a good start the gaps lie in $[1,H]$, and Lemma~\ref{lem:signs} gives $A,A'\ge1$ and
-$U>0>V$. Let $b_1,b_2,b_3$ be the basis of Lemma~\ref{lem:reduce} for $\Lambda_p$, with $|m|$ in
+At a good start the gaps lie in $[1,H]$, and since $A=L(i)$ and $A'=L(i+1)$ are positive
+integers, Lemma~\ref{lem:signs} gives $U>0>V$. Let $b_1,b_2,b_3$ be the basis of Lemma~\ref{lem:reduce} for $\Lambda_p$, with $|m|$ in
 place of $m$, and $\hat b_i$ their lifts $c\mapsto L_c\cdot b_i/m$ to $\mathbb Z^5$. Write
 $k'=\sum y_ib_i$. By Lemma~\ref{lem:lift}, $\kappa=\sum y_i\hat b_i$, so $(k_1,k_2,k_3)=\hat By$
 for the $3\times3$ matrix $\hat B$ of the lifts in columns $1,2,3$, and
@@ -1731,7 +1742,7 @@ together with \lean{hankelInv\_one}, \dots, \lean{hankelInv\_four}; the last sta
 \lean{hankelInv a b i 4} $=$ \lean{sixL $\dots$}, the six-step integer of
 Lemma~\ref{lem:six}.
 Here \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean} are Lean propositions stating
-\eqref{eq:NT} (with $\varepsilon=1/4$) and~\eqref{eq:BT}, with existential constants and
+\eqref{eq:NT} (with $\alpha=1/4$) and~\eqref{eq:BT}, with existential constants and
 thresholds. \lean{hooleyDelta} is defined as the supremum over $u\in\mathbb R$, exactly as
 above. The command \lean{\#print axioms} was run on \lean{P\_le}, \lean{P\_le\_23\_77},
 \lean{P\_le\_11\_37}, \lean{P\_le\_8\_27}, \lean{P\_le\_45\_152}, \lean{norm\_count},
@@ -1753,7 +1764,7 @@ Definition of $P(a,b)$ & \lean{P}, \lean{orb} & \lean{Defs.lean}\\
 Lemma~\ref{lem:quot} & \lean{div\_lt\_div\_mod} & \lean{Block.lean}\\
 Lemma~\ref{lem:curv} & \lean{curvature\_identity}, \lean{one\_le\_bD} & \lean{Block.lean}\\
 Lemma~\ref{lem:fiber-eq} & \lean{fiber\_identity}, \lean{block\_fiber\_eq} & \lean{Block.lean}\\
-Lemma~\ref{lem:size} & \lean{bu\_mul\_le}, \lean{bv\_mul\_le}, \lean{bD\_mul\_le} & \lean{Block.lean}\\
+Lemma~\ref{lem:size} & \lean{bu\_mul\_le}, \lean{bv\_mul\_le} ($w>0$), \lean{bD\_mul\_le} & \lean{Block.lean}\\
 Lemma~\ref{lem:fiber} & \lean{fiber\_poly\_identity}, \lean{fiber\_card\_le} & \lean{Fiber.lean}\\
 Window runs & \lean{Window}, \lean{DivBound} & \lean{Window.lean}\\
 Proposition~\ref{prop:drop} & \lean{drop\_bound} & \lean{Window.lean}\\
@@ -1773,7 +1784,7 @@ $\Delta_{\mathrm H}$, $\tau_A\le\Delta_{\mathrm H}$ & \lean{hooleyDelta}, \lean{
 Lemma~\ref{lem:partial} & \lean{sum\_hooleyDelta\_div\_le} & \lean{Hooley.lean}\\
 Theorem~\ref{thm:loglog} & \lean{P\_le\_loglog} & \lean{Hooley.lean}\\
 Lemma~\ref{lem:ap} & \lean{ap\_identity}, \lean{ap\_bound} & \lean{Rises.lean}\\
-Lemma~\ref{lem:norise} & \lean{drop\_lt\_of\_not\_rise} & \lean{Rises.lean}\\
+Lemma~\ref{lem:norise} & \lean{Window.ratio\_lt}, \lean{drop\_lt\_of\_not\_rise} & \lean{Rises.lean}\\
 Lemma~\ref{lem:mult} & \lean{sq\_card\_le\_of\_fiber} & \lean{Rises.lean}\\
 Proposition~\ref{prop:rises} & \lean{rises\_drop\_bound}, \lean{rises\_quot\_bound}, & \lean{Rises.lean}\\
  & \lean{rises\_incr\_bound} & \\
@@ -1794,8 +1805,8 @@ Paper & Lean & File \\
 \midrule
 Hadamard's inequality & \lean{det\_le\_prod\_diag} & \lean{Hadamard.lean}\\
 $\mu_i$, $\nu_i$, shift rule & \lean{muF}, \lean{nuF}, \lean{muF\_nb\_mul} & \lean{Functional.lean}\\
-Lemma~\ref{lem:labels} & \lean{hankelInv\_le\_prod}, \lean{label\_bound} & \lean{Gram.lean}\\
-Lemma~\ref{lem:pattern} & \lean{null\_k}, \lean{null\_r} & \lean{TwoState.lean}\\
+Lemma~\ref{lem:labels} & \lean{hankelInv\_le\_prod}, \lean{label\_bound}; \lean{label\_at} & \lean{Gram.lean}, \lean{TwoStateMain.lean}\\
+Lemma~\ref{lem:pattern} & \lean{null\_d}, \lean{null\_k}, \lean{null\_r} & \lean{TwoState.lean}\\
 Lemma~\ref{lem:quad} & \lean{quad\_root} & \lean{TwoState.lean}\\
 Lemma~\ref{lem:multid} & \lean{mult\_identity}, \lean{quart\_eq} & \lean{TwoState.lean}\\
 Lemma~\ref{lem:psize} & \lean{gramP\_le}, \lean{state\_bound} & \lean{PatternBound.lean}\\
@@ -1846,8 +1857,9 @@ Theorem~\ref{thm:45152} & \lean{slack\_le2}, \lean{P\_le\_45\_152} & \lean{Forty
 Some details of the formalisation:
 \begin{itemize}
 \item The algebraic identities (Lemmas~\ref{lem:curv}, \ref{lem:fiber-eq}
-and~\eqref{eq:resultant}) are proved over $\mathbb Z$ by the tactic
-\lean{linear\_combination}, using the explicit coefficients above. They are then transferred to $\mathbb N$ by writing
+and~\eqref{eq:resultant}) are proved over $\mathbb Z$ by the tactics \lean{ring} and
+\lean{linear\_combination}, the latter with the explicit coefficients above for
+Lemma~\ref{lem:curv}. They are then transferred to $\mathbb N$ by writing
 $z=w+f$, $y=z+e$, $x=y+d$, which avoids truncated subtraction.
 \item The curvature is the natural number $\lean{bD}\,a\,x=(x-y)v-(y-z)u$. Lean first proves
 $eu<dv$, so this truncated subtraction is the true value.
@@ -1928,7 +1940,7 @@ for the formalised divisor bound.
 \bibitem{BT}
 R.~de~la~Bret\`eche and G.~Tenenbaum,
 \emph{Note on the mean value of the Erd\H{o}s--Hooley Delta-function},
-Acta Arith.\ \textbf{219} (2025), 379--394.
+Acta Arith.\ \textbf{219} (2025), no.~4, 379--394.
 
 \bibitem{CDHNV}
 R.~Cluckers, P.~D\`ebes, Y.~I.~Hendel, K.~H.~Nguyen and F.~Vermeulen,
