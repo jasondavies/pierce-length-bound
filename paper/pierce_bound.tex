@@ -1182,23 +1182,25 @@ $Q=a/A$, and its failure gives the stronger bound $T\ll a^{2/7+o(1)}$.
 
 Proposition~\ref{prop:pcount} uses only one coefficient of the reduced quadratic. Here we use
 all of it, which saves a factor $H$ in the count per pattern and proves
-Theorem~\ref{thm:1137}. We keep the notation of Section~\ref{sec:2377}, and write a pattern as
-$\theta=(A,A',A'',U,V,U',V')=(L(i),L(i+1),L(i+2),U_1(i),U_2(i),U_1(i+1),U_2(i+1))$.
+Theorem~\ref{thm:1137}. We keep the notation of Section~\ref{sec:2377}, and, as in
+Lemma~\ref{lem:quad}, write a pattern as
+$\theta=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)=(L(i),L(i+1),L(i+2),U_1(i),U_2(i),U_1(i+1),U_2(i+1))$.
+In particular $A$ is still the scale of the window $[A,2A)$.
 
 \subsection{Signs}
 Put $S(a,b,c)=a^2b+(a-1)b^2+ac$ and $E(a,b,c,d)=a^2c+(2a-1)bc+ac^2+ad$. Both are positive at
 positive integers.
 
 \begin{lemma}[Signs]\label{lem:signs}
-If $A,A'\ge1$ and $k_0,\dots,k_4\ge1$, then $U>0>V$.
+If $N_0,N_1\ge1$ and $k_0,\dots,k_4\ge1$, then $u_1>0>u_2$.
 \end{lemma}
 
 \begin{proof}
-Solving the $k$- and $r$-relations of Lemma~\ref{lem:pattern} for $(U,V)$ by Cramer's rule
+Solving the $k$- and $r$-relations of Lemma~\ref{lem:pattern} for $(u_1,u_2)$ by Cramer's rule
 gives the exact identities
 \begin{align*}
-U\,S(k_1,k_2,k_3)&=A'E(k_0,k_1,k_2,k_3)+A\,S(k_2,k_3,k_4),\\
--V\,S(k_1,k_2,k_3)&=A'S(k_0,k_1,k_2)+A\,E(k_1,k_2,k_3,k_4),
+u_1S(k_1,k_2,k_3)&=N_1E(k_0,k_1,k_2,k_3)+N_0S(k_2,k_3,k_4),\\
+-u_2S(k_1,k_2,k_3)&=N_1S(k_0,k_1,k_2)+N_0E(k_1,k_2,k_3,k_4),
 \end{align*}
 since the Cramer determinant is $k_1r_2-k_2r_1=S(k_1,k_2,k_3)$.
 \end{proof}
@@ -1206,17 +1208,17 @@ since the Cramer determinant is $k_1r_2-k_2r_1=S(k_1,k_2,k_3)$.
 \subsection{The ternary relation}
 For a pattern $\theta$ let
 \begin{align*}
-F_\theta(x,y,z)={}&(Ux+Vy+Az)^2+A'Ux^2+A'Vy^2+AA'z^2+2A'Vxy+2AA'xz+2AA'yz\\
-&+(AA''-A'^2)x+(A'U-AU')y+(A'V-AV')z .
+F_\theta(x,y,z)={}&(u_1x+u_2y+N_0z)^2+N_1u_1x^2+N_1u_2y^2+N_0N_1z^2+2N_1u_2xy+2N_0N_1xz\\
+&+2N_0N_1yz+(N_0N_2-N_1^2)x+(N_1u_1-N_0v_1)y+(N_1u_2-N_0v_2)z .
 \end{align*}
 
 \begin{lemma}\label{lem:tern}
 At every state $i$ with $i+7<N$, $F_{\theta(i)}(k_1,k_2,k_3)=0$. Write $F_\theta=\alpha x^2+\beta xy+\gamma
-y^2+d(z)x+e(z)y+f(z)$. Then $\alpha=U(U+A')$,
-$\beta^2-4\alpha\gamma=-4A'V(A'+U)(U-V)$, and
+y^2+d(z)x+e(z)y+f(z)$. Then $\alpha=u_1(u_1+N_1)$,
+$\beta^2-4\alpha\gamma=-4N_1u_2(N_1+u_1)(u_1-u_2)$, and
 \[
 (\beta d_1-2\alpha e_1)^2+(\beta^2-4\alpha\gamma)(4\alpha f_2-d_1^2)
-=16\,AA'^2U(A-V)(A'+U)^2(U-V),
+=16\,N_0N_1^2u_1(N_0-u_2)(N_1+u_1)^2(u_1-u_2),
 \]
 where $d_1,e_1,f_2$ are the leading coefficients of $d,e,f$. In particular, under the
 hypotheses of Lemma~\ref{lem:signs}, $\alpha>0$, $\beta^2-4\alpha\gamma>0$ and the last
@@ -1225,44 +1227,44 @@ quantity is nonzero.
 
 \begin{proof}
 The identity
-$A'F_\theta(k_1,k_2,k_3)=A'^2R+(AA'k_3-A'^2k_0+A'Uk_1+A'Vk_2)K_0-AA'K_1$, where $K_0$, $K_1$
+$N_1F_\theta(k_1,k_2,k_3)=N_1^2R+(N_0N_1k_3-N_1^2k_0+N_1u_1k_1+N_1u_2k_2)K_0-N_0N_1K_1$, where $K_0$, $K_1$
 and $R$ are the $k$-relations at $i$, $i+1$ and the $r$-relation at $i$, gives the first claim.
-The rest is expansion. So $F_\theta\equiv A'R$ modulo the two linear relations.
+The rest is expansion. So $F_\theta\equiv N_1R$ modulo the two linear relations.
 \end{proof}
 
 \subsection{Norm equations}
 
 \begin{lemma}[Norm equations]\label{lem:norm}
-Let $D\ge1$, $N\ne0$, $B\ge1$ be integers and $L=B(\lfloor\sqrt D\rfloor+2)$. The number of
-$(U,V)\in[-B,B]^2$ with $U^2-DV^2=N$ is at most $2\tau(|N|)^3(\log_3L^2+1)$.
+Let $D\ge1$, $m\ne0$, $B\ge1$ be integers and $Z=B(\lfloor\sqrt D\rfloor+2)$. The number of
+$(x,y)\in[-B,B]^2$ with $x^2-Dy^2=m$ is at most $2\tau(|m|)^3(\log_3Z^2+1)$.
 \end{lemma}
 
 \begin{proof}
-If $D=m^2$ then $(U-mV)(U+mV)=N$, and $U-mV$ is one of the $2\tau(|N|)$ signed divisors of $N$;
-it determines $(U,V)$. Otherwise write $D=df^2$ with $d>1$ squarefree, so $d$ is not a square
-and $\sqrt d$ is irrational. For a solution put $g=\gcd(U,fV)$, $u=U/g$, $w=fV/g$ and
-$n=u^2-dw^2$, so that $N=g^2n$. Since $\gcd(u,w)=1$ and $n\equiv u^2\pmod w$, $w$ is invertible
+If $D=h^2$ then $(x-hy)(x+hy)=m$, and $x-hy$ is one of the $2\tau(|m|)$ signed divisors of $m$;
+it determines $(x,y)$. Otherwise write $D=df^2$ with $d>1$ squarefree, so $d$ is not a square
+and $\sqrt d$ is irrational. For a solution put $g=\gcd(x,fy)$, $u=x/g$, $w=fy/g$ and
+$n=u^2-dw^2$, so that $m=g^2n$. Since $\gcd(u,w)=1$ and $n\equiv u^2\pmod w$, $w$ is invertible
 modulo $n$. Let $t\in[0,|n|)$ be the residue of $uw^{-1}$; then $t^2\equiv d$ and $u\equiv tw$
 modulo $n$.
 
-\emph{The residues.} The number of square roots of $d$ modulo $m$ is at most $\tau(m)^2$. Modulo
+\emph{The residues.} The number of square roots of $d$ modulo $c\ge1$ is at most $\tau(c)^2$. Modulo
 $p^e$ it is at most four. If $p\mid d$, either $e=1$ and the only root is $0$, or $e\ge2$ and a
 root would force $p^2\mid d$. If $p\nmid d$ is odd, two roots $r,s$ satisfy
 $p^e\mid(s-r)(s+r)$, and $p$ cannot divide both factors, so $s\equiv\pm r$. If $p=2\nmid d$,
 then $s,r$ are odd, one of $(s\mp r)/2$ is odd, and $s\equiv\pm r\pmod{2^{e-1}}$. The count is
 submultiplicative over coprime factors, by the Chinese remainder theorem, and $4\le\tau(p^e)^2$.
 
-\emph{A class.} Fix $g$ (with $g^2\mid N$), $t$ and the sign of $\xi=u+w\sqrt d$. Two
+\emph{A class.} Fix $g$ (with $g^2\mid m$), $t$ and the sign of $\xi=u+w\sqrt d$. Two
 solutions $(u,w),(u',w')$ in this class satisfy $n\mid uu'-dww'$ and $n\mid wu'-uw'$. So
 $\xi=\xi'\varepsilon$ with $\varepsilon=r+s\sqrt d$, where $r=(uu'-dww')/n$, $s=(wu'-uw')/n$ and
 $r^2-ds^2=1$. If $|\xi|>|\xi'|$ then $\varepsilon>1$, and then $\varepsilon\ge3$: indeed
 $\varepsilon^{-1}=r-s\sqrt d\in(0,1)$, so $2r=\varepsilon+\varepsilon^{-1}>2$, hence $r\ge2$, and
-$\varepsilon<3$ would give $\varepsilon+\varepsilon^{-1}<4$. Now $|u|+|w|\sqrt d\le|U|+|V|\sqrt
-D\le L$, so $|\xi|,|\bar\xi|\le L$, and $|\xi\bar\xi|=|n|\ge1$ gives $L|\xi|\ge1$. Hence the map
-$\xi\mapsto\lfloor\log_3(L|\xi|)\rfloor$ is injective on the class, with values in
-$[0,\log_3L^2]$.
+$\varepsilon<3$ would give $\varepsilon+\varepsilon^{-1}<4$. Now $|u|+|w|\sqrt d\le|x|+|y|\sqrt
+D\le Z$, so $|\xi|,|\bar\xi|\le Z$, and $|\xi\bar\xi|=|n|\ge1$ gives $Z|\xi|\ge1$. Hence the map
+$\xi\mapsto\lfloor\log_3(Z|\xi|)\rfloor$ is injective on the class, with values in
+$[0,\log_3Z^2]$.
 
-There are at most $\tau(|N|)$ values of $g$, $\tau(|N|)^2$ of $t$ and two signs.
+There are at most $\tau(|m|)$ values of $g$, $\tau(|m|)^2$ of $t$ and two signs.
 \end{proof}
 
 The argument is the classical one; compare Vaughan and Wooley~\cite[Lemma~3.5]{VW}.
@@ -1271,21 +1273,21 @@ The argument is the classical one; compare Vaughan and Wooley~\cite[Lemma~3.5]{V
 
 \begin{lemma}[Slices]\label{lem:slice}
 Let $F(x,y,z)=\alpha x^2+\beta xy+\gamma y^2+(d_1z+d_0)x+(e_1z+e_0)y+f_2z^2+f_1z+f_0$ have integer
-coefficients bounded by $K$, with $\alpha>0$, $\Delta=\beta^2-4\alpha\gamma>0$ and
-$\ell=(\beta d_1-2\alpha e_1)^2+\Delta(4\alpha f_2-d_1^2)\ne0$. Let $H\ge1$, and suppose that
-$2\tau(|M|)^3(\log_3(11K^2H(3K+2))^2+1)\le W$ for all $0<|M|\le116K^4H^2$. Then $F$ has at most
+coefficients bounded by $K$, with $\alpha>0$, $D=\beta^2-4\alpha\gamma>0$ and
+$\ell=(\beta d_1-2\alpha e_1)^2+D(4\alpha f_2-d_1^2)\ne0$. Let $H\ge1$, and suppose that
+$2\tau(|m|)^3(\log_3(11K^2H(3K+2))^2+1)\le W$ for all integers $0<|m|\le116K^4H^2$. Then $F$ has at most
 $(2H+1)(W+4)$ zeros in $[-H,H]^3$.
 \end{lemma}
 
 \begin{proof}
-Put $U=2\alpha x+\beta y+d(z)$, $\Lambda(z)=\beta d(z)-2\alpha e(z)$, $V=\Delta y+\Lambda(z)$ and
-$\mathcal N(z)=\Lambda(z)^2+\Delta(4\alpha f(z)-d(z)^2)$. Completing squares gives
-$V^2-\Delta U^2=\mathcal N(z)-4\alpha\Delta F$. In the box, $|U|,|V|\le11K^2H$,
-$\sqrt\Delta\le3K$ and $|\mathcal N(z)|\le116K^4H^2$. For fixed $z$ the map $(x,y)\mapsto(V,U)$
+Put $t=2\alpha x+\beta y+d(z)$, $\Lambda(z)=\beta d(z)-2\alpha e(z)$, $s=Dy+\Lambda(z)$ and
+$\mathcal N(z)=\Lambda(z)^2+D(4\alpha f(z)-d(z)^2)$. Completing squares gives
+$s^2-Dt^2=\mathcal N(z)-4\alpha DF$. In the box, $|s|,|t|\le11K^2H$,
+$\sqrt D\le3K$ and $|\mathcal N(z)|\le116K^4H^2$. For fixed $z$ the map $(x,y)\mapsto(s,t)$
 is injective. So if $\mathcal N(z)\ne0$ the slice has at most $W$ zeros, by
 Lemma~\ref{lem:norm}. The $z^2$-coefficient of $\mathcal N$ is $\ell\ne0$, so at most two
-slices have $\mathcal N(z)=0$. In such a slice $V^2=\Delta U^2$, which for fixed $y$ is a
-quadratic in $x$ with leading coefficient $4\alpha^2\Delta\ne0$, so it has at most
+slices have $\mathcal N(z)=0$. In such a slice $s^2=Dt^2$, which for fixed $y$ is a
+quadratic in $x$ with leading coefficient $4\alpha^2D\ne0$, so it has at most
 $2(2H+1)$ zeros.
 \end{proof}
 
@@ -1570,13 +1572,13 @@ $h(2R/h+1)\le3R$.
 \subsection{One minor vector}
 
 \begin{lemma}[Definite norm equations]\label{lem:defnorm}
-For $D\ge1$ and $N\ne0$, the equation $U^2+DV^2=N$ has at most $4\tau(|N|)^3$ integer
+For $D\ge1$ and $m\ne0$, the equation $x^2+Dy^2=m$ has at most $4\tau(|m|)^3$ integer
 solutions.
 \end{lemma}
 
 \begin{proof}
 As in Lemma~\ref{lem:norm}, with $D=df^2$, $d$ squarefree, each solution reduces to a primitive
-$u^2+dw^2=n$, $N=g^2n$, with a class $t\equiv uw^{-1}$, a square root of $-d$ modulo $n$. The
+$u^2+dw^2=n$, $m=g^2n$, with a class $t\equiv uw^{-1}$, a square root of $-d$ modulo $n$. The
 count of square roots in the proof of Lemma~\ref{lem:norm} applies to $-d$ unchanged. Two
 solutions in a class give integers $r,s$ with $r^2+ds^2=1$, of which there are at most four.
 \end{proof}
@@ -1584,7 +1586,7 @@ solutions in a class give integers $r,s$ with $r^2+ds^2=1$, of which there are a
 A ternary quadratic $F$ with quadratic part of Gram matrix $S$ has $\det(2S)$ multiplied by
 $\det(C)^2$ under a substitution $x=Cy$. In the notation of Lemma~\ref{lem:slice} one has the
 identity $\ell=-2\alpha\det(2S)$. For $F_\theta$, Lemma~\ref{lem:tern} therefore gives
-$\det(2S)=-8AA'^2(A-V)(A'+U)(U-V)\ne0$ under the hypotheses of Lemma~\ref{lem:signs}.
+$\det(2S)=-8N_0N_1^2(N_0-u_2)(N_1+u_1)(u_1-u_2)\ne0$ under the hypotheses of Lemma~\ref{lem:signs}.
 
 If $\det(2S)\ne0$, a product of two substitutions, each with entries in $\{0,\pm1\}$,
 determinant $\pm1$ and an inverse with absolute row sums at most $2$, makes both the $y_1^2$
@@ -1593,9 +1595,9 @@ well. First choose one of the planes
 $\langle e_1,e_2\rangle$, $\langle e_1,e_3\rangle$, $\langle e_2,e_3\rangle$,
 $\langle e_1+e_2,e_3\rangle$: if all four binary discriminants vanished then $\det(2S)$ would
 vanish, by an explicit linear combination. Then choose $f$, $g$ or $f+g$ in the plane. With this, Lemma~\ref{lem:slice} holds
-for $\alpha\ne0$ and $\Delta\ne0$ of either sign, under the same hypothesis on $W$. When
-$\Delta<0$ each slice uses Lemma~\ref{lem:defnorm}, whose bound $4\tau(|N|)^3$ is at most
-$2\tau(|N|)^3(\log_3(11K^2H(3K+2))^2+1)$ because $11K^2H(3K+2)\ge3$.
+for $\alpha\ne0$ and $D\ne0$ of either sign, under the same hypothesis on $W$. When
+$D<0$ each slice uses Lemma~\ref{lem:defnorm}, whose bound $4\tau(|m|)^3$ is at most
+$2\tau(|m|)^3(\log_3(11K^2H(3K+2))^2+1)$ because $11K^2H(3K+2)\ge3$.
 
 \begin{proposition}[One minor vector]\label{prop:fibre}
 Let $p$ be a minor vector with all coordinates in $[-X,X]$, $X\ge1$, and suppose $W$ satisfies
@@ -1608,8 +1610,8 @@ gap vectors $\kappa$.
 \end{proposition}
 
 \begin{proof}
-At a good start the gaps lie in $[1,H]$, and since $A=L(i)$ and $A'=L(i+1)$ are positive
-integers, Lemma~\ref{lem:signs} gives $U>0>V$. Let $b_1,b_2,b_3$ be the basis of Lemma~\ref{lem:reduce} for $\Lambda_p$, with $|m|$ in
+At a good start the gaps lie in $[1,H]$, and since $N_0=L(i)$ and $N_1=L(i+1)$ are positive
+integers, Lemma~\ref{lem:signs} gives $u_1>0>u_2$. Let $b_1,b_2,b_3$ be the basis of Lemma~\ref{lem:reduce} for $\Lambda_p$, with $|m|$ in
 place of $m$, and $\hat b_i$ their lifts $c\mapsto L_c\cdot b_i/m$ to $\mathbb Z^5$. Write
 $k'=\sum y_ib_i$. By Lemma~\ref{lem:lift}, $\kappa=\sum y_i\hat b_i$, so $(k_1,k_2,k_3)=\hat By$
 for the $3\times3$ matrix $\hat B$ of the lifts in columns $1,2,3$, and

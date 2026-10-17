@@ -39,8 +39,8 @@ bounded via Hadamard's inequality on the moment model. States with a given patte
 So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷⁷ ≪ Δ²²a²³` (exponent 23/77).
 
 For `11/37`, exact Cramer identities give `U₁ > 0 > U₂`, so the quadric in `(k₁, k₂, k₃)` is
-nonsingular with an indefinite binary section. Each slice is a norm equation `V² − ΔU² = N`, which
-has `≤ 2τ(|N|)³(log₃ (B(⌊√Δ⌋ + 2))² + 1)` solutions in `[−B, B]²`, uniformly in the
+nonsingular with an indefinite binary section. Each slice is a norm equation `x² − Dy² = m`, which
+has `≤ 2τ(|m|)³(log₃ (B(⌊√D⌋ + 2))² + 1)` solutions in `[−B, B]²`, uniformly in the
 coefficients. This is proved in
 full: square roots modulo prime powers, CRT, and the separation `ε ≥ 3` of norm-one numbers. So
 each pattern covers `O(H a^η)` states, `T ≪ a^η X⁷ H`, and `T⁷⁴ ≪ a^{22+O(η)}`.
