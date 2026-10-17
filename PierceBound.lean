@@ -18,3 +18,7 @@ import PierceBound.TwoState
 import PierceBound.PatternBound
 import PierceBound.PatternCount
 import PierceBound.TwoStateMain
+import PierceBound.NormCount
+import PierceBound.SliceCount
+import PierceBound.ElevenCount
+import PierceBound.ElevenMain

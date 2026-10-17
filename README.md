@@ -5,8 +5,9 @@ positive terms ([Open Problem Garden](https://www.openproblemgarden.org/op/a_dis
 Shallit asked whether `P(a, b) = O((log a)²)`. That question is **still open**. This repository
 proves, uniformly in `0 < b < a`:
 
-* **Main theorem:** `P(a, b) ≤ C_ε · a^{23/77 + ε}`, where `23/77 = 0.29870…`. This goes below the
+* **Main theorem:** `P(a, b) ≤ C_ε · a^{11/37 + ε}`, where `11/37 = 0.29729…`. This goes below the
   exponent `3/10` of the unpublished `n^{3/10}` bound reported on Shallit's talks page.
+* **The first step below `3/10`:** `P(a, b) ≤ C_ε · a^{23/77 + ε}`.
 * **The `3/10` bound:** `P(a, b) ≤ C_ε · a^{3/10 + ε}`, improving Chase–Pandey's
   `a^{1/3 − 2/177 + ε}`. Its six-step identity is an ingredient of the main theorem.
 * **Assuming two published theorems:** `P(a, b) ≪ a^{3/10} √(log log 3a)`. The theorems are
@@ -34,7 +35,13 @@ bounded via Hadamard's inequality on the moment model. States with a given patte
   coefficient `L(i)L(i+1)(L(i)+L(i+1)) > 0`;
 * the quartic identity `I₄(i) pᵢ(-qᵢ) = a det(μᵢ(x^{j+l}))`, so at most four states share a point.
 
-So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷⁷ ≪ Δ²²a²³`.
+So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷⁷ ≪ Δ²²a²³` (exponent 23/77).
+
+For `11/37`, exact Cramer identities give `U₁ > 0 > U₂`, so the quadric in `(k₁, k₂, k₃)` is
+nonsingular with an indefinite binary section. Each slice is a norm equation `V² − ΔU² = N`, which
+has `≤ 2τ(|N|)³(log₃ L² + 1)` solutions in a box, uniformly in the coefficients. This is proved in
+full: square roots modulo prime powers, CRT, and the separation `ε ≥ 3` of norm-one numbers. So
+each pattern covers `O(H a^η)` states, `T ≪ a^η X⁷ H`, and `T⁷⁴ ≪ a^{22+O(η)}`.
 
 * `paper/pierce_bound.tex` (and `.pdf`): the paper.
 * `PierceBound/`: Lean 4 / Mathlib formalisation of all of the above, with no `sorry`.
@@ -44,6 +51,9 @@ So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷�
 Build with `lake build` (Lean `v4.35.0`, Mathlib `v4.35.0`). The main theorems are
 
 ```lean
+theorem PierceBound.P_le_11_37 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((11 : ℝ) / 37 + ε)
+
 theorem PierceBound.P_le_23_77 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((23 : ℝ) / 77 + ε)
 
@@ -61,7 +71,7 @@ theorem PierceBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr : r ≤
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n
 ```
 
-`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all five. The second
+`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all six. The second
 theorem's dependence on the two papers is entirely through its hypotheses.
 
 | File | Contents |
@@ -85,6 +95,10 @@ theorem's dependence on the two papers is entirely through its hypotheses.
 | `PatternBound.lean` | the seven pattern integers are `≤ 172032 A⁴H⁶/a³` under the scale condition |
 | `PatternCount.lean` | the counting lemma `#G ≤ 8 (2M+1)⁷ H²` |
 | `TwoStateMain.lean` | good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
+| `NormCount.lean` | Lemma 7: square roots mod `m` (`≤ τ(m)²`), norm-one separation, and `norm_count` |
+| `SliceCount.lean` | Lemma 8: slices of a ternary quadratic via completing squares (`slice_count`) |
+| `ElevenCount.lean` | the sign identities, the ternary relation `F_θ(k₁,k₂,k₃) = 0`, and the refined count |
+| `ElevenMain.lean` | the window bound, `T⁷⁴ ≤ C Δ¹⁹ Ξ¹⁹ a²²`, slack factors `≪ a^η`, and `P_le_11_37` |
 | `Hooley.lean` | Erdős–Hooley `Δ`, the hypotheses `NairTenenbaumDelta` and `BretecheTenenbaumMean`, partial summation, and `P_le_loglog` |
 
 ## Vendored code
