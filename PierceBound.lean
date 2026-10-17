@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.Defs
 import PierceBound.Block
 import PierceBound.Fiber
@@ -17,7 +22,7 @@ import PierceBound.Gram
 import PierceBound.TwoState
 import PierceBound.PatternBound
 import PierceBound.PatternCount
-import PierceBound.TwoStateMain
+import PierceBound.TwentyThreeMain
 import PierceBound.NormCount
 import PierceBound.SliceCount
 import PierceBound.ElevenCount

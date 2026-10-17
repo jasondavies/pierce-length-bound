@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound
 
 /-!
@@ -10,25 +15,33 @@ axioms `propext`, `Classical.choice` and `Quot.sound`.
 open PierceBound
 
 /-- info: 'PierceBound.P_le_45_152' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in #print axioms P_le_45_152
+#guard_msgs in
+#print axioms P_le_45_152
 
 /-- info: 'PierceBound.P_le_8_27' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in #print axioms P_le_8_27
+#guard_msgs in
+#print axioms P_le_8_27
 
 /-- info: 'PierceBound.P_le_11_37' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in #print axioms P_le_11_37
+#guard_msgs in
+#print axioms P_le_11_37
 
 /-- info: 'PierceBound.P_le_23_77' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in #print axioms P_le_23_77
+#guard_msgs in
+#print axioms P_le_23_77
 
 /-- info: 'PierceBound.P_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in #print axioms P_le
+#guard_msgs in
+#print axioms P_le
 
 /-- info: 'PierceBound.P_le_loglog' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in #print axioms P_le_loglog
+#guard_msgs in
+#print axioms P_le_loglog
 
 /-- info: 'PierceBound.P_le_rises' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in #print axioms P_le_rises
+#guard_msgs in
+#print axioms P_le_rises
 
 /-- info: 'PierceBound.hankelInv_pos_int' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in #print axioms hankelInv_pos_int
+#guard_msgs in
+#print axioms hankelInv_pos_int

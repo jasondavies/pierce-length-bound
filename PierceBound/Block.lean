@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.Defs
 
 /-!
@@ -41,7 +46,8 @@ theorem curvature_identity (a w f e d q u v : ℤ)
     (h2 : (w + f + e) * (q + u) + (w + f) = a)
     (h3 : (w + f) * (q + u + v) + w = a) :
     (d * v - e * u) * (w + f) = d * f + u * d * e + (u - 1) * e ^ 2 := by
-  linear_combination d * h3 + (a - q * (w + f + e + d) - (w + f + e + d) - (w + f + e) + (w + f)) * h2 +
+  linear_combination d * h3 + (a - q * (w + f + e + d) - (w + f + e + d) - (w + f + e) + (w + f))
+      * h2 +
     (-a + (q + u) * (w + f + e) + (w + f + e)) * h1
 
 /-- **The fiber equation.** `D = M(q) x - a N(q)`. -/
@@ -231,6 +237,7 @@ end Block
 /-- **Size of `v`.** `v · z · y ≤ a (y - w)`. -/
 lemma bv_mul_le {a x : ℕ} (hy : a % x ≠ 0) (hz : a % (a % x) ≠ 0)
     (hw : a % (a % (a % x)) ≠ 0) :
-    bv a x * (a % (a % x) * (a % x)) ≤ a * (a % x - a % (a % (a % x))) := bu_mul_le (x := a % x) (Nat.pos_of_ne_zero hy) hz hw (Nat.mod_le _ _)
+    bv a x * (a % (a % x) * (a % x)) ≤ a * (a % x - a % (a % (a % x))) := bu_mul_le (x := a % x)
+        (Nat.pos_of_ne_zero hy) hz hw (Nat.mod_le _ _)
 
 end PierceBound

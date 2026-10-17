@@ -1,11 +1,16 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.ElevenCount
-import PierceBound.TwoStateMain
+import PierceBound.TwentyThreeMain
 
 /-!
 # `P(a, b) ≪_ε a^{11/37 + ε}`
 
-The two-state pattern of `TwoStateMain.lean`, counted with the ternary quadratic of
-`ElevenCount.lean`, gives `T ≤ 24 (2M+1)⁷ H Ξ(a)` for a window run (`two_state_window_eleven`),
+The two-state pattern of `TwentyThreeMain.lean`, counted with the ternary quadratic of
+`ElevenCount.lean`, gives `T ≤ 24 (2M+1)⁷ H Ξ(a)` for a window run (`two_state_window_74`),
 where `Ξ(a) = 2 τ_max³ (log₃ P(a) + 1) + 4` collects the divisor and logarithm factors of
 `norm_count` over the polynomial range `[1, P(a)]`, `P(a) = 10³⁰⁰ a¹⁰⁰`. With the six-step
 and drop bounds this gives `T⁷⁴ ≤ C Δ¹⁹ Ξ(a)¹⁹ a²²` (`window_74`). Both `Δ` and `Ξ(a)` are
@@ -17,28 +22,28 @@ namespace PierceBound
 open Finset
 
 /-- The polynomial range `P(a) = 10³⁰⁰ a¹⁰⁰` containing all norm-equation right sides. -/
-def Pbig (a : ℕ) : ℕ := 10 ^ 300 * a ^ 100
+def Pbig1 (a : ℕ) : ℕ := 10 ^ 300 * a ^ 100
 
 /-- The slack factor `Ξ(a)`. -/
-def Xi (a : ℕ) : ℕ := 2 * tauMax (Pbig a) ^ 3 * (Nat.log 3 (Pbig a) + 1) + 4
+def Xi (a : ℕ) : ℕ := 2 * tauMax (Pbig1 a) ^ 3 * (Nat.log 3 (Pbig1 a) + 1) + 4
 
 set_option exponentiation.threshold 400 in
 /-- The quantities controlled by `Ξ(a)` lie in `[1, P(a)]`, for patterns of height `≤ 10¹⁶ a⁷`. -/
-lemma pbig_bounds {a M H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hM : M ≤ 10 ^ 16 * a ^ 7) :
-    116 * (4 * M ^ 2) ^ 4 * H ^ 2 ≤ Pbig a ∧
-      (11 * (4 * M ^ 2) ^ 2 * H * (3 * (4 * M ^ 2) + 2)) ^ 2 ≤ Pbig a ∧ M ≤ Pbig a := by
+lemma pbig1_bounds {a M H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hM : M ≤ 10 ^ 16 * a ^ 7) :
+    116 * (4 * M ^ 2) ^ 4 * H ^ 2 ≤ Pbig1 a ∧
+      (11 * (4 * M ^ 2) ^ 2 * H * (3 * (4 * M ^ 2) + 2)) ^ 2 ≤ Pbig1 a ∧ M ≤ Pbig1 a := by
   have hK : 4 * M ^ 2 ≤ 4 * 10 ^ 32 * a ^ 14 := by
     calc 4 * M ^ 2 ≤ 4 * (10 ^ 16 * a ^ 7) ^ 2 := by gcongr
       _ = 4 * 10 ^ 32 * a ^ 14 := by ring
   have ha1 : 1 ≤ a ^ 14 := Nat.one_le_pow _ _ ha
-  have hP : Pbig a = 10 ^ 300 * a ^ 100 := rfl
+  have hP : Pbig1 a = 10 ^ 300 * a ^ 100 := rfl
   have hmono : ∀ k, k ≤ 100 → a ^ k ≤ a ^ 100 := fun k hk => Nat.pow_le_pow_right ha hk
   refine ⟨?_, ?_, ?_⟩
   · calc 116 * (4 * M ^ 2) ^ 4 * H ^ 2 ≤ 116 * (4 * 10 ^ 32 * a ^ 14) ^ 4 * (29 * a) ^ 2 := by
           gcongr
       _ = (116 * 4 ^ 4 * 10 ^ 128 * 29 ^ 2) * a ^ 58 := by ring
       _ ≤ 10 ^ 300 * a ^ 100 := Nat.mul_le_mul (by norm_num) (hmono 58 (by norm_num))
-      _ = Pbig a := hP.symm
+      _ = Pbig1 a := hP.symm
   · have h3 : 3 * (4 * M ^ 2) + 2 ≤ 5 * (4 * 10 ^ 32 * a ^ 14) := by
       have : 1 ≤ 4 * 10 ^ 32 * a ^ 14 := by nlinarith
       omega
@@ -47,16 +52,16 @@ lemma pbig_bounds {a M H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hM : M ≤ 1
           gcongr
       _ = (11 * 16 * 10 ^ 64 * 29 * 20 * 10 ^ 32) ^ 2 * a ^ 86 := by ring
       _ ≤ 10 ^ 300 * a ^ 100 := Nat.mul_le_mul (by norm_num) (hmono 86 (by norm_num))
-      _ = Pbig a := hP.symm
+      _ = Pbig1 a := hP.symm
   · calc M ≤ 10 ^ 16 * a ^ 7 := hM
       _ ≤ 10 ^ 300 * a ^ 100 := Nat.mul_le_mul (by norm_num) (hmono 7 (by norm_num))
-      _ = Pbig a := hP.symm
+      _ = Pbig1 a := hP.symm
 
 section Window
 
 variable {a b : ℕ}
 
-theorem two_state_window_eleven (hba : b < a) {s T A : ℕ}
+theorem two_state_window_74 (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T)
     (hc : 237568 * A ^ 4 * (28 * a / (A * T) + 1) ^ 5 ≤ a ^ 3) :
@@ -83,11 +88,11 @@ theorem two_state_window_eleven (hba : b < a) {s T A : ℕ}
     · have := (hmem (i + 1 - s) (by omega)).2; rwa [show s + (i + 1 - s) = i + 1 by omega] at this
     · have := (hmem (i + 2 - s) (by omega)).2; rwa [show s + (i + 2 - s) = i + 2 by omega] at this
   have hH1 : 1 ≤ H := by rw [hH]; exact Nat.le_add_left 1 _
-  have hcount := pattern_count_eleven (G := G) (θ := theta a b) (κ := kap a b)
+  have hcount := pattern_count_slice (G := G) (θ := theta a b) (κ := kap a b)
     (Q := fun i => (qq a b i : ℤ)) (a := (a : ℤ)) (M := M) (H := H)
-    (W := 2 * tauMax (Pbig a) ^ 3 * (Nat.log 3 (Pbig a) + 1)) hH1 ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
+    (W := 2 * tauMax (Pbig1 a) ^ 3 * (Nat.log 3 (Pbig1 a) + 1)) hH1 ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
   · have hg2 : T ≤ 2 * G.card := hgood
-    have hXi : 2 * tauMax (Pbig a) ^ 3 * (Nat.log 3 (Pbig a) + 1) + 4 = Xi a := rfl
+    have hXi : 2 * tauMax (Pbig1 a) ^ 3 * (Nat.log 3 (Pbig1 a) + 1) + 4 = Xi a := rfl
     rw [hXi] at hcount
     calc T ≤ 2 * G.card := hg2
       _ ≤ 2 * (4 * (2 * M + 1) ^ 7 * ((2 * H + 1) * Xi a)) := Nat.mul_le_mul_left _ hcount
@@ -171,9 +176,9 @@ theorem two_state_window_eleven (hba : b < a) {s T A : ℕ}
     have hH29 : H ≤ 29 * a := by
       have : 28 * a / (A * T) ≤ 28 * a := Nat.div_le_self _ _
       omega
-    obtain ⟨P1, P2, -⟩ := pbig_bounds (by omega) hH29
+    obtain ⟨P1, P2, -⟩ := pbig1_bounds (by omega) hH29
       (hMb.trans (Nat.mul_le_mul_right _ (by norm_num)))
-    have hτ : M'.natAbs.divisors.card ≤ tauMax (Pbig a) := by
+    have hτ : M'.natAbs.divisors.card ≤ tauMax (Pbig1 a) := by
       unfold tauMax
       refine le_sup (f := fun n => n.divisors.card) (mem_range.mpr ?_)
       have : M'.natAbs ≤ 116 * (4 * M ^ 2) ^ 4 * H ^ 2 := by
@@ -182,7 +187,7 @@ theorem two_state_window_eleven (hba : b < a) {s T A : ℕ}
         exact_mod_cast h'
       omega
     have hlog : Nat.log 3 ((11 * (4 * M ^ 2) ^ 2 * H * (3 * (4 * M ^ 2) + 2)) ^ 2) ≤
-        Nat.log 3 (Pbig a) := Nat.log_mono_right P2
+        Nat.log 3 (Pbig1 a) := Nat.log_mono_right P2
     gcongr
 
 
@@ -363,7 +368,8 @@ lemma xi_le (c e : ℕ) (he : 1 ≤ e) (η : ℝ) (hη : 0 < η) : ∃ C > 0, �
       rw [Real.mul_rpow (by positivity) (by positivity), ← Real.rpow_natCast (a : ℝ) e,
         ← Real.rpow_mul (by positivity)]
       congr 2; field_simp
-    calc ((Nat.log 3 (10 ^ c * a ^ e) + 1 : ℕ) : ℝ) ≤ ((Nat.log 2 (10 ^ c * a ^ e) + 1 : ℕ) : ℝ) := by
+    calc ((Nat.log 3 (10 ^ c * a ^ e) + 1 : ℕ) : ℝ)
+           ≤ ((Nat.log 2 (10 ^ c * a ^ e) + 1 : ℕ) : ℝ) := by
           exact_mod_cast h1
       _ ≤ CL * ((10 ^ c * a ^ e : ℕ) : ℝ) ^ (η / (2 * e)) := h2
       _ = C3 * (a : ℝ) ^ (η / 2) := by rw [e1]; simp only [C3]; ring
@@ -371,7 +377,8 @@ lemma xi_le (c e : ℕ) (he : 1 ≤ e) (η : ℝ) (hη : 0 < η) : ∃ C > 0, �
   have := mul_le_mul b2' (by exact_mod_cast b3) (by positivity) (by positivity)
   have e2 : C2 ^ 3 * (a : ℝ) ^ (η / 2) * (C3 * (a : ℝ) ^ (η / 2)) = C2 ^ 3 * C3 * (a : ℝ) ^ η := by
     rw [show C2 ^ 3 * (a : ℝ) ^ (η / 2) * (C3 * (a : ℝ) ^ (η / 2)) =
-      C2 ^ 3 * C3 * ((a : ℝ) ^ (η / 2) * (a : ℝ) ^ (η / 2)) by ring, ← Real.rpow_add (by positivity)]
+      C2 ^ 3 * C3 * ((a : ℝ) ^ (η / 2) * (a : ℝ) ^ (η / 2)) by ring, ← Real.rpow_add
+          (by positivity)]
     ring_nf
   push_cast at this
   nlinarith
@@ -397,7 +404,7 @@ theorem visits_74 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
     omega
   exact window_74 (by unfold Xi; omega) (by omega)
     (six_step_bound W (by omega)) (drop_bound W hΔ (by omega))
-    (fun hc => two_state_window_eleven hba hmem hsT (by omega) hc)
+    (fun hc => two_state_window_74 hba hmem hsT (by omega) hc)
 
 /-- **Theorem.** `P(a, b) ≪_ε a^{11/37 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le_11_37 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →

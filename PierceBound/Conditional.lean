@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.ShortSum
 import PierceBound.Geometric
 import PierceBound.Main
@@ -24,7 +29,8 @@ def ShortDivisorBound (G : ℕ → ℝ) : Prop :=
     (∑ n ∈ Ioc x (x + y), (dcount A n : ℝ)) ≤ C * y * G x
 
 /-- Solving `T(T-1) ≤ c(2A + β₀(T-1))`: `T ≤ 2cβ₀ + √(8cA)`. -/
-lemma quadratic_solve {T c β₀ H A : ℝ} (hT : 2 ≤ T) (hc : 0 ≤ c) (hβ : 0 ≤ β₀) (h1 : T ≤ c * (H + β₀)) (h2 : H * (T - 1) ≤ 2 * A) :
+lemma quadratic_solve {T c β₀ H A : ℝ} (hT : 2 ≤ T) (hc : 0 ≤ c) (hβ : 0 ≤ β₀)
+    (h1 : T ≤ c * (H + β₀)) (h2 : H * (T - 1) ≤ 2 * A) :
     T ≤ 2 * c * β₀ + Real.sqrt (8 * c * A) := by
   have hTT : T * (T - 1) ≤ c * (2 * A + β₀ * (T - 1)) := by
     have := mul_le_mul_of_nonneg_right h1 (by linarith : (0 : ℝ) ≤ T - 1)
@@ -127,8 +133,10 @@ theorem visits_real_bound {G : ℕ → ℝ} {C x₀ : ℝ} (hC : 0 < C)
     have h' : ((T - 1 : ℕ) : ℝ) = (T : ℝ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
     rw [← h']; exact_mod_cast this
   have b2 := quadratic_solve (T := T) (c := 2 * C * G a) (β₀ := (a : ℝ) ^ (1 / 4 : ℝ) + 1)
-    (H := H) (A := A) (by exact_mod_cast (show 2 ≤ T by omega)) (by positivity) (by positivity) hT2 hHT
-  have hsq : Real.sqrt (8 * (2 * C * G a) * A) = 4 * Real.sqrt (C * G a) * (A : ℝ) ^ (1 / 2 : ℝ) := by
+    (H := H) (A := A) (by exact_mod_cast (show 2 ≤ T by omega)) (by positivity) (by positivity) hT2
+        hHT
+  have hsq : Real.sqrt (8 * (2 * C * G a) * A) = 4 * Real.sqrt (C * G a)
+      * (A : ℝ) ^ (1 / 2 : ℝ) := by
     rw [show 8 * (2 * C * G a) * A = 4 ^ 2 * ((C * G a) * A) by ring,
       Real.sqrt_mul (by positivity), Real.sqrt_sq (by norm_num),
       Real.sqrt_mul (by positivity), Real.sqrt_eq_rpow (A : ℝ)]

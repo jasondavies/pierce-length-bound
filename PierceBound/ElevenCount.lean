@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.SliceCount
 import PierceBound.PatternCount
 
@@ -13,8 +18,8 @@ At a state with pattern `θ = (A, A', A'', U, V, U', V')` and gaps `κ = (k₀, 
   leading coefficient `16 A A'² U (A - V)(A' + U)²(U - V) ≠ 0`.
 
 So each pattern accounts for at most `(2H+1)(W+4)` gap triples (`slice_count`), and
-`#G ≤ 4 (2M+1)⁷ (2H+1)(W+4)` (`pattern_count_eleven`). The same count for patterns in an
-arbitrary set `B` is `pattern_count_gen`, used for `8/27`.
+`#G ≤ 4 (2M+1)⁷ (2H+1)(W+4)` (`pattern_count_slice`). The same count for patterns in an
+arbitrary set `B` is `pattern_count_slice_gen`, used for `8/27`.
 
 Here `A, A', U, V` are the paper's `N₀, N₁, u₁, u₂`.
 -/
@@ -36,7 +41,8 @@ lemma sixS_pos {a b c : ℤ} (ha : 1 ≤ a) (hb : 1 ≤ b) (hc : 1 ≤ c) : 0 < 
 lemma eF_pos {a b c d : ℤ} (ha : 1 ≤ a) (hb : 1 ≤ b) (hc : 1 ≤ c) (hd : 1 ≤ d) :
     0 < eF a b c d := by
   unfold eF
-  have h1 : 0 ≤ (2 * a - 1) * b * c := mul_nonneg (mul_nonneg (by linarith) (by linarith)) (by linarith)
+  have h1 : 0 ≤ (2 * a - 1) * b * c := mul_nonneg (mul_nonneg (by linarith) (by linarith))
+      (by linarith)
   have h2 : 0 < a ^ 2 * c := by positivity
   have h3 : 0 < a * c ^ 2 := by positivity
   have h4 : 0 < a * d := by positivity
@@ -120,7 +126,8 @@ lemma tern_coef_le {A A' A'' U V U' V' M : ℤ} (hA : |A| ≤ M) (hA' : |A'| ≤
       rw [sq]; exact m2 _ _ _ _ hA' hA'); linarith),
     ?_, e _ (by have := d2 _ _ (m2 _ _ _ _ hA' hU) (m2 _ _ _ _ hA hU'); linarith),
     e _ (by have := m2 _ _ _ _ hA (s2 _ _ hA hA'); linarith),
-    e _ (by have := d2 _ _ (m2 _ _ _ _ hA' hV) (m2 _ _ _ _ hA hV'); linarith), by simp; positivity⟩
+    e _ (by have := d2 _ _ (m2 _ _ _ _ hA' hV) (m2 _ _ _ _ hA hV'); linarith), by
+        simp only [abs_zero, Nat.ofNat_pos, mul_nonneg_iff_of_pos_left]; positivity⟩
   · rw [mul_assoc, abs_mul, two]
     have := m2 _ _ _ _ hV (s2 _ _ hU hA'); nlinarith
   · rw [mul_assoc, abs_mul, two]
@@ -133,7 +140,7 @@ lemma mem_ibox_of {H : ℕ} {x : ℤ} (h1 : 1 ≤ x) (h2 : x ≤ H) : x ∈ ibox
   mem_Icc.mpr ⟨by omega, h2⟩
 
 /-- **The counting lemma for an arbitrary set of patterns.** -/
-theorem pattern_count_gen {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ : ℕ → Fin 5 → ℤ}
+theorem pattern_count_slice_gen {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ : ℕ → Fin 5 → ℤ}
     {Q : ℕ → ℤ} {a : ℤ} {M H W : ℕ} {B : Finset (Fin 7 → ℤ)} (hH : 1 ≤ H)
     (hB : ∀ i ∈ G, θ i ∈ B)
     (hQ : Set.InjOn Q G)
@@ -269,7 +276,7 @@ theorem pattern_count_gen {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ : �
     _ = 4 * B.card * ((2 * H + 1) * (W + 4)) := by ring
 
 /-- **The refined counting lemma.** -/
-theorem pattern_count_eleven {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ : ℕ → Fin 5 → ℤ}
+theorem pattern_count_slice {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ : ℕ → Fin 5 → ℤ}
     {Q : ℕ → ℤ} {a : ℤ} {M H W : ℕ} (hH : 1 ≤ H)
     (hQ : Set.InjOn Q G)
     (hθ : ∀ i ∈ G, ∀ t, |θ i t| ≤ M)
@@ -293,7 +300,7 @@ theorem pattern_count_eleven {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ :
     congr 1; omega
   have hB : ∀ i ∈ G, θ i ∈ B7 := fun i hi =>
     Fintype.mem_piFinset.mpr fun t => mem_Icc.mpr (abs_le.mp (hθ i hi t))
-  have := pattern_count_gen hH hB hQ hθ hκ h0 h1 e0 e4 e3 hm hW
+  have := pattern_count_slice_gen hH hB hQ hθ hκ h0 h1 e0 e4 e3 hm hW
   rwa [hB7] at this
 
 

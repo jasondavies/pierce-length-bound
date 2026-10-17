@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.LatticeCount
 
 /-!
@@ -8,7 +13,7 @@ lattice `Λ_p`: at most `(8 ⌊3H/λ₁(p)⌋ + 3) Ξ` of them (`pattern_count_l
 have a short lattice vector (`short_count`), and every `Λ_p` has one of length
 `≤ L ≍ X^{1/3}` (`pivLat_short`). Partial summation (`abel_sum`) then gives
 `T ≪ Ξ (H X^{14/3} + X⁵)` in place of `T ≪ Ξ H X⁵`, so `T³ ≤ C Ξ⁹ (H³X¹⁴ + X¹⁵)`
-(`two_state_window_45`). The exponent arithmetic turns this into `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`, hence
+(`two_state_window_152`). The exponent arithmetic turns this into `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`, hence
 `P ≪ a^{45/152 + ε}`.
 -/
 
@@ -108,7 +113,8 @@ theorem abel_sum {ι : Type*} (S : Finset ι) (R : ι → ℕ) {L N C : ℕ}
             apply one_div_le_one_div_of_le (by positivity)
             nlinarith
           have hgp : 0 ≤ g j := by simp only [g]; positivity
-          calc ((S.filter fun p => R p ≤ j).card : ℝ) * g j ≤ (C * (j : ℝ) ^ 3) * (1 / (j : ℝ) ^ 2) :=
+          calc ((S.filter fun p => R p ≤ j).card : ℝ) * g j ≤ (C * (j : ℝ) ^ 3)
+                 * (1 / (j : ℝ) ^ 2) :=
                 mul_le_mul hc' hg hgp (by positivity)
             _ = C * j := by field_simp
             _ ≤ C * L := by gcongr
@@ -159,7 +165,7 @@ lemma exists_cube_root {X : ℕ} (hX : 1 ≤ X) : ∃ L : ℕ, 1 ≤ L ∧ X ≤
 def C3w : ℕ := 32 * 607461312 ^ 3
 
 /-- **The window arithmetic.** -/
-theorem arith45 {T G L X H Xi Ssum Sc τ0 : ℕ} (hT : T ≤ 2 * G)
+theorem arith_152 {T G L X H Xi Ssum Sc τ0 : ℕ} (hT : T ≤ 2 * G)
     (hG : G ≤ 4 * Xi * (8 * Ssum + 3 * Sc))
     (hab : L * Ssum ≤ 3 * H * Sc + 3 * H * (393660 * X ^ 4 * τ0 ^ 2) * L ^ 3)
     (hSc : Sc ≤ 14581 * X ^ 5 * τ0) (hτ : 1 ≤ τ0) (hτΞ : τ0 ≤ Xi) (hX : 1 ≤ X)
@@ -228,7 +234,7 @@ section Window
 variable {a b : ℕ}
 
 /-- **The window bound through the pattern lattices.** -/
-theorem two_state_window_45 (hba : b < a) {s T A : ℕ}
+theorem two_state_window_152 (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T) :
     T ^ 3 ≤ C3w * Xi2 a ^ 9 * ((28 * a / (A * T) + 1) ^ 3 *
@@ -351,7 +357,7 @@ theorem two_state_window_45 (hba : b < a) {s T A : ℕ}
     have h6 : 1 ≤ pm i 6 := by
       have := Lz_pos hba (i := i + 1) (by have := (facts i hi).1; omega)
       have e := congrFun (theta_eq (a := a) (b := b) i) 1
-      simp [theta, projθ] at e
+      simp only [theta, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_zero, projθ] at e
       simp only [pm]; rw [← e]; exact_mod_cast this
     intro h0
     have hle := piv_max (pm i) 6
@@ -385,7 +391,7 @@ theorem two_state_window_45 (hba : b < a) {s T A : ℕ}
       _ < (L + 1) ^ 3 := Nat.pow_lt_pow_left (by omega) (by norm_num)
   have hab := abel_sum S shortR (N := 3 * H) (C := 393660 * X ^ 4 * τ0 ^ 2) hR fun r _ =>
     (short_count (Y := X) (R := r) hS hτX).trans (by ring_nf; exact le_rfl)
-  refine arith45 (G := G.card) (L := L) (Ssum := ∑ p ∈ S, 3 * H / shortR p) (Sc := S.card)
+  refine arith_152 (G := G.card) (L := L) (Ssum := ∑ p ∈ S, 3 * H / shortR p) (Sc := S.card)
     (τ0 := τ0) hgood ?_ (by ring_nf; ring_nf at hab; exact hab) hSc hτ1 hτΞ hX1 hLX hLX8
   rw [← hXi]
   calc G.card ≤ ∑ p ∈ S, 4 * ((2 * (4 * (3 * H / shortR p) + 1) + 1) * (W + 4)) := hcount
@@ -602,7 +608,7 @@ theorem visits_152 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
     omega
   exact window_152 (by omega)
     (six_step_bound W (by omega)) (drop_bound W hΔ (by omega))
-    (two_state_window_45 hba hmem hsT (by omega))
+    (two_state_window_152 hba hmem hsT (by omega))
 
 /-- **Theorem.** `P(a, b) ≪_ε a^{45/152 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le_45_152 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →

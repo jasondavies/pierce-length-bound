@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.SliceCount
 import PierceBound.DefiniteNorm
 
@@ -24,7 +29,8 @@ def ternv (c : Fin 10 → ℤ) (v : Fin 3 → ℤ) : ℤ :=
 
 /-- The quadratic part at a vector. -/
 def quadv (c : Fin 10 → ℤ) (v : Fin 3 → ℤ) : ℤ :=
-  c 0 * v 0 ^ 2 + c 1 * v 0 * v 1 + c 2 * v 1 ^ 2 + c 3 * v 0 * v 2 + c 5 * v 1 * v 2 + c 7 * v 2 ^ 2
+  c 0 * v 0 ^ 2 + c 1 * v 0 * v 1 + c 2 * v 1 ^ 2 + c 3 * v 0 * v 2 + c 5 * v 1 * v 2 + c 7
+      * v 2 ^ 2
 
 /-- The polarised quadratic part. -/
 def bilv (c : Fin 10 → ℤ) (v w : Fin 3 → ℤ) : ℤ :=
@@ -155,7 +161,9 @@ lemma plane_two (c : Fin 10 → ℤ) (hΔ : bdisc c ≠ 0) :
   · ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three]
   · intro i; fin_cases i <;> simp [Fin.sum_univ_three]
   · intro i j; fin_cases i <;> fin_cases j <;> simp
-  · simp [tcomp, quadv, h0, h2]; exact h1
+  · simp only [tcomp, quadv, Fin.isValue, h0, of_apply, cons_val', cons_val_zero, cons_val_fin_one,
+      one_pow, mul_one, cons_val_one, zero_add, h2, add_zero, Matrix.cons_val, mul_zero, ne_eq,
+      OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow]; exact h1
   · convert hΔ using 1
     simp [bdisc, tcomp, quadv, bilv]; try ring
 

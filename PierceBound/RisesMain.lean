@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.Rises
 
 /-!
@@ -16,7 +21,8 @@ open Finset
 def incrO (a b i : ℕ) : ℕ := a / orb a b (i + 1) - a / orb a b i
 
 /-- The number of rises `kᵢ < k_{i+1}` in the quotient increments of the orbit of `b`. -/
-def rises (a b : ℕ) : ℕ := ((range (P a b - 2)).filter fun i => incrO a b i < incrO a b (i + 1)).card
+def rises (a b : ℕ) : ℕ := ((range (P a b - 2)).filter
+    fun i => incrO a b i < incrO a b (i + 1)).card
 
 /-- The rises inside a window are rises of the orbit. -/
 lemma windowRises_le {a b k : ℕ} (hba : b ≤ a) (h : (visits a b k).Nonempty) :
@@ -174,7 +180,8 @@ quotient increments. -/
 theorem P_le_rises : ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ (1 / 4 : ℝ) * Real.sqrt (rises a b + 1) := by
   obtain ⟨CL, hCL, hlog⟩ := log_add_one_le_rpow (1 / 4) (by norm_num)
-  set C1 : ℝ := 1 / (1 - (2 : ℝ) ^ (-(1 / 2 : ℝ))) + (2 : ℝ) ^ (1 / 2 : ℝ) / ((2 : ℝ) ^ (1 / 2 : ℝ) - 1)
+  set C1 : ℝ := 1 / (1 - (2 : ℝ) ^ (-(1 / 2 : ℝ))) + (2 : ℝ) ^ (1 / 2 : ℝ) /
+      ((2 : ℝ) ^ (1 / 2 : ℝ) - 1)
   set C2 : ℝ := 1 / (1 - (2 : ℝ) ^ (-(1 : ℝ))) + (2 : ℝ) ^ (1 / 3 : ℝ) / ((2 : ℝ) ^ (1 / 3 : ℝ) - 1)
   have hC1 : 0 < C1 := by
     have h1 : (2 : ℝ) ^ (-(1 / 2 : ℝ)) < 1 :=
@@ -199,7 +206,8 @@ theorem P_le_rises : ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
   have ha0 : (0 : ℝ) < a := by linarith
   set R : ℝ := rises a b + 1
   have hR1 : 1 ≤ R := by simp only [R]; linarith [(Nat.cast_nonneg (rises a b) : (0 : ℝ) ≤ _)]
-  have hsR : 1 ≤ Real.sqrt R := by rw [show (1 : ℝ) = Real.sqrt 1 by simp]; exact Real.sqrt_le_sqrt hR1
+  have hsR : 1 ≤ Real.sqrt R := by
+    rw [show (1 : ℝ) = Real.sqrt 1 by simp]; exact Real.sqrt_le_sqrt hR1
   have ha4 : 1 ≤ (a : ℝ) ^ (1 / 4 : ℝ) := Real.one_le_rpow ha (by norm_num)
   set L := Nat.log 2 a + 1
   have hP : (P a b : ℝ) ≤ L + Real.sqrt R * ∑ k ∈ range L,

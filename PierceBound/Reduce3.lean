@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import Mathlib
 
 /-!
@@ -294,7 +299,8 @@ theorem reduced_basis {m : ℕ} (hm : 0 < m)
   have hdet' : det3 b1 b2' b3' = D := by
     simp only [b2', b3', c, D, det3, Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring
   -- the length bounds
-  have L2 := red_arith2 hA iA (by linarith [hn, show (2 * (s + n * d1)) ^ 2 = 4 * (s + n * d1) ^ 2 by ring])
+  have L2 := red_arith2 hA iA (by linarith [hn,
+      show (2 * (s + n * d1)) ^ 2 = 4 * (s + n * d1) ^ 2 by ring])
   have L3 := red_arith3 hd1pos hd2pos.le hA hB iC iB
     (by linarith [hn2, show (2 * (B23 + n2 * d2)) ^ 2 = 4 * (B23 + n2 * d2) ^ 2 by ring])
     (by linarith [hn1, show (2 * (s' + n1 * d1)) ^ 2 = 4 * (s' + n1 * d1) ^ 2 by ring])

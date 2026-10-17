@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.Conditional
 
 /-!
@@ -182,7 +187,8 @@ theorem sum_hooleyDelta_div_le (hBT : BretecheTenenbaumMean) :
       have : n < 2 ^ (j + 1) := hnj ▸ Nat.lt_pow_succ_log_self (by norm_num) n
       exact mem_Icc.mpr ⟨h1, this.le⟩
     have hBTX := hBT X hXx0
-    obtain ⟨hll0, hllX⟩ := loglog_mono hX16 (show (X : ℝ) ≤ ((2 * x : ℕ) : ℝ) by exact_mod_cast hX2x)
+    obtain ⟨hll0, hllX⟩ := loglog_mono hX16
+        (show (X : ℝ) ≤ ((2 * x : ℕ) : ℝ) by exact_mod_cast hX2x)
     have hell2 := ell_two_mul (x := x) (by omega)
     have hpow : Real.log (Real.log X) ^ (5 / 2 : ℝ) ≤ 6 * ell x ^ (5 / 2 : ℝ) := by
       calc Real.log (Real.log X) ^ (5 / 2 : ℝ) ≤ (2 * ell x) ^ (5 / 2 : ℝ) := by
@@ -276,11 +282,13 @@ theorem shortDivisorBound_of_hooley (hNT : NairTenenbaumDelta) (hBT : BretecheTe
     _ ≤ (C1p * C2 + 1) * y * ell x ^ (5 / 2 : ℝ) := by gcongr; linarith
 
 /-- `ℓ(x)^{5/2} ≪ x^{1/40}`. -/
-lemma ell_pow_le (x : ℕ) (hx : 1 ≤ x) : ell x ^ (5 / 2 : ℝ) ≤ 101 ^ (5 / 2 : ℝ) * (x : ℝ) ^ (1 / 40 : ℝ) := by
+lemma ell_pow_le (x : ℕ) (hx : 1 ≤ x) : ell x ^ (5 / 2 : ℝ) ≤ 101 ^ (5 / 2 : ℝ)
+    * (x : ℝ) ^ (1 / 40 : ℝ) := by
   have hx' : (1 : ℝ) ≤ x := by exact_mod_cast hx
   have hlx : 0 ≤ Real.log x := Real.log_nonneg hx'
   have h100 : Real.log x ≤ 100 * (x : ℝ) ^ (1 / 100 : ℝ) := by
-    have := Real.log_le_rpow_div (show (0 : ℝ) ≤ x by positivity) (show (0 : ℝ) < 1 / 100 by norm_num)
+    have := Real.log_le_rpow_div (show (0 : ℝ) ≤ x by positivity)
+        (show (0 : ℝ) < 1 / 100 by norm_num)
     linarith
   have hll : Real.log (Real.log x) ≤ Real.log x := Real.log_le_self hlx
   have h1 : (1 : ℝ) ≤ (x : ℝ) ^ (1 / 100 : ℝ) := Real.one_le_rpow hx' (by norm_num)
@@ -317,8 +325,10 @@ theorem P_le_loglog (hNT : NairTenenbaumDelta) (hBT : BretecheTenenbaumMean) :
   have hsq0 : Real.sqrt c0 ≤ Real.sqrt (Real.log (Real.log (3 * a))) := Real.sqrt_le_sqrt hll3a
   have hsqc0 : 0 < Real.sqrt c0 := Real.sqrt_pos.mpr hc0
   -- `ℓ(a)^{1/2} ≤ K √(log log 3a)`
-  have hell : (ell a ^ (5 / 2 : ℝ)) ^ (1 / 5 : ℝ) ≤ K * Real.sqrt (Real.log (Real.log (3 * a))) := by
-    rw [← Real.rpow_mul (by linarith [one_le_ell a]), show (5 / 2 : ℝ) * (1 / 5) = 1 / 2 by norm_num,
+  have hell : (ell a ^ (5 / 2 : ℝ)) ^ (1 / 5 : ℝ) ≤ K
+      * Real.sqrt (Real.log (Real.log (3 * a))) := by
+    rw [← Real.rpow_mul (by linarith [one_le_ell a]), show (5 / 2 : ℝ) * (1 /
+        5) = 1 / 2 by norm_num,
       ← Real.sqrt_eq_rpow]
     have hs1 : 1 ≤ Real.sqrt (Real.log (Real.log (3 * a))) / Real.sqrt c0 := by
       rw [le_div_iff₀ hsqc0]; linarith

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.Hankel
 
 /-!
@@ -46,10 +51,10 @@ lemma muF_add (i : ℕ) (f g : ℝ[X]) : muF a b i (f + g) = muF a b i f + muF a
   simp [muF, mul_add, sum_add_distrib]
 
 lemma muF_C_mul (i : ℕ) (c : ℝ) (f : ℝ[X]) : muF a b i (C c * f) = c * muF a b i f := by
-  simp [muF, mul_sum]; refine sum_congr rfl fun j _ => ?_; ring
+  simp only [muF, eval_mul, eval_C, mul_sum]; refine sum_congr rfl fun j _ => ?_; ring
 
 lemma nuF_C_mul (i : ℕ) (c : ℝ) (f : ℝ[X]) : nuF a b i (C c * f) = c * nuF a b i f := by
-  simp [nuF, mul_sum]; refine sum_congr rfl fun j _ => ?_; ring
+  simp only [nuF, eval_mul, eval_C, mul_sum]; refine sum_congr rfl fun j _ => ?_; ring
 
 lemma muF_C (i : ℕ) (c : ℝ) : muF a b i (C c) = c * muF a b i 1 := by
   rw [← mul_one (C c), muF_C_mul]
@@ -84,7 +89,8 @@ lemma muF_X_mul {i : ℕ} (hl : i + 1 < P a b) (g : ℝ[X]) :
   have hp : 0 < pt a b i (j + 1) := by
     have := pt_ge (a := a) (b := b) (i := i) (j := j + 1) (by have := mem_range.mp hj; omega)
     push_cast at this; linarith
-  rw [wt_of_lt a b hl, ite_eq_right (Nat.succ_ne_zero j), Nat.add_sub_cancel, eval_comp, eval_add, eval_X,
+  rw [wt_of_lt a b hl, ite_eq_right (Nat.succ_ne_zero j), Nat.add_sub_cancel, eval_comp, eval_add,
+      eval_X,
     eval_C, pt_succ, kk]
   rw [pt_succ] at hp
   field_simp

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.MinorCount
 import PierceBound.Reduce3
 
@@ -36,7 +41,11 @@ def Lrow (p : Fin 10 → ℤ) (τ : Fin 10) (c : Fin 5) : Fin 3 → ℤ :=
 theorem lift_row (M : Fin 3 → Fin 5 → ℤ) (τ : Fin 10) (r : Fin 3) (c : Fin 5) :
     plk M τ * M r c = dot3 (Lrow (plk M) τ c) (fun a => M r (pcol τ a)) := by
   fin_cases τ <;> fin_cases c <;>
-    simp [Lrow, role, pcol, dot3, plk, trip, minor3, uVec, vVec, puX, puS, pvX, pvS] <;>
+    simp only [plk, minor3, Fin.isValue, trip, Fin.mk_one, Matrix.cons_val_one,
+        Matrix.cons_val_zero, Fin.reduceFinMk, dot3, Lrow, Nat.succ_eq_add_one, Nat.reduceAdd, role,
+        Matrix.cons_val', Matrix.cons_val, Matrix.cons_val_fin_one, uVec, puS, Int.reduceNeg, puX,
+        neg_mul, one_mul, neg_add_rev, neg_sub, vVec, pvS, pvX, pcol, zero_mul, add_zero, zero_add,
+        Fin.zero_eta] <;>
     fin_cases r <;> simp only [Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, Fin.isValue] <;> ring
 
 /-- **The determinant of the rows `1, 2, 3`.** -/
@@ -252,7 +261,7 @@ theorem shortR_spec {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
         by_contra h0
         push Not at h0
         apply hx0; funext j; have := h j; rw [show shortR p = 0 by omega] at this
-        simp at this; exact absurd this (not_lt.mpr (abs_nonneg _))
+        simp only [CharP.cast_eq_zero] at this; exact absurd this (not_lt.mpr (abs_nonneg _))
       have : HasShort p (shortR p - 1) := ⟨x, hx, hx0, fun j => by
         have := h j; push_cast [h1]; omega⟩
       exact Nat.notMem_of_lt_sInf (s := {R : ℕ | HasShort p R}) (m := shortR p - 1)
@@ -352,7 +361,8 @@ theorem card_dot_dvd_le {n : ℕ} (hn : 0 < n) (x : Fin 3 → ℤ) :
           simp only [dot3]; ring
         rw [e1, hcc] at h3
         have := dvd_sub (dvd_sub h3 h1) (dvd_neg.mpr h2)
-        have h4 : (n : ℤ) ∣ ((wk.2 : ℤ) - wk'.2) * (n * s0) := dvd_mul_of_dvd_right (dvd_mul_right _ _) _
+        have h4 : (n : ℤ) ∣ ((wk.2 : ℤ) - wk'.2) * (n * s0) := dvd_mul_of_dvd_right
+            (dvd_mul_right _ _) _
         have := dvd_add this h4
         convert this using 1; ring
       have hk_eq : wk.2 = wk'.2 := by

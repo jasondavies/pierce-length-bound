@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import Mathlib
 
 /-!
@@ -22,7 +27,8 @@ lemma geom_low {ρ : ℝ} (hρ : 1 < ρ) {X : ℝ} (hX : 0 ≤ X) (L : ℕ) :
       ∑ k ∈ range L, (if ρ ^ k ≤ X then ρ ^ k else 0) ≤ ρ * X / (ρ - 1) from (h L).2
   intro L
   induction L with
-  | zero => simp; positivity
+  | zero => simp only [range_zero, sum_empty, pow_zero, sub_self, zero_div, Std.le_refl,
+      true_and]; positivity
   | succ L ih =>
     rw [sum_range_succ]
     obtain ⟨ih1, ih2⟩ := ih
@@ -47,7 +53,7 @@ lemma geom_high {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) {Y : ℝ} (hY : 0 ≤
   have h1σ : 0 < 1 - σ := by linarith
   set f : ℕ → ℝ := fun L => ∑ k ∈ range L, (if σ ^ k ≤ Y then σ ^ k else 0) with hf
   suffices h : ∀ L, (Y < σ ^ L → f L = 0) ∧ (σ ^ L ≤ Y → f L ≤ (Y - σ ^ L) / (1 - σ)) by
-    show f L ≤ Y / (1 - σ)
+    change f L ≤ Y / (1 - σ)
     by_cases hL : σ ^ L ≤ Y
     · have := (h L).2 hL
       have : 0 ≤ σ ^ L := by positivity

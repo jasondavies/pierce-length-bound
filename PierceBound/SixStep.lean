@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.Window
 
 /-!
@@ -343,7 +348,8 @@ theorem six_step_bound {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT 
         _ ≤ a * (10 * A) := Nat.mul_le_mul_left _ hsT
         _ = 10 * a * A := by ring
     exact Nat.le_of_mul_le_mul_right this (by omega)
-  have inc : ∀ (y k : ℕ), k ≤ 3 → y * (g (j + k + 1) * g (j + k)) ≤ a * (g (j + k) - g (j + k + 2)) →
+  have inc : ∀ (y k : ℕ), k ≤ 3 → y * (g (j + k + 1) * g (j + k)) ≤ a
+      * (g (j + k) - g (j + k + 2)) →
       y * (A * T) ≤ 10 * a := by
     intro y k hk hy
     apply cancel
@@ -353,7 +359,8 @@ theorem six_step_bound {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT 
       have := W.le_of_le (i := j) (j := j + k) (by omega) (by omega)
       have := W.le_of_le (i := j + k + 2) (j := j + 5) (by omega) (by omega)
       omega
-    calc y * (A * A) ≤ y * (g (j + k + 1) * g (j + k)) := Nat.mul_le_mul_left _ (Nat.mul_le_mul hk1.1 hk0.1)
+    calc y * (A * A) ≤ y * (g (j + k + 1) * g (j + k)) := Nat.mul_le_mul_left _
+           (Nat.mul_le_mul hk1.1 hk0.1)
       _ ≤ a * (g (j + k) - g (j + k + 2)) := hy
       _ ≤ a * s := Nat.mul_le_mul_left _ hd
   have iu := inc u 0 (by norm_num) (by simpa using hu)
@@ -365,10 +372,14 @@ theorem six_step_bound {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT 
     rcases le_total u v with h | h <;> rcases le_total w z with h' | h' <;>
       simp only [max_eq_left, max_eq_right, h, h'] <;>
       first
-      | (rcases le_total v z with h'' | h'' <;> simp [h''] <;> assumption)
-      | (rcases le_total v w with h'' | h'' <;> simp [h''] <;> assumption)
-      | (rcases le_total u z with h'' | h'' <;> simp [h''] <;> assumption)
-      | (rcases le_total u w with h'' | h'' <;> simp [h''] <;> assumption)
+      | (rcases le_total v z with h'' | h'' <;> simp only [h'', sup_of_le_left, sup_of_le_right] <;>
+          assumption)
+      | (rcases le_total v w with h'' | h'' <;> simp only [h'', sup_of_le_left, sup_of_le_right] <;>
+          assumption)
+      | (rcases le_total u z with h'' | h'' <;> simp only [h'', sup_of_le_left, sup_of_le_right] <;>
+          assumption)
+      | (rcases le_total u w with h'' | h'' <;> simp only [h'', sup_of_le_left, sup_of_le_right] <;>
+          assumption)
   -- `E A ≤ 2 m s²`, `F A ≤ 2 m s²`
   have hvm : v ≤ m := by simp [m]
   have hwm : w ≤ m := by simp [m]

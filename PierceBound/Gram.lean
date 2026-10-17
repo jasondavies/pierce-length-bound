@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.Functional
 import PierceBound.Hadamard
 
@@ -118,7 +123,8 @@ lemma muF_nb_sq (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
   -- expand the products
   rw [show (X + C (kk a b i)) = X + C (kk a b i) * 1 by ring, muF_add, muF_C_mul,
     muF_X hba (by omega), muF_one hba (by omega)]
-  have h2 : (X + C (kk a b i + kk a b (i + 1))) * (X + C (kk a b i + kk a b (i + 1)) - C (kk a b i)) =
+  have h2 : (X + C (kk a b i + kk a b (i + 1))) * (X + C (kk a b i + kk a b (i + 1)) - C (kk a b i))
+      =
       X ^ 2 + C (2 * kk a b (i + 1) + kk a b i) * X +
         C ((kk a b i + kk a b (i + 1)) * kk a b (i + 1)) * 1 := by
     simp only [map_add, map_mul, map_ofNat]; ring

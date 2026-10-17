@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.NormCount
 import PierceBound.DefiniteNorm
 import PierceBound.TwoState
@@ -57,8 +62,10 @@ lemma abs_le_of_mem_ibox {H : ℕ} {x : ℤ} (h : x ∈ ibox H) : |x| ≤ H := a
 /-- `|β² - 4αγ| ≤ 5K²`. -/
 lemma disc_bound {α β γ : ℤ} {K : ℕ} (kα : |α| ≤ K) (kβ : |β| ≤ K) (kγ : |γ| ≤ K) :
     |β ^ 2 - 4 * α * γ| ≤ 5 * (K : ℤ) ^ 2 := by
-  have h1 : |β * β| ≤ K * K := by rw [abs_mul]; exact mul_le_mul kβ kβ (abs_nonneg _) (by linarith [abs_nonneg β])
-  have h2 : |α * γ| ≤ K * K := by rw [abs_mul]; exact mul_le_mul kα kγ (abs_nonneg _) (by linarith [abs_nonneg α])
+  have h1 : |β * β| ≤ K * K := by
+    rw [abs_mul]; exact mul_le_mul kβ kβ (abs_nonneg _) (by linarith [abs_nonneg β])
+  have h2 : |α * γ| ≤ K * K := by
+    rw [abs_mul]; exact mul_le_mul kα kγ (abs_nonneg _) (by linarith [abs_nonneg α])
   calc |β ^ 2 - 4 * α * γ| = |β * β - 4 * (α * γ)| := by ring_nf
     _ ≤ |β * β| + |4 * (α * γ)| := abs_sub _ _
     _ = |β * β| + 4 * |α * γ| := by rw [abs_mul (4 : ℤ)]; norm_num
@@ -66,7 +73,8 @@ lemma disc_bound {α β γ : ℤ} {K : ℕ} (kα : |α| ≤ K) (kβ : |β| ≤ K
     _ = 5 * K ^ 2 := by ring
 
 /-- The norm-equation variables are `O(K²H)` on the box. -/
-lemma slice_bnd {α β γ d1 d0 e1 e0 : ℤ} {K H : ℕ} (hH : 1 ≤ H) (hK1 : (1 : ℤ) ≤ K) (kα : |α| ≤ K) (kβ : |β| ≤ K)
+lemma slice_bnd {α β γ d1 d0 e1 e0 : ℤ} {K H : ℕ} (hH : 1 ≤ H) (hK1 : (1 : ℤ) ≤ K) (kα : |α| ≤ K)
+    (kβ : |β| ≤ K)
     (kγ : |γ| ≤ K) (kd1 : |d1| ≤ K) (kd0 : |d0| ≤ K) (ke1 : |e1| ≤ K) (ke0 : |e0| ≤ K)
     {x y z : ℤ} (hx : x ∈ ibox H) (hy : y ∈ ibox H) (hz : z ∈ ibox H) :
     |2 * α * x + β * y + (d1 * z + d0)| ≤ ((11 * K ^ 2 * H : ℕ) : ℤ) ∧
@@ -132,7 +140,8 @@ lemma ternN_bound {α β γ d1 d0 e1 e0 f2 f1 f0 : ℤ} {K H : ℕ} (hH : 1 ≤ 
       _ ≤ K * H + K := add_le_add this ke0
       _ ≤ 2 * K * H := by linarith
   have hf : |f2 * z ^ 2 + f1 * z + f0| ≤ 3 * (K : ℤ) * (H : ℤ) ^ 2 := by
-    have t1 := m2 _ _ _ _ kf2 (show |z ^ 2| ≤ (H : ℤ) ^ 2 by rw [abs_pow]; exact pow_le_pow_left₀ (abs_nonneg _) az 2)
+    have t1 := m2 _ _ _ _ kf2
+        (show |z ^ 2| ≤ (H : ℤ) ^ 2 by rw [abs_pow]; exact pow_le_pow_left₀ (abs_nonneg _) az 2)
     have t2 := m2 _ _ _ _ kf1 az
     have s1 := abs_add_three (f2 * z ^ 2) (f1 * z) f0
     have : (K : ℤ) * H ≤ K * H ^ 2 := by nlinarith
@@ -143,7 +152,8 @@ lemma ternN_bound {α β γ d1 d0 e1 e0 f2 f1 f0 : ℤ} {K H : ℕ} (hH : 1 ≤ 
     have t2 := m2 _ _ _ _ (show |2 * α| ≤ 2 * K by rw [abs_mul]; norm_num; linarith) he
     have := abs_sub (β * (d1 * z + d0)) (2 * α * (e1 * z + e0))
     nlinarith
-  have hQ : |4 * α * (f2 * z ^ 2 + f1 * z + f0) - (d1 * z + d0) ^ 2| ≤ 16 * (K : ℤ) ^ 2 * (H : ℤ) ^ 2 := by
+  have hQ : |4 * α * (f2 * z ^ 2 + f1 * z + f0) - (d1 * z + d0) ^ 2| ≤ 16 * (K : ℤ) ^ 2
+      * (H : ℤ) ^ 2 := by
     have t1 := m2 _ _ _ _ (show |4 * α| ≤ 4 * K by rw [abs_mul]; norm_num; linarith) hf
     have t2 : |(d1 * z + d0) ^ 2| ≤ (2 * (K : ℤ) * H) ^ 2 := by
       rw [abs_pow]; exact pow_le_pow_left₀ (abs_nonneg _) hd 2
@@ -250,12 +260,12 @@ theorem slice_count_ne {α β γ d1 d0 e1 e0 f2 f1 f0 : ℤ} {K H W : ℕ} (hH :
       refine le_trans (card_le_card_of_injOn _ (t := defSols (-Δ).toNat
         (ternN α β γ d1 d0 e1 e0 f2 f1 f0 z) (11 * K ^ 2 * H)) (fun q hq => ?_) hinj)
         ((norm_count_def _ (by omega) hN).trans (le_trans ?_ (hW _ hN (hNb z hz))))
-      obtain ⟨b2, b1, hid⟩ := hbox q (mem_coe.mp hq)
-      refine mem_filter.mpr ⟨mem_product.mpr ⟨mem_Icc.mpr (abs_le.mp b2), mem_Icc.mpr (abs_le.mp b1)⟩,
-        ?_⟩
-      simp only
-      rw [hDcast]
-      linear_combination hid
+      · obtain ⟨b2, b1, hid⟩ := hbox q (mem_coe.mp hq)
+        refine mem_filter.mpr ⟨mem_product.mpr ⟨mem_Icc.mpr (abs_le.mp b2),
+          mem_Icc.mpr (abs_le.mp b1)⟩, ?_⟩
+        simp only
+        rw [hDcast]
+        linear_combination hid
       have hKH : 1 ≤ K ^ 2 * H := Nat.mul_pos (pow_pos (by exact_mod_cast hK1) 2) hH
       have hl : 1 ≤ Nat.log 3 ((11 * K ^ 2 * H * (3 * K + 2)) ^ 2) :=
         Nat.le_log_of_pow_le (by norm_num) (by
@@ -287,8 +297,8 @@ theorem slice_count_ne {α β γ d1 d0 e1 e0 f2 f1 f0 : ℤ} {K H W : ℕ} (hH :
           (Nat.log_mono_right (Nat.pow_le_pow_left (Nat.mul_le_mul_left _ (by omega)) 2))))
           (hW _ hN (hNb z hz))))
       obtain ⟨b2, b1, hid⟩ := hbox q (mem_coe.mp hq)
-      refine mem_filter.mpr ⟨mem_product.mpr ⟨mem_Icc.mpr (abs_le.mp b2), mem_Icc.mpr (abs_le.mp b1)⟩,
-        ?_⟩
+      refine mem_filter.mpr ⟨mem_product.mpr ⟨mem_Icc.mpr (abs_le.mp b2),
+        mem_Icc.mpr (abs_le.mp b1)⟩, ?_⟩
       simp only
       rw [hDcast]
       exact hid
@@ -319,7 +329,8 @@ theorem slice_count_ne {α β γ d1 d0 e1 e0 f2 f1 f0 : ℤ} {K H W : ℕ} (hH :
       exact this
   rw [hsplit]
   calc ∑ z ∈ ibox H, (slice z).card
-      ≤ ∑ z ∈ ibox H, (W + if ternN α β γ d1 d0 e1 e0 f2 f1 f0 z = 0 then 2 * (2 * H + 1) else 0) := by
+      ≤ ∑ z ∈ ibox H, (W + if ternN α β γ d1 d0 e1 e0 f2 f1 f0 z = 0 then 2 * (2 * H
+          + 1) else 0) := by
         refine sum_le_sum fun z hz => ?_
         by_cases hN : ternN α β γ d1 d0 e1 e0 f2 f1 f0 z = 0
         · rw [ite_eq_left hN]; exact (hbad z hz hN).trans (Nat.le_add_left _ _)

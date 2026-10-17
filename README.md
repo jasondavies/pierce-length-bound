@@ -66,7 +66,8 @@ summation gives `T ≪ a^η (H X^{14/3} + X⁵)`, hence `T¹⁵² ≪ a^{45+O(η
 ## Lean
 
 Build with `lake exe cache get` (to download the compiled Mathlib) and then `lake build`
-(Lean `v4.35.0`, Mathlib `v4.35.0`). The main theorems are
+(Lean `v4.35.0`, Mathlib `v4.35.0`). The build runs Mathlib's standard linters
+(`weak.linter.mathlibStandardSet`), and every file passes them. The main theorems are
 
 ```lean
 theorem PierceBound.P_le_45_152 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
@@ -106,7 +107,7 @@ papers only through its hypotheses.
 | `Fiber.lean` | a fixed `(u, v, D)` allows at most `max_{n ≤ 32a⁷} τ(n)` starting points |
 | `Window.lean` | for a run of `T` terms in `[A, 2A)`: `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
 | `Main.lean` | dyadic decomposition, `P_le_of_visits` (window bounds `T^N ≤ K S(a) aʳ` with `S(a) ≪ a^η` give `P ≪ a^{r/N+ε}`), and the unconditional theorem `P_le` |
-| `SixStep.lean` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `TwoStateMain.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10` |
+| `SixStep.lean` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `TwentyThreeMain.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10` |
 | `ShortSum.lean` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
 | `Geometric.lean` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}`, and the general form `∑_k min(α 2^{−sk}, β 2^{tk}) ≪ α^{t/(s+t)} β^{s/(s+t)}` (`sum_min_le_gen`) |
 | `Conditional.lean` | any short-interval divisor bound `≪ y G(x)` for `x^{1/4} ≤ y ≤ x`, with `1 ≤ G(x) ≪ x^{1/40}`, gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
@@ -119,7 +120,7 @@ papers only through its hypotheses.
 | `TwoState.lean` | the cofactors, null relations, reduced quadratic, the multiplicity identity, root counting |
 | `PatternBound.lean` | the seven pattern integers are `≤ 172032 A⁴H⁶/a³` under the scale condition |
 | `PatternCount.lean` | the counting lemma `#G ≤ 8 (2M+1)⁷ H²` |
-| `TwoStateMain.lean` | good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
+| `TwentyThreeMain.lean` | good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
 | `NormCount.lean` | the norm-equation lemma: square roots mod `m` (`≤ τ(m)²`), norm-one separation, and `norm_count` |
 | `SliceCount.lean` | the slice lemma: slices of a ternary quadratic via completing squares, for either sign of the binary discriminant (`slice_count_ne`, `slice_count`) |
 | `ElevenCount.lean` | the sign identities, the ternary relation `F_θ(k₁,k₂,k₃) = 0`, and the refined count |

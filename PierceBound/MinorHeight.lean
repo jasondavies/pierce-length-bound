@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.MinorCount
-import PierceBound.TwoStateMain
+import PierceBound.TwentyThreeMain
 
 /-!
 # All ten minors are small
@@ -69,7 +74,8 @@ theorem nu_expand (hba : b < a) {m : ℕ} (hm : m + 3 < P a b) {q : ℝ} (hq : 0
     rw [mul_div_assoc, mul_div_assoc]
     refine mul_le_mul_of_nonneg_left ?_ h1.le
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    have : (s + pt a b m j) ^ 3 * q ^ 4 ≤ (s + pt a b m j) ^ 3 * (q ^ 3 * (q + (s + pt a b m j))) := by
+    have : (s + pt a b m j) ^ 3 * q ^ 4 ≤ (s + pt a b m j) ^ 3
+        * (q ^ 3 * (q + (s + pt a b m j))) := by
       apply mul_le_mul_of_nonneg_left _ (by positivity)
       nlinarith [pow_pos hq 3]
     linarith
@@ -134,7 +140,8 @@ lemma rminor3_le {x y z : Fin 5 → ℝ} {X0 Y0 Z0 : ℝ} (hx : ∀ c, |x c| ≤
   have h3 : ∀ c c' c'', |x c * y c' * z c''| ≤ X0 * Y0 * Z0 := fun c c' c'' => by
     rw [abs_mul, abs_mul]
     exact mul_le_mul (mul_le_mul (hx c) (hy c') (abs_nonneg _) ((abs_nonneg _).trans (hx c)))
-      (hz c'') (abs_nonneg _) (mul_nonneg ((abs_nonneg _).trans (hx c)) ((abs_nonneg _).trans (hy c')))
+      (hz c'') (abs_nonneg _) (mul_nonneg ((abs_nonneg _).trans (hx c))
+          ((abs_nonneg _).trans (hy c')))
   have e : rminor3 x y z c1 c2 c3 = x c1 * y c2 * z c3 - x c1 * y c3 * z c2 - x c2 * y c1 * z c3 +
       x c2 * y c3 * z c1 + x c3 * y c1 * z c2 - x c3 * y c2 * z c1 := by unfold rminor3; ring
   rw [e]
@@ -178,7 +185,8 @@ theorem minor_height (hba : b < a) {A H i : ℕ} (hP : i + 8 < P a b) (hb : orb 
     rw [e]
     exact ⟨by exact_mod_cast (hk m hm).1, by exact_mod_cast (hk m hm).2⟩
   -- `0 ≤ sⱼ ≤ jH`
-  have hsR : ∀ j, j ≤ 6 → (0 : ℝ) ≤ (qq a b (i + j) : ℝ) - q ∧ (qq a b (i + j) : ℝ) - q ≤ j * H := by
+  have hsR : ∀ j, j ≤ 6 → (0 : ℝ) ≤ (qq a b (i + j) : ℝ) - q ∧ (qq a b (i + j) : ℝ) - q ≤ j
+      * H := by
     intro j hj
     have e : (qq a b (i + j) : ℝ) - q = ((sq a b i j : ℤ) : ℝ) := by simp [sq, q]
     rw [e, sq_eq_sum]
@@ -229,7 +237,8 @@ theorem minor_height (hba : b < a) {A H i : ℕ} (hP : i + 8 < P a b) (hb : orb 
     have hc := c.2
     obtain ⟨e0, e1, e2⟩ := hexp c (by omega)
     obtain ⟨f0, f1, f2⟩ := hexp (c + 1) (by omega)
-    have hdq : (dq a b (i + c) : ℝ) = a * ((orb a b (i + c) : ℝ) / a - (orb a b (i + c + 1) : ℝ) / a) := by
+    have hdq : (dq a b (i + c) : ℝ) = a * ((orb a b (i + c) : ℝ) / a
+        - (orb a b (i + c + 1) : ℝ) / a) := by
       simp only [dq]; push_cast; field_simp
     have hkq : (kq a b (i + c) : ℝ) = (qq a b (i + (c + 1)) : ℝ) - qq a b (i + c) := by
       simp only [kq]; push_cast; ring_nf
@@ -268,7 +277,8 @@ theorem minor_height (hba : b < a) {A H i : ℕ} (hP : i + 8 < P a b) (hb : orb 
     have hk2' : (kq a b (i + (c + 1)) : ℝ) ≤ H := by exact_mod_cast k2'
     have hcR : ((c : ℕ) : ℝ) ≤ 4 := by exact_mod_cast (show (c : ℕ) ≤ 4 by omega)
     have hval : ((rq a b i c : ℤ) : ℝ) = (kq a b (i + c) : ℝ) *
-        (((qq a b (i + c) : ℝ) - q) + ((qq a b (i + (c + 1)) : ℝ) - q)) + (kq a b (i + (c + 1)) : ℝ) := by
+        (((qq a b (i + c) : ℝ) - q) + ((qq a b (i + (c + 1)) : ℝ) - q))
+            + (kq a b (i + (c + 1)) : ℝ) := by
       simp only [rq]; push_cast; rw [e1, e2, show i + c + 1 = i + (c + 1) by ring]
     rw [hval]
     push_cast at hs hs'
@@ -302,7 +312,8 @@ theorem minor_height (hba : b < a) {A H i : ℕ} (hP : i + 8 < P a b) (hb : orb 
   have h44 : (a : ℝ) ^ 4 ≤ 256 * A ^ 4 * q ^ 4 := by
     calc (a : ℝ) ^ 4 ≤ (4 * A * q) ^ 4 := pow_le_pow_left₀ ha.le h4 4
       _ = 256 * A ^ 4 * q ^ 4 := by ring
-  have hfin : |((plk (Mi a b i) t : ℤ) : ℝ)| * (a : ℝ) ^ 3 ≤ 3609600 * (A : ℝ) ^ 4 * (H : ℝ) ^ 6 := by
+  have hfin : |((plk (Mi a b i) t : ℤ) : ℝ)| * (a : ℝ) ^ 3 ≤ 3609600 * (A : ℝ) ^ 4
+      * (H : ℝ) ^ 6 := by
     have hq4 : 0 < q ^ 4 := by positivity
     calc |((plk (Mi a b i) t : ℤ) : ℝ)| * (a : ℝ) ^ 3
         ≤ 6 * (a * (235 * H ^ 3 / q ^ 4)) * H * (10 * H ^ 2) * (a : ℝ) ^ 3 :=
@@ -312,7 +323,8 @@ theorem minor_height (hba : b < a) {A H i : ℕ} (hP : i + 8 < P a b) (hb : orb 
           apply mul_le_mul_of_nonneg_left _ (by positivity)
           rw [div_le_iff₀ hq4]; linarith
       _ = 3609600 * (A : ℝ) ^ 4 * (H : ℝ) ^ 6 := by ring
-  have : ((|plk (Mi a b i) t| * (a : ℤ) ^ 3 : ℤ) : ℝ) ≤ ((3609600 * (A : ℤ) ^ 4 * (H : ℤ) ^ 6 : ℤ) : ℝ) := by
+  have : ((|plk (Mi a b i) t| * (a : ℤ) ^ 3 : ℤ) : ℝ) ≤
+      ((3609600 * (A : ℤ) ^ 4 * (H : ℤ) ^ 6 : ℤ) : ℝ) := by
     push_cast; exact hfin
   exact_mod_cast this
 

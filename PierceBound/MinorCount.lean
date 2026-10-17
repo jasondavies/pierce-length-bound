@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import Mathlib
 
 /-!
@@ -17,19 +22,26 @@ namespace PierceBound
 
 open Finset
 
-def trip : Fin 10 → Fin 5 × Fin 5 × Fin 5 := ![(0, 1, 2), (0, 1, 3), (0, 1, 4), (0, 2, 3), (0, 2, 4), (0, 3, 4), (1, 2, 3), (1, 2, 4), (1, 3, 4), (2, 3, 4)]
+def trip : Fin 10 → Fin 5 × Fin 5 × Fin 5 := ![(0, 1, 2), (0, 1, 3), (0, 1, 4), (0, 2, 3),
+    (0, 2, 4), (0, 3, 4), (1, 2, 3), (1, 2, 4), (1, 3, 4), (2, 3, 4)]
 
-def puX : Fin 10 → Fin 3 → Fin 10 := ![![6, 3, 1], ![6, 3, 0], ![7, 4, 0], ![6, 1, 0], ![7, 2, 0], ![8, 2, 1], ![3, 1, 0], ![4, 2, 0], ![5, 2, 1], ![5, 4, 3]]
+def puX : Fin 10 → Fin 3 → Fin 10 := ![![6, 3, 1], ![6, 3, 0], ![7, 4, 0], ![6, 1, 0], ![7, 2, 0],
+    ![8, 2, 1], ![3, 1, 0], ![4, 2, 0], ![5, 2, 1], ![5, 4, 3]]
 
-def puS : Fin 10 → Fin 3 → ℤ := ![![1, -1, 1], ![-1, 1, 1], ![-1, 1, 1], ![1, 1, -1], ![1, 1, -1], ![1, 1, -1], ![1, -1, 1], ![1, -1, 1], ![1, -1, 1], ![1, -1, 1]]
+def puS : Fin 10 → Fin 3 → ℤ := ![![1, -1, 1], ![-1, 1, 1], ![-1, 1, 1], ![1, 1, -1], ![1, 1, -1],
+    ![1, 1, -1], ![1, -1, 1], ![1, -1, 1], ![1, -1, 1], ![1, -1, 1]]
 
-def pvX : Fin 10 → Fin 3 → Fin 10 := ![![7, 4, 2], ![8, 5, 2], ![8, 5, 1], ![9, 5, 4], ![9, 5, 3], ![9, 4, 3], ![9, 8, 7], ![9, 8, 6], ![9, 7, 6], ![8, 7, 6]]
+def pvX : Fin 10 → Fin 3 → Fin 10 := ![![7, 4, 2], ![8, 5, 2], ![8, 5, 1], ![9, 5, 4], ![9, 5, 3],
+    ![9, 4, 3], ![9, 8, 7], ![9, 8, 6], ![9, 7, 6], ![8, 7, 6]]
 
-def pvS : Fin 10 → Fin 3 → ℤ := ![![1, -1, 1], ![1, -1, 1], ![-1, 1, 1], ![1, -1, 1], ![-1, 1, 1], ![1, 1, -1], ![1, -1, 1], ![-1, 1, 1], ![1, 1, -1], ![1, -1, 1]]
+def pvS : Fin 10 → Fin 3 → ℤ := ![![1, -1, 1], ![1, -1, 1], ![-1, 1, 1], ![1, -1, 1], ![-1, 1, 1],
+    ![1, 1, -1], ![1, -1, 1], ![-1, 1, 1], ![1, 1, -1], ![1, -1, 1]]
 
-def pwX : Fin 10 → Fin 3 → Fin 10 := ![![5, 8, 9], ![4, 7, 9], ![3, 6, 9], ![2, 7, 8], ![1, 6, 8], ![0, 6, 7], ![2, 4, 5], ![1, 3, 5], ![0, 3, 4], ![0, 1, 2]]
+def pwX : Fin 10 → Fin 3 → Fin 10 := ![![5, 8, 9], ![4, 7, 9], ![3, 6, 9], ![2, 7, 8], ![1, 6, 8],
+    ![0, 6, 7], ![2, 4, 5], ![1, 3, 5], ![0, 3, 4], ![0, 1, 2]]
 
-def pwS : Fin 10 → Fin 3 → ℤ := ![![1, 1, 1], ![1, 1, -1], ![1, 1, 1], ![1, -1, -1], ![1, -1, 1], ![1, 1, 1], ![-1, -1, -1], ![-1, -1, 1], ![-1, 1, 1], ![1, 1, 1]]
+def pwS : Fin 10 → Fin 3 → ℤ := ![![1, 1, 1], ![1, 1, -1], ![1, 1, 1], ![1, -1, -1], ![1, -1, 1],
+    ![1, 1, 1], ![-1, -1, -1], ![-1, -1, 1], ![-1, 1, 1], ![1, 1, 1]]
 
 /-- The `3 × 3` minor on columns `c₁, c₂, c₃`. -/
 def minor3 (M : Fin 3 → Fin 5 → ℤ) (c1 c2 c3 : Fin 5) : ℤ :=
@@ -78,7 +90,7 @@ lemma card_Icc_dvd_le {m n : ℕ} (hn : 0 < n) (c : ℤ) :
   · obtain ⟨hx1, -⟩ := mem_filter.mp (mem_coe.mp hx)
     obtain ⟨hl, hu⟩ := mem_Icc.mp hx1
     refine mem_range.mpr (Nat.lt_succ_of_le ?_)
-    show ((x + (m : ℤ)) / (n : ℤ)).toNat ≤ 2 * m / n
+    change ((x + (m : ℤ)) / (n : ℤ)).toNat ≤ 2 * m / n
     have h1 : (x + m) / n ≤ (((2 * m : ℕ) : ℤ)) / n := Int.ediv_le_ediv hn' (by push_cast; linarith)
     have h2 : ((2 * m / n : ℕ) : ℤ) = ((2 * m : ℕ) : ℤ) / n := Int.natCast_div _ _
     have h3 : 0 ≤ (x + m) / n := Int.ediv_nonneg (by linarith) hn'.le
@@ -131,7 +143,8 @@ theorem card_cross_fiber {m : ℕ} (hm : 0 < m) (u : Fin 3 → ℤ) :
     · exact h1.trans (hg012.2.trans hg12.1)
     · exact h1.trans (hg012.2.trans hg12.2)
   -- Bézout
-  obtain ⟨x, c0, c1, c2, hb⟩ : ∃ x c0 c1 c2 : ℤ, (m : ℤ) * x + u 0 * c0 + u 1 * c1 + u 2 * c2 = g := by
+  obtain ⟨x, c0, c1, c2, hb⟩ : ∃ x c0 c1 c2 : ℤ, (m : ℤ) * x + u 0 * c0 + u 1 * c1 + u 2 * c2
+      = g := by
     have e1 := Int.gcd_eq_gcd_ab (m : ℤ) (Int.gcd (u 0) (Int.gcd (u 1) (u 2)))
     have e2 := Int.gcd_eq_gcd_ab (u 0) (Int.gcd (u 1) (u 2))
     have e3 := Int.gcd_eq_gcd_ab (u 1) (u 2)
@@ -190,13 +203,13 @@ theorem card_cross_fiber {m : ℕ} (hm : 0 < m) (u : Fin 3 → ℤ) :
     simp only [u', Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
       Matrix.head_cons, Matrix.tail_cons] at hz0 hz1 hz2
     have e0 : n ∣ v 0 - lam v * u' 0 := ⟨v 0 * x - c1 * z2 + c2 * z1, by
-      show v 0 - (c0 * v 0 + c1 * v 1 + c2 * v 2) * w0 = _
+      change v 0 - (c0 * v 0 + c1 * v 1 + c2 * v 2) * w0 = _
       linear_combination -v 0 * hn1 - c1 * hz2 + c2 * hz1⟩
     have e1 : n ∣ v 1 - lam v * u' 1 := ⟨v 1 * x + c0 * z2 - c2 * z0, by
-      show v 1 - (c0 * v 0 + c1 * v 1 + c2 * v 2) * w1 = _
+      change v 1 - (c0 * v 0 + c1 * v 1 + c2 * v 2) * w1 = _
       linear_combination -v 1 * hn1 + c0 * hz2 - c2 * hz0⟩
     have e2 : n ∣ v 2 - lam v * u' 2 := ⟨v 2 * x - c0 * z1 + c1 * z0, by
-      show v 2 - (c0 * v 0 + c1 * v 1 + c2 * v 2) * w2 = _
+      change v 2 - (c0 * v 0 + c1 * v 1 + c2 * v 2) * w2 = _
       linear_combination -v 2 * hn1 - c0 * hz1 + c1 * hz0⟩
     intro a
     match a with

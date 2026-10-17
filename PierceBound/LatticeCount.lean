@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.ShortVec
 import PierceBound.TernComp
 import PierceBound.ElevenCount
@@ -70,7 +75,8 @@ lemma liftv_spec {p : Fin 10 → ℤ} {b : Fin 3 → ℤ} (hb : b ∈ pivLat p) 
 lemma det3_mul (l1 l2 l3 b1 b2 b3 : Fin 3 → ℤ) :
     (Matrix.of ![![dot3 l1 b1, dot3 l1 b2, dot3 l1 b3], ![dot3 l2 b1, dot3 l2 b2, dot3 l2 b3],
       ![dot3 l3 b1, dot3 l3 b2, dot3 l3 b3]]).det = det3 l1 l2 l3 * det3 b1 b2 b3 := by
-  simp [Matrix.det_fin_three]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, det_fin_three, Fin.isValue, of_apply, cons_val',
+      cons_val_zero, cons_val_fin_one, cons_val_one, Matrix.cons_val]
   unfold det3 dot3; ring
 
 lemma abs_mul_le' {a b A B : ℤ} (ha : |a| ≤ A) (hb : |b| ≤ B) : |a * b| ≤ A * B := by
@@ -146,7 +152,7 @@ lemma tcomp_bound {c : Fin 10 → ℤ} {C : Matrix (Fin 3) (Fin 3) ℤ} {K L : �
   · exact l 1
   · exact q 2
   · exact l 2
-  · show |c 9| ≤ _
+  · change |c 9| ≤ _
     have := hc 9
     have : K ≤ 12 * K * L ^ 2 := by nlinarith
     linarith
@@ -359,7 +365,8 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
     have q2 := liftv_bound h2 hm (entry_bound hM0 l2)
     have q3 := liftv_bound h3 hm (entry_bound hM0 l3)
     intro i j
-    fin_cases i <;> fin_cases j <;> simp [Bh, liftM] <;> linarith [q1 1, q1 2, q1 3, q2 1, q2 2, q2 3,
+    fin_cases i <;> fin_cases j <;> simp [Bh, liftM] <;>
+        linarith [q1 1, q1 2, q1 3, q2 1, q2 2, q2 3,
       q3 1, q3 2, q3 3]
   have hdetB : Bh.det ≠ 0 := liftM_det_ne hMx hm (by omega) h1 h2 h3 hD
   -- the quadratic in basis coordinates
@@ -458,7 +465,7 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
         fin_cases i <;> simp [Bh, liftM, Matrix.mulVec, dotProduct, Fin.sum_univ_three] <;> linarith
       simp only [G2, G1, ternv_tcomp]
       rw [hPQ, ternv_tcomp, hB]
-      show ternv (thetaCoef _ _ _ _ _ _ _) _ = 0
+      change ternv (thetaCoef _ _ _ _ _ _ _) _ = 0
       rw [ternv_thetaCoef]
       exact (hVs k hk).2.2
   have hinj : Set.InjOn f Vs := by
@@ -467,7 +474,8 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
     funext c
     rw [hexp k hk c, hexp k' hk' c, hy]
   refine (card_le_card_of_injOn f hmaps hinj).trans ?_
-  refine slice_count_tv (by omega) hQα hQΔ hG2D hG2b fun M' hM' hb => (hW M' hM' (hb.trans ?_)).trans'
+  refine slice_count_tv (by omega) hQα hQΔ hG2D hG2b fun M' hM' hb =>
+      (hW M' hM' (hb.trans ?_)).trans'
     (Nat.mul_le_mul_left _ (Nat.succ_le_succ (Nat.log_mono_right ?_)))
   · have : (Y : ℤ) ≤ (12 * H + 1 : ℕ) := by
       have : Y0 * R ≤ 3 * H := Nat.div_mul_le_self _ _

@@ -1803,7 +1803,7 @@ Lemma~\ref{lem:div} & \lean{exists\_divisors\_power\_bound} & \lean{DivisorPower
 Lemma~\ref{lem:six} & \lean{six\_divisibility}, \lean{six\_identity} & \lean{SixStep.lean}\\
 Corollary~\ref{cor:six} & \lean{six\_core} & \lean{SixStep.lean}\\
  & \lean{one\_le\_bD} & \lean{Block.lean}\\
- & \lean{Lz\_pos} & \lean{TwoStateMain.lean}\\
+ & \lean{Lz\_pos} & \lean{TwentyThreeMain.lean}\\
 Proposition~\ref{prop:six} & \lean{six\_step\_bound} & \lean{SixStep.lean}\\
 Proposition~\ref{prop:dropcount} & \lean{drop\_count\_bound'} & \lean{ShortSum.lean}\\
 Lemma~\ref{lem:geom} & \lean{sum\_min\_le}, \lean{sum\_min\_le\_gen} & \lean{Geometric.lean}\\
@@ -1833,29 +1833,30 @@ Paper & Lean & File \\
 \midrule
 Hadamard's inequality & \lean{det\_le\_prod\_diag} & \lean{Hadamard.lean}\\
 $\mu_i$, $\nu_i$, shift rule & \lean{muF}, \lean{nuF}, \lean{muF\_nb\_mul} & \lean{Functional.lean}\\
-Lemma~\ref{lem:labels} & \lean{hankelInv\_le\_prod}, \lean{label\_bound}; \lean{label\_at} & \lean{Gram.lean}, \lean{TwoStateMain.lean}\\
+Lemma~\ref{lem:labels} & \lean{hankelInv\_le\_prod}, \lean{label\_bound} & \lean{Gram.lean}\\
+ & \lean{label\_at} & \lean{TwentyThreeMain.lean}\\
 Lemma~\ref{lem:pattern} & \lean{null\_d}, \lean{null\_k}, \lean{null\_r} & \lean{TwoState.lean}\\
  & \lean{theta\_eq}, \lean{hankelInv\_four} & \lean{EightMain.lean}, \lean{Hankel.lean}\\
 Lemma~\ref{lem:quad} & \lean{quad\_root} & \lean{TwoState.lean}\\
 Lemma~\ref{lem:multid} & \lean{mult\_identity}, \lean{quart\_eq} & \lean{TwoState.lean}\\
 Lemma~\ref{lem:psize} & \lean{gramP\_le}, \lean{state\_bound} & \lean{PatternBound.lean}\\
 Proposition~\ref{prop:pcount} & \lean{pattern\_count} & \lean{PatternCount.lean}\\
-Proposition~\ref{prop:twostate} & \lean{good\_card}, \lean{two\_state\_window} & \lean{TwoStateMain.lean}\\
-Proposition~\ref{prop:77} & \lean{window\_77}, \lean{visits\_77} & \lean{TwoStateMain.lean}\\
-Theorem~\ref{thm:2377} & \lean{P\_le\_23\_77} & \lean{TwoStateMain.lean}\\
+Proposition~\ref{prop:twostate} & \lean{good\_card}, \lean{two\_state\_window\_77} & \lean{TwentyThreeMain.lean}\\
+Proposition~\ref{prop:77} & \lean{window\_77}, \lean{visits\_77} & \lean{TwentyThreeMain.lean}\\
+Theorem~\ref{thm:2377} & \lean{P\_le\_23\_77} & \lean{TwentyThreeMain.lean}\\
 Lemma~\ref{lem:signs} & \lean{pattern\_signs} & \lean{ElevenCount.lean}\\
 Lemma~\ref{lem:tern} & \lean{tern\_rel}, \lean{tern\_disc}, \lean{tern\_lead} & \lean{ElevenCount.lean}\\
 Lemma~\ref{lem:norm} & \lean{card\_sqRoots\_le}, \lean{class\_card}, \lean{norm\_count} & \lean{NormCount.lean}\\
 Lemma~\ref{lem:slice} & \lean{slice\_identity}, \lean{slice\_count\_ne}, \lean{slice\_count} & \lean{SliceCount.lean}\\
-Proposition~\ref{prop:pcount2} & \lean{pattern\_count\_eleven} & \lean{ElevenCount.lean}\\
-Proposition~\ref{prop:twostate2} & \lean{two\_state\_window\_eleven} & \lean{ElevenMain.lean}\\
+Proposition~\ref{prop:pcount2} & \lean{pattern\_count\_slice} & \lean{ElevenCount.lean}\\
+Proposition~\ref{prop:twostate2} & \lean{two\_state\_window\_74} & \lean{ElevenMain.lean}\\
 Proposition~\ref{prop:74} & \lean{window\_74}, \lean{visits\_74} & \lean{ElevenMain.lean}\\
 Theorem~\ref{thm:1137} & \lean{xi\_le}, \lean{slack\_le}, \lean{P\_le\_11\_37} & \lean{ElevenMain.lean}\\
 Lemma~\ref{lem:expand} & \lean{nu\_expand} & \lean{MinorHeight.lean}\\
 Proposition~\ref{prop:allminors} & \lean{minor\_height} & \lean{MinorHeight.lean}\\
 Pattern as minors & \lean{theta\_eq} & \lean{EightMain.lean}\\
 Proposition~\ref{prop:minorvec} & \lean{plucker}, \lean{card\_cross\_fiber}, \lean{minor\_vector\_count} & \lean{MinorCount.lean}\\
-Proposition~\ref{prop:twostate3} & \lean{two\_state\_window\_eight}, \lean{window\_54} & \lean{EightMain.lean}\\
+Proposition~\ref{prop:twostate3} & \lean{two\_state\_window\_54}, \lean{window\_54} & \lean{EightMain.lean}\\
 Theorem~\ref{thm:827} & \lean{P\_le\_8\_27} & \lean{EightMain.lean}\\
 \bottomrule
 \end{tabular}
@@ -1877,7 +1878,7 @@ Plane choice, slices & \lean{disc3\_tcomp}, \lean{lead\_eq}, \lean{plane\_one}, 
 Proposition~\ref{prop:fibre} & \lean{ycoord\_spec}, \lean{liftM\_det\_ne}, & \lean{LatticeCount.lean}\\
  & \lean{lattice\_fiber\_count}, \lean{pattern\_count\_lattice} & \\
 Lemma~\ref{lem:abel} & \lean{inv\_telescope}, \lean{abel\_sum} & \lean{FortyFiveMain.lean}\\
-Proposition~\ref{prop:twostate4} & \lean{two\_state\_window\_45}, \lean{window\_152} & \lean{FortyFiveMain.lean}\\
+Proposition~\ref{prop:twostate4} & \lean{two\_state\_window\_152}, \lean{window\_152} & \lean{FortyFiveMain.lean}\\
 Theorem~\ref{thm:45152} & \lean{slack\_le2}, \lean{P\_le\_45\_152} & \lean{FortyFiveMain.lean}\\
 \bottomrule
 \end{tabular}
@@ -1916,7 +1917,7 @@ and the separation $\varepsilon\ge3$.
 \item Lemma~\ref{lem:reduce} is proved with integer arithmetic only: the minimal
 determinant and the lexicographic minimum are taken with \lean{Nat.find}, and the rounding steps
 use Euclidean division.
-\item The project has about 11100 lines of Lean. \lean{lake build} rebuilds it in a few
+\item The project has about 11700 lines of Lean. \lean{lake build} rebuilds it in a few
 minutes once Mathlib is built.
 \end{itemize}
 

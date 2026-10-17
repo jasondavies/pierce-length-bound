@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.PatternBound
 import PierceBound.PatternCount
 import PierceBound.Main
@@ -14,7 +19,7 @@ is `θ(i) = (L(i), L(i+1), L(i+2), U₁(i), U₂(i), U₁(i+1), U₂(i+1)) ∈ �
 In a window run of `T ≥ 36` terms in `[A, 2A)` take `H = ⌊28a/(AT)⌋ + 1`. At least `T/2`
 starts have their next seven increments `≤ H` (`good_card`). If `237568 A⁴ H⁵ ≤ a³`, their
 patterns are bounded by `M = ⌊172032 A⁴ H⁶ / a³⌋` (`state_bound`), so the counting lemma gives
-`T ≤ 16 (2M+1)⁷ H²` (`two_state_window`). Combined with the six-step bound and the drop bound,
+`T ≤ 16 (2M+1)⁷ H²` (`two_state_window_77`). Combined with the six-step bound and the drop bound,
 every window has `T⁷⁷ ≤ C₇₇ Δ²² a²³` (`window_77`), and the dyadic decomposition gives the
 theorem (`P_le_23_77`).
 -/
@@ -152,7 +157,8 @@ lemma label_at {A i : ℕ} (hba : b < a) (h : i + 6 < P a b) (hi : orb a b i < 2
       _ = 256 * (A : ℤ) ^ 4 * (Lz a b i * (qq a b i : ℤ) ^ 4) := by ring
       _ ≤ _ := mul_le_mul_of_nonneg_left hl (by positivity)
   have : (Lz a b i * (a : ℤ) ^ 3) * a ≤ (256 * (A : ℤ) ^ 4 *
-      gramP (kq a b i) (kq a b (i + 1)) (kq a b (i + 2)) (kq a b (i + 3)) (kq a b (i + 4))) * a := by
+      gramP (kq a b i) (kq a b (i + 1)) (kq a b (i + 2)) (kq a b (i + 3)) (kq a b (i + 4)))
+          * a := by
     calc (Lz a b i * (a : ℤ) ^ 3) * a = Lz a b i * (a : ℤ) ^ 4 := by ring
       _ ≤ _ := this
       _ = _ := by ring
@@ -258,7 +264,7 @@ lemma abs_le_div {z : ℤ} {C n : ℕ} (hn : 0 < n) (h : |z| * n ≤ C) : |z| �
 
 /-- **The window theorem.** Under the scale condition `237568 A⁴ H⁵ ≤ a³`,
 `T ≤ 16 (2M + 1)⁷ H²` with `M = ⌊172032 A⁴ H⁶ / a³⌋`. -/
-theorem two_state_window (hba : b < a) {s T A : ℕ}
+theorem two_state_window_77 (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T)
     (hc : 237568 * A ^ 4 * (28 * a / (A * T) + 1) ^ 5 ≤ a ^ 3) :
@@ -504,7 +510,7 @@ theorem visits_77 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
     omega
   exact window_77 (by omega) (six_step_bound W (by omega))
     (drop_bound W hΔ (by omega))
-    (fun hc => two_state_window hba hmem hsT (by omega) hc)
+    (fun hc => two_state_window_77 hba hmem hsT (by omega) hc)
 
 /-- **Theorem.** `P(a, b) ≪_ε a^{23/77 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le_23_77 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →

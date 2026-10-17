@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import Mathlib
 
 /-!
@@ -38,7 +43,8 @@ lemma eq_emod_of_dvd_half {h s c : ℤ} (h0 : 0 ≤ s) (hs : s < 2 * h)
   obtain ⟨j, hj⟩ := hd
   rcases Int.even_or_odd j with ⟨q, hq⟩ | ⟨q, hq⟩
   · left; exact eq_emod_of_dvd h0 hs ⟨q, by rw [hj, hq]; ring⟩
-  · right; exact eq_emod_of_dvd h0 hs ⟨q, by rw [show s - (c + h) = s - c - h by ring, hj, hq]; ring⟩
+  · right; exact eq_emod_of_dvd h0 hs
+      ⟨q, by rw [show s - (c + h) = s - c - h by ring, hj, hq]; ring⟩
 
 lemma prime_pow_dvd_of_dvd_mul {p : ℤ} (hp : Prime p) {e : ℕ} {a b : ℤ} (h : p ^ e ∣ a * b)
     (ha : ¬ p ∣ a) : p ^ e ∣ b := by
@@ -167,7 +173,8 @@ theorem card_sqRoots_prime_pow {p e : ℕ} (hp : p.Prime) (he : 1 ≤ e) {d : �
       · exact Or.inl (eq_emod_of_dvd hs0 hsM h)
       · exact Or.inr (Or.inl (eq_emod_of_dvd hs0 hsM (by rwa [sub_neg_eq_add])))
   -- conclude
-  have hsub : sqRoots d (p ^ e) ⊆ ({(r : ℤ) % (p ^ e), (-(r : ℤ)) % (p ^ e), ((r : ℤ) + h0) % (p ^ e),
+  have hsub : sqRoots d (p ^ e) ⊆ ({(r : ℤ) % (p ^ e), (-(r : ℤ)) % (p ^ e), ((r : ℤ) + h0) %
+      (p ^ e),
       (-(r : ℤ) + h0) % (p ^ e)} : Finset ℤ).image Int.toNat := by
     intro s hs
     exact mem_image.mpr ⟨s, key s hs, by simp⟩
@@ -246,7 +253,8 @@ noncomputable def xi (d : ℕ) (q : ℤ × ℤ) : ℝ := q.1 + q.2 * Real.sqrt d
 /-- The conjugate `u - w√d`. -/
 noncomputable def xiBar (d : ℕ) (q : ℤ × ℤ) : ℝ := q.1 - q.2 * Real.sqrt d
 
-lemma xi_mul_xiBar (d : ℕ) (q : ℤ × ℤ) : xi d q * xiBar d q = ((q.1 ^ 2 - d * q.2 ^ 2 : ℤ) : ℝ) := by
+lemma xi_mul_xiBar (d : ℕ) (q : ℤ × ℤ) : xi d q * xiBar d q
+    = ((q.1 ^ 2 - d * q.2 ^ 2 : ℤ) : ℝ) := by
   unfold xi xiBar
   have : Real.sqrt d ^ 2 = d := Real.sq_sqrt (Nat.cast_nonneg d)
   push_cast
@@ -262,7 +270,8 @@ lemma xi_ratio {d : ℕ} {n t : ℤ} (hn : n ≠ 0) (ht : n ∣ t ^ 2 - d) {q q'
   simp only at hq hq' hc hc' ⊢
   have h1 : n ∣ u * u' - d * w * w' := by
     obtain ⟨x, hx⟩ := hc; obtain ⟨y, hy⟩ := hc'; obtain ⟨z, hz⟩ := ht
-    exact ⟨x * u' + t * w * y + w * w' * z, by linear_combination u' * hx + t * w * hy + w * w' * hz⟩
+    exact
+        ⟨x * u' + t * w * y + w * w' * z, by linear_combination u' * hx + t * w * hy + w * w' * hz⟩
   have h2 : n ∣ w * u' - u * w' := by
     obtain ⟨x, hx⟩ := hc; obtain ⟨y, hy⟩ := hc'
     exact ⟨w * y - w' * x, by linear_combination w * hy - w' * hx⟩
@@ -304,7 +313,8 @@ theorem class_card {d : ℕ} (hd : ¬ IsSquare d) {n t : ℤ} (hn : n ≠ 0) (ht
     obtain ⟨hq1, -, hq3⟩ := hS q hq
     have hx : |xi d q| ≤ L := by
       unfold xi
-      calc |(q.1 : ℝ) + q.2 * Real.sqrt d| ≤ |(q.1 : ℝ)| + |(q.2 : ℝ) * Real.sqrt d| := abs_add_le _ _
+      calc |(q.1 : ℝ) + q.2 * Real.sqrt d| ≤ |(q.1 : ℝ)| + |(q.2 : ℝ)
+             * Real.sqrt d| := abs_add_le _ _
         _ = |(q.1 : ℝ)| + |(q.2 : ℝ)| * Real.sqrt d := by rw [abs_mul, abs_of_nonneg hδ0]
         _ ≤ L := hq3
     have hxb : |xiBar d q| ≤ L := by
@@ -489,7 +499,8 @@ lemma reduce {d f : ℕ} (hf : 0 < f) {N : ℤ} (hN : N ≠ 0) {p : ℤ × ℤ}
     rw [← hp, h.1, show p.2 = 0 from (mul_eq_zero.mp h.2).resolve_left hf']
     ring
   have hu : p.1 = g * (p.1 / g) := (Int.mul_ediv_cancel' (Int.gcd_dvd_left _ _)).symm
-  have hw : (f : ℤ) * p.2 = g * ((f * p.2) / g) := (Int.mul_ediv_cancel' (Int.gcd_dvd_right _ _)).symm
+  have hw : (f : ℤ) * p.2 = g * ((f * p.2) / g) :=
+      (Int.mul_ediv_cancel' (Int.gcd_dvd_right _ _)).symm
   refine ⟨hg, hu, hw, ?_, rfl, ?_⟩
   · rw [← hp]
     push_cast
@@ -542,7 +553,8 @@ lemma reduced_size {d f B : ℕ} {N : ℤ} {p : ℤ × ℤ} {g : ℕ} {u w n : �
       rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (Nat.cast_nonneg _)]
     rw [e, Real.sqrt_lt' (by positivity)]
     have := Nat.lt_succ_sqrt (f ^ 2 * d)
-    have : ((f ^ 2 * d : ℕ) : ℝ) < ((Nat.sqrt (f ^ 2 * d) + 1) * (Nat.sqrt (f ^ 2 * d) + 1) : ℕ) := by
+    have : ((f ^ 2 * d : ℕ) : ℝ) < ((Nat.sqrt (f ^ 2 * d) + 1)
+        * (Nat.sqrt (f ^ 2 * d) + 1) : ℕ) := by
       exact_mod_cast this
     push_cast at this ⊢; nlinarith
   have hδ : 0 ≤ Real.sqrt d := Real.sqrt_nonneg _
@@ -657,7 +669,8 @@ theorem norm_count {D : ℕ} {N : ℤ} (B : ℕ) (hD : 1 ≤ D) (hN : N ≠ 0) :
         rw [R.hw, R'.hw, hgg, h.2]
     rw [← card_image_of_injOn hinj]
     have R0 := hR p0 hp0'.1
-    refine class_card hdsq (hn0 p0 hp0'.1) (hkey p0 hp0'.1).1 (fun q hq => ?_) (fun q hq q' hq' => ?_)
+    refine class_card hdsq (hn0 p0 hp0'.1) (hkey p0 hp0'.1).1 (fun q hq => ?_)
+        (fun q hq q' hq' => ?_)
     · obtain ⟨p, hp, rfl⟩ := mem_image.mp hq
       have hp1 := mem_filter.mp hp
       have R := hR p hp1.1
@@ -672,7 +685,8 @@ theorem norm_count {D : ℕ} {N : ℤ} (B : ℕ) (hD : 1 ≤ D) (hN : N ≠ 0) :
       have htt' : t p = t p0 := by
         have := congrArg (fun x : ℕ => (x : ℤ)) htt
         rwa [Int.toNat_of_nonneg (ht0 p hp1.1).1, Int.toNat_of_nonneg (ht0 p0 hp0'.1).1] at this
-      refine ⟨by simp only; rw [← hnn], by simp only; rw [← hnn, ← htt']; exact (hkey p hp1.1).2, ?_⟩
+      refine ⟨by simp only; rw [← hnn], by simp only; rw [← hnn, ← htt']; exact (hkey p
+          hp1.1).2, ?_⟩
       have hb := mem_filter.mp hp1.1
       obtain ⟨hb1, hb2⟩ := mem_product.mp hb.1
       exact reduced_size R (abs_le.mpr ⟨(mem_Icc.mp hb1).1, (mem_Icc.mp hb1).2⟩)

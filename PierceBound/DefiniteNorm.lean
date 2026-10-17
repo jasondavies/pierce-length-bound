@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.NormCount
 
 /-!
@@ -42,7 +47,8 @@ lemma reduce_def {d f : ℕ} (hf : 0 < f) {N : ℤ} (hN : N ≠ 0) {p : ℤ × �
     rw [← hp, h.1, show p.2 = 0 from (mul_eq_zero.mp h.2).resolve_left hf']
     ring
   have hu : p.1 = g * (p.1 / g) := (Int.mul_ediv_cancel' (Int.gcd_dvd_left _ _)).symm
-  have hw : (f : ℤ) * p.2 = g * ((f * p.2) / g) := (Int.mul_ediv_cancel' (Int.gcd_dvd_right _ _)).symm
+  have hw : (f : ℤ) * p.2 = g * ((f * p.2) / g) :=
+      (Int.mul_ediv_cancel' (Int.gcd_dvd_right _ _)).symm
   refine ⟨hg, hu, hw, ?_, rfl, ?_⟩
   · rw [← hp]
     push_cast
@@ -72,7 +78,8 @@ lemma def_class_units {d : ℕ} (hd : 1 ≤ d) {n t : ℤ} (hn : n ≠ 0) (ht : 
   simp only at hq hq' hc hc' ⊢
   have h1 : n ∣ u * u' + d * w * w' := by
     obtain ⟨x, hx⟩ := hc; obtain ⟨y, hy⟩ := hc'; obtain ⟨z, hz⟩ := ht
-    exact ⟨x * u' + t * w * y + w * w' * z, by linear_combination u' * hx + t * w * hy + w * w' * hz⟩
+    exact
+        ⟨x * u' + t * w * y + w * w' * z, by linear_combination u' * hx + t * w * hy + w * w' * hz⟩
   have h2 : n ∣ w * u' - u * w' := by
     obtain ⟨x, hx⟩ := hc; obtain ⟨y, hy⟩ := hc'
     exact ⟨w * y - w' * x, by linear_combination w * hy - w' * hx⟩
@@ -208,7 +215,8 @@ theorem norm_count_def {D : ℕ} {N : ℤ} (B : ℕ) (hD : 1 ≤ D) (hN : N ≠ 
         (by rw [← hnn, ← htt']; exact (hkey p hp1.1).2) (hkey p0 hp0'.1).2
       exact mem_image.mpr ⟨(r, s), hrs, he.symm⟩
     exact (card_le_card hsub).trans (card_image_le.trans (by decide))
-  calc (defSols (f ^ 2 * d) N B).card ≤ 4 * KS.card := card_le_mul_card_image_of_maps_to hmaps _ hfib
+  calc (defSols (f ^ 2 * d) N B).card ≤ 4 * KS.card := card_le_mul_card_image_of_maps_to hmaps _
+         hfib
     _ ≤ 4 * N.natAbs.divisors.card ^ 3 := Nat.mul_le_mul_left _ hKS
 
 end PierceBound

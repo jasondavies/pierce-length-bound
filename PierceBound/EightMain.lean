@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
 import PierceBound.MinorHeight
 import PierceBound.ElevenMain
 
@@ -28,7 +33,7 @@ theorem theta_eq (i : ℕ) : theta a b i = projθ (plk (Mi a b i)) := by
 section Window
 
 /-- **The window bound with minor vectors.** -/
-theorem two_state_window_eight (hba : b < a) {s T A : ℕ}
+theorem two_state_window_54 (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T) :
     T ≤ 24 * 14581 * (3609600 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3 + 1) ^ 5 *
@@ -66,7 +71,7 @@ theorem two_state_window_eight (hba : b < a) {s T A : ℕ}
         _ = 2147074259481600 * a ^ 7 * a ^ 3 := by ring
         _ ≤ (10 ^ 16 * a ^ 7) * a ^ 3 := by gcongr; norm_num
     exact Nat.le_of_mul_le_mul_right h3 (by positivity)
-  obtain ⟨P1, P2, P3⟩ := pbig_bounds (by omega) hH29 hMb
+  obtain ⟨P1, P2, P3⟩ := pbig1_bounds (by omega) hH29 hMb
   -- every minor is bounded by `M`
   have hminor : ∀ i ∈ G, ∀ t, |plk (Mi a b i) t| ≤ M := by
     intro i hi t
@@ -83,28 +88,29 @@ theorem two_state_window_eight (hba : b < a) {s T A : ℕ}
     have h2 : ∑ m ∈ Icc 1 M, 729 * m ^ 4 * m.divisors.card ≤ 729 * M ^ 5 * Xi a := by
       have hτ : ∀ m ∈ Icc 1 M, m.divisors.card ≤ Xi a := fun m hm => by
         have := (mem_Icc.mp hm).2
-        calc m.divisors.card ≤ tauMax (Pbig a) := tau_le_tauMax (this.trans P3)
+        calc m.divisors.card ≤ tauMax (Pbig1 a) := tau_le_tauMax (this.trans P3)
           _ ≤ Xi a := by
               unfold Xi
-              have : tauMax (Pbig a) ≤ tauMax (Pbig a) ^ 3 := Nat.le_self_pow (by norm_num) _
+              have : tauMax (Pbig1 a) ≤ tauMax (Pbig1 a) ^ 3 := Nat.le_self_pow (by norm_num) _
               nlinarith
       calc ∑ m ∈ Icc 1 M, 729 * m ^ 4 * m.divisors.card ≤ ∑ _m ∈ Icc 1 M, 729 * M ^ 4 * Xi a :=
             sum_le_sum fun m hm => by
               have := (mem_Icc.mp hm).2
               gcongr
               exact hτ m hm
-        _ = 729 * M ^ 5 * Xi a := by rw [sum_const, Nat.card_Icc, smul_eq_mul, Nat.add_sub_cancel]; ring
+        _ = 729 * M ^ 5 * Xi a := by
+          rw [sum_const, Nat.card_Icc, smul_eq_mul, Nat.add_sub_cancel]; ring
     have h3 : M ^ 5 ≤ (M + 1) ^ 5 := Nat.pow_le_pow_left (by omega) 5
     calc B.card ≤ S.card := card_image_le
       _ ≤ 1 + 20 * (729 * M ^ 5 * Xi a) := by omega
       _ ≤ 14581 * (M + 1) ^ 5 * Xi a := by
           have : 1 ≤ (M + 1) ^ 5 * Xi a := Nat.one_le_iff_ne_zero.mpr (by positivity)
           nlinarith
-  have hcount := pattern_count_gen (G := G) (θ := theta a b) (κ := kap a b)
+  have hcount := pattern_count_slice_gen (G := G) (θ := theta a b) (κ := kap a b)
     (Q := fun i => (qq a b i : ℤ)) (a := (a : ℤ)) (M := M) (H := H) (B := B)
-    (W := 2 * tauMax (Pbig a) ^ 3 * (Nat.log 3 (Pbig a) + 1)) hH1 ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
+    (W := 2 * tauMax (Pbig1 a) ^ 3 * (Nat.log 3 (Pbig1 a) + 1)) hH1 ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
   · have hg2 : T ≤ 2 * G.card := hgood
-    have hXi : 2 * tauMax (Pbig a) ^ 3 * (Nat.log 3 (Pbig a) + 1) + 4 = Xi a := rfl
+    have hXi : 2 * tauMax (Pbig1 a) ^ 3 * (Nat.log 3 (Pbig1 a) + 1) + 4 = Xi a := rfl
     rw [hXi] at hcount
     calc T ≤ 2 * G.card := hg2
       _ ≤ 2 * (4 * B.card * ((2 * H + 1) * Xi a)) := Nat.mul_le_mul_left _ hcount
@@ -128,7 +134,9 @@ theorem two_state_window_eight (hba : b < a) {s T A : ℕ}
   · intro i hi t
     rw [theta_eq]
     have hm := hminor i hi
-    fin_cases t <;> simp [projθ] <;> exact hm _
+    fin_cases t <;> simp only [projθ, Fin.isValue, Fin.mk_one, Matrix.cons_val_one,
+        Matrix.cons_val_zero, ge_iff_le, Fin.reduceFinMk, Matrix.cons_val, abs_neg,
+        Fin.zero_eta] <;> exact hm _
   -- the gaps
   · intro i hi t
     obtain ⟨-, hk, -⟩ := facts i hi
@@ -147,7 +155,7 @@ theorem two_state_window_eight (hba : b < a) {s T A : ℕ}
       (by have := (facts i hi).1; omega)
   -- the divisor and logarithm bounds
   · intro M' hM' hb
-    have hτ : M'.natAbs.divisors.card ≤ tauMax (Pbig a) := by
+    have hτ : M'.natAbs.divisors.card ≤ tauMax (Pbig1 a) := by
       refine tau_le_tauMax ?_
       have : M'.natAbs ≤ 116 * (4 * M ^ 2) ^ 4 * H ^ 2 := by
         have h' : (M'.natAbs : ℤ) ≤ ((116 * (4 * M ^ 2) ^ 4 * H ^ 2 : ℕ) : ℤ) := by
@@ -155,7 +163,7 @@ theorem two_state_window_eight (hba : b < a) {s T A : ℕ}
         exact_mod_cast h'
       omega
     have hlog : Nat.log 3 ((11 * (4 * M ^ 2) ^ 2 * H * (3 * (4 * M ^ 2) + 2)) ^ 2) ≤
-        Nat.log 3 (Pbig a) := Nat.log_mono_right P2
+        Nat.log 3 (Pbig1 a) := Nat.log_mono_right P2
     gcongr
 
 end Window
@@ -295,7 +303,7 @@ theorem visits_54 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
     omega
   exact window_54 (by omega)
     (six_step_bound W (by omega)) (drop_bound W hΔ (by omega))
-    (two_state_window_eight hba hmem hsT (by omega))
+    (two_state_window_54 hba hmem hsT (by omega))
 
 /-- **Theorem.** `P(a, b) ≪_ε a^{8/27 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le_8_27 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
