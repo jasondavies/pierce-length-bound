@@ -5,10 +5,10 @@ positive terms ([Open Problem Garden](https://www.openproblemgarden.org/op/a_dis
 Shallit asked whether `P(a, b) = O((log a)²)`. That question is **still open**. This repository
 proves, uniformly in `0 < b < a`:
 
-* **Main theorem:** `P(a, b) ≤ C_ε · a^{8/27 + ε}`, where `8/27 = 0.29629…`. This goes below the
-  exponent `3/10` of the unpublished `n^{3/10}` bound reported on Shallit's talks page.
-* **Earlier steps:** `P(a, b) ≤ C_ε · a^{11/37 + ε}`, and before that
-  `P(a, b) ≤ C_ε · a^{23/77 + ε}`.
+* **Main theorem:** `P(a, b) ≤ C_ε · a^{45/152 + ε}`, where `45/152 = 0.29605…`. This goes below
+  the exponent `3/10` of the unpublished `n^{3/10}` bound reported on Shallit's talks page.
+* **Earlier steps:** `P(a, b) ≤ C_ε · a^{8/27 + ε}`, before that `a^{11/37 + ε}`, and before
+  that `a^{23/77 + ε}`.
 * **The `3/10` bound:** `P(a, b) ≤ C_ε · a^{3/10 + ε}`, improving Chase–Pandey's
   `a^{1/3 − 2/177 + ε}`. Its six-step identity is an ingredient of the main theorem.
 * **Assuming two published theorems:** `P(a, b) ≪ a^{3/10} √(log log 3a)`. The theorems are
@@ -49,6 +49,16 @@ expansion of `b/a` with a positive remainder bounds all ten minors by `X`. Minor
 number `≤ 1 + 20 ∑_{m≤Y} 729 m⁴ τ(m)`, via a maximal pivot, the Plücker relations, and the congruence
 `v ≡ λu₀ (mod m/g)`. So `T ≪ a^η X⁵ H` and `T⁵⁴ ≪ a^{16+O(η)}`.
 
+For `45/152`, the pivot gaps `k'` of a state lie in the lattice
+`Λ_p = {x ∈ ℤ³ : m ∣ u·x, m ∣ v·x}` of its minor vector, and `m kᶜ = Lᶜ · k'` recovers all five gaps.
+The cross relation makes the index `≤ |m|`, so `Λ_p` has a vector of length `λ(p) ≤ X^{1/3}`
+(pigeonhole). A reduced basis with `27|b₁|²|b₂|²|b₃|² ≤ 64 det²`, built by minimising the
+determinant, then `|b₁|²`, then a Gram determinant (integer arithmetic only), gives coordinates
+`λ(p)|yᵢ| ≤ 3H`. After a plane choice the slice count applies to `F_θ` in those coordinates,
+with definite slices handled by a definite norm count. So one minor vector covers
+`O((H/λ(p) + 1) a^η)` gap vectors. Only `≪ R³X⁴τ²` minor vectors have `λ(p) ≤ R`, and partial
+summation gives `T ≪ a^η (H X^{14/3} + X⁵)`, hence `T¹⁵² ≪ a^{45+O(η)}`.
+
 * `paper/pierce_bound.tex` (and `.pdf`): the paper.
 * `PierceBound/`: Lean 4 / Mathlib formalisation of all of the above, with no `sorry`.
 
@@ -57,6 +67,9 @@ number `≤ 1 + 20 ∑_{m≤Y} 729 m⁴ τ(m)`, via a maximal pivot, the Plücke
 Build with `lake build` (Lean `v4.35.0`, Mathlib `v4.35.0`). The main theorems are
 
 ```lean
+theorem PierceBound.P_le_45_152 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((45 : ℝ) / 152 + ε)
+
 theorem PierceBound.P_le_8_27 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((8 : ℝ) / 27 + ε)
 
@@ -80,7 +93,7 @@ theorem PierceBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr : r ≤
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n
 ```
 
-`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all seven. The second
+`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all eight. The second
 theorem's dependence on the two papers is entirely through its hypotheses.
 
 | File | Contents |
@@ -111,6 +124,12 @@ theorem's dependence on the two papers is entirely through its hypotheses.
 | `MinorCount.lean` | the Plücker relations, the congruence count `27 m g²`, and `minor_vector_count` |
 | `MinorHeight.lean` | the expansion of `b/a` (`nu_expand`) and the uniform bound on all ten minors |
 | `EightMain.lean` | the pattern as signed minors, the window bound, `T⁵⁴ ≤ C Δ¹⁴ Ξ²⁸ a¹⁶`, and `P_le_8_27` |
+| `DefiniteNorm.lean` | the definite norm count: `U² + D V² = N` has `≤ 4τ(|N|)³` solutions |
+| `Reduce3.lean` | reduced bases of lattices in `ℤ³`: `27 |b₁|²|b₂|²|b₃|² ≤ 64 det²`, and coordinate bounds |
+| `TernComp.lean` | ternary quadratics under substitution, the plane choice, and the slice count for either sign |
+| `ShortVec.lean` | the lifting identities, the lattice `Λ_p`, the pigeonhole bound, and `short_count` |
+| `LatticeCount.lean` | the gap vectors of one minor vector (`lattice_fiber_count`) and `pattern_count_lattice` |
+| `FortyFiveMain.lean` | partial summation, the window bound `T³ ≤ C Ξ⁹ (H³X¹⁴ + X¹⁵)`, `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`, and `P_le_45_152` |
 | `Hooley.lean` | Erdős–Hooley `Δ`, the hypotheses `NairTenenbaumDelta` and `BretecheTenenbaumMean`, partial summation, and `P_le_loglog` |
 
 ## Vendored code

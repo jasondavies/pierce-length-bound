@@ -22,7 +22,7 @@
 \DeclareMathOperator{\Good}{Good}
 \DeclareMathOperator{\Bad}{Bad}
 
-\title[A discrete iteration related to Pierce expansions]{The iteration $x\mapsto a \bmod x$ has length $O_\varepsilon(a^{8/27+\varepsilon})$}
+\title[A discrete iteration related to Pierce expansions]{The iteration $x\mapsto a \bmod x$ has length $O_\varepsilon(a^{45/152+\varepsilon})$}
 
 \author{Jason Davies}
 \email{jason@jasondavies.com}
@@ -35,8 +35,8 @@
 For integers $a>b>0$ let $b_1=b$, $b_{i+1}=a\bmod b_i$, and let $P(a,b)$ be the number of
 positive terms of this sequence. Shallit asked whether $P(a,b)=O((\log a)^2)$. The bound
 $P(a,b)\ll_\varepsilon a^{1/3+\varepsilon}$ of Erd\H{o}s and Shallit was improved by Chase and
-Pandey to $a^{1/3-2/177+\varepsilon}$. We prove $P(a,b)\ll_\varepsilon a^{8/27+\varepsilon}$,
-where $8/27=0.29629\ldots$, by an elementary argument. We first prove
+Pandey to $a^{1/3-2/177+\varepsilon}$. We prove $P(a,b)\ll_\varepsilon a^{45/152+\varepsilon}$,
+where $45/152=0.29605\ldots$, by an elementary argument. We first prove
 $P(a,b)\ll_\varepsilon a^{3/10+\varepsilon}$. The new ingredient there is an exact identity for
 three consecutive steps of the iteration. It shows that a certain integer combination
 $D=dv-eu$ of the drops and quotient increments is always positive and is small when the drops
@@ -48,8 +48,11 @@ orbit. To go below $3/10$ we use the arithmetic of $L$ itself. At
 the critical scale $L$ is a positive integer of bounded size. Seven such integers at two
 consecutive states form a pattern, and the states with a given pattern lie on a nonsingular
 quadric surface in the quotient increments, with at most four states per point. Counting its
-points by binary slices and norm equations gives the exponent $11/37$. Finally the seven integers
-are Pl\"ucker coordinates of one matrix, and counting vectors of minors gives $8/27$. Along the way we show
+points by binary slices and norm equations gives the exponent $11/37$. Next the seven integers
+are Pl\"ucker coordinates of one matrix, and counting vectors of minors gives $8/27$. Finally
+the gap vector lies in a rank-three lattice determined by the minor vector. Weighting each minor
+vector by the shortest vector of its lattice, through an elementary reduced basis, gives
+$45/152$. Along the way we show
 $P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$, assuming results of Nair--Tenenbaum and de la
 Bret\`eche--Tenenbaum on the Erd\H{o}s--Hooley $\Delta$-function. We also show
 $P(a,b)\ll a^{1/4}\sqrt R$, where $R-1$ is the number of rises in the sequence of quotient
@@ -210,7 +213,20 @@ P(a,b)\le C_\varepsilon\, a^{8/27+\varepsilon}\qquad\text{for all integers }0<b<
 
 Here $8/27=0.296296\ldots$. The seven pattern integers are signed coordinates of the vector of
 $3\times3$ minors of a $3\times5$ integer matrix (Section~\ref{sec:827}). All ten minors are
-bounded by $X$, and such minor vectors number $X^{5+o(1)}$ rather than $X^7$. The proof (Section~\ref{sec:2377})
+bounded by $X$, and such minor vectors number $X^{5+o(1)}$ rather than $X^7$.
+
+\begin{theorem}\label{thm:45152}
+For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
+\[
+P(a,b)\le C_\varepsilon\, a^{45/152+\varepsilon}\qquad\text{for all integers }0<b<a .
+\]
+\end{theorem}
+
+Here $45/152=0.296052\ldots$. The pivot gaps of a state lie in a lattice $\Lambda_p\subseteq\mathbb
+Z^3$ of index at most $X$ determined by its minor vector $p$ (Section~\ref{sec:45152}). If the
+shortest vector of $\Lambda_p$ has length $\lambda$, a reduced basis cuts the ternary quadratic
+into $O(H/\lambda+1)$ slices, and only $X^{4+o(1)}R^3$ minor vectors have $\lambda\le R$. This
+gives $T\ll a^{o(1)}(HX^{14/3}+X^5)$ in place of $T\ll a^{o(1)}HX^5$. The proof (Section~\ref{sec:2377})
 uses the fourth Hankel invariant $I_4=L$ as an integer, not only as a positive number. At the
 critical configuration $L$ has bounded size. The labels $L(i),L(i+1),L(i+2)$ and four
 cofactors of an explicit $3\times4$ integer matrix form a \emph{pattern} of seven integers. Two
@@ -229,11 +245,13 @@ five, together with the dimension-growth bounds of Cluckers, D\`ebes, Hendel, Ng
 Vermeulen~\cite{CDHNV}. The two-state count of Section~\ref{sec:2377} replaces both by
 elementary algebra. The refinement to $11/37$, with the sign identities and the slice count, was
 also found in that exploration, as was the observation that the seven integers form a
-Pl\"ucker vector.
+Pl\"ucker vector, and the proposal to weight each minor vector by the shortest vector of its
+lattice. The proof of the last step given here replaces the geometry of numbers by an elementary
+reduction argument.
 
 \subsection*{Formal verification}
-Every step of the proofs of Theorems~\ref{thm:main}, \ref{thm:2377}, \ref{thm:1137}
-and~\ref{thm:827} has been formalised in Lean~4~\cite{Lean}
+Every step of the proofs of Theorems~\ref{thm:main}, \ref{thm:2377}, \ref{thm:1137},
+\ref{thm:827} and~\ref{thm:45152} has been formalised in Lean~4~\cite{Lean}
 using Mathlib~\cite{Mathlib}. So have Proposition~\ref{prop:six}, Theorem~\ref{thm:generic},
 the deduction of Theorem~\ref{thm:loglog} from~\eqref{eq:NT} and~\eqref{eq:BT},
 Theorem~\ref{thm:rises} and Theorem~\ref{thm:hankel}.
@@ -1414,6 +1432,228 @@ a^{16+O(\eta)}$. At the critical point $T\approx a^{8/27}$, $Q\approx a^{11/27}$
 and $X\approx a^{1/27}$.
 \end{remark}
 
+\section{Lattices of minor vectors and the exponent \texorpdfstring{$45/152$}{45/152}}\label{sec:45152}
+
+Proposition~\ref{prop:twostate3} allows $(2H+1)(W+4)$ gap vectors for every minor vector. But
+the gap vector of a state is not an arbitrary point of $[1,H]^5$: it lies in a rank-three
+lattice determined by its minor vector. If that lattice has no short vectors, the slices of the
+ternary quadratic are few. If it has a short vector, the minor vector satisfies an extra
+congruence, and few minor vectors do. Balancing the two proves Theorem~\ref{thm:45152}. The
+argument uses only integer arithmetic. Instead of the geometry of numbers it uses a reduced
+basis obtained by minimising determinants and lengths directly.
+
+\subsection{The lattice of a minor vector}
+Let $p\ne0$ be the minor vector of a $3\times5$ integer matrix $\mathcal M$, with pivot $\tau$,
+$m=p_\tau$, pivot columns $c_1<c_2<c_3$, other columns $c_4<c_5$, and $u$, $v$ as in
+Proposition~\ref{prop:minorvec}. Let $\Lambda_p\subseteq\mathbb Z^3$ be the subgroup of $x$ with
+$m\mid u\cdot x$ and $m\mid v\cdot x$. It contains $m\mathbb Z^3$. Let $\lambda(p)$ be the least
+sup-norm of a nonzero vector of $\Lambda_p$.
+
+\begin{lemma}[Lifting]\label{lem:lift}
+Let $L_c$ be $me_a$ if $c=c_a$ is a pivot column, $u$ if $c=c_4$ and $v$ if $c=c_5$. For every
+row $x$ of $\mathcal M$ and every column $c$, $m\,x_c=L_c\cdot(x_{c_1},x_{c_2},x_{c_3})$.
+Moreover $\det(L_1,L_2,L_3)=m^2p_{123}$.
+\end{lemma}
+
+\begin{proof}
+The rows $L_c$ are the rows of $\mathcal M^{\mathsf T}\operatorname{adj}(\mathcal M_\tau^{\mathsf
+T})$, where $\mathcal M_\tau$ is the pivot $3\times3$ block. This is Cramer's rule. Both claims
+are polynomial identities in the fifteen entries, checked symbolically for each of the ten
+pivots.
+\end{proof}
+
+So the pivot gaps $k'=(k_{c_1},k_{c_2},k_{c_3})$ of a state lie in $\Lambda_p$. Its five gaps
+are $k_c=L_c\cdot k'/m$, and the gaps $(k_1,k_2,k_3)$ are an invertible linear image of $k'$.
+
+\begin{lemma}[Index]\label{lem:index}
+If $(L+1)^3>|m|$ then $\lambda(p)\le L$.
+\end{lemma}
+
+\begin{proof}
+Write $g=\gcd(|m|,u)$, $n=|m|/g$ and $u=gu_0$. The proof of Proposition~\ref{prop:minorvec}
+gives $v=\lambda u_0+nw$ with $\lambda\in\mathbb Z$, $w\in\mathbb Z^3$. Put
+$\psi(x)=\bigl(u_0\cdot x\bmod n,\ (\lambda\lfloor u_0\cdot x/n\rfloor+w\cdot x)\bmod g\bigr)$,
+which takes at most $ng=|m|$ values. Two points $x\ne y$ of $[0,L]^3$ with
+$\psi(x)=\psi(y)$ exist. Then $u_0\cdot(x-y)=n(q-q')$ with $q,q'$ the two floors, so
+$u\cdot(x-y)=\pm m(q-q')$, and $v\cdot(x-y)=n\bigl(\lambda(q-q')+w\cdot(x-y)\bigr)$ with the
+bracket divisible by $g$. So $x-y\in\Lambda_p$.
+\end{proof}
+
+\subsection{Reduced bases}
+
+\begin{lemma}[Reduction]\label{lem:reduce}
+Let $\Lambda\subseteq\mathbb Z^3$ be a subgroup containing $m\mathbb Z^3$, $m\ge1$. There is a
+basis $b_1,b_2,b_3$ of $\Lambda$ with $D=\det(b_1,b_2,b_3)$, $0<|D|\le m^3$ and
+\[
+27\,|b_1|^2|b_2|^2|b_3|^2\le64\,D^2 .
+\]
+Hence every $w\in\Lambda$ is $\sum y_ib_i$ with $y\in\mathbb Z^3$ and $27|b_i|^2y_i^2\le64|w|^2$.
+\end{lemma}
+
+\begin{proof}
+Let $I$ be the least nonzero $|\det|$ of a triple in $\Lambda$; the triple
+$(me_1,me_2,me_3)$ gives $I\le m^3$. A triple with $|\det|=I$ is a basis. Otherwise some
+$w\in\Lambda$ has a Cramer coordinate $\det(w,b_2,b_3)/D$ that is not an integer, and
+$w-\lfloor\cdot\rfloor b_1$ gives a triple with smaller nonzero determinant. Among such bases
+minimise $d_1=|b_1|^2$, and then the Gram determinant $d_2=d_1|b_2|^2-\langle b_1,b_2\rangle^2$.
+Put $d_3=D^2$.
+
+Choose $n$ with $|2(\langle b_1,b_2\rangle+nd_1)|\le d_1$. Then $(b_2+nb_1,b_1,b_3)$ is a basis, so
+$d_1\le|b_2+nb_1|^2$, and $d_1|b_2+nb_1|^2=d_2+(\langle b_1,b_2\rangle+nd_1)^2$. Hence
+$3d_1^2\le4d_2$.
+
+Let $B(y,z)=d_1\langle y,z\rangle-\langle b_1,y\rangle\langle b_1,z\rangle$, so that
+$B(b_2,b_2)=d_2$, and Sylvester's identity gives $B(b_2,b_2)B(b_3,b_3)-B(b_2,b_3)^2=d_1d_3$. Choose
+$n_2$ with $|2(B(b_2,b_3)+n_2d_2)|\le d_2$ and put $c=b_3+n_2b_2$. Then $(b_1,c,b_2)$ is a basis
+with first vector $b_1$, so $d_2\le d_1|c|^2-\langle b_1,c\rangle^2=B(c,c)$, while
+$d_2B(c,c)=(B(b_2,b_3)+n_2d_2)^2+d_1d_3$. Hence $3d_2^2\le4d_1d_3$.
+
+Finally choose $n_1$ with $|2(\langle b_1,c\rangle+n_1d_1)|\le d_1$, and use the basis
+$b_1$, $b_2'=b_2+nb_1$, $b_3'=c+n_1b_1$. The identities above give
+$3d_1|b_2'|^2\le4d_2$ and $4d_1d_2|b_3'|^2\le d_2^2+4d_1d_3+d_1^2d_2$. With the two inequalities
+this gives $9d_2|b_3'|^2\le16d_3$, and the product of the three bounds is the claim. For the
+coordinates, $y_1D=\det(w,b_2,b_3)$ and Hadamard's inequality $\det(w,b_2,b_3)^2\le
+|w|^2|b_2|^2|b_3|^2$.
+\end{proof}
+
+\subsection{Few minor vectors have a short vector}
+
+\begin{lemma}\label{lem:dotcount}
+For $n\ge1$ and $x\in\mathbb Z^3$, at most $27n^2\gcd(n,x)$ vectors $w\in[-n,n]^3$ have
+$n\mid w\cdot x$.
+\end{lemma}
+
+\begin{proof}
+Reducing modulo $n$ loses a factor at most $27$. Let $K$ be the set of solutions in
+$[0,n)^3$, $e=\gcd(n,x)$ and $c\cdot x\equiv e\pmod n$ by B\'ezout. The map
+$(w,j)\mapsto(w+jc)\bmod n$ is injective on $K\times[0,n/e)$: equal images give
+$n\mid(j-j')e$, so $j=j'$, and then $w=w'$. Hence $|K|\,n/e\le n^3$.
+\end{proof}
+
+\begin{proposition}[Short vectors]\label{prop:short}
+Let $\mathcal S$ be a set of nonzero minor vectors with coordinates in $[-Y,Y]$, and let
+$\tau(m)\le\tau_0$ for $m\le Y$. Then for every $R\ge1$,
+\[
+\#\{p\in\mathcal S:\lambda(p)\le R\}\le393660\,R^3Y^4\tau_0^2 .
+\]
+\end{proposition}
+
+\begin{proof}
+If $\lambda(p)\le R$, some nonzero $x\in[-R,R]^3$ has $m\mid u\cdot x$. For fixed $x$, the
+encoding of Proposition~\ref{prop:minorvec} gives at most $20\sum_m N(m,x)$ such $p$, where
+$N(m,x)$ counts pairs $(u,v)$ with $m\mid u\times v$ and $m\mid u\cdot x$. For each $u$ there
+are at most $27m\gcd(m,u)^2$ vectors $v$. Grouping the $u$ by $g=\gcd(m,u)$ and writing
+$u=gu'$ with $(m/g)\mid u'\cdot x$, Lemma~\ref{lem:dotcount} gives
+$\sum_ug^2\le27m^2\tau(m)\gcd(m,x)$, so $N(m,x)\le729m^3\tau(m)\gcd(m,x)$. Finally
+$\sum_{0<|x|_\infty\le R}\gcd(m,x)\le27R^3\tau(m)$. A divisor $h>R$ of $m$ divides no nonzero
+$x$ in the box, and for $h\le R$ the multiples of $h$ number at most $(2R/h+1)^3$, with
+$h(2R/h+1)\le3R$.
+\end{proof}
+
+\subsection{One minor vector}
+
+\begin{lemma}[Definite norm equations]\label{lem:defnorm}
+For $D\ge1$ and $N\ne0$, the equation $U^2+DV^2=N$ has at most $4\tau(|N|)^3$ integer
+solutions.
+\end{lemma}
+
+\begin{proof}
+As in Lemma~\ref{lem:norm}, with $D=df^2$, $d$ squarefree, each solution reduces to a primitive
+$u^2+dw^2=n$, $N=g^2n$, with a class $t\equiv uw^{-1}$, a square root of $-d$ modulo $n$. Two
+solutions in a class give integers $r,s$ with $r^2+ds^2=1$, of which there are at most four.
+\end{proof}
+
+A ternary quadratic $F$ with quadratic part of Gram matrix $S$ has $\det(2S)$ multiplied by
+$\det(C)^2$ under a substitution $x=Cy$. If $\det(2S)\ne0$, some substitution $C$ with entries in
+$\{0,\pm1\}$, $\det C=\pm1$ and inverse of row sums at most $4$ makes both the $y_1^2$
+coefficient and the binary discriminant in $(y_1,y_2)$ nonzero. First choose one of the planes
+$\langle e_1,e_2\rangle$, $\langle e_1,e_3\rangle$, $\langle e_2,e_3\rangle$,
+$\langle e_1+e_2,e_3\rangle$: if all four binary discriminants vanished then $\det(2S)$ would
+vanish, by an explicit linear combination. Then choose $f$, $g$ or $f+g$ in the plane. With this, Lemma~\ref{lem:slice} holds
+for $\alpha\ne0$ and $\Delta\ne0$ of either sign, using Lemma~\ref{lem:defnorm} when $\Delta<0$,
+and with $z$ and $(x,y)$ in the same box $[-Y,Y]$.
+
+\begin{proposition}[One minor vector]\label{prop:fibre}
+Let $p$ be the minor vector of some state, with all coordinates in $[-X,X]$, $X\ge1$, and
+suppose $W$ satisfies the hypotheses of the slice count for $K=248832X^8$ and the box
+$[-(12H+1),12H+1]$. The states with minor vector $p$ have at most
+\[
+\bigl(8\lfloor3H/\lambda(p)\rfloor+3\bigr)(W+4)
+\]
+gap vectors $\kappa$.
+\end{proposition}
+
+\begin{proof}
+Let $b_1,b_2,b_3$ be the basis of Lemma~\ref{lem:reduce} for $\Lambda_p$, and $\hat b_i$ their
+lifts $c\mapsto L_c\cdot b_i/m$ to $\mathbb Z^5$. Write $k'=\sum y_ib_i$. By
+Lemma~\ref{lem:lift}, $\kappa=\sum y_i\hat b_i$, so $(k_1,k_2,k_3)=\hat By$ for the
+$3\times3$ matrix $\hat B$ of the lifts in columns $1,2,3$, and $m\det\hat B=p_{123}D\ne0$. So
+$y$ is a zero of $G=F_\theta\circ\hat B$, and $\det(2S_G)\ne0$ by Lemma~\ref{lem:tern}. Each
+$|b_i|^2\ge\lambda(p)^2$ and $|k'|^2\le3H^2$, so $\lambda(p)|y_i|\le3H$, and after the plane
+substitution the coordinates lie in $[-Y,Y]$ with $Y=4\lfloor3H/\lambda(p)\rfloor+1$. Since
+$|b_i|\le2X^3$ by Lemma~\ref{lem:reduce}, every lift is at most $6X^3$, and the coefficients of
+the final quadratic are at most $12^3\cdot4X^2\cdot(6X^3)^2=248832X^8$. The slice count
+applies with $(2Y+1)(W+4)$, and $y$ determines $\kappa$.
+\end{proof}
+
+\subsection{The bound}
+
+\begin{lemma}[Partial summation]\label{lem:abel}
+Let $1\le R_p\le L$ for $p\in\mathcal S$, and $\#\{p:R_p\le r\}\le Cr^3$ for $r\ge1$. Then
+$L\sum_p\lfloor N/R_p\rfloor\le N|\mathcal S|+NCL^3$.
+\end{lemma}
+
+\begin{proof}
+Write $1/r=1/L+\sum_{r\le j<L}1/(j(j+1))$ and exchange the sums:
+$\sum_p1/R_p\le|\mathcal S|/L+\sum_{j<L}Cj^3/(j(j+1))\le|\mathcal S|/L+CL^2$.
+\end{proof}
+
+Let $P_2(a)=10^{1000}a^{400}$ and $\Xi_2(a)=4\tau^*(P_2(a))^3(\log_3P_2(a)+1)+4$. As in
+Section~\ref{sec:1137}, $W=\Xi_2(a)-4$ is admissible in every window, and
+$\Xi_2(a)\ll_\eta a^\eta$.
+
+\begin{proposition}\label{prop:twostate4}
+For a window run in $[A,2A)$ with $T\ge36$, let $H=\lfloor28a/(AT)\rfloor+1$ and
+$X=\lfloor3609600A^4H^6/a^3\rfloor+1$. Then
+\[
+T^3\le C_3\,\Xi_2(a)^9\,(H^3X^{14}+X^{15}),\qquad C_3=32\cdot607461312^3 ,
+\]
+and $T^{152}\le C_{152}\Delta^{39}\Xi_2(a)^{117}a^{45}$ with $C_{152}=122449^{38}+c_0^{13}+8^{31}c_A+8^{30}c_B$, where
+$c_0=1024\,C_3\,56^3$, $c_A=2^{15}C_3\,3609600^{14}56^{87}$ and $c_B=2^{16}C_3\,3609600^{15}56^{90}$.
+\end{proposition}
+
+\begin{proof}
+Let $\mathcal S$ be the set of minor vectors of good starts and $\tau_0=\tau^*(P_2(a))$. By
+Proposition~\ref{prop:fibre}, at most four states per $(p,\kappa)$, and $T\le2|\mathcal G|$,
+\[
+T\le8\,\Xi_2(a)\Bigl(8\sum_{p\in\mathcal S}\lfloor3H/\lambda(p)\rfloor+3|\mathcal S|\Bigr).
+\]
+Choose $L$ with $X\le L^3\le8X$. Lemma~\ref{lem:index} gives $\lambda(p)\le L$, and
+Proposition~\ref{prop:short} and Lemma~\ref{lem:abel} give
+$L\sum_p\lfloor3H/\lambda(p)\rfloor\le3H|\mathcal S|+3H\cdot393660X^4\tau_0^2L^3$, with
+$|\mathcal S|\le14581X^5\tau_0$. Hence $TL\le607461312\,\Xi_2^3X^5(H+L)$, and cubing, with
+$(H+L)^3\le4(H^3+L^3)$ and $X\le L^3\le8X$, gives the first bound.
+
+For the second, if $AT>28a$ then $T^4\le122449a$. Otherwise $H\,AT\le56a$. If $X=1$ then
+$T^6A^3\le2C_3\,56^3\Xi_2^9a^3$, and $T^{12}\le(8A\Delta)^3T^6\le c_0\Delta^3\Xi_2^9a^3$. If
+$X\ge2$, write $X\le2Y$ with $Ya^3\le3609600A^4H^6$. When $2Y\le H^3$,
+$T^3a^{42}\ll\Xi_2^9A^{56}H^{87}$, so $T^{90}A^{31}\le c_A\Xi_2^9a^{45}$ and
+$T^{152}\le(8A\Delta)^{31}T^{90}$. When $2Y>H^3$, $T^3a^{45}\ll\Xi_2^9A^{60}H^{90}$, so
+$T^{93}A^{30}\le c_B\Xi_2^9a^{45}$ and $T^{153}\le(8A\Delta)^{30}T^{93}$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:45152}]
+Since $\Delta,\Xi_2(a)\ll_\eta a^\eta$, every window has $T\ll a^{(45+156\eta)/152}$. Summing over
+the $O(\log a)$ windows proves the theorem.
+\end{proof}
+
+\begin{remark}
+In terms of the scales, $T\ll a^\eta(HX^{14/3}+X^5)$: the factor $X^{1/3}$ saved over
+Proposition~\ref{prop:twostate3} is the typical $\lambda(p)$. At the critical point
+$T\approx a^{45/152}$, $Q\approx a^{62/152}$, $H\approx a^{17/152}$ and $X\approx a^{6/152}$, and
+the term $X^5\approx a^{30/152}$ is smaller.
+\end{remark}
+
 \section{The Lean formalisation}\label{sec:lean}
 
 The repository accompanying this paper contains a Lean~4 project (toolchain
@@ -1437,6 +1677,11 @@ and Theorem~\ref{thm:827} is
 \begin{quote}\ttfamily\small
 theorem P\_le\_8\_27 : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
 \hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((8 : $\mathbb R$) / 27 + $\varepsilon$)
+\end{quote}
+and Theorem~\ref{thm:45152} is
+\begin{quote}\ttfamily\small
+theorem P\_le\_45\_152 : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
+\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((45 : $\mathbb R$) / 152 + $\varepsilon$)
 \end{quote}
 Here \lean{P a b} is defined by well-founded recursion as the number of positive terms
 ($P(a,0)=0$, $P(a,b)=P(a,a\bmod b)+1$ for $b>0$), and the file checks $P(35,22)=7$.
@@ -1463,7 +1708,8 @@ Here \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean} are Lean proposi
 \eqref{eq:NT} (with $\varepsilon=1/4$) and~\eqref{eq:BT}, with existential constants and
 thresholds. \lean{hooleyDelta} is defined as the supremum over $u\in\mathbb R$, exactly as
 above. The command \lean{\#print axioms} was run on \lean{P\_le}, \lean{P\_le\_23\_77},
-\lean{P\_le\_11\_37}, \lean{P\_le\_8\_27}, \lean{norm\_count}, \lean{minor\_vector\_count},
+\lean{P\_le\_11\_37}, \lean{P\_le\_8\_27}, \lean{P\_le\_45\_152}, \lean{norm\_count},
+\lean{minor\_vector\_count}, \lean{reduced\_basis}, \lean{short\_count},
 \lean{six\_step\_bound},
 \lean{P\_le\_of\_shortDivisorBound}, \lean{P\_le\_loglog}, \lean{P\_le\_rises}, \lean{hankelInv\_pos\_int} and
 \lean{hankelInv\_four}; for each it reports only \lean{propext},
@@ -1547,6 +1793,27 @@ Theorem~\ref{thm:827} & \lean{P\_le\_8\_27} & \lean{EightMain.lean}\\
 \end{tabular}
 \end{center}
 
+\begin{center}\footnotesize
+\begin{tabular}{@{}lll@{}}
+\toprule
+Paper & Lean & File \\
+\midrule
+Lemma~\ref{lem:lift} & \lean{lift\_row}, \lean{lift\_det}, \lean{pivLat} & \lean{ShortVec.lean}\\
+Lemma~\ref{lem:index} & \lean{cross\_cong}, \lean{pivLat\_short}, \lean{shortR\_spec} & \lean{ShortVec.lean}\\
+Lemma~\ref{lem:reduce} & \lean{basis\_of\_min}, \lean{reduced\_basis}, \lean{reduced\_coords} & \lean{Reduce3.lean}\\
+Lemma~\ref{lem:dotcount} & \lean{card\_dot\_dvd\_le} & \lean{ShortVec.lean}\\
+Proposition~\ref{prop:short} & \lean{card\_crossSet\_dot}, \lean{short\_count} & \lean{ShortVec.lean}\\
+Lemma~\ref{lem:defnorm} & \lean{def\_class\_units}, \lean{norm\_count\_def} & \lean{DefiniteNorm.lean}\\
+Plane choice, slices & \lean{disc3\_tcomp}, \lean{plane\_one}, \lean{plane\_two}, & \lean{TernComp.lean}\\
+ & \lean{slice\_count\_tv} & \\
+Proposition~\ref{prop:fibre} & \lean{lattice\_fiber\_count}, \lean{pattern\_count\_lattice} & \lean{LatticeCount.lean}\\
+Lemma~\ref{lem:abel} & \lean{inv\_telescope}, \lean{abel\_sum} & \lean{FortyFiveMain.lean}\\
+Proposition~\ref{prop:twostate4} & \lean{two\_state\_window\_45}, \lean{window\_152} & \lean{FortyFiveMain.lean}\\
+Theorem~\ref{thm:45152} & \lean{slack\_le2}, \lean{P\_le\_45\_152} & \lean{FortyFiveMain.lean}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
 Some details of the formalisation:
 \begin{itemize}
 \item The algebraic identities (Lemmas~\ref{lem:curv}, \ref{lem:fiber-eq}
@@ -1576,7 +1843,10 @@ counting uses the Mathlib lemma \lean{card\_roots'}.
 \item Lemma~\ref{lem:norm} is proved in full in \lean{NormCount.lean}: the prime-power root
 count, the Chinese remainder theorem, irrationality of $\sqrt d$ (\lean{irrational\_sqrt\_natCast\_iff})
 and the separation $\varepsilon\ge3$.
-\item The project has about 8900 lines of Lean. \lean{lake build} rebuilds it in a few
+\item Lemma~\ref{lem:reduce} is proved with integer arithmetic only: the minimal
+determinant and the lexicographic minimum are taken with \lean{Nat.find}, and the rounding steps
+use Euclidean division.
+\item The project has about 11900 lines of Lean. \lean{lake build} rebuilds it in a few
 minutes once Mathlib is built.
 \end{itemize}
 
@@ -1601,10 +1871,10 @@ positive-dimensional families of solutions. For instance, the Newton coefficient
 $(\alpha,-3\alpha-1,3\alpha+3,-\alpha-3,1)$, with coefficient polynomial $(z-1)^3(z-\alpha)$, at
 every state, together with constant increments $k_j=t$, satisfy all the linear and quadratic
 relations for every $t$. Such families are excluded only by the remainder equations, which the
-count above discards. Two further refinements have been proposed. One, through the degree-five orthogonal polynomial
-and the curve bounds of~\cite{CDHNV}, reaches $14/47$. The other weights each minor vector by the
-shortest vector of the rank-three lattice it determines, which contains the gap vector, and
-reaches $45/152$. We do not include either here.
+count above discards. A further refinement has been proposed, through the degree-five
+orthogonal polynomial and the curve bounds of~\cite{CDHNV}, reaching $14/47$. We do not include
+it here. Section~\ref{sec:45152} uses only the first minimum of $\Lambda_p$, and slices in a
+single direction; the other two minima and the shape of the quadric in the lattice are not used.
 
 There is no obvious monotonicity to exploit. The curvatures $D_i$ of successive blocks need
 not decrease. For $a=13242$ the orbit of $255$ begins

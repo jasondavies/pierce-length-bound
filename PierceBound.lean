@@ -25,3 +25,9 @@ import PierceBound.ElevenMain
 import PierceBound.MinorCount
 import PierceBound.MinorHeight
 import PierceBound.EightMain
+import PierceBound.DefiniteNorm
+import PierceBound.Reduce3
+import PierceBound.TernComp
+import PierceBound.ShortVec
+import PierceBound.LatticeCount
+import PierceBound.FortyFiveMain
