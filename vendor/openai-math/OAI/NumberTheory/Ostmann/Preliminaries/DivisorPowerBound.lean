@@ -1,6 +1,10 @@
-import Mathlib.Analysis.SpecificLimits.Normed
-import Mathlib.Data.Nat.Factorization.Basic
-import Mathlib.NumberTheory.ArithmeticFunction.Misc
+module
+
+public import Mathlib.Analysis.SpecificLimits.Normed
+public import Mathlib.Data.Nat.Factorization.Basic
+public import Mathlib.NumberTheory.ArithmeticFunction.Misc
+
+@[expose] public section
 
 namespace OAI
 

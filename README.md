@@ -67,7 +67,10 @@ summation gives `T ≪ a^η (H X^{14/3} + X⁵)`, hence `T¹⁵² ≪ a^{45+O(η
 
 Build with `lake exe cache get` (to download the compiled Mathlib) and then `lake build`
 (Lean `v4.35.0`, Mathlib `v4.35.0`). The build runs Mathlib's standard linters
-(`weak.linter.mathlibStandardSet`), and every file passes them. The main theorems are
+(`weak.linter.mathlibStandardSet`). It also builds the independent Palomar Challenge
+and Solution modules and runs the eight-theorem axiom audit. The eight `sorry` warnings
+in `Challenge.lean` are deliberate statement holes; the proof development has none.
+The main theorems are
 
 ```lean
 theorem PierceBound.P_le_45_152 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
@@ -97,7 +100,8 @@ theorem PierceBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr : r ≤
 ```
 
 `#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all eight;
-`lake env lean Axioms.lean` checks this with `#guard_msgs`. `P_le_loglog` depends on the two
+`Axioms.lean` checks this with `#guard_msgs` as part of `lake build`; it can also be run
+with `lake env lean Axioms.lean`. `P_le_loglog` depends on the two
 papers only through its hypotheses.
 
 | File | Contents |
@@ -140,8 +144,47 @@ papers only through its hypotheses.
 
 `vendor/openai-math/` is a path-required Lake package. It contains a single file from
 [openai/math](https://github.com/openai/math) (Apache-2.0): the divisor bound
-`τ(n)^k ≤ C_k n` (`exists_divisors_power_bound`). The file is unchanged except for its import
-lines; the upstream commit is recorded in [UPSTREAM.md](vendor/openai-math/UPSTREAM.md).
+`τ(n)^k ≤ C_k n` (`exists_divisors_power_bound`). Proof bodies are unchanged; imports and
+module visibility are adapted. The upstream commit and changes are recorded in
+[UPSTREAM.md](vendor/openai-math/UPSTREAM.md).
+
+## Palomar submission
+
+[Challenge.lean](Challenge.lean) independently states all eight main results using only
+Mathlib imports and complete mathematical definitions. Its eight theorem proofs are
+deliberate holes. [Solution.lean](Solution.lean) exposes the original proved declarations;
+neither module imports the other. [comparator.json](comparator.json) selects the results,
+and [formalization.yaml](formalization.yaml) records their scope, provenance, automation,
+and review status. This repository is the substantive development, not a thin wrapper.
+
+Run the local preparation checks:
+
+```sh
+python3 scripts/check-lean-sources.py
+lake exe cache get
+lake build
+```
+
+On Linux with `bubblewrap` installed, run `bash scripts/verify-comparator.sh` to compare
+the statements and proofs using Lean's kernel, NanoDa, and con-ron. The GitHub Actions
+workflow runs these checks. The standard sandboxed Comparator needs Linux; a successful
+macOS Lean build alone does not establish a Palomar verification pass.
+
+The intended public repository is `jasondavies/pierce-length-bound`. Before submission,
+confirm the automation and review account in `formalization.yaml`, push all intended
+changes there, and obtain the full commit SHA with `git rev-parse HEAD`.
+Run **Full Palomar mechanical preflight** from the repository's Actions tab on that
+revision. It uses Palomar's pinned reusable workflow in `full` mode with the
+`palomar-standard-v1` execution profile. Require `status: pass` in its mechanical report;
+the ordinary CI build and standalone Comparator are not a substitute for this check.
+This preflight does not perform editorial review or register the result.
+
+Submit that immutable revision with the repository root as the
+project and the default `comparator.json` and `formalization.yaml` paths. See
+[Palomar's requirements](https://palomar-registry.org/how-to-submit) and the
+[submission form](https://submit.palomar-registry.org/). Agents should use the
+[documented HTTPS protocol](https://submit.palomar-registry.org/llms.txt), not drive the form.
+Repository preparation does not itself submit or register a result.
 
 ## Licence
 

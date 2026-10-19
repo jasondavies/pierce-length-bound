@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # A uniform count for norm equations
@@ -21,6 +23,8 @@ The bound is uniform in the coefficients.
   `ξ/ξ' = r + s√d` with `r² - d s² = 1`. If `ξ/ξ' > 1` then `ξ/ξ' ≥ 3` (`unit_ge_three`). Since
   `1/L ≤ |ξ| ≤ L`, the map `ξ ↦ log₃ ⌊L|ξ|⌋` is injective on such a class.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

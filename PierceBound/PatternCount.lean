@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.TwoState
+module
+
+public import PierceBound.TwoState
 
 /-!
 # The counting lemma
@@ -19,6 +21,8 @@ identity. Then `#G ≤ 8 (2M+1)⁷ H²`.
   coefficient `θ₁ θ₀ (θ₁ + θ₀) > 0`), and `κ₀, κ₄` are then fixed by the linear relations.
 * There are at most `(2M+1)⁷ H²` values of `(θ, κ₁, κ₂)`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

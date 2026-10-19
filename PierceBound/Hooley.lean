@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.Conditional
+module
+
+public import PierceBound.Conditional
 
 /-!
 # The Erdős–Hooley `Δ` function and the `√(log log a)` bound
@@ -23,6 +25,8 @@ exactly this definition). Two published theorems are stated as propositions:
 From them we prove `ShortDivisorBound` with `G = (log log x)^{5/2}` (partial summation,
 `shortDivisorBound_of_hooley`) and hence `P(a, b) ≪ a^{3/10} √(log log 3a)` (`P_le_loglog`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

@@ -3,10 +3,12 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.PatternBound
-import PierceBound.PatternCount
-import PierceBound.Main
-import PierceBound.RisesMain
+module
+
+public import PierceBound.PatternBound
+public import PierceBound.PatternCount
+public import PierceBound.Main
+public import PierceBound.RisesMain
 
 /-!
 # `P(a, b) ≪_ε a^{23/77 + ε}`
@@ -23,6 +25,8 @@ patterns are bounded by `M = ⌊172032 A⁴ H⁶ / a³⌋` (`state_bound`), so t
 every window has `T⁷⁷ ≤ C₇₇ Δ²² a²³` (`window_77`), and the dyadic decomposition gives the
 theorem (`P_le_23_77`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.MinorHeight
-import PierceBound.ElevenMain
+module
+
+public import PierceBound.MinorHeight
+public import PierceBound.ElevenMain
 
 /-!
 # `P(a, b) ≪_ε a^{8/27 + ε}`
@@ -14,6 +16,8 @@ The seven pattern integers are signed coordinates of the vector of ten minors of
 integers replaces `X⁷` by `X⁵ τ`, and the uniform minor bound (`minor_height`) removes the scale
 condition. This gives `T⁵⁴ ≤ C Δ¹⁴ Ξ(a)²⁸ a¹⁶` per window, hence `P ≪ a^{8/27 + ε}`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

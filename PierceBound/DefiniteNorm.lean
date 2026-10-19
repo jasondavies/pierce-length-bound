@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.NormCount
+module
+
+public import PierceBound.NormCount
 
 /-!
 # The definite norm count
@@ -14,6 +16,8 @@ For `D ≥ 1` and `N ≠ 0`, the equation `U² + D V² = N` has at most `4 τ(|N
 Two solutions in one class differ by a unit `r + s√-d` with `r² + d s² = 1`, of which there are at
 most four.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

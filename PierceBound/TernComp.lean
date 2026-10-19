@@ -3,8 +3,10 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.SliceCount
-import PierceBound.DefiniteNorm
+module
+
+public import PierceBound.SliceCount
+public import PierceBound.DefiniteNorm
 
 /-!
 # Ternary quadratics under linear substitution
@@ -18,6 +20,8 @@ and the discriminant of the binary part in `(x, y)` nonzero (`plane_one`, `plane
 slice count `slice_count_ne` then applies with the norm equation definite or indefinite
 (`slice_count_tv`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

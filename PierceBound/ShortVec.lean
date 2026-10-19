@@ -3,8 +3,10 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.MinorCount
-import PierceBound.Reduce3
+module
+
+public import PierceBound.MinorCount
+public import PierceBound.Reduce3
 
 /-!
 # The pattern lattice and its short vectors
@@ -19,6 +21,8 @@ three pivot gaps `k' = (k_{c₁}, k_{c₂}, k_{c₃})` by `m kᶜ = Lᶜ · k'` 
 cross relation `m ∣ u × v` makes the index at most `|m|`. Few patterns have a short vector:
 `#{p : λ₁(Λ_p) ≤ R} ≤ 393660 R³ Y⁴ τ²` (`short_count`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

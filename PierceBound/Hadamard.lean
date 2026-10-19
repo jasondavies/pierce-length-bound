@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Hadamard's inequality
@@ -12,6 +14,8 @@ For a positive definite real matrix `G`, `det G ≤ ∏ᵢ Gᵢᵢ`. Rescale by 
 `M = D G D` is positive semidefinite with unit diagonal, so its eigenvalues `λᵢ ≥ 0` have
 `∑ λᵢ = tr M = n`, and `∏ λᵢ ≤ ∏ exp(λᵢ - 1) = exp(∑ λᵢ - n) = 1`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

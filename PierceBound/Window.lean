@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.Fiber
+module
+
+public import PierceBound.Fiber
 
 /-!
 # Counting the visits to a dyadic window
@@ -16,6 +18,8 @@ A *window run* is a run `g 0, g 1, …, g (T-1)` of consecutive terms of an orbi
 * `curvature_bound`: `T⁶ A² ≤ 995328 a³ Δ` for `T ≥ 12` (the curvature argument);
 * `window_bound`: hence `T¹⁰ ≤ 63700992 a³ Δ³` for `T ≥ 12`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

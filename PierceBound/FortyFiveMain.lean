@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.LatticeCount
+module
+
+public import PierceBound.LatticeCount
 
 /-!
 # `P(a, b) ≪_ε a^{45/152 + ε}`
@@ -16,6 +18,8 @@ have a short lattice vector (`short_count`), and every `Λ_p` has one of length
 (`two_state_window_152`). The exponent arithmetic turns this into `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`, hence
 `P ≪ a^{45/152 + ε}`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Geometric sums of `min(α 2^{-k/3}, β 2^{k/2})`
@@ -14,6 +16,8 @@ It is the case `s = 1/3`, `t = 1/2` of `sum_min_le_gen`, which bounds
 This is the reason no factor `log a` appears when the two window bounds are summed over the
 dyadic ranges.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

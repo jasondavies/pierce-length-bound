@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Counting minor vectors of `3 × 5` integer matrices
@@ -17,6 +19,8 @@ form two vectors `u, v ∈ ℤ³` (Cramer's rule), and the remaining three minor
 `#{(u, v)} ≤ 729 m⁴ τ(m)` (`card_crossSet`), and there are at most
 `1 + 20 ∑_{m ≤ Y} 729 m⁴ τ(m)` minor vectors of height `≤ Y` (`minor_vector_count`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

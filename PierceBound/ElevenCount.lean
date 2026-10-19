@@ -3,8 +3,10 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.SliceCount
-import PierceBound.PatternCount
+module
+
+public import PierceBound.SliceCount
+public import PierceBound.PatternCount
 
 /-!
 # The refined counting lemma
@@ -23,6 +25,8 @@ arbitrary set `B` is `pattern_count_slice_gen`, used for `8/27`.
 
 Here `A, A', U, V` are the paper's `N₀, N₁, u₁, u₂`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

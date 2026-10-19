@@ -3,10 +3,12 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.ShortVec
-import PierceBound.TernComp
-import PierceBound.ElevenCount
-import PierceBound.EightMain
+module
+
+public import PierceBound.ShortVec
+public import PierceBound.TernComp
+public import PierceBound.ElevenCount
+public import PierceBound.EightMain
 
 /-!
 # Counting gap vectors of one minor vector through its lattice
@@ -18,6 +20,8 @@ the lifted basis vectors, and its gaps `(k₁, k₂, k₃)` are `B̂ y` for an i
 `λ₁ |yᵢ| ≤ 3H`. After a plane choice the slice count gives at most `(8 ⌊3H/λ₁⌋ + 3)(W + 4)`
 gap vectors (`lattice_fiber_count`). Summing over minor vectors gives `pattern_count_lattice`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

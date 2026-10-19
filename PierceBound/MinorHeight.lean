@@ -3,8 +3,10 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.MinorCount
-import PierceBound.TwentyThreeMain
+module
+
+public import PierceBound.MinorCount
+public import PierceBound.TwentyThreeMain
 
 /-!
 # All ten minors are small
@@ -17,6 +19,8 @@ At a state `i` let `𝓜ᵢ` be the `3 × 5` integer matrix with rows `(d₀,…
 `a(q⁻² - q⁻³)·k - a q⁻³·r + O(aH³/q⁴)`, and every maximal minor is `O(aH⁶/q⁴)`
 (`minor_height`): `|p| a³ ≤ 3609600 A⁴ H⁶`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

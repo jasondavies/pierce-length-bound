@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.Window
+module
+
+public import PierceBound.Window
 
 /-!
 # Six consecutive terms: a second positive integer
@@ -20,6 +22,8 @@ get `L ≥ 1`, hence `q w ≤ J E + S₀ F` (`six_core`). This bounds `q ≍ a/A
 small parameters, with no divisor function, and gives `T⁶ A² ≤ 96·10⁶ a³`
 (`six_step_bound`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

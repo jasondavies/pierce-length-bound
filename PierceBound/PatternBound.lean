@@ -3,8 +3,10 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.TwoState
-import PierceBound.Gram
+module
+
+public import PierceBound.TwoState
+public import PierceBound.Gram
 
 /-!
 # Sizes of the pattern integers
@@ -19,6 +21,8 @@ adjacent states; the scale condition absorbs the error, giving `L a³ ≤ 3072 A
 `V ≥ 77 H²`. Then Cramer's rule for `(U₁, U₂)` has determinant `δ = k₁ r₂ - k₂ r₁ ≥ V/2`
 and numerators `≤ 14 (L(i) + L(i+1)) H³`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.Rises
+module
+
+public import PierceBound.Rises
 
 /-!
 # `P(a, b) ≪ a^{1/4} √R`
@@ -12,6 +14,8 @@ import PierceBound.Rises
 quotient increments `kᵢ = ⌊a/b_{i+1}⌋ - ⌊a/bᵢ⌋` of the whole orbit. In particular an orbit with
 nonincreasing quotient increments has length `O(a^{1/4})` (`P_le_of_no_rises`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

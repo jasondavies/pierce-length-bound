@@ -3,8 +3,10 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.ElevenCount
-import PierceBound.TwentyThreeMain
+module
+
+public import PierceBound.ElevenCount
+public import PierceBound.TwentyThreeMain
 
 /-!
 # `P(a, b) ≪_ε a^{11/37 + ε}`
@@ -16,6 +18,8 @@ where `Ξ(a) = 2 τ_max³ (log₃ P(a) + 1) + 4` collects the divisor and logari
 and drop bounds this gives `T⁷⁴ ≤ C Δ¹⁹ Ξ(a)¹⁹ a²²` (`window_74`). Both `Δ` and `Ξ(a)` are
 `O_η(a^η)`, which gives the theorem (`P_le_11_37`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

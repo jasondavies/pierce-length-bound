@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.Defs
+module
+
+public import PierceBound.Defs
 
 /-!
 # Three consecutive steps
@@ -17,6 +19,8 @@ Let `x = bᵢ`, `y = b_{i+1} = a mod x`, `z = b_{i+2} = a mod y`, `w = b_{i+3} =
   `N(q) = uq + u² + v`;
 * `bu_mul_le`, `bv_mul_le`, `bD_mul_le`: the size bounds used in the counting.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

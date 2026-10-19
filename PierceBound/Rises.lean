@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.Conditional
+module
+
+public import PierceBound.Conditional
 
 /-!
 # Trajectories with few rises in the quotient increments
@@ -17,6 +19,8 @@ This file proves the window bounds; `RisesMain.lean` deduces `P(a, b) ≪ a^{1/4
 * `drop_lt_of_not_rise`: if `k_{i+1} ≤ kᵢ` then `d_{i+1} < dᵢ` (from the curvature `D ≥ 1`).
 * window bounds: `T - 1 ≤ √(2R'A)`, `T - 1 ≤ √(8R'a/A) + (26244 A)^{1/3}` and `T - 1 ≤ a/A`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

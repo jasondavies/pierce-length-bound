@@ -1,0 +1,16 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "PierceBound.P_le_45_152",
+    "PierceBound.P_le_8_27",
+    "PierceBound.P_le_11_37",
+    "PierceBound.P_le_23_77",
+    "PierceBound.P_le",
+    "PierceBound.P_le_loglog",
+    "PierceBound.P_le_rises",
+    "PierceBound.hankelInv_pos_int"
+  ],
+  "definition_names": [],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]
+}

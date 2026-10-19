@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.SixStep
+module
+
+public import PierceBound.SixStep
 
 /-!
 # Divisors in a dyadic range, counted over a short interval
@@ -13,6 +15,8 @@ import PierceBound.SixStep
 `T ≤ 2 ∑_{1 ≤ h ≤ 2A/(T-1)} dcount A (a + h)` (`drop_count_bound`). Any bound for
 `∑_{x < n ≤ x + y} dcount A n` on short intervals therefore bounds `T`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

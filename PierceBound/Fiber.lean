@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.Block
+module
+
+public import PierceBound.Block
 
 /-!
 # A fixed triple `(u, v, D)` allows few starting points
@@ -17,6 +19,8 @@ Then `c² M(q) - U(q) L(q) = R` identically, so `x M(q) = L(q)` forces `R = M(q)
 
 Either way the number of admissible `q` is at most a divisor count of a number `≤ 32 a⁷`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

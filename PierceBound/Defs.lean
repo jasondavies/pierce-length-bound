@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # The iteration `x ↦ a mod x`
@@ -15,6 +17,8 @@ number of positive terms of the sequence.
 Here the sequence is indexed from `0`: `orb a b i = b_{i+1}`. Lean's `a % 0 = a`, so the
 iteration is frozen at `0` explicitly (`step`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

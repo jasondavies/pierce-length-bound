@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.SixStep
+module
+
+public import PierceBound.SixStep
 
 /-!
 # The moment model and the Hankel hierarchy
@@ -22,6 +24,8 @@ Hence the Hankel invariants `Iᵣ(i) = a · det (hᵢ(j+l))_{j,l<r}` are positiv
 `1 ≤ r ≤ N - i` (`hankelInv_pos_int`). The first four are `bᵢ`, `bᵢ - b_{i+1}`, the curvature
 `D` and the six-step integer `L` (`hankelInv_one` … `hankelInv_four`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

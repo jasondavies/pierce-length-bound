@@ -3,8 +3,10 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.Functional
-import PierceBound.Hadamard
+module
+
+public import PierceBound.Functional
+public import PierceBound.Hadamard
 
 /-!
 # The label bound `Iᵣ(i) ≤ a ∏ⱼ μᵢ(Fⱼ²) / qᵢʳ`
@@ -15,6 +17,8 @@ unit lower triangular change of basis. Hadamard's inequality bounds its determin
 increments (`gramP`), and `I₄(i)` is the six-step integer `L` (`hankelInv_four`), so
 `L qᵢ⁴ ≤ a · gramP` in `ℤ` (`label_bound`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

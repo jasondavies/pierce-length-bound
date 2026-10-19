@@ -3,9 +3,11 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.NormCount
-import PierceBound.DefiniteNorm
-import PierceBound.TwoState
+module
+
+public import PierceBound.NormCount
+public import PierceBound.DefiniteNorm
+public import PierceBound.TwoState
 
 /-!
 # Counting a ternary quadratic by binary slices
@@ -21,6 +23,8 @@ nonzero, at most two slices have `N(z) = 0`, and in those `V² = ΔU²` leaves a
 each `y`. Hence (`slice_count_ne`, and `slice_count` for `Δ > 0`) `#{F = 0} ≤ (2H+1)(W + 4)` in
 the box `[-H, H]³`, where `W` bounds the norm counts.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

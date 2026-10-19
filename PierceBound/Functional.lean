@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.Hankel
+module
+
+public import PierceBound.Hankel
 
 /-!
 # The moment functionals `μᵢ`, `νᵢ` and the Newton basis
@@ -18,6 +20,8 @@ With `kᵢ = q_{i+1} - qᵢ` and the Newton basis `Fᵢ,ⱼ = ∏_{l<j} (X - p�
 * `μᵢ(X) = 1`, `μᵢ(X²) = kᵢ + 1`, `μᵢ(X³) = kᵢ² + 2kᵢ + k_{i+1} + 1`;
 * `0 ≤ νᵢ(f²) ≤ μᵢ(f²)/qᵢ`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Reduced bases of lattices in `ℤ³`
@@ -18,6 +20,8 @@ then `d₂ = |b₁|²|b₂|² - ⟨b₁, b₂⟩²`. Swapping and shearing the m
 
 Everything is integer arithmetic. No real numbers or geometry of numbers are needed.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

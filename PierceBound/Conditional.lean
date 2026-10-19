@@ -3,9 +3,11 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.ShortSum
-import PierceBound.Geometric
-import PierceBound.Main
+module
+
+public import PierceBound.ShortSum
+public import PierceBound.Geometric
+public import PierceBound.Main
 
 /-!
 # `P(a, b) ≪ a^{3/10} G(a)^{1/5}` from a short-interval divisor bound
@@ -18,6 +20,8 @@ hypothesis) and `T ≪ (G(a) A)^{1/2} + G(a) a^{1/4}` (`drop_count_bound'`). Sum
 over the dyadic ranges (`sum_min_le`) gives `P(a, b) ≪ a^{3/10} G(a)^{1/5}`
 (`P_le_of_shortDivisorBound`).
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

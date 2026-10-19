@@ -3,8 +3,10 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.Window
-import OAI.NumberTheory.Ostmann.Preliminaries.DivisorPowerBound
+module
+
+public import PierceBound.Window
+public import OAI.NumberTheory.Ostmann.Preliminaries.DivisorPowerBound
 
 /-!
 # `P(a, b) ≪_ε a^{3/10 + ε}`
@@ -19,6 +21,8 @@ The last step is shared by all the main theorems: `P_le_of_visits` turns a windo
 `T ≤ 35` or `T^N ≤ K S(a) a^r`, with `S(a) ≪_η a^η` (`SlowGrowth S`), into
 `P(a, b) ≪_ε a^{r/N + ε}`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

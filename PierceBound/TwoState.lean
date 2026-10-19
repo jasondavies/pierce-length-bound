@@ -3,7 +3,9 @@ Copyright (c) 2026 Jason Davies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
-import PierceBound.SixStep
+module
+
+public import PierceBound.SixStep
 
 /-!
 # The two-state pattern: exact algebra
@@ -27,6 +29,8 @@ The null-vector relations `∑ Uₘ dₘ = ∑ Uₘ kₘ = ∑ Uₘ rₘ = 0` ar
   the moments of `μᵢ`. This is `I₄(i) pᵢ(-qᵢ) = a H₄(i)` for the orthogonal polynomial `pᵢ`, and is
   a quartic equation for `qᵢ` with leading coefficient `U₃`.
 -/
+
+@[expose] public section
 
 namespace PierceBound
 

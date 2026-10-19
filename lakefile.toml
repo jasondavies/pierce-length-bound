@@ -1,6 +1,6 @@
 name = "pierce_bound"
 version = "0.1.0"
-defaultTargets = ["PierceBound"]
+defaultTargets = ["PierceBound", "Challenge", "Solution", "Axioms"]
 
 [leanOptions]
 autoImplicit = false
@@ -13,6 +13,15 @@ rev = "v4.35.0"
 
 [[lean_lib]]
 name = "PierceBound"
+
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "Solution"
+
+[[lean_lib]]
+name = "Axioms"
 
 [[require]]
 name = "openai_math"
