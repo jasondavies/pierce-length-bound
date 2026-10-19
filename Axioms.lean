@@ -47,3 +47,29 @@ open PierceLengthBound
 /-- info: 'PierceLengthBound.hankelInv_pos_int' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms hankelInv_pos_int
+
+/-! The following audit covers proved components of the unfinished `13/44` refinement. -/
+
+/-- info: 'PierceLengthBound.FixedDividend.pattern_cubic_obstruction' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.pattern_cubic_obstruction
+
+/-- info: 'PierceLengthBound.FixedDividend.line_direction_exceptional' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.line_direction_exceptional
+
+/-- info: 'PierceLengthBound.FixedDividend.exceptional_minors' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.exceptional_minors
+
+/-- info: 'PierceLengthBound.newtonQuartic_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms newtonQuartic_orthogonal
+
+/-- info: 'PierceLengthBound.FixedDividend.resultant_four' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.resultant_four
+
+/-- info: 'PierceLengthBound.FixedDividend.local_count_dichotomy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.local_count_dichotomy

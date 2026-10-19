@@ -65,6 +65,22 @@ summation gives `T ≪ a^η (H X^{14/3} + X⁵)`, hence `T¹⁵² ≪ a^{45+O(η
 * `paper/pierce_length_bound.tex` (and `.pdf`): the paper.
 * `PierceLengthBound/`: Lean 4 / Mathlib formalisation of all of the above, with no `sorry`.
 
+## Fixed-dividend refinement in progress
+
+The [new proof candidate](paper/pierce_13_44_proof_candidate.txt) proposes the exponent
+`13/44`, improving `45/152` by `1/1672`. Its complete Lean formalization is **unfinished**.
+The `FixedDividend*.lean` modules prove moment and orthogonality identities, the algebraic
+resultant recurrence, the cubic obstruction, the line-direction criterion, and the exponent
+arithmetic under explicit local-estimate hypotheses. They do not yet prove `P ≪ a^{13/44+ε}`.
+The general uniform curve-counting theorem must also be proved, rather than assumed.
+See the [formalization status](paper/pierce_13_44_status.txt) for the remaining obligations.
+
+For reproducible exact checks of the new identities (requires SymPy):
+
+```sh
+python3 scripts/check-fixed-dividend.py
+```
+
 ## Lean
 
 Build with `lake exe cache get` (to download the compiled Mathlib) and then `lake build`

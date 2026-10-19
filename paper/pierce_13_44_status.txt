@@ -1,0 +1,133 @@
+FIXED-DIVIDEND REFINEMENT: REVIEW AND FORMALIZATION STATUS
+19 October 2026
+
+Status: INCOMPLETE. The repository does not yet prove the 13/44 bound in Lean.
+The strongest fully formalized unconditional bound remains 45/152.
+The requested scope includes proving the external curve-counting theorem;
+introducing it as an axiom or hypothesis would not satisfy that scope.
+
+Source
+------
+pierce_13_44_proof_candidate.txt is an unchanged copy of the supplied
+/tmp/pierce_13_44_proof_candidate.md, with SHA-256
+3de5e866b7983b61f538bbc2a8543ac2505e295aa2637043ee587a85139dbb5a.
+Its original status warning remains applicable. The main manuscript, PDF,
+Challenge and comparator theorem list have not been promoted to 13/44.
+
+Mathematical assessment
+-----------------------
+The candidate's exponent calculation is consistent: the nonlinear contribution
+has exponent 31/105, and the possible lines have exponent 13/44. Their ordering
+and the saving 1/1672 over 45/152 are checked in Lean.
+
+The new algebraic identities passed the finite exact checks described below.
+No counterexample was found. These checks and the currently proved lemmas do
+not constitute verification of the complete argument, the uniform estimates,
+or a novelty/priority determination.
+
+The cited counting statement was checked against Corollary 2.2 of Cluckers,
+Debes, Hendel, Nguyen and Vermeulen (2025). It applies to affine curves
+irreducible over Q, uniformly in their coefficients. The original statement
+is Theorem 3 of Castryck, Cluckers, Dittmann and Nguyen (2020). For degrees
+2 through 24 it implies the required square-root bound with logarithmic loss.
+
+Lean components completed
+--------------------------
+All the following modules are imported by PierceLengthBound.lean. They contain
+no sorry, custom axioms, or native_decide.
+
+1. FixedDividendMoments.lean
+   - Conversion from nu to mu by multiplication by X + q.
+   - Weighted Newton-basis shift and nu(F_j) = b_(i+j)/a.
+   - The first three raw moments after multiplication by F_j, with explicit
+     support assumptions.
+   - newtonQuartic_orthogonal: the four specified moment/row equations imply
+     orthogonality to monomials of degree zero through three.
+   This is a theorem about coefficients satisfying those equations. The new
+   module does not yet derive all of them from the actual minor pattern.
+
+2. FixedDividendResultant.lean
+   - resultant_step and resultant_four prove the resultant product for
+     polynomials satisfying the stated three-term recurrence.
+   - hankel_ratio_product proves the telescoping determinant-ratio formula.
+   - fixed_dividend_normalization proves the final scalar normalization.
+   The application still requires proving the recurrence and determinant-ratio
+   formulas for the Pierce moment functional. In particular the actual-orbit
+   identity A Res(P,xR) = a D^4 has not yet been proved in Lean.
+
+3. FixedDividend.lean
+   - The normalized Newton coefficient signs and exceptional coefficient pairs.
+   - The determinant of the quadratic leading form and its nonvanishing.
+   - pattern_cubic_obstruction: the cubic leading form cannot be the quadratic
+     times any linear form. This verifies the coefficient obstruction for all
+     real coefficients with the required signs, not just sampled patterns.
+   - cluster_sums_zero: the Vandermonde argument with repeated nodes.
+   - five_cluster_pair: five nonzero weights with zero cluster sums and at
+     least two clusters force a two-element zero-sum cluster.
+   - line_direction_exceptional combines these facts under the stated leading
+     moment and repeated-node hypotheses.
+   - exceptional_minors verifies the four determinant transformations.
+   Establishing these hypotheses for every line on f = Omega = 0 remains to
+   be done; no geometric curve-counting theorem is asserted by this module.
+
+4. FixedDividendExponent.lean
+   - nonlinear_exponent: T^105 <= K C^11 D^21 a^31.
+   - line_exponent: T^44 <= K C^5 D^9 a^13.
+   - local_count_dichotomy combines the two contributions.
+   These are implications from explicitly stated local count, gap, height and
+   drop estimates. They do not assert those premises for Pierce orbits.
+
+Axioms.lean audits six representative new results in addition to the eight
+existing main theorems. The new results use only the standard axioms propext,
+Classical.choice and Quot.sound (exceptional_minors needs no Classical.choice).
+
+Reproducible exact checks
+-------------------------
+Run: python3 scripts/check-fixed-dividend.py
+Requires SymPy; tested with version 1.14.0. The sampler is deterministic.
+
+The script checks 202 starts, each with sixteen subsequent positive states:
+positive probability weights, orthogonality of the quartic and the shifted
+quintic, D = nu(P^2) > 0, the resultant normalization, and A P(-q) = a H_4.
+It also checks seven degree-ten leading-form specializations and reproduces
+the entire displayed normalization polynomial for a = 473 and equal gaps.
+These are finite exact checks, not a proof of the general polynomial identity
+or of an asymptotic estimate.
+
+Remaining formal proof obligations
+-----------------------------------
+A. Construct the relevant orthogonal polynomials for the finite positive
+   moment functional, prove their recurrence and Hankel-ratio identities,
+   and apply FixedDividendResultant to the actual orbit polynomials.
+B. Prove the resultant's degree-ten leading-form identity in the multivariate
+   coefficient ring, including specialization and denominator clearing.
+C. Prove absolute irreducibility of the affine quadratic from its rank-three
+   leading part, transfer the cubic obstruction to polynomial nondivisibility,
+   and establish coprimality with Omega. Formalize the curve decomposition
+   and degree bound, and use the line-direction result on its line components.
+D. Prove the exceptional-minor-pattern count, including nonprimitive vectors,
+   bounded integral coordinate changes, and the dyadic primitive-normal sum.
+   The existing total minor count with divisor loss already has sufficient
+   subpower slack for the final exponent; removing that loss is not necessary.
+E. Prove the external coefficient-uniform curve-counting theorem. Searches of
+   the pinned Mathlib found no applicable integral-point counting result.
+   The published proof of Theorem 3 uses the plane-curve estimate in Corollary
+   4.2.4, Proposition 4.2.1 and its determinant-method input in Theorem 3.1.1,
+   and the controlled projection in Proposition 4.3.1. These involve further
+   arithmetic and algebraic-geometric ingredients, including Bezout bounds.
+   These are unimplemented proof obligations, not assumptions licensed by
+   the user, and must not be hidden in a local-count hypothesis.
+F. Assemble the local orbit count, choose supported starts with sixteen future
+   gaps, apply the existing minor-height and divisor estimates, absorb all
+   logarithmic factors, and sum over the dyadic blocks with uniform constants.
+G. Only after the resulting P_le_13_44 passes its axiom audit: update the main
+   manuscript and PDF, independent Challenge, comparator, submission metadata,
+   and complete submission verification.
+
+Sources checked
+---------------
+2025 Corollary 2.2:
+https://www.cambridge.org/core/journals/forum-of-mathematics-sigma/article/improvements-on-dimension-growth-results-and-effective-hilberts-irreducibility-theorem/A7BCAEBF00B8B165D6DDB3FFB9B40B97
+2020 Theorem 3 and its proof:
+https://rcluckers.perso.math.cnrs.fr/prints/Cast-Cl-Ditt-Nguy.pdf
+DOI: 10.2140/ant.2020.14.2261

@@ -38,3 +38,4 @@ public import PierceLengthBound.TernComp
 public import PierceLengthBound.ShortVec
 public import PierceLengthBound.LatticeCount
 public import PierceLengthBound.FortyFiveMain
+public import PierceLengthBound.FixedDividend
