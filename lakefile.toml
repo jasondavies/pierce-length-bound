@@ -1,6 +1,6 @@
-name = "pierce_bound"
+name = "pierce_length_bound"
 version = "0.1.0"
-defaultTargets = ["PierceBound", "Challenge", "Solution", "Axioms"]
+defaultTargets = ["PierceLengthBound", "Challenge", "Solution", "Axioms"]
 
 [leanOptions]
 autoImplicit = false
@@ -12,7 +12,7 @@ git = "https://github.com/leanprover-community/mathlib4.git"
 rev = "v4.35.0"
 
 [[lean_lib]]
-name = "PierceBound"
+name = "PierceLengthBound"
 
 [[lean_lib]]
 name = "Challenge"

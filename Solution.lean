@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceBound
+public import PierceLengthBound
 
 /-!
 # Proved statements for Palomar

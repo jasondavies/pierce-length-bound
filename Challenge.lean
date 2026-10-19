@@ -28,7 +28,7 @@ in the length bounds are uniform in `a` and `b`.
 
 @[expose] public section
 
-namespace PierceBound
+namespace PierceLengthBound
 
 open Finset
 
@@ -149,4 +149,4 @@ theorem hankelInv_pos_int {a b : ℕ} (hba : b < a) {i r : ℕ}
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n := by
   sorry
 
-end PierceBound
+end PierceLengthBound

@@ -26,7 +26,7 @@ sources:
     authors: ["Jason Davies"]
     type: original-proof
     relationship: other
-    location: "paper/pierce_bound.tex and paper/pierce_bound.pdf in this repository"
+    location: "paper/pierce_length_bound.tex and paper/pierce_length_bound.pdf in this repository"
     note: >-
       The paper accompanying this substantive Lean development presents the
       argument, including the intermediate bounds, structured trajectories,
@@ -139,41 +139,41 @@ review:
     no additional human review. No external endorsement or Palomar review is claimed.
 
 alignment:
-  namespace: "PierceBound"
+  namespace: "PierceLengthBound"
   statements:
     - source: "Main bound in the accompanying paper"
-      lean: "PierceBound.P_le_45_152"
-      module: "PierceBound.FortyFiveMain"
+      lean: "PierceLengthBound.P_le_45_152"
+      module: "PierceLengthBound.FortyFiveMain"
       status: proved
       note: "Uniform in a and b; C may depend on the positive epsilon."
     - source: "Minor-vector counting bound"
-      lean: "PierceBound.P_le_8_27"
-      module: "PierceBound.EightMain"
+      lean: "PierceLengthBound.P_le_8_27"
+      module: "PierceLengthBound.EightMain"
       status: proved
     - source: "Ternary slicing bound"
-      lean: "PierceBound.P_le_11_37"
-      module: "PierceBound.ElevenMain"
+      lean: "PierceLengthBound.P_le_11_37"
+      module: "PierceLengthBound.ElevenMain"
       status: proved
     - source: "Seven-integer pattern bound"
-      lean: "PierceBound.P_le_23_77"
-      module: "PierceBound.TwentyThreeMain"
+      lean: "PierceLengthBound.P_le_23_77"
+      module: "PierceLengthBound.TwentyThreeMain"
       status: proved
     - source: "Unconditional 3/10 bound"
-      lean: "PierceBound.P_le"
-      module: "PierceBound.Main"
+      lean: "PierceLengthBound.P_le"
+      module: "PierceLengthBound.Main"
       status: proved
     - source: "Conditional logarithmic refinement"
-      lean: "PierceBound.P_le_loglog"
-      module: "PierceBound.Hooley"
+      lean: "PierceLengthBound.P_le_loglog"
+      module: "PierceLengthBound.Hooley"
       status: proved
       note: "Conditional on NairTenenbaumDelta and BretecheTenenbaumMean."
     - source: "Trajectories with few rises"
-      lean: "PierceBound.P_le_rises"
-      module: "PierceBound.RisesMain"
+      lean: "PierceLengthBound.P_le_rises"
+      module: "PierceLengthBound.RisesMain"
       status: proved
     - source: "Positive integer Hankel hierarchy"
-      lean: "PierceBound.hankelInv_pos_int"
-      module: "PierceBound.Hankel"
+      lean: "PierceLengthBound.hankelInv_pos_int"
+      module: "PierceLengthBound.Hankel"
       status: proved
       note: "For i < P(a,b) and r ≤ P(a,b) - i, including r = 0."
 
