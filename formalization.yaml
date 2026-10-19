@@ -56,6 +56,14 @@ sources:
       The displayed consequence of Theorem 1 for F = Delta, Q(X) = X,
       and interval exponent 1/4 is stated as NairTenenbaumDelta. It is an
       explicit hypothesis of P_le_loglog; its proof is not formalized.
+  - title: "Bounds for sets of remainders"
+    authors: ["Omkar Baraskar", "Ingrid Vukusic"]
+    type: preprint
+    id: "https://arxiv.org/abs/2508.20853"
+    relationship: background
+    note: >-
+      Related work on the cardinalities of iterated remainder sets at fixed
+      depth, cited for context; not used as a formal dependency.
   - title: "Note on the mean value of the Erdős–Hooley Delta-function"
     authors: ["Régis de la Bretèche", "Gérald Tenenbaum"]
     type: article
@@ -101,9 +109,10 @@ automation:
   methods:
     - method: other
       tool_setup: >-
-        AI-assisted mathematical development, as described in the paper's
-        acknowledgements. The model identities and division of implementation
-        work in the original development have not been recorded here.
+        AI-assisted mathematical development using GPT-6-Astra, as identified
+        by the maintainer, with contributions described in the paper's
+        acknowledgements. The division of implementation work in the original
+        development has not been recorded here.
     - method: agent
       framework: "OpenAI Codex"
       tool_setup: >-
@@ -131,12 +140,20 @@ review:
   status: "agent-reviewed"
   reviewers: ["OpenAI Codex"]
   notes: >-
-    A Codex review inspected the Lean development, theorem statements,
-    dependencies, README, and paper; ran the Lean build and eight-theorem axiom
-    audit; and performed 8,655 exact-rational Hankel checks on 303 sample
-    orbits. No actionable correctness defect was identified. This is an
-    automated review, not independent human peer review. The maintainer reports
-    no additional human review. No external endorsement or Palomar review is claimed.
+    The October 19, 2026 Codex review read the full paper, checked the definitions
+    and theorem statements against it, inspected the main proof dependencies,
+    and ran the Lean build and eight-theorem axiom audit. Sandboxed Comparator
+    accepted all eight theorems with Lean, NanoDa, and con-ron in a self-contained
+    local copy. The reproducible scripts/check-math.py checked 26,554 exact-rational
+    Hankel determinants through order six on 2,274 orbits, plus curvature,
+    six-step, pattern, quartic and minor identities. The review corrected the
+    description of quadratic nondegeneracy, the Nair–Tenenbaum parameter mapping,
+    and the scope of the no-sorry claim; it found no defect in the eight proved
+    results. This is an automated review, not independent human peer review.
+    The existing provenance record reports no additional human review; the
+    maintainer has identified GPT-6-Astra but has not further specified personal
+    review coverage. Full Palomar mechanical preflight and editorial review
+    remain outstanding. No external endorsement is claimed.
 
 alignment:
   namespace: "PierceLengthBound"

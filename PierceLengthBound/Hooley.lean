@@ -15,8 +15,9 @@ exactly this definition). Two published theorems are stated as propositions:
 
 * `NairTenenbaumDelta`: Nair–Tenenbaum, *Short sums of certain arithmetic functions*,
   Acta Math. 180 (1998), the displayed consequence of their Theorem 1 for `F = Δ`, `t = 1`,
-  `Q(X) = X` (so `ρ = 1`), with short-interval exponent `1/4` (their `y ≥ x^ε` with `ε = 1/4`;
-  `Δ` lies in their class `M(A, B, ε)` for every `ε > 0`):
+  `Q(X) = X` (so `ρ = 1`), with short-interval exponent `1/4`: take their degree `g = 1`,
+  parameter `ε = 1/16`, and `δ = 1`, giving `y ≥ x^(4g²ε) = x^(1/4)`.
+  `Δ` lies in their required class `M₁(2, B, 1/48)` for a suitable `B`:
   `∑_{x<n≤x+y} Δ(n) ≪ (y / log x) ∑_{n≤x} Δ(n)/n` for `x^{1/4} ≤ y ≤ x`, `x` large.
 * `BretecheTenenbaumMean`: de la Bretèche–Tenenbaum, *Note on the mean value of the
   Erdős–Hooley Delta-function*, Acta Arith. 219 (2025), Theorem 1.1:

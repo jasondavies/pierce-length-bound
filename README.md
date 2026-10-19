@@ -20,7 +20,8 @@ proves, uniformly in `0 < b < a`:
   `P(a, b) ≪ a^{1/4}`.
 * **The Hankel hierarchy:** an exact positive moment model of the orbit gives positive integer
   invariants `I_r(i)` (Hankel determinants) for every `r`, with `I₁ = bᵢ`, `I₂ = dᵢ`, `I₃ = D`
-  and `I₄ = L`.
+  and `I₄ = L` in the nonterminal ranges specified in the paper. In particular the last two
+  identities require `i + 3 < P(a,b)` and `i + 5 < P(a,b)`, respectively, with zero-based indexing.
 
 The `3/10` bound rests on two exact identities. The first, for three consecutive steps, shows
 that the curvature `D = dv − eu` is a positive integer. The second, for six consecutive steps,
@@ -38,8 +39,9 @@ bounded via Hadamard's inequality on the moment model. States with a given patte
 
 So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷⁷ ≪ Δ²²a²³` (exponent 23/77).
 
-For `11/37`, exact Cramer identities give `U₁ > 0 > U₂`, so the quadric in `(k₁, k₂, k₃)` is
-nonsingular with an indefinite binary section. Each slice is a norm equation `x² − δy² = m`, which
+For `11/37`, exact Cramer identities give `U₁ > 0 > U₂`, so the quadratic part in `(k₁, k₂, k₃)` is
+nondegenerate with an indefinite binary restriction. Apart from at most two exceptional slices,
+each slice is a norm equation `x² − δy² = m` with `m ≠ 0`, which
 has `≤ 2τ(|m|)³(log₃((B(⌊√δ⌋ + 2))²) + 1)` solutions in `[−B, B]²`, uniformly in the
 coefficients. This is proved in
 full: square roots modulo prime powers, CRT, and the separation `ε ≥ 3` of norm-one numbers. So
@@ -161,6 +163,7 @@ Run the local preparation checks:
 
 ```sh
 python3 scripts/check-lean-sources.py
+python3 scripts/check-math.py
 lake exe cache get
 lake build
 ```
@@ -179,12 +182,26 @@ revision. It uses Palomar's pinned reusable workflow in `full` mode with the
 the ordinary CI build and standalone Comparator are not a substitute for this check.
 This preflight does not perform editorial review or register the result.
 
+`scripts/check-math.py` independently checks the moment construction and local identities using
+exact rational arithmetic on 2,274 deterministic sample orbits. It supplements the formal proof;
+finite numerical checks do not establish the asymptotic bounds.
+
 Submit that immutable revision with the repository root as the
 project and the default `comparator.json` and `formalization.yaml` paths. See
 [Palomar's requirements](https://palomar-registry.org/how-to-submit) and the
 [submission form](https://submit.palomar-registry.org/). Agents should use the
 [documented HTTPS protocol](https://submit.palomar-registry.org/llms.txt), not drive the form.
 Repository preparation does not itself submit or register a result.
+
+## Hexagon submission
+
+After Palomar registration, cite the versioned Palomar record in the paper and rebuild the PDF.
+[Hexagon](https://hexagonmath.org/about) accepts TeX source and links to formalization artifacts;
+it does not accept Lean code in the upload. This paper is self-contained in
+`paper/pierce_length_bound.tex`, including its bibliography, so that file alone is the source package.
+The contributor must sign in with an ORCID iD, select the distribution license, and complete
+the AI-use and human-understanding disclosures. The paper and metadata identify GPT-6-Astra;
+the contributor should describe their own understanding and review accurately.
 
 ## Licence
 

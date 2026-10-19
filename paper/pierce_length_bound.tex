@@ -47,8 +47,8 @@ $[A,2A)$, with no divisor-function loss. Then $D$ and $L$ are the third and four
 hierarchy of positive integers, the Hankel determinants of an exact positive moment model of the
 orbit. To go below $3/10$ we use the arithmetic of $L$ itself. At
 the critical scale $L$ is a positive integer of bounded size. Seven such integers at two
-consecutive states form a pattern, and the states with a given pattern lie on a nonsingular
-quadric surface in the quotient increments, with at most four states per point. Counting its
+consecutive states form a pattern, and the states with a given pattern lie on a quadric
+whose quadratic part is nondegenerate, with at most four states per point. Counting its
 points by binary slices and norm equations gives the exponent $11/37$. Next the seven integers
 are Pl\"ucker coordinates of one matrix, and counting vectors of minors gives $8/27$. Finally
 the gap vector lies in a rank-three lattice determined by the minor vector. Weighting each minor
@@ -57,7 +57,7 @@ $45/152$. Along the way we show
 $P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$, assuming results of Nair--Tenenbaum and de la
 Bret\`eche--Tenenbaum on the Erd\H{o}s--Hooley $\Delta$-function. We also show
 $P(a,b)\ll a^{1/4}\sqrt R$, where $R-1$ is the number of rises in the sequence of quotient
-increments. Everything is formalised in Lean~4 with Mathlib, without \lean{sorry}. The
+increments. These results are formalised in Lean~4 with Mathlib, without proof holes. The
 $\sqrt{\log\log 3a}$ bound is formalised conditionally on the two cited theorems, which are
 stated in Lean as explicit hypotheses.
 \end{abstract}
@@ -85,7 +85,9 @@ $P(a,b)\ll_\varepsilon a^{1/3+\varepsilon}$, and showed that $\max_b P(a,b)/\log
 tend to $0$. Chase and Pandey~\cite{CP} went past the exponent $1/3$, proving
 $P(a,b)\ll_\varepsilon a^{1/3-2/177+\varepsilon}$ with exponential sum estimates
 (Bourgain's exponent pair), and showed that $\max_b P(a,b)\gg \log a/\log\log a$ for all large
-$a$. Shallit's talk pages~\cite{ShallitTalks} report a bound $n^{3/10}$, described as
+$a$. Baraskar and Vukusic~\cite{BV} study the related sets of iterated remainders and
+bound their cardinalities at each fixed iteration depth.
+Shallit's talk pages~\cite{ShallitTalks} report a bound $n^{3/10}$, described as
 ``LLM, unpublished so far''. We have not seen that argument. The result below has the same
 exponent up to $\varepsilon$, and we make no claim about how the two arguments are related.
 
@@ -212,9 +214,10 @@ P(a,b)\le C_\varepsilon\, a^{11/37+\varepsilon}\qquad\text{for all integers }0<b
 \end{theorem}
 
 Here $11/37=0.297297\ldots$, a saving of $1/370$ over $3/10$. The extra input
-(Section~\ref{sec:1137}) is that the quadric is nonsingular with an indefinite binary section,
+(Section~\ref{sec:1137}) is that the quadratic part is nondegenerate with an indefinite binary restriction,
 by exact sign identities for the cofactors. So each slice is a binary norm equation, which has
-$a^{o(1)}$ solutions of size $a^{O(1)}$, uniformly in its coefficients.
+$a^{o(1)}$ solutions of size $a^{O(1)}$, uniformly in its coefficients, when its right-hand
+side is nonzero. There are at most two exceptional slices, which are counted separately.
 
 \begin{theorem}\label{thm:827}
 For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
@@ -260,6 +263,8 @@ the deduction of Theorem~\ref{thm:loglog} from~\eqref{eq:NT} and~\eqref{eq:BT},
 Theorem~\ref{thm:rises} and Theorem~\ref{thm:hankel}.
 Section~\ref{sec:lean} describes the formalisation. The constants in this paper are the
 constants in the Lean proof.
+The source, independent submission statements and build instructions are available at
+\url{https://github.com/jasondavies/pierce-length-bound}.
 
 \subsection*{What is not proved}
 These results are far from~\eqref{eq:conj}, and the method cannot reach it; see
@@ -700,7 +705,10 @@ polynomial $Q(X)=X$, gives for every fixed $\sigma>0$, $x$ large and $x^{\sigma}
 \begin{equation}\label{eq:NT}
 \sum_{x<n\le x+y}\Delta_{\mathrm H}(n)\ll_\sigma\frac{y}{\log x}\sum_{n\le x}\frac{\Delta_{\mathrm H}(n)}{n}.
 \end{equation}
-We use it with $\sigma=1/4$.
+We use it with $\sigma=1/4$. In the parameters of their Theorem~1, take
+$g=1$, $\varepsilon=1/16$ and $\delta=1$: then $4g^2\varepsilon=1/4$ and the required
+class is $\mathcal M_1(2,B,1/48)$ for a suitable $B$. The same consequence is displayed
+immediately after equation~(2) of their paper.
 \item[(BT)] de la Bret\`eche and Tenenbaum~\cite[Theorem~1.1]{BT} prove that for large $x$
 \begin{equation}\label{eq:BT}
 \sum_{n\le x}\Delta_{\mathrm H}(n)\ll x\,(\log\log x)^{5/2}.
@@ -1776,8 +1784,10 @@ above. The command \lean{\#print axioms} was run on \lean{P\_le}, \lean{P\_le\_2
 \lean{P\_le\_of\_shortDivisorBound}, \lean{P\_le\_loglog}, \lean{P\_le\_rises}, \lean{hankelInv\_pos\_int} and
 \lean{hankelInv\_four}; for each it reports only \lean{propext},
 \lean{Classical.choice} and \lean{Quot.sound}. The file \lean{Axioms.lean} checks this for the
-eight main theorems with \lean{\#guard\_msgs}. There is no \lean{sorry} and no
-\lean{native\_decide}. In the tables below, Lean names omit their namespaces
+eight main theorems with \lean{\#guard\_msgs}. The proof development contains no \lean{sorry}
+and no \lean{native\_decide}. The separate Mathlib-only \lean{Challenge.lean} states these eight
+results with deliberate theorem holes for comparison with the proved \lean{Solution.lean};
+neither module imports the other. In the tables below, Lean names omit their namespaces
 (\lean{PierceLengthBound}, \lean{PierceLengthBound.Window}, \lean{OAI.Ostmann}).
 \end{sloppypar}
 
@@ -1897,7 +1907,7 @@ $eu<dv$, so this truncated subtraction is the true value.
 number of good indices is at most the size of the parameter box times the largest fiber.
 \item The divisor bound $\tau(n)^k\le C_kn$ (Lemma~\ref{lem:div}) is the file
 \lean{DivisorPowerBound.lean} from the \lean{openai/math} repository~\cite{OAIMath}
-(Apache-2.0), vendored unchanged except for its import lines.
+(Apache-2.0), with unchanged proof bodies; imports and module visibility are adapted.
 \item Lemma~\ref{lem:six}(2) is checked by \lean{linear\_combination} with the coefficients
 given in its proof, which were found by polynomial division. Corollary~\ref{cor:six} proves
 $L\ge1$ directly from the identity, since $L$ is an integer by definition.
@@ -1955,7 +1965,7 @@ with quotients $51,55,63,65,74,91,95,100,\dots$. The curvatures of the first fiv
 $24,12,6,111,30$, all for blocks that lie within a factor of two.
 
 \subsection*{Acknowledgements}
-The argument was developed with the help of AI language models. This includes the use of
+The argument was developed with the help of GPT-6-Astra. This includes the use of
 orthogonal polynomials and adjacent labels behind Section~\ref{sec:2377}, the first proof of a
 bound $a^{3/10-\delta}$ through resultants, the bounded-multiplicity form of
 Lemma~\ref{lem:multid}, the sign identities and the slice count behind Section~\ref{sec:1137},
@@ -1966,6 +1976,11 @@ in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \l
 for the formalised divisor bound.
 
 \begin{thebibliography}{99}
+
+\bibitem{BV}
+O.~Baraskar and I.~Vukusic,
+\emph{Bounds for sets of remainders},
+\href{https://arxiv.org/abs/2508.20853}{arXiv:2508.20853} (2025).
 
 \bibitem{BT}
 R.~de~la~Bret\`eche and G.~Tenenbaum,
