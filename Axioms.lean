@@ -73,3 +73,41 @@ open PierceLengthBound
 /-- info: 'PierceLengthBound.FixedDividend.local_count_dichotomy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms FixedDividend.local_count_dichotomy
+
+/-! Proved components of the unfinished `18/61` refinement. -/
+
+/-- info: 'PierceLengthBound.FixedDividend.line_identity_03' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.line_identity_03
+
+/-- info: 'PierceLengthBound.FixedDividend.line_identity_12' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.line_identity_12
+
+/-- info: 'PierceLengthBound.FixedDividend.line_identity_23' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.line_identity_23
+
+/-- info: 'PierceLengthBound.FixedDividend.line_identity_14' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.line_identity_14
+
+/-- info: 'PierceLengthBound.FixedDividend.norm_degree_le_one' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.norm_degree_le_one
+
+/-- info: 'PierceLengthBound.FixedDividend.half_weight_minor_bound' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.half_weight_minor_bound
+
+/-- info: 'PierceLengthBound.FixedDividend.weighted_count_sixth' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.weighted_count_sixth
+
+/-- info: 'PierceLengthBound.FixedDividend.weighted_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.weighted_exponent
+
+/-- info: 'PierceLengthBound.FixedDividend.small_scale_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.small_scale_exponent

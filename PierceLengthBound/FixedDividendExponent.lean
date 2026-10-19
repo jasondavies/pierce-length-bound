@@ -83,4 +83,50 @@ theorem local_count_dichotomy {T H X Q a C D K : ℕ}
   · have hl : T ^ 2 ≤ (2 * K) * H ^ 2 * X ^ 8 := by nlinarith
     exact Or.inr (line_exponent hl hgap hheight hdrop)
 
+/-- Sixth powers remove the half-integral exponents in the weighted local count.
+This is an arithmetic implication, not an assertion of that count for an orbit. -/
+theorem weighted_exponent {T H X Q a C D K : ℕ}
+    (hcount : T ^ 6 ≤ K * H ^ 3 * X ^ 29)
+    (hgap : H * T ≤ C * Q) (hheight : X * T ^ 6 ≤ C * a * Q ^ 2)
+    (hdrop : Q * T ^ 2 ≤ D * a) :
+    T ^ 305 ≤ K * C ^ 32 * D ^ 61 * a ^ 90 := by
+  have h183 : T ^ 183 ≤ K * C ^ 32 * a ^ 29 * Q ^ 61 := by
+    calc T ^ 183 = T ^ 6 * T ^ 177 := by ring
+      _ ≤ (K * H ^ 3 * X ^ 29) * T ^ 177 := Nat.mul_le_mul_right _ hcount
+      _ = K * (H * T) ^ 3 * (X * T ^ 6) ^ 29 := by ring
+      _ ≤ K * (C * Q) ^ 3 * (C * a * Q ^ 2) ^ 29 := by gcongr
+      _ = K * C ^ 32 * a ^ 29 * Q ^ 61 := by ring
+  calc T ^ 305 = T ^ 183 * (T ^ 2) ^ 61 := by ring
+    _ ≤ (K * C ^ 32 * a ^ 29 * Q ^ 61) * (T ^ 2) ^ 61 :=
+      Nat.mul_le_mul_right _ h183
+    _ = K * C ^ 32 * a ^ 29 * (Q * T ^ 2) ^ 61 := by ring
+    _ ≤ K * C ^ 32 * a ^ 29 * (D * a) ^ 61 := by gcongr
+    _ = K * C ^ 32 * D ^ 61 * a ^ 90 := by ring
+
+/-- The complementary scale gives the strictly smaller exponent `5/17`. -/
+theorem small_scale_exponent {T Q a C D : ℕ}
+    (hscale : T ^ 11 ≤ C * a ^ 2 * Q ^ 3)
+    (hdrop : Q * T ^ 2 ≤ D * a) :
+    T ^ 17 ≤ C * D ^ 3 * a ^ 5 := by
+  calc T ^ 17 = T ^ 11 * (T ^ 2) ^ 3 := by ring
+    _ ≤ (C * a ^ 2 * Q ^ 3) * (T ^ 2) ^ 3 := Nat.mul_le_mul_right _ hscale
+    _ = C * a ^ 2 * (Q * T ^ 2) ^ 3 := by ring
+    _ ≤ C * a ^ 2 * (D * a) ^ 3 := by gcongr
+    _ = C * D ^ 3 * a ^ 5 := by ring
+
+/-- Exact exponent savings, including the complementary range. -/
+lemma weighted_exponent_comparison :
+    (90 : ℚ) / 305 = 18 / 61 ∧
+    (13 : ℚ) / 44 - 31 / 105 = 1 / 4620 ∧
+    (31 : ℚ) / 105 - 18 / 61 = 1 / 6405 ∧
+    (13 : ℚ) / 44 - 18 / 61 = 1 / 2684 ∧
+    (18 : ℚ) / 61 - 5 / 17 = 1 / 1037 := by norm_num
+
+/-- The five scales claimed at the critical balance satisfy all exponent relations. -/
+lemma weighted_critical_balance :
+    (25 : ℚ) / 61 - 18 / 61 = 7 / 61 ∧
+    1 + 2 * ((25 : ℚ) / 61) - 6 * (18 / 61) = 3 / 61 ∧
+    5 * ((18 : ℚ) / 61) - 1 - 25 / 61 = 4 / 61 ∧
+    ((7 : ℚ) / 61) / 2 + (29 / 6) * (3 / 61) = 18 / 61 := by norm_num
+
 end PierceLengthBound.FixedDividend

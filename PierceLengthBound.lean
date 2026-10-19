@@ -39,3 +39,5 @@ public import PierceLengthBound.ShortVec
 public import PierceLengthBound.LatticeCount
 public import PierceLengthBound.FortyFiveMain
 public import PierceLengthBound.FixedDividend
+public import PierceLengthBound.FixedDividendLines
+public import PierceLengthBound.FixedDividendWeights

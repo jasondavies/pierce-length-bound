@@ -67,18 +67,26 @@ summation gives `T ≪ a^η (H X^{14/3} + X⁵)`, hence `T¹⁵² ≪ a^{45+O(η
 
 ## Fixed-dividend refinement in progress
 
-The [new proof candidate](paper/pierce_13_44_proof_candidate.txt) proposes the exponent
-`13/44`, improving `45/152` by `1/1672`. Its complete Lean formalization is **unfinished**.
-The `FixedDividend*.lean` modules prove moment and orthogonality identities, the algebraic
-resultant recurrence, the cubic obstruction, the line-direction criterion, and the exponent
-arithmetic under explicit local-estimate hypotheses. They do not yet prove `P ≪ a^{13/44+ε}`.
-The general uniform curve-counting theorem must also be proved, rather than assumed.
-See the [formalization status](paper/pierce_13_44_status.txt) for the remaining obligations.
+The [latest proof candidate](paper/pierce_18_61_proof_candidate.txt) proposes `18/61`,
+improving the [preceding `13/44` candidate](paper/pierce_13_44_proof_candidate.txt).
+Its complete Lean formalization is **unfinished**; the strongest unconditional theorem
+in this repository remains `45/152`.
 
-For reproducible exact checks of the new identities (requires SymPy):
+The `FixedDividend*.lean` modules prove moment and orthogonality identities, an abstract
+resultant recurrence, the cubic obstruction, the line-direction criterion, four exact
+line-obstruction identities, and exponent arithmetic under explicit local-estimate
+hypotheses. The new half-power lattice-weight estimate is proved using the existing
+minor counts and Cauchy–Schwarz, with divisor factors that are sufficient for the proposed
+exponent. The actual local curve count and `P ≪ a^{18/61+ε}` remain unproved.
+The general coefficient-uniform curve-counting theorem must also be proved.
+See the [current formalization status](paper/pierce_18_61_status.txt) for completed results,
+the sufficient variation in the lattice argument, and all remaining obligations.
+
+For reproducible exact checks (requires SymPy):
 
 ```sh
 python3 scripts/check-fixed-dividend.py
+python3 scripts/check-fixed-dividend-lines.py
 ```
 
 ## Lean
@@ -86,7 +94,8 @@ python3 scripts/check-fixed-dividend.py
 Build with `lake exe cache get` (to download the compiled Mathlib) and then `lake build`
 (Lean `v4.35.0`, Mathlib `v4.35.0`). The build runs Mathlib's standard linters
 (`weak.linter.mathlibStandardSet`). It also builds the independent Palomar Challenge
-and Solution modules and runs the eight-theorem axiom audit. The eight `sorry` warnings
+and Solution modules and runs the main-theorem and refinement-component axiom audits.
+The eight `sorry` warnings
 in `Challenge.lean` are deliberate statement holes; the proof development has none.
 The main theorems are
 

@@ -1,0 +1,150 @@
+LINE-EXCLUSION AND LATTICE REFINEMENT: FORMALIZATION STATUS
+19 October 2026
+
+Status: INCOMPLETE. This repository does not yet prove the 18/61 bound in Lean.
+The strongest fully formalized unconditional bound remains 45/152. Neither
+18/61 nor the preceding 13/44 candidate is ready to replace the main theorem
+in the manuscript or submission. The requested scope includes proving the
+external coefficient-uniform curve-counting theorem, not assuming it.
+
+Source and mathematical review
+------------------------------
+pierce_18_61_proof_candidate.txt is an unchanged copy of the supplied
+/tmp/pierce_18_61_proof_candidate.md. SHA-256:
+6c37a84e3c4cdafe3274105077978f17723e3d856b3a6d99ea9377b89a418ece.
+It supersedes the proposed 13/44 target while retaining its algebraic setup.
+Its original warning about incomplete verification remains applicable.
+
+The candidate adds line exclusion in the range K >> X and a half-power
+lattice weight. The exponent arithmetic is consistent: the main range gives
+T^305 << a^(90+O(eta)), and the complementary range gives T^17 << a^(5+O(eta)).
+Lean verifies the exact reductions 90/305 = 18/61 and
+18/61 - 5/17 = 1/1037, as well as the savings over 13/44 and 31/105.
+
+The supplied polynomial identities passed generic symbolic checks and their
+Lean versions are proved for all real parameters. The resultant degree-six
+claim passed finite exact specializations and its shared-node residual table
+passed symbolic checks. These tests do not prove the general resultant-degree
+claim or validate the entire candidate. No priority claim is made.
+
+Counting input and lattice coordinates
+--------------------------------------
+Section 10 uses the same external CCDN affine-curve theorem as the 13/44
+candidate: uniformly in coefficients, an affine Q-irreducible curve of degree
+d in A^n has O_n(d^3 B^(1/d) (log B+d)) integer points in a coordinate box.
+For this application n=3 and 2 <= d <= 24 suffice. The coefficient uniformity
+is essential because the rational linear change to lattice coordinates can
+have arbitrarily large coefficients.
+
+The separate project /home/ttuser/affine-curve-counting is developing this
+input (checked sibling revision 1dfd861). Its full curve-counting target
+remains unproved. This repository does
+not import it as an axiom or claim that the local count has been established.
+
+There is a simpler sufficient route to the weighted count than the new
+rank-five lattice enumeration in Sections 8-9. The existing Pierce development
+already proves all of the following for the pivot lattice:
+- shortR is a positive integral minimum, bounded above by ceil(X^(1/3));
+- an integral reduced basis and integral coordinates bounded by 3H/shortR;
+- an integral lift to the five gaps, whose central-coordinate matrix has
+  nonzero determinant (LatticeCount.ycoord_spec and liftM_det_ne);
+- O(X^5 tau) total minor patterns and O(R^3 X^4 tau^2) patterns with shortR<=R,
+  including nonprimitive patterns.
+
+The new FixedDividendWeights module uses these existing proved results.
+Partial summation and Cauchy-Schwarz give, with
+C = [14581 * (14581 + 8*393660)]^3,
+
+  (sum_p sqrt(1 / shortR(p)))^6 <= C X^29 tau^9.
+
+Here tau bounds the divisor counts for integers up to X. This is precisely
+the required exponent 29/6, with an extra factor tau^(3/2). The existing
+subpower divisor estimates can absorb it into a^epsilon. Thus formalizing
+the sharper divisor-free lattice enumeration in the candidate is unnecessary
+for the requested final exponent. This is a mathematically sufficient
+variation of the argument, not a claim that Lemmas 9.1-9.2 were formalized.
+The new weighted bound itself has no unproved lattice-counting hypothesis.
+
+New Lean results
+----------------
+FixedDividendLines.lean:
+- Defines the first quadratic and norm expression after eliminating the
+  fourth node and the next two gaps using the kernel relations.
+- line_identity_03, line_identity_12, line_identity_23, line_identity_14 prove
+  all four exact symmetric-difference identities, for arbitrary real data.
+  For example D(+1)+D(-1)-2D(0) = -2 rho s3 + 2(f(+1)-f(-1)) in case (0,3).
+  The fourth-node linear relation is built into the definitions; the node
+  offsets cannot all be treated as independent in that first identity.
+- line_obstruction_03/12/23/14 derive the four stated obstructions from
+  vanishing quadratic samples and vanishing second difference of the norm.
+- line_obstructions_excluded rules out those alternatives under explicit
+  gap lower bounds and the coefficient-height bound.
+- norm_degree_le_one and norm_quadratic_coeff_zero prove the degree argument
+  from a polynomial identity A R = a D^4 and degree(R)<=6. They do not prove
+  degree(R)<=6 for the actual resultant.
+
+FixedDividendWeights.lean:
+- reciprocal_sum_bound is real-valued partial summation.
+- half_weight_sq is the Cauchy-Schwarz transfer.
+- half_weight_minor_bound proves the sixth-power weighted pattern estimate
+  above, directly from Plucker relations and height/divisor bounds.
+- weighted_count_sixth transfers an explicitly hypothesized square-root
+  local count to T^6 <= C K^6 H^3 X^29 tau^9. Its local-count hypothesis
+  remains an obligation when applying it to the Pierce orbit.
+
+FixedDividendExponent.lean:
+- weighted_exponent proves T^305 <= K C^32 D^61 a^90 from the sixth-power
+  local count, height bound, gap selection bound, and drop bound.
+- small_scale_exponent proves T^17 <= C D^3 a^5 from the other scale range.
+- weighted_exponent_comparison and weighted_critical_balance verify the
+  exact rational exponent identities.
+
+The earlier FixedDividendMoments, FixedDividendResultant and FixedDividend
+components remain applicable; their limitations are recorded in the preceding
+pierce_13_44_status.txt. None of these components asserts an orbit bound with
+exponent 18/61 or hides the external theorem behind an axiom.
+
+Reproducible validation
+-----------------------
+Run lake build (including Axioms), and:
+  python3 scripts/check-fixed-dividend-lines.py
+  python3 scripts/check-fixed-dividend.py
+Both scripts require SymPy, tested with 1.14.0.
+
+The new script independently reconstructs four generic quadratic-coefficient
+identities and six generic shared-node residual/derivative degree checks.
+It also performs 24 exact resultant specializations, six for each direction,
+checking degree <= 6 and Res(P,xR) = c0 Res(P,R); each direction attains degree
+six in the samples. This script does not implement the claimed lattice test
+package mentioned in the supplied candidate. The older script checks 202
+actual starts with sixteen subsequent positive states and seven leading-form
+specializations. Finite regressions are not asymptotic proofs.
+
+The build imports both new modules, and Axioms.lean audits representative
+new results in addition to the existing theorem audits. All added proofs use
+only standard Lean axioms: propext, Classical.choice, and Quot.sound. There
+are no new sorry declarations, custom axioms, or native_decide calls.
+
+Remaining proof obligations
+----------------------------
+1. Complete the actual-orbit orthogonal-polynomial recurrence, Hankel-ratio,
+   norm and fixed-dividend resultant identities. Existing abstract recurrence
+   lemmas do not yet establish A Res(P,xR) = a D^4 for an orbit window.
+2. Prove the multivariate resultant's degree-ten leading form and the degree
+   bound six on all four exceptional line directions. The latter is still
+   needed to discharge norm_degree_le_one's degree hypothesis.
+3. Establish absolute irreducibility, coprimality, curve decomposition and
+   total degree <=24; derive the full line direction classification, including
+   a possible complex line through a real state, and connect it to the
+   explicit line polynomials in FixedDividendLines.
+4. Prove the raw Gram determinant Vandermonde leading term with its uniform
+   error, and obtain gap lower bounds and actual line exclusion when K >> X.
+5. Complete the coefficient-uniform affine-curve counting theorem in the
+   separate project; then prove degree preservation and the local count in
+   the integral lattice coordinates. Existing integral basis infrastructure
+   handles the coordinate arithmetic, but does not count points on curves.
+6. Assemble supported orbit windows, minor heights, bounded multiplicity,
+   scale dichotomy and divisor drop estimates. Absorb the divisor factors and
+   logarithms, then sum the dyadic blocks with uniform constants.
+7. Only after a complete P_le_18_61 passes its axiom audit, update the main
+   manuscript/PDF, Challenge, comparator and submission metadata.

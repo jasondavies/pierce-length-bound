@@ -1,0 +1,777 @@
+# A line-exclusion and lattice refinement for the Pierce remainder iteration
+
+**Status:** research proof candidate, developed on 19 October 2026. It has not received external mathematical review or formal verification. No priority claim is made. The only external uniform arithmetic counting input is the affine-curve theorem stated in Section 10.
+
+## Claim
+
+For every epsilon > 0,
+
+\[
+\boxed{P(a,b)\ll_\varepsilon a^{18/61+\varepsilon}}
+\]
+
+uniformly for integers a>b>0, where P counts positive states of b_(i+1)=a mod b_i. Here
+
+\[
+18/61=0.2950819672131147\ldots,
+\qquad 13/44-18/61=1/2684.
+\]
+
+This improves the preceding 13/44 proof candidate. The argument has two new parts: a degree-six bound for the resultant along every possible line direction, excluding all line contributions in the main range; and the weighted minor-lattice estimate
+
+\[
+\sum_p\lambda_1(L_p)^{-1/2}\ll X^{29/6}.
+\]
+
+They give
+
+\[
+T\ll H^{1/2}X^{29/6}\log(2H)
+\]
+
+in the main range, with H comparable to Q/T and X comparable to aH^6/Q^4. The complementary range has the smaller exponent 5/17. Removing lines without the lattice weight already gives the intermediate exponent 31/105.
+
+Sections 1–5 restate the necessary foundations of the preceding fixed-dividend argument, so the algebraic setup is included here rather than assumed from the conversation. All local moment identities use the support margin stated in Section 1.
+
+## 1. Positive functionals and the support convention
+
+Write a = q_i b_i + b_(i+1), with b_0,...,b_(N-1) positive and b_N = 0. The quotients strictly increase: a = q_i b_i + b_(i+1) > (q_i+1)b_(i+1). Put k_i=q_(i+1)-q_i >=1.
+
+All local identities in this note are applied only to starts having sixteen subsequent positive states and sixteen subsequent quotient gaps within the selected quotient block. This deliberately exceeds the support requirements. In particular, a terminal point mass must not be assigned the nonterminal first moment 1.
+
+Define finite positive probability measures backwards. At the terminal state set mu_(N-1)=delta_0. Given masses w_x of mu_(i+1), place mass w_x/(k_i+x) at k_i+x and the remaining mass at zero. The masses are positive. The last gap is at least two: if a=q_last*b_last=q_prev*b_prev+b_last, then (q_last-1)b_last=q_prev*b_prev>q_prev*b_last. At earlier steps positivity follows either from k_i>=2, or from the fact that the next measure has positive mass away from zero.
+
+These measures satisfy
+
+\[
+\mu_i(xf(x))=\mu_{i+1}(f(k_i+x)).
+\]
+
+Set d nu_i(x)=d mu_i(x)/(q_i+x). Then
+
+\[
+\nu_i(1)=b_i/a,\qquad (q_i+x)\nu_i=\mu_i.
+\]
+
+Indeed q_i nu_i(1)+nu_(i+1)(1)=1, with the correct terminal value. Multiplication of nu_i by x, followed by translation by -k_i, gives nu_(i+1).
+
+At a fixed start use local indexing, q=q_i, s_j=q_(i+j)-q_i, and
+
+\[
+F_j(x)=\prod_{v=0}^{j-1}(x-s_v),\qquad F_0=1.
+\]
+
+Then
+
+\[
+\mu_i(F_jf)=\mu_{i+j}(f(s_j+x)),\qquad
+\nu_i(F_j)=b_{i+j}/a.
+\]
+
+In particular mu_i(F_j)=1. With the stated support margin,
+
+\[
+\begin{aligned}
+\mu_i(xF_j)&=s_j+1,\\
+\mu_i(x^2F_j)&=s_j^2+2s_j+1+k_j,\\
+\mu_i(x^3F_j)&=s_j^3+3s_j^2+3s_j(1+k_j)+(1+k_j)^2+k_{j+1}.
+\end{aligned}
+\]
+
+All raw moments of mu_i are integers, by backward induction. If v_m=nu_i(x^m), then
+
+\[
+v_m=(-q_i)^m b_i/a+z_m,\qquad z_m\in\mathbb Z.
+\]
+
+Consequently, a times every square minor of the weighted moment matrix is integral: its nonintegral part has rank one. Define
+
+\[
+H_r(i)=\det[\mu_i(x^{u+v})]_{u,v<r},\qquad
+I_r(i)=a\det[\nu_i(x^{u+v})]_{u,v<r}.
+\]
+
+These are positive when sufficiently many support points remain, and I_r(i) is an integer.
+
+## 2. The minor pattern and its uniform height
+
+Let
+
+\[
+d_j=b_{i+j}-b_{i+j+1},\qquad
+r_j=k_j(s_j+s_{j+1})+k_{j+1}.
+\]
+
+Form the integer 3 by 5 matrix with rows (d_j), (k_j), (r_j), for j=0,...,4. Denote its maximal minors by p_(j,l,m). Set
+
+\[
+A=p_{012},\quad A'=p_{123},\quad A''=p_{234},\quad
+U=p_{023},\quad V=-p_{013},\quad U'=p_{134},\quad V'=-p_{124}.
+\]
+
+The first three labels are I_4(i), I_4(i+1), I_4(i+2), hence positive. For example, change the rows of the rank-four Gram determinant to 1, q+x, x(q+x), x^2(q+x), then take adjacent column differences. The resulting 3 by 3 determinant is p_012/a before multiplication by a. Shifting gives the other two labels.
+
+The cofactor kernel vectors of the first and last four columns give
+
+\[
+C=(-\rho,u,v,1),\qquad C^+=(-\rho',u',v',1),
+\]
+
+where
+
+\[
+\rho=A'/A,\ u=U/A,\ v=V/A,\qquad
+\rho'=A''/A',\ u'=U'/A',\ v'=V'/A'.
+\]
+
+They annihilate each of the three matrix rows on their respective four-column supports.
+
+For q in [Q,2Q) and the needed gaps at most H, every maximal minor satisfies
+
+\[
+|p_{jlm}|\ll aH^6/Q^4.
+\]
+
+To prove this without a scale hypothesis, use the exact expansion
+
+\[
+\frac1{q+y}=\frac1q-\frac y{q^2}+\frac{y^2}{q^3}-\frac{y^3}{q^3(q+y)}.
+\]
+
+Positivity and the explicit third moments give, uniformly for the finitely many j used,
+
+\[
+\frac{b_{i+j}}a=\frac1q-\frac{s_j+1}{q^2}
++\frac{s_j^2+2s_j+1+k_j}{q^3}+O(H^3/q^4).
+\]
+
+Subtract adjacent expressions:
+
+\[
+\frac{d_j}a=\frac{k_j}{q^2}-\frac{r_j+k_j}{q^3}+O(H^3/q^4).
+\]
+
+Subtract a(q^(-2)-q^(-3)) times the k-row and add a q^(-3) times the r-row to the d-row. The three resulting row sizes are O(aH^3/q^4), O(H), O(H^2), proving the minor bound.
+
+Choose X=C aH^6/Q^4 for a sufficiently large absolute C. If a selected start exists, A>=1 ensures X>=1. All ten minors are then bounded by X.
+
+The full minor vector determines the seven displayed coordinates. Conversely those seven determine the remaining three through
+
+\[
+A'p_{014}=VV'-AU',\quad A'p_{024}=-AA''-UV',\quad
+A'p_{034}=UU'+VA''.
+\]
+
+## 3. An elementary count for minor patterns
+
+### 3.1 All patterns: O(X^5)
+
+Choose a maximal minor of largest absolute value m. After one of finitely many permutations and a sign choice, use it as a pivot block B. The other columns give integral vectors u=adj(B)w_4 and v=adj(B)w_5, with coordinates bounded by m. Remaining minors are signed coordinates of (u cross v)/m. Hence u cross v=0 modulo m.
+
+For fixed u and g=gcd(m,u_1,u_2,u_3), the number of v modulo m satisfying this condition is m g^2. To see this write m=gn,u=g u_0. Since gcd(n,u_0)=1, u_0 cross v=0 modulo n means v is a scalar multiple of u_0. There are n such residue vectors modulo n and g^3 lifts each modulo m.
+
+Allowing the bounded number of representatives in [-m,m], the count at pivot m is at most
+
+\[
+Cm\sum_{|u_j|\le m}\gcd(m,u_1,u_2,u_3)^2
+\ll m^4\sum_{g\mid m}g^{-1}.
+\]
+
+Summing over m<=X gives O(X^5), because after writing m=gr the resulting sum is bounded by X^5 sum_g g^(-2). This counts nonprimitive vectors as well.
+
+## 4. The two quartics and the first quadratic
+
+Define
+
+\[
+P(x)=\sum_{m=0}^3C_m(F_{m+1}(x)-F_m(x))
+=\sum_{j=0}^4c_jF_j(x).
+\]
+
+Then
+
+\[
+(c_0,c_1,c_2,c_3,c_4)
+=(\rho,-\rho-u,u-v,v-1,1).
+\]
+
+Define c'_j similarly from C^+. The shifted next quartic is
+
+\[
+R(x)=\sum_{j=0}^4c'_j\prod_{v=1}^{j}(x-s_v),
+\quad
+the product for j=0 being 1.
+\]
+
+Thus
+
+\[
+xR(x)=\sum_{j=0}^4c'_jF_{j+1}(x).
+\]
+
+The row kernel equations imply that P is the monic degree-four orthogonal polynomial for nu_i; R is the next state's polynomial after translation. One can verify this directly: nu_i(P)=0 comes from the d-row, mu_i(P)=0 from sum c_j=0, and mu_i(xP)=mu_i(x^2P)=0 from the k- and r-rows. The relation mu_i=(q+x)nu_i gives orthogonality against all degrees <=3.
+
+The signs rho>0, u>0, v<0 hold exactly. For the latter two put
+
+\[
+S(a,b,c)=a^2b+(a-1)b^2+ac,
+\quad E(a,b,c,d)=a^2c+(2a-1)bc+ac^2+ad.
+\]
+
+The Cramer denominator is D_2=S(k_1,k_2,k_3)>0, and
+
+\[
+D_2u=\rho E(k_0,k_1,k_2,k_3)+S(k_2,k_3,k_4)>0,
+\]
+\[
+-D_2v=\rho S(k_0,k_1,k_2)+E(k_1,k_2,k_3,k_4)>0.
+\]
+
+In particular all c_j are nonzero, c_0,c_2,c_4>0, c_1<0, and c_3<-1.
+
+Use x_1=k_1, x_2=k_2, x_3=k_3 as independent gap coordinates. The two linear relations give
+
+\[
+k_0=(u x_1+v x_2+x_3)/\rho,\qquad
+k_4=\rho'x_1-u'x_2-v'x_3.
+\]
+
+The first quadratic is
+
+\[
+f=\sum_{j=0}^4c_j(s_j^2+k_j)=0.
+\]
+
+Equivalently it is sum_(m=0)^3 C_m r_m=0. Its homogeneous part is
+
+\[
+f_2=\sum_{j=0}^4c_js_j^2,
+\quad s_0=0,\quad s_4=-c_1s_1-c_2s_2-c_3s_3.
+\]
+
+The change between (x_1,x_2,x_3) and (s_1,s_2,s_3) is invertible. In the latter coordinates the determinant of the homogeneous quadratic matrix is -c_0c_1c_2c_3, which is nonzero. Therefore f is absolutely irreducible.
+
+The next quadratic determines k_5:
+
+\[
+k_5=\frac{A''r_1-U'r_2-V'r_3}{A'}-k_4(s_4+s_5).
+\]
+
+For the polynomial argument we substitute this rational quadratic expression without imposing integrality or its interval bound. This only enlarges the set counted.
+
+## 5. The fixed-dividend identity
+
+Define the polynomial in the three independent gap coordinates
+
+\[
+D=\sum_{j=0}^4c_j\{s_j^3+3s_j^2+3s_j(1+k_j)+(1+k_j)^2+k_{j+1}\}.
+\]
+
+It has degree at most three and homogeneous cubic part
+
+\[
+D_3=\sum_{j=0}^4c_js_j^3.
+\]
+
+At every actual start,
+
+\[
+D=\mu_i(x^3P)=\nu_i(P^2)>0.
+\]
+
+If p_5 is the monic quintic orthogonal polynomial for nu_i, then xR=p_5+gamma P for some scalar gamma, since both monic degree-five polynomials are orthogonal to degrees <=3. Thus Res(P,xR)=Res(P,p_5).
+
+Writing tau_r=det[nu_i(x^(j+k))]_(j,k<r), the standard three-term orthogonal recurrence gives
+
+\[
+\operatorname{Res}(P,p_5)=\tau_5^4/\tau_4^5.
+\]
+
+This follows by applying the recurrence successively at roots of the preceding polynomial: the resultant is the product of beta_j^j for j=1,...,4, where beta_j=tau_(j+1)tau_(j-1)/tau_j^2. Its sign for rank four is positive. Since tau_4=A/a and tau_5/tau_4=D,
+
+\[
+\boxed{A\operatorname{Res}(P,xR)=aD^4.}
+\]
+
+Put Omega=A Res(P,xR)-aD^4. After clearing denominators this is a polynomial of degree at most twelve in the three gap variables, and every actual start lies on f=Omega=0.
+
+### Degree and leading form of the resultant
+
+For fixed coefficient patterns,
+
+\[
+\deg\operatorname{Res}(P,xR)=10,
+\]
+
+and its degree-ten part is
+
+\[
+c_0c_1c_2c_3\prod_{0\le j<l\le4}(s_l-s_j).
+\]
+
+Here the product is not identically zero: the pattern occurs at strictly increasing nodes. To prove the formula, scale any strictly increasing node shape by t. The root of P near t s_j has displacement O(t^(j-3)), j=0,...,3. At that root, use P=0 to eliminate F_4 in F_5=(x-t s_4)F_4. The leading value of xR is
+
+\[
+c_j(s_4-s_j)\prod_{v<j}(s_j-s_v)t^{j+1}.
+\]
+
+Lower Newton terms have degree at most j there. Multiplying over the roots proves the formula, first on an open set of node shapes and then as a polynomial identity.
+
+### The two equations have no common surface component
+
+The quadratic f_2 does not divide D_3. In the independent coordinates (s_1,s_2,s_3), write b=c_2 and c=c_3. If D_3=f_2 L with L linear, comparison of the s_2^3 and s_3^3 coefficients forces L's corresponding coefficients to be 1-b and 1-c. (Here b>0 and c<-1.) The coefficient of s_2^2 s_3 then forces 1+b+c=0. But 1+c_2+c_3=u>0. This is impossible.
+
+Since f is irreducible, if it divided Omega then f_2 would divide the degree-twelve leading term -aD_3^4 and hence D_3, a contradiction. Therefore f and Omega are coprime. Their common zeros have total curve degree at most 24, by Bezout. Possible zero-dimensional pieces have bounded size and can also be included in the counts below.
+
+## 6. A sharper degree bound on possible line components
+
+First recall the necessary direction condition. Suppose an affine line is contained in `f = Omega = 0`. Along the line the norm polynomial D has degree at most three, while Res(P,xR) has degree at most ten. The identity
+
+\[
+A\operatorname{Res}(P,xR)=aD^4
+\]
+
+forces deg D <= 2. The resultant then has degree at most eight. If z_j is the direction of node s_j, with z_0=0, the leading equations are
+
+\[
+\sum_{j=0}^4c_jz_j^m=0\quad(m=0,1,2,3),\qquad
+\prod_{j<l}(z_l-z_j)=0.
+\]
+
+Group equal z_j. There are at most four distinct groups, so the Vandermonde system forces the sum of the c_j in each group to be zero. None of the c_j vanishes. A nonzero direction consequently has exactly two groups of sizes two and three. The signs of the c_j allow only the pairs (0,3), (1,2), (2,3), (1,4) to form the two-element group. Rescale the nonzero direction value to one. The corresponding directions are:
+
+| Pair | (z_0,z_1,z_2,z_3,z_4) |
+|---|---|
+| (0,3) | (0,1,1,0,1) |
+| (1,2) | (0,1,1,0,0) |
+| (2,3) | (0,0,1,1,0) |
+| (1,4) | (0,1,0,0,1) |
+
+The following improvement is the crucial new observation.
+
+### Lemma 6.1: degree six along these directions
+
+For any of the four directions in the table, with arbitrary fixed node offsets and arbitrary fixed Newton coefficient vectors, monic at degree four, one has
+
+\[
+\deg_t\operatorname{Res}(P,xR)\le6.
+\]
+
+Here the nodes are s_j(t)=a_j+t z_j, with a_0=0, and
+
+\[
+P=\sum_{j=0}^4c_j\prod_{v<j}(x-s_v),\qquad
+R=\sum_{j=0}^4e_j\prod_{v=1}^j(x-s_v),\quad c_4=e_4=1.
+\]
+
+**Proof.** Since P(0)=c_0 is independent of t,
+
+\[
+\operatorname{Res}(P,xR)=c_0\operatorname{Res}(P,R).
+\]
+
+For generic coefficients and offsets, roots of P and R lie in bounded neighborhoods of the two clusters 0 and t. This follows either by their Newton companion matrices (a diagonal matrix of the nodes plus a bounded matrix), or by expanding P(tz+x), R(tz+x) for z=0,1. The number of roots in each cluster is the number of defining nodes in that cluster, counted among s_0,...,s_3 for P and s_1,...,s_4 for R.
+
+In all four cases there are exactly eight P-root/R-root pairs in different clusters. Those differences are O(t); all same-cluster differences are O(1). There is an additional saving from roots approaching shared nodes:
+
+| Pair | P cluster sizes (0,1) | R cluster sizes (0,1) | Shared nodes | Each corresponding root difference |
+|---|---:|---:|---|---|
+| (0,3) | (2,2) | (1,3) | s_1, s_2 | O(t^{-1}) |
+| (1,2) | (2,2) | (2,2) | s_1, s_2 | O(t^{-1}) |
+| (2,3) | (2,2) | (2,2) | s_1 | O(t^{-2}) |
+| (1,4) | (3,1) | (2,2) | s_1 | O(t^{-2}) |
+
+For clarity, these orders can be verified directly without solving quartics. At a displayed shared node, the order of its nearby root's displacement is bounded by the residual divided by the leading derivative. The degrees in t of these two quantities are:
+
+| Pair and shared node | P residual / derivative degrees | R residual / derivative degrees |
+|---|---:|---:|
+| (0,3), j=1 or 2 | 1 / 2 | 0 / 1 |
+| (1,2), j=1 or 2 | 1 / 2 | 0 / 2 |
+| (2,3), j=1 | 0 / 2 | 0 / 2 |
+| (1,4), j=1 | 1 / 3 | 0 / 2 |
+
+The limiting local roots are simple for generic parameters, so the implicit function theorem, with parameter 1/t, justifies the displacement estimates. All entries of the table follow by substituting x=s_j in the displayed Newton expansions. For example, in case (2,3), P(s_1)=c_0+c_1s_1=O(1), R(s_1)=e_0=O(1), and both derivatives have generic order t^2.
+
+The product formula for the resultant therefore gives O(t^{8-2})=O(t^6). The coefficients of powers t^m for m>6 are polynomials in the offsets and coefficient parameters. Since they vanish for a generic set of those parameters, they vanish identically. Thus the bound also covers repeated limiting roots and all special coefficient patterns. This proves the lemma. The argument works over the complex numbers; the generic parameters can first be chosen in an open complex neighborhood of real distinct offsets. □
+
+### Corollary 6.2: four exact obstructions
+
+On a line contained in f=Omega=0, Lemma 6.1 forces deg D <= 1 (or D identically zero), since a and A are nonzero constants. In particular, the coefficient D_2 of t^2 vanishes.
+
+Let f_1 denote the coefficient of t in the restriction of f. At an arbitrary origin point of the line, direct expansion of Sections 4–5 gives the following identities:
+
+| Pair condition | Identity for the t^2 coefficient of D |
+|---|---|
+| v=1-rho | D_2 = -rho s_3 + 2 f_1 |
+| v=-rho | D_2 = (rho+u)(s_2-s_1-1) + f_1 |
+| u=1 | D_2 = (v-1)(s_3-s_2-1) + f_1 |
+| u=1-rho | D_2 = (u-v)-(s_4-s_1) + 2 f_1 |
+
+These are identities after substituting the next quadratic for k_5; the next coefficient vector is otherwise unrestricted. Since f_1=D_2=0 on a contained line, and rho>0, rho+u>0, v-1<0, they imply respectively
+
+\[
+\boxed{s_3=0,\qquad k_1=1,\qquad k_2=1,\qquad s_4-s_1=c_2.}
+\]
+
+The identities are also supplied as generic symbolic checks in the verification package. They are used here as polynomial equalities, not numerical observations.
+
+## 7. All lines miss the relevant slow windows
+
+Retain
+
+\[
+X=C\,aH^6/Q^4\ge1,\qquad K=Q^4/(aH^5),
+\]
+
+where the absolute constant C is large enough to bound all ten minors by X. We prove that, for an absolute C_1,
+
+\[
+K\ge C_1X
+\]
+
+implies that no actual selected state lies on any line component of f=Omega=0.
+
+We need a raw determinant estimate. For each fixed rank s, changing the Gram basis from monomials to F_0,...,F_{s-1} gives
+
+\[
+H_s=\Delta_s+O(H^{s(s-1)/2-1}),\qquad
+\Delta_s=\prod_{0\le j<l<s}(s_l-s_j).
+\]
+
+Here the finitely many required gaps are at most H. A proof of the leading term is as follows. For j<=l,
+
+\[
+\mu_i(F_jF_l)=\mu_{i+l}(F_j(s_l+x))
+\]
+
+has leading homogeneous part F_j(s_l), of gap degree j. Each term using a positive power x^m loses at least one degree because the raw moment of order m has degree at most m-1 in subsequent gaps. In the determinant expansion a permutation pi has degree at most sum_j min(j,pi(j)); only the identity reaches s(s-1)/2. Its leading product is Delta_s. Lower-degree polynomials are O(H^{s(s-1)/2-1}).
+
+Apply this at rank four and starts i,i+1,i+2. Positivity and the Gram inequality give
+
+\[
+H_4(i+j)\ge I_4(i+j)q_{i+j}^4/a\ge Q^4/a.
+\]
+
+Thus, if K is sufficiently large,
+
+\[
+\Delta_4(i+j)\ge Q^4/(2a),\qquad j=0,1,2.
+\]
+
+For three consecutive gaps u,v,w,
+
+\[
+\Delta_4=uvw(u+v)(v+w)(u+v+w).
+\]
+
+Each other factor is at most 3H. Consequently every gap k_0,...,k_4 is at least
+
+\[
+\frac{Q^4}{2a(3H)^5}\gg K.
+\]
+
+The first line obstruction s_3=0 is incompatible with positive gaps. The next two contradict k_1,k_2 >> K>1. Finally
+
+\[
+0<c_2=(U-V)/A\le 2X
+\]
+
+because A>=1 and all minors have height at most X. But s_4-s_1=k_1+k_2+k_3 >> K, excluding the last line when C_1 is sufficiently large. This proves the claim.
+
+A line component may still exist algebraically outside the relevant region. We discard only its contribution to the actual selected states. This argument also covers a complex line containing such a real state, since its possible direction has already been classified.
+
+**Unweighted intermediate consequence.** The O(X^5) pattern bound and the uniform affine-curve estimate from Section 10 now give
+
+\[
+T\ll X^5 H^{1/2}\log(2H)
+\]
+
+in this scale range. Together with the small-scale alternative in Section 11, this alone improves the candidate exponent to 31/105+epsilon. The next two sections yield the stronger 18/61 bound.
+
+## 8. Elementary lattice preliminaries
+
+For a nonzero decomposable integer three-vector p (the full minor pattern), define
+
+\[
+L_p=\operatorname{rowspan}_{\mathbb R}(M)\cap\mathbb Z^5.
+\]
+
+This is a primitive rank-three lattice: it contains every integer vector in its real span. It depends only on the plane encoded by p. If p=g p_0, where p_0 is primitive, then
+
+\[
+\det L_p=\|p_0\|_2\le \sqrt{10}X/g.
+\]
+
+This identity follows from the Gram determinant of a lattice basis and the fact that its primitive maximal minors have gcd one. Hodge duality gives, for W=L_p^perp intersect Z^5,
+
+\[
+\det W=\det L_p.
+\]
+
+We record the elementary basis facts used below. In a rank-n Euclidean lattice, repeatedly choose a shortest nonzero vector in the current orthogonal projection and lift it; reduce its coefficients against the preceding basis vectors into [-1/2,1/2]. This produces a basis with Gram–Schmidt lengths d_1,...,d_n and size-reduction coefficients at most 1/2 in absolute value. Each shortest vector is primitive in its current quotient lattice, so these choices extend to a basis. The inequality
+
+\[
+d_{j+1}\ge (\sqrt3/2)d_j
+\]
+
+holds: otherwise a shortest projected vector, lifted and reduced along the preceding shortest vector, would have length less than that preceding shortest vector. Therefore, in fixed dimension,
+
+\[
+d_j\ge c_n\lambda_1(L),\qquad \prod_jd_j=\det L.
+\]
+
+In particular lambda_1(L)^n <<_n det L. Also a vector of length at most H has integer basis coordinates bounded by C_n H/lambda_1(L), by backward substitution in Gram–Schmidt coordinates.
+
+If L is an integral sublattice of Z^m, then lambda_1>=1. Each d_j is bounded above by C_n det L because the other d_j are bounded below by c_n. The reduced basis vectors thus have lengths at most C_n det L, and the covering radius is at most C_n det L.
+
+For a rank-four integral lattice Gamma of determinant r, the same basis gives, for U>=1,
+
+\[
+\#\{v\in\Gamma:\|v\|\le U\}
+\ll \prod_{j=1}^4(1+2U/d_j)
+\ll U^4/r+U^3.
+\]
+
+For the first inequality, choose coordinates from last to first: each available interval has length at most 2U/d_j, regardless of the previously chosen higher coordinates. In the second inequality the degree-four term is U^4/r, while every other term is O(U^3), using d_j>=c>0. These arguments establish all basis and elementary point-counting estimates invoked below without a lattice enumeration theorem.
+
+## 9. The weighted lattice count
+
+### Lemma 9.1: lattices with a short vector
+
+Let N(D,R) be the number of primitive rank-three lattices L in Z^5 with det L<=D and lambda_1(L)<=R. For
+
+\[
+D\ge1,\qquad 1\le R\le C D^{1/3},
+\]
+
+with a fixed C, one has
+
+\[
+\boxed{N(D,R)\ll_C D^4 R^3.}
+\]
+
+**Proof.** Choose a shortest vector v of L, with r=||v||<=R. It is primitive in Z^5. The lattice
+
+\[
+\Gamma=v^\perp\cap\mathbb Z^5
+\]
+
+has rank four and determinant r. The orthogonal lattice
+
+\[
+W=L^\perp\cap\mathbb Z^5
+\]
+
+is a primitive rank-two sublattice of Gamma with det W=det L<=D.
+
+Fix v. Choose a shortest vector u of W with length U_u. It is primitive in Gamma, since W is primitive, and the rank-two basis estimate gives U_u<<sqrt(D). Extend u to a basis u,w of W. After reducing w along u,
+
+\[
+\|\pi_u w\|=\det W/U_u\le D/U_u,
+\]
+
+where pi_u is orthogonal projection along u.
+
+The projected rank-three lattice pi_u Gamma has determinant r/U_u. Its covering radius is O(r): Gamma has a basis of length O(r) by Section 8, and orthogonal projection cannot increase the covering radius. Since U_u<<sqrt(D) and r<<D^{1/3}, the radius D/U_u is at least a fixed positive multiple of the covering radius. A Voronoi-cell volume bound therefore gives
+
+\[
+\#\{\pi_u w:\|\pi_u w\|\le D/U_u\}
+\ll \frac{(D/U_u)^3}{r/U_u}
+=\frac{D^3}{U_u^2r}.
+\]
+
+Indeed, all cells attached to points in a ball of radius B lie in a ball of radius B plus the covering radius, and each cell has volume det(pi_u Gamma). Because u is primitive, a projected point specifies one class w modulo Z u and hence at most one generated plane W.
+
+The number of u in Gamma of length at most U is O(U^4/r+U^3), including the non-full-dimensional size ranges. Sum dyadically over 1<=U_u<<sqrt(D). The number of W for this fixed v is at most
+
+\[
+\ll \frac{D^4}{r^2}+\frac{D^{7/2}}r
+\ll \frac{D^4}{r^2},
+\]
+
+where r<<D^{1/3} is used in the last inequality. The possible u may overcount W, which is harmless.
+
+Finally, in Z^5,
+
+\[
+\sum_{0<\|v\|\le R}\|v\|^{-2}\ll R^3.
+\]
+
+Sum the fixed-v bound. The map L -> L^perp intersect Z^5 is injective, so this counts all the desired L and proves the lemma. □
+
+### Lemma 9.2: the half-power weight
+
+For X>=1, sum over all nonzero decomposable integral three-vectors p with coordinate height at most X. Then
+
+\[
+\boxed{\sum_p\lambda_1(L_p)^{-1/2}\ll X^{29/6}.}
+\]
+
+**Proof.** First count primitive lattices of determinant at most D. By Section 8 every such lattice has lambda_1<<D^{1/3}. Divide shortest lengths into dyadic ranges R. Lemma 9.1 gives
+
+\[
+\sum_{\substack{L\text{ primitive}\\ \det L\le D}}
+\lambda_1(L)^{-1/2}
+\ll \sum_{R\ll D^{1/3}}D^4R^{3-1/2}
+\ll D^{29/6}.
+\]
+
+For a nonprimitive vector p=g p_0, its underlying lattice has determinant at most sqrt(10)X/g. There are just two primitive orientations per lattice. Thus the required sum is at most
+
+\[
+C\sum_{1\le g\le X}(X/g)^{29/6}\ll X^{29/6}.
+\]
+
+This includes every common divisor of the minors, and no assumption on a typical shortest-vector length is made. □
+
+## 10. Curves counted in their pattern lattice
+
+We use the coefficient-uniform curve theorem: for an affine curve C over Q irreducible over Q, of degree d in fixed affine dimension n>=2,
+
+\[
+\#\{z\in C(\mathbb Z):|z_j|\le B\}
+\ll_n d^3 B^{1/d}(\log B+d).
+\]
+
+The constant is independent of the coefficients. This is Corollary 2.2 of Cluckers–Debes–Hendel–Nguyen–Vermeulen (2025), attributed there to Castryck–Cluckers–Dittmann–Nguyen (2020). The primary source is given in Section 13.
+
+For a fixed actual pattern p, the gap vector (k_0,...,k_4) belongs to L_p and has Euclidean norm at most sqrt(5)H. Use the reduced lattice basis from Section 8. Its three integer coordinates lie in a box of radius
+
+\[
+B\ll H/\lambda_1(L_p).
+\]
+
+For a represented pattern this ratio is bounded below by an absolute positive constant, because the lattice contains a nonzero gap vector of length at most sqrt(5)H. Thus ceilings in B change only constants.
+
+Projection onto (k_1,k_2,k_3) is an isomorphism on the real row plane. Indeed the two independent null equations recover k_0 and k_4 from those three coordinates, with nonzero coefficient rho in the first equation. Passing from the lattice basis to these central coordinates is consequently an invertible rational linear transformation. It preserves the degrees of all curve components.
+
+By Section 5 the total curve degree of f=Omega=0 is at most 24. By Section 7 none of its line components contributes a selected actual state when K>=C_1X. The uniform curve theorem in the lattice coordinates therefore bounds the remaining points by
+
+\[
+C\bigl(H/\lambda_1(L_p)\bigr)^{1/2}\log(2H)
+\]
+
+per pattern. Components irreducible only over Q are covered by the theorem as stated. The invertible coordinate change does not require any height bound, since the theorem is coefficient-uniform.
+
+Fixed pattern and five gaps determine P and H_4. The determinant identity
+
+\[
+A P(-q_i)=aH_4
+\]
+
+is a nonzero quartic equation in q_i. Therefore at most four orbit starts have those data, since quotients strictly increase. This bounded multiplicity changes only the constant.
+
+Summing over actual patterns and enlarging to all decomposable minor vectors of height <=X, Lemma 9.2 gives the new local estimate
+
+\[
+\boxed{T\ll H^{1/2}X^{29/6}\log(2H),\qquad K\ge C_1X.}
+\]
+
+Here, as in Section 11, a fixed positive fraction of the T starts is selected. No congruence-density assumption is used.
+
+## 11. Global exponent, including the other scale range
+
+Let T count orbit states with integer quotients in [Q,2Q), for a dyadic Q. The internal gaps sum to less than Q. Choose
+
+\[
+H=C_0 Q/T
+\]
+
+for a sufficiently large absolute constant C_0. Discard the final sixteen starts and any start whose next sixteen gaps contain a gap larger than H. There are fewer than T/C_0 large gaps, each spoiling at most sixteen starts. Thus at least T/2 good starts remain once T exceeds an absolute constant. Small T is harmless. These windows satisfy all support requirements above.
+
+For every eta>0 the drop estimate is
+
+\[
+Q\ll_\eta a^{1+\eta}/T^2.
+\]
+
+The drops in the block, including its last drop out, sum to at most a/Q. At least half are at most 2a/(QT). For each drop d,
+
+\[
+a+d=(q_i+1)b_i.
+\]
+
+The distinct remainders at that drop value are divisors of a+d<=2a. The elementary bound tau(n)<<_eta n^eta proves the estimate. If the drop interval contains no positive integer, the supposed block cannot exist.
+
+Recall
+
+\[
+X\asymp aQ^2/T^6,\qquad K\asymp T^5/(aQ).
+\]
+
+If K<C_1X, then
+
+\[
+T^{11}\ll a^2Q^3,
+\qquad T^{17}\ll_\eta a^{5+3\eta}.
+\]
+
+This gives exponent 5/17, strictly smaller than 18/61, since
+
+\[
+18/61-5/17=1/1037>0.
+\]
+
+In the main range K>=C_1X, use the weighted local count and absorb its logarithm into a^eta (H<<a and X<<a^7):
+
+\[
+T\ll_\eta a^\eta
+\left(\frac QT\right)^{1/2}
+\left(\frac{aQ^2}{T^6}\right)^{29/6}.
+\]
+
+Hence
+
+\[
+T^{183}\ll_\eta a^{29+6\eta}Q^{61}.
+\]
+
+Insert the drop estimate:
+
+\[
+\boxed{T^{305}\ll_\eta a^{90+67\eta}.}
+\]
+
+Since 90/305=18/61, every quotient block has T<<_epsilon a^{18/61+epsilon}. Choose eta sufficiently small before summing the O(log a) dyadic quotient blocks; the logarithm is absorbed into the requested epsilon. The finite range of small a is absorbed by the constant. This proves the claimed research candidate.
+
+The exact comparisons are
+
+\[
+13/44-31/105=1/4620,\qquad
+31/105-18/61=1/6405,\qquad
+13/44-18/61=1/2684.
+\]
+
+At the final critical balance,
+
+\[
+T\sim a^{18/61},\quad Q\sim a^{25/61},\quad
+H\sim a^{7/61},\quad X\sim a^{3/61},\quad K\sim a^{4/61}.
+\]
+
+Thus K/X grows like a^{1/61}; the line-exclusion hypothesis is comfortably satisfied at this balance. The weighted local expression H^{1/2}X^{29/6} has exponent (7/2+29/2)/61=18/61, as required.
+
+## 12. Verification and limitations
+
+The proof above is a proposed mathematical argument. It has not received external review or a Lean formalization. No independent-agent proof audits were performed for this refinement.
+
+The accompanying package provides:
+
+1. Four generic symbolic identities for the quadratic-in-line-parameter coefficient of D, including its exact multiple of the linear coefficient of f.
+2. Six generic shared-node residual/derivative checks underlying the degree-six resultant argument (two nodes each in two cases, one node each in the other two).
+3. Twenty-four exact resultant-degree tests, with an additional normalization check Res(P,xR)=c_0 Res(P,R) in each test.
+4. One hundred exact lattice tests covering primitive exterior coordinates, equality of orthogonal-complement determinants, normal-lattice determinants, and projected covolumes.
+5. A rerun of the prior finite-positive-measure implementation at two hundred genuine orbit starts, each with at least ten positive states, checking both quartics, Gram labels, the norm, quotient normalization, and fixed-dividend resultant.
+
+The generic polynomial identities are exact symbolic checks; the numerical families and lattice examples are regression checks. Neither type of computation establishes the asymptotic counting lemma by itself. Sections 8–9 supply its uniform proof, including very short vectors and nonprimitive minor patterns.
+
+This result does not resolve the original O((log a)^2) conjecture. It improves the preceding 13/44 candidate by removing all line contributions in the relevant range and counting nonlinear curves in their own lattices. It does not assert that the remaining curves actually attain the uniform square-root bound.
+
+## 13. External reference
+
+R. Cluckers, P. Debes, Y. I. Hendel, K. H. Nguyen, F. Vermeulen, *Improvements on dimension growth results and effective Hilbert's irreducibility theorem*, Forum of Mathematics, Sigma 13 (2025), e153, DOI 10.1017/fms.2025.10096, Corollary 2.2. The corollary attributes the affine-curve estimate to W. Castryck, R. Cluckers, P. Dittmann, K. H. Nguyen, *The dimension growth conjecture, polynomial in the degree and without logarithmic factors*, Algebra & Number Theory 14 (2020).
+
+Primary full text:
+https://www.cambridge.org/core/journals/forum-of-mathematics-sigma/article/improvements-on-dimension-growth-results-and-effective-hilberts-irreducibility-theorem/A7BCAEBF00B8B165D6DDB3FFB9B40B97
+
+The only coefficient-uniform arithmetic counting result taken from outside this note is the stated affine-curve theorem. The finite moment, polynomial, divisor, and lattice estimates used here are proved in the note.
