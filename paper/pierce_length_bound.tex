@@ -39,23 +39,21 @@ $x\mapsto a\bmod x$, starting at $b$. We prove
  P(a,b)\ll_\varepsilon a^{\alpha_*+\varepsilon},\qquad
  \alpha_*=(1310-\sqrt{655})/4365=0.2942513246\ldots.
 \]
-The explicit rational exponent $2201/7480$ and the simpler unpowered exponent
-$128/435$ also follow. The argument combines a positive moment model of the
-orbit, complete minor patterns, and coefficient-uniform counting on affine
-curves. Three small integer curvature minors and the rank-five Hankel invariant
-provide a joint curve embedding. On a retained component of degree $d$, the
-curvature pole envelope has degree at least $3d/2+1$, forcing the unpowered
-graph degree to be at least $4d+1$. Powers of the two kinds of coordinates give
-the optimized exponent. The pattern count is the ordinary $O(X^5)$ count,
-with subpower divisor losses;
-no weighted-lattice counting estimate is used for these bounds.
-We also present the earlier elementary exponents $3/10$, $23/77$, $11/37$,
-$8/27$ and $45/152$, a bound for trajectories with few rises in their quotient
-increments, and positivity and integrality of the Hankel hierarchy.
-The main result, including the external affine-curve counting theorem, is
-formalized in Lean~4 with Mathlib without proof holes or additional axioms.
-A separate logarithmic refinement of the $3/10$ bound remains conditional on
-two explicitly stated analytic estimates. Shallit's conjectured
+The rational exponents $2201/7480$ and $128/435$ also follow.
+We group short segments of the orbit by integer determinants derived from a
+positive moment model. For each group, the fixed-dividend equations place the
+possible quotient increments on affine curves. Additional integer invariants
+give embeddings of higher degree while keeping the coordinates small.
+A coefficient-uniform curve-counting theorem then bounds the number of
+segments in each group. Taking powers of the added coordinates and balancing
+their heights gives the exponent $\alpha_*$.
+We also prove several elementary intermediate bounds, a bound for trajectories
+with few rises in their quotient increments, and positivity and integrality of
+the associated Hankel determinants.
+The main result and its curve-counting input are formalized in Lean~4 with
+Mathlib without proof holes or additional axioms.
+The Lean proof of a separate logarithmic refinement of the $3/10$ bound
+takes two published analytic estimates as explicit hypotheses. Shallit's conjectured
 $O((\log a)^2)$ bound remains open.
 \end{abstract}
 
@@ -99,6 +97,29 @@ For every $\varepsilon>0$ there is $C_\varepsilon>0$, independent of $a,b$, such
 The rational exponents $2201/7480$ and $128/435$ also give such uniform bounds.
 \end{theorem}
 
+\subsection*{How the main argument fits together}
+We count orbit terms in a remainder window $[A,2A)$, then sum over dyadic
+values of $A$. For most short segments in a window, both the quotient
+increments and certain integer determinants are small. We call the
+collection of determinants a \emph{pattern}. Fixing a pattern reduces the
+count to a system of polynomial equations in the increments.
+
+The proof has two main stages. Sections~\ref{sec:hankel}--\ref{sec:827}
+construct the patterns and bound their number. Section~\ref{sec:joint}
+retains the fixed dividend $a$ in the equations, so that each pattern gives
+finitely many curves. It then adjoins small integer invariants as coordinates.
+The degree of the resulting curve controls the saving in the point count:
+larger degree gives a smaller exponent of the coordinate bound. The final
+step balances the competing coordinate bounds.
+
+The elementary window estimates and the six-step identity are developed first,
+in Sections~\ref{sec:curv}--\ref{sec:six}. The short-interval divisor refinement
+of Section~\ref{sec:short}, the rise bound of Section~\ref{sec:rises}, and the
+lattice refinement of Section~\ref{sec:45152} can be read separately; they are
+not needed for the joint-invariant bound. Section~\ref{sec:lean} explains the
+scope of the formal verification.
+
+\subsection*{The first window bound}
 We first develop the elementary ingredients and earlier bounds. The first is:
 
 \begin{theorem}\label{thm:main}
@@ -173,8 +194,11 @@ $\sum_{x<n\le x+y}\tau(n)\ll y\log x$ for $y\ge x^{1/4}$, and hence
 $P(a,b)\ll a^{3/10}(\log a)^{1/5}$; we have not formalised that either.
 
 \subsection*{Structured trajectories and the Hankel hierarchy}
-Write $k_i=q_{i+1}-q_i$ for the quotient increments, and let $R-1$ be the number of indices with
-$k_i<k_{i+1}$.
+Write $k_i=q_{i+1}-q_i$ for the quotient increments, and put
+\[
+R=1+\#\{i:1\le i,\ i+2\le P(a,b),\ k_i<k_{i+1}\}.
+\]
+Thus $R-1$ counts the rises between consecutive increments.
 
 \begin{theorem}\label{thm:rises}
 $P(a,b)\ll a^{1/4}\sqrt R$ uniformly for $0<b<a$. In particular, if the quotient increments
@@ -190,11 +214,14 @@ contain $\gg a^{1/10}$ rises.
 
 Finally, both $D$ and $L$ fit into a single structure (Section~\ref{sec:hankel}). The orbit
 carries an exact finite model by positive measures $\nu_i$ with $\int d\nu_i=b_i/a$. The Hankel
-determinants $I_r(i)=a\det\bigl(\int x^{j+l}\,d\nu_i\bigr)_{j,l<r}$ are positive integers, and
-$I_1,I_2,I_3,I_4$ are $b_i$, $b_i-b_{i+1}$, $D$ and $L$ (Theorem~\ref{thm:hankel}).
+determinants $I_r(i)=a\det\bigl(\int x^{j+l}\,d\nu_i\bigr)_{j,l<r}$ are positive
+integers whenever the remaining orbit has at least $r$ positive terms.
+The first four agree with $b_i$, $b_i-b_{i+1}$, $D$ and $L$ in the
+nonterminal ranges specified in Theorem~\ref{thm:hankel}.
 
 \subsection*{Below \texorpdfstring{$3/10$}{3/10}}
-We go past the exponent $3/10$ in four steps.
+The following four elementary bounds explain the pattern-counting ingredients
+and an alternative lattice refinement.
 
 \begin{theorem}\label{thm:2377}
 For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
@@ -253,17 +280,9 @@ shortest vector of $\Lambda_p$ has length $\lambda$, a reduced basis cuts the te
 into $O(H/\lambda+1)$ slices, and only $X^{4+o(1)}t^3$ minor vectors have $\lambda\le t$. This
 gives $T\ll a^{o(1)}(HX^{14/3}+X^5)$ in place of $T\ll a^{o(1)}HX^5$.
 
-The idea of encoding states by the coefficients of the degree-four orthogonal polynomial is due
-to an AI-assisted exploration (see the acknowledgements). It first gave a bound
-$a^{3/10-\delta}$ for a small $\delta>0$, through the resultant identity
-$\operatorname{Res}(I_4\pi_4,I_5\pi_5)=aI_5^8$ for the orthogonal polynomials of degrees four and
-five, together with the dimension-growth bounds of Cluckers, D\`ebes, Hendel, Nguyen and
-Vermeulen~\cite{CDHNV}. The two-state count of Section~\ref{sec:2377} replaces both by
-elementary algebra. The refinement to $11/37$, with the sign identities and the slice count, was
-also found in that exploration, as was the observation that the seven integers form a
-Pl\"ucker vector, and the proposal to weight each minor vector by the shortest vector of its
-lattice. The proof of that lattice step replaces the geometry of numbers by an elementary
-reduction argument.
+The joint-invariant argument returns to the ordinary minor-pattern count
+of Section~\ref{sec:827} and improves the count within each pattern. Its
+additional input is the affine-curve theorem used in Section~\ref{sec:joint}.
 
 \subsection*{Formal verification}
 Every step of the proofs of Theorems~\ref{thm:joint}, \ref{thm:main}, \ref{thm:2377}, \ref{thm:1137},
@@ -273,8 +292,8 @@ the deduction of Theorem~\ref{thm:loglog} from~\eqref{eq:NT} and~\eqref{eq:BT},
 Theorem~\ref{thm:rises} and Theorem~\ref{thm:hankel}.
 Section~\ref{sec:lean} describes the formalisation. The constants in this paper are the
 constants in the Lean proof.
-The source, independent submission statements and build instructions are available at
-\url{https://github.com/jasondavies/pierce-length-bound}.
+The accompanying repository contains the proof source, independent submission
+statements and build instructions.
 
 \subsection*{What is not proved}
 These results are far from~\eqref{eq:conj}, and the method cannot reach it; see
@@ -292,6 +311,10 @@ Let $\tau(n)$ be the number of positive divisors of $n$, and let
 \[
 \Delta=\Delta(a)=\max_{1\le n\le 32a^7}\tau(n).
 \]
+We write $F\ll_\eta G$ when $F\le C_\eta G$, with the constant uniform in the
+dividend and orbit. A factor denoted $a^{o(1)}$ is bounded by
+$C_\eta a^\eta$ for every fixed $\eta>0$; such factors include the divisor
+losses below. We write $F\asymp G$ when both $F\ll G$ and $G\ll F$ hold.
 
 \begin{lemma}[Quotients increase]\label{lem:quot}
 If $b_{i+1}>0$ then $q_{i+1}\ge q_i+1$.
@@ -359,13 +382,6 @@ $uz=uy-ue=qd+(1-u)e$. Subtracting the last two gives $vz=(q+u)e+f$. Therefore
 The right-hand side is at least $df\ge1$, and $z>0$, so $D>0$.
 \end{proof}
 
-Equivalently, the identity is the linear combination
-\[
-Dz-\bigl(df+ude+(u-1)e^2\bigr)=d\,E_3+(a-qx-x-y+z)\,E_2+(-a+(q+u)y+y)\,E_1
-\]
-of the three division equations $E_1,E_2,E_3$ of~\eqref{eq:div} (each written as
-$\text{left}-\text{right}=0$). This is how it is checked in Lean.
-
 \begin{lemma}[The fiber equation]\label{lem:fiber-eq}
 Put $M(q)=uq^2+(u^2+u+v)q+v$ and $N(q)=uq+u^2+v$. Then
 \[
@@ -397,19 +413,19 @@ $Dz=df+ude+(u-1)e^2\le df+u\,e(d+e)\le (1+u)(d+e+f)^2$.
 
 \begin{lemma}[Fiber count]\label{lem:fiber}
 Let $a\ge1$, $1\le u,v\le a$ and $1\le D\le 2a$. Let $M(q)=uq^2+pq+v$ with $p=u^2+u+v$, and
-let $L(q)=cq+\ell$ with $c=au$ and $\ell=a(u^2+v)+D$. Then the set
+let $\Lambda(q)=cq+\ell$ with $c=au$ and $\ell=a(u^2+v)+D$. Then the set
 \[
-Q=\{q\ge 0:\ xM(q)=L(q)\text{ for some integer }x\ge1\}
+Q=\{q\in\mathbb Z_{\ge0}:\ xM(q)=\Lambda(q)\text{ for some integer }x\ge1\}
 \]
-has at most $\Delta=\max_{n\le 32a^7}\tau(n)$ elements.
+has at most $\Delta=\max_{1\le n\le 32a^7}\tau(n)$ elements.
 \end{lemma}
 
 \begin{proof}
 Put $U(q)=ucq+cp-u\ell$ and $R=u\ell^2-cp\ell+c^2v$. Expanding shows
 \begin{equation}\label{eq:resultant}
-c^2M(q)-U(q)L(q)=R
+c^2M(q)-U(q)\Lambda(q)=R
 \end{equation}
-identically in $q$. If $q\in Q$ with witness $x$, substituting $L(q)=xM(q)$
+identically in $q$. If $q\in Q$ with witness $x$, substituting $\Lambda(q)=xM(q)$
 into~\eqref{eq:resultant} gives
 \begin{equation}\label{eq:R}
 R=M(q)\bigl(c^2-U(q)x\bigr).
@@ -429,12 +445,13 @@ so $U(q)$ is a positive divisor of $c^2$. Since $U$ is linear with positive lead
 coefficient $uc$, it is injective. Therefore $|Q|\le\tau(c^2)\le\Delta$.
 \end{proof}
 
-The case $R=0$ cannot be dropped: it is the case in which $M$ and $L$ might share a factor.
+The case $R=0$ cannot be dropped: it is the case in which $M$ and $\Lambda$ might share a factor.
 
 \section{Counting visits to a window}
 
 In this section $x_0,\dots,x_{T-1}$ is a window run in $[A,2A)$, and
-$\Delta=\max_{n\le 32a^7}\tau(n)$.
+$q_j=\lfloor a/x_j\rfloor$ are its quotients. We continue to write
+$\Delta=\max_{1\le n\le 32a^7}\tau(n)$.
 
 \begin{proposition}[Drop bound; after Erd\H{o}s--Shallit]\label{prop:drop}
 If $T\ge2$ then $T(T-1)\le 4A\Delta$.
@@ -708,15 +725,16 @@ theorems.
 
 \begin{enumerate}
 \item[(NT)] Nair and Tenenbaum~\cite{NT} prove a general upper bound for short sums of
-functions $g$ satisfying $g(mn)\le\min(\lambda_1^{\Omega(m)},\lambda_2m^\varepsilon)g(n)$ for $(m,n)=1$. Since
+functions $F$ satisfying $F(mn)\le\min(\lambda_1^{\Omega(m)},\lambda_2m^\varepsilon)F(n)$ for $(m,n)=1$. Since
 $\Delta_{\mathrm H}(mn)\le\tau(m)\Delta_{\mathrm H}(n)$ for $(m,n)=1$, the function
 $\Delta_{\mathrm H}$ satisfies this with $\lambda_1=2$ for every $\varepsilon>0$. Their bound, for the
 polynomial $Q(X)=X$, gives for every fixed $\sigma>0$, $x$ large and $x^{\sigma}\le y\le x$
 \begin{equation}\label{eq:NT}
 \sum_{x<n\le x+y}\Delta_{\mathrm H}(n)\ll_\sigma\frac{y}{\log x}\sum_{n\le x}\frac{\Delta_{\mathrm H}(n)}{n}.
 \end{equation}
-We use it with $\sigma=1/4$. In the parameters of their Theorem~1, take
-$g=1$, $\varepsilon=1/16$ and $\delta=1$: then $4g^2\varepsilon=1/4$ and the required
+We use it with $\sigma=1/4$. In the parameters of their Theorem~1, the
+polynomial degree is $g=\deg Q=1$; take $\varepsilon=1/16$ and $\delta=1$.
+Then $4g^2\varepsilon=1/4$ and the required
 class is $\mathcal M_1(2,B,1/48)$ for a suitable $B$. The same consequence is displayed
 immediately after equation~(2) of their paper.
 \item[(BT)] de la Bret\`eche and Tenenbaum~\cite[Theorem~1.1]{BT} prove that for large $x$
@@ -746,8 +764,8 @@ Theorem~\ref{thm:generic} gives $P(a,b)\ll a^{3/10}\ell(a)^{1/2}\ll a^{3/10}\sqr
 
 \section{Rises in the quotient increments}\label{sec:rises}
 
-Throughout this section $k_i=q_{i+1}-q_i\ge1$, $d_i=b_i-b_{i+1}\ge1$, and a \emph{rise} is an
-index with $k_i<k_{i+1}$.
+Throughout this section $k_i=q_{i+1}-q_i\ge1$, $d_i=b_i-b_{i+1}\ge1$, and a
+\emph{rise} is an index $1\le i$ with $i+2\le P(a,b)$ and $k_i<k_{i+1}$.
 
 \begin{lemma}[Six quotients in arithmetic progression]\label{lem:ap}
 Let $q,h\ge1$ and $x_0>x_1>\dots>x_6\ge0$ satisfy $x_j(q+jh)+x_{j+1}=a$ for $0\le j\le5$. Then
@@ -831,7 +849,8 @@ Within a run the increments are nonincreasing, so equal values are consecutive. 
 low value occurs at most $4$ times per run, and at most $4(\rho+1)$ times in all.
 Lemma~\ref{lem:mult} bounds the number $\ell$ of low increments by
 $\ell^2\le8(\rho+1)\sum_jk_j\le8(\rho+1)\lfloor a/A\rfloor$. Let $s$ be the number of high
-increments, with smallest value $h_*$. Then $sh_*\le\lfloor a/A\rfloor$ and
+increments. If $s=0$, its bound is immediate. Otherwise let $h_*$ be their
+smallest value. Then $sh_*\le\lfloor a/A\rfloor$ and
 $a^3\le26244h_*^3A^4$, so $s^3a^3\le26244A^4(a/A)^3\le26244Aa^3$.
 \end{proof}
 
@@ -857,16 +876,28 @@ run of $T\asymp a^{3/10}$ remainders must contain $\gg a^{1/5}$ rises.
 
 \section{The Hankel hierarchy}\label{sec:hankel}
 
-Let $b_0>b_1>\dots>b_{N-1}>0$ be the positive part of an orbit, with quotients $q_i$ and
-increments $k_i=q_{i+1}-q_i$. From
-here on the orbit is indexed from $0$, so $b_0=b$, $N=P(a,b)$ and $b_N=0$; the symbols $p_i$,
-$w_i$ below are unrelated to $p$ and $w$ of the earlier sections. Put $p_i(j)=q_{i+j}-q_i$ for $j<N-i$. Define weights
-$w_i(j)$ backwards by $w_{N-1}=\delta_0$ and
+We now index the orbit from zero: $b_0=b$, $N=P(a,b)$ and
+$b_0>\dots>b_{N-1}>0=b_N$. Write $q_i=\lfloor a/b_i\rfloor$ and
+$k_i=q_{i+1}-q_i$. For each remaining tail we construct a probability measure
+on its quotient differences. Reweighting by the reciprocal quotient will
+make its total mass equal to $b_i/a$.
+
+Put $p_i(j)=q_{i+j}-q_i$ for $0\le j<N-i$; the symbols $p_i,w_i$
+are local to this construction. Define the weights backwards from
+$w_{N-1}(0)=1$ by
 \[
-w_i(0)=1-\sum_{j}\frac{w_{i+1}(j)}{p_i(j+1)},\qquad w_i(j+1)=\frac{w_{i+1}(j)}{p_i(j+1)} .
+w_i(0)=1-\sum_{j=0}^{N-i-2}\frac{w_{i+1}(j)}{p_i(j+1)},\qquad
+w_i(j+1)=\frac{w_{i+1}(j)}{p_i(j+1)}
+\quad(0\le j<N-i-1).
 \]
 Let $\mu_i$ be the measure with mass $w_i(j)$ at $p_i(j)$, and let
-$\nu_i=\mu_i/(q_i+x)$. Write $h_i(s)=\int x^s\,d\nu_i=\sum_jw_i(j)p_i(j)^s/q_{i+j}$.
+\[
+ d\nu_i(x)=\frac{d\mu_i(x)}{q_i+x},\qquad
+ h_i(s)=\int x^s\,d\nu_i=\sum_{j=0}^{N-i-1}
+ \frac{w_i(j)p_i(j)^s}{q_{i+j}}.
+\]
+The recursion is chosen to reproduce the division equation
+$q_ih_i(0)+h_{i+1}(0)=1$ for $i+1<N$.
 
 \begin{lemma}\label{lem:moments}
 \begin{enumerate}
@@ -910,19 +941,28 @@ Its quadratic form is $\sum_jw_i(j)q_{i+j}^{-1}\bigl(\sum_lc_lp_i(j)^l\bigr)^2$.
 vanishes, the polynomial $\sum_lc_lx^l$ vanishes at the $N-i\ge r$ distinct points $p_i(j)$, so
 it is zero, by the invertibility of the Vandermonde matrix. So the matrix is positive definite.
 
-\emph{The first four.} By Lemma~\ref{lem:moments}(2),(3), the entries $h_i(s)$, $s\le2r-2$, are
+\emph{The first four.} First, $I_1(i)=ah_i(0)=b_i$.
+For $i+1<N$, write $\beta_j=b_{i+j}/a$. Then
+$h_i(0)=\beta_0$, $h_i(1)=\beta_1$ and
+$h_i(2)=k_i\beta_1+\beta_2$. Hence
+\[
+ I_2(i)=a\bigl(\beta_0(k_i\beta_1+\beta_2)-\beta_1^2\bigr)
+       =a(\beta_0-\beta_1)=d_i,
+\]
+using $q_i\beta_0+\beta_1=q_{i+1}\beta_1+\beta_2=1$.
+For the larger determinants, Lemma~\ref{lem:moments}(2),(3) makes the entries $h_i(s)$, $s\le2r-2$,
 explicit polynomials in $\beta_j=b_{i+j}/a$ and $k_i,\dots,k_{i+2r-4}$; at the end of the orbit
-this uses $h_{N-1}(s)=0$ for $s\ge1$, that is, $b_N=0$. The claimed values are
-linear in the $b_{i+j}$. So each identity holds modulo the relations
-$q_{i+j}\beta_j+\beta_{j+1}=1$, with explicit certificates of at most $156$ terms per
-coefficient.
+this uses $h_{N-1}(s)=0$ for $s\ge1$, that is, $b_N=0$.
+Expanding and reducing by $q_{i+j}\beta_j+\beta_{j+1}=1$ gives $D_i$
+and $L_i$ in the stated ranges. The formal proof records polynomial
+certificates for these two reductions.
 \end{proof}
 
 The ranges $i+3<N$ and $i+5<N$ cannot be relaxed to all $i$ at which $D_i$ or $L_i$ is defined.
 For $a=926$ and $b=229$ the orbit is $229,10,6,2$, so $N=4$, and $I_3(1)=984$ while $D_1=988$.
 
 \begin{remark}
-So the positivity of $D$ and $L$, proved earlier by explicit identities, is an instance of the
+In these index ranges, the positivity of $D$ and $L$, proved earlier by explicit identities, is an instance of the
 positivity of Gram determinants. The integrality of $L$ (Lemma~\ref{lem:six}(1)) is an instance
 of the integrality of $I_4$. A priori $I_r(i)$ involves the moments $h_i(s)$ for $s\le2r-2$,
 and hence $b_i,\dots,b_{i+2r-2}$. In fact $I_3(i)$ depends only on $b_i,b_{i+1},b_{i+2}$ and
@@ -955,6 +995,8 @@ Fix a state $i$ with $i+6<N$ and write, for $m\ge0$,
 k_m=q_{i+m+1}-q_{i+m},\qquad d_m=b_{i+m}-b_{i+m+1},\\
 s_m=k_0+\dots+k_{m-1},\qquad r_m=k_m(s_m+s_{m+1})+k_{m+1}.
 \end{gather*}
+All indices here are local to the chosen state, and the definitions apply
+whenever the indicated orbit entries exist; the empty sum gives $s_0=0$.
 So $s_m=q_{i+m}-q_i$, $r_0=k_0^2+k_1$, $r_1=k_1(2k_0+k_1)+k_2$, and so on. Consider the
 $3\times4$ integer matrix
 \[
@@ -987,7 +1029,8 @@ the measure $\nu_i$ of Section~\ref{sec:hankel}. The three rows of $\mathcal M_i
 $\nu_i(\pi_i)=0$ and $\mu_i(x\pi_i)=\mu_i(x^2\pi_i)=0$, and $\nu_i(xf)=\mu_i(f)-q_i\nu_i(f)$ turns these
 into $\nu_i(x^j\pi_i)=0$ for $j\le3$. In particular $U_m(i)/I_4(i)$ are tail sums of the
 Newton coefficients of $\pi_i$: writing $\pi_i=\sum_{l\le4}\gamma_lF_l$, one has $U_m(i)/I_4(i)=\gamma_{m+1}+\dots+\gamma_4$,
-and $\gamma_0=-C_0=I_4(i+1)/I_4(i)$. None of this is used below.
+and $\gamma_0=-C_0=I_4(i+1)/I_4(i)$. This interpretation is not needed for
+the elementary count in this section; it will be used in Section~\ref{sec:joint}.
 \end{remark}
 
 The \emph{pattern} of $i$ is the vector of seven integers
@@ -1037,7 +1080,7 @@ $b_{i+1},\dots,b_{i+4}$ from both sides. The difference becomes the zero polynom
 $a,q_i,b_i,k_0,\dots,k_4$; explicit certificates are in the Lean proof. The polynomial $H_4$ is
 the Hankel determinant $\det\bigl(\mu_i(x^{j+l})\bigr)_{j,l<4}$, and the identity is
 $I_4(i)\,\pi_i(-q_i)=a\det\bigl(\mu_i(x^{j+l})\bigr)$. This follows from the determinant formula for
-$\pi_i$, since $\nu_i(x^{s+1})+q_i\nu_i(x^s)=\mu_i(x^s)$; we do not need this interpretation. The
+$\pi_i$, since $\nu_i(x^{s+1})+q_i\nu_i(x^s)=\mu_i(x^s)$. The
 leading coefficient comes from the term $m=3$.
 \end{proof}
 
@@ -1229,6 +1272,8 @@ $\theta=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)=(L(i),L(i+1),L(i+2),U_1(i),U_2(i),U_1(i+1)
 In particular $A$ is still the scale of the window $[A,2A)$.
 
 \subsection{Signs}
+Throughout this subsection the pattern and gaps arise from the same state,
+so the cofactor relations of Lemma~\ref{lem:pattern} remain in force.
 Put $S(a,b,c)=a^2b+(a-1)b^2+ac$ and $E(a,b,c,d)=a^2c+(2a-1)bc+ac^2+ad$. Both are positive at
 positive integers.
 
@@ -1261,7 +1306,8 @@ $\beta^2-4\alpha\gamma=-4N_1u_2(N_1+u_1)(u_1-u_2)$, and
 (\beta d_1-2\alpha e_1)^2+(\beta^2-4\alpha\gamma)(4\alpha f_2-d_1^2)
 =16\,N_0N_1^2u_1(N_0-u_2)(N_1+u_1)^2(u_1-u_2),
 \]
-where $d_1,e_1,f_2$ are the leading coefficients of $d,e,f$. In particular, under the
+where $d_1,e_1,f_2$ are the coefficients of $z,z,z^2$ in $d,e,f$, respectively.
+In particular, under the
 hypotheses of Lemma~\ref{lem:signs}, $\alpha>0$, $\beta^2-4\alpha\gamma>0$ and the last
 quantity is nonzero.
 \end{lemma}
@@ -1479,6 +1525,8 @@ A^{20}H^{31}\Xi^2$, hence $T^{32}A^{11}\ll\Xi^2a^{16}$ and $T^{54}\le(8A\Delta)^
 
 \begin{proof}[Proof of Theorem~\ref{thm:827}]
 Since $\Delta,\Xi(a)\ll_\eta a^\eta$, every window has $T\ll a^{(16+42\eta)/54}$, and $16/54=8/27$.
+Choose $\eta$ sufficiently small in terms of $\varepsilon$, include the
+bounded-length windows, and sum over the $O(\log a)$ dyadic windows.
 \end{proof}
 
 \begin{remark}
@@ -1503,6 +1551,9 @@ $m=p_\pi$, pivot columns $c_1<c_2<c_3$, other columns $c_4<c_5$, and $u$, $v$ as
 Proposition~\ref{prop:minorvec}. Let $\Lambda_p\subseteq\mathbb Z^3$ be the subgroup of $x$ with
 $m\mid u\cdot x$ and $m\mid v\cdot x$. It contains $m\mathbb Z^3$. Let $\lambda(p)$ be the least
 sup-norm of a nonzero vector of $\Lambda_p$.
+Subscripts on $L_c$ and $p_{abc}$ retain the original column labels
+$0,\dots,4$; $c_1,c_2,c_3$ enumerate the chosen pivot. We use
+$\gcd(n,x)$ for $\gcd(n,x_1,x_2,x_3)$ when $x\in\mathbb Z^3$.
 
 \begin{lemma}[Lifting]\label{lem:lift}
 Let $L_c$ be $me_a$ if $c=c_a$ is a pivot column, $u$ if $c=c_4$ and $v$ if $c=c_5$. For every
@@ -1522,7 +1573,7 @@ are $k_c=L_c\cdot k'/m$, and since $p_{123}=L(i+1)\ge1$, the gaps $(k_1,k_2,k_3)
 invertible linear image of $k'$.
 
 \begin{lemma}[Index]\label{lem:index}
-If $(t+1)^3>|m|$ then $\lambda(p)\le t$.
+If $t$ is a nonnegative integer and $(t+1)^3>|m|$, then $\lambda(p)\le t$.
 \end{lemma}
 
 \begin{proof}
@@ -1539,6 +1590,9 @@ Since $\psi(x)=\psi(y)$ forces $x-y\in\Lambda_p$, the same argument shows that $
 index at most $|m|$ in $\mathbb Z^3$.
 
 \subsection{Reduced bases}
+
+Here $|v|$ denotes the Euclidean norm, while $|v|_\infty$ denotes the sup norm
+used to define $\lambda(p)$. In particular, $|v|\ge |v|_\infty$.
 
 \begin{lemma}[Reduction]\label{lem:reduce}
 Let $\Lambda\subseteq\mathbb Z^3$ be a subgroup containing $m\mathbb Z^3$, $m\ge1$. There is a
@@ -1635,7 +1689,9 @@ coefficient $\alpha$ and the binary discriminant in $(y_1,y_2)$ nonzero, and the
 well. First choose one of the planes
 $\langle e_1,e_2\rangle$, $\langle e_1,e_3\rangle$, $\langle e_2,e_3\rangle$,
 $\langle e_1+e_2,e_3\rangle$: if all four binary discriminants vanished then $\det(2S)$ would
-vanish, by an explicit combination with polynomial coefficients. Then choose $f$, $g$ or $f+g$ in the plane. With this, Lemma~\ref{lem:slice} holds
+vanish, by an explicit combination with polynomial coefficients. Writing $f,g$
+for the displayed spanning vectors of the chosen plane, choose $f$, $g$ or
+$f+g$ as its first basis vector. With this, Lemma~\ref{lem:slice} holds
 for $\alpha\ne0$ and $D\ne0$ of either sign, under the same hypothesis on $W$. When
 $D<0$ each slice uses Lemma~\ref{lem:defnorm}, whose bound $4\tau(|m|)^3$ is at most
 $2\tau(|m|)^3(\log_3\bigl((11K^2H(3K+2))^2\bigr)+1)$ because $11K^2H(3K+2)\ge3$.
@@ -1659,8 +1715,10 @@ for the $3\times3$ matrix $\hat B$ of the lifts in columns $1,2,3$, and
 $m\det\hat B=p_{123}\delta\ne0$. So $y$ is a zero of $\tilde F=F_\theta\circ\hat B$, and
 $\det(2S_{\tilde F})=\det(2S_{F_\theta})(\det\hat B)^2\ne0$. Each $|b_i|^2\ge\lambda(p)^2$ and
 $|k'|^2\le3H^2$, so $\lambda(p)|y_i|\le3H$, and after the plane substitution the coordinates lie
-in $[-Y',Y']$ with $Y'=4\lfloor3H/\lambda(p)\rfloor+1\le12H+1$. Since $|b_i|\le2X^3$ by
-Lemma~\ref{lem:reduce}, every lift is at most $6X^3$, and the coefficients of the final quadratic
+in $[-Y',Y']$ with $Y'=4\lfloor3H/\lambda(p)\rfloor+1\le12H+1$.
+Every nonzero integer basis vector has length at least one, so
+Lemma~\ref{lem:reduce} gives $|b_i|\le2X^3$. Maximality of the pivot bounds
+each entry of $L_c$ by $|m|$. Thus every lift is at most $6X^3$, and the coefficients of the final quadratic
 are at most $12^3\cdot4X^2\cdot(6X^3)^2=248832X^8$. The slice count applies with
 $(2Y'+1)(W+4)$, and $y$ determines $\kappa$.
 \end{proof}
@@ -1732,6 +1790,9 @@ small integer invariants as coordinates. This gives the strongest bound of the
 paper without the weighted lattice count of Section~\ref{sec:45152}.
 Throughout this section constants may depend on fixed positive integers $m,n$
 and on a positive loss $\eta$, but never on the dividend, orbit or pattern.
+The argument has three steps: construct the curves for a fixed pattern,
+increase their degree by adjoining integer invariants, and apply the
+curve-counting theorem using the heights of those invariants.
 
 \subsection{Selected windows and their curve components}
 
@@ -1747,28 +1808,115 @@ seven gaps at most $H$. These are the selected starts. Their complete minor
 vectors have height at most $X$, and $X\ge1$. The three free node coordinates
 $q_{i+j}-q_i$, $j=1,2,3$, are integers in $[0,3H]$.
 The pattern count from Section~\ref{sec:827} is $O_\eta(a^\eta X^5)$.
+Thus $H$ controls gaps, $X$ controls patterns, and $S,Y$ will control
+the additional integer coordinates.
 
-Write $A_0=I_4(i)$ for the first consecutive minor, to distinguish it from the
-window scale $A$. The pattern gives $\rho>0$, $u>0$, $v<0$ and the corresponding
-next-state quantities. In gap coordinates,
+For the pattern $\theta=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)$, put
 \[
- k_0=(u k_1+v k_2+k_3)/\rho,\qquad
- k_4=\rho' k_1-u' k_2-v' k_3.
+ A_0=N_0=I_4(i),\qquad
+ (\rho,u,v)=\frac{(N_1,u_1,u_2)}{N_0},\qquad
+ (\rho',u',v')=\frac{(N_2,v_1,v_2)}{N_1}.
 \]
-Let $P_4$ be the monic quartic orthogonal polynomial of the current state,
-$R_4$ the translated next quartic, and $Z=xR_4$. Their resultant and the
-quartic norm $D=\nu_i(P_4^2)$ are polynomials in three free coordinates after
-these eliminations. Actual points satisfy
+Here $A_0$ is a minor, distinct from the window scale $A$, and
+$\rho>0$, $u>0$, $v<0$ by Lemma~\ref{lem:signs}.
+Use the three free nodes $s_1,s_2,s_3$ as coordinates and define
+\[
+ s_0=0,\quad
+ s_4=(\rho+u)s_1-(u-v)s_2-(v-1)s_3,\quad
+ k_j=s_{j+1}-s_j\quad(0\le j\le3),
+\]
+\[
+ k_4=\rho'k_1-u'k_2-v'k_3,\qquad s_5=s_4+k_4.
+\]
+The first elimination is equivalent to
+$\rho k_0=uk_1+vk_2+k_3$. Let
+\[
+ \gamma=(\rho,-\rho-u,u-v,v-1,1),
+\]
+and let $\gamma'$ be the same expression in the primed quantities. The
+orthogonal quartics of the current and next states, in the same variable, are
+\[
+ P_4(x)=\sum_{j=0}^4\gamma_j\prod_{\ell=0}^{j-1}(x-s_\ell),
+ \qquad
+ R_4(x)=\sum_{j=0}^4\gamma'_j\prod_{\ell=1}^{j}(x-s_\ell).
+\]
+Put $Z=xR_4$ and $f=\sum_{j=0}^4\gamma_j(s_j^2+k_j)$.
+The next-state quadratic relation eliminates $k_5$, giving the cubic
+polynomial
+\begin{align*}
+ D={}&\sum_{j=0}^4\gamma_j
+ \bigl(s_j^3+3s_j^2+3s_j(1+k_j)+(1+k_j)^2\bigr)
+ +\sum_{j=0}^3\gamma_jk_{j+1}\\
+ &+\rho'r_1-u'r_2-v'r_3-k_4(2s_4+k_4),
+\end{align*}
+where $r_j=k_j(s_j+s_{j+1})+k_{j+1}$ for $j=1,2,3$.
+At selected starts, $D=\nu_i(P_4^2)$ is the quartic norm. Actual points satisfy
 \begin{equation}\label{eq:jointcurve}
  f=0,\qquad A_0\operatorname{Res}(P_4,Z)=aD^4.
 \end{equation}
 Here $f$ is the pattern quadratic, $\deg D\le3$, and the second equation has
 degree at most twelve. The two equations are relatively prime; the quadratic
 has irreducible quadratic part with nonzero Hessian determinant. Their common
-zero set admits a cover by at most twenty-four rational prime curves, each of
-degree at most twenty-four. Degrees throughout this section mean the leading
+zero set admits a cover by at most twenty-four integral affine curves over
+$\mathbb Q$, each of degree at most twenty-four. Here ``integral'' means that
+the defining ideal is prime over $\mathbb Q$; it does not assert geometric
+irreducibility or a rational parametrization.
+Degrees throughout this section mean the leading
 coefficient of the eventual affine Hilbert function, equivalently the degree
 of the projective closure.
+
+\subsection{Reconstruction and component selection}
+
+Two further identities distinguish components on which the later rational
+functions have the required behavior. We give their definitions before
+stating the component bounds.
+
+Form the $8\times9$ matrix of coefficients of
+$P_4,xP_4,x^2P_4,x^3P_4,Z,xZ,x^2Z,x^3Z$ in the basis
+$1,x,\dots,x^8$. Let $c_j$ be $(-1)^j$ times the minor obtained by
+deleting column $j$, and define
+\[
+ Q=\frac{c_1-c_2}{c_1-c_0},\qquad
+ E_0=a\,\frac{\det(c_{r+s})_{0\le r,s<3}(c_1-c_0)^3}
+                  {(c_1^2-c_0c_2)^3}.
+\]
+At an actual point the matrix annihilates the moment vector
+$(h_i(0),\dots,h_i(8))$ and has rank eight. Indeed, the resultant in
+\eqref{eq:jointcurve} is positive, so $P_4$ and $Z$ are coprime.
+The identities
+$q_ih_i(0)+h_i(1)=q_ih_i(1)+h_i(2)=1$, together with
+$h_i(0)h_i(2)>h_i(1)^2$, then give
+\[
+ h_i(j)=\frac{c_j(c_1-c_0)}{c_1^2-c_0c_2}\quad(0\le j\le8),\qquad
+ Q=q_i,\qquad E_0=I_3(i).
+\]
+In particular, all displayed denominators are nonzero at selected starts.
+
+To state the identities as equations on the curve, use the raw-moment
+polynomials
+\[
+ M_0=1,\qquad
+ M_{r+1}(k_0,k_1,\dots)
+ =\sum_{t=0}^{r}\binom rt k_0^{r-t}M_t(k_1,k_2,\dots).
+\]
+Only $M_0,\dots,M_6$ are needed; they involve $k_0,\dots,k_4$.
+At selected starts, $M_r=\mu_i(x^r)$ for $0\le r\le6$, by the
+weight recursion in Section~\ref{sec:hankel}. Set
+\[
+ H_3=\det(M_{r+s})_{0\le r,s<3},\qquad
+ H_4=\det(M_{r+s})_{0\le r,s<4},\qquad
+ H_{013}=\det(M_{r+s})_{\substack{r=0,1,2\\s=0,1,3}}.
+\]
+This $H_4$ is the polynomial of Lemma~\ref{lem:multid}. With
+$p_3=v-1-s_1-s_2-s_3$, the coefficient of $x^3$ in $P_4$, the
+normalization and raw-resolvent identities are
+\begin{equation}\label{eq:jointcuts}
+ A_0P_4(-Q)=aH_4,\qquad
+ E_0P_4(-Q)=a\bigl((Q-p_3)H_3-H_{013}\bigr).
+\end{equation}
+Among components containing a selected start, we call a component
+\emph{retained} if both equations, after clearing denominators, hold
+identically on it.
 
 For clarity, the additional component facts used below are recorded together.
 They apply to components supporting the selected actual points, not to an
@@ -1784,7 +1932,7 @@ patterns every component has even degree: it is a conic or has degree at least f
 124928 A^4H^5X<a^3,
 \end{equation}
 no line component contains a selected actual point.
-\item The cleared normalization and raw-resolvent identities have degrees at
+\item The cleared identities \eqref{eq:jointcuts} have degrees at
 most $166$ and $404$. On a prime component of degree $d$, either each identity
 holds identically or its selected actual points number at most $166d$ or $404d$,
 respectively.
@@ -1792,41 +1940,47 @@ respectively.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
+\emph{Exceptional patterns and parity.}
 The sign identities and the quadratic relation give the four possible
 vanishing pair sums. Each is a fixed linear condition on the minor vector;
 counting it in the same pivot charts as the ordinary minor count removes one
 power of $X$. On the infinity section of a nonexceptional component the
-leading node values are distinct. The resultant has order ten times the
-hyperplane order. The fixed-dividend equation then makes each branch's
+leading node values are distinct. The resultant has pole order ten times the
+hyperplane multiplicity. The fixed-dividend equation then makes each branch's
 hyperplane multiplicity even; their residue-degree weighted sum is $d$.
 This proves the parity assertion, including over $\mathbb Q$ without a
 geometric irreducibility assumption.
 
-The line equations force
+\emph{Lines.} The line equations force
 $aH^5(24X+464)\ge q_i^4$ at a supported point. But $q_i\ge a/(4A)$, and $X\ge1$
 makes \eqref{eq:jointscale} imply the strict reverse inequality. This excludes
-lines also for exceptional patterns. For the third assertion, clear the
+lines also for exceptional patterns.
+
+\emph{Proper cuts.} Clear the
 rational quotient reconstructed from the two quartics and then clear the
 normalization and resolvent equations. Polynomial degree bounds give $166$
 and $404$; a proper polynomial section of a degree-$d$ prime curve has at
-most its degree times $d$ distinct rational points. Reconstruction makes the
-free nodes injective on gap vectors of a fixed complete pattern; at most four
-actual starts share a gap vector.
+most its degree times $d$ distinct rational points. Reconstruction recovers
+$q_i$ from the free nodes and the fixed pattern. Since $q_i$ strictly
+increases along the orbit, distinct selected starts have distinct free-node
+triples. Thus these point bounds also bound the number of selected starts.
 
-For a nonexceptional conic the double infinity section gives a polynomial
-parameter of degree two. Clearing a uniformly bounded common denominator gives
-an integer parameter. The rank-three invariant is a proper rational function
-of this parameter, except for a bounded number of points cut out by the actual
+\emph{Conics.} For a nonexceptional conic the double infinity section gives a polynomial
+parameter of degree two. One obtains an integer parameter and quadratic
+numerator polynomials with a common denominator, whose heights are bounded
+by a fixed power of $a$. The rank-three invariant is a proper rational
+function of this parameter---its numerator has smaller degree than its
+denominator after cancellation---except for a bounded number of points cut out by the actual
 normalization equations. At integral values, a polynomial Bezout identity
 forces the denominator value to divide a nonzero resultant of height bounded
 by a fixed power of $a$. Its number of divisors is $O_\eta(a^\eta)$; each value
 has boundedly many parameter preimages. Coefficient, denominator and resultant
 heights are uniform because the conic degrees are fixed and $X\le10^{16}a^7$.
 
-These algebraic steps are proved in the rational component, line-exclusion,
-parity and conic modules listed below. In particular the conic count includes
-its properness and height estimates; it is not an additional arithmetic
-hypothesis of the final theorem.
+The formal proofs include the properness and height estimates used in this
+conic argument. The README maps the component, line-exclusion, parity and
+conic arguments to their Lean modules; the scope of the formalisation is
+described in Section~\ref{sec:lean}.
 \end{proof}
 
 \subsection{The joint coordinates}
@@ -1842,8 +1996,8 @@ $r_j=k_j(s_j+s_{j+1})+k_{j+1}$, write
  B_0&=k_0r_1-k_1r_0=k_0^2k_1+(k_0-1)k_1^2+k_0k_2,\\
  B_1&=k_1r_2-k_2r_1=k_1^2k_2+(k_1-1)k_2^2+k_1k_3.
 \end{align*}
-They are positive at actual states. On a component surviving the two cuts,
-let $E_0$ be the reconstructed rational rank-three invariant. Define
+They are positive at actual states, and $B_0=H_3$. On a retained component,
+use the reconstructed function $E_0$ to define
 \[
  E_{12}=\frac{B_1E_0-A_0k_1}{B_0},\qquad
  E_{02}=\frac{k_0E_{12}+k_2E_0}{k_1},\qquad
@@ -1879,15 +2033,16 @@ for $q$ gives $Y$.
 
 \subsection{The extra degree and the powered graph}
 
-Let $C$ be a retained nonexceptional prime component of degree $d\ge4$.
-On its normalization let $E$ denote the old infinity divisor, of degree $d$.
-At a branch with hyperplane multiplicity $e$, the retained identities give
+Let $C$ be a retained nonexceptional component of degree $d\ge4$.
+On the normalization of its projective closure, let $E$ denote the
+pullback of the original hyperplane at infinity, of degree $d$.
+At a branch over infinity with hyperplane multiplicity $e$, the retained identities give
 \begin{equation}\label{eq:jointorders}
  e\text{ is even},\qquad \operatorname{ord}(J)=-5e/2,
  \qquad \min_j\operatorname{ord}(W_j)=3e/2.
 \end{equation}
-Here the resultant order is $-10e$, both cubic determinants have order $-3e$,
-and the fourth determinant has order $-6e$. Substitution in the normalization
+Here the resultant order is $-10e$, both $B_0$ and $B_1$ have order $-3e$,
+and $H_4$ has order $-6e$. Substitution in the normalization
 and raw-resolvent identities gives the rank-three zero order $3e/2$.
 The two reconstruction formulas then give the stated orders for the other
 curvatures. Distinct leading nodes exclude cancellation of the requisite
@@ -1914,7 +2069,9 @@ extra branch contributes at least one even when its residue field is larger
 than $\mathbb Q$.
 
 For fixed positive integers $m,n$, adjoin $W_0^m,W_1^m,W_2^m,J^n$ to the
-three original node coordinates. Projection onto those original coordinates
+three original node coordinates. The new curve is the closure of this
+graph on the common domain of the rational functions.
+Projection onto the original coordinates
 is birational. A generic rational linear combination of all seven coordinates
 avoids cancellation at every relevant pole: each forbidden choice is a proper
 linear subspace over the infinite field $\mathbb Q$. Its old infinity poles
@@ -1924,8 +2081,7 @@ $\delta$. It follows that
 \begin{equation}\label{eq:jointdegree}
  2\delta\ge(5n+3m)d+2m,\qquad \delta\ge10n+7m=:L_*.
 \end{equation}
-This inequality, rather than an unneeded equality of divisors, is what the
-formal proof uses. For $m=n=1$ it gives $\delta\ge4d+1\ge17$.
+For $m=n=1$ it gives $\delta\ge4d+1\ge17$.
 Clearing the common rational denominator gives the uniform upper bound
 $\delta\le((m+n)247+1)d$. In the unpowered case the sharper bound $247d$
 also holds. Actual integer points on the powered graph lie in the box of
@@ -1935,7 +2091,7 @@ radius $\max(3H,S^m,Y^n)$.
 
 We use the coefficient-uniform affine-curve theorem of
 Castryck--Cluckers--Dittmann--Nguyen~\cite[Theorem~3]{CCDN}, also stated as
-\cite[Corollary~2.2]{CDHNV}: a rational prime affine curve of degree $\delta$
+\cite[Corollary~2.2]{CDHNV}: an integral affine curve over $\mathbb Q$ of degree $\delta$
 in fixed ambient dimension $N\ge2$ satisfies
 \begin{equation}\label{eq:jointexternal}
  N_{\rm aff}(C,B)\ll_N \delta^3 B^{1/\delta}(\log B+\delta),\qquad B\ge1.
@@ -1951,34 +2107,47 @@ is $O_\eta(a^\eta)$. The nonexceptional conics and proper cuts contribute
 $O_\eta(a^\eta X^5)$. Exceptional patterns number $O_\eta(a^\eta X^4)$; after
 line exclusion the original three-coordinate curve count gives
 $O_\eta(a^\eta H^{1/2})$ per pattern. The other components use
-\eqref{eq:jointdegree}. Patterns and complete gap vectors have multiplicity
-at most four. Summing the at-most-twenty-four components, allowing overlaps,
-gives the proved local estimate
+\eqref{eq:jointdegree}. At most four actual starts share a fixed pattern
+and complete gap vector. Summing the at-most-twenty-four components,
+allowing overlaps, gives, under the line-exclusion condition
+\eqref{eq:jointscale},
 \begin{equation}\label{eq:jointcount}
  T\ll_{m,n,\eta}a^\eta\left(
  X^5+X^4H^{1/2}+X^5\max(H,S^m,Y^n)^{1/L_*}\right).
 \end{equation}
 The added invariants introduce no additional freely counted pattern coordinates.
 
-Here is the exponent calculation in the same remainder-window coordinates as
-the formal proof. Outside the large-mean-gap range,
+We now eliminate the window scale $A$ from the count. In the range
+$AT\le28a$,
 \[
  HAT\le56a,\quad Xa^3\le3609600 A^4H^6,\quad T^2\le8\Delta A,
- \qquad \Delta=\max_{j\le32a^7}\tau(j).
+ \qquad \Delta=\max_{1\le j\le32a^7}\tau(j).
 \]
-A graph branch $T^{L_*}\le KX^{5L_*}B$ and a box estimate
-$BT^u\le Fa^v$ imply, by raising these inequalities and cancelling positive
+If the graph term in \eqref{eq:jointcount} dominates, split according to
+which of $\max(H,S^m)$ and $Y^n$ is larger, and call that radius $\mathcal B$.
+Raising the bound to $L_*$ gives $T^{L_*}\le KX^{5L_*}\mathcal B$,
+where $K\ll_{m,n,\eta}a^{\eta L_*}$ includes the counting loss. This and a box estimate
+$\mathcal B T^\beta\le C_1a^\gamma$, where $C_1$ may include divisor factors,
+imply, by raising these inequalities and cancelling positive
 powers of $A,a$,
 \[
- T^{51L_*+u}\le
- K\,3609600^{5L_*}56^{30L_*}F(8\Delta)^{10L_*}a^{15L_*+v}.
+ T^{51L_*+\beta}\le
+ K\,3609600^{5L_*}56^{30L_*}C_1(8\Delta)^{10L_*}a^{15L_*+\gamma}.
 \]
-The curvature bound gives $ST^3\ll a$; the drop bound absorbs $H$ into its
-positive $m$th power, giving $(u,v)=(3m,m)$ up to divisor factors.
+The curvature bound gives $ST^3\ll a$, while
+$HT^3\le448\Delta a$ follows from the first and third window inequalities.
+Since $H\ge1$ and $m\ge1$,
+$\max(H,S^m)\le\max(H,S)^m$. This gives
+$(\beta,\gamma)=(3m,m)$ for $\mathcal B=\max(H,S^m)$, up to divisor factors.
 The rank-five bound gives $YT^{20}\ll\Delta^5a^6$, hence
-$(u,v)=(20n,6n)$. The other terms and the failure of
-\eqref{eq:jointscale} have exponent at most $5/17$; the large-mean-gap range
-has exponent $1/4$. Thus every window, and then their dyadic sum, has exponent
+$(\beta,\gamma)=(20n,6n)$ for $\mathcal B=Y^n$.
+For comparison, the ordinary-pattern term gives
+$T^{51}\ll a^{15+O(\eta)}$, the exceptional-pattern term gives
+$T^{85}\ll a^{25+O(\eta)}$, and failure of \eqref{eq:jointscale} gives
+$T^{17}\ll a^{5+O(\eta)}$, after absorbing divisor factors.
+These exponents are all $5/17$ up to the arbitrarily small loss.
+The remaining range $AT>28a$ gives $T^4\ll a$.
+Thus every window, and then their dyadic sum, has exponent
 \[
  \max\left(\frac{15L_*+m}{51L_*+3m},
            \frac{15L_*+6n}{51L_*+20n}\right)+\varepsilon.
@@ -2012,229 +2181,86 @@ to exclude the weighted-lattice counting modules.
 
 \section{The Lean formalisation}\label{sec:lean}
 
-The repository accompanying this paper contains a Lean~4 project (toolchain
-\lean{v4.35.0}, Mathlib \lean{v4.35.0}) that proves the theorems of
-Section~\ref{sec:intro}, with \eqref{eq:NT} and~\eqref{eq:BT} as hypotheses for
-Theorem~\ref{thm:loglog}. The strongest result, Theorem~\ref{thm:joint}, is
+The accompanying Lean~4 project uses toolchain \lean{v4.35.0} and Mathlib
+\lean{v4.35.0}. It proves the main results of this paper, including the
+curve-counting input to Theorem~\ref{thm:joint}. The logarithmic refinement
+is the one exception: its Lean proof takes the two published analytic
+estimates \eqref{eq:NT} and~\eqref{eq:BT} as explicit hypotheses.
+
+The strongest bound has the following statement:
 \begin{quote}\ttfamily\small
 theorem P\_le\_joint\_optimal :\\
 \hspace*{2em}$\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$,\\
 \hspace*{2em}0 < b $\to$ b < a $\to$ (P a b : $\mathbb R$) $\le$\\
 \hspace*{2em}C * (a : $\mathbb R$) \^{} (((1310 : $\mathbb R$) - Real.sqrt 655) / 4365 + $\varepsilon$)
 \end{quote}
-Its rational versions have the same quantifiers, with exponents
-\lean{(2201 : $\mathbb R$) / 7480} and \lean{(128 : $\mathbb R$) / 435}.
-Theorem~\ref{thm:main} is
-\begin{quote}\ttfamily\small
-theorem P\_le : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0,\\
-\hspace*{2em}$\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
-\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((3 : $\mathbb R$) / 10 + $\varepsilon$)
-\end{quote}
-and Theorem~\ref{thm:2377} is
-\begin{quote}\ttfamily\small
-theorem P\_le\_23\_77 : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0,\\
-\hspace*{2em}$\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
-\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((23 : $\mathbb R$) / 77 + $\varepsilon$)
-\end{quote}
-and Theorem~\ref{thm:1137} is
-\begin{quote}\ttfamily\small
-theorem P\_le\_11\_37 : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0,\\
-\hspace*{2em}$\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
-\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((11 : $\mathbb R$) / 37 + $\varepsilon$)
-\end{quote}
-and Theorem~\ref{thm:827} is
-\begin{quote}\ttfamily\small
-theorem P\_le\_8\_27 : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0,\\
-\hspace*{2em}$\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
-\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((8 : $\mathbb R$) / 27 + $\varepsilon$)
-\end{quote}
-and Theorem~\ref{thm:45152} is
-\begin{quote}\ttfamily\small
-theorem P\_le\_45\_152 : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0,\\
-\hspace*{2em}$\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
-\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} ((45 : $\mathbb R$) / 152 + $\varepsilon$)
-\end{quote}
-Here \lean{P a b} is defined by well-founded recursion as the number of positive terms
-($P(a,0)=0$, $P(a,b)=P(a,a\bmod b)+1$ for $b>0$), and the file checks $P(35,22)=7$.
-Theorem~\ref{thm:loglog} is formalised as
-\begin{quote}\ttfamily\small
-theorem P\_le\_loglog (hNT : NairTenenbaumDelta)\\
-\hspace*{2em}(hBT : BretecheTenenbaumMean) :\\
-\hspace*{2em}$\exists$ C > 0,\\
-\hspace*{2em}$\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
-\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} (3 / 10 : $\mathbb R$)\\
-\hspace*{4em}* $\surd$(Real.log (Real.log (3 * a)))
-\end{quote}
-Theorems~\ref{thm:rises} and~\ref{thm:hankel} are formalised as
-\begin{quote}\ttfamily\small
-theorem P\_le\_rises : $\exists$ C > 0,\\
-\hspace*{2em}$\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
-\hspace*{2em}(P a b : $\mathbb R$) $\le$ C * (a : $\mathbb R$) \^{} (1 / 4 : $\mathbb R$) * $\surd$(rises a b + 1)\\[2pt]
-theorem hankelInv\_pos\_int (hba : b < a) (hi : i < P a b)\\
-\hspace*{2em}(hr : r $\le$ P a b - i) :\\
-\hspace*{2em}$\exists$ n : $\mathbb N$, 0 < n $\wedge$ hankelInv a b i r = n
-\end{quote}
-\begin{sloppypar}\noindent
-together with \lean{hankelInv\_one}, \dots, \lean{hankelInv\_four}; the last states
-\lean{hankelInv a b i 4} $=$ \lean{sixL $\dots$}, the six-step integer of
-Lemma~\ref{lem:six}.
-Here \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean} are Lean propositions stating
-\eqref{eq:NT} (with $\sigma=1/4$) and~\eqref{eq:BT}, with existential constants and
-thresholds. \lean{hooleyDelta} is defined as the supremum over $u\in\mathbb R$, exactly as
-above. The command \lean{\#print axioms} was run on \lean{P\_le}, \lean{P\_le\_23\_77},
-\lean{P\_le\_11\_37}, \lean{P\_le\_8\_27}, \lean{P\_le\_45\_152}, \lean{norm\_count},
-\lean{minor\_vector\_count}, \lean{reduced\_basis}, \lean{short\_count},
-\lean{six\_step\_bound},
-\lean{P\_le\_of\_shortDivisorBound}, \lean{P\_le\_loglog}, \lean{P\_le\_rises}, \lean{hankelInv\_pos\_int} and
-\lean{hankelInv\_four}; for each it reports only \lean{propext},
-\lean{Classical.choice} and \lean{Quot.sound}. The new joint-lift statements and the external curve theorem have the same three axioms.
-The file \lean{Axioms.lean} checks this for the
-eleven main theorems with \lean{\#guard\_msgs}. The proof development contains no \lean{sorry}
-and no \lean{native\_decide}. The separate Mathlib-only \lean{Challenge.lean} states these eleven
-results with deliberate theorem holes for comparison with the proved \lean{Solution.lean};
-neither module imports the other. In the tables below, Lean names omit their namespaces
-(\lean{PierceLengthBound}, \lean{PierceLengthBound.Window}, \lean{OAI.Ostmann}).
-\end{sloppypar}
+The order of the quantifiers makes the uniformity explicit: $C$ may depend
+on $\varepsilon$, but not on $a$ or $b$. Here \lean{P a b} is defined by
+well-founded recursion,
+\[
+ P(a,0)=0,\qquad P(a,b)=1+P(a,a\bmod b)\quad(b>0),
+\]
+so it counts exactly the positive terms of the orbit. The formal orbit is
+indexed from zero, as in Section~\ref{sec:hankel}.
 
-\begin{center}\footnotesize
+The following table gives the public declarations; namespaces and the
+\lean{.lean} extension are omitted. The repository README gives the fuller
+map from proof steps to modules.
+\begin{center}\small
 \begin{tabular}{@{}lll@{}}
 \toprule
-Paper & Lean & File \\
+Result & Declaration & Module \\
 \midrule
-Definition of $P(a,b)$ & \lean{P}, \lean{orb} & \lean{Defs.lean}\\
-Lemma~\ref{lem:quot} & \lean{div\_lt\_div\_mod} & \lean{Block.lean}\\
-Lemma~\ref{lem:curv} & \lean{curvature\_identity}, \lean{one\_le\_bD} & \lean{Block.lean}\\
-Lemma~\ref{lem:fiber-eq} & \lean{fiber\_identity}, \lean{block\_fiber\_eq} & \lean{Block.lean}\\
-Lemma~\ref{lem:size} & \lean{bu\_mul\_le}, \lean{bv\_mul\_le} ($w>0$), \lean{bD\_mul\_le} & \lean{Block.lean}\\
-Lemma~\ref{lem:fiber} & \lean{fiber\_poly\_identity}, \lean{fiber\_card\_le} & \lean{Fiber.lean}\\
-Window runs & \lean{Window}, \lean{DivBound} & \lean{Window.lean}\\
-Proposition~\ref{prop:drop} & \lean{drop\_bound} & \lean{Window.lean}\\
-Proposition~\ref{prop:curv} & \lean{curvature\_bound} & \lean{Window.lean}\\
-Corollary~\ref{cor:window} & \lean{window\_bound} & \lean{Window.lean}\\
-Dyadic decomposition & \lean{P\_eq\_sum\_visits}, \lean{visits\_window} & \lean{Main.lean}\\
-Summing the windows & \lean{SlowGrowth}, \lean{tauMax\_slow}, \lean{P\_le\_of\_visits} & \lean{Main.lean}\\
-Theorem~\ref{thm:main} & \lean{P\_le} & \lean{Main.lean}\\
-Lemma~\ref{lem:div} & \lean{exists\_divisors\_power\_bound} & \lean{DivisorPowerBound.lean}\\
-Lemma~\ref{lem:six} & \lean{six\_divisibility}, \lean{six\_identity} & \lean{SixStep.lean}\\
-Corollary~\ref{cor:six} & \lean{six\_core} & \lean{SixStep.lean}\\
- & \lean{one\_le\_bD} & \lean{Block.lean}\\
- & \lean{Lz\_pos} & \lean{TwentyThreeMain.lean}\\
-Proposition~\ref{prop:six} & \lean{six\_step\_bound} & \lean{SixStep.lean}\\
-Proposition~\ref{prop:dropcount} & \lean{drop\_count\_bound'} & \lean{ShortSum.lean}\\
-Lemma~\ref{lem:geom} & \lean{sum\_min\_le}, \lean{sum\_min\_le\_gen} & \lean{Geometric.lean}\\
-Theorem~\ref{thm:generic} & \lean{P\_le\_of\_shortDivisorBound} & \lean{Conditional.lean}\\
-$\Delta_{\mathrm H}$, $\tau_A\le\Delta_{\mathrm H}$ & \lean{hooleyDelta}, \lean{dcount\_le\_hooleyDelta} & \lean{Hooley.lean}\\
-\eqref{eq:NT}, \eqref{eq:BT} & \lean{NairTenenbaumDelta}, \lean{BretecheTenenbaumMean} & \lean{Hooley.lean}\\
-Lemma~\ref{lem:partial} & \lean{sum\_hooleyDelta\_div\_le} & \lean{Hooley.lean}\\
-Theorem~\ref{thm:loglog} & \lean{P\_le\_loglog} & \lean{Hooley.lean}\\
-Lemma~\ref{lem:ap} & \lean{ap\_identity}, \lean{ap\_bound} & \lean{Rises.lean}\\
-Lemma~\ref{lem:norise} & \lean{ratio\_lt}, \lean{drop\_lt\_of\_not\_rise} & \lean{Rises.lean}\\
-Lemma~\ref{lem:mult} & \lean{sq\_card\_le\_of\_fiber} & \lean{Rises.lean}\\
-Proposition~\ref{prop:rises} & \lean{rises\_drop\_bound}, \lean{rises\_quot\_bound}, & \lean{Rises.lean}\\
- & \lean{rises\_incr\_bound} & \\
-Theorem~\ref{thm:rises} & \lean{P\_le\_rises}, \lean{P\_le\_of\_no\_rises} & \lean{RisesMain.lean}\\
-Lemma~\ref{lem:moments} & \lean{wt\_spec}, \lean{hm\_zero}, & \lean{Hankel.lean}\\
- & \lean{hm\_succ}, \lean{hm\_int} & \\
-Theorem~\ref{thm:hankel} & \lean{hankelInv\_pos\_int}, & \lean{Hankel.lean}\\
- & \lean{hankelInv\_one}, \dots, \lean{hankelInv\_four} & \\
+Theorem~\ref{thm:joint}, $\alpha_*$ & \lean{P\_le\_joint\_optimal} & \lean{JointLiftMain}\\
+Theorem~\ref{thm:joint}, $2201/7480$ & \lean{P\_le\_2201\_7480} & \lean{JointLiftMain}\\
+Theorem~\ref{thm:joint}, $128/435$ & \lean{P\_le\_128\_435} & \lean{JointLiftMain}\\
+Theorem~\ref{thm:main} & \lean{P\_le} & \lean{Main}\\
+Theorem~\ref{thm:2377} & \lean{P\_le\_23\_77} & \lean{TwentyThreeMain}\\
+Theorem~\ref{thm:1137} & \lean{P\_le\_11\_37} & \lean{ElevenMain}\\
+Theorem~\ref{thm:827} & \lean{P\_le\_8\_27} & \lean{EightMain}\\
+Theorem~\ref{thm:45152} & \lean{P\_le\_45\_152} & \lean{FortyFiveMain}\\
+Theorem~\ref{thm:loglog} & \lean{P\_le\_loglog} & \lean{Hooley}\\
+Theorem~\ref{thm:rises} & \lean{P\_le\_rises} & \lean{RisesMain}\\
+Theorem~\ref{thm:hankel} & \lean{hankelInv\_pos\_int} & \lean{Hankel}\\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\begin{center}\footnotesize
-\begin{tabular}{@{}lll@{}}
-\toprule
-Paper & Lean & File \\
-\midrule
-Hadamard's inequality & \lean{det\_le\_prod\_diag} & \lean{Hadamard.lean}\\
-$\mu_i$, $\nu_i$, shift rule & \lean{muF}, \lean{nuF}, \lean{muF\_nb\_mul} & \lean{Functional.lean}\\
-Lemma~\ref{lem:labels} & \lean{hankelInv\_le\_prod}, \lean{label\_bound} & \lean{Gram.lean}\\
- & \lean{label\_at} & \lean{TwentyThreeMain.lean}\\
-Lemma~\ref{lem:pattern} & \lean{null\_d}, \lean{null\_k}, \lean{null\_r} & \lean{TwoState.lean}\\
- & \lean{theta\_eq}, \lean{hankelInv\_four} & \lean{EightMain.lean}, \lean{Hankel.lean}\\
-Lemma~\ref{lem:quad} & \lean{quad\_root} & \lean{TwoState.lean}\\
-Lemma~\ref{lem:multid} & \lean{mult\_identity}, \lean{quart\_eq} & \lean{TwoState.lean}\\
-Lemma~\ref{lem:psize} & \lean{gramP\_le}, \lean{state\_bound} & \lean{PatternBound.lean}\\
-Proposition~\ref{prop:pcount} & \lean{pattern\_count} & \lean{PatternCount.lean}\\
-Proposition~\ref{prop:twostate} & \lean{good\_card}, \lean{two\_state\_window\_77} & \lean{TwentyThreeMain.lean}\\
-Proposition~\ref{prop:77} & \lean{window\_77}, \lean{visits\_77} & \lean{TwentyThreeMain.lean}\\
-Theorem~\ref{thm:2377} & \lean{P\_le\_23\_77} & \lean{TwentyThreeMain.lean}\\
-Lemma~\ref{lem:signs} & \lean{pattern\_signs} & \lean{ElevenCount.lean}\\
-Lemma~\ref{lem:tern} & \lean{tern\_rel}, \lean{tern\_disc}, \lean{tern\_lead} & \lean{ElevenCount.lean}\\
-Lemma~\ref{lem:norm} & \lean{card\_sqRoots\_le}, \lean{class\_card}, \lean{norm\_count} & \lean{NormCount.lean}\\
-Lemma~\ref{lem:slice} & \lean{slice\_identity}, \lean{slice\_count\_ne}, \lean{slice\_count} & \lean{SliceCount.lean}\\
-Proposition~\ref{prop:pcount2} & \lean{pattern\_count\_slice} & \lean{ElevenCount.lean}\\
-Proposition~\ref{prop:twostate2} & \lean{two\_state\_window\_74} & \lean{ElevenMain.lean}\\
-Proposition~\ref{prop:74} & \lean{window\_74}, \lean{visits\_74} & \lean{ElevenMain.lean}\\
-Theorem~\ref{thm:1137} & \lean{xi\_le}, \lean{slack\_le}, \lean{P\_le\_11\_37} & \lean{ElevenMain.lean}\\
-Lemma~\ref{lem:expand} & \lean{nu\_expand} & \lean{MinorHeight.lean}\\
-Proposition~\ref{prop:allminors} & \lean{minor\_height} & \lean{MinorHeight.lean}\\
-Pattern as minors & \lean{theta\_eq} & \lean{EightMain.lean}\\
-Proposition~\ref{prop:minorvec} & \lean{plucker}, \lean{card\_cross\_fiber}, \lean{minor\_vector\_count} & \lean{MinorCount.lean}\\
-Proposition~\ref{prop:twostate3} & \lean{two\_state\_window\_54}, \lean{window\_54} & \lean{EightMain.lean}\\
-Theorem~\ref{thm:827} & \lean{P\_le\_8\_27} & \lean{EightMain.lean}\\
-\bottomrule
-\end{tabular}
-\end{center}
+The identifications of the first four invariants in
+Theorem~\ref{thm:hankel} are proved in the same module as
+\lean{hankelInv\_one} through \lean{hankelInv\_four}.
 
-\begin{center}\footnotesize
-\begin{tabular}{@{}lll@{}}
-\toprule
-Paper & Lean & File \\
-\midrule
-Lemma~\ref{lem:lift} & \lean{lift\_row}, \lean{lift\_det}, \lean{pivLat} & \lean{ShortVec.lean}\\
-Lemma~\ref{lem:index} & \lean{cross\_cong}, \lean{pivLat\_short}, \lean{shortR\_spec} & \lean{ShortVec.lean}\\
-Lemma~\ref{lem:reduce} & \lean{basis\_of\_min}, \lean{reduced\_basis}, \lean{reduced\_coords} & \lean{Reduce3.lean}\\
-Lemma~\ref{lem:dotcount} & \lean{card\_dot\_dvd\_le} & \lean{ShortVec.lean}\\
-Proposition~\ref{prop:short} & \lean{card\_crossSet\_dot}, \lean{short\_count} & \lean{ShortVec.lean}\\
-Lemma~\ref{lem:defnorm} & \lean{def\_class\_units}, \lean{norm\_count\_def} & \lean{DefiniteNorm.lean}\\
-Plane choice, slices & \lean{disc3\_tcomp}, \lean{lead\_eq}, \lean{plane\_one}, \lean{plane\_two}, & \lean{TernComp.lean}\\
- & \lean{slice\_count\_tv} & \\
-Proposition~\ref{prop:fibre} & \lean{ycoord\_spec}, \lean{liftM\_det\_ne}, & \lean{LatticeCount.lean}\\
- & \lean{lattice\_fiber\_count}, \lean{pattern\_count\_lattice} & \\
-Lemma~\ref{lem:abel} & \lean{inv\_telescope}, \lean{abel\_sum} & \lean{FortyFiveMain.lean}\\
-Proposition~\ref{prop:twostate4} & \lean{two\_state\_window\_152}, \lean{window\_152} & \lean{FortyFiveMain.lean}\\
-Theorem~\ref{thm:45152} & \lean{slack\_le2}, \lean{P\_le\_45\_152} & \lean{FortyFiveMain.lean}\\
-\bottomrule
-\end{tabular}
-\end{center}
+For the curve theorem, the separate library \lean{ccdn-dimension-growth}
+proves the plane estimate, degree-preserving projection and box rescaling.
+The Pierce development applies this theorem to the defining prime ideals
+of its curves, using the same affine Hilbert degree as in
+Section~\ref{sec:joint}. Thus the curve count is a proved dependency, not a
+hypothesis of the Pierce bound. In contrast, \lean{P\_le\_loglog} takes the
+propositions \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean}, which
+state \eqref{eq:NT} (with $\sigma=1/4$) and~\eqref{eq:BT}, including their
+existential constants and thresholds.
 
-Some details of the formalisation:
-\begin{itemize}
-\item The algebraic identities (Lemmas~\ref{lem:curv}, \ref{lem:fiber-eq}
-and~\eqref{eq:resultant}) are proved over $\mathbb Z$ by the tactics \lean{ring} and
-\lean{linear\_combination}, the latter with the explicit coefficients above for
-Lemma~\ref{lem:curv}. They are then transferred to $\mathbb N$ by writing
-$z=w+f$, $y=z+e$, $x=y+d$, which avoids truncated subtraction.
-\item The curvature is the natural number $\lean{bD}\,a\,x=(x-y)v-(y-z)u$. Lean first proves
-$eu<dv$, so this truncated subtraction is the true value.
-\item The counting arguments use \lean{Finset.card\_le\_mul\_card\_image\_of\_maps\_to}: the
-number of good indices is at most the size of the parameter box times the largest fiber.
-\item The divisor bound $\tau(n)^k\le C_kn$ (Lemma~\ref{lem:div}) is the file
-\lean{DivisorPowerBound.lean} from the \lean{openai/math} repository~\cite{OAIMath}
-(Apache-2.0), with unchanged proof bodies; imports and module visibility are adapted.
-\item Lemma~\ref{lem:six}(2) is checked by \lean{linear\_combination} with the coefficients
-given in its proof, which were found by polynomial division. Corollary~\ref{cor:six} proves
-$L\ge1$ directly from the identity, since $L$ is an integer by definition.
-\item The identities $I_2=d$, $I_3=D$, $I_4=L$ are checked by \lean{linear\_combination}, with
-certificates generated by polynomial division. The moment entries $h_i(s)$ are computed in Lean
-from the recursion of Lemma~\ref{lem:moments}(3).
-\item Mathlib has no Hadamard inequality for determinants, so \lean{Hadamard.lean} proves it:
-rescale to unit diagonal, and use $\prod\lambda_j\le\prod e^{\lambda_j-1}=e^{\operatorname{tr}-n}=1$
-for the eigenvalues.
-\item The identities of Lemmas~\ref{lem:pattern}, \ref{lem:quad} and~\ref{lem:multid} are
-checked by the tactics \lean{ring} and \lean{linear\_combination}. The certificate for
-Lemma~\ref{lem:multid} has about $350$ terms and was found by polynomial division. Root
-counting uses the Mathlib lemma \lean{card\_roots'}.
-\item Lemma~\ref{lem:norm} is proved in full in \lean{NormCount.lean}: the prime-power root
-count, the Chinese remainder theorem, irrationality of $\sqrt d$ (\lean{irrational\_sqrt\_natCast\_iff})
-and the separation $\varepsilon\ge3$.
-\item Lemma~\ref{lem:reduce} is proved with integer arithmetic only: the minimal
-determinant and the lexicographic minimum are taken with \lean{Nat.find}, and the rounding steps
-use Euclidean division.
-\item The complete formalization is checked with \lean{lake build};
-\lean{Axioms.lean} audits its logical dependencies.
-\end{itemize}
+The file \lean{Axioms.lean} audits the eleven public statements and their
+proof dependencies. The only logical axioms reported are \lean{propext},
+\lean{Classical.choice} and \lean{Quot.sound}, the standard axioms used by
+Mathlib. The proof library contains no \lean{sorry} and uses no
+\lean{native\_decide}. The separate Mathlib-only \lean{Challenge.lean}
+states the eleven results with deliberate theorem holes for comparison
+with the proved \lean{Solution.lean}; neither module imports the other.
+Build instructions and the scope of the verification checks are recorded
+in the README.
+
+Many local identities are checked by polynomial normalization over
+$\mathbb Z$, then transferred to the natural-number orbit after proving
+that the relevant differences are nonnegative. The counting arguments
+bound the number of parameter values and then the number of states with
+each value. Determinant positivity, integrality, curve reconstruction and
+the valuation arguments are proved within the same development.
+The divisor estimate in Lemma~\ref{lem:div} uses
+\lean{DivisorPowerBound.lean} from \lean{openai/math}~\cite{OAIMath}
+(Apache-2.0), with unchanged proof bodies and adapted imports and module
+visibility. The required Hadamard inequality is proved in
+\lean{Hadamard.lean}.
 
 \section{Limits of the method}\label{sec:limits}
 
@@ -2248,8 +2274,8 @@ Proposition~\ref{prop:six} removes the divisor loss from the local bound, but on
 exponent is still $3/10$. The local bound $T\ll a^{1/2}A^{-1/3}$ and the drop bound $T\ll A^{1/2}$ (up to
 the divisor factor) both allow $T\asymp a^{3/10}$ at $A\asymp a^{3/5}$. Even an ideal
 short-interval divisor estimate with $G$ constant leaves this balance unchanged. So sharpening
-constants or improving the divisor counts cannot give a logarithmic bound. Further progress
-needs to restrict \emph{which} configurations of the parameters $(u,v,w,z,D,E,F)$ can occur
+constants or improving the divisor counts in that argument cannot give a logarithmic bound.
+To improve that argument, one needs to restrict \emph{which} configurations of the parameters $(u,v,w,z,D,E,F)$ can occur
 together along a single orbit. Theorem~\ref{thm:rises} is one restriction of this kind: a long
 orbit must have many rises in its quotient increments. Theorem~\ref{thm:hankel} supplies the
 natural candidates for further ones, the higher invariants $I_r$. Section~\ref{sec:2377} uses
@@ -2287,9 +2313,10 @@ work developed and formalised the joint-invariant graphs, their normalization
 and valuation arguments, the powered-coordinate optimization, and the external
 affine-curve counting theorem. OpenAI Codex assisted with this formalisation
 and with automated statement, dependency and submission checks. These checks
-are not independent human peer review. All proofs, apart from the cited
-theorems \eqref{eq:NT} and~\eqref{eq:BT} and the remark on Shiu's theorem, were then verified
-in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \lean{openai/math}
+are not independent human peer review. The new results of this paper and
+their stated deductions were verified in Lean~4 against Mathlib, with the
+analytic hypotheses and the unformalised application of Shiu's theorem
+identified above. We thank the Mathlib community, and the authors of \lean{openai/math}
 for the formalised divisor bound.
 
 \begin{thebibliography}{99}
