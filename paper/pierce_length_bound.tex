@@ -1790,9 +1790,13 @@ small integer invariants as coordinates. This gives the strongest bound of the
 paper without the weighted lattice count of Section~\ref{sec:45152}.
 Throughout this section constants may depend on fixed positive integers $m,n$
 and on a positive loss $\eta$, but never on the dividend, orbit or pattern.
-The argument has three steps: construct the curves for a fixed pattern,
-increase their degree by adjoining integer invariants, and apply the
-curve-counting theorem using the heights of those invariants.
+We first isolate the components on which the quotient and curvature can
+be reconstructed, and bound the discarded components and exceptional
+patterns. The orders of the reconstructed functions at infinity then
+serve two purposes: they bound the contribution of conics and force a
+degree gain on the remaining components when the integer invariants are
+adjoined. Finally, the small heights of these invariants turn the degree
+gain into a sharper curve count.
 
 \subsection{Selected windows and their curve components}
 
@@ -1918,69 +1922,130 @@ Among components containing a selected start, we call a component
 \emph{retained} if both equations, after clearing denominators, hold
 identically on it.
 
-For clarity, the additional component facts used below are recorded together.
-They apply to components supporting the selected actual points, not to an
-assumption that every point of a component is an orbit point.
-\begin{lemma}\label{lem:jointcomponents}
-The following bounds are uniform over the complete minor pattern.
-\begin{enumerate}
-\item The exceptional patterns, characterized by a vanishing pair sum of the
-quartic's five Newton coefficients, number $O_\eta(a^\eta X^4)$. Outside these
-patterns every component has even degree: it is a conic or has degree at least four.
-\item In the range
-\begin{equation}\label{eq:jointscale}
-124928 A^4H^5X<a^3,
-\end{equation}
-no line component contains a selected actual point.
-\item The cleared identities \eqref{eq:jointcuts} have degrees at
-most $166$ and $404$. On a prime component of degree $d$, either each identity
-holds identically or its selected actual points number at most $166d$ or $404d$,
-respectively.
-\item A nonexceptional conic contributes $O_\eta(a^\eta)$ distinct gap vectors.
-\end{enumerate}
+\begin{lemma}[Removing components by polynomial equations]\label{lem:jointcuts}
+The two identities in \eqref{eq:jointcuts}, after clearing denominators,
+have degrees at most $166$ and $404$, respectively. On a degree-$d$
+component, either an identity holds everywhere or it holds at at most
+$166d$ or $404d$ selected starts, respectively. Consequently each
+component that is not retained contributes $O(1)$ selected starts.
 \end{lemma}
 \begin{proof}
-\emph{Exceptional patterns and parity.}
-The sign identities and the quadratic relation give the four possible
-vanishing pair sums. Each is a fixed linear condition on the minor vector;
-counting it in the same pivot charts as the ordinary minor count removes one
-power of $X$. On the infinity section of a nonexceptional component the
-leading node values are distinct. The resultant has pole order ten times the
-hyperplane multiplicity. The fixed-dividend equation then makes each branch's
-hyperplane multiplicity even; their residue-degree weighted sum is $d$.
-This proves the parity assertion, including over $\mathbb Q$ without a
-geometric irreducibility assumption.
+Write $Q=n_Q/d_Q$ and $E_0=n_E/d_E$ using the cofactor expressions above.
+Each cofactor has degree at most $40$, so
+\[
+ \deg n_Q,\deg d_Q\le40,\qquad
+ \deg n_E,\deg d_E\le240.
+\]
+The latter bound follows from the $3\times3$ determinant and the cube
+in the numerator, and the cube of a quadratic cofactor expression in the
+denominator. The polynomial
+$\widehat P=d_Q^4P_4(-n_Q/d_Q)$ has degree at most $163$: in Newton
+form its longest product is
+$n_Q\prod_{j=1}^3(n_Q+s_jd_Q)$, of degree at most $40+3\cdot41$,
+because $s_0=0$. The cleared equations are
+\begin{align*}
+ \Phi_N&=A_0\widehat P-aH_4d_Q^4,\\
+ \Phi_R&=n_E\widehat P
+ -a\bigl((n_Q-p_3d_Q)H_3-H_{013}d_Q\bigr)d_Q^3d_E.
+\end{align*}
+Here $\deg H_3\le3$, $\deg H_4\le6$ and $\deg H_{013}\le4$.
+Thus $\deg\Phi_N\le166$ and $\deg\Phi_R\le404$.
 
-\emph{Lines.} The line equations force
-$aH^5(24X+464)\ge q_i^4$ at a supported point. But $q_i\ge a/(4A)$, and $X\ge1$
-makes \eqref{eq:jointscale} imply the strict reverse inequality. This excludes
-lines also for exceptional patterns.
+If a polynomial of degree $r$ does not vanish identically on an integral
+curve of degree $d$, its zero set on that curve has at most $rd$ distinct
+rational points, by the polynomial-section form of B\'ezout's bound.
+Every selected start satisfies both cleared equations. Moreover, the
+free nodes and pattern recover $q_i=Q$, and $q_i$ strictly increases along
+the fixed orbit. Thus distinct selected starts of this pattern give distinct free-node triples.
+Applying the point bound to whichever equation is not an identity proves
+the claim. The absolute bound $d\le24$ makes the last estimate uniform.
+\end{proof}
 
-\emph{Proper cuts.} Clear the
-rational quotient reconstructed from the two quartics and then clear the
-normalization and resolvent equations. Polynomial degree bounds give $166$
-and $404$; a proper polynomial section of a degree-$d$ prime curve has at
-most its degree times $d$ distinct rational points. Reconstruction recovers
-$q_i$ from the free nodes and the fixed pattern. Since $q_i$ strictly
-increases along the orbit, distinct selected starts have distinct free-node
-triples. Thus these point bounds also bound the number of selected starts.
+\subsection{Exceptional patterns and line components}
 
-\emph{Conics.} For a nonexceptional conic the double infinity section gives a polynomial
-parameter of degree two. One obtains an integer parameter and quadratic
-numerator polynomials with a common denominator, whose heights are bounded
-by a fixed power of $a$. The rank-three invariant is a proper rational
-function of this parameter---its numerator has smaller degree than its
-denominator after cancellation---except for a bounded number of points cut out by the actual
-normalization equations. At integral values, a polynomial Bezout identity
-forces the denominator value to divide a nonzero resultant of height bounded
-by a fixed power of $a$. Its number of divisors is $O_\eta(a^\eta)$; each value
-has boundedly many parameter preimages. Coefficient, denominator and resultant
-heights are uniform because the conic degrees are fixed and $X\le10^{16}a^7$.
+Call a pattern \emph{exceptional} if two of its five Newton coefficients
+sum to zero. Since $\rho>0$, $u>0$ and $v<0$, this is equivalent to one of
+\begin{equation}\label{eq:jointexceptional}
+ \rho+v=1,\qquad \rho+v=0,\qquad u=1,\qquad \rho+u=1.
+\end{equation}
+Equivalently, the integral pattern coordinates satisfy
+$N_1+u_2=N_0$, $N_1+u_2=0$, $u_1=N_0$ or $N_1+u_1=N_0$.
+The nonexceptional components will have even degree
+(Corollary~\ref{cor:jointparity}). Exceptional patterns need a separate
+line exclusion, but there are fewer of them.
 
-The formal proofs include the properness and height estimates used in this
-conic argument. The README maps the component, line-exclusion, parity and
-conic arguments to their Lean modules; the scope of the formalisation is
-described in Section~\ref{sec:lean}.
+\begin{lemma}[Exceptional patterns and lines]\label{lem:jointcomponents}
+There are $O(X^4\log(2X))=O_\eta(a^\eta X^4)$ exceptional complete
+minor patterns. In the range
+\begin{equation}\label{eq:jointscale}
+ 124928 A^4H^5X<a^3,
+\end{equation}
+no line component contains a selected start.
+\end{lemma}
+\begin{proof}
+Each relation in \eqref{eq:jointexceptional} becomes a vanishing maximal
+minor after a fixed invertible integer column change. The transformed
+minor vector still has height $O(X)$. For example, if the original columns
+are $C_0,\dots,C_4$, then
+\[
+ \det(C_1,C_2+C_0,C_3-C_0)=p_{123}-p_{013}-p_{012}
+                              =N_1+u_2-N_0.
+\]
+The other three relations follow by the same column additions and
+permutations.
+
+For completeness, a fixed zero minor reduces the Pl\"ucker relations to
+three integer vectors $\mathbf x,\mathbf y,\mathbf z$ of height $O(X)$
+with $\mathbf x\times\mathbf y=0$ and
+$\mathbf x\cdot\mathbf z=\mathbf y\cdot\mathbf z=0$.
+These vectors are signed rearrangements of the nine remaining minors,
+so they determine the complete minor vector.
+The case $\mathbf x=\mathbf y=0$ has $O(X^3)$ choices. Otherwise write
+$\mathbf x=r\mathbf v$, $\mathbf y=s\mathbf v$ with $\mathbf v$ primitive.
+In a dyadic range $R\le|\mathbf v|_\infty<2R$, there are $O(R^3)$
+choices for $\mathbf v$ and $O((X/R)^2)$ for $(r,s)$.
+The equation $\mathbf v\cdot\mathbf z=0$ has $O(X^2/R)$ solutions
+in the box. Indeed, take a coordinate of absolute value
+$n=|\mathbf v|_\infty$. Primitivity gives $n$ admissible pairs of the
+other two coordinates modulo $n$, and the chosen coordinate is then
+determined. Since $R\le n\ll X$, this gives $O(X^2/n)$ choices.
+Each range therefore contributes $O(X^4)$, and summing over $O(\log(2X))$
+ranges proves the pattern count. The crude bound $X\le10^{16}a^7$
+absorbs its logarithm into $a^\eta$.
+
+For a contained line, the degree-twelve part of \eqref{eq:jointcurve}
+first forces the cubic coefficient of $D$ to vanish. Then $D^4$ has
+degree at most eight, so the degree-ten resultant coefficient also
+vanishes. By the leading forms and collision argument in
+Lemma~\ref{lem:jointleading}, its direction satisfies one of the four
+exceptional relations. The grouping argument there gives exactly two
+groups of equal leading nodes, of sizes two and three. After scaling,
+the five-node directions are, in the order of \eqref{eq:jointexceptional},
+\[
+ (0,1,1,0,1),\quad (0,1,1,0,0),\quad
+ (0,0,1,1,0),\quad (0,1,0,0,1).
+\]
+Substitution of these directions into the resultant gives a polynomial
+of degree at most six. Equation~\eqref{eq:jointcurve} then
+forces $D$ to have degree at most one along the line. Its quadratic
+coefficient, together with $f=0$, gives respectively
+\[
+ s_3=0,\qquad k_1=1,\qquad k_2=1,\qquad s_4-s_1=u-v.
+\]
+The first is impossible at a selected start. The polynomial $G$ in
+Lemma~\ref{lem:labels} satisfies, by expansion,
+\[
+ G\le H^5(12k_1+464),\qquad G\le H^5(12k_2+464).
+\]
+In the last obstruction, $k_1+k_2+k_3=u-v=(u_1-u_2)/A_0\le2X$.
+Thus each surviving case gives $k_1\le2X$ or $k_2\le2X$.
+The label bound $A_0q_i^4\le aG$, with $A_0\ge1$, now gives
+\[
+ q_i^4\le aH^5(24X+464).
+\]
+But $q_i\ge a/(4A)$ and $24X+464\le488X$ for $X\ge1$.
+Condition~\eqref{eq:jointscale}, with $124928=4^4\cdot488$, gives
+the strict reverse inequality.
 \end{proof}
 
 \subsection{The joint coordinates}
@@ -2016,7 +2081,7 @@ Consequently $J=I_5(i)$ is a positive integer at actual states.
 At selected actual starts, $|W_j|\le S$ and $1\le J\le Y$.
 \end{lemma}
 \begin{proof}
-Use the exact positive remainder expansion
+Write $q=q_i$ and use the exact positive remainder expansion
 $(q+y)^{-1}=q^{-1}-yq^{-2}+y^2/(q^2(q+y))$. For the first four shifted states,
 \[
  \frac{b_{i+j}}a=\frac1q-\frac{s_j+1}{q^2}+\epsilon_j,
@@ -2031,61 +2096,661 @@ Weighted Gram comparison gives $Jq^5\le1230460aH^{10}$; the same lower bound
 for $q$ gives $Y$.
 \end{proof}
 
+\subsection{Orders at infinity}
+
+The next calculation identifies the possible directions at infinity.
+It will also explain why the reconstructed curvature becomes small there,
+even though the original node coordinates become large.
+
+\begin{lemma}[Leading nodes and determinant orders]\label{lem:jointleading}
+Let $C$ be an integral component of positive degree of
+\eqref{eq:jointcurve}. At a point $\xi$ above infinity on the normalization of its projective closure,
+write $\operatorname{ord}=\operatorname{ord}_\xi$, and let $e>0$ be the
+multiplicity of the hyperplane at infinity.
+For a local parameter $\tau$, put
+$z_j=\overline{\tau^es_j}$, $0\le j\le4$.
+Then the $z_j$ are not all equal and satisfy
+\[
+ \sum_{j=0}^4\gamma_jz_j^r=0\qquad(0\le r\le3).
+\]
+If two of these five nodes coincide, one of the four exceptional
+coefficient relations holds.
+For a nonexceptional pattern, therefore,
+\begin{align*}
+ \operatorname{ord}(s_l-s_j)&=-e\quad(0\le j<l\le4),\\
+ \operatorname{ord}\operatorname{Res}(P_4,xR_4)&=-10e,\\
+ \operatorname{ord}H_3&=-3e,\qquad \operatorname{ord}H_4=-6e.
+\end{align*}
+Positive order denotes a zero and negative order a pole.
+\end{lemma}
+
+\begin{proof}
+All nonzero rational constants have order zero. The multiplicity $e$ can
+equivalently be written as
+\[
+ e=\max_{1\le j\le3}\{-\operatorname{ord}s_j\}>0.
+\]
+Thus a polynomial of total node degree at most $r$ has order at least
+$-re$. Choose a local parameter $\tau$ at $\xi$, and let $z_j$ be the
+residue of $\tau^e s_j$, for $0\le j\le4$. These residues lie in the
+residue field of $\xi$; we do not require $\xi$ to be rational.
+We have $z_0=0$, and at least one of $z_1,z_2,z_3$ is nonzero.
+
+\emph{The leading nodes are distinct.}
+Recall
+$\gamma=(\rho,-\rho-u,u-v,v-1,1)$.
+Its entries are nonzero because $\rho,u>0$ and $v<0$.
+Under these sign restrictions, a pair sum $\gamma_j+\gamma_l$ can vanish
+only in the following four cases:
+\[
+ v=1-\rho,\qquad v=-\rho,\qquad u=1,\qquad u=1-\rho.
+\]
+The definitions of the nodes give the moment equations of orders zero
+and one. The highest-degree part of $f=0$ gives the equation of order two.
+Finally, the highest-degree part of
+$A_0\operatorname{Res}(P_4,xR_4)=aD^4$ gives the equation of order three:
+the resultant has total degree at most ten, whereas the cubic part of
+$D$ is $\sum_j\gamma_js_j^3$. Consequently
+\begin{equation}\label{eq:joint-leading-moments}
+ \sum_{j=0}^4\gamma_jz_j^r=0\qquad(0\le r\le3).
+\end{equation}
+For the last implication, multiply the fixed-dividend equation by
+$\tau^{12e}$ and take residues; its left side vanishes and its right side
+is $a(\sum_j\gamma_jz_j^3)^4$.
+
+If two nodes coincided, there would be at most four distinct values among
+the $z_j$. Grouping the sums in \eqref{eq:joint-leading-moments} by those
+values and using the corresponding Vandermonde matrix shows that the
+sum of the $\gamma_j$ in each group is zero.
+Since there are five indices and at least two groups, some group has at
+most two elements. It cannot have one, because every $\gamma_j$ is nonzero;
+it must therefore give a vanishing pair sum. This proves the collision
+assertion. For a nonexceptional pattern it is impossible, so all five
+nodes are distinct, and
+\begin{equation}\label{eq:joint-node-orders}
+ \operatorname{ord}(s_l-s_j)=-e\qquad(0\le j<l\le4).
+\end{equation}
+
+\emph{The determinant orders.}
+Write $\mathcal R=\operatorname{Res}(P_4,xR_4)$.
+The leading homogeneous parts needed below are
+\begin{align}
+ [\mathcal R]_{10}
+   &=\gamma_0\gamma_1\gamma_2\gamma_3
+        \prod_{0\le j<l\le4}(s_l-s_j), \label{eq:joint-resultant-leading}\\
+ [H_3]_3&=k_0k_1(k_0+k_1),\notag\\
+ [H_4]_6&=k_0k_1k_2(k_0+k_1)(k_1+k_2)(k_0+k_1+k_2).
+ \label{eq:joint-hankel-leading}
+\end{align}
+Here $[F]_r$ denotes the homogeneous part of total node degree $r$.
+For completeness, the degree-ten formula can be checked without expanding
+the resultant. In the Newton basis beginning at $s_1,s_2,s_3$, its
+$4\times4$ Bezout matrix for $P_4,R_4$ has entry degrees at most
+$4-\max(i,j)$, for $0\le i,j<4$. Only the diagonal term of its determinant
+can have degree ten. Its four leading diagonal entries are
+\[
+\begin{split}
+ &-\gamma_1s_1(s_1-s_2)(s_1-s_3)(s_1-s_4),\\
+ &-\gamma_2s_2(s_2-s_3)(s_2-s_4),\\
+ &-\gamma_3s_3(s_3-s_4),\qquad -s_4.
+\end{split}
+\]
+Their product gives the stated Vandermonde; the additional factor
+$x$ in the second polynomial contributes
+$P_4(0)=\gamma_0$.
+The raw-moment recurrence gives
+\[
+ H_3=k_0k_1(k_0+k_1)+k_0k_2-k_1^2,
+\]
+and gives the displayed degree-six part of $H_4$, with remainder of
+degree at most five. These are finite polynomial identities.
+
+Every factor in these leading products has order $-e$ by
+\eqref{eq:joint-node-orders}. The lower-degree terms have strictly larger
+order, so they cannot cancel the leading terms. Thus
+\begin{equation}\label{eq:joint-determinant-orders}
+ \operatorname{ord}\mathcal R=-10e,\qquad
+ \operatorname{ord}H_3=-3e,\qquad
+ \operatorname{ord}H_4=-6e.
+\end{equation}
+\end{proof}
+
+\begin{corollary}[Even component degrees]\label{cor:jointparity}
+Every positive-degree nonexceptional component of \eqref{eq:jointcurve}
+has even degree. At each point above infinity its hyperplane multiplicity
+$e$ is even, and
+$\operatorname{ord}(A_0D)=-5e/2$.
+\end{corollary}
+\begin{proof}
+Taking orders in the fixed-dividend equation and using
+Lemma~\ref{lem:jointleading} gives
+$4\operatorname{ord}D=-10e$.
+Since orders are integers and $A_0\ne0$, this proves both local assertions.
+The degree of the curve is the sum of the multiplicities $e$, weighted
+by the residue-field degrees, so it is even. The retained identities
+are not needed here.
+\end{proof}
+
+\begin{lemma}[Orders of the reconstructed functions]\label{lem:joint-infinity-orders}
+Let $C$ be a retained nonexceptional component of positive degree
+containing a selected actual point.
+At every point above infinity, with hyperplane multiplicity $e$, one has
+\[
+ \operatorname{ord}Q=-\frac{3e}{2},\qquad
+ \operatorname{ord}E_0=\frac{3e}{2}.
+\]
+In particular, $E_0$ is a nonzero rational function vanishing at every
+point above infinity.
+\end{lemma}
+\begin{proof}
+The selected point guarantees that the reconstruction denominators are
+not identically zero on $C$. Thus $Q$ and $E_0$ are rational functions
+on $C$, and retention makes both identities \eqref{eq:jointcuts}
+identities in its function field.
+\emph{The quotient order.}
+Write
+$P_4(x)=x^4+p_3x^3+p_2x^2+p_1x+p_0$.
+Its Newton expression gives $\deg p_j\le4-j$, and hence
+$\operatorname{ord}p_j\ge-(4-j)e$.
+The first retained identity gives
+\[
+ \operatorname{ord}P_4(-Q)=\operatorname{ord}(aH_4/A_0)=-6e.
+\]
+If $\operatorname{ord}Q\ge-e$, every term of $P_4(-Q)$ would have order
+at least $-4e$, a contradiction. Put $r=\operatorname{ord}Q<-e$.
+For $0\le j<4$,
+\[
+ \operatorname{ord}\bigl(p_j(-Q)^j\bigr)-4r
+ \ \ge\ (4-j)(-e-r)>0.
+\]
+Thus $Q^4$ is the unique term of lowest order. It follows that
+$4r=-6e$, or $\operatorname{ord}Q=-3e/2$.
+
+\emph{The reconstructed curvature order.}
+The coefficient $p_3=v-1-s_1-s_2-s_3$ has order at least $-e$.
+The raw-moment recurrence also shows that $H_{013}$ has degree at most
+four: its degree-four part is
+$(2k_0+k_1)k_0k_1(k_0+k_1)$.
+Consequently
+\[
+ \operatorname{ord}(Q-p_3)=-3e/2,\qquad
+ \operatorname{ord}\bigl((Q-p_3)H_3\bigr)=-9e/2
+       <-4e\le\operatorname{ord}H_{013}.
+\]
+There is again a unique term of lowest order. Dividing the second
+retained identity by $P_4(-Q)$ therefore gives
+\[
+ \operatorname{ord}E_0=-9e/2-(-6e)=3e/2.
+\]
+The argument uses the discrete valuation on the normalization, so it
+also covers branches above singular points of the original curve.
+\end{proof}
+
+\begin{corollary}[Orders of the joint coordinates]\label{cor:joint-curvature-orders}
+In the setting of Lemma~\ref{lem:joint-infinity-orders}, the joint
+coordinates satisfy
+\begin{equation}\label{eq:jointorders}
+ \operatorname{ord}W_0=\operatorname{ord}W_2=3e/2,\qquad
+ \operatorname{ord}W_1\ge3e/2,\qquad
+ \operatorname{ord}J=-5e/2.
+\end{equation}
+\end{corollary}
+\begin{proof}
+The cubic leading part of $B_1$ is $k_1k_2(k_1+k_2)$.
+By \eqref{eq:joint-node-orders}, it has order $-3e$, whereas the
+quadratic remainder $k_1k_3-k_2^2$ has order at least $-2e$.
+Thus $\operatorname{ord}B_0=\operatorname{ord}B_1=-3e$ and
+$\operatorname{ord}k_1=-e$.
+In the numerator defining $E_{12}$ the two terms have different orders:
+\[
+ \operatorname{ord}(B_1E_0)=-3e/2
+       <-e=\operatorname{ord}(A_0k_1).
+\]
+Therefore $\operatorname{ord}E_{12}=3e/2$.
+Each term in $k_0E_{12}+k_2E_0$ has order $e/2$, so their sum has
+order at least $e/2$. Dividing by $k_1$ gives
+$\operatorname{ord}E_{02}\ge3e/2$. Cancellation here is harmless:
+equality for the first and third coordinates already gives
+$\min_j\operatorname{ord}W_j=3e/2$.
+The formula for $J=A_0D$ is Corollary~\ref{cor:jointparity}.
+\end{proof}
+
+\subsection{Counting the nonexceptional conics}
+
+We now show that a nonexceptional degree-two component contributes only
+$O_\eta(a^\eta)$ selected starts. The implied constant is independent of
+the pattern and of the component. A component that is not retained
+already contributes at most $404\cdot2=808$ starts, by
+Lemma~\ref{lem:jointcuts}. We may therefore assume that the component
+$C$ is retained. If it contains at most two selected free-node triples,
+there is nothing to prove. In the remaining case we first construct a
+parameter whose value is an integer at every selected triple.
+
+\begin{lemma}[A bounded integral parameter]\label{lem:jointconicparameter}
+Let $C$ be a retained nonexceptional degree-two component containing at
+least three selected free-node triples. After permuting the three free-node coordinates to $(x,y,z)$, there are
+integers $\Delta_c\ne0$ and polynomials $F_0,F_1,F_2\in\mathbb Z[t]$ such
+that
+\[
+ \deg F_j\le2,\qquad
+ |\Delta_c|,\ \max_{j,k}|[t^k]F_j|\ll(aX)^{C_0}
+\]
+for an absolute constant $C_0$. The map
+\[
+ t\longmapsto
+ \bigl(F_0(t),F_1(t),F_2(t)\bigr)/\Delta_c
+\]
+parametrizes $C$ over $\mathbb Q$. Its inverse takes an integer value at
+every integer point of $C$, and is injective on those points.
+\end{lemma}
+\begin{proof}
+Every selected free node has absolute value at most $a$. Three distinct
+selected triples admit an integer plane
+\[
+ \ell z+\mu x+\nu y+c=0,\qquad
+ |\ell|,|\mu|,|\nu|\le8a^2,\qquad |c|\le24a^3.
+\]
+For example, take a cross product of two differences to obtain the
+normal; if that cross product vanishes, a nonzero perpendicular vector
+with the same bounds suffices. Put $L=24a^3$. A plane not containing an integral curve
+of degree two meets it in at most two distinct points. Thus this plane
+contains $C$. Choose an eliminated coordinate with $\ell\ne0$.
+
+The six rational pattern coordinates have common denominator
+$D_\theta=N_0N_1\ne0$ and respective integer numerators
+\[
+ N_1^2,\ u_1N_1,\ u_2N_1,\ N_2N_0,\ v_1N_0,\ v_2N_0,
+\]
+each of absolute value at most $X^2$. Expanding the quadratic $f$, its
+homogeneous part is a diagonal quadratic plus the square of a linear
+form. Its three diagonal numerators have denominator $D_\theta$, and
+its three linear numerators have denominator $D_\theta^2$; all six
+numerators have absolute value at most $12X^4$.
+Substitute $z=-(\mu x+\nu y+c)/\ell$ and multiply by
+$D_\theta^2\ell^2$. The resulting plane equation is
+\begin{equation}\label{eq:jointconicplane}
+ \alpha x^2+\beta xy+\gamma_c y^2+d_cx+e_cy+f_c=0,
+\end{equation}
+with integer coefficients of absolute value at most
+$K=10(12X^4)^2L^2$. Indeed, each
+coefficient is a sum of products of two quantities bounded by $12X^4$
+and two plane coefficients bounded by $L$; expansion gives the stated
+factor $10$. The restriction of $f$ to the plane is nonzero: otherwise
+the plane would be a component of the irreducible pattern quadric.
+It has degree two because it contains $C$, and hence defines $C$ in
+that plane.
+
+The pullback of the hyperplane at infinity to the normalization of $C$
+has degree two. Corollary~\ref{cor:jointparity} says
+that each of its positive multiplicities is even. Counting residue
+degrees, there is therefore just one branch over infinity, of
+multiplicity two and residue degree one. Consequently the leading
+binary quadratic in \eqref{eq:jointconicplane} is a nonzero rational
+scalar times the square of a rational linear form. Indeed, the
+normalization map is finite and surjective, so the projective conic
+meets the line at infinity only at the image of this rational point.
+Its leading binary quadratic therefore has a single rational zero,
+of multiplicity two. Interchanging $x$ and $y$ if necessary gives
+\[
+ \alpha\ne0,\qquad \beta^2-4\alpha\gamma_c=0.
+\]
+Set
+\[
+ \kappa=2\beta d_c-4\alpha e_c,\qquad
+ \epsilon_c=d_c^2-4\alpha f_c,\qquad
+ t=2\alpha x+\beta y+d_c.
+\]
+Completing the square in \eqref{eq:jointconicplane} gives
+\begin{equation}\label{eq:jointconicparameter}
+ t^2=\kappa y+\epsilon_c.
+\end{equation}
+Here $\kappa\ne0$. If it were zero, a rational point of $C$ with
+parameter $t_0$ would give $\epsilon_c=t_0^2$, and the equation would
+factor as $(t-t_0)(t+t_0)=0$. Integrality would then place $C$ in an
+affine line, contradicting its degree.
+
+We can therefore solve explicitly:
+\[
+ y=\frac{t^2-\epsilon_c}{\kappa},\qquad
+ x=\frac{t-\beta y-d_c}{2\alpha},\qquad
+ z=-\frac{\mu x+\nu y+c}{\ell}.
+\]
+Substitution verifies the conic and plane equations for every rational
+$t$, and the displayed linear expression in $x,y$ recovers $t$.
+In particular, $t$ is an integer whenever $(x,y,z)$ is an integer point.
+Distinct points have distinct parameters.
+Taking $\Delta_c=2\alpha\kappa\ell$ clears all three denominators.
+The inequalities
+\[
+ |\kappa|\le6K^2,\qquad |\epsilon_c|\le5K^2,\qquad
+ |\beta\epsilon_c-d_c\kappa|\le11K^3
+\]
+give $|\Delta_c|\le12LK^3$ and the coefficient bounds $33LK^3$
+for the three resulting quadratic numerators. For selected points one
+also has $|t|\le4Ka$, although the counting argument below does not
+need a parameter interval.
+\end{proof}
+
+\begin{lemma}[Properness and coefficient height]\label{lem:jointconicproper}
+In the parameter of Lemma~\ref{lem:jointconicparameter}, write
+\[
+ E_0(t)=\frac{F(t)}{G(t)},\qquad F,G\in\mathbb Z[t],
+ \qquad \gcd_{\mathbb Q[t]}(F,G)=1.
+\]
+The polynomials may be chosen so that
+\[
+ \deg G-\deg F=3,\qquad
+ \max(\deg F,\deg G)\le D_0,\qquad
+ \max_k\bigl(|[t^k]F|,|[t^k]G|\bigr)\le C_0a^{k_0},
+\]
+for absolute constants $D_0,C_0,k_0$. In particular, $G$ is
+nonconstant. At every selected parameter $t$, $G(t)\ne0$ and
+$F(t)/G(t)=I_3(i)$ is an integer.
+\end{lemma}
+\begin{proof}
+The explicit parametrization identifies $C$ with the affine line and
+its smooth projective model with $\mathbb P^1$. Its point at infinity
+has hyperplane multiplicity two. Lemma~\ref{lem:joint-infinity-orders} therefore gives
+\[
+ \operatorname{ord}_{t=\infty}E_0=3.
+\]
+The function is nonzero, since it is positive at a selected start.
+For a reduced rational function on $\mathbb P^1$, its order at infinity
+is $\deg G-\deg F$, proving properness.
+
+We next bound the coefficients uniformly in the component, including
+after cancellation. Retain the choices $L=24a^3$ and
+$K=10(12X^4)^2L^2$ from the preceding proof, and define
+\[
+ M=1+a+X+33LK^3.
+\]
+The six rational pattern coordinates, the three coordinate polynomials
+$F_j/\Delta_c$, and the fixed dividend $a$ have the common nonzero
+denominator $N_0N_1\Delta_c$. Their ten numerator polynomials have degree
+at most two and coefficient height at most $M^4$; the common denominator
+has absolute value at most $M^4$ as well. For instance, the coordinate
+numerators are $N_0N_1F_j$, while the numerator for $a$ is
+$aN_0N_1\Delta_c$.
+
+The cofactor formula defining $E_0$ is a quotient of two fixed
+polynomials in these ten inputs, with fixed rational coefficients.
+Clear those fixed coefficients once, then substitute the ten
+polynomials and clear a fixed power of their common denominator.
+This gives integer polynomials $N,D$, both nonzero, of bounded degree
+and coefficient height at most $C M^r$, where the degree bound, $C$
+and $r$ are absolute. This assertion follows directly from polynomial
+multiplication: both the number of factors and the number of summands
+are fixed by the displayed cofactor formula.
+
+Choose a primitive $H\in\mathbb Z[t]$ representing
+$\gcd_{\mathbb Q[t]}(N,D)$. By Gauss's lemma, $H$ divides both $N$ and
+$D$ in $\mathbb Z[t]$. Thus $F=N/H$ and $G=D/H$ are integer polynomials
+with the same ratio, coprime over $\mathbb Q$, and with
+degrees no larger than those of $N,D$. For a nonzero integer polynomial of
+degree at most $D_0$ and coefficient height $\mathcal H$, every integer
+polynomial factor has coefficient height at most
+$2^{D_0}(D_0+1)\mathcal H$. To see this, the Mahler measure of an integer
+cofactor is at least one, the original polynomial's Mahler measure is
+at most $(D_0+1)\mathcal H$, and each coefficient of a factor is bounded by
+$2^{D_0}$ times its Mahler measure. Thus cancellation preserves a
+fixed polynomial bound in $M$.
+
+Finally, $L=24a^3$ and $X\le10^{16}a^7$ show that $M$ is bounded by a fixed power of $a$.
+Absorbing the fixed exponents and constants gives the asserted
+$C_0a^{k_0}$ bound. The original reconstruction denominator is nonzero
+at every selected start. Its cleared polynomial $D$ is therefore
+nonzero at the corresponding parameter, and so is its factor $G$.
+The reconstruction identity then gives $F(t)/G(t)=I_3(i)\in\mathbb Z$.
+\end{proof}
+
+\begin{lemma}[Integer values of a rational function]\label{lem:jointconicdivisors}
+Let $F,G\in\mathbb Z[t]$ be coprime over $\mathbb Q$, of degrees at most
+$D_0$, with $G$ nonconstant and coefficient heights at most
+$C_0a^{k_0}$. For every $\eta>0$, the number of integers $t$ such that
+$G(t)\ne0$ and $F(t)/G(t)\in\mathbb Z$ is $O_\eta(a^\eta)$.
+The implied constant depends only on $\eta,D_0,C_0,k_0$.
+\end{lemma}
+\begin{proof}
+The integer resultant $R=\operatorname{Res}(F,G)$ is nonzero.
+The adjugate of the Sylvester matrix gives $U,V\in\mathbb Z[t]$ with
+$UF+VG=R$. At any parameter in question, $G(t)\mid F(t)$, and hence
+$G(t)\mid R$. There are $2\tau(|R|)$ possible signed values of $G(t)$.
+For each such value $v$, the nonzero polynomial $G-v$ has at most
+$\deg G\le D_0$ roots. Thus the number of parameters is at most
+\[
+ 2D_0\tau(|R|).
+\]
+The Sylvester matrix has size at most $2D_0$, and its entries are
+bounded by $C_0a^{k_0}$. Expanding its determinant gives
+\[
+ 1\le |R|\le(2D_0)!\bigl(C_0a^{k_0}\bigr)^{2D_0}.
+\]
+The divisor estimate $\tau(n)\ll_\varepsilon n^\varepsilon$, with
+$\varepsilon$ chosen in terms of $\eta$ and the fixed degree and height
+exponents, proves the claim.
+\end{proof}
+
+Apply the last lemma to the reconstructed invariant $E_0$. The
+parameter is injective on selected free-node triples, and reconstruction
+of the strictly increasing $q_i$ makes those triples injective in the
+selected starts. Each retained nonexceptional conic therefore
+contributes $O_\eta(a^\eta)$ starts. The components with at most two
+selected triples and the nonretained components were already bounded
+absolutely. Apply the conic estimate with $\eta/2$ and the pattern
+estimate $O_{\eta/2}(a^{\eta/2}X^5)$. Since there are at most twenty-four
+components per pattern, all nonexceptional conics together contribute
+$O_\eta(a^\eta X^5)$.
+
 \subsection{The extra degree and the powered graph}
 
-Let $C$ be a retained nonexceptional component of degree $d\ge4$.
-On the normalization of its projective closure, let $E$ denote the
-pullback of the original hyperplane at infinity, of degree $d$.
-At a branch over infinity with hyperplane multiplicity $e$, the retained identities give
-\begin{equation}\label{eq:jointorders}
- e\text{ is even},\qquad \operatorname{ord}(J)=-5e/2,
- \qquad \min_j\operatorname{ord}(W_j)=3e/2.
-\end{equation}
-Here the resultant order is $-10e$, both $B_0$ and $B_1$ have order $-3e$,
-and $H_4$ has order $-6e$. Substitution in the normalization
-and raw-resolvent identities gives the rank-three zero order $3e/2$.
-The two reconstruction formulas then give the stated orders for the other
-curvatures. Distinct leading nodes exclude cancellation of the requisite
-Vandermonde factors. These calculations take place at discrete valuations of
-the normalized chart, so they also apply at singular points of the original curve.
+The conic count leaves retained nonexceptional components of degree at
+least four. Fix such a component $C$ of degree $d$. The additional
+integer coordinates will increase its degree without increasing their
+heights too much. The key is one extra zero over the affine part of $C$.
 
-Let $F$ be the pole envelope of the three $W_j$: at each branch its coefficient
-is the maximum of their pole orders and zero. It is supported over the affine
-part and disjoint from $E$. We have
+All divisors in this argument are on the normalization $\widetilde C$
+of the projective closure of $C$, over $\mathbb Q$.
+For a closed point $P$ of $\widetilde C$, put
+$f_P=[\kappa(P):\mathbb Q]$; thus
+$\deg(\sum_P a_P[P])=\sum_P a_Pf_P$.
+Let $E=\sum_{P\mid\infty}e_P[P]$ be the pullback of the original
+hyperplane at infinity. Then
+$\sum_{P\mid\infty}e_Pf_P=d$.  We do not require the closed points, or the
+branches over a rational point of $C$, to be rational.
+
+Let $F$ be the pole envelope of the curvature coordinates:
+\[
+ F=\sum_P \max\{0,-\operatorname{ord}_P(W_0),
+                   -\operatorname{ord}_P(W_1),
+                   -\operatorname{ord}_P(W_2)\}[P],
+\]
+with $\operatorname{ord}_P(0)=+\infty$.
+The orders in \eqref{eq:jointorders} show that $F$ is supported over the
+affine part of $C$, and hence is disjoint from $E$.
+
+\begin{lemma}[An additional affine zero]\label{lem:jointaffinezero}
+There is a rational linear combination $\phi$ of $W_0,W_1,W_2$ which is
+not the zero function and has a positive-order zero at a closed point
+$P_0$ of $\widetilde C$ outside $E$.
+\end{lemma}
+
+\begin{proof}
+First, the $W_j$ cannot all be scalar multiples, in $\mathbb Q(C)$, of a
+fixed nonzero vector $v\in\mathbb Q^3$.  Such a relation, together with
+$W\cdot(k_0,k_1,k_2)=0$, would put $C$ in the plane
+$v_0k_0+v_1k_1+v_2k_2=0$.  This is a genuine plane: the first three gaps
+are an invertible linear change of the three node coordinates.
+The pattern quadratic is irreducible, so its restriction to this plane
+is nonzero and has degree at most two.  Every curve contained in this
+plane section therefore has degree at most two, contrary to $d\ge4$.
+
+Choose a selected actual point $z_*\in C(\mathbb Q)$.  All the $W_j$
+are regular there, because their common reconstruction denominator
+does not vanish at an actual point.  Write $w_j=W_j(z_*)$.
+The identity $W\cdot(r_0,r_1,r_2)=A_0\ne0$ gives $w\ne0$.
+Choose $h$ with $w_h\ne0$.  At least one function
+$w_hW_j-w_jW_h$ is nonzero: otherwise
+$W=(W_h/w_h)w$, contradicting the preceding paragraph.
+Take such a function for $\phi$.  It has rational coefficients and
+satisfies $\phi(z_*)=0$.
+
+This zero survives normalization even if $z_*$ is singular.
+Indeed, write $\phi=g/h_0$ near $z_*$, with $g$ not identically zero on $C$,
+$g(z_*)=0$ and $h_0(z_*)\ne0$.
+The finite normalization has a closed point $P_0$ above $z_*$.
+In its discrete valuation ring the numerator is in the maximal ideal
+and the denominator is a unit, so $\operatorname{ord}_{P_0}(\phi)>0$.
+Since $z_*$ is affine, $P_0$ does not lie in $E$.
+\end{proof}
+
+\begin{lemma}[The curvature pole degree]\label{lem:jointpoledegree}
+The pole envelope satisfies
 \begin{equation}\label{eq:jointextra}
- \deg F\ge3d/2+1.
+ \deg F\ge \frac{3d}{2}+1.
 \end{equation}
-Indeed, the projective direction $[W_0:W_1:W_2]$ is nonconstant. Otherwise the
-first identity in \eqref{eq:jointdot} places the curve in a fixed plane, whereas
-a plane section of the irreducible pattern quadric has degree at most two.
-The second identity ensures that the curvature vector does not vanish at an
-affine point where its coordinates are regular. At a supported rational point
-choose a rational linear combination of the $W_j$ which vanishes there but is
-not the zero function. On normalization it has a positive-order zero above
-that point, in addition to zeros of total degree at least $3d/2$ over infinity.
-Its poles are bounded by $F$. Equality of zero and pole degrees gives
-\eqref{eq:jointextra}. Residue degrees are included in all these sums; the
-extra branch contributes at least one even when its residue field is larger
-than $\mathbb Q$.
+\end{lemma}
 
-For fixed positive integers $m,n$, adjoin $W_0^m,W_1^m,W_2^m,J^n$ to the
-three original node coordinates. The new curve is the closure of this
-graph on the common domain of the rational functions.
-Projection onto the original coordinates
-is birational. A generic rational linear combination of all seven coordinates
-avoids cancellation at every relevant pole: each forbidden choice is a proper
-linear subspace over the infinite field $\mathbb Q$. Its old infinity poles
-have total degree $5nd/2$, and the affine poles contribute $m\deg F$.
-The degree of this rational function is at most the graph Hilbert degree
-$\delta$. It follows that
+\begin{proof}
+Use the function $\phi$ from Lemma~\ref{lem:jointaffinezero}.
+At every point over infinity, each $W_j$ has order at least $3e_P/2$.
+The same is true of a rational linear combination; cancellation can
+only increase its zero order.  Consequently
+\[
+ (\phi)_0\ \ge\ \frac32 E+[P_0],
+ \qquad
+ (\phi)_\infty\ \le\ F .
+\]
+The first divisor is integral because every $e_P$ is even.
+The function $\phi$ is nonzero and has a zero, so its principal divisor
+has equal zero and pole degrees.  Hence
+\[
+ \deg F\ \ge\ \deg(\phi)_\infty
+ =\deg(\phi)_0
+ \ \ge\ \frac32\sum_{P\mid\infty}e_Pf_P+f_{P_0}
+ \ \ge\ \frac{3d}{2}+1.
+\]
+The last inequality uses only $f_{P_0}\ge1$, not that $P_0$ is rational.
+\end{proof}
+
+For positive integers $m,n$, let $\Gamma_{m,n}\subseteq\mathbb A^7$ be
+the closure of the graph obtained by adjoining
+$W_0^m,W_1^m,W_2^m,J^n$ to the three original node coordinates.
+The graph is taken on the common domain of these rational functions.
+It is an integral curve, and projection to the first three coordinates
+is birational: on that domain the four remaining coordinates are
+uniquely determined.  Thus $\Gamma_{m,n}$ and $C$ have the same function
+field.  Taking powers does not lose this property, because the original
+coordinates remain in the graph.
+
+\begin{lemma}[Degree of the powered graph]\label{lem:jointpowereddegree}
+If $\delta=\deg\Gamma_{m,n}$, then
 \begin{equation}\label{eq:jointdegree}
- 2\delta\ge(5n+3m)d+2m,\qquad \delta\ge10n+7m=:L_*.
+ 2\delta\ge(5n+3m)d+2m,
+ \qquad
+ \delta\ge10n+7m=:L_*.
 \end{equation}
-For $m=n=1$ it gives $\delta\ge4d+1\ge17$.
-Clearing the common rational denominator gives the uniform upper bound
-$\delta\le((m+n)247+1)d$. In the unpowered case the sharper bound $247d$
-also holds. Actual integer points on the powered graph lie in the box of
-radius $\max(3H,S^m,Y^n)$.
+Moreover,
+\[
+ \delta\le\bigl(247(m+n)+1\bigr)d.
+\]
+For $m=n=1$ one has the sharper upper bound $\delta\le247d$ and the
+lower bound $\delta\ge4d+1\ge17$.
+\end{lemma}
+
+\begin{proof}
+\emph{Lower bound.}
+At a point $P$ over the old infinity hyperplane, the original node
+coordinates have pole orders at most $e_P$, while
+$J^n$ has pole order $5ne_P/2$ and all $W_j^m$ vanish.
+Since $n\ge1$, the pole envelope of the seven graph coordinates at
+$P$ is exactly $5ne_P/2$.
+Over the affine part, the node coordinates and $J$ are regular:
+$J=A_0D$ is polynomial in the nodes.  There the envelope is exactly
+$m$ times the curvature envelope.  The complete envelope of the graph
+coordinates is therefore
+\[
+ G=\frac{5n}{2}E+mF.
+\]
+
+There is a single rational linear combination $\lambda$ of the seven
+coordinates whose pole divisor is $G$.  To see this, fix a point $P$
+in the finite support of $G$ and multiply all seven coordinates by a
+local uniformizer to the power $G(P)$.  Their residues in $\kappa(P)$
+are not all zero.  Cancellation of the leading pole is therefore a
+proper $\mathbb Q$-linear condition on the seven coefficients.
+The finitely many such proper subspaces do not cover $\mathbb Q^7$.
+Choosing coefficients outside their union gives the asserted
+simultaneous absence of cancellation, also when $\kappa(P)\ne\mathbb Q$.
+
+As a linear function on $\Gamma_{m,n}$, $\lambda$ has degree at most
+$\delta$.  For example, homogenize it on the projective closure of the
+graph: its pencil with the homogenizing coordinate consists of
+hyperplane sections of degree $\delta$.  Removing common zeros can
+only decrease the degree of the resulting map to $\mathbb P^1$.
+Birational projection identifies its function field with $\mathbb Q(C)$,
+so this degree is $\deg(\lambda)_\infty=\deg G$.  It follows that
+\[
+ \delta\ \ge\ \frac{5n}{2}d+m\deg F
+ \ \ge\ \frac{5n+3m}{2}d+m.
+\]
+This is the first inequality in \eqref{eq:jointdegree}; $d\ge4$ gives
+the second.  The auxiliary linear combination is used only to measure
+degree: no bound on its coefficients enters the integer-point box.
+
+\emph{Upper bound.}
+Here only total polynomial degrees matter, not the heights of the
+pattern-dependent coefficients.
+Write the cofactor formula for the reconstructed invariant as
+$E_0=\mathcal P/\mathcal Q$.
+Each entry of the moment matrix has degree at most four in the nodes.
+Expanding its $8\times8$ cofactors gives, in particular, the uniform
+bound $\deg c_j\le40$, so the formula for $E_0$ gives
+$\deg\mathcal P,\deg\mathcal Q\le240$.
+Since $B_0,B_1$ have degree at most three and the gaps have degree at
+most one, the three curvature coordinates have a common denominator
+\[
+ \mathcal D=\mathcal Q B_0k_1,\qquad \deg\mathcal D\le244,
+\]
+and numerators $\mathcal N_0,\mathcal N_1,\mathcal N_2$ of degree at
+most $244$.  The numerator for $J$ with this denominator is
+$\mathcal N_3=J\mathcal D$, of degree at most $247$.
+The denominator is nonzero on $C$, since it is nonzero at a selected
+actual point.
+
+Put $M=m+n$.  Represent the powered coordinates with denominator
+$\mathcal D^M$ and numerators
+\[
+ \mathcal N_j^m\mathcal D^{M-m}\quad(0\le j\le2),
+ \qquad
+ \mathcal N_3^n\mathcal D^{M-n}.
+\]
+All these numerators have degree at most $247M$.
+The original node coordinates, written with the same denominator,
+have numerators of degree at most $244M+1$.
+It follows that multiplying a polynomial of degree at most $t$ in
+the graph coordinates by $\mathcal D^{Mt}$ gives a polynomial in the
+original nodes of degree at most $(247M+1)t$.
+This operation is injective on the corresponding spaces of functions,
+because $\mathcal D$ is nonzero in $\mathbb Q(C)$.
+Comparing their eventual affine Hilbert functions gives
+\[
+ \delta t+O(1)\le d(247M+1)t+O(1),
+\]
+and hence the asserted upper bound.
+In the unpowered case use $\mathcal D$ directly: the four new
+numerators have degree at most $247$, and the original coordinates
+have numerators of degree at most $245$.  The same comparison gives
+$\delta\le247d$.
+\end{proof}
+
+Every selected actual point on $C$ gives an integer point on this graph.
+By Lemma~\ref{lem:jointheights}, its coordinates have absolute values
+at most
+\[
+ \max(3H,S^m,Y^n).
+\]
+The original node coordinates also show that distinct such node
+triples remain distinct after adjoining the powers.
 
 \subsection{Counting and the final exponents}
 
@@ -2103,12 +2768,15 @@ imported as a proved theorem, with no external counting hypothesis.
 
 For fixed $m,n$ the graph degrees lie in a fixed interval. All the heights are
 bounded by fixed powers of $a$, so the logarithm in \eqref{eq:jointexternal}
-is $O_\eta(a^\eta)$. The nonexceptional conics and proper cuts contribute
-$O_\eta(a^\eta X^5)$. Exceptional patterns number $O_\eta(a^\eta X^4)$; after
+is $O_\eta(a^\eta)$. The nonexceptional conics and components removed by
+Lemma~\ref{lem:jointcuts} contribute $O_\eta(a^\eta X^5)$.
+Exceptional patterns number $O_\eta(a^\eta X^4)$; after
 line exclusion the original three-coordinate curve count gives
-$O_\eta(a^\eta H^{1/2})$ per pattern. The other components use
-\eqref{eq:jointdegree}. At most four actual starts share a fixed pattern
-and complete gap vector. Summing the at-most-twenty-four components,
+$O_\eta(a^\eta H^{1/2})$ per pattern. The retained nonexceptional
+components of degree at least four use \eqref{eq:jointdegree}.
+At least $T/2$ starts are selected, and reconstruction makes their
+free-node triples distinct for each fixed pattern.
+Summing the at-most-twenty-four components,
 allowing overlaps, gives, under the line-exclusion condition
 \eqref{eq:jointscale},
 \begin{equation}\label{eq:jointcount}
