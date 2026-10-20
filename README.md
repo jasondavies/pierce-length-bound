@@ -203,7 +203,7 @@ and the range `17 ≤ δ ≤ 247*d` when the component degree is at least four.
 The earlier `151/513` conditional reduction remains available.
 
 The external coefficient-uniform affine-curve theorem is proved in
-`ccdn-dimension-growth`. `AffineCurveCounting.affineCurveBound` gives
+`ccdn-dimension-growth`. `CCDN.affineCurveBound` gives
 `C(n) * d³ * B^(1/d) * (log B + d)` for every prime affine curve over `ℚ`
 in ambient dimension `n ≥ 2`, using its actual affine Hilbert degree and every
 real `B ≥ 1`. Its proof includes the plane theorem, bounded degree-preserving

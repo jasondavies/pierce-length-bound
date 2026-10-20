@@ -115,7 +115,7 @@ lemma finrank_map_add_kernel_subspace_le {K M W : Type*} [Field K]
   omega
 
 /-- Bounded-degree polynomials in the quotient coordinate ring. This agrees with
-`AffineCurveCounting.coordinateSpace` when the coefficient field is `ℚ`. -/
+`CCDN.coordinateSpace` when the coefficient field is `ℚ`. -/
 def filteredCoordinateSpace {K σ : Type*} [Field K]
     (I : Ideal (MvPolynomial σ K)) (N : ℕ) : Submodule K (MvPolynomial σ K ⧸ I) :=
   (restrictTotalDegree σ K N).map (Ideal.Quotient.mkₐ K I).toLinearMap

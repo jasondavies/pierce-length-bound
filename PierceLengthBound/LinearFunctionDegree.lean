@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendFilteredIntersection
-public import AffineCurveCounting.CurveFunctionField
+public import CCDN.CurveFunctionField
 public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 
 /-! The function-field degree of a transcendental linear coordinate is bounded
@@ -34,7 +34,7 @@ theorem linear_function_degree_le_hilbert {K F σ : Type*}
   have hu : Transcendental K u :=
     (transcendental_algebraMap_iff (R := K) (S := K⟮x⟯)
       (A := F) (algebraMap K⟮x⟯ F).injective).mp hx
-  exact AffineCurveCounting.curve_functionField_finite_rank_le I d hdegree l hl u hu he
+  exact CCDN.curve_functionField_finite_rank_le I d hdegree l hl u hu he
 
 end
 end PierceLengthBound.FixedDividend

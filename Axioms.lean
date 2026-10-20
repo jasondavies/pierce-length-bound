@@ -204,7 +204,7 @@ run_cmd do
     let some idx := env.getModuleIdxFor? name | continue
     let some mod := modules[idx.toNat]? | throwError "Missing module for {name}"
     let isPierce := (`PierceLengthBound).isPrefixOf mod
-    let isCurve := (`AffineCurveCounting).isPrefixOf mod
+    let isCurve := (`CCDN).isPrefixOf mod
     let isCurveVendor := (`ArithmeticHeights).isPrefixOf mod
     if !isPierce && !isCurve && !isCurveVendor then continue
     let axioms ← collectAxioms name
@@ -216,5 +216,5 @@ run_cmd do
     if isCurveVendor then curveVendor := curveVendor + 1
   unless checked > 0 ∧ curve > 0 ∧ curveVendor > 0 do
     throwError "Axiom audit coverage failure"
-  logInfo m!"Axiom audit passed: {checked} PierceLengthBound, {curve} AffineCurveCounting \
+  logInfo m!"Axiom audit passed: {checked} PierceLengthBound, {curve} CCDN \
     and {curveVendor} curve-vendor declarations; only {allowed}."
