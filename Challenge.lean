@@ -12,15 +12,15 @@ public import Mathlib
 
 For natural numbers `0 < b < a`, repeatedly replace the positive remainder `x` by
 `a % x`, stopping at zero. `P a b` counts the positive terms, including `b`.
-The strongest result here is the uniform bound `P(a,b) ≪_ε a^(45/152 + ε)`.
-The four earlier exponents are included to cover the results advertised in the paper.
+The strongest result is `P(a,b) ≪_ε a^((1310 - sqrt 655)/4365 + ε)`.
+The rational joint-lift bounds and earlier exponents are also included.
 The conjectured `O((log a)^2)` bound remains open.
 
 Two further results give a conditional logarithmic refinement and a bound in terms
 of rises in the quotient increments. The final theorem states positivity and
 integrality of the entire Hankel hierarchy of the orbit's exact moment model.
 
-All mathematical definitions below are supplied in full. Only the eight theorem
+All mathematical definitions below are supplied in full. Only the eleven theorem
 proofs have deliberate holes. In particular, the two analytic inputs are explicit
 propositions, not axioms: their proofs are outside this formalization. All constants
 in the length bounds are uniform in `a` and `b`.
@@ -44,7 +44,22 @@ def P (a : ℕ) : ℕ → ℕ
   | b + 1 => P a (a % (b + 1)) + 1
 decreasing_by exact Nat.mod_lt _ (Nat.succ_pos _)
 
-/-- The main unconditional bound, with an arbitrary positive exponent loss. -/
+/-- The optimized unconditional joint-invariant bound. -/
+theorem P_le_joint_optimal : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ (((1310 : ℝ) - Real.sqrt 655) / 4365 + ε) := by
+  sorry
+
+/-- The rational bound from fixed powers 50 and 51. -/
+theorem P_le_2201_7480 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((2201 : ℝ) / 7480 + ε) := by
+  sorry
+
+/-- The unpowered joint-invariant bound. -/
+theorem P_le_128_435 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((128 : ℝ) / 435 + ε) := by
+  sorry
+
+/-- The earlier unconditional lattice bound. -/
 theorem P_le_45_152 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((45 : ℝ) / 152 + ε) := by
   sorry

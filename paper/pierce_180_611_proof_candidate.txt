@@ -1,0 +1,732 @@
+# A degree-parity refinement for the Pierce remainder iteration
+
+## Status and claim
+
+Research proof candidate, 19 October 2026. This note extends
+`pierce_135_458_proof_candidate.md` and its retained dependency
+`pierce_18_61_proof_candidate.md`. It has not received external mathematical
+review or formal verification. No priority claim is made.
+
+The new argument is a parity lemma for the degrees of the fixed-pattern
+curve components. It is proved below using normalization of curves and
+orders of vanishing. The conic arithmetic, bounded pattern multiplicity,
+line exclusion, minor counts, and short-vector lattice incidence estimate
+are retained from the named dependency notes. Numerical checks do not
+replace those dependencies.
+
+Subject to that retained framework, the resulting bound is
+
+\[
+\boxed{P(a,b)\ll_\varepsilon a^{180/611+\varepsilon}},
+\qquad 180/611=0.2945990180032733\ldots.
+\]
+
+The exact improvement over the preceding candidate is
+
+\[
+135/458-180/611=45/279838.
+\]
+
+The original conjecture \(P(a,b)=O((\log a)^2)\) is not resolved.
+
+The improved local estimate is
+
+\[
+\boxed{
+T\ll_\eta a^\eta
+\left(X^5+X^4H^{1/2}+X^{59/12}H^{1/4}\right).
+}
+\tag{0.1}
+\]
+
+The final term previously had the form \(X^{44/9}H^{1/3}\). The change
+comes from proving that **nonexceptional patterns have no odd-degree
+geometric curve components at all**, not from improving a general bound
+for the integer points of a cubic.
+
+## 1. Retained setup and dependencies
+
+Write the finite remainder orbit as
+
+\[
+a=q_i b_i+b_{i+1},\qquad k_i=q_{i+1}-q_i>0,
+\]
+
+until the first zero remainder. The quotients strictly increase. In a
+quotient block \(Q\le q_i<2Q\) with \(T\) states, a fixed positive
+fraction of the starts have their next sixteen quotient gaps bounded by
+
+\[
+H=C_0Q/T.
+\]
+
+The last sixteen starts of the block are discarded. All local moment
+identities below use this support margin. Put
+
+\[
+X=C_2aH^6/Q^4,\qquad K=Q^4/(aH^5),
+\]
+
+with fixed sufficiently large constants where required. A represented
+pattern has a positive integer minor, hence \(X\ge1\).
+
+Here are the exact retained statements used by the refinement.
+
+1. Form the integer 3-by-5 matrix whose rows are, for \(j=0,\ldots,4\),
+   \[
+   d_j=b_{i+j}-b_{i+j+1},\quad k_j,\quad
+   r_j=k_j(s_j+s_{j+1})+k_{j+1},\qquad s_j=q_{i+j}-q_i.
+   \]
+   Its ten maximal minors \(\mathbf p\) have height at most \(X\).
+   There are \(O(X^5)\) such full patterns, including nonprimitive vectors.
+
+2. Set
+   \[
+   A=p_{012},\ A'=p_{123},\ A''=p_{234},\quad
+   U=p_{023},\ V=-p_{013},\ U'=p_{134},\ V'=-p_{124}.
+   \]
+   The first three are positive integers. With
+   \[
+   \rho=A'/A,\quad u=U/A,\quad v=V/A,
+   \]
+   the first quartic's Newton coefficients are
+   \[
+   (c_0,c_1,c_2,c_3,c_4)
+   =(\rho,-\rho-u,u-v,v-1,1),
+   \]
+   and exactly \(\rho>0,u>0,v<0\). Thus every \(c_j\ne0\).
+
+3. The two consecutive linear moment relations determine \(k_0,k_4\)
+   linearly from \((k_1,k_2,k_3)\). The five nodes \(s_0,\ldots,s_4\)
+   are homogeneous linear functions of these three coordinates, with
+   \(s_0=0\), and
+   \[
+   \sum_{j=0}^4c_j=0,\qquad \sum_{j=0}^4c_js_j=0.
+   \tag{1.1}
+   \]
+   The three functions \(s_1,s_2,s_3\) are independent linear coordinates.
+
+4. Let
+   \[
+   F_j(x)=\prod_{v<j}(x-s_v),\quad
+   P(x)=\sum_{j=0}^4c_jF_j(x),\quad
+   Z(x)=xR(x)=\sum_{j=0}^4c'_jF_{j+1}(x).
+   \]
+   The next quadratic determines \(k_5\). After substituting it, define
+   \[
+   f=\sum_{j=0}^4c_j(s_j^2+k_j),
+   \]
+   and the cubic norm polynomial
+   \[
+   D=\sum_{j=0}^4c_j\{s_j^3+3s_j^2+3s_j(1+k_j)
+       +(1+k_j)^2+k_{j+1}\}.
+   \]
+   Their leading homogeneous terms are
+   \[
+   f_2=\sum_{j=0}^4c_js_j^2,\qquad
+   D_3=\sum_{j=0}^4c_js_j^3.
+   \tag{1.2}
+   \]
+   Set \(\mathcal R=\operatorname{Res}_x(P,Z)\). It has degree ten and
+   \[
+   \mathcal R_{10}
+   =\kappa\prod_{0\le j<\ell\le4}(s_\ell-s_j),
+   \qquad \kappa=c_0c_1c_2c_3\ne0.
+   \tag{1.3}
+   \]
+   Every actual state satisfies
+   \[
+   f=0,\qquad A\mathcal R=aD^4,\qquad D>0.
+   \tag{1.4}
+   \]
+   The two polynomials \(f\) and \(\Omega=A\mathcal R-aD^4\) have no
+   common surface component; their intersection has total curve degree at
+   most 24. Bounded isolated contributions can be absorbed in \(O(1)\)
+   per pattern.
+
+5. If \(K\ge C_1X\), no selected actual state lies on any line component.
+   In the complementary range the drop estimate gives
+   \(T\ll_\eta a^{5/17+\eta}\).
+
+6. A nonexceptional parabolic conic, meaning that its five leading node
+   directions are distinct, contributes \(O_\eta(a^\eta)\) actual states
+   per fixed pattern. This is Lemma 5.1 of the 135/458 note, including its
+   bounded-height and exceptional-denominator cases. It uses rational
+   reconstruction from the two quartics and the integrality of the
+   reconstructed remainder. A reminder is given in Section 6 below.
+
+7. The primitive rank-three lattice
+   \[
+   L_{\mathbf p}=\operatorname{rowspan}_{\mathbb R}(M)\cap\mathbb Z^5
+   \]
+   contains the five-gap vector. If \(\lambda_1\) is its shortest-vector
+   length, a reduced basis gives integer coordinates of size
+   \(O(H/\lambda_1)\). This change is invertible on the three independent
+   gap coordinates, hence preserves curve degrees. If \(N(Y,R)\) counts
+   primitive rank-three lattices of determinant at most \(Y\) with
+   shortest length at most \(R\), then
+   \[
+   N(Y,R)\ll Y^4R^3\quad(1\le R\ll Y^{1/3}).
+   \tag{1.5}
+   \]
+   These are Sections 8--9 of the 18/61 note.
+
+8. Fixed pattern and five gaps represent at most four orbit states, using
+   the determinant identity \(A P(-q_i)=aH_4\), which is a quartic equation
+   for \(q_i\). Quotients strictly increase along a genuine orbit.
+
+The present note proves the new geometric restriction before applying
+these counting inputs.
+
+## 2. Exact definition of exceptional patterns
+
+Call an actual coefficient pattern **exceptional** if some pair satisfies
+\(c_j+c_\ell=0\), \(j\ne\ell\). Otherwise call it nonexceptional.
+This is an exact classification; it does not presume any distribution of
+patterns.
+
+The signs \(\rho>0,u>0,v<0\) and the formulas for \(c\) show that only
+four pairs can vanish:
+
+| Pair | Coefficient sum | Equivalent minor relation |
+|---|---|---|
+| (0,3) | \(\rho+v-1\) | \(A'+V-A=0\) |
+| (1,2) | \(-\rho-v\) | \(A'+V=0\) |
+| (2,3) | \(u-1\) | \(U-A=0\) |
+| (1,4) | \(1-\rho-u\) | \(A-A'-U=0\) |
+
+The remaining pair sums are
+\(-u,\rho+u-v,\rho+1,-\rho-u+v-1,u-v+1,v\), which are all nonzero.
+
+Each displayed minor relation is a single maximal minor made zero by a
+bounded unimodular change of the five matrix columns. For original
+columns \(v_0,\ldots,v_4\), suitable three-column determinants are
+
+\[
+\begin{aligned}
+&\det(v_1,v_2+v_0,v_3-v_0),\\
+&\det(v_1,v_2+v_0,v_3),\\
+&\det(v_0,v_2,v_3+v_1),\\
+&\det(v_0+v_1,v_2,-v_1-v_3).
+\end{aligned}
+\]
+
+The selected columns extend to an integral basis change by retaining
+appropriate original columns and \(v_4\). Heights change by a constant
+factor only.
+
+For later use,
+
+\[
+\boxed{\#\{\text{exceptional patterns of height at most }X\}
+       \ll X^4\log(2X).}
+\tag{2.1}
+\]
+
+An elementary proof is included in Section 5. No sufficiency of the four
+relations for supporting a particular curve is assumed.
+
+## 3. New parity theorem
+
+### Theorem 3.1
+
+Fix a nonexceptional pattern in the setup of Section 1. Every geometrically
+irreducible affine curve component of \(f=\Omega=0\) has **even degree**.
+More precisely, on the normalization of its projective closure, the
+pullback divisor of the hyperplane at infinity has even multiplicity at
+every point.
+
+Consequently the same is true of the degree of every irreducible component
+over \(\mathbb Q\): its geometric component degrees add. In particular,
+there are no degree-three components for a nonexceptional pattern.
+
+### 3.1 Homogenization
+
+Work over an algebraic closure of characteristic zero. Denote the
+homogenizing coordinate by \(w\). Homogenize \(f,D,\mathcal R\) to
+degrees 2, 3 and 10, writing the resulting forms as
+\(\widehat f,\widehat D,\widehat{\mathcal R}\).
+The fixed-dividend equation homogenizes to degree twelve as
+
+\[
+\boxed{
+A w^2\widehat{\mathcal R}=a\widehat D^{\,4}.
+}
+\tag{3.1}
+\]
+
+Let \(\overline C\) be the projective closure of an irreducible affine
+curve component. It is not contained in \(w=0\). Both the homogeneous
+quadratic and (3.1) vanish on \(\overline C\).
+
+### 3.2 At infinity the node values cannot collide
+
+At a point of \(\overline C\cap\{w=0\}\), evaluate the five homogeneous
+linear node functions, giving values \(z_0,\ldots,z_4\), up to a common
+nonzero scalar. Here \(z_0=0\) and not all values vanish, because
+\(s_1,s_2,s_3\) are independent coordinates.
+
+The equations at this point imply
+
+\[
+\sum_{j=0}^4c_jz_j^m=0\qquad(m=0,1,2,3).
+\tag{3.2}
+\]
+
+For \(m=0,1\) use (1.1); for \(m=2\), use \(\widehat f=0\). For
+\(m=3\), equation (3.1) at \(w=0\) forces
+\(\widehat D=D_3(z)=0\), since \(a\ne0\).
+
+Suppose two node values coincide. Group equal values into clusters, with
+at most four distinct cluster values. The first as many equations in
+(3.2) as there are clusters form an invertible Vandermonde system for the
+cluster coefficient sums. Thus each cluster has coefficient sum zero.
+
+No cluster can have size one because all \(c_j\ne0\). A single cluster
+would make all \(z_j=z_0=0\), which is impossible. Hence the five indices
+would have to split into two clusters of sizes two and three. The
+coefficient sum in the two-element cluster would vanish, contradicting
+nonexceptionality.
+
+Therefore all five \(z_j\) are pairwise distinct. By (1.3),
+
+\[
+\boxed{\widehat{\mathcal R}(z)\ne0}
+\tag{3.3}
+\]
+
+at every point at infinity of \(\overline C\).
+
+### 3.3 Normalize to count multiplicities branch by branch
+
+Let \(\pi:\widetilde C\to\overline C\) be the normalization.
+The curve \(\widetilde C\) is nonsingular and projective in characteristic
+zero. A point of \(\widetilde C\) above an infinity point represents a
+particular branch, so singularities and tangencies cause no ambiguity.
+
+Choose a homogeneous linear coordinate \(\ell\) nonzero at that image
+point. In the local ring of \(\widetilde C\) define
+
+\[
+h=\pi^*(w/\ell),\quad
+r=\pi^*(\widehat{\mathcal R}/\ell^{10}),\quad
+\delta=\pi^*(\widehat D/\ell^3).
+\]
+
+These are regular near the chosen point. The function \(r\) is a unit by
+(3.3), and \(h\) vanishes to some positive integer order \(e\). Equation
+(3.1) becomes
+
+\[
+A h^2r=a\delta^4.
+\]
+
+In the discrete valuation ring of the normalized curve, both constants
+have order zero, and \(r\) has order zero. Therefore
+
+\[
+\boxed{2e=4\operatorname{ord}(\delta).}
+\tag{3.4}
+\]
+
+It follows that \(e\) is even. This argument applies separately to every
+branch above infinity.
+
+Finally, the degree of the pullback hyperplane divisor equals
+\(\deg\overline C\). This remains true under the birational normalization.
+Equivalently, compare with a generic hyperplane cutting \(\overline C\)
+in \(\deg\overline C\) smooth points; on the normalization the ratio of
+the two linear forms is a meromorphic function whose zero and pole
+divisors have the same degree. Thus
+
+\[
+\deg C=\sum_{p\mid\infty}e_p,
+\]
+
+which is even by (3.4). This proves the theorem.
+
+**Geometric foundations.** Existence of the nonsingular projective model
+and the discrete-valuation description are standard normalization facts
+for curves; see the Stacks Project, Section 53.2 (tag 0BXX). Degrees are
+preserved under a birational proper curve morphism by Lemma 33.44.4
+(tag 0AYU); the degree of a section's zero divisor is treated in Section
+33.44 (tag 0AYQ), in particular Lemmas 33.44.9 and 33.44.12. No
+point-counting theorem is used in Theorem 3.1.
+
+### 3.4 Equivalent pole-order form
+
+At a normalized branch let the five affine nodes have common maximum pole
+order \(e\), and leading values \(z_j\). Their distinctness makes the
+resultant have exact pole order \(10e\): the degree-ten leading part has
+nonzero coefficient, and every lower-degree part has pole order at most
+\(9e\). The identity \(A\mathcal R=aD^4\) then gives
+
+\[
+10e=4\,\text{(pole order of }D\text{)}.
+\]
+
+Thus \(e\) is even. This agrees with (3.4), since the homogenized norm
+\(\delta\) has order \(3e-5e/2=e/2\).
+
+The divisor proof is used rather than assuming that every curve has a
+polynomial parametrization. The theorem covers smooth and singular cubic
+curves, including nonrational ones, and components with several infinity
+points.
+
+## 4. Consequences for the components actually being counted
+
+The theorem proves the following dichotomy.
+
+* For a nonexceptional pattern, every geometric component has even degree.
+  In particular, there are no cubic components or any other odd-degree
+  components.
+* If an odd-degree component occurs, the pattern must satisfy one of the
+  four exact minor relations of Section 2. Its pattern belongs to the
+  smaller set counted in (2.1).
+
+The statement concerns the algebraic components themselves, not merely
+selected integer points. No reconstruction identity beyond the retained
+fixed-dividend equation was added to obtain it.
+
+A useful further consequence concerns conics. For a nonexceptional
+geometrically irreducible conic, the infinity divisor has degree two and
+positive even multiplicities. It is therefore \(2p\) for one point \(p\).
+For a conic defined over \(\mathbb Q\), that unique point is rational.
+The conic is thus parabolic in its affine plane, with one double point
+of intersection with the line at infinity. The five leading node values
+there are distinct by Section 3.2. It falls exactly under the retained
+parabolic arithmetic lemma.
+
+A nonexceptional \(\mathbb Q\)-irreducible conic cannot split into two
+geometric lines, since those would be odd-degree components. More
+geometrically reducible components of higher degree can either be counted
+using the \(\mathbb Q\)-irreducible curve theorem below or have their
+bounded rational intersections counted separately. Degree additivity means
+that a \(\mathbb Q\)-irreducible component also has even degree.
+
+After the conics have been treated arithmetically, the smallest remaining
+degree for nonexceptional patterns is therefore four.
+
+## 5. Exceptional patterns contribute only the previous harmless term
+
+For completeness, the count (2.1) is elementary. Hodge duality turns a
+three-vector with one specified zero maximal coordinate into a decomposable
+integral bivector \(w\) in five coordinates with \(w_{45}=0\). Put
+
+\[
+\mathbf a=(w_{14},w_{24},w_{34}),\quad
+\mathbf b=(w_{15},w_{25},w_{35}),\quad
+\mathbf t=(w_{23},-w_{13},w_{12}).
+\]
+
+The Pluecker equations give
+
+\[
+\mathbf a\times\mathbf b=0,\qquad
+\mathbf t\cdot\mathbf a=\mathbf t\cdot\mathbf b=0.
+\]
+
+If \(\mathbf a=\mathbf b=0\), there are \(O(X^3)\) choices. Otherwise,
+write \(\mathbf a=r\mathbf z\), \(\mathbf b=s\mathbf z\), with
+\(\mathbf z\) primitive integral, and \(r,s\) integers not both zero.
+Let \(Z=\|\mathbf z\|_\infty\). Then \(1\le Z\ll X\),
+\(|r|,|s|\ll X/Z\), and \(\mathbf z\cdot\mathbf t=0\).
+
+For fixed primitive \(\mathbf z\), there are \(O(X^2/Z)\) choices for
+\(\mathbf t\). Use a largest coordinate as the modulus \(Z\); the
+congruence on the other two coordinates is surjective by primitivity, and
+the last coordinate is determined. The bound is uniform since \(Z\ll X\).
+
+On a dyadic \(Z\)-range the number of possibilities is
+
+\[
+O(Z^3)\,O((X/Z)^2)\,O(X^2/Z)=O(X^4).
+\]
+
+Summing the \(O(\log(2X))\) ranges proves the assertion, including
+nonprimitive vectors and every common divisor.
+
+In the main range \(K\ge C_1X\), the retained line-exclusion lemma
+removes all actual points on line components, for both exceptional and
+nonexceptional patterns. Every remaining component in an exceptional
+pattern has degree at least two and at most 24. The uniform curve bound
+therefore gives, in the original gap box,
+
+\[
+O\left(H^{1/2}\log(2H)\right)
+\]
+
+points per pattern, including all its finitely many components. The
+bounded state multiplicity changes only the constant. Their combined
+contribution is
+
+\[
+\boxed{O_\eta\left(a^\eta X^4H^{1/2}\right).}
+\tag{5.1}
+\]
+
+This single term covers the exceptional cubics and all the exceptional
+higher-degree components as well as exceptional conics. No claim that an
+exceptional pattern actually supports any such component is needed.
+
+## 6. The retained arithmetic contribution from conics
+
+Every nonexceptional conic has just been shown to be parabolic with five
+distinct leading node values. The uniform \(O_\eta(a^\eta)\) count for
+actual states on each such component is retained from Section 5 of the
+135/458 note. To specify exactly what is being used, that argument is:
+
+* If there are more than two actual integer gap points, their affine plane
+  has height bounded by a fixed power of \(a\). Completing the square in
+  the plane conic gives an integer parameter \(t\) with node polynomials
+  \(s_j(t)\) of degree at most two and bounded rational coefficient height.
+* The two quartics determine the normalized moment functional up to scale,
+  because the eight polynomials \(x^jP,x^jZ\), \(0\le j\le3\), are
+  linearly independent when the resultant is nonzero. Actual states have
+  nonzero resultant because \(D>0\).
+* Consequently \(q(t)\) and \(b(t)\) are rational functions of bounded
+  degree and height. Each actual-state normalization is used as a further
+  bounded-degree cut unless it holds identically.
+* If \(A P_t(-q(t))=aH_4(t)\) holds identically, the monic equation makes
+  \(q(t)\) a polynomial. Distinct leading nodes give \(\deg H_4=12\),
+  which forces \(\deg q=3\).
+* If the quartic remainder relation also holds identically, it writes
+  \(b(t)=-aW(t)/V(t)\) with \(\deg W=9\), \(\deg V=12\).
+  Thus in lowest terms \(b(t)\) has a nonconstant denominator.
+* For coprime integer polynomials \(F,G\) with \(\deg G>0\), integrality
+  of \(F(t)/G(t)\) forces \(G(t)\) to divide the nonzero resultant
+  \(\operatorname{Res}(F,G)\). Bounded degrees and polynomial height in
+  \(a\) give \(O_\eta(a^\eta)\) parameter values via the divisor bound.
+
+All exceptional denominator cases and the finite-cut alternatives remain
+as in that lemma; no identity is imposed on the whole conic merely
+because it holds at a few actual points. The total number of conics per
+pattern is bounded by 24. Summing over \(O(X^5)\) patterns gives
+
+\[
+\boxed{O_\eta(a^\eta X^5).}
+\tag{6.1}
+\]
+
+Unlike the preceding presentation, the current parity argument makes a
+separate treatment of nonparabolic conics unnecessary for nonexceptional
+patterns. They cannot occur there. Exceptional conics are already included
+in (5.1).
+
+## 7. Degree at least four: the quarter-power lattice weight
+
+The coefficient-uniform affine-curve theorem used is
+
+\[
+N_{\mathrm{aff}}(C,B)
+\ll_n d^3B^{1/d}(\log B+d)
+\]
+
+for an affine curve over \(\mathbb Q\), irreducible over \(\mathbb Q\),
+of degree \(d\) in fixed ambient dimension \(n\ge2\). This is Corollary
+2.2 of Cluckers--Debes--Hendel--Nguyen--Vermeulen, *Improvements on dimension
+growth results and effective Hilbert's irreducibility theorem*, Forum of
+Mathematics, Sigma 13 (2025), e153, DOI 10.1017/fms.2025.10096. The corollary
+attributes the estimate to Castryck--Cluckers--Dittmann--Nguyen (2020).
+The implied constant is independent of coefficient height.
+
+In lattice coordinates, a fixed pattern's actual gap vector lies in a box
+of radius \(O(H/\lambda_1(L_{\mathbf p}))\). A represented pattern has
+\(\lambda_1\le\sqrt5H\); thus a ceiling or a minimum box radius of one
+changes only constants. The invertible linear change preserves degrees.
+Every remaining nonexceptional curve now has degree at least four. Its
+contribution is at most
+
+\[
+O\left((H/\lambda_1(L_{\mathbf p}))^{1/4}\log(2H)\right).
+\tag{7.1}
+\]
+
+To sum this weight, use the retained incidence estimate (1.5). For primitive
+lattices of determinant at most \(Y\), the shortest-vector length is
+\(O(Y^{1/3})\). A dyadic sum gives
+
+\[
+\begin{aligned}
+\sum_{\substack{L\text{ primitive}\ \det L\le Y}}
+\lambda_1(L)^{-1/4}
+&\ll\sum_{R\ll Y^{1/3}}Y^4R^{3-1/4}\\
+&\ll Y^{4+11/12}=Y^{59/12}.
+\end{aligned}
+\tag{7.2}
+\]
+
+For \(\mathbf p=g\mathbf p_0\), with \(\mathbf p_0\) primitive,
+\(\det L_{\mathbf p}=\|\mathbf p_0\|_2\le\sqrt{10}X/g\).
+There are two primitive orientations per lattice. Hence
+
+\[
+\boxed{
+\sum_{\operatorname{Ht}(\mathbf p)\le X}
+\lambda_1(L_{\mathbf p})^{-1/4}
+\ll\sum_{g\le X}(X/g)^{59/12}\ll X^{59/12}.
+}
+\tag{7.3}
+\]
+
+All sums include nonprimitive minor vectors and unusually short lattices.
+Enlarging from actual nonexceptional patterns to every decomposable pattern
+is harmless. Combining (7.1)--(7.3) and the bounded state multiplicity gives
+
+\[
+\boxed{O\left(H^{1/4}X^{59/12}\log(2H)\right).}
+\tag{7.4}
+\]
+
+Together, (5.1), (6.1), and (7.4) prove (0.1) in the main range.
+
+## 8. Global exponent and the complementary range
+
+The elementary drop bound is retained in the form
+
+\[
+Q\ll_\eta a^{1+\eta}/T^2.
+\tag{8.1}
+\]
+
+For clarity, the remainder drops in a quotient block have total at most
+\(a/Q\), so at least half are at most \(2a/(QT)\). At drop \(d\),
+\(a+d=(q_i+1)b_i\), and distinct remainders are divisors of \(a+d\le2a\).
+The elementary divisor estimate gives (8.1). The selected good windows
+retain at least a fixed positive proportion of the block; small \(T\)
+and the finite range of small \(a\) are absorbed into constants.
+
+Substitute
+
+\[
+H\asymp Q/T,\qquad X\asymp aQ^2/T^6
+\]
+
+into the three terms of (0.1). Absorb logarithms into arbitrarily small
+powers of \(a\).
+
+* If the \(X^5\) term dominates, then
+  \(T^{31}\ll a^{5+\eta}Q^{10}\), hence
+  \(T^{51}\ll a^{15+11\eta}\). This gives exponent \(5/17\).
+* If the \(X^4H^{1/2}\) term dominates, then
+  \(T^{51}\ll a^{8+2\eta}Q^{17}\), hence
+  \(T^{85}\ll a^{25+19\eta}\). This also gives \(5/17\).
+* From the \(X^{59/12}H^{1/4}\) term,
+  \[
+  T^{369}\ll_\eta a^{59+12\eta}Q^{121},
+  \]
+  and then by (8.1),
+  \[
+  \boxed{T^{611}\ll_\eta a^{180+133\eta}.}
+  \tag{8.2}
+  \]
+
+If the line-exclusion scale \(K\ge C_1X\) fails, then
+
+\[
+T^{11}\ll a^2Q^3,\qquad
+T^{17}\ll_\eta a^{5+3\eta}.
+\]
+
+This is again controlled by the smaller exponent \(5/17\), because
+
+\[
+180/611-5/17=5/10387>0.
+\]
+
+Choose \(\eta\) sufficiently small relative to a prescribed
+\(\varepsilon>0\), and sum the \(O(\log a)\) dyadic quotient blocks.
+The last logarithm is absorbed into \(a^\varepsilon\). We obtain the
+claimed research candidate
+
+\[
+\boxed{P(a,b)\ll_\varepsilon a^{180/611+\varepsilon}.}
+\]
+
+At the limiting scales,
+
+\[
+T\sim a^{180/611},\quad Q\sim a^{251/611},\quad
+H\sim a^{71/611},\quad X\sim a^{33/611},\quad K\sim a^{38/611}.
+\]
+
+In particular \(K/X\sim a^{5/611}\), consistent with the main-range
+line exclusion.
+
+## 9. What the parity argument does and does not give
+
+The theorem excludes odd-degree components for nonexceptional patterns,
+not quartic components. It does not justify substituting degree six in the
+curve count. Singularities and several branches at infinity have been
+included through normalization, so they are not missing exceptions to the
+parity statement.
+
+More generally, if the remaining generic components could all be shown to
+have degree at least \(d\), the same lattice calculation would give
+
+\[
+H^{1/d}X^{5-1/(3d)},
+\]
+
+with corresponding exponent
+
+\[
+\frac{45d}{153d-1}.
+\]
+
+The values \(d=2,3,4\) give \(18/61,135/458,180/611\), respectively.
+This expression approaches \(5/17\) from above. The other local terms
+and complementary scale also currently have exponent \(5/17\).
+Consequently, eliminating higher-degree components one at a time within
+this unchanged framework cannot by itself produce an exponent below
+\(5/17\). Further progress beyond that threshold needs another saving
+in the pattern count, the arithmetic contribution, or the scale analysis.
+
+## 10. Verification performed for this refinement
+
+No independent-agent review or formal verification was performed. The
+following exact computations were executed in the current run and are
+included in the companion archive.
+
+1. A generic symbolic computation verifies that the substituted norm
+   polynomial has degree three and homogeneous part
+   \(D_3=\sum c_js_j^3\). Ten generic coefficient-pair identities and the
+   homogenized square/fourth-power identity are checked symbolically.
+2. Three symbolic Vandermonde determinants are verified. All 52 partitions
+   of five indices are enumerated to confirm that a nontrivial collision
+   partition without singleton clusters has type \(2+3\).
+3. Sixteen explicitly constructed rational node families verify the exact
+   degree-ten resultant leading coefficient. They are algebraic test
+   families, not claimed to be actual orbit curves. Four pole-scale
+   substitutions per family check the same leading coefficient under
+   \(t=\tau^{-e}\). These checks do not prove the divisor statement.
+4. The retained finite-positive-measure test was rerun at 200 genuine orbit
+   starts, each with at least ten positive states. It verifies the
+   orthogonality of the two quartics, positive norm, integral Hankel label,
+   quotient-normalization identity, and
+   \(A\operatorname{Res}(P,Z)=aD^4\).
+5. The rational exponent arithmetic and exact differences are checked.
+
+The proof of the new uniform restriction is Section 3, not the finite
+computations. The previous conic arithmetic and short-vector incidence
+lemmas remain explicitly identified dependencies rather than newly
+claimed audits.
+
+## 11. References
+
+- `pierce_135_458_proof_candidate.md`, supplied in the conversation. Sections
+  1--6 contain the retained setup, reconstruction, parabolic arithmetic,
+  and exceptional-pattern estimate.
+- `pierce_18_61_proof_candidate.md`, supplied in the conversation. Sections
+  6--11 contain line exclusion, elementary lattice preliminaries, the
+  short-vector incidence estimate, and the selected-window framework.
+- The Stacks Project, Section 53.2, *Curves and function fields* (tag 0BXX);
+  Section 33.44, *Degrees on curves* (tag 0AYQ), especially Lemma 33.44.4
+  (tag 0AYU) and Lemmas 33.44.9 and 33.44.12.
+- R. Cluckers, P. Debes, Y. I. Hendel, K. H. Nguyen, F. Vermeulen,
+  *Improvements on dimension growth results and effective Hilbert's
+  irreducibility theorem*, Forum of Mathematics, Sigma 13 (2025), e153,
+  DOI 10.1017/fms.2025.10096, Corollary 2.2. The corollary attributes the
+  affine-curve estimate to W. Castryck, R. Cluckers, P. Dittmann, K. H.
+  Nguyen, *The dimension growth conjecture, polynomial in the degree and
+  without logarithmic factors*, Algebra & Number Theory 14 (2020).

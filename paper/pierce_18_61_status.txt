@@ -1,3 +1,13 @@
+CURRENT UPDATE — 20 October 2026
+The joint-lift refinement supersedes this historical development record.
+The unconditional optimized exponent (1310-sqrt(655))/4365, and the rational
+exponents 2201/7480 and 128/435, are proved in JointLiftMain.lean, including
+the external curve-counting theorem. They are stronger than the bound discussed
+below. Statements below about remaining obligations or 45/152 being strongest
+refer to the earlier snapshot. See pierce_joint_lift_status.txt and
+../SUBMISSION_REVIEW.txt for current proof and submission-check status.
+The older conditional reductions remain as historical intermediate results.
+
 LINE-EXCLUSION AND LATTICE REFINEMENT: FORMALIZATION STATUS
 19 October 2026
 
@@ -6,6 +16,11 @@ The strongest fully formalized unconditional bound remains 45/152. Neither
 18/61 nor the preceding 13/44 candidate is ready to replace the main theorem
 in the manuscript or submission. The requested scope includes proving the
 external coefficient-uniform curve-counting theorem, not assuming it.
+
+The newer 135/458 and 180/611 candidates extend this development. See
+pierce_135_458_status.txt for conic arguments and pierce_180_611_status.txt for
+the active parity refinement.
+The shared geometry below continues to support both refinements.
 
 Source and mathematical review
 ------------------------------
@@ -21,11 +36,12 @@ T^305 << a^(90+O(eta)), and the complementary range gives T^17 << a^(5+O(eta)).
 Lean verifies the exact reductions 90/305 = 18/61 and
 18/61 - 5/17 = 1/1037, as well as the savings over 13/44 and 31/105.
 
-The supplied polynomial identities passed generic symbolic checks and their
-Lean versions are proved for all real parameters. The resultant degree-six
-claim passed finite exact specializations and its shared-node residual table
-passed symbolic checks. These tests do not prove the general resultant-degree
-claim or validate the entire candidate. No priority claim is made.
+The resultant degree-six claim and the degree-ten leading coefficient now have
+universal Lean proofs, replacing the earlier finite checks as evidence for these
+statements. The degree-ten upper bound is also proved directly in the multivariate
+coordinate ring. Actual orbit identities, absolute irreducibility of the quadratic,
+and exclusion of arbitrary contained complex lines have been proved. No priority
+claim is made.
 
 Counting input and lattice coordinates
 --------------------------------------
@@ -36,10 +52,11 @@ For this application n=3 and 2 <= d <= 24 suffice. The coefficient uniformity
 is essential because the rational linear change to lattice coordinates can
 have arbitrarily large coefficients.
 
-The separate project /home/ttuser/affine-curve-counting is developing this
-input (checked sibling revision 1dfd861). Its full curve-counting target
-remains unproved. This repository does
-not import it as an axiom or claim that the local count has been established.
+The separate project /home/ttuser/ccdn-dimension-growth is developing this
+input. Its current checked working tree adds residue-class aggregation and an
+adapted first Mertens theorem to the earlier prerequisites. The full curve-counting
+target remains unproved. This repository does not import it as an axiom or claim
+that the local count has been established.
 
 There is a simpler sufficient route to the weighted count than the new
 rank-five lattice enumeration in Sections 8-9. The existing Pierce development
@@ -65,44 +82,114 @@ for the requested final exponent. This is a mathematically sufficient
 variation of the argument, not a claim that Lemmas 9.1-9.2 were formalized.
 The new weighted bound itself has no unproved lattice-counting hypothesis.
 
-New Lean results
-----------------
-FixedDividendLines.lean:
-- Defines the first quadratic and norm expression after eliminating the
-  fourth node and the next two gaps using the kernel relations.
-- line_identity_03, line_identity_12, line_identity_23, line_identity_14 prove
-  all four exact symmetric-difference identities, for arbitrary real data.
-  For example D(+1)+D(-1)-2D(0) = -2 rho s3 + 2(f(+1)-f(-1)) in case (0,3).
-  The fourth-node linear relation is built into the definitions; the node
-  offsets cannot all be treated as independent in that first identity.
-- line_obstruction_03/12/23/14 derive the four stated obstructions from
-  vanishing quadratic samples and vanishing second difference of the norm.
-- line_obstructions_excluded rules out those alternatives under explicit
-  gap lower bounds and the coefficient-height bound.
-- norm_degree_le_one and norm_quadratic_coeff_zero prove the degree argument
-  from a polynomial identity A R = a D^4 and degree(R)<=6. They do not prove
-  degree(R)<=6 for the actual resultant.
+Lean results completed
+-----------------------
+FixedDividendOrbit and FixedDividendOrthogonal:
+- Derive the actual cofactor kernel equations and orthogonality of the orbit
+  quartic against degrees zero through three.
+- Construct monic orthogonal polynomials from the invertible moment matrix.
+- Prove positivity of square norms, uniqueness, the three-term recurrence,
+  and the identity norm(p_n) * det(H_n) = det(H_(n+1)).
+- Identify the candidate's explicit cubic norm with nu(P^2), including positivity.
 
-FixedDividendWeights.lean:
-- reciprocal_sum_bound is real-valued partial summation.
-- half_weight_sq is the Cauchy-Schwarz transfer.
-- half_weight_minor_bound proves the sixth-power weighted pattern estimate
-  above, directly from Plucker relations and height/divisor bounds.
-- weighted_count_sixth transfers an explicitly hypothesized square-root
-  local count to T^6 <= C K^6 H^3 X^29 tau^9. Its local-count hypothesis
-  remains an obligation when applying it to the Pierce orbit.
+FixedDividendIdentity and FixedDividendCoordinates:
+- Identify the next translated quartic and show xR differs from the canonical
+  quintic by a scalar multiple of P.
+- Derive the actual fixed-dividend identity A Res(P,xR) = a D^4 and A=a det(H_4).
+- Connect the actual orbit quartics to the explicit Newton forms, and the
+  actual nodes/gaps to the eliminated polynomial coordinates.
+- Prove f=0 and D=orbitNorm at every appropriately supported orbit start.
 
-FixedDividendExponent.lean:
-- weighted_exponent proves T^305 <= K C^32 D^61 a^90 from the sixth-power
-  local count, height bound, gap selection bound, and drop bound.
-- small_scale_exponent proves T^17 <= C D^3 a^5 from the other scale range.
-- weighted_exponent_comparison and weighted_critical_balance verify the
-  exact rational exponent identities.
+FixedDividendLineResultant, FixedDividendLeadingResultant, FixedDividendTotalDegree:
+- Prove the monic-quartic Sylvester/Bézout determinant identity symbolically.
+- Prove degree <=6 along each of the four exceptional directions for arbitrary
+  offsets and coefficients, including degenerate cases.
+- Prove degree <=10 and the exact degree-ten coefficient for arbitrary affine
+  node restrictions; the coefficient is c0*c1*c2*c3 times the node Vandermonde.
+- Prove resultant total degree <=10 directly for multivariate node polynomials
+  of degree <=1; prove the quadratic and norm total degrees <=2 and <=3.
+  These are universal checked identities and degree estimates, not finite tests.
 
-The earlier FixedDividendMoments, FixedDividendResultant and FixedDividend
-components remain applicable; their limitations are recorded in the preceding
-pierce_13_44_status.txt. None of these components asserts an orbit bound with
-exponent 18/61 or hides the external theorem behind an axiom.
+FixedDividendQuadraticGeometry and FixedDividendCubicGeometry:
+- Prove a general irreducibility criterion for ternary quadratics with nonzero
+  Hessian determinant, by ruling out products of affine linear polynomials.
+- Apply it to the actual eliminated quadratic over the complex numbers.
+- Prove the leading quadratic has degree two and does not divide the leading
+  cubic, including complex factors. This is actual polynomial nondivisibility,
+  strengthening the earlier obstruction for a prescribed linear form.
+
+FixedDividendCoprimality and FixedDividendCurveEquations:
+- Radial leading coefficients lift the leading-form obstruction to actual
+  nondivisibility of the fixed-dividend equation by the quadratic.
+- The two equations are relatively prime and have total degrees <=2 and <=12.
+- Every actual supported orbit point satisfies both coordinate-ring equations.
+
+FixedDividendComponents, FixedDividendFilteredIntersection,
+FixedDividendMonomialDimension:
+- Decompose the intersection into finitely many prime components of height two.
+- Prove the exact intersection identity for filtered multiples of the two
+  relatively prime equations and derive the dimension inequality by rank-nullity.
+- Count bounded-degree monomials and prove H_I(N)<=24*(N+2) for N>=14,
+  for any ideal containing the two equations.
+
+FixedDividendComponentSeparation, FixedDividendTranscendentalCoordinate,
+FixedDividendComponentCount:
+- Construct finite prime separators and independent powers of a transcendental
+  coordinate, with joint independence across separated components.
+- Prove that every height-two prime over an algebraically closed field has a
+  transcendental coordinate, using a strict chain of evaluation-kernel primes.
+- Derive at most 24 components from the filtered dimension bound, without
+  assuming Hilbert-polynomial existence. The subsequent StandardMonomials,
+  MonomialRays and HilbertLinearity modules now establish eventual Hilbert
+  degrees in [1,24] for these complex prime components.
+
+FixedDividendDirections, FixedDividendDirectionExtraction:
+- Prove the cluster/Vandermonde argument over arbitrary fields and classify
+  the four possible normalized complex directions using the actual coefficient signs.
+- Derive the required leading equations directly from the quadratic and
+  fixed-dividend polynomial containment identities, for every nonconstant line.
+
+FixedDividendLines, FixedDividendGapExclusion, FixedDividendContainedLines,
+FixedDividendComplexLines:
+- Prove all four symmetric-difference identities and concrete line obstructions.
+- Obtain the required middle-gap lower bounds from the existing gramP upper
+  bound; a new raw-Hankel asymptotic expansion is unnecessary.
+- Prove that no contained complex affine line passes through an actual supported
+  orbit point when the five gaps are <=H, |U|,|V|<=X, X>=1, and
+      a H^5 (24X+464) < q_i^4.
+- Transfer arbitrary complex line containment to a normalized real line using
+  an injective coefficient inclusion and parameter scaling. No assumption that
+  a complex line is already real is used.
+
+FixedDividendWeights:
+- Prove real-valued partial summation and the Cauchy-Schwarz half-weight transfer.
+- Prove the sixth-power minor-pattern bound recorded above from the existing
+  Plucker, height and short-vector counts, including nonprimitive patterns.
+- Transfer an explicitly hypothesized per-pattern square-root count to a sixth-
+  power window count. The local curve-count hypothesis is still undischarged.
+
+FixedDividendExponent and FixedDividendWindow:
+- Verify the exact rational exponent comparisons and the candidate's abstract
+  exponent arithmetic.
+- Translate line exclusion to the repository's remainder windows: if orb_i<2A,
+  then a<=4Aq_i; 124928 A^4 H^5 X<a^3 suffices for the line-exclusion scale.
+- Prove the main-range T^305 bound and complementary T^17 bound directly in
+  remainder-window coordinates, from explicit local-count, height, gap and
+  divisor-drop inequalities. Prove the unit-height cases needed for rounding.
+  These implications do not assert the still-unproved local curve count.
+
+FixedDividendSelection, FixedDividendCount, FixedDividendMainReduction,
+FixedDividendGlobalReduction, FixedDividendCountAssembly:
+- Select enough supported orbit starts with bounded gaps; prove the exact
+  floor-valued minor height is positive and lies in a fixed polynomial range.
+- Prove at most four starts per fixed minor-and-gap pair using the quartic
+  identity and strict quotient growth.
+- Combine the per-pattern square-root count with the proved lattice weight,
+  including every divisor slack factor and the full scale dichotomy.
+- Complete the dyadic sum and exponent extraction in
+  P_le_18_61_of_selectedPatternCount. Its two explicit premises are a
+  subpolynomial slack R and SelectedPatternCount R. The latter is NOT proved.
+  This conditional result does not replace the unconditional theorem.
 
 Reproducible validation
 -----------------------
@@ -120,31 +207,32 @@ package mentioned in the supplied candidate. The older script checks 202
 actual starts with sixteen subsequent positive states and seven leading-form
 specializations. Finite regressions are not asymptotic proofs.
 
-The build imports both new modules, and Axioms.lean audits representative
-new results in addition to the existing theorem audits. All added proofs use
-only standard Lean axioms: propext, Classical.choice, and Quot.sound. There
-are no new sorry declarations, custom axioms, or native_decide calls.
+At the preceding development checkpoint, lake build succeeded (9123 jobs).
+Axioms.lean audits every
+exported declaration from the PierceLengthBound modules, including intermediate
+results: 1058 declarations passed at that checkpoint with only propext, Classical.choice and Quot.sound.
+The separate Challenge exercise holes are intentionally outside this audit.
+There are no sorry declarations, custom axioms, or native_decide calls in the
+proof development. Some standard style lints remain.
 
 Remaining proof obligations
 ----------------------------
-1. Complete the actual-orbit orthogonal-polynomial recurrence, Hankel-ratio,
-   norm and fixed-dividend resultant identities. Existing abstract recurrence
-   lemmas do not yet establish A Res(P,xR) = a D^4 for an orbit window.
-2. Prove the multivariate resultant's degree-ten leading form and the degree
-   bound six on all four exceptional line directions. The latter is still
-   needed to discharge norm_degree_le_one's degree hypothesis.
-3. Establish absolute irreducibility, coprimality, curve decomposition and
-   total degree <=24; derive the full line direction classification, including
-   a possible complex line through a real state, and connect it to the
-   explicit line polynomials in FixedDividendLines.
-4. Prove the raw Gram determinant Vandermonde leading term with its uniform
-   error, and obtain gap lower bounds and actual line exclusion when K >> X.
-5. Complete the coefficient-uniform affine-curve counting theorem in the
-   separate project; then prove degree preservation and the local count in
-   the integral lattice coordinates. Existing integral basis infrastructure
-   handles the coordinate arithmetic, but does not count points on curves.
-6. Assemble supported orbit windows, minor heights, bounded multiplicity,
-   scale dichotomy and divisor drop estimates. Absorb the divisor factors and
-   logarithms, then sum the dyadic blocks with uniform constants.
-7. Only after a complete P_le_18_61 passes its axiom audit, update the main
-   manuscript/PDF, Challenge, comparator and submission metadata.
+1. The rational component interface is now proved directly over Q in
+   RationalComponents, RationalCurves and RationalOrbit: at most 24 rational
+   prime components cover rational gap points, with genuine degree in [1,24];
+   components through large-scale actual points have degree in [2,24].
+   HyperplaneDegree also proves the degree-two planarity step. Degree transfer
+   through the integral lattice coordinates remains part of item 3.
+2. Complete the coefficient-uniform affine-curve counting theorem in the
+   separate project. Its main global determinant bound, curve-specific local
+   multiplicity estimates, finite-field geometry and bad-prime control remain
+   substantial tasks. First Mertens is proved; curve-specific prime estimates
+   and their geometric inputs remain. No counting axiom has been introduced.
+3. Prove degree preservation and the per-pattern square-root count in the
+   integral lattice coordinates. Existing integral bases and short-vector
+   estimates supply coordinate arithmetic, but do not count points on curves.
+4. Discharge SelectedPatternCount with a proved subpolynomial slack, using
+   the geometric/counting results. All subsequent window selection, multiplicity,
+   scale arithmetic, divisor losses and dyadic summation are now connected.
+5. Only after a complete unconditional P_le_18_61 passes its axiom audit, update
+   the main manuscript/PDF, Challenge, comparator and submission metadata.

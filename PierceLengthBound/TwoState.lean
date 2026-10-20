@@ -101,7 +101,7 @@ def quart (U0 U1 U2 U3 k0 k1 k2 q : ℤ) : ℤ :=
     U3 * (-q) * (-q - k0) * (-q - (k0 + k1)) * (-q - (k0 + k1 + k2) - 1)
 
 /-- The rank-four Hankel determinant of the moments of `μᵢ`, as a polynomial in `k₀,…,k₄`. -/
-def muH4 (k0 k1 k2 k3 k4 : ℤ) : ℤ :=
+def muH4 {R : Type*} [CommRing R] (k0 k1 k2 k3 k4 : R) : R :=
   k0^3*k1^2*k2 + k0^3*k1*k2^2 + k0^3*k1*k3 - k0^3*k2^2 + 2*k0^2*k1^3*k2 + 3*k0^2*k1^2*k2^2
       + 3*k0^2*k1^2*k3 + k0^2*k1*k2^3 - 2*k0^2*k1*k2^2 + 3*k0^2*k1*k2*k3 + k0^2*k1*k3^2 + k0^2*k1*k4
       - k0^2*k2^3 - k0^2*k2*k3 + k0*k1^4*k2 + 2*k0*k1^3*k2^2 - k0*k1^3*k2 + 2*k0*k1^3*k3

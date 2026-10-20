@@ -1,8 +1,20 @@
+CURRENT UPDATE — 20 October 2026
+The joint-lift refinement supersedes this historical development record.
+The unconditional optimized exponent (1310-sqrt(655))/4365, and the rational
+exponents 2201/7480 and 128/435, are proved in JointLiftMain.lean, including
+the external curve-counting theorem. They are stronger than the bound discussed
+below. Statements below about remaining obligations or 45/152 being strongest
+refer to the earlier snapshot. See pierce_joint_lift_status.txt and
+../SUBMISSION_REVIEW.txt for current proof and submission-check status.
+The older conditional reductions remain as historical intermediate results.
+
 FIXED-DIVIDEND REFINEMENT: REVIEW AND FORMALIZATION STATUS
 19 October 2026
 
 The newer 18/61 proposal and additional verified components are documented in
-pierce_18_61_status.txt. This file retains the status of the earlier candidate.
+pierce_18_61_status.txt. This file retains the historical status of the earlier candidate. In particular,
+its listed orbit-identity and line-direction gaps have since been closed; consult
+the newer status file for the current obligations.
 
 Status: INCOMPLETE. The repository does not yet prove the 13/44 bound in Lean.
 The strongest fully formalized unconditional bound remains 45/152.

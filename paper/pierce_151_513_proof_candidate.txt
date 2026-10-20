@@ -1,0 +1,838 @@
+# An integral-coordinate lift for the Pierce remainder iteration
+
+## Status and claim
+
+Research proof candidate, 19 October 2026. This note extends the uploaded
+`pierce_180_611_proof_candidate.md` and its finite-moment and line-exclusion
+foundations in `pierce_18_61_proof_candidate.md`. It has not received external
+mathematical review or formal verification. No priority claim is made.
+
+The new ingredient is to add the smaller integral Hankel invariant I_3 as
+an affine curve coordinate. A degree-d nonexceptional curve carrying
+sufficiently many actual states then has a graph of degree at least 5d/2.
+At actual states I_3 is small enough that this degree increase is useful.
+
+Subject to the retained foundational statements identified below, the
+resulting bound is
+
+\[
+\boxed{P(a,b)\ll_\varepsilon a^{151/513+\varepsilon}},
+\qquad 151/513=0.29434697855750486\ldots.
+\]
+
+The saving over the preceding candidate is
+
+\[
+180/611-151/513=79/313443.
+\]
+
+This argument does **not** use the weighted-lattice incidence estimate.
+It also avoids the arithmetic classification of higher-genus curves. The
+only external uniform arithmetic point-counting input remains the affine
+curve theorem in Section 8. The geometric divisor facts used in Section 6
+are stated explicitly and referenced at the end.
+
+The original logarithmic-squared conjecture is not resolved.
+
+## 1. Retained framework and notation
+
+For integers a>b>0, write
+
+\[
+a=q_i b_i+b_{i+1},\qquad k_i=q_{i+1}-q_i>0
+\]
+
+until the first zero remainder. Positive remainders decrease strictly and
+quotients increase strictly. A quotient block is Q <= q_i < 2Q; let T count
+its states. For sufficiently large T, a fixed positive fraction of its starts
+have their next sixteen gaps bounded by H=C_0 Q/T. The last sixteen starts
+are discarded. This is the support margin throughout this note.
+
+Put
+
+\[
+X=C_2 aH^6/Q^4,\qquad K=Q^4/(aH^5),\qquad
+S=C_3 aH^3/Q^3,
+\tag{1.1}
+\]
+
+where the positive absolute constants are sufficiently large for the stated
+bounds. A represented pattern has X>=1; a selected actual state also has S>=1.
+
+We retain the following inputs, without treating numerical tests as proofs
+of them:
+
+1. There are finite positive functionals mu_i and nu_i with
+   \[
+   (q_i+x)\nu_i=\mu_i,\quad \mu_i(1)=\mu_i(x)=1,\quad
+   \nu_i(1)=b_i/a.
+   \]
+   For s_j=q_(i+j)-q_i and F_j(x)=product_(v<j)(x-s_v),
+   \[
+   \mu_i(F_j f)=\mu_{i+j}(f(s_j+x)),\quad \mu_i(F_j)=1.
+   \]
+   Their raw moments m_j=mu_i(x^j) through degree six are polynomials in
+   the first five gaps; for j>=1 their gap degrees are at most j-1.
+   The finite support convention is essential here.
+
+2. The quantities
+   \[
+   H_r(i)=\det[m_{u+v}]_{u,v<r},\qquad
+   I_r(i)=a\det[\nu_i(x^{u+v})]_{u,v<r}
+   \]
+   are positive for the ranks used here, and the I_r(i) are integers.
+   Integrality follows because the nonintegral part of the weighted moment
+   matrix has rank one. Positive Gram comparison gives
+   \[
+   0<I_r(i)\le a H_r(i)/q_i^r.
+   \tag{1.2}
+   \]
+
+3. Form the 3-by-5 integer matrix with rows
+   \[
+   d_j=b_{i+j}-b_{i+j+1},\quad k_j,\quad
+   r_j=k_j(s_j+s_{j+1})+k_{j+1},\quad 0\le j\le4.
+   \]
+   All ten maximal minors p have height at most X. There are O(X^5)
+   possible full minor vectors, including every common factor. The proof
+   uses a maximal pivot m and the congruence u cross v=0 mod m; for fixed
+   u and g=gcd(m,u_1,u_2,u_3), there are exactly m g^2 admissible residue
+   vectors v. Summing gives O(X^5).
+
+4. Set
+   \[
+   A=p_{012},\ A'=p_{123},\ A''=p_{234},\quad
+   U=p_{023},\ V=-p_{013},\ U'=p_{134},\ V'=-p_{124}.
+   \]
+   Then A,A',A''>0. Put rho=A'/A, u=U/A, v=V/A and define rho',u',v'
+   using the next labels. Exactly rho>0,u>0,v<0. The Newton coefficient
+   vectors of the two quartics are
+   \[
+   c=(\rho,-\rho-u,u-v,v-1,1),
+   \]
+   and c' defined similarly. With
+   \[
+   P(x)=\sum_{j=0}^4c_jF_j(x),\qquad
+   Z(x)=xR(x)=\sum_{j=0}^4c'_jF_{j+1}(x),
+   \]
+   P and Z annihilate nu_i against all polynomials of degree <=3.
+
+5. For a fixed pattern, the two linear relations recover k_0,k_4 from
+   y=(k_1,k_2,k_3):
+   \[
+   k_0=(u k_1+v k_2+k_3)/\rho,\qquad
+   k_4=\rho'k_1-u'k_2-v'k_3.
+   \]
+   Thus s_0,...,s_5 are homogeneous linear functions of y. The first
+   quadratic f=0 and the fixed-dividend equation
+   \[
+   A\operatorname{Res}(P,Z)=aD^4
+   \]
+   cut out curves in A^3 of total degree at most 24; they have no common
+   surface component. D is the polynomial quartic norm, after the next
+   quadratic has eliminated k_5. Actual states have D>0.
+
+6. A pattern is exceptional if some c_j+c_l=0, j!=l. Exactly four such
+   relations are possible:
+   \[
+   A'+V-A=0,\quad A'+V=0,\quad U-A=0,\quad A-A'-U=0.
+   \]
+   Each is one vanishing maximal minor after a bounded unimodular column
+   change. The number of exceptional full patterns is O(X^4 log(2X)).
+   A proof reminder is given in Section 9.
+
+7. At every branch at infinity of a nonexceptional component, the five node
+   leading values z_0,...,z_4 are pairwise distinct, with z_0=0. If e is
+   the pole order of a generic gap coordinate at that branch, then e is
+   positive and even. The infinity divisor has total degree d for a
+   degree-d component. In particular nonexceptional geometric components
+   have even degree. These are the parity and noncollision results in
+   Section 3 of the 180/611 candidate.
+
+8. If K>=C_1 X, no selected actual state lies on a line component. In the
+   complementary range K<C_1 X, the drop estimate yields exponent 5/17.
+   This is the retained line-exclusion lemma, not a consequence of a
+   numerical search.
+
+The raw determinant expansions needed below are
+
+\[
+H_r=\prod_{0\le j<l<r}(s_l-s_j)
+       +O_{\rm degree}\bigl(r(r-1)/2-1\bigr),
+\tag{1.3}
+\]
+
+where the notation means a polynomial of no greater gap degree. They follow
+by using the monic Newton basis in the Gram determinant: a mixed moment
+mu(F_i F_j) has gap degree at most min(i,j), and only the diagonal
+permutation reaches the leading Vandermonde degree.
+
+These retained inputs concern exact identities and uniform estimates. The
+new results begin with the reconstruction and determinant calculation below.
+
+## 2. Reconstruct a rational weighted functional
+
+For fixed P of degree four and Z of degree five, with nonzero resultant,
+the eight polynomials
+
+\[
+P,xP,x^2P,x^3P,\quad Z,xZ,x^2Z,x^3Z
+\]
+
+are linearly independent. A dependence gives U P+V Z=0 with deg U,deg V<=3;
+coprimality forces P to divide V, so V=U=0. Hence their annihilator in the
+nine-dimensional space of functionals on degrees <=8 is one-dimensional.
+
+Let h_0,...,h_8 be the signed maximal-minor kernel vector of the 8-by-9
+coefficient matrix. Define rational functions
+
+\[
+q=\frac{h_1-h_2}{h_1-h_0},\qquad
+v_j=\frac{h_j(h_1-h_0)}{h_1^2-h_0h_2}.
+\tag{2.1}
+\]
+
+At an actual state these equal q_i and nu_i(x^j). To verify this, normalize
+h_j/h_0=nu_i(x^j)/nu_i(1). The two conditions mu_i(1)=mu_i(x)=1 determine
+q and the scale of nu exactly as in (2.1).
+
+All displayed denominators are nonzero at actual states. Positive
+definiteness gives
+
+\[
+\nu_i(x^2)\nu_i(1)-\nu_i(x)^2>0.
+\]
+
+If h_1=h_0, the two normalization equations would force equality in this
+inequality. Also h_0!=0 because the actual annihilator has positive mass,
+and the coefficient matrix has rank eight.
+
+Define the reconstructed integer-coordinate function
+
+\[
+\mathcal I(y)=a\det[v_{r+s}]_{r,s=0}^2.
+\tag{2.2}
+\]
+
+At actual states, this is the positive integer I_3(i).
+
+### Bounded-degree cuts, not silent identities
+
+On a fixed irreducible curve component C, impose the following additional
+actual-state equations:
+
+\[
+qv_j+v_{j+1}=m_j(y),\qquad 0\le j\le6,
+\tag{2.3}
+\]
+
+where m_j are the raw moment polynomials from the first five gaps, and
+
+\[
+A P(-q)=aH_4(y).
+\tag{2.4}
+\]
+
+Their denominators do not vanish at actual states. Their degrees are
+bounded absolutely, independently of a and of the pattern.
+
+If any equation is not an identity in the function field of C, clearing
+its denominator gives a nonzero polynomial on C of bounded degree.
+Bezout bounds its zeros by an absolute constant. Such a component
+contributes only O(1) actual gap points and hence O(1) actual states.
+
+Otherwise all of (2.3)--(2.4) hold identically. The remainder of the argument
+applies to this case. Components where the reconstruction denominators
+vanish identically, or where Res(P,Z) vanishes identically, have no actual
+states: the corresponding quantities are nonzero at every actual state.
+
+This explicit cut-or-identity step is important. The original algebraic
+curve is not assumed to consist entirely of orbit data.
+
+### Uniform degree bound for the graph
+
+The coefficients of P,Z have bounded degrees in y (a bound of five
+suffices). Thus the h_j have degree at most 40. Formula (2.2) can be written
+as
+
+\[
+\mathcal I
+=a\frac{(h_1-h_0)^3\det[h_{r+s}]_{r,s<3}}
+        {(h_1^2-h_0h_2)^3}.
+\]
+
+Its numerator and denominator have degrees at most 240. The graph of
+mathcal I over a degree-d curve therefore has degree at most 241d: a generic
+hyperplane of the graph pulls back, after clearing the denominator, to a
+polynomial of degree at most 241 in the original coordinates. In particular
+all graph degrees below are bounded by 24*241. This large absolute constant
+is harmless for coefficient-uniform curve counting.
+
+## 3. A resolvent identity for the smaller Hankel determinant
+
+Write
+
+\[
+P(x)=x^4+p_3x^3+p_2x^2+p_1x+p_0,
+\]
+
+and define
+
+\[
+H_3=\det[m_{r+s}]_{r,s=0}^2,
+\qquad
+J=\det[m_{r+s}]_{r=0,1,2;\ s=0,1,3}.
+\tag{3.1}
+\]
+
+### Lemma 3.1
+
+Where (2.3)--(2.4) hold identically,
+
+\[
+\boxed{
+\mathcal I
+=a\frac{(q-p_3)H_3-J}{P(-q)}.
+}
+\tag{3.2}
+\]
+
+**Proof.** Let G_nu=[v_(i+j)]_(i,j<4) and G_mu=[m_(i+j)]_(i,j<4).
+Let T_P be the matrix of multiplication by x in the quotient basis
+1,x,x^2,x^3 modulo P:
+
+\[
+T_P=\begin{pmatrix}
+0&0&0&-p_0\\
+1&0&0&-p_1\\
+0&1&0&-p_2\\
+0&0&1&-p_3
+\end{pmatrix}.
+\]
+
+The orthogonality equations v(x^jP)=0 for 0<=j<=3 and (2.3) give
+
+\[
+G_\mu=G_\nu(qI+T_P).
+\]
+
+Also det(qI+T_P)=P(-q). Take the bottom-right cofactor of G_nu, using
+G_nu^(-1)=(qI+T_P)G_mu^(-1). The last row of qI+T_P has only the
+entries 1 and q-p_3 in columns 2 and 3. The two corresponding adjugate
+entries of G_mu are -J and H_3. This proves
+
+\[
+\det[v_{r+s}]_{r,s<3}=\frac{(q-p_3)H_3-J}{P(-q)}.
+\]
+
+Multiply by a. The calculation is a rational-function identity, so deriving
+it on the open set where the matrices are invertible suffices. In the
+present application H_4 is nonzero and (2.4) makes P(-q) nonzero; the same
+matrix identity then makes G_nu invertible. □
+
+The following degree estimates will prevent cancellation at infinity:
+
+\[
+\deg H_3=3,\qquad \deg J\le4,\qquad \deg p_3\le1.
+\tag{3.3}
+\]
+
+In fact
+
+\[
+H_3=k_0^2k_1+(k_0-1)k_1^2+k_0k_2,
+\tag{3.4}
+\]
+
+whose leading form is k_0k_1(k_0+k_1).
+
+For J, change the row basis to F_0,F_1,F_2 and its first two columns to
+F_0,F_1. Modulo the first two columns,
+
+\[
+x^3=F_3+(s_0+s_1+s_2)F_2.
+\]
+
+Consequently
+
+\[
+J=\det[\mu(F_iF_j)]_{i=0,1,2;\ j=0,1,3}
+  +(s_0+s_1+s_2)H_3.
+\]
+
+The mixed determinant has degree at most three, since its moment entries
+have degree at most min(i,j). Thus J has degree at most four and its leading
+form is
+
+\[
+(s_0+s_1+s_2)\prod_{0\le j<l<3}(s_l-s_j).
+\]
+
+Finally p_3=c_3-(s_0+s_1+s_2+s_3), proving its degree bound.
+
+## 4. Exact orders at every old point at infinity
+
+Work over an algebraic closure and normalize the projective closure of a
+nonexceptional component C on which the additional identities hold. Let p
+be a point of the normalization above the original hyperplane at infinity.
+Let e>0 be its multiplicity in that hyperplane divisor.
+
+By the retained noncollision theorem, every node difference s_j-s_l has
+pole order exactly e. The nonzero node functions s_1,...,s_4 have pole
+order e; s_0=0. Their leading coefficients z_j are all distinct.
+
+The raw determinant leading forms therefore give
+
+\[
+\operatorname{ord}_p(H_4)=-6e,\qquad
+\operatorname{ord}_p(H_3)=-3e.
+\tag{4.1}
+\]
+
+### Quotient pole order
+
+Equation (2.4) says A P(-q)=aH_4. If q had pole order at most e, then P(-q)
+would have pole order at most 4e, contradicting (4.1). Let n>e be the pole
+order of q. The monic q^4 term strictly dominates all other terms of P(-q),
+so its pole order is 4n. Hence
+
+\[
+\boxed{\operatorname{ord}_p(q)=-3e/2.}
+\tag{4.2}
+\]
+
+In particular e is even. This also recovers the even-multiplicity conclusion
+for components surviving the additional actual-state identities.
+
+### The smaller integer invariant vanishes
+
+In the numerator of (3.2), qH_3 has pole order 9e/2. By (3.3), both
+p_3H_3 and J have pole order at most 4e. Therefore there is no cancellation
+of its leading term. The denominator P(-q) has pole order 6e. Thus
+
+\[
+\boxed{\operatorname{ord}_p(\mathcal I)=3e/2.}
+\tag{4.3}
+\]
+
+This is an exact zero order, not just an upper or lower estimate. In
+particular mathcal I is nonzero and has no poles at any original infinity
+point. The reasoning applies separately to each branch, including branches
+above singular points of the original projective curve.
+
+## 5. The integer coordinate is small at actual states
+
+At an actual selected start, (1.2) and (3.4) give
+
+\[
+1\le I_3(i)\le \frac{aH_3(i)}{q_i^3}
+\ll\frac{aH^3}{Q^3}=S/C_3.
+\tag{5.1}
+\]
+
+For instance H_3<=3H^3 when the three needed gaps are at most H>=1.
+This is the reason to use I_3 rather than the much larger remainder b as
+the extra coordinate.
+
+The actual points of the graph
+
+\[
+\Gamma_C=\overline{\{(k_1,k_2,k_3,\mathcal I):
+                     (k_1,k_2,k_3)\in C\}}\subset\mathbb A^4
+\tag{5.2}
+\]
+
+are integer points in a box of radius O(max(H,S)). The graph is defined
+over Q whenever C is, and the projection to its first three coordinates
+is birational to C.
+
+## 6. The graph has degree at least five halves of the old degree
+
+### Lemma 6.1 (degree increase)
+
+Let C be a degree-d geometrically irreducible nonexceptional curve surviving
+the additional identities of Section 2. Then
+
+\[
+\boxed{\deg\Gamma_C\ge\frac52 d.}
+\tag{6.1}
+\]
+
+**Proof.** On the nonsingular projective model let
+
+\[
+E=\sum_{p\mid\infty}e_p[p]
+\]
+
+be the pole divisor of a generic original affine linear function. Its degree
+is d. Equations (4.3) give zeros of mathcal I at these points of total
+multiplicity 3d/2.
+
+A nonzero rational function on a smooth projective curve has zero and pole
+divisors of equal degree. Therefore
+
+\[
+\deg(\mathcal I)_\infty
+=\deg(\mathcal I)_0\ge3d/2.
+\]
+
+All these poles are at points lying over the original affine part, because
+mathcal I has a zero at every point over the original infinity hyperplane.
+They are consequently disjoint from E.
+
+A generic affine linear function in the four graph coordinates has pole
+divisor exactly
+
+\[
+E+(\mathcal I)_\infty.
+\]
+
+At old infinity points the gap coordinates dominate, with a generic linear
+combination having pole order e_p. At a finite pole of mathcal I, the old
+coordinates are regular and the nonzero coefficient of mathcal I prevents
+cancellation. There are no other poles.
+
+Since the graph map is birational, the degree of this generic hyperplane
+pullback is the degree of the graph. It is at least d+3d/2, proving (6.1). □
+
+Normalization handles singularities, and the divisor-degree statement is
+invariant under birational proper maps of curves. References for these
+facts are listed in Section 12.
+
+If C is irreducible over Q but not geometrically irreducible, apply the
+argument to its geometric components and add degrees. The rational graph
+is still irreducible over Q, and its degree is at least 5d/2. Alternatively,
+rational points confined to intersections of distinct conjugate components
+form a bounded contribution. Either treatment is sufficient here.
+
+In particular, an original nonexceptional component of degree at least four
+produces a graph of degree at least ten, with degree bounded above by the
+absolute constant from Section 2.
+
+## 7. Nonexceptional conics: a direct divisor argument using the same coordinate
+
+The retained parity theorem implies that a nonexceptional geometric conic
+has exactly one point at infinity, of multiplicity two. If the conic is
+defined over Q, the unique point is rational. It is a parabolic conic in its
+plane. Nonexceptional degree-two components cannot split into lines over
+the algebraic closure, by the same parity theorem.
+
+If it contains at most two actual gap points, their contribution is bounded.
+Otherwise choose three actual integer points. No three points of an
+irreducible conic are collinear, so they determine a plane with integer
+coefficients of height O(H^3). Project onto two original integer gap
+coordinates, restrict f to the plane, and clear denominators. Because f
+contains no plane, the restriction is the conic equation. Its degree is two
+and its integer coefficient height is bounded by a fixed power of a.
+
+After a bounded unimodular change of these two coordinates, the equation is
+
+\[
+\alpha x^2+\beta xy+\gamma y^2+dx+ey+f_0=0,
+\quad\alpha\ne0,\quad\beta^2-4\alpha\gamma=0.
+\]
+
+Put
+
+\[
+t=2\alpha x+\beta y+d,\quad
+J_0=2\beta d-4\alpha e,\quad E_0=d^2-4\alpha f_0.
+\]
+
+Then t is an integer at every integer gap point, and
+
+\[
+t^2=J_0y+E_0,
+\quad
+y=(t^2-E_0)/J_0,
+\quad
+x=(t-\beta y-d)/(2\alpha).
+\tag{7.1}
+\]
+
+Geometric irreducibility gives J_0!=0. This is a birational polynomial
+parametrization, with its unique infinity point at t=infinity.
+
+The rational function mathcal I(t) has, by (4.3) with e=2, a zero of order
+three at infinity. It is therefore nonzero and proper, and its reduced
+denominator is nonconstant. Its degrees are bounded absolutely; its rational
+coefficients, after clearing and cancelling denominators, have heights
+bounded by a fixed power of a. The latter follows from (2.1), the bounded
+minor heights, the plane construction above, and fixed-degree polynomial
+factor bounds (or the elementary root bound and Gauss lemma).
+
+We use the following elementary fact. If F,G in Z[t] are coprime over Q,
+G is nonconstant, and R=Res(F,G)!=0, then
+
+\[
+F(t)/G(t)\in\mathbb Z,\quad t\in\mathbb Z,\quad G(t)\ne0
+\quad\Longrightarrow\quad G(t)\mid R.
+\]
+
+Indeed the polynomial Bezout identity U F+V G=R gives the divisibility.
+For each signed divisor n of R, the equation G(t)=n has at most deg G roots.
+Thus the number of such t is at most 2 deg(G) tau(|R|).
+
+Apply this to mathcal I(t). Its values are positive integers at actual
+states. The resultant has size at most a fixed power of a, and the elementary
+divisor estimate tau(n)<<_eta n^eta gives O_eta(a^eta) actual parameters.
+Each parameter determines the gap point, and the reconstructed q determines
+the state because quotients are strictly increasing. Hence
+
+\[
+\boxed{\text{nonexceptional conic contribution}\ll_\eta a^\eta X^5.}
+\tag{7.2}
+\]
+
+This proves the needed conic estimate with the new integer coordinate. It
+does not rely on a norm-equation estimate or on the earlier properness
+argument for the reconstructed remainder b.
+
+## 8. Count the higher-degree graphs
+
+The arithmetic input is the coefficient-uniform affine-curve theorem:
+for an affine curve C over Q, irreducible over Q, of degree d in fixed
+ambient dimension n>=2,
+
+\[
+\#\{x\in C(\mathbb Z):|x_j|\le B\}
+\ll_n d^3 B^{1/d}(\log B+d).
+\tag{8.1}
+\]
+
+It is Corollary 2.2 of Cluckers--Debes--Hendel--Nguyen--Vermeulen (2025),
+attributed there to Castryck--Cluckers--Dittmann--Nguyen (2020). Its constant
+is independent of coefficient height.
+
+For each surviving nonexceptional component of degree at least four,
+Section 6 gives graph degree at least ten and at most an absolute constant.
+Section 5 bounds the actual integer coordinates by
+
+\[
+B\ll\max(H,S).
+\]
+
+Consequently each such component contributes at most
+
+\[
+C\max(H,S)^{1/10}\log(2\max(H,S)).
+\tag{8.2}
+\]
+
+The number and total degrees of the original components are bounded
+absolutely per pattern. The O(1) actual-point contributions from additional
+cuts in Section 2 are included separately. For every actual gap point, the
+reconstruction (2.1) gives the unique quotient; the retained multiplicity
+bound of four would also suffice.
+
+There are O(X^5) full patterns. Therefore the higher-degree contribution is
+
+\[
+\ll X^5\max(H,S)^{1/10}\log(2\max(H,S)).
+\tag{8.3}
+\]
+
+No lattice change of variables and no count of short vectors is used.
+
+## 9. Exceptional patterns and the full local bound
+
+We retain the O(X^4 log(2X)) exceptional-pattern count. To recall the
+arithmetic reason, after a bounded column change and exterior duality a
+specified coordinate of an integral decomposable bivector is zero. Write
+its two proportional three-coordinate blocks as r z and s z, with z
+primitive of height Z, and let the remaining three-vector be t. Then
+
+\[
+|r|,|s|\ll X/Z,\qquad z\cdot t=0,\qquad |t_j|\ll X.
+\]
+
+For fixed z, the last condition has O(X^2/Z) choices: use a largest coordinate
+of z as a modulus; primitivity makes the congruence on the other two
+coordinates surjective. A dyadic Z-range contributes
+
+\[
+O(Z^3)\,O((X/Z)^2)\,O(X^2/Z)=O(X^4).
+\]
+
+The zero-block case contributes only O(X^3). Summing the ranges and the four
+relations gives O(X^4 log(2X)), including all nonprimitive vectors.
+
+When K>=C_1 X, the retained line-exclusion lemma removes all actual states
+on line components. Apply (8.1) with d>=2 to every remaining component of
+an exceptional pattern, in the original H-box. This gives total contribution
+
+\[
+\ll X^4H^{1/2}\log(2X)\log(2H).
+\tag{9.1}
+\]
+
+Combining (7.2), (8.3), the bounded cut contributions, and (9.1),
+
+\[
+T\ll_\eta a^\eta\left[
+X^5+X^4H^{1/2}+X^5\max(H,S)^{1/10}
+\right],
+\qquad K\ge C_1X.
+\tag{9.2}
+\]
+
+## 10. Global exponent and the other scale range
+
+The elementary drop estimate, for any eta>0, is
+
+\[
+Q\ll_\eta a^{1+\eta}/T^2.
+\tag{10.1}
+\]
+
+The drops in the quotient block, including the exit drop, sum to at most
+a/Q. At least half are at most 2a/(QT). For each such drop d,
+
+\[
+a+d=(q_i+1)b_i.
+\]
+
+Distinct remainders at a fixed d are divisors of a+d<=2a. The bound
+ tau(n)<<_eta n^eta proves (10.1). If the permitted drop interval contains
+no positive integer, the supposed block cannot occur.
+
+Since H asymp Q/T and S asymp a/T^3, (10.1) gives
+
+\[
+\max(H,S)\ll_\eta a^\eta S.
+\tag{10.2}
+\]
+
+A represented actual state has S>=1. Logarithms and the small exponent loss
+in (10.2) can be absorbed into an arbitrarily small power of a. The local
+bound consequently becomes
+
+\[
+\boxed{
+T\ll_\eta a^\eta\left(X^5+X^4H^{1/2}+X^5S^{1/10}\right).
+}
+\tag{10.3}
+\]
+
+Use X asymp aQ^2/T^6. The first two terms give exponent 5/17 exactly as in
+the preceding candidate. The new term gives
+
+\[
+T\ll_\eta a^\eta
+\left(\frac{aQ^2}{T^6}\right)^5
+\left(\frac a{T^3}\right)^{1/10}.
+\]
+
+Thus
+
+\[
+T^{313}\ll_\eta a^{51+10\eta}Q^{100}.
+\]
+
+Insert (10.1):
+
+\[
+\boxed{T^{513}\ll_\eta a^{151+110\eta}.}
+\tag{10.4}
+\]
+
+There is no significance to the particular multiple of eta: applications
+with smaller eta can always be made before combining estimates.
+
+For the complementary range K<C_1 X, the definitions give
+
+\[
+T^{11}\ll a^2Q^3,
+\qquad T^{17}\ll_\eta a^{5+3\eta}.
+\]
+
+This is smaller than the new exponent, because
+
+\[
+151/513-5/17=2/8721>0.
+\]
+
+The good-window selection is unchanged: discard sixteen final starts and
+starts spoiled by a gap exceeding C_0Q/T. Each oversized gap spoils at most
+sixteen starts, leaving a fixed positive fraction. All identities above
+then have their stated support margin. Blocks with bounded T are harmless.
+
+Finally choose eta sufficiently small relative to the desired epsilon and
+sum the O(log a) dyadic quotient blocks. The bounded range of a is absorbed
+by the constant. This yields
+
+\[
+\boxed{P(a,b)\ll_\varepsilon a^{151/513+\varepsilon}.}
+\]
+
+The critical scales are
+
+\[
+T\sim a^{151/513},\quad Q\sim a^{211/513},\quad
+H\sim S\sim a^{60/513},\quad X\sim a^{29/513},\quad
+K\sim a^{31/513}.
+\]
+
+The main-range condition K/X -> infinity holds, and
+X^5 S^(1/10) has exponent (145+6)/513=151/513, as required.
+
+## 11. Verification, scope, and next obstruction
+
+The supplied checks were executed in exact arithmetic:
+
+* One generic symbolic resolvent identity for arbitrary quartic coefficients
+  and four initial moments, with later moments generated by the quartic
+  recurrence. This verifies (3.2) without sampling particular measures.
+* The exact polynomial for H_3, the degrees of H_3 and J, and the leading
+  form of J.
+* Two hundred and five actual orbit starts, each with at least ten positive states:
+  the I_3 curvature identity and integrality, its Gram upper bound, (3.2),
+  rational reconstruction of q and all moments through degree eight, and
+  agreement of the reconstructed I_3 with the actual determinant. The targeted
+  cases include I_3=1 and an orbit of length 34.
+* Six formal local models with node pole orders e=2,4,6: the I_3 rational
+  function has the predicted degree difference -3e/2 and nonzero leading
+  coefficient. These models are explicitly NOT asserted to be actual
+  fixed-dividend orbit curves.
+* Two synthetic birational rational-curve parametrizations with one and two
+  old infinity points. They check the degree increase from four to ten on
+  adding a rational coordinate with the stated zero divisor. These likewise
+  are not claimed to be orbit curves.
+* Exact exponent arithmetic and critical scale comparisons.
+
+No independent-agent review or formal verification was performed for this
+refinement. The finite computations check identities and implementation;
+Sections 4--10 provide the branchwise geometric argument and the uniform
+count. The retained framework still needs its own external review.
+
+The substantial change is the counting space: adding a small integer
+invariant creates a curve of higher degree, rather than trying to exclude
+all original quartic components. The proof no longer needs the preceding
+weighted-lattice estimate. It does still use the uniform affine-curve
+bound, the full pattern count, and the exceptional-pattern/line analysis.
+
+The resulting exponent remains above 5/17, where the X^5 and complementary
+scale contributions meet. This note does not improve those two terms or
+prove the original logarithmic conjecture.
+
+## 12. References and retained source notes
+
+1. `pierce_18_61_proof_candidate.md`, especially Sections 1--7: positive
+   finite moments, exact minors, quartics and fixed-dividend identity,
+   resultant leading form, noncollision setup, and line exclusion.
+2. `pierce_180_611_proof_candidate.md`, Sections 1--5: parity at every
+   infinity branch and exceptional pattern count. Its weighted-lattice
+   argument is NOT used by the new graph count.
+3. R. Cluckers, P. Debes, Y. I. Hendel, K. H. Nguyen, F. Vermeulen,
+   *Improvements on dimension growth results and effective Hilbert's
+   irreducibility theorem*, Forum of Mathematics, Sigma 13 (2025), e153,
+   DOI 10.1017/fms.2025.10096, Corollary 2.2; that corollary attributes the
+   coefficient-uniform affine-curve estimate to Castryck--Cluckers--Dittmann--Nguyen.
+   Primary full text:
+   https://www.cambridge.org/core/journals/forum-of-mathematics-sigma/article/improvements-on-dimension-growth-results-and-effective-hilberts-irreducibility-theorem/A7BCAEBF00B8B165D6DDB3FFB9B40B97
+4. Stacks Project, Section 53.2, tag 0BXX: normal projective models of curves
+   and discrete valuation local rings. https://stacks.math.columbia.edu/tag/0BXX
+5. Stacks Project, Section 33.44, tag 0AYQ, and Lemma 33.44.4, tag 0AYU:
+   degrees of divisors on curves and invariance under birational proper maps.
+   https://stacks.math.columbia.edu/tag/0AYQ
+   https://stacks.math.columbia.edu/tag/0AYU

@@ -2,6 +2,9 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
+    "PierceLengthBound.P_le_joint_optimal",
+    "PierceLengthBound.P_le_2201_7480",
+    "PierceLengthBound.P_le_128_435",
     "PierceLengthBound.P_le_45_152",
     "PierceLengthBound.P_le_8_27",
     "PierceLengthBound.P_le_11_37",
@@ -12,5 +15,9 @@
     "PierceLengthBound.hankelInv_pos_int"
   ],
   "definition_names": [],
-  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ]
 }

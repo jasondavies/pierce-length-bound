@@ -1,0 +1,170 @@
+CURRENT UPDATE — 20 October 2026
+The joint-lift refinement supersedes this historical development record.
+The unconditional optimized exponent (1310-sqrt(655))/4365, and the rational
+exponents 2201/7480 and 128/435, are proved in JointLiftMain.lean, including
+the external curve-counting theorem. They are stronger than the bound discussed
+below. Statements below about remaining obligations or 45/152 being strongest
+refer to the earlier snapshot. See pierce_joint_lift_status.txt and
+../SUBMISSION_REVIEW.txt for current proof and submission-check status.
+The older conditional reductions remain as historical intermediate results.
+
+CURRENT CROSS-REFERENCE (19 October 2026): The active candidate is 151/513;
+see pierce_151_513_status.txt for the current obligation list. The record below
+is the earlier 135/458 snapshot. Since then, actual component degree parity,
+the exceptional-pattern count, lattice-cover transport, integer plane and
+parabolic-parameter height bounds, cofactor identities, and resultant/factor
+height bounds have been proved. The full conic counting assembly and external
+affine-curve theorem remain unfinished. The unconditional theorem is 45/152.
+
+CONIC REFINEMENT: FORMALIZATION STATUS
+19 October 2026
+
+Status: INCOMPLETE. The proposed 135/458 bound is incorporated as a research
+candidate, now superseded by the 180/611 target. See pierce_180_611_status.txt. It is not yet an unconditional Lean theorem and is not ready
+to replace the main theorem in the manuscript or submission. The strongest
+fully formalized unconditional bound remains 45/152. The requested scope
+includes proving the external curve-counting theorem, not assuming it.
+
+Source
+------
+pierce_135_458_proof_candidate.txt is an unchanged copy of
+/tmp/pierce_135_458_proof_candidate.md. Both have SHA-256:
+f10d7ff27e61a8fe5169d6ea62a58b43ffad74357cc8ab03fac8295ddb7e4d16.
+It retains the fixed-dividend framework of the 18/61 candidate. Its warning
+that this is a research proof candidate remains applicable. No priority claim
+or claim of independent human review is made.
+
+The proposed local estimate is
+  T << a^eta (X^5 + X^4 H^(1/2) + X^(44/9) H^(1/3)).
+Lean checks the exact exponent implications: the first two terms give 5/17;
+the third gives 135/458. The improvement over 18/61 is 9/27938.
+
+New checked components
+----------------------
+ConicIntegerValues:
+- For integral F,G coprime over Q with nonconstant G, any finite set of integer
+  parameters satisfying G(t) | F(t) has cardinality at most
+    2 deg(G) tau(|Res(F,G)|).
+- The proof uses the integral resultant Bezout identity, signed divisors and
+  polynomial root counting. It proves the resultant is nonzero from rational
+  coprimality. Parameter-height assumptions are unnecessary for this exact bound.
+
+ConicReconstruction:
+- Proves independence of the shifted quartic/quintic rows via coprimality.
+- Proves positive variance and both moment normalizations for actual supported
+  orbit states, then the formulas
+    q = (m1-m2)/(m1-1), b = a/(q+m1).
+- Proves the relevant denominator is nonzero. The full cofactor construction,
+  its rank statement and uniform parameter-height bounds are still outstanding.
+
+ConicArithmetic:
+- Proves the general completion-of-squares and norm identities.
+- Proves the parabolic parameter reconstruction when alpha and J are nonzero,
+  and injectivity of the nonparabolic norm-coordinate map.
+- These are algebraic identities; the reduction of every actual component to
+  this form, including the geometric nonvanishing hypotheses, is not yet done.
+
+ConicNonparabolic:
+- Proves a uniform count for every finite set of integer points on a conic
+  with nonzero discriminant and nonzero norm, in terms of the explicit
+  transformed-coordinate bound B and the norm integer N. It reuses the proved
+  definite/indefinite norm bounds with tau(|N|)^3, which suffices for epsilon.
+  Also proves the explicit bounds B = 11 K^2 H and |N| <= 116 K^4 from
+  original coefficient height K and coordinate height H. The candidate's
+  stronger tau(|N|) estimate is not needed or claimed here.
+
+ConicRawDeterminant and ConicParabola:
+- Generalize the existing muH4 polynomial to commutative rings and prove its
+  exact six-factor Vandermonde leading term, with a remainder of gap degree <=5.
+  Under quadratic gap substitution the remainder has parameter degree <=10,
+  and a nonzero Vandermonde coefficient forces exact degree 12.
+- Reuse the polynomial already occurring in the proved multiplicity identity;
+  a separate new raw-Hankel identification is unnecessary for this argument.
+- Prove that a rational function satisfying a monic polynomial equation over
+  K[t] is a polynomial. Prove the quartic/remainder degree calculations:
+  a degree-12 normalization with quadratic nodes forces deg(q)=3;
+  the recurrence coefficients V and W have degrees 12 and 9 respectively.
+- Prove the exact four-step remainder expansion and degree transfer through
+  the scalar normalization identity.
+- Proves the reduced denominator is nonconstant after cancellation: its
+  degree exceeds the numerator degree by three.
+- Geometric construction, exceptional cuts, height estimates and connection
+  to the integer-value count remain to be assembled.
+
+ConicWeights:
+- Proves Jensen's cube-root weight transfer from the existing reciprocal sum.
+- Proves the ninth-power minor-pattern weight bound
+    (sum_p shortR(p)^(-1/3))^9 <= C X^44 tau^12.
+  This retains sufficient divisor slack, including nonprimitive patterns.
+  For X bounded by a fixed power of a, the divisor loss is subpolynomial.
+
+ConicExponent, ConicWindow, ConicGlobalReduction and ConicLocalEstimate:
+- Prove all three abstract exponent implications and their versions in the
+  repository's actual remainder-window coordinates.
+- Prove the complete integer-rounding and line-scale dichotomy, including the
+  complementary 5/17 and quarter-power ranges.
+- Assemble divisor slack and the actual dyadic decomposition into
+    P_le_135_458_of_conic_count.
+  Its explicit premises are SlowGrowth K and ConicLocalWindowCount K.
+  The latter asks for the local disjunction
+    T <= K(a) X^5, or T^2 <= K(a) H X^8, or T^9 <= K(a) H^3 X^44
+  only in the large line-exclusion range. This disjunction is sufficient for
+  the candidate's three-term estimate after adjusting its subpolynomial slack.
+  It is NOT proved here. No counting axiom is declared.
+- ConicLocalEstimate proves the direct passage from the displayed real
+  three-term estimate to the integer disjunction, with slack (3(R(a)+1))^9.
+  P_le_135_458_of_three_term_estimate is therefore stated directly with the
+  candidate's three-term estimate. That premise remains unproved.
+- A common power 4580 gives exponent 1350/4580 = 135/458 without rounding
+  losses. Larger powers of the divisor/slack factors do not affect epsilon.
+
+Shared geometry
+---------------
+The FixedDividend development now supplies actual orbit identities, moment
+positivity, absolutely irreducible quadratic equations, coprimality, a finite
+height-two prime decomposition, at most 24 complex components, and eventual
+Hilbert degrees between 1 and 24. CriticalGrowth and DegreeOne identify
+slope-one components as lines; ComponentLineExclusion excludes them through
+relevant actual orbit points. HyperplaneDegree proves that any proper
+hyperplane section has at most d points, and hence proves planarity for
+degree-two components with at least three distinct points.
+RationalComponents, RationalCurves and RationalOrbit now also supply these
+interfaces directly over Q: all rational zeros are covered by at most 24
+rational prime components of degree in [1,24], and every component through an
+actual large-scale orbit point has degree in [2,24]. Rational components without
+rational points are discarded. No unproved complex-to-rational degree descent
+hypothesis is used. The degree-two planarity theorem works over Q as well.
+See pierce_18_61_status.txt for the earlier component-by-component record.
+
+Remaining proof obligations
+----------------------------
+1. Transfer degree and the rational component cover through the integral
+   lattice coordinate changes. The rational component/degree interfaces for
+   the actual orbit equations are now proved.
+2. Construct the conic planes and quadratic integer parametrizations with
+   polynomial coefficient heights. Prove nonzero J and nonzero norm N from
+   geometric irreducibility, including the geometrically reducible case.
+3. Complete cofactor reconstruction over the parameter field, bounded-degree
+   exceptional cuts, reduced rational-function height bounds and the resulting
+   uniform arithmetic count for parabolic components.
+4. Prove the O(X^4 log(2X)) exceptional minor-pattern count and connect the
+   leading-node collision classification to it after unimodular changes.
+5. Finish the external coefficient-uniform affine-curve count. The separate
+   project has determinant/local aggregation arithmetic and prime-sum estimates,
+   but the curve-specific local multiplicity, finite-field geometry, bad-prime
+   control, auxiliary polynomial construction and full counting theorem remain.
+   No dependency on a completed external counting theorem exists yet.
+6. Assemble the per-pattern conic and higher-degree counts, their polynomial
+   height/slack bounds, and the proved lattice weights to discharge
+   ConicLocalWindowCount. The final reduction then applies directly.
+7. Only after an unconditional theorem passes the full axiom audit should the
+   main manuscript/PDF, Challenge, comparator and submission metadata change.
+
+Validation
+----------
+All integrated proof modules are checked by lake build and the exported-
+declaration audit in Axioms.lean. The audit allows only propext, Classical.choice
+and Quot.sound. Challenge.lean's deliberate exercise holes are outside it.
+The newly supplied candidate was preserved exactly; no unprovided external
+verification scripts have been claimed as run. Finite computations would not
+replace any of the remaining proof obligations.

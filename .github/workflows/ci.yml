@@ -57,10 +57,12 @@ jobs:
       - uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9
         with:
           build: true
+      - name: Check joint-lift independence from weighted counting
+        run: python3 scripts/check-integral-lift-dependencies.py
       - name: Install Comparator's Linux sandbox
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq bubblewrap
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-      - name: Compare all eight theorems with Lean, NanoDa, and con-ron
+      - name: Compare all eleven theorems with Lean, NanoDa, and con-ron
         run: bash scripts/verify-comparator.sh

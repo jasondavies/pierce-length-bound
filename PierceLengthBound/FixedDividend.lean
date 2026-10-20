@@ -24,7 +24,7 @@ input is not an axiom of this module.
 namespace PierceLengthBound.FixedDividend
 
 /-- Newton coefficients of the normalized monic quartic. -/
-def coeffs (ρ u v : ℝ) : Fin 5 → ℝ := ![ρ, -ρ - u, u - v, v - 1, 1]
+def coeffs {R : Type*} [CommRing R] (ρ u v : R) : Fin 5 → R := ![ρ, -ρ - u, u - v, v - 1, 1]
 
 lemma coeffs_sum (ρ u v : ℝ) : ∑ j, coeffs ρ u v j = 0 := by
   simp [coeffs, Fin.sum_univ_succ]

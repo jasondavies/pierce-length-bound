@@ -1,0 +1,14 @@
+name = "ccdn_dimension_growth"
+version = "0.1.0"
+defaultTargets = ["AffineCurveCounting"]
+
+[leanOptions]
+autoImplicit = false
+warningAsError = true
+
+[[require]]
+name = "bombieri_vaaler"
+path = "vendor/bombieri-vaaler"
+
+[[lean_lib]]
+name = "AffineCurveCounting"

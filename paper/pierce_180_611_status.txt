@@ -1,0 +1,190 @@
+CURRENT UPDATE — 20 October 2026
+The joint-lift refinement supersedes this historical development record.
+The unconditional optimized exponent (1310-sqrt(655))/4365, and the rational
+exponents 2201/7480 and 128/435, are proved in JointLiftMain.lean, including
+the external curve-counting theorem. They are stronger than the bound discussed
+below. Statements below about remaining obligations or 45/152 being strongest
+refer to the earlier snapshot. See pierce_joint_lift_status.txt and
+../SUBMISSION_REVIEW.txt for current proof and submission-check status.
+The older conditional reductions remain as historical intermediate results.
+
+DEGREE-PARITY REFINEMENT: HISTORICAL STATUS AND UPDATE
+19 October 2026
+
+CURRENT UPDATE
+--------------
+The active candidate is now 151/513; see pierce_151_513_status.txt. The strongest
+unconditional Lean theorem is still 45/152. The new route uses the ordinary
+pattern count, not the weighted-lattice count retained in the 180/611 route.
+
+Several obligations in the historical snapshot below are now closed:
+- Actual projective charts, their finite infinity section and the comparison
+  with affine Hilbert degree are constructed. Even degree is proved for actual
+  nonexceptional prime components over both C and Q, with a rational cover by
+  at most 24 conics or even-degree components of degree at least four.
+- Nonexceptional conics have a unique infinity point. Their plane restriction
+  has discriminant zero and nonzero square coefficient. Bounded integer-plane
+  and parabolic-parameter constructions, cofactor identities, and resultant and
+  integer-factor height bounds are proved; actual conic counting assembly is
+  still incomplete.
+- The complete exceptional-pattern count O(X^4 log(2X)) is proved, including
+  nonprimitive cases and all four integer minor-coordinate changes.
+- The actual lattice coordinates transport the rational component cover and
+  preserve Hilbert degree.
+
+The external affine-curve theorem and the uniform arithmetic conic count are
+still incomplete. Therefore the local counting premise for 180/611 has not
+been discharged either. The build and audit counts below describe the earlier
+snapshot; consult the active status file for current validation.
+
+HISTORICAL SNAPSHOT (before the above developments)
+--------------------------------------------------
+Status: INCOMPLETE. The proposed 180/611 bound is the active research target.
+The strongest unconditional Lean theorem remains 45/152. Neither this target
+nor the preceding 135/458 and 18/61 candidates is ready to replace the main
+manuscript/submission theorem. The external curve-counting theorem is still
+being proved in a separate project; the requested scope does not permit
+assuming it as an axiom.
+
+Source and review
+-----------------
+pierce_180_611_proof_candidate.txt is an unchanged copy of
+/tmp/pierce_180_611_proof_candidate.md. Both have SHA-256:
+21750c346b5078d7ef32aa549abf70ca64c5a6941c6dd6143fef152b8f91f0dd.
+The candidate retains the preceding conic and lattice arguments. No supplied
+companion archive was found alongside the candidate, and its claimed finite
+computational checks have not been represented as independently rerun here.
+
+The new argument excludes odd-degree geometric components for nonexceptional
+patterns. At infinity, four vanishing moments and nonexceptionality force
+all five node values to be distinct, so the resultant's leading term is nonzero.
+In the local homogenized identity A h^2 r = a delta^4, A,a,r are units.
+Thus the order of h is even. A global degree/intersection argument is needed
+to conclude that the actual affine Hilbert degree is even; local order parity
+alone does not prove this last assertion.
+
+The cited source statements were checked on the primary sites:
+- Stacks 0BXX, normalization/nonsingular projective curves and DVR local rings:
+  https://stacks.math.columbia.edu/tag/0BXX
+- Stacks 0AYU, preservation of line-bundle degree under proper birational maps:
+  https://stacks.math.columbia.edu/tag/0AYU
+- Stacks 0AYQ, degrees of sections and zero divisors:
+  https://stacks.math.columbia.edu/tag/0AYQ
+- Cluckers--Debes--Hendel--Nguyen--Vermeulen, Corollary 2.2, confirms the stated
+  coefficient-uniform affine curve estimate, including Q-irreducible curves:
+  https://www.cambridge.org/core/journals/forum-of-mathematics-sigma/article/improvements-on-dimension-growth-results-and-effective-hilberts-irreducibility-theorem/A7BCAEBF00B8B165D6DDB3FFB9B40B97
+These references support the mathematical framework; they are not Lean proofs
+of the remaining interfaces. No priority or independent human-review claim is made.
+
+New checked analytic and arithmetic components
+---------------------------------------------
+ParityWeights:
+- Jensen's inequality transfers the existing reciprocal sum to quarter-power
+  lattice weights, including nonprimitive patterns and short lattices.
+- The exact checked bound is
+    (sum_p shortR(p)^(-1/4))^12 <= C X^59 tau^15.
+  The divisor factor is harmless on a polynomial range in a. This is a
+  sufficient version of the candidate's weight estimate, retaining explicit
+  divisor slack rather than asserting its sharper divisor-free count.
+
+ParityExponent:
+- Proves the general remainder-window implication
+    T^n <= K H^3 X^m
+  together with the proved height, gap and divisor-drop inequalities, implies
+    T^(n+10m+9) <= K E^m C^(6m+3) D^(2m+3) a^(3m+3).
+- The new n=12,m=59 branch gives T^611 <= K E^59 C^357 D^121 a^180.
+- The general degree threshold d yields exponent 45d/(153d-1), still strictly
+  above 5/17. Exact savings and critical-scale arithmetic are checked.
+
+ParityWindow, ParityGlobalReduction and ParityLocalEstimate:
+- Prove all integer-rounding and complementary scale cases using the actual
+  selected remainder windows, not hypothetical quotient blocks.
+- Convert the displayed estimate
+    T <= R(a) (X^5 + X^4 H^(1/2) + X^(59/12) H^(1/4))
+  into the integer branch disjunction with explicit slack (3(R(a)+1))^12.
+- Complete divisor-slack absorption and dyadic summation in
+    P_le_180_611_of_three_term_estimate.
+  Its premises are SlowGrowth R and ParityThreeTermEstimate R. The latter is
+  NOT proved: it is precisely the local counting estimate still to be assembled.
+  There is also P_le_180_611_of_parity_count for the integer branch form.
+- A common power 6110 has final exponent 1800/6110 = 180/611, so rounding loses
+  none of the claimed improvement. The other branches still give 5/17.
+
+New geometric components
+------------------------
+FixedDividendParity:
+- Defines nonexceptionality by the four exact exceptional coefficient relations.
+- Proves leading-node injectivity and nonvanishing of the Vandermonde form from
+  the four weighted moment equations and a nonconstant leading direction.
+- Proves the exact discrete-valuation identity 2 ord(h) = 4 ord(delta), and
+  even finite order of h, from A h^2 r = a delta^4 with A,a,r units and h!=0.
+- Also proves even finite quotient length in every one-dimensional Noetherian
+  domain under that identity. This alternative local argument includes singular
+  local rings and does not require normalization.
+- These are local results. Evenness of the degree of an actual component has
+  not yet been deduced from them.
+
+FixedDividendHomogenization and FixedDividendLocalParity:
+- Construct the actual homogenizations by reflecting the radial substitution.
+- Prove the homogeneous identity A w^2 Rhat = a Dhat^4 on the curve, and its
+  restrictions at infinity, including the Vandermonde leading resultant.
+- Derive even local infinity intersection length from the actual homogeneous
+  equations in a one-dimensional Noetherian local domain chart. The resultant
+  is proved to be a unit using the residue map and the nonexceptional moments.
+  The chart, residue map, and nonzero local infinity equation remain premises;
+  constructing all projective charts and summing their lengths is still open.
+
+Retained checked foundations
+---------------------------
+The earlier development supplies actual moment and resultant identities,
+coprimality, at most 24 rational prime components covering rational gap points,
+and genuine eventual Hilbert degree in [2,24] for components through actual
+large-scale orbit points. Degree-one components are lines and are excluded.
+Degree-two components with three distinct rational points are planar.
+The conic integer-value lemma, moment formulas, raw degree-twelve identity,
+cubic quotient and degree-nine/degree-twelve remainder calculations, and reduced
+nonconstant-denominator result are proved. Their full uniform arithmetic-count
+assembly is unfinished. Details are in pierce_135_458_status.txt.
+
+Remaining proof obligations
+----------------------------
+1. Construct the projective local charts and identify the actual component's
+   affine Hilbert degree with its total infinity intersection length, so that
+   the checked local parity theorem applies. Then prove even degree, with the
+   rational/geometric component comparison or a direct rational argument.
+2. Derive the nonexceptional conic's unique double infinity point, the bounded-
+   height integer parabolic parametrization, cofactor reconstruction, exceptional
+   cuts and reduced rational-function height estimates. Apply the integer-value
+   count uniformly to actual orbit states.
+3. Complete the O(X^4 log(2X)) exceptional-pattern count and its unimodular
+   minor-coordinate changes. The exceptional term now covers all exceptional
+   degrees, including cubics, using the degree-at-least-two curve count.
+4. Transfer degree and the component cover to integral lattice coordinates.
+5. Finish the external coefficient-uniform affine-curve theorem, including
+   curve-specific local multiplicity, finite-field geometry, bad-prime control
+   and the full auxiliary-polynomial/counting argument.
+6. Assemble these results and the quarter-power lattice weight to discharge
+   ParityThreeTermEstimate with a proved subpolynomial slack.
+7. Only after an unconditional P_le_180_611 passes the full audit should the
+   main paper/PDF, Challenge, comparator and submission metadata be promoted.
+
+The local-length proof suggests a direct route for obligation 1: multiplication
+by the infinity coordinate gives the projective exact sequence
+  0 -> O_C(-1) -> O_C -> O_(C intersect infinity) -> 0.
+The Hilbert-polynomial difference should identify the degree with the sum of
+local lengths weighted by residue-field degrees. Even local lengths would then
+give rational parity directly. The chart construction and this comparison are
+not yet formalized; they cannot be replaced by summing abstract even integers.
+The final mathematical review found no additional flaw in the new parity or
+exponent arguments, conditional on the listed retained and open obligations.
+
+Validation
+----------
+The integrated lake build passes (9152 jobs). Axioms.lean audits all 1270
+exported project declarations, allowing only propext, Classical.choice and
+Quot.sound. The source-requirements check and git diff --check pass, and the
+preserved candidate's SHA-256 matches the supplied file. The build retains the
+eight deliberate Challenge statement holes and existing style warnings.
+
+To reproduce, run lake build and python3 scripts/check-lean-sources.py.
+Challenge.lean's intentional statement holes are outside the axiom audit.

@@ -5,7 +5,7 @@
 \usepackage{mathtools}
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
-\hypersetup{pdftitle={The iteration x -> a mod x has length O(a\textasciicircum(45/152+epsilon))},pdfauthor={Jason Davies}}
+\hypersetup{pdftitle={Bounds for the Length of Finite Pierce Expansions},pdfauthor={Jason Davies}}
 \usepackage{xcolor}
 \emergencystretch=2em
 \raggedbottom
@@ -23,7 +23,7 @@
 \DeclareMathOperator{\Good}{Good}
 \DeclareMathOperator{\Bad}{Bad}
 
-\title[A discrete iteration related to Pierce expansions]{The iteration $x\mapsto a \bmod x$ has length $O_\varepsilon(a^{45/152+\varepsilon})$}
+\title[The length of finite Pierce expansions]{Bounds for the Length of Finite Pierce Expansions}
 
 \author{Jason Davies}
 \email{jason@jasondavies.com}
@@ -33,37 +33,34 @@
 \begin{document}
 
 \begin{abstract}
-For integers $a>b>0$ let $b_1=b$, $b_{i+1}=a\bmod b_i$, and let $P(a,b)$ be the number of
-positive terms of this sequence. Shallit asked whether $P(a,b)=O((\log a)^2)$. The bound
-$P(a,b)\ll_\varepsilon a^{1/3+\varepsilon}$ of Erd\H{o}s and Shallit was improved by Chase and
-Pandey to $a^{1/3-2/177+\varepsilon}$. We prove $P(a,b)\ll_\varepsilon a^{45/152+\varepsilon}$,
-where $45/152=0.29605\ldots$, by an elementary argument. We first prove
-$P(a,b)\ll_\varepsilon a^{3/10+\varepsilon}$. The new ingredient there is an exact identity for
-three consecutive steps of the iteration. It shows that a certain integer combination
-$D=dv-eu$ of the drops and quotient increments is always positive and is small when the drops
-are small. A second identity, for six consecutive steps, produces a further positive integer
-$L$. It gives the local bound $T\ll a^{1/2}A^{-1/3}$ for the number $T$ of remainders in
-$[A,2A)$, with no divisor-function loss. Then $D$ and $L$ are the third and fourth members of a
-hierarchy of positive integers, the Hankel determinants of an exact positive moment model of the
-orbit. To go below $3/10$ we use the arithmetic of $L$ itself. At
-the critical scale $L$ is a positive integer of bounded size. Seven such integers at two
-consecutive states form a pattern, and the states with a given pattern lie on a quadric
-whose quadratic part is nondegenerate, with at most four states per point. Counting its
-points by binary slices and norm equations gives the exponent $11/37$. Next the seven integers
-are Pl\"ucker coordinates of one matrix, and counting vectors of minors gives $8/27$. Finally
-the gap vector lies in a rank-three lattice determined by the minor vector. Weighting each minor
-vector by the shortest vector of its lattice, through an elementary reduced basis, gives
-$45/152$. Along the way we show
-$P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$, assuming results of Nair--Tenenbaum and de la
-Bret\`eche--Tenenbaum on the Erd\H{o}s--Hooley $\Delta$-function. We also show
-$P(a,b)\ll a^{1/4}\sqrt R$, where $R-1$ is the number of rises in the sequence of quotient
-increments. These results are formalised in Lean~4 with Mathlib, without proof holes. The
-$\sqrt{\log\log 3a}$ bound is formalised conditionally on the two cited theorems, which are
-stated in Lean as explicit hypotheses.
+For integers $a>b>0$, let $P(a,b)$ count the positive terms of the iteration
+$x\mapsto a\bmod x$, starting at $b$. We prove
+\[
+ P(a,b)\ll_\varepsilon a^{\alpha_*+\varepsilon},\qquad
+ \alpha_*=(1310-\sqrt{655})/4365=0.2942513246\ldots.
+\]
+The explicit rational exponent $2201/7480$ and the simpler unpowered exponent
+$128/435$ also follow. The argument combines a positive moment model of the
+orbit, complete minor patterns, and coefficient-uniform counting on affine
+curves. Three small integer curvature minors and the rank-five Hankel invariant
+provide a joint curve embedding. On a retained component of degree $d$, the
+curvature pole envelope has degree at least $3d/2+1$, forcing the unpowered
+graph degree to be at least $4d+1$. Powers of the two kinds of coordinates give
+the optimized exponent. The pattern count is the ordinary $O(X^5)$ count,
+with subpower divisor losses;
+no weighted-lattice counting estimate is used for these bounds.
+We also present the earlier elementary exponents $3/10$, $23/77$, $11/37$,
+$8/27$ and $45/152$, a bound for trajectories with few rises in their quotient
+increments, and positivity and integrality of the Hankel hierarchy.
+The main result, including the external affine-curve counting theorem, is
+formalized in Lean~4 with Mathlib without proof holes or additional axioms.
+A separate logarithmic refinement of the $3/10$ bound remains conditional on
+two explicitly stated analytic estimates. Shallit's conjectured
+$O((\log a)^2)$ bound remains open.
 \end{abstract}
 
 \maketitle
-\enlargethispage{\baselineskip}
+\enlargethispage{1.1\baselineskip}
 
 \section{Introduction}\label{sec:intro}
 
@@ -88,8 +85,21 @@ $P(a,b)\ll_\varepsilon a^{1/3-2/177+\varepsilon}$ with exponential sum estimates
 $a$. Baraskar and Vukusic~\cite{BV} study the related sets of iterated remainders and
 bound their cardinalities at each fixed iteration depth.
 Shallit's talk pages~\cite{ShallitTalks} report a bound $n^{3/10}$, described as
-``LLM, unpublished so far''. We have not seen that argument. The result below has the same
+``LLM, unpublished so far''. We have not seen that argument. The preliminary $3/10$ theorem below has the same
 exponent up to $\varepsilon$, and we make no claim about how the two arguments are related.
+
+Our strongest bound comes from the joint-invariant curve embedding of
+Section~\ref{sec:joint}.
+\begin{theorem}\label{thm:joint}
+For every $\varepsilon>0$ there is $C_\varepsilon>0$, independent of $a,b$, such that
+\[
+ P(a,b)\le C_\varepsilon a^{(1310-\sqrt{655})/4365+\varepsilon}
+ \qquad(0<b<a).
+\]
+The rational exponents $2201/7480$ and $128/435$ also give such uniform bounds.
+\end{theorem}
+
+We first develop the elementary ingredients and earlier bounds. The first is:
 
 \begin{theorem}\label{thm:main}
 For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
@@ -252,11 +262,11 @@ Vermeulen~\cite{CDHNV}. The two-state count of Section~\ref{sec:2377} replaces b
 elementary algebra. The refinement to $11/37$, with the sign identities and the slice count, was
 also found in that exploration, as was the observation that the seven integers form a
 Pl\"ucker vector, and the proposal to weight each minor vector by the shortest vector of its
-lattice. The proof of the last step given here replaces the geometry of numbers by an elementary
+lattice. The proof of that lattice step replaces the geometry of numbers by an elementary
 reduction argument.
 
 \subsection*{Formal verification}
-Every step of the proofs of Theorems~\ref{thm:main}, \ref{thm:2377}, \ref{thm:1137},
+Every step of the proofs of Theorems~\ref{thm:joint}, \ref{thm:main}, \ref{thm:2377}, \ref{thm:1137},
 \ref{thm:827} and~\ref{thm:45152} has been formalised in Lean~4~\cite{Lean}
 using Mathlib~\cite{Mathlib}. So have Proposition~\ref{prop:six}, Theorem~\ref{thm:generic},
 the deduction of Theorem~\ref{thm:loglog} from~\eqref{eq:NT} and~\eqref{eq:BT},
@@ -1715,12 +1725,306 @@ $T\approx a^{45/152}$, $Q\approx a^{62/152}$, $H\approx a^{17/152}$ and $X\appro
 the term $X^5\approx a^{30/152}$ is smaller.
 \end{remark}
 
+\section{Joint integer invariants and the optimized bound}\label{sec:joint}
+
+We now use the fixed dividend in the equations of the pattern curve and adjoin
+small integer invariants as coordinates. This gives the strongest bound of the
+paper without the weighted lattice count of Section~\ref{sec:45152}.
+Throughout this section constants may depend on fixed positive integers $m,n$
+and on a positive loss $\eta$, but never on the dividend, orbit or pattern.
+
+\subsection{Selected windows and their curve components}
+
+Use the remainder window $[A,2A)$ and its number $T$ of visits. For $T\ge36$ set
+\begin{align*}
+ H&=\left\lfloor\frac{28a}{AT}\right\rfloor+1,&
+ X&=\left\lfloor\frac{3609600 A^4H^6}{a^3}\right\rfloor,\\
+ S&=\left\lfloor\frac{4352 A^3H^3}{a^2}\right\rfloor,&
+ Y&=\left\lfloor\frac{1259991040 A^5H^{10}}{a^4}\right\rfloor.
+\end{align*}
+At least $T/2$ starts have nine available states in the window and their next
+seven gaps at most $H$. These are the selected starts. Their complete minor
+vectors have height at most $X$, and $X\ge1$. The three free node coordinates
+$q_{i+j}-q_i$, $j=1,2,3$, are integers in $[0,3H]$.
+The pattern count from Section~\ref{sec:827} is $O_\eta(a^\eta X^5)$.
+
+Write $A_0=I_4(i)$ for the first consecutive minor, to distinguish it from the
+window scale $A$. The pattern gives $\rho>0$, $u>0$, $v<0$ and the corresponding
+next-state quantities. In gap coordinates,
+\[
+ k_0=(u k_1+v k_2+k_3)/\rho,\qquad
+ k_4=\rho' k_1-u' k_2-v' k_3.
+\]
+Let $P_4$ be the monic quartic orthogonal polynomial of the current state,
+$R_4$ the translated next quartic, and $Z=xR_4$. Their resultant and the
+quartic norm $D=\nu_i(P_4^2)$ are polynomials in three free coordinates after
+these eliminations. Actual points satisfy
+\begin{equation}\label{eq:jointcurve}
+ f=0,\qquad A_0\operatorname{Res}(P_4,Z)=aD^4.
+\end{equation}
+Here $f$ is the pattern quadratic, $\deg D\le3$, and the second equation has
+degree at most twelve. The two equations are relatively prime; the quadratic
+has irreducible quadratic part with nonzero Hessian determinant. Their common
+zero set admits a cover by at most twenty-four rational prime curves, each of
+degree at most twenty-four. Degrees throughout this section mean the leading
+coefficient of the eventual affine Hilbert function, equivalently the degree
+of the projective closure.
+
+For clarity, the additional component facts used below are recorded together.
+They apply to components supporting the selected actual points, not to an
+assumption that every point of a component is an orbit point.
+\begin{lemma}\label{lem:jointcomponents}
+The following bounds are uniform over the complete minor pattern.
+\begin{enumerate}
+\item The exceptional patterns, characterized by a vanishing pair sum of the
+quartic's five Newton coefficients, number $O_\eta(a^\eta X^4)$. Outside these
+patterns every component has even degree: it is a conic or has degree at least four.
+\item In the range
+\begin{equation}\label{eq:jointscale}
+124928 A^4H^5X<a^3,
+\end{equation}
+no line component contains a selected actual point.
+\item The cleared normalization and raw-resolvent identities have degrees at
+most $166$ and $404$. On a prime component of degree $d$, either each identity
+holds identically or its selected actual points number at most $166d$ or $404d$,
+respectively.
+\item A nonexceptional conic contributes $O_\eta(a^\eta)$ distinct gap vectors.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+The sign identities and the quadratic relation give the four possible
+vanishing pair sums. Each is a fixed linear condition on the minor vector;
+counting it in the same pivot charts as the ordinary minor count removes one
+power of $X$. On the infinity section of a nonexceptional component the
+leading node values are distinct. The resultant has order ten times the
+hyperplane order. The fixed-dividend equation then makes each branch's
+hyperplane multiplicity even; their residue-degree weighted sum is $d$.
+This proves the parity assertion, including over $\mathbb Q$ without a
+geometric irreducibility assumption.
+
+The line equations force
+$aH^5(24X+464)\ge q_i^4$ at a supported point. But $q_i\ge a/(4A)$, and $X\ge1$
+makes \eqref{eq:jointscale} imply the strict reverse inequality. This excludes
+lines also for exceptional patterns. For the third assertion, clear the
+rational quotient reconstructed from the two quartics and then clear the
+normalization and resolvent equations. Polynomial degree bounds give $166$
+and $404$; a proper polynomial section of a degree-$d$ prime curve has at
+most its degree times $d$ distinct rational points. Reconstruction makes the
+free nodes injective on gap vectors of a fixed complete pattern; at most four
+actual starts share a gap vector.
+
+For a nonexceptional conic the double infinity section gives a polynomial
+parameter of degree two. Clearing a uniformly bounded common denominator gives
+an integer parameter. The rank-three invariant is a proper rational function
+of this parameter, except for a bounded number of points cut out by the actual
+normalization equations. At integral values, a polynomial Bezout identity
+forces the denominator value to divide a nonzero resultant of height bounded
+by a fixed power of $a$. Its number of divisors is $O_\eta(a^\eta)$; each value
+has boundedly many parameter preimages. Coefficient, denominator and resultant
+heights are uniform because the conic degrees are fixed and $X\le10^{16}a^7$.
+
+These algebraic steps are proved in the rational component, line-exclusion,
+parity and conic modules listed below. In particular the conic count includes
+its properness and height estimates; it is not an additional arithmetic
+hypothesis of the final theorem.
+\end{proof}
+
+\subsection{The joint coordinates}
+
+Put $d_j=b_{i+j}-b_{i+j+1}$ and
+\[
+ e_{01}=d_0k_1-d_1k_0,\quad e_{02}=d_0k_2-d_2k_0,\quad
+ e_{12}=d_1k_2-d_2k_1,\qquad W=(e_{12},-e_{02},e_{01}).
+\]
+The first curvature $e_{01}$ is $I_3(i)$. With $s_j=q_{i+j}-q_i$ and
+$r_j=k_j(s_j+s_{j+1})+k_{j+1}$, write
+\begin{align*}
+ B_0&=k_0r_1-k_1r_0=k_0^2k_1+(k_0-1)k_1^2+k_0k_2,\\
+ B_1&=k_1r_2-k_2r_1=k_1^2k_2+(k_1-1)k_2^2+k_1k_3.
+\end{align*}
+They are positive at actual states. On a component surviving the two cuts,
+let $E_0$ be the reconstructed rational rank-three invariant. Define
+\[
+ E_{12}=\frac{B_1E_0-A_0k_1}{B_0},\qquad
+ E_{02}=\frac{k_0E_{12}+k_2E_0}{k_1},\qquad
+ W=(E_{12},-E_{02},E_0),\qquad J=A_0D.
+\]
+The determinant and cross-product identities give, identically,
+\begin{equation}\label{eq:jointdot}
+ W\cdot(k_0,k_1,k_2)=0,\qquad W\cdot(r_0,r_1,r_2)=A_0.
+\end{equation}
+These rational functions specialize to the displayed integer minors. Changing
+the rank-five Gram basis to $1,x,x^2,x^3,P_4$ gives
+$\det(\nu_i(x^{r+s}))_{r,s<5}=\det(\nu_i(x^{r+s}))_{r,s<4}\nu_i(P_4^2)$.
+Consequently $J=I_5(i)$ is a positive integer at actual states.
+
+\begin{lemma}\label{lem:jointheights}
+At selected actual starts, $|W_j|\le S$ and $1\le J\le Y$.
+\end{lemma}
+\begin{proof}
+Use the exact positive remainder expansion
+$(q+y)^{-1}=q^{-1}-yq^{-2}+y^2/(q^2(q+y))$. For the first four shifted states,
+\[
+ \frac{b_{i+j}}a=\frac1q-\frac{s_j+1}{q^2}+\epsilon_j,
+ \qquad 0\le\epsilon_j\le17H^2/q^3.
+\]
+Thus $d_j/a=k_j/q^2+O(34H^2/q^3)$, and cancellation of the leading terms in
+each minor gives $|e_{jl}|q^3\le68aH^3$. The bound $q\ge a/(4A)$ gives $S$,
+including the floor because the minors are integers.
+For $J$, Newton basis Gram comparison bounds the raw rank-five determinant by
+$(1\cdot2\cdot10\cdot77\cdot799)H^{10}=1230460H^{10}$.
+Weighted Gram comparison gives $Jq^5\le1230460aH^{10}$; the same lower bound
+for $q$ gives $Y$.
+\end{proof}
+
+\subsection{The extra degree and the powered graph}
+
+Let $C$ be a retained nonexceptional prime component of degree $d\ge4$.
+On its normalization let $E$ denote the old infinity divisor, of degree $d$.
+At a branch with hyperplane multiplicity $e$, the retained identities give
+\begin{equation}\label{eq:jointorders}
+ e\text{ is even},\qquad \operatorname{ord}(J)=-5e/2,
+ \qquad \min_j\operatorname{ord}(W_j)=3e/2.
+\end{equation}
+Here the resultant order is $-10e$, both cubic determinants have order $-3e$,
+and the fourth determinant has order $-6e$. Substitution in the normalization
+and raw-resolvent identities gives the rank-three zero order $3e/2$.
+The two reconstruction formulas then give the stated orders for the other
+curvatures. Distinct leading nodes exclude cancellation of the requisite
+Vandermonde factors. These calculations take place at discrete valuations of
+the normalized chart, so they also apply at singular points of the original curve.
+
+Let $F$ be the pole envelope of the three $W_j$: at each branch its coefficient
+is the maximum of their pole orders and zero. It is supported over the affine
+part and disjoint from $E$. We have
+\begin{equation}\label{eq:jointextra}
+ \deg F\ge3d/2+1.
+\end{equation}
+Indeed, the projective direction $[W_0:W_1:W_2]$ is nonconstant. Otherwise the
+first identity in \eqref{eq:jointdot} places the curve in a fixed plane, whereas
+a plane section of the irreducible pattern quadric has degree at most two.
+The second identity ensures that the curvature vector does not vanish at an
+affine point where its coordinates are regular. At a supported rational point
+choose a rational linear combination of the $W_j$ which vanishes there but is
+not the zero function. On normalization it has a positive-order zero above
+that point, in addition to zeros of total degree at least $3d/2$ over infinity.
+Its poles are bounded by $F$. Equality of zero and pole degrees gives
+\eqref{eq:jointextra}. Residue degrees are included in all these sums; the
+extra branch contributes at least one even when its residue field is larger
+than $\mathbb Q$.
+
+For fixed positive integers $m,n$, adjoin $W_0^m,W_1^m,W_2^m,J^n$ to the
+three original node coordinates. Projection onto those original coordinates
+is birational. A generic rational linear combination of all seven coordinates
+avoids cancellation at every relevant pole: each forbidden choice is a proper
+linear subspace over the infinite field $\mathbb Q$. Its old infinity poles
+have total degree $5nd/2$, and the affine poles contribute $m\deg F$.
+The degree of this rational function is at most the graph Hilbert degree
+$\delta$. It follows that
+\begin{equation}\label{eq:jointdegree}
+ 2\delta\ge(5n+3m)d+2m,\qquad \delta\ge10n+7m=:L_*.
+\end{equation}
+This inequality, rather than an unneeded equality of divisors, is what the
+formal proof uses. For $m=n=1$ it gives $\delta\ge4d+1\ge17$.
+Clearing the common rational denominator gives the uniform upper bound
+$\delta\le((m+n)247+1)d$. In the unpowered case the sharper bound $247d$
+also holds. Actual integer points on the powered graph lie in the box of
+radius $\max(3H,S^m,Y^n)$.
+
+\subsection{Counting and the final exponents}
+
+We use the coefficient-uniform affine-curve theorem of
+Castryck--Cluckers--Dittmann--Nguyen~\cite[Theorem~3]{CCDN}, also stated as
+\cite[Corollary~2.2]{CDHNV}: a rational prime affine curve of degree $\delta$
+in fixed ambient dimension $N\ge2$ satisfies
+\begin{equation}\label{eq:jointexternal}
+ N_{\rm aff}(C,B)\ll_N \delta^3 B^{1/\delta}(\log B+\delta),\qquad B\ge1.
+\end{equation}
+The separate Lean library \lean{ccdn-dimension-growth}, pinned in this
+repository, proves the real-$B$ version of \eqref{eq:jointexternal}, including
+the plane estimate, degree-preserving projection and box rescaling. It is
+imported as a proved theorem, with no external counting hypothesis.
+
+For fixed $m,n$ the graph degrees lie in a fixed interval. All the heights are
+bounded by fixed powers of $a$, so the logarithm in \eqref{eq:jointexternal}
+is $O_\eta(a^\eta)$. The nonexceptional conics and proper cuts contribute
+$O_\eta(a^\eta X^5)$. Exceptional patterns number $O_\eta(a^\eta X^4)$; after
+line exclusion the original three-coordinate curve count gives
+$O_\eta(a^\eta H^{1/2})$ per pattern. The other components use
+\eqref{eq:jointdegree}. Patterns and complete gap vectors have multiplicity
+at most four. Summing the at-most-twenty-four components, allowing overlaps,
+gives the proved local estimate
+\begin{equation}\label{eq:jointcount}
+ T\ll_{m,n,\eta}a^\eta\left(
+ X^5+X^4H^{1/2}+X^5\max(H,S^m,Y^n)^{1/L_*}\right).
+\end{equation}
+The added invariants introduce no additional freely counted pattern coordinates.
+
+Here is the exponent calculation in the same remainder-window coordinates as
+the formal proof. Outside the large-mean-gap range,
+\[
+ HAT\le56a,\quad Xa^3\le3609600 A^4H^6,\quad T^2\le8\Delta A,
+ \qquad \Delta=\max_{j\le32a^7}\tau(j).
+\]
+A graph branch $T^{L_*}\le KX^{5L_*}B$ and a box estimate
+$BT^u\le Fa^v$ imply, by raising these inequalities and cancelling positive
+powers of $A,a$,
+\[
+ T^{51L_*+u}\le
+ K\,3609600^{5L_*}56^{30L_*}F(8\Delta)^{10L_*}a^{15L_*+v}.
+\]
+The curvature bound gives $ST^3\ll a$; the drop bound absorbs $H$ into its
+positive $m$th power, giving $(u,v)=(3m,m)$ up to divisor factors.
+The rank-five bound gives $YT^{20}\ll\Delta^5a^6$, hence
+$(u,v)=(20n,6n)$. The other terms and the failure of
+\eqref{eq:jointscale} have exponent at most $5/17$; the large-mean-gap range
+has exponent $1/4$. Thus every window, and then their dyadic sum, has exponent
+\[
+ \max\left(\frac{15L_*+m}{51L_*+3m},
+           \frac{15L_*+6n}{51L_*+20n}\right)+\varepsilon.
+\]
+Both displayed fractions exceed $5/17$. All divisor and logarithmic losses
+are absorbed after fixing $m,n$.
+
+\begin{proof}[Proof of Theorem~\ref{thm:joint}]
+For $m=n=1$ the larger fraction is $128/435$. For $m=50,n=51$ it is
+$2201/7480$. In general set $r=n/m$. The two fractions become
+\[
+ E_S(r)=\frac{150r+106}{510r+360},\qquad
+ E_Y(r)=\frac{156r+105}{530r+357}.
+\]
+The first decreases and the second increases on $r>0$. Their crossing satisfies
+$30r^2-10r-21=0$, so $r_*=(5+\sqrt{655})/30$ and their common value is
+$\alpha_*=(1310-\sqrt{655})/4365$.
+Positive rational ratios approximate $r_*$; choose the fixed positive integers
+$m,n$ to make the larger exponent less than $\alpha_*+\varepsilon/2$.
+Apply the proved fixed-power bound with loss $\varepsilon/2$.
+The powers and all constants depend only on $\varepsilon$, not on $a,b$.
+\end{proof}
+
+The proof is assembled in \lean{PoweredJointBound}. Its main ingredients are
+the rational parity cover, ordinary and conic gap counts, graph-degree lower
+bounds, powered pattern count, and window estimates. The repository README
+maps these steps to their Lean modules. The public statements in \lean{JointLiftMain}
+are \lean{P\_le\_128\_435}, \lean{P\_le\_2201\_7480} and
+\lean{P\_le\_joint\_optimal}. Their transitive proof dependencies are audited
+to exclude the weighted-lattice counting modules.
+
 \section{The Lean formalisation}\label{sec:lean}
 
 The repository accompanying this paper contains a Lean~4 project (toolchain
 \lean{v4.35.0}, Mathlib \lean{v4.35.0}) that proves the theorems of
 Section~\ref{sec:intro}, with \eqref{eq:NT} and~\eqref{eq:BT} as hypotheses for
-Theorem~\ref{thm:loglog}. Theorem~\ref{thm:main} is
+Theorem~\ref{thm:loglog}. The strongest result, Theorem~\ref{thm:joint}, is
+\begin{quote}\ttfamily\small
+theorem P\_le\_joint\_optimal :\\
+\hspace*{2em}$\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$,\\
+\hspace*{2em}0 < b $\to$ b < a $\to$ (P a b : $\mathbb R$) $\le$\\
+\hspace*{2em}C * (a : $\mathbb R$) \^{} (((1310 : $\mathbb R$) - Real.sqrt 655) / 4365 + $\varepsilon$)
+\end{quote}
+Its rational versions have the same quantifiers, with exponents
+\lean{(2201 : $\mathbb R$) / 7480} and \lean{(128 : $\mathbb R$) / 435}.
+Theorem~\ref{thm:main} is
 \begin{quote}\ttfamily\small
 theorem P\_le : $\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0,\\
 \hspace*{2em}$\forall$ a b : $\mathbb N$, 0 < b $\to$ b < a $\to$\\
@@ -1783,9 +2087,10 @@ above. The command \lean{\#print axioms} was run on \lean{P\_le}, \lean{P\_le\_2
 \lean{six\_step\_bound},
 \lean{P\_le\_of\_shortDivisorBound}, \lean{P\_le\_loglog}, \lean{P\_le\_rises}, \lean{hankelInv\_pos\_int} and
 \lean{hankelInv\_four}; for each it reports only \lean{propext},
-\lean{Classical.choice} and \lean{Quot.sound}. The file \lean{Axioms.lean} checks this for the
-eight main theorems with \lean{\#guard\_msgs}. The proof development contains no \lean{sorry}
-and no \lean{native\_decide}. The separate Mathlib-only \lean{Challenge.lean} states these eight
+\lean{Classical.choice} and \lean{Quot.sound}. The new joint-lift statements and the external curve theorem have the same three axioms.
+The file \lean{Axioms.lean} checks this for the
+eleven main theorems with \lean{\#guard\_msgs}. The proof development contains no \lean{sorry}
+and no \lean{native\_decide}. The separate Mathlib-only \lean{Challenge.lean} states these eleven
 results with deliberate theorem holes for comparison with the proved \lean{Solution.lean};
 neither module imports the other. In the tables below, Lean names omit their namespaces
 (\lean{PierceLengthBound}, \lean{PierceLengthBound.Window}, \lean{OAI.Ostmann}).
@@ -1927,11 +2232,17 @@ and the separation $\varepsilon\ge3$.
 \item Lemma~\ref{lem:reduce} is proved with integer arithmetic only: the minimal
 determinant and the lexicographic minimum are taken with \lean{Nat.find}, and the rounding steps
 use Euclidean division.
-\item The project has about 11700 lines of Lean. \lean{lake build} rebuilds it in a few
-minutes once Mathlib is built.
+\item The complete formalization is checked with \lean{lake build};
+\lean{Axioms.lean} audits its logical dependencies.
 \end{itemize}
 
 \section{Limits of the method}\label{sec:limits}
+
+The joint-invariant bound of Section~\ref{sec:joint} has a remaining threshold
+$5/17$ from the ordinary pattern and complementary-scale terms. Improving the
+coordinate embedding alone does not remove those contributions. A stronger
+curvature degree bound or a sharper count of realizable patterns may improve
+on $\alpha_*$. No claim of optimality for the Pierce iteration is made.
 
 Proposition~\ref{prop:six} removes the divisor loss from the local bound, but on its own the
 exponent is still $3/10$. The local bound $T\ll a^{1/2}A^{-1/3}$ and the drop bound $T\ll A^{1/2}$ (up to
@@ -1952,8 +2263,9 @@ pattern. But the four-state equations have
 positive-dimensional families of solutions. For instance, the Newton coefficients
 $(\alpha,-3\alpha-1,3\alpha+3,-\alpha-3,1)$, with coefficient polynomial $(z-1)^3(z-\alpha)$, at
 every state, together with constant increments $k_j=t$, satisfy all the linear and quadratic
-relations for every $t$. Such families are excluded only by the remainder equations, which the
-count above discards. Section~\ref{sec:45152} uses only the first minimum of $\Lambda_p$, and slices in a
+relations for every $t$. Such families are excluded only by the remainder equations, which those earlier
+counts discard. The fixed-dividend curve equations of Section~\ref{sec:joint}
+retain this information. Section~\ref{sec:45152} uses only the first minimum of $\Lambda_p$, and slices in a
 single direction; the other two minima and the shape of the quadric in the lattice are not used.
 
 There is no obvious monotonicity to exploit. The curvatures $D_i$ of successive blocks need
@@ -1970,7 +2282,12 @@ orthogonal polynomials and adjacent labels behind Section~\ref{sec:2377}, the fi
 bound $a^{3/10-\delta}$ through resultants, the bounded-multiplicity form of
 Lemma~\ref{lem:multid}, the sign identities and the slice count behind Section~\ref{sec:1137},
 the observation that the pattern integers form a Pl\"ucker vector, and the proposal to weight
-minor vectors by the shortest vectors of their lattices. All proofs, apart from the cited
+minor vectors by the shortest vectors of their lattices. Subsequent AI-assisted
+work developed and formalised the joint-invariant graphs, their normalization
+and valuation arguments, the powered-coordinate optimization, and the external
+affine-curve counting theorem. OpenAI Codex assisted with this formalisation
+and with automated statement, dependency and submission checks. These checks
+are not independent human peer review. All proofs, apart from the cited
 theorems \eqref{eq:NT} and~\eqref{eq:BT} and the remark on Shiu's theorem, were then verified
 in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \lean{openai/math}
 for the formalised divisor bound.
@@ -1986,6 +2303,12 @@ O.~Baraskar and I.~Vukusic,
 R.~de~la~Bret\`eche and G.~Tenenbaum,
 \emph{Note on the mean value of the Erd\H{o}s--Hooley Delta-function},
 Acta Arith.\ \textbf{219} (2025), no.~4, 379--394.
+
+\bibitem{CCDN}
+W.~Castryck, R.~Cluckers, P.~Dittmann and K.~H.~Nguyen,
+\emph{The dimension growth conjecture, polynomial in the degree and without logarithmic factors},
+Algebra Number Theory \textbf{14} (2020), no.~8, 2261--2294,
+\href{https://doi.org/10.2140/ant.2020.14.2261}{doi:10.2140/ant.2020.14.2261}.
 
 \bibitem{CDHNV}
 R.~Cluckers, P.~D\`ebes, Y.~I.~Hendel, K.~H.~Nguyen and F.~Vermeulen,

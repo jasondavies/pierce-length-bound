@@ -6,8 +6,10 @@ project:
   description: >-
     For integers 0 < b < a, let P(a,b) count the positive terms obtained by
     repeatedly replacing x by a mod x, starting at b. This development proves
-    the uniform bound P(a,b) ≤ C_ε a^(45/152 + ε) for every ε > 0, together
-    with the earlier exponents 8/27, 11/37, 23/77, and 3/10. It also proves
+    the uniform bound P(a,b) ≤ C_ε a^((1310-sqrt(655))/4365 + ε) for every ε > 0,
+    including the external coefficient-uniform affine-curve theorem. It also
+    proves the rational joint-lift exponents 2201/7480 and 128/435 and the
+    earlier exponents 45/152, 8/27, 11/37, 23/77, and 3/10. It also proves
     a bound O(a^(1/4) sqrt R), where R minus one counts rises in the quotient
     increments, and positivity and integrality of the orbit's Hankel invariants.
     A separate conditional theorem gives O(a^(3/10) sqrt(log log(3a))) assuming
@@ -22,7 +24,7 @@ classification:
   msc2020: ["11A67", "11N37", "11H06"]
 
 sources:
-  - title: "The iteration x → a mod x has length O(a^(45/152+epsilon))"
+  - title: "Bounds for the Length of Finite Pierce Expansions"
     authors: ["Jason Davies"]
     type: original-proof
     relationship: other
@@ -46,6 +48,16 @@ sources:
     note: >-
       Prior bound with exponent 1/3 - 2/177 + epsilon. Its proof is not
       formalized or used as a hypothesis in this repository.
+  - title: "The dimension growth conjecture, polynomial in the degree and without logarithmic factors"
+    authors: ["Wouter Castryck", "Raf Cluckers", "Philip Dittmann", "Kien Huu Nguyen"]
+    type: article
+    location: "Algebra & Number Theory 14 (2020), no. 8, 2261–2294, Theorem 3"
+    id: "https://doi.org/10.2140/ant.2020.14.2261"
+    relationship: other
+    note: >-
+      The coefficient-uniform affine-curve estimate is proved in the separate
+      ccdn-dimension-growth project and imported through a source-hashed snapshot
+      in vendor/ccdn-dimension-growth. It is not an unproved hypothesis or axiom.
   - title: "Short sums of certain arithmetic functions"
     authors: ["M. Nair", "Gérald Tenenbaum"]
     type: article
@@ -93,10 +105,10 @@ related_formalizations:
 
 status:
   scope: >-
-    Comparator covers the eight main theorems listed in alignment below.
+    Comparator covers the eleven main theorems listed in alignment below.
     Their definitions are given in full in the independent Mathlib-only
     Challenge module. The proof development has no sorry holes or custom
-    axioms. The eight deliberate theorem holes in Challenge.lean are excluded
+    axioms. The eleven deliberate theorem holes in Challenge.lean are excluded
     from these counts. NairTenenbaumDelta and BretecheTenenbaumMean are
     unproved propositions passed as hypotheses, not axioms. The paper's
     background literature and its remark about Shiu's theorem are not
@@ -119,7 +131,9 @@ automation:
         Repository review and Palomar preparation: statement and proof review,
         exact-rational numerical checks, Lean builds and axiom audits,
         module-system migration, independent Challenge and Comparator setup,
-        metadata, and CI preparation.
+        metadata, and CI preparation. Subsequent work formalized the rational curve
+        geometry, normalization and valuation arguments, joint invariant graphs,
+        powered counting and optimized exponent, and the external curve-counting theorem.
   notes: >-
     The paper credits AI language models with contributions to the orthogonal
     polynomial and adjacent-label approach, the resultant bound, bounded
@@ -130,7 +144,7 @@ automation:
 
 fidelity:
   divergences: >-
-    No known mismatch between the eight compared Lean statements and their
+    No known mismatch between the eleven compared Lean statements and their
     descriptions in the accompanying paper. The conditional result explicitly
     assumes two published analytic statements instead of formalizing their
     proofs. The natural-number orbit is frozen at zero, and P counts positive
@@ -140,6 +154,18 @@ review:
   status: "agent-reviewed"
   reviewers: ["OpenAI Codex"]
   notes: >-
+    On October 20, 2026 the optimized joint-lift theorem, both rational versions,
+    and the external affine-curve counting theorem passed the integrated Lean
+    build and axiom audit. The proof dependency audit excludes weighted-lattice
+    counting from these new bounds. The manuscript, independent Challenge and
+    comparator alignment were extended to all eleven public results. The final
+    standard sandboxed Comparator passed: con-ron verified all 89,181 exported
+    declarations, NanoDa and Lean's full replay accepted the solution, and all
+    eleven statements matched the independent Challenge. All 508 Lean source
+    files in the review copy match the worktree snapshot recorded in
+    SUBMISSION_REVIEW.txt. Earlier checker resource failures were repaired by
+    making equivalent algebra and coefficient conversions explicit before
+    substituting large resultants. No hypotheses or checker limits were changed.
     The October 19, 2026 Codex review read the full paper, checked the definitions
     and theorem statements against it, inspected the main proof dependencies,
     and ran the Lean build and eight-theorem axiom audit. Sandboxed Comparator
@@ -158,7 +184,20 @@ review:
 alignment:
   namespace: "PierceLengthBound"
   statements:
-    - source: "Main bound in the accompanying paper"
+    - source: "Optimized joint-invariant bound, Theorem 1.1"
+      lean: "PierceLengthBound.P_le_joint_optimal"
+      module: "PierceLengthBound.JointLiftMain"
+      status: proved
+      note: "Uniform in a and b, including the proved external curve theorem."
+    - source: "Rational powered joint-invariant bound"
+      lean: "PierceLengthBound.P_le_2201_7480"
+      module: "PierceLengthBound.JointLiftMain"
+      status: proved
+    - source: "Unpowered joint-invariant bound"
+      lean: "PierceLengthBound.P_le_128_435"
+      module: "PierceLengthBound.JointLiftMain"
+      status: proved
+    - source: "Earlier lattice bound"
       lean: "PierceLengthBound.P_le_45_152"
       module: "PierceLengthBound.FortyFiveMain"
       status: proved

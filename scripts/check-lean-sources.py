@@ -8,6 +8,8 @@ Scanner functions follow PalomarSubmission/scripts/source_requirements.py.
 import json
 import os
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 COMMENT_MARKER = re.compile(r"/-|-/")
@@ -82,6 +84,8 @@ def lean_source_files(root: Path) -> list[Path]:
 
 
 def main() -> int:
+    subprocess.run([sys.executable, str(Path(__file__).resolve().with_name(
+        "check-curve-counting-vendor.py"))], check=True)
     root = Path(__file__).resolve().parents[1]
     failed = False
     for path in lean_source_files(root):

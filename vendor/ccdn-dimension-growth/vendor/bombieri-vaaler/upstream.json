@@ -1,0 +1,36 @@
+{
+  "repository": "https://github.com/rwst/Subspace-Theorems",
+  "commit": "09835cb23557ae5ae0cf55a9c4ab9055f5d60338",
+  "entry_module": "ArithmeticHeights.BombieriVaaler",
+  "files": {
+    "ArithmeticHeights/Absolute.lean": "6057d8e76a742a287195e6623a7e88f5cd5936f514064b4b74102761b832da86",
+    "ArithmeticHeights/AdaptedBasis.lean": "7ea7003700d0cbbf4f3e3949e6b888ca053e16e7321c26a42981eb3affa4e654",
+    "ArithmeticHeights/Affine.lean": "8618fe375d60f3e823706da17058116c4c7064379adc5d58bbc5c52fbc420dc6",
+    "ArithmeticHeights/Arakelov.lean": "040e847f3c675f58a57af5b3175a493700959b5fcb1f895df882ac6c744f6a07",
+    "ArithmeticHeights/BombieriVaaler.lean": "31b4c55438102dc327261bfa805138ad79e423f3631664ec09cd89959e47f510",
+    "ArithmeticHeights/CauchyBinet.lean": "2169397f8921a1663e1e686af6778b30c1a96f8174357797ed17c21ce812a531",
+    "ArithmeticHeights/CubeSlicing.lean": "1cfb84c0492f3c326fb3aee30f58f072247fc634530cbaac40fe1df0fc003495",
+    "ArithmeticHeights/Duality.lean": "fba3eac7e4bfa651128165472884c2e55ba5c34f6c8a6aa6fd0df42d8be9c888",
+    "ArithmeticHeights/Extension.lean": "e39435858a567eacfc243641ab0aacc7acdf3c55163388d01fb2915f658bcad1",
+    "ArithmeticHeights/GaussMeasure.lean": "5684f7759c5f968b33af5edaced03d2480d4e9ca81c9254c2470dbd44d063970",
+    "ArithmeticHeights/GramCovolume.lean": "8b747f7a1afbc3c6539b54dadf43cb3baedce4bb2e77e027db7513ae7e8f3d67",
+    "ArithmeticHeights/LinearForm.lean": "d42580bae6571434651e249c5b6128e1aa5efeca16138078c0d69a73e6e62d1c",
+    "ArithmeticHeights/LogConcave.lean": "d46d294aa5e8790ce2a2594f732ae049eabca10104f952713e2370133330521b",
+    "ArithmeticHeights/Matrix.lean": "cee5c5d670078bc87bfef77d752d601d1277015298fdd88255b12bc3bb22e64b",
+    "ArithmeticHeights/MinkowskiSecond.lean": "730a358c33fc27abc32f773826f5d669d95194bbbd28ae5f2afce6ecb1c97c33",
+    "ArithmeticHeights/Plucker.lean": "93fe5a5e645f9484a1b2ef8a919676f45ebdadcf81286af12fe03341dbb1ae9e",
+    "ArithmeticHeights/PrekopaLeindler.lean": "633b64a4a2ad62f6cdbb52bc63f75155aef3d3f9a65f778f25ce2d78d0529af5",
+    "ArithmeticHeights/ProductOfBalls.lean": "ca370367563a8059340c8a3097d92955c50e239cb33aa11a7d69752b1297ea14",
+    "ArithmeticHeights/QuotientFubini.lean": "2409d3ae58854768df964f3db1086569ad91c2b5c8fecf8fa7de5ac5f953d490",
+    "ArithmeticHeights/RationalLattice.lean": "fd9dc5ce75ce1be6c4198a7827c9f740154f810deee678f564afae05b7b9dccd",
+    "ArithmeticHeights/RowSpace.lean": "9e7c51767eadd5603dc2cf7a9e88255c00e6991b22e3a9cbcfa0bb4f85ea0d39",
+    "ArithmeticHeights/Siegel.lean": "f6832c5feb48de3aff284a0e74791e05011f1a3f6885b5f978b577f55b8da953",
+    "ArithmeticHeights/SliceBound.lean": "d7a54b0c37a7d2eddfb1c7e37b3fa09cea957704de0423e2bcdfd8bdf7fcab1c",
+    "ArithmeticHeights/Subspace.lean": "e7d47cd9a065202debcc4964e121b6fab6c8670f264a233aa17ac52828ddd4cf",
+    "ArithmeticHeights/SuccessiveMinima.lean": "10df250a79f082d4dd7a4fe35c1fad05ce7d80367748d17f938bdb8b13a6a6f1"
+  },
+  "patched_files": {
+    "ArithmeticHeights/GramCovolume.lean": "6200d54fb71d44908e855b5a4d5aae89884a48e5979b1a0612ffe142c35bebaa",
+    "ArithmeticHeights/PrekopaLeindler.lean": "00a01e7cb5e722158493c15e913cc7b4e6d7712519e52fb34a5eeefdab6f73f0"
+  }
+}

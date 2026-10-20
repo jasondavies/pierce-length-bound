@@ -1,0 +1,587 @@
+VERIFICATION RECORD
+19 October 2026
+
+Lean: leanprover/lean4:v4.35.0
+Mathlib: 56a005855ea17e0b0958f73ec801ae140b0a1679
+
+Historical smooth-branch verification (19 October 2026)
+------------------------------------------------------
+bash scripts/check.sh passes with 9103 Lake jobs, auditing 194 project and
+555 vendor declarations. Only propext, Classical.choice and Quot.sound occur.
+New proofs cover the exact principal-plane Hilbert function, sharp polynomial
+section/Bézout bounds, singular-plane-point counts below the characteristic,
+and independent spanning-row selection. Further checked proofs establish
+integer column-lattice factorization, residue-block determinant and maximal-
+minor-gcd aggregation, finite polynomial Newton approximation on actual smooth
+plane residue classes, the local triangular valuation bound, the actual smooth
+reduction partition, and the resulting global logarithmic gcd estimate with
+explicit finite-field point-count and excluded-prime inputs. The generic filtered-space and point
+separation lemmas were adapted from the author's Pierce-length development;
+their copyright and Apache license headers are retained.
+
+The full PlaneCurveBound and AffineCurveBound are still unproved. In particular,
+the singular local curve determinant estimates, finite-field point estimate,
+bad-prime control, auxiliary degree bound and controlled projection are not
+certified by this build.
+
+Homogeneous auxiliary branch, direct verification (19 October 2026)
+-------------------------------------------------------------------
+Five new modules were compiled sequentially with the pinned toolchain and both
+-DautoImplicit=false and -DwarningAsError=true:
+  HomogeneousMonomials, HomogeneousHilbert, HomogeneousEvaluation,
+  HomogeneousRank, HomogeneousAuxiliary.
+Result: PASS, no diagnostics. All 28 new declarations were separately checked
+with #print axioms; only propext, Classical.choice and Quot.sound occur.
+The branch proves the complete monomial indexing, exact homogeneous Hilbert
+count, actual evaluation-rank deficit, and small homogeneous auxiliary
+polynomial vanishing on all supplied points. The numerical determinant
+threshold and the auxiliary degree bound remain unproved. This direct check
+does not claim a subsequent full repository build or update the historical
+integrated-build counts above; integration is checked separately.
+
+Integrated homogeneous branch (19 October 2026)
+-----------------------------------------------
+The five homogeneous modules and their root import were integrated into the
+actual ccdn-dimension-growth checkout. bash scripts/check.sh passed:
+  25 vendor hashes, 58 reachable modules;
+  9108 build jobs completed;
+  231 project and 555 vendor declarations audited;
+  only propext, Classical.choice and Quot.sound.
+The complete theorem remains unproved. In particular this audit does not
+certify the nonmultiple determinant threshold, the auxiliary degree estimate,
+the sharp finite-field count, bad-prime bounds, or controlled projection.
+
+Singular plane local determinant, direct verification (19 October 2026)
+------------------------------------------------------------------------
+Eight new modules were compiled sequentially with the pinned toolchain and both
+-DautoImplicit=false and -DwarningAsError=true:
+  SingularTangent, OriginLayerGenerators, OriginTruncationGenerators,
+  ModularPolynomialLift, ModularOriginGenerators, SingularApproximation,
+  SingularLocalDeterminant, SingularPlaneChart.
+Result: PASS, no diagnostics. A separate module-indexed transitive axiom audit
+checked all 37 declarations from these modules; only propext, Classical.choice
+and Quot.sound occur. Source scan found no sorry/admit/custom axioms.
+The theorem singular_plane_residue_minorGcd gives actual evaluation-matrix
+maximal-minor divisibility by p raised to the sum of the local exponents
+sum_{i<s} floor(i/mu). The input multiplicities are orders of the actual
+translated mod-p equation, not assumed local-ring generators or determinant
+factorizations. Integer generators and uniform approximation at all actual
+curve zeros are constructed in the proof. Translation handles arbitrary
+integral representatives, and the existing block theorem combines classes.
+This closes the singular plane local-algebra step; the sharp finite-field point
+bound with multiplicity, coefficient-controlled bad primes, auxiliary-degree
+threshold/nonmultiple argument and controlled projection remain open. The
+general higher-dimensional hypersurface local theorem is not asserted.
+The preceding integrated-build record is historical. These direct checks do
+not assert a new full repository build; root imports and integration are
+verified separately.
+
+Actual all-point residue partition, direct verification (19 October 2026)
+------------------------------------------------------------------------
+PlaneMultiplicity and SingularReduction also compile with
+-DautoImplicit=false and -DwarningAsError=true. The expanded transitive axiom
+audit covers all 61 declarations from the ten singular-branch modules and
+passes with only propext, Classical.choice and Quot.sound.
+The final theorem singular_reduction_minorGcd constructs positive total residue
+multiplicity M and an exponent e satisfying s^2 <= 2*M*(e+s),
+s^2/(2*M)-s <= e, and p^e dividing the actual maximal-minor gcd. It requires
+only a prime p, a nonzero equation modulo p, a nonempty list of actual integral
+zeros, and arbitrary integer polynomial evaluation columns. The entire
+residue partition and all multiplicities are derived. It also bounds M between
+the number of reduced points and degree times that number. The sharp bound
+M <= p + C(d)*sqrt(p) is still unproved; the elementary upper bound recorded
+here does not replace that missing result.
+PlaneMultiplicitySmooth additionally derives the singularity of multiplicity
+at least two and bounds total multiplicity by the actual point count plus
+d^2(d-1) for irreducible reductions below the characteristic. Its strict
+direct compile passes. The sharp point-count estimate remains open.
+Final import for this branch: AffineCurveCounting.PlaneMultiplicitySmooth.
+
+Integrated singular branch (19 October 2026)
+--------------------------------------------
+All eleven new modules and the final PlaneMultiplicitySmooth root import were
+integrated into the actual ccdn-dimension-growth checkout. Command:
+  bash scripts/check.sh
+Result: PASS, 9119 Lake jobs; 25 vendor hashes and 69 reachable modules;
+299 project and 555 vendor declarations audited, allowing only propext,
+Classical.choice and Quot.sound. The complete local singular plane determinant,
+actual residue partition, and degree-dependent multiplicity correction are now
+included in this repository-wide build. PlaneCurveBound and AffineCurveBound
+remain unproved. No independent human or independent-kernel review is asserted.
+
+Global singular determinant assembly, direct verification (19 October 2026)
+------------------------------------------------------------------------
+SingularDeterminant compiles with -DautoImplicit=false and
+-DwarningAsError=true. A module-indexed transitive axiom audit passes all four
+new declarations with only propext, Classical.choice and Quot.sound.
+The local card-bound theorem uses actual integral zeros, an irreducible
+reduction and p greater than the original degree; positivity of the reduced
+degree is derived. The exact global theorem sums log(p) divided by the actual
+point count plus d^2(d-1). The prime-sum theorem additionally assumes the sharp
+finite-field point bound and supplies the explicit excluded-prime charge and
+error (C+d^2(d-1))*primeErrorMass. Smoothness and assumed local divisibilities
+are absent. Sharp finite-field counts, effective bad-prime control and the
+cutoff optimization for CCDN's degree dependence remain open. This is a direct
+module check, not a new integrated repository build.
+
+Fourth-power prime cutoff, direct verification (19 October 2026)
+----------------------------------------------------------------
+PrimeCutoff and SingularDeterminantCutoff compile with
+-DautoImplicit=false and -DwarningAsError=true. A module-indexed transitive
+axiom audit passes all 20 declarations (including generated exports), with only
+propext, Classical.choice and Quot.sound. Source scanning finds no sorry/admit,
+custom axioms, native_decide or implemented_by. The two modules contain 394 lines.
+The proof derives a uniform prime-weighted O(L^(-1/2)) tail from factor-four
+Mertens blocks. The actual singular determinant theorem at L=27*d^4 and x=s is
+  log minorGcd >= s^2/2 * (log s - 4*log d - badPrimeCharge - K(C)),
+where K(C) is independent of degree. The local divisibilities, partition,
+singular correction and cutoff optimization are proved. Sharp finite-field
+point counts and good-reduction hypotheses are explicit, and their effective
+geometric proofs remain open. Final import: SingularDeterminantCutoff.
+This records direct module checks; the integrated repository build is recorded
+separately. Historical records above are retained unchanged.
+
+Exact-rank and affine-chart comparison, direct verification (19 October 2026)
+-----------------------------------------------------------------------
+HomogeneousRankDichotomy, HomogeneousDeterminantComparison and
+PlaneChartDeterminant compile with autoImplicit=false and warningAsError=true.
+The proofs clear homogeneous denominators, establish exact evaluation rank,
+derive the coefficient/logarithmic upper comparison, and combine actual affine
+chart rows with both the exact and fourth-power-cutoff singular lower comparisons.
+Sharp finite-field counting, effective bad primes, auxiliary degree choice,
+affine specialization and projection remain unproved. The earlier direct
+SingularDeterminant record describes its intermediate unoptimized bound.
+
+Integrated exact-rank and cutoff verification (19 October 2026)
+--------------------------------------------------------------
+bash scripts/check.sh passes with 9125 Lake jobs. The repository-wide audit
+checks 344 project and 555 vendored declarations, allowing only propext,
+Classical.choice and Quot.sound. The source audit verifies 25 vendor hashes
+and 75 reachable mathematical modules. All six new modules are reached through
+AffineCurveCounting.PlaneChartDeterminant. This supersedes the earlier direct
+checks for build coverage, not the stated remaining proof obligations.
+PlaneCurveBound and AffineCurveBound remain unproved; no new counting axioms
+have been introduced. No independent human review is asserted.
+
+Bad-prime witness charge, direct verification (19 October 2026)
+--------------------------------------------------------------
+BadPrimeCharge strictly compiles. Its seven lemmas prove the prime-divisor
+logarithmic sum, cutoff charge, arbitrary Mertens interval, split charge,
+log-log bound and height-controlled charge and exponential factor. The input
+is an actual positive integer divisible by every listed prime. No geometric
+witness construction or Noether-form height bound is claimed.
+The subsequent integrated bash scripts/check.sh passes: 9126 Lake jobs,
+351 project and 555 vendored declarations audited with only the three standard
+axioms. Source checks pass with 25 vendored hashes and 76 reachable modules.
+Both repositories pass git diff --check. These totals precede the differential-core integration.
+
+Differential irreducibility core, direct verification (19 October 2026)
+---------------------------------------------------------------------
+AlgebraicDifferentialConstants, RationalDifferential, DifferentialResidue,
+RationalClosedForms, BivariateClosedForms and BivariateFactorForms all compile
+with autoImplicit=false and warningAsError=true. They prove the rational
+constant-field and algebraic-descent facts, simple-root residue constancy,
+classification of degree-bounded closed forms for monic irreducible equations
+over algebraically closed characteristic-zero fields, and explicit factor
+forms. The actual integer Noether witness and the finite-field counting
+estimate are still unproved. No such result has been introduced as an axiom.
+The integrated bash scripts/check.sh subsequently passed with 9132 Lake jobs.
+Its transitive axiom audit checks 399 project and 555 vendored declarations,
+allowing only propext, Classical.choice and Quot.sound. Source checks verify
+25 vendor hashes and 82 reachable mathematical modules. Both repositories
+pass git diff --check. These totals precede the coefficient-matrix integration.
+No independent human review is asserted.
+
+Integer coefficient matrix and prime charge (19 October 2026)
+------------------------------------------------------------
+BivariateCoefficientMatrix, ClosedFormBaseChange, ClosedFormRank,
+FiniteRowMinor, ClosedFormIntegerMinor, ClosedFormHeight,
+ClosedFormKernelWitness and ClosedFormMinorCharge are integrated and built
+with autoImplicit=false and warningAsError=true. The coefficient derivative
+is generalized from fields to commutative rings to define the actual integer
+matrix. The matrix kernel equivalence, characteristic-zero rank lower bound,
+nonzero integer minor, characteristic-p rank-drop divisibility, coefficient
+height bound, and rank-drop prime charge are checked. Reconstruction of
+bounded forms and the two-independent-solutions rank drop are also checked.
+The full geometric reducibility criterion and normalization remain unproved;
+the prime charge currently applies to primes with a stated matrix rank drop.
+The integrated bash scripts/check.sh passes with 9140 Lake jobs. Its transitive
+axiom audit checks 468 project and 555 vendored declarations, allowing only
+propext, Classical.choice and Quot.sound. Source checks verify 25 vendor hashes
+and 90 reachable mathematical modules. These totals precede the monic geometric
+bad-reduction integration.
+No external counting axiom or independent human review is asserted.
+
+Monic geometric bad reduction (19 October 2026)
+-----------------------------------------------
+BivariateTotalDegree, ClosedFormFactorRank, ClosedFormReducibility and
+MonicBadReduction are integrated and built with autoImplicit=false and
+warningAsError=true. The actual total-degree/grid support, monic irreducible
+factor extraction with full multiplicity, and both factor-rank cases are
+proved. For monic equations of full outer degree below the characteristic,
+reducibility implies rank drop by two. The positive integer witness and prime
+charge now apply to actual geometric bad primes, defined by reducibility in
+an algebraic closure of ZMod p. General normalization and degree-dropping
+reductions remain outside this theorem; it does not prove the counting target.
+The integrated bash scripts/check.sh passes with 9144 Lake jobs. Its transitive
+axiom audit checks 502 project and 555 vendored declarations, allowing only
+propext, Classical.choice and Quot.sound. Source checks verify 25 vendor hashes
+and 94 reachable mathematical modules. These totals precede the general
+constant-leading and bounded-shear integration.
+No independent human review is asserted.
+
+Constant leading coefficient and bounded shears (19 October 2026)
+----------------------------------------------------------------
+ClosedFormScaling, ConstantLeadingBadReduction, PlaneShear, LeadingDirection
+and ShearNormalization are integrated and built with autoImplicit=false and
+warningAsError=true. Normalization over the coefficient field preserves the
+rank of the original integer matrix. For full-outer-degree integer equations,
+leading coefficient times minor detects both degree drops and reducibility,
+with logarithmic witness height 27*d^4*(1+2*log(H)/d²) and the corresponding
+prime-charge estimate. Integer shears preserve irreducibility and total
+degree, commute with coefficient maps, and preserve the actual bad-prime set.
+A parameter in 0,...,d gives full outer degree for every nonzero integer plane
+equation. The transformed-coefficient height estimate remains unproved, so
+the uniform bad-prime charge in arbitrary coordinates is not yet discharged.
+The integrated bash scripts/check.sh passes with 9149 Lake jobs. Its transitive
+axiom audit checks 563 project and 555 vendored declarations, allowing only
+propext, Classical.choice and Quot.sound. Source checks verify 25 vendor hashes
+and 99 reachable mathematical modules. These totals precede the general
+bad-prime and auxiliary-degree integration below.
+The full counting theorem and the separate Pierce geometry remain unfinished.
+No independent human review is asserted.
+
+General plane bad reduction and auxiliary degrees (19 October 2026)
+------------------------------------------------------------------
+ShearHeight, GeneralBadReduction, PlaneBadPrimes, HeightDeterminant and
+PlaneChartHeight are integrated. The shear height is at most H*(d+1)^(d+2).
+For arbitrary absolutely irreducible integer plane equations, the actual
+finite bad-prime set above 27*d^4 is constructed and its charge is bounded
+by log(1+log(H)/d²)+log 7+2*mertensError+1. The determinant comparison now
+uses this proved charge instead of assuming a bad-prime estimate.
+PlaneAuxiliaryDegree, PlaneAuxiliaryLargeHeight and PlaneAuxiliarySelection
+are also integrated. They choose integer degrees and construct actual
+homogeneous integer nonmultiples in both height ranges, retaining the
+B^(2/d) and L^(-1/d²) factors in the small-height case. The large-height
+bound is (34+8*exp(K+6+T))*d^3, with explicit positioning loss T.
+All eight modules passed direct Lean checks with autoImplicit=false and
+warningAsError=true. The integrated bash scripts/check.sh passes with
+9157 Lake jobs. The transitive audit checks 602 project and 555 vendored
+declarations, allowing only propext, Classical.choice and Quot.sound.
+Source checks verify 25 vendor hashes and 107 reachable mathematical modules.
+These totals precede the primitive-model and chart integration below. Both auxiliary constructions still
+assume the sharp finite-field point-count estimate; coefficient positioning,
+primitive normalization, rational nondivisibility, affine specialization and
+controlled projection remain unfinished. The full counting theorem and
+separate Pierce geometry are not proved. No independent human review is asserted.
+
+Primitive models, homogeneous charts and Bezout counts (19 October 2026)
+-----------------------------------------------------------------------
+PrimitiveIntegerPolynomial, PrimitiveNormalization, HomogeneousChart and
+PlaneAuxiliaryCount are integrated. Every nonzero rational multivariate
+equation has a primitive integer model differing by a nonzero rational scalar.
+Degree and homogeneous grading are preserved; integer content removal does
+not increase coefficient height. Divisibility over Q reflects to integer
+divisibility for any primitive equation, without an irreducibility assumption.
+The x0=1 chart is injective in each homogeneous degree, and bounded
+homogenization inverts it. Full chart degree lifts affine divisibility to
+homogeneous divisibility. Consequently the actual integer auxiliary
+nonmultiples produce proper rational affine sections. Bezout now gives
+finite-family and actual integer-box count bounds in both height ranges.
+The four modules pass direct Lean checks with autoImplicit=false and
+warningAsError=true. The integrated bash scripts/check.sh passes with
+9161 Lake jobs. Its transitive audit checks 650 project and 555 vendored
+declarations, allowing only propext, Classical.choice and Quot.sound.
+Source checks verify 25 vendor hashes and 111 reachable mathematical modules.
+These totals precede the coefficient-position integration below. The resulting point bounds still
+assume sharp finite-field counting and the stated height/position conditions.
+The small-height exponent remains 2/d. Coordinate positioning and the affine
+scaling/prime-selection argument needed for exponent 1/d remain open, as do
+controlled projection, non-geometrically-integral cases and Pierce geometry.
+The full curve-counting theorem is unproved. No independent human review is asserted.
+
+Bounded coefficient positioning (19 October 2026)
+-------------------------------------------------
+IntegerGridInterpolation, PlaneGridHeight, HomogeneousTranslation,
+HomogeneousLeadingCoefficient, HomogeneousEvaluationHeight,
+LeadingPositionHeight and AffineTranslation are integrated. Integer-grid
+interpolation gives coefficient factors (d+1)^(d+1) and (d+1)^(2(d+1)) in
+one and two variables. A nonzero grid value is turned into the actual
+lexicographic leading coefficient by a homogeneous integer translation.
+The translation preserves primitivity, homogeneous degree, chart degree and
+irreducibility under coefficient maps. Parameters lie in 0,...,d, and the
+integer-point radius grows by at most d+1. The actual transformed chart
+coefficients are bounded by H=P(d)*L, where
+  P(d)=(d+1)^(4(d+1))*(d+2)^2*(2d+1)^d.
+For d>=1, H>=1 and log L<=log H<=log L+14d². Thus the coefficient-position
+input now has a proof; its final combination with the count branches and
+height elimination is still to be assembled.
+All seven modules pass direct Lean checks with autoImplicit=false and
+warningAsError=true. The integrated bash scripts/check.sh passes with
+9168 Lake jobs. The transitive audit checks 705 project and 555 vendored
+declarations, allowing only propext, Classical.choice and Quot.sound.
+Source checks verify 25 vendor hashes and 118 reachable mathematical modules.
+These totals precede the scaled-model integration below. The full finite-field point count,
+affine scaling/prime selection, controlled projection, non-geometrically-
+integral cases and separate Pierce geometry remain unfinished. No counting
+axiom or independent human review is asserted.
+
+Scaled models, affine exponent and scaling-prime construction (19 October 2026)
+-----------------------------------------------------------------------------
+Thirteen modules are now integrated: PolynomialMapDeterminant,
+PolynomialMapAuxiliary, ScaledHomogenization, ScaledHomogenizationPrimitive,
+HomogeneousSlice, ScaledAuxiliaryCount, ScaledHeightElimination,
+ScaledModelPosition, ScaledModelCoordinates, ScaledPlaneCount,
+ScaledBoxExponent, ScalingPrime and ScaledPlaneSmallCoefficient.
+The determinant and auxiliary-degree constructions now accept polynomial
+homogeneous-coordinate maps of the original integer curve. The scaled model
+satisfies F_p(p,x)=p^d*f(x), retains original coefficients in absolute value,
+and has a coefficient at least p^d. It is primitive for prime p not dividing
+f(0). Divisibility reflection on x0=p gives proper rational sections and the
+actual Bezout bound. Bounded translation supplies point radius (d+1)B and
+H>=p^d with log L<=log H<=log L+14d². The monotone logarithmic-height ratio
+eliminates H. Both auxiliary branches yield an actual finite-family count
+  t <= K(C,A)*d^3*B^(1/d)*(log B+d),
+where K is explicit and independent of the equation coefficients, provided
+B/A<=p<=B, p does not divide f(0), and the sharp finite-field bound holds.
+The first Mertens estimate and prime-divisor charge now construct such a
+prime with A=exp(2*mertensError+2) when B>=A, f(0)!=0 and log|f(0)|<B/A.
+The resulting point bound in that branch has no prime-existence assumption.
+All thirteen modules pass direct Lean checks with autoImplicit=false and
+warningAsError=true. The first eleven were also integrated and fully checked
+with 9179 Lake jobs and 766 project declarations. After the prime-selection
+integration, bash scripts/check.sh passes with 9181 Lake jobs and a transitive
+audit of 774 project and 555 vendored declarations. Only propext,
+Classical.choice and Quot.sound occur. Source checks verify 25 vendor hashes
+and 131 reachable mathematical modules. These totals precede the complete
+affine plane assembly below.
+The complementary large-height case, zero constant terms and small boxes in
+the affine count assembly remain open. The sharp finite-field estimate,
+controlled projections, non-geometrically-integral cases and separate Pierce
+geometry remain open. Neither PlaneCurveBound nor AffineCurveBound is proved.
+No counting axiom or independent human review is asserted.
+
+Complete affine plane assembly, conditional on sharp residues (19 October 2026)
+-------------------------------------------------------------------------------
+Six modules are now integrated: UnscaledModelCount, AffineBoxRanges,
+AffineNonzeroConstant, AffineTranslationCount, AffinePlaneAssembly and
+RationalPlaneAssembly. The unit-scaled model is primitive and transfers
+auxiliary nonmultiples to proper sections. It gives a coefficient-uniform
+2/d fallback and an O(d^4) count from a sufficiently large actual coefficient.
+The numerical box split is proved at B=(12A)^2*d^2. Above it, B/A is large
+enough for the large-height branch; below it, the fallback has an absolute
+d^4 bound. The Mertens scaling-prime branch and these bounds cover every
+B>=1 for equations with nonzero constant term.
+A bounded integer translation now removes that restriction, preserving
+primitivity, degree, irreducibility and residue counts via an actual
+ZMod p equivalence. Its radius cost satisfies
+  curveBound(d,(d+1)B) <= 2e*curveBound(d,B).
+The primitive integer theorem therefore has no coefficient-height,
+prime-existence, constant-term or box-range restrictions beyond B>=1.
+Primitive rational normalization extends it to all absolutely irreducible
+rational plane equations with one explicit constant independent of degree
+and coefficients. The only counting input is SharpPlaneResidueBound C,
+explicitly defined as a proposition and still unproved. The result does not
+assert PlaneCurveBound or AffineCurveBound.
+All six modules pass direct Lean checks with autoImplicit=false and
+warningAsError=true. The integrated bash scripts/check.sh passes with
+9187 Lake jobs and a transitive audit of 815 project and 555 vendored
+declarations. Only propext, Classical.choice and Quot.sound occur. Source
+checks verify 25 vendor hashes and 137 reachable mathematical modules.
+These totals precede the nonabsolute integration below. The sharp finite-field estimate,
+rational irreducible but not absolutely irreducible case, controlled
+projections, arbitrary-curve degree interfaces and separate Pierce geometry
+remain unfinished. No counting axiom or independent human review is asserted.
+
+Nonabsolute curves and the exact plane target (19 October 2026)
+--------------------------------------------------------------
+PolynomialLinearDescent, NonabsolutePlaneCount, PlaneCurveAssembly and
+GeometricResidueReduction are integrated. A nonzero polynomial over a field
+extension descends, using a linear functional on its coefficients, to a
+nonzero base-field polynomial of no greater total degree which retains all
+base-field zeros. For a base-field irreducible equation f that factors into
+two nonunits over an extension, its base-field points split between those
+factors. The descended sections are proper since each degree is below deg f.
+Bezout bounds the two subsets by d*deg g and d*deg h, giving at most d^2
+points in total. This theorem holds over arbitrary fields and extensions;
+no Galois action or smooth-point descent is assumed.
+The rational nonabsolute case is therefore bounded in every box independently
+of its radius. PlaneCurveAssembly proves the exact PlaneCurveBound target
+from SharpPlaneResidueBound C with C>=0. GeometricResidueReduction applies
+the d^2 bound to nongeometric finite-field curves and handles degree drops
+under reduction. Thus SharpGeometricPlaneResidueBound C implies the full
+rational plane-count target. The geometric sharp estimate remains unproved.
+All four modules pass direct Lean checks with autoImplicit=false and
+warningAsError=true. The integrated bash scripts/check.sh passes with
+9191 Lake jobs, auditing 833 project and 555 vendored declarations. Only
+propext, Classical.choice and Quot.sound occur. Source checks verify 25
+vendor hashes and 141 reachable mathematical modules. These totals precede the formal-branch integration below. Controlled projections, general-curve degree and
+nongeometric interfaces, and the separate Pierce geometry remain unfinished
+in addition to the sharp geometric finite-field estimate. There is still no
+unconditional proof of PlaneCurveBound or AffineCurveBound. No counting
+axiom or independent human review is asserted.
+
+
+Formal branches and the Stepanov construction (19 October 2026)
+---------------------------------------------------------------
+Thirteen modules now pass direct Lean checks with autoImplicit=false and
+warningAsError=true: PowerSeriesOrderIndependence, FormalImplicitRoot,
+FormalPlaneBranch, PowerSeriesFrobenius, SectionImageRank, FormalBranchFaithful,
+FormalBranchOrder, FormalBranchMultiplicity, FormalPlaneDifferentiation,
+PlaneTangentMultiplicity, PlaneFrobeniusAuxiliary, PlaneFrobeniusSystem and
+PlaneStepanovBound. The formal branch is constructed and faithful, proper
+sections have order at most d*m, and summed multiplicities satisfy N*#S<=d*m.
+Tangent derivatives detect these multiplicities for N<=p. Injective low-degree
+jets prevent Frobenius cancellation when d*D<p. A finite linear kernel supplies
+actual nontrivial auxiliary coefficients. The final assembled bound is
+  #S*N <= d*(D+p*A)+d*(d-1)*N,
+under the explicit inequality sum(r<N,H(D+A+r*d))<H(D)*H(A) for the actual
+filtered Hilbert dimensions. No formal branch, auxiliary polynomial,
+noncancellation assertion or multiplicity estimate is left as an input to this
+result. The integer parameter choice giving p+O(d² sqrt(p)) is still unproved.
+The integrated check passed with 9204 Lake jobs, auditing 908 project and 555
+vendored declarations. Only propext, Classical.choice and Quot.sound occur.
+Source checks verify 25 vendor hashes and 154 reachable modules. These totals
+precede the numerical completion below. Controlled projections,
+general-curve interfaces and the separate Pierce geometry also remain open.
+No counting axiom or independent human review is asserted.
+
+
+Sharp finite-field count and unconditional plane theorem (19 October 2026)
+-------------------------------------------------------------------------
+StepanovParameters, PlaneStepanovDimension, StepanovRealBound and SharpPlaneCount
+pass direct Lean checks with autoImplicit=false and warningAsError=true.
+The integer choices A=floor(sqrt(p)/d), D=floor((p-1)/d), N=d*A-4*d² satisfy the
+strict dimension inequality for p>27*d^4. All rounding is accounted for.
+The resulting point count is p+161*d²*sqrt(p) for every irreducible prime-field
+plane equation. SharpPlaneResidueBound 161 is proved. The theorem
+AffineCurveCounting.planeCurveBound proves the exact PlaneCurveBound statement
+without an external counting hypothesis. Earlier records of an open finite-field
+input or open plane theorem describe historical intermediate stages.
+The integrated bash scripts/check.sh passes with 9208 Lake jobs, auditing
+917 project and 555 vendored declarations. Only propext, Classical.choice and
+Quot.sound occur. Source checks verify 25 vendor hashes and 158 reachable
+mathematical modules. These totals precede the primitive-pair integration below. AffineCurveBound,
+controlled projections, general-curve interfaces and separate Pierce geometry
+remain unfinished. No counting axiom or independent human review is asserted.
+
+
+Function fields and bounded primitive coordinates (19 October 2026)
+------------------------------------------------------------------
+Eight modules pass direct Lean checks with autoImplicit=false and
+warningAsError=true: FunctionFieldRank, CurveFunctionField, CurveParameter,
+CurveRationalParameter, BoundedLinearSeparation, BoundedPrimitiveElement,
+CurvePrimitivePair and BoundedProjectionCoordinates.
+Positive affine Hilbert degree now constructs a transcendental original
+coordinate and proves that the fraction field is a finite extension of K(t)
+of degree at most d. A product of difference polynomials provides an explicit
+bounded primitive linear form. The resulting coordinate pair generates the
+actual function field and has integer coefficients with parameter k<=n*d².
+Integer points map to integer points in a box enlarged by 1+n*(n*d²+1)^n.
+The integrated bash scripts/check.sh passes with 9216 Lake jobs, auditing
+946 project and 555 vendored declarations. Only propext, Classical.choice and
+Quot.sound occur. Source checks verify 25 vendor hashes and 166 reachable
+mathematical modules. These totals precede the projection integration below. The degree-
+preserving projection and exceptional-fiber bounds remain unproved; so do the general-
+curve nongeometric interface and the separate Pierce geometry. PlaneCurveBound
+is proved; AffineCurveBound and the active Pierce candidate are not.
+No counting axiom or independent human review is asserted.
+
+
+Plane equations, degree criterion and reconstruction (19 October 2026)
+--------------------------------------------------------------------
+Nine new modules pass direct Lean checks with autoImplicit=false and
+warningAsError=true: LinearProjectionFiltration, PlaneProjectionKernel,
+PlaneProjectionDegree, PlaneIdealCount, ProjectionFieldDegree,
+PrimitivePairReconstruction, CurveRationalInverse, BoundedBirationalProjection
+and ProjectionExceptionalCount. The transcendental-power independence lemma
+in FunctionFieldRank now also allows a commutative ring as its target.
+The new results prove the actual irreducible projection equation, its degree
+upper bound, the full plane prime-ideal counting interface, and the criterion
+for equality when the parameter has full field degree. They construct rational
+inverse identities for bounded projection coordinates and prove a finite-set
+count error of d*deg(Q) using the proper reconstruction denominator Q.
+The integrated bash scripts/check.sh passes with 9225 Lake jobs, auditing
+973 project and 555 vendored declarations. Only propext, Classical.choice and
+Quot.sound occur. Source checks verify 25 vendor hashes and 175 reachable
+mathematical modules. These totals precede the deformation integration below.
+The bounded existence of a full-degree parameter and a uniform O(d²)
+exceptional-point bound remain unproved. AffineCurveBound and the separate
+Pierce geometric obligations remain unfinished. No counting axiom or
+independent human review is asserted.
+
+
+Uniform exceptional count by deformation (19 October 2026)
+---------------------------------------------------------
+Twelve new modules pass direct Lean checks with autoImplicit=false and
+warningAsError=true: PolynomialMatrixSpecialization, PolynomialKernelOrigin,
+PolynomialKernelDerivative, PlaneProjectionDerivative, PlaneRelationSpace,
+PlaneLinearDeformation, PolynomialCoefficientLinearMap,
+PolynomialFamilyRelations, CurveProjectionDeformation,
+PlaneDeformationRelation, CurveDerivativeReconstruction and
+DegreePreservingProjectionCount.
+They construct a nonzero-at-zero family of actual plane relations and derive
+polynomial reconstruction with the common denominator f_Y. Its degree is at
+most d-1 and it is proper. Every degree-preserving linear projection in the
+stated prime-curve setting consequently loses at most d(d-1) points from any
+finite set, with no geometric-integrality or exceptional-fiber assumption.
+The integrated bash scripts/check.sh passes with 9237 Lake jobs, auditing
+1008 project and 555 vendored declarations. Only propext, Classical.choice and
+Quot.sound occur. Source checks verify 25 vendor hashes and 187 reachable
+mathematical modules. These are the integrated totals for that stage.
+Bounded existence of a degree-preserving projection, the full affine counting
+assembly and the separate Pierce geometry remain unproved. No counting axiom
+or independent human review is asserted.
+
+Historical initial-checkout verification
+---------------------------------------
+A clean local checkout of initial commit d96d122 rebuilt all project and
+vendored source modules. Only the pinned Mathlib/package build cache was reused.
+Command: bash scripts/check.sh
+Result: PASS, 9087 Lake jobs.
+
+Source provenance check: 25 vendored hashes and 37 reachable mathematical modules.
+Axiom audit: 72 project and 555 vendored exported declarations.
+Allowed axioms only: propext, Classical.choice, Quot.sound.
+No sorry/admit, custom axioms, native_decide, or implemented_by occur in the
+project or vendored mathematical source.
+
+This records a Lean build and transitive axiom audit, not independent human
+review or an independently implemented kernel check. PlaneCurveBound is now
+proved as recorded above; AffineCurveBound and the full CCDN theorem remain unfinished.
+
+
+Bounded degree-preserving projection, direct checks (19 October 2026)
+-------------------------------------------------------------------
+Twenty-one new modules pass direct compilation with autoImplicit=false and
+warningAsError=true. The final theorem exists_bounded_degree_preserving_projection
+constructs both moment coordinates, bounded by n²*d and n*d², and an irreducible
+plane equation of degree exactly d. exists_bounded_projection_card_le additionally
+bounds the loss of points in every finite source set by d(d-1). Infinity
+avoidance, the parameter-field embedding and full extension degree are proved,
+not assumptions. The proof covers prime curves without geometric integrality.
+The integrated bash scripts/check.sh passes with 9258 Lake jobs, auditing
+1122 project and 555 vendored declarations. Only propext, Classical.choice and
+Quot.sound occur. Source checks verify 25 vendor hashes and 208 reachable
+mathematical modules. These are the integrated totals for that stage. The full general
+affine counting assembly and separate Pierce geometry remain unfinished.
+No counting axiom or independent human review is asserted.
+
+
+Full affine counting theorem, direct verification (19 October 2026)
+------------------------------------------------------------------
+DegreePreservingProjectionBox, ProjectionScaleAbsorption, AffineProjectionCount
+and AffineCurveBound pass direct compilation with autoImplicit=false and
+warningAsError=true. The final declaration is
+  AffineCurveCounting.affineCurveBound : AffineCurveBound.
+Its target quantifies n>=2, then chooses C(n)>0 before the prime ideal, positive
+Hilbert degree and B>=1. The precise bound is C(n)*d³*B^(1/d)*(log B+d).
+All counting, projection, height and exceptional-point inputs are proved.
+This completes the external theorem's stated prime-ideal/Hilbert-degree
+interface; it does not prove the remaining Pierce geometry or final bound.
+The integrated bash scripts/check.sh passes with 9262 Lake jobs, auditing
+1140 project and 555 vendored declarations. Only propext, Classical.choice and
+Quot.sound occur. Source checks verify 25 vendor hashes and 212 reachable
+mathematical modules. These are the latest integrated totals. The proof of
+AffineCurveBound is complete; no external counting result is assumed.
+No independent human review or separate kernel implementation is asserted.

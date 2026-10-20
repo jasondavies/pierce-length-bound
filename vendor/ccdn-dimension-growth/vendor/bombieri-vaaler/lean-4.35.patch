@@ -1,0 +1,45 @@
+--- a/ArithmeticHeights/GramCovolume.lean
++++ b/ArithmeticHeights/GramCovolume.lean
+@@ -2,10 +2,13 @@
+ Copyright (c) 2026 Ralf Stephan. All rights reserved.
+ Released under Apache 2.0 license as described in the file LICENSE.
+ Authors: Ralf Stephan
++
++Modified for Lean/Mathlib 4.35.0: add the explicit inner-product Haar-measure import.
+ -/
+ module
+ 
+ public import Mathlib.Algebra.Module.ZLattice.Covolume
++public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
+ public import Mathlib.Analysis.InnerProductSpace.Adjoint
+ 
+ /-!
+--- a/ArithmeticHeights/PrekopaLeindler.lean
++++ b/ArithmeticHeights/PrekopaLeindler.lean
+@@ -2,6 +2,8 @@
+ Copyright (c) 2026 Ralf Stephan. All rights reserved.
+ Released under Apache 2.0 license as described in the file LICENSE.
+ Authors: Ralf Stephan
++
++Modified for Lean/Mathlib 4.35.0: rename the real-weight AM-GM lemma to avoid a new Mathlib declaration.
+ -/
+ module
+ 
+@@ -100,7 +102,7 @@
+ /-- **Weighted AM–GM in `ℝ≥0∞`**, for two terms: the `ℝ≥0∞`-valued companion of
+ `NNReal.geom_mean_le_arith_mean2_weighted`, stated with real weights because the exponents of
+ `ENNReal.rpow` are real. -/
+-theorem ENNReal.geom_mean_le_arith_mean2_weighted {w₁ w₂ : ℝ} (hw₁ : 0 ≤ w₁) (hw₂ : 0 ≤ w₂)
++theorem ENNReal.geom_mean_le_arith_mean2_weighted_real_weights {w₁ w₂ : ℝ} (hw₁ : 0 ≤ w₁) (hw₂ : 0 ≤ w₂)
+     (hw : w₁ + w₂ = 1) (p₁ p₂ : ENNReal) :
+     p₁ ^ w₁ * p₂ ^ w₂ ≤ ENNReal.ofReal w₁ * p₁ + ENNReal.ofReal w₂ * p₂ := by
+   rcases eq_or_lt_of_le hw₁ with hz | hpos₁
+@@ -408,7 +410,7 @@
+     (fun x y => by rw [hcomp]; gcongr; exact key x y)
+   rw [lintegral_const_mul' _ _ hMiT, lintegral_const_mul' _ _ hNiT,
+     lintegral_const_mul' _ _ hcT] at hunit
+-  have hAM := ENNReal.geom_mean_le_arith_mean2_weighted ha.le hb.le hab
++  have hAM := ENNReal.geom_mean_le_arith_mean2_weighted_real_weights ha.le hb.le hab
+     (M⁻¹ * ∫⁻ x, f x) (N⁻¹ * ∫⁻ y, g y)
+   rw [hcomp] at hAM
+   exact (ENNReal.mul_le_mul_iff_right hc0 hcT).mp (hAM.trans hunit)

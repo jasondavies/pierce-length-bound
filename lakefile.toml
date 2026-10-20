@@ -26,3 +26,7 @@ name = "Axioms"
 [[require]]
 name = "openai_math"
 path = "vendor/openai-math"
+
+[[require]]
+name = "ccdn_dimension_growth"
+path = "vendor/ccdn-dimension-growth"

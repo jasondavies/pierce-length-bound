@@ -12,9 +12,9 @@ public import PierceLengthBound.FixedDividend
 
 The symmetric differences below prove the candidate's four quadratic-coefficient
 identities, after eliminating the fourth node and the next two gaps. They apply to
-arbitrary real parameters, not just to sampled orbit windows. The deduction that the
-norm polynomial is affine on a contained line (using the resultant degree bound) is
-still a separate, unproved obligation.
+arbitrary real parameters. The degree-six resultant bound is proved in
+FixedDividendLineResultant;
+connecting these identities to arbitrary contained lines is handled separately.
 -/
 
 @[expose] public section
@@ -22,21 +22,22 @@ still a separate, unproved obligation.
 namespace PierceLengthBound.FixedDividend
 
 /-- Fourth node recovered from the first kernel relation. -/
-def fourthNode (ρ u v a b c : ℝ) : ℝ := (ρ + u) * a - (u - v) * b - (v - 1) * c
+def fourthNode {R : Type*} [CommRing R] (ρ u v a b c : R) : R :=
+  (ρ + u) * a - (u - v) * b - (v - 1) * c
 
 /-- Gap data, including the fifth gap from the next linear kernel relation. -/
-def lineGaps (ρ u v ρ' u' v' a b c : ℝ) : Fin 5 → ℝ :=
+def lineGaps {R : Type*} [CommRing R] (ρ u v ρ' u' v' a b c : R) : Fin 5 → R :=
   let d := fourthNode ρ u v a b c
   ![a, b - a, c - b, d - c, ρ' * (b - a) - u' * (c - b) - v' * (d - c)]
 
 /-- The first five nodes and the following node. -/
-def lineNodes (ρ u v ρ' u' v' a b c : ℝ) : Fin 6 → ℝ :=
+def lineNodes {R : Type*} [CommRing R] (ρ u v ρ' u' v' a b c : R) : Fin 6 → R :=
   let d := fourthNode ρ u v a b c
   let k := lineGaps ρ u v ρ' u' v' a b c
   ![0, a, b, c, d, d + k 4]
 
 /-- Six gaps, with the last eliminated by the next quadratic kernel relation. -/
-def extendedLineGaps (ρ u v ρ' u' v' a b c : ℝ) : Fin 6 → ℝ :=
+def extendedLineGaps {R : Type*} [CommRing R] (ρ u v ρ' u' v' a b c : R) : Fin 6 → R :=
   let k := lineGaps ρ u v ρ' u' v' a b c
   let s := lineNodes ρ u v ρ' u' v' a b c
   let r1 := k 1 * (s 1 + s 2) + k 2
@@ -46,13 +47,13 @@ def extendedLineGaps (ρ u v ρ' u' v' a b c : ℝ) : Fin 6 → ℝ :=
     ρ' * r1 - u' * r2 - v' * r3 - k 4 * (s 4 + s 5)]
 
 /-- The first quadratic with both linear kernel relations imposed. -/
-def lineQuadratic (ρ u v ρ' u' v' a b c : ℝ) : ℝ :=
+def lineQuadratic {R : Type*} [CommRing R] (ρ u v ρ' u' v' a b c : R) : R :=
   let s := lineNodes ρ u v ρ' u' v' a b c
   let k := lineGaps ρ u v ρ' u' v' a b c
   ∑ j : Fin 5, coeffs ρ u v j * (s j.castSucc ^ 2 + k j)
 
 /-- The cubic norm expression with the next quadratic imposed. -/
-def lineNorm (ρ u v ρ' u' v' a b c : ℝ) : ℝ :=
+def lineNorm {R : Type*} [CommRing R] (ρ u v ρ' u' v' a b c : R) : R :=
   let s := lineNodes ρ u v ρ' u' v' a b c
   let k := extendedLineGaps ρ u v ρ' u' v' a b c
   ∑ j : Fin 5, coeffs ρ u v j *

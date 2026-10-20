@@ -1,0 +1,833 @@
+# Conic arithmetic in the Pierce remainder iteration
+
+## Status and claim
+
+Research proof candidate, 19 October 2026. This note extends the uploaded
+`pierce_18_61_proof_candidate.md`; it is not an externally reviewed paper or
+formally verified proof. No priority claim is made. The new arguments are the
+rational reconstruction lemma and the arithmetic treatment of parabolic
+conics. The moment, minor, line-exclusion, and lattice-incidence lemmas listed
+in Section 1 are retained from the preceding candidate, not replaced by
+computational evidence.
+
+The resulting proposed bound is
+
+\[
+\boxed{P(a,b)\ll_\varepsilon a^{135/458+\varepsilon}},
+\qquad 135/458=0.2947598253275109\ldots.
+\]
+
+It improves the preceding candidate by
+
+\[
+18/61-135/458=9/27938.
+\]
+
+It does not resolve the original logarithmic-squared conjecture.
+
+The main local estimate, with an arbitrarily small power of a absorbing
+logarithms, is
+
+\[
+T\ll_\eta a^\eta\left(X^5+X^4H^{1/2}+X^{44/9}H^{1/3}\right).
+\tag{0.1}
+\]
+
+The first term counts nonparabolic conics and most parabolic conics using
+arithmetic, the second counts exceptional parabolic patterns, and the third
+counts curve components of degree at least three. The third term determines
+the final exponent.
+
+## 1. Retained framework and precise dependencies
+
+Write
+
+\[
+a=q_i b_i+b_{i+1},\qquad k_i=q_{i+1}-q_i>0,
+\]
+
+until the first zero remainder. The positive remainders strictly decrease and
+the quotients strictly increase. A quotient block is Q <= q_i < 2Q, and T is
+its number of states. A fixed positive fraction of its starts have their next
+sixteen quotient gaps at most
+
+\[
+H=C_0Q/T
+\]
+
+for an absolute C_0. The final sixteen starts are discarded. This is the
+support margin used throughout; all identities involving finite moments
+below are applied only to these starts. Put
+
+\[
+X=C_2aH^6/Q^4,\qquad K=Q^4/(aH^5),
+\]
+
+where C_2 bounds the minors below. If a selected start exists then X >= 1.
+The scales satisfy H << a and X << a^7; these crude bounds are enough for all
+coefficient-height arguments.
+
+Here are the retained lemmas from the 18/61 note, with section references to
+that note.
+
+1. **Finite positive moments (Sections 1 and 4).** At a start there are positive
+   finite measures mu and nu, with
+   \[
+   (q+x)\nu=\mu,\quad \mu(1)=\mu(x)=1,\quad \nu(1)=b/a.
+   \]
+   Write s_j=q_(i+j)-q_i and F_j(x)=product_(v<j)(x-s_v). Then
+   \[
+   \nu(F_j)=b_{i+j}/a,\qquad \mu(F_j)=1.
+   \]
+   Raw moments through degree six depend polynomially on the first five gaps.
+   The weighted Hankel matrix is positive definite on the degrees used here.
+
+2. **Integral minor pattern (Sections 2--3).** Form the 3 by 5 matrix with rows
+   \[
+   d_j=b_{i+j}-b_{i+j+1},\quad k_j,\quad
+   r_j=k_j(s_j+s_{j+1})+k_{j+1},\quad 0\le j\le4.
+   \]
+   Its ten maximal minors p have height at most X. Set
+   \[
+   A=p_{012},\ A'=p_{123},\ A''=p_{234},\ U=p_{023},\ V=-p_{013},
+   \ U'=p_{134},\ V'=-p_{124}.
+   \]
+   A,A',A'' are positive integers. There are O(X^5) full minor patterns,
+   including nonprimitive patterns. One may prove the latter by a maximal
+   pivot m: the remaining coordinates give vectors u,v modulo m with
+   u cross v=0. For g=gcd(m,u_1,u_2,u_3), the number of v residues is m g^2;
+   summing yields O(X^5).
+
+3. **Quartics and curves (Sections 4--5).** Define
+   \[
+   \rho=A'/A,\ u=U/A,\ v=V/A,\qquad
+   \rho'=A''/A',\ u'=U'/A',\ v'=V'/A',
+   \]
+   and
+   \[
+   c=(\rho,-\rho-u,u-v,v-1,1),
+   \]
+   with c' defined similarly. Exactly rho>0,u>0,v<0, so every c_j is nonzero,
+   c_0,c_2,c_4>0 and c_1,c_3<0, with c_3<-1. Put
+   \[
+   P(x)=\sum_{j=0}^4c_jF_j(x),\qquad
+   Z(x)=xR(x)=\sum_{j=0}^4c'_jF_{j+1}(x).
+   \]
+   P and Z have degrees four and five, and
+   \[
+   \nu(x^mP)=\nu(x^mZ)=0\quad(0\le m\le3).
+   \]
+   The two linear relations determine k_0 and k_4 from k_1,k_2,k_3. The first
+   quadratic is
+   \[
+   f=\sum_{j=0}^4c_j(s_j^2+k_j)=0.
+   \]
+   The next quadratic determines k_5; substituting it defines a cubic D with
+   homogeneous part
+   \[
+   D_3=\sum_{j=0}^4c_js_j^3.
+   \]
+   At actual states D=nu(P^2)>0 and
+   \[
+   A\operatorname{Res}(P,Z)=aD^4.
+   \]
+   Thus actual gap points lie on f=Omega=0, where
+   \[
+   \Omega=A\operatorname{Res}(P,Z)-aD^4.
+   \]
+   The resultant has gap degree ten, f is absolutely irreducible of degree
+   two, and f and Omega are coprime. Their common zero locus has total curve
+   degree at most 24. Any isolated contributions have bounded size.
+
+4. **Raw determinant and normalization (Sections 7 and 10).** With
+   \[
+   H_4=\det[\mu(x^{j+k})]_{j,k<4},
+   \]
+   one has
+   \[
+   H_4=\prod_{0\le j<l<4}(s_l-s_j)+E,
+   \qquad \deg E\le5
+   \tag{1.1}
+   \]
+   as a polynomial in nearby quotient gaps. Also
+   \[
+   A P(-q)=aH_4.
+   \tag{1.2}
+   \]
+   Fixed pattern and five gaps consequently represent at most four states.
+
+5. **Line exclusion (Sections 6--7).** When K >= C_1 X, with an absolute C_1,
+   no selected actual state lies on a line component of f=Omega=0. The
+   complementary range satisfies T <<_eta a^(5/17+eta).
+
+6. **Pattern lattices (Sections 8--9).** The primitive rank-three lattice
+   \[
+   L_p=\operatorname{rowspan}_{\mathbb R}(M)\cap\mathbb Z^5
+   \]
+   contains the five-gap vector. A reduced basis gives integer coordinates
+   of size O(H/lambda_1(L_p)). If N(Y,R) counts primitive rank-three
+   sublattices of Z^5 of determinant at most Y with shortest length at most R,
+   then
+   \[
+   N(Y,R)\ll Y^4R^3\quad(1\le R\ll Y^{1/3}).
+   \tag{1.3}
+   \]
+   The note proves this uniformly, including short-vector and common-divisor
+   cases.
+
+The new proof does not assume that the full algebraic curve consists of
+actual orbit points. Additional identities holding only at actual points
+are either used as further bounded-degree cuts or proved to hold identically
+on a parametrized component before taking their degrees.
+
+## 2. Rational reconstruction from two quartics
+
+### Lemma 2.1
+
+For fixed P of degree four and Z of degree five, with Res(P,Z) nonzero, the
+linear functional on polynomials of degree at most eight satisfying
+
+\[
+\ell(x^jP)=\ell(x^jZ)=0\quad(0\le j\le3)
+\]
+
+is unique up to scale.
+
+**Proof.** The eight row polynomials are linearly independent. A dependence
+would give U P+V Z=0 with deg U,deg V <=3. Coprimality forces P to divide V,
+which is impossible unless V=0; then U=0. The ambient polynomial space has
+dimension nine. Thus its annihilator has dimension one. This reasoning works
+over any field of characteristic zero, including Q(t).
+
+Let h_0,...,h_8 be a nonzero cofactor kernel vector of the 8 by 9 coefficient
+matrix. They can be chosen polynomially in the coefficients of P,Z. At an
+actual state h_0 is nonzero, and m_j=h_j/h_0=nu(x^j)/nu(1).
+
+The equations mu(1)=mu(x)=1 give
+
+\[
+q\nu(1)+\nu(x)=1,\qquad q\nu(x)+\nu(x^2)=1.
+\]
+
+Consequently
+
+\[
+\boxed{
+q=\frac{m_1-m_2}{m_1-1},\qquad
+b=\frac{a}{q+m_1}.
+}
+\tag{2.1}
+\]
+
+All denominators are nonzero at actual states. Indeed positive definiteness
+gives m_2>m_1^2. If m_1=1, the two displayed equations would force m_2=1.
+Also q+m_1=a/b>0. The nonzero resultant follows independently from D>0 and
+the fixed-dividend identity.
+
+When P,Z depend rationally on a parameter t, (2.1) reconstructs q,b as rational
+functions of t, outside a bounded set of algebraic exceptional values. If a
+kernel coordinate or denominator vanishes identically in a way that makes
+this reconstruction unavailable, that component has no actual states.
+
+All degrees here are bounded absolutely. If the rational coefficients of P,Z
+have numerators and denominators bounded by a fixed power of a, the same is
+true for the rational functions obtained by these fixed-size determinants,
+after reduction. This also follows from fixed-degree subresultant formulas.
+
+## 3. An elementary integer-value lemma
+
+### Lemma 3.1
+
+Suppose F,G in Z[t] are coprime over Q, G is nonconstant, and their degrees are
+at most d. Put R=Res(F,G), which is a nonzero integer. Then
+
+\[
+\#\{t\in\mathbb Z:G(t)\ne0,\ F(t)/G(t)\in\mathbb Z\}
+\le 2d\,\tau(|R|).
+\tag{3.1}
+\]
+
+**Proof.** The Sylvester adjugate yields integer polynomial coefficients in a
+Bezout identity U F+V G=R. At an integral value F(t)/G(t), G(t) divides F(t),
+and hence G(t) divides R. For each signed divisor e of R, the nonconstant
+polynomial G(t)-e has at most d roots. Sum over the signed divisors.
+
+In particular, a proper nonzero rational function of bounded degree and
+height at most a^C has O_(C,d,eta)(a^eta) integer values at integer parameters,
+for every eta>0. After clearing denominators and cancelling the polynomial
+gcd, the resulting integer polynomials still have height bounded by a fixed
+power of a. A fixed-degree resultant has the same property. The elementary
+estimate tau(n) <<_delta n^delta then applies.
+
+For the height statement, no factorization-height theorem with variable
+degree is necessary: for fixed degree, Cauchy's root bound bounds every root
+by a fixed power of the original height, and Gauss's lemma bounds a primitive
+factor's leading coefficient by the original leading coefficient. Its other
+coefficients are consequently bounded by a fixed power as well.
+
+## 4. Conic planes and an integer parameter for parabolas
+
+Fix one degree-two component over Q and one coefficient pattern. If it has at
+most two actual gap points, its contribution is already O(1). Otherwise take
+three such points. An absolutely irreducible conic has no three collinear
+points, so these points determine its plane. The plane equation can be chosen
+with integer coefficients of size O(H^3), by taking a cross product of the
+two difference vectors and then the constant term.
+
+Project away a coordinate whose plane coefficient is nonzero. The remaining
+two coordinates x,y of an actual gap point are integers bounded by H. The
+third coordinate is an affine rational function of them. Restrict the
+retained quadratic f to this plane and clear denominators. Because f contains
+the conic but no plane, the resulting polynomial is a nonzero scalar multiple
+of the irreducible conic equation. Its integer coefficients have height at
+most a^C for an absolute C. Here H << a, X << a^7 and the coefficients of f
+are rational functions of the bounded minor pattern with bounded degrees.
+
+A bounded unimodular change of x,y ensures that the first square coefficient
+is nonzero. Write the equation as
+
+\[
+\alpha x^2+\beta xy+\gamma y^2+d x+e y+f_0=0,
+\qquad \alpha\ne0.
+\tag{4.1}
+\]
+
+Let Delta=beta^2-4 alpha gamma. If Delta=0, the conic is a parabola (one point
+at infinity counted twice). Set
+
+\[
+J=2\beta d-4\alpha e,\qquad E=d^2-4\alpha f_0,
+\qquad t=2\alpha x+\beta y+d.
+\]
+
+Then
+
+\[
+t^2=J y+E.
+\]
+
+Irreducibility over the algebraic closure implies J != 0; otherwise the conic
+factors over that field. Thus
+
+\[
+y(t)=\frac{t^2-E}{J},\qquad
+x(t)=\frac{t-\beta y(t)-d}{2\alpha}.
+\tag{4.2}
+\]
+
+Every actual integer gap point gives an integer t. The parameter is injective
+on the affine conic. All three original gap coordinates and all node
+coordinates are rational polynomials in t of degree at most two. Their
+coefficients have numerators and denominators at most a^C, as does the bound
+on |t| at actual points.
+
+Write
+
+\[
+s_j(t)=z_jt^2+w_jt+e_j,\qquad z_0=w_0=e_0=0.
+\tag{4.3}
+\]
+
+The vector of leading central-gap coordinates is nonzero. The map from those
+coordinates to s_1,s_2,s_3 is invertible; consequently not all the z_j are zero.
+
+If a Q-irreducible degree-two component is geometrically reducible, its
+rational points lie on the intersection of its two conjugate lines, giving
+at most one point. Such components can be included in the O(1) contribution.
+
+## 5. Parabolas with distinct node directions: actual states have a divisor bound
+
+### Lemma 5.1
+
+For a fixed coefficient pattern and an absolutely irreducible parabolic conic
+component of f=Omega=0, suppose the five leading node coefficients
+z_0,...,z_4 in (4.3) are pairwise distinct. Then the number of actual orbit
+states on that component with gaps at most H is O_eta(a^eta), uniformly in the
+pattern and component.
+
+**Proof.** Use the integer parameter t from Section 4. Form the rational
+functions q(t),b(t) from Lemma 2.1. If Res(P,Z) vanishes identically on the
+component, the fixed-dividend identity forces D to vanish there and there are
+no actual states. Otherwise the cofactor reconstruction applies. Its degree
+is bounded absolutely, and every rational function used below has height
+bounded by a fixed power of a. Exceptional denominator values have bounded
+cardinality and do not contribute unboundedly; the actual moment conditions
+in fact rule out the reconstruction poles.
+
+First impose the actual-state identity
+
+\[
+A P_t(-q(t))=aH_4(t).
+\tag{5.1}
+\]
+
+If it is not an identity in Q(t), its numerator is a nonzero polynomial of
+bounded degree. There are O(1) actual parameter values, which proves the
+lemma in this case. We may therefore suppose (5.1) is an identity.
+
+The polynomial P_t is monic of degree four in its argument and has
+coefficients in Q[t]. Equation (5.1) is thus a monic polynomial equation for
+the rational function q(t) over Q[t]. It follows that q(t) is a polynomial.
+An elementary proof is to put q=N/D in lowest terms in Q[t]: after multiplying
+by D^4, the monic equation implies D divides N^4, so D is constant.
+
+The raw determinant identity (1.1) gives
+
+\[
+\deg_t H_4(t)=12,
+\qquad [t^{12}]H_4(t)=
+\prod_{0\le j<l<4}(z_l-z_j)\ne0.
+\tag{5.2}
+\]
+
+Indeed the leading Vandermonde has degree 12, while the lower gap-degree
+terms have t-degree at most 10. If deg q <=2, the left side of (5.1) has degree
+at most eight, impossible. If deg q=m>2, its degree is exactly 4m, since the
+quartic is monic and each s_j has degree at most two. Therefore
+
+\[
+\boxed{\deg q=3.}
+\tag{5.3}
+\]
+
+Next impose the quartic remainder relation. Define rational functions
+
+\[
+r_0(t)=b(t),\qquad r_{j+1}(t)=a-(q(t)+s_j(t))r_j(t)
+\quad(0\le j<4).
+\]
+
+At actual states r_j=b_(i+j), so
+
+\[
+\sum_{j=0}^4c_jr_j(t)=0.
+\tag{5.4}
+\]
+
+If (5.4) is not a rational-function identity, it again contributes only O(1)
+actual parameters. Suppose it is an identity. Put
+
+\[
+Q_j(t)=\prod_{l<j}(q(t)+s_l(t)),\qquad
+S_0=0,\quad S_{j+1}=1-(q+s_j)S_j.
+\]
+
+Then r_j=(-1)^j Q_j b+aS_j. Consequently
+
+\[
+b(t)=-a\frac{W(t)}{V(t)},\qquad
+V=\sum_{j=0}^4c_j(-1)^jQ_j=P_t(-q(t)),\quad
+W=\sum_{j=0}^4c_jS_j.
+\tag{5.5}
+\]
+
+If gamma is the nonzero cubic leading coefficient of q, then every q+s_j
+has degree three and leading coefficient gamma. Since c_4=1,
+
+\[
+\deg V=12,\quad [t^{12}]V=\gamma^4,
+\qquad
+\deg W=9,\quad [t^9]W=-\gamma^3.
+\tag{5.6}
+\]
+
+Thus b(t) is nonzero and proper, with degree difference -3 even after common
+factors are cancelled. In lowest terms its denominator is nonconstant.
+Every actual remainder b(t) is an integer. Lemma 3.1 now bounds the number of
+actual integer parameters by O_eta(a^eta). Because t determines the gap point
+and the reconstruction determines q and b, this counts states themselves.
+This proves the lemma.
+
+**Logical point.** Equations (5.1) and (5.4) were not assumed to hold at every
+point of the algebraic conic. Each was explicitly treated as an additional
+bounded-degree cut unless it is an identity. The degree argument is used
+only in the identity cases.
+
+## 6. The remaining parabolic patterns are a smaller set
+
+The leading homogeneous pieces of the retained equations are
+
+\[
+f_2=\sum_{j=0}^4c_js_j^2,\qquad
+D_3=\sum_{j=0}^4c_js_j^3.
+\]
+
+For any parabola component, the resultant has t-degree at most 20, because
+its gap degree is ten. The identity A Res(P,Z)=aD^4 forces deg_t D <=5.
+Therefore (4.3) satisfies
+
+\[
+\sum_{j=0}^4c_jz_j^m=0\quad(m=0,1,2,3).
+\tag{6.1}
+\]
+
+The equations for m=0,1 are the coefficient sum and the retained first linear
+relation; those for m=2,3 follow from f and the degree comparison just made.
+
+If two of the z_j coincide, there are at most four distinct values. Group
+identical values and apply the Vandermonde matrix to (6.1). Each cluster has
+coefficient sum zero. Since all c_j are nonzero, there are no singleton
+clusters. A single cluster would give every z_j=0, which is impossible for a
+genuine parabola. Thus there are two clusters of sizes two and three.
+
+The signs and formulas for c allow only four vanishing pair sums:
+
+| Pair | Equivalent minor relation |
+|---|---|
+| c_0+c_3=0 | A'+V-A=0 |
+| c_1+c_2=0 | A'+V=0 |
+| c_2+c_3=0 | U-A=0 |
+| c_1+c_4=0 | A-A'-U=0 |
+
+Each relation is one zero maximal minor after an integer unimodular column
+change with bounded coefficients. If v_0,...,v_4 are the original columns,
+the four determinants are respectively
+
+\[
+\begin{aligned}
+&\det(v_1,v_2+v_0,v_3-v_0),\\
+&\det(v_1,v_2+v_0,v_3),\\
+&\det(v_0,v_2,v_3+v_1),\\
+&\det(v_0+v_1,v_2,-v_1-v_3).
+\end{aligned}
+\]
+
+In each case the three displayed columns extend to a bounded unimodular
+change of all five columns, for example by retaining appropriate original
+columns v_0 or v_1 and v_4. Heights change by an absolute factor only.
+
+### Lemma 6.1
+
+There are O(X^4 log(2X)) integral decomposable three-vectors of height at most
+X having a specified maximal coordinate zero. This includes every common
+factor of the coordinates.
+
+**Proof.** Hodge duality turns such a vector into an integral decomposable
+bivector w in five coordinates, with w_45=0 after a permutation. Put
+
+\[
+\mathbf a=(w_{14},w_{24},w_{34}),\qquad
+\mathbf b=(w_{15},w_{25},w_{35}),\qquad
+\mathbf t=(w_{23},-w_{13},w_{12}).
+\]
+
+The Pluecker relations give
+
+\[
+\mathbf a\times\mathbf b=0,\qquad
+\mathbf t\cdot\mathbf a=\mathbf t\cdot\mathbf b=0.
+\]
+
+If a=b=0 there are O(X^3) possibilities. Otherwise write
+
+\[
+\mathbf a=r\mathbf z,\qquad \mathbf b=s\mathbf z,
+\]
+
+with z primitive integral, r,s integral and not both zero. If
+Z=||z||_infinity, then 1<=Z<<X, |r|,|s|<<X/Z, and z dot t=0.
+For fixed z, the number of t in the X-box is O(X^2/Z). To see this use a
+largest coordinate of z, of absolute value Z, as the modulus. The resulting
+congruence on the other two t-coordinates is surjective, because z is
+primitive; the final t-coordinate is determined.
+
+In one dyadic Z-range there are O(Z^3) possible primitive z, O((X/Z)^2)
+choices for r,s, and O(X^2/Z) choices for t. Their product is O(X^4).
+Summing the O(log(2X)) ranges proves the assertion.
+
+Consequently the parabolic components not covered by Lemma 5.1 occur in at
+most O(X^4 log(2X)) coefficient patterns. The uniform degree-two curve bound
+counts their integer gap points by O(H^(1/2) log(2H)) per component. The total
+number of components per pattern is bounded by 24. The bounded multiplicity
+from (1.2) changes the constant only. Their total contribution is therefore
+
+\[
+\ll X^4H^{1/2}\log(2X)\log(2H).
+\tag{6.2}
+\]
+
+These patterns are overcounted: a vanishing pair need not actually support a
+parabola. No assertion of sufficiency is used.
+
+## 7. Nonparabolic conics have a uniform divisor bound
+
+Use the bounded-height plane equation (4.1). In this case
+
+\[
+\Delta=\beta^2-4\alpha\gamma\ne0.
+\]
+
+Put
+
+\[
+\Lambda=\beta d-2\alpha e,\quad
+U=2\alpha x+\beta y+d,\quad V=\Delta y+\Lambda,
+\]
+
+and
+
+\[
+N=\Lambda^2+\Delta(4\alpha f_0-d^2).
+\]
+
+On the conic,
+
+\[
+V^2-\Delta U^2=N.
+\tag{7.1}
+\]
+
+The transformation is injective, since Delta and alpha are nonzero. Also
+N != 0: if N=0, (7.1) factors into two lines over the algebraic closure,
+contradicting geometric irreducibility. Coefficients, |N|, and the bounds on
+|U|,|V| are all at most a fixed power of a.
+
+Here is a self-contained uniform norm estimate sufficient for (7.1):
+
+\[
+\#\{(p,q)\in\mathbb Z^2:p^2-Eq^2=N,
+ |p|,|q|\le B\}
+\ll \tau(|N|)\log(2B(1+\sqrt{|E|})),
+\tag{7.2}
+\]
+
+for E != 0 and N != 0. An absolute factor suffices in this statement.
+
+For a positive square E=m^2, factor (p-mq)(p+mq)=N. Otherwise write
+E=d f^2 with signed squarefree d != 1. For each solution put
+
+\[
+g=\gcd(p,fq),\qquad r=p/g,\ s=fq/g,\ n=N/g^2.
+\]
+
+Then r^2-ds^2=n, gcd(r,s)=1, and gcd(s,n)=1. The residue r/s modulo |n|
+satisfies t^2=d mod |n|. A prime-power calculation gives at most
+4*2^(omega(|n|)) such classes (modulus one is harmless).
+
+For two primitive solutions in one residue class, the ratio
+
+\[
+\frac{r+s\sqrt d}{r'+s'\sqrt d}
+=\frac{rr'-dss'+(sr'-rs')\sqrt d}{n}
+\]
+
+belongs to Z[sqrt(d)] and has norm one. If d<0 there are at most four such
+units, from h^2+|d|j^2=1. If d>1, any positive unit greater than one in this
+ring is at least 2+sqrt(3): its integral real part is (epsilon+epsilon^-1)/2
+and is at least two. The two real embeddings of r+s sqrt(d) have absolute
+value at most L=B(1+sqrt(|E|)); their product is the nonzero integer n.
+Hence its nonzero absolute value is between 1/L and L. Multiplicative
+separation gives O(log(2L)) solutions in one residue class, including both
+signs. Finally
+
+\[
+\sum_{g^2\mid |N|}2^{\omega(|N|/g^2)}=\tau(|N|),
+\]
+
+as is checked prime power by prime power. This proves (7.2).
+
+It follows that each nonparabolic conic contributes O_eta(a^eta) states.
+Together with Lemma 5.1, the at most two-point cases, and geometrically
+reducible conics, these contributions sum to
+
+\[
+O_\eta(a^\eta X^5).
+\tag{7.3}
+\]
+
+## 8. Higher-degree curves in their pattern lattices
+
+The external counting theorem is the same as in the preceding note: for an
+affine curve C over Q, irreducible over Q, of degree d in fixed dimension n,
+
+\[
+N_{\rm aff}(C,B)\ll_n d^3B^{1/d}(\log B+d).
+\tag{8.1}
+\]
+
+This is Corollary 2.2 of Cluckers--Debes--Hendel--Nguyen--Vermeulen,
+*Improvements on dimension growth results and effective Hilbert's
+irreducibility theorem*, Forum of Mathematics, Sigma 13 (2025), e153,
+DOI 10.1017/fms.2025.10096. It attributes the result to
+Castryck--Cluckers--Dittmann--Nguyen (2020). Its constant is independent of
+coefficient height.
+
+For degree at least three, lattice coordinates from Section 1 give the bound
+
+\[
+\ll \left(H/\lambda_1(L_p)\right)^{1/3}\log(2H)
+\]
+
+per pattern, because all component degrees are at most 24. Actual patterns
+contain a nonzero gap vector of length at most sqrt(5) H, so the ratio
+H/lambda_1 is bounded below by an absolute positive constant. Rounding the
+box size changes only constants.
+
+The same short-vector incidence estimate (1.3), with weight 1/3 instead of
+1/2, gives
+
+\[
+\sum_{\substack{L\text{ primitive}\\ \det L\le Y}}
+\lambda_1(L)^{-1/3}
+\ll
+\sum_{R\ll Y^{1/3}}Y^4R^{3-1/3}
+\ll Y^{44/9}.
+\]
+
+For a nonprimitive minor vector p=g p_0 of height at most X, its lattice has
+determinant ||p_0||_2 <= sqrt(10) X/g. There are two primitive orientations
+per lattice, and sum_g g^(-44/9) converges. Thus
+
+\[
+\boxed{\sum_p\lambda_1(L_p)^{-1/3}\ll X^{44/9}.}
+\tag{8.2}
+\]
+
+The higher-degree contribution is therefore
+
+\[
+\ll H^{1/3}X^{44/9}\log(2H).
+\tag{8.3}
+\]
+
+The invertible rational change from lattice coordinates to central gap
+coordinates preserves curve degrees. Coefficient uniformity in (8.1) means
+that no height bound on that change is required.
+
+## 9. Local estimate and exponent
+
+In the main range K >= C_1 X, no selected actual state lies on a line
+component by the retained line-exclusion lemma. Equations (6.2), (7.3), and
+(8.3) give, with any eta>0,
+
+\[
+\boxed{
+T\ll_\eta a^\eta
+\left(X^5+X^4H^{1/2}+X^{44/9}H^{1/3}\right).
+}
+\tag{9.1}
+\]
+
+The fixed support convention and good-window selection retain at least T/2
+starts. Fixed pattern and five gaps represent at most four starts; those
+constants are already incorporated into (9.1).
+
+The elementary complementary estimate is
+
+\[
+Q\ll_\eta a^{1+\eta}/T^2.
+\tag{9.2}
+\]
+
+Indeed the remainder drops within the quotient block, including its last
+exit drop, sum to at most a/Q. At least half are at most 2a/(QT), and
+
+\[
+a+d_i=(q_i+1)b_i.
+\]
+
+At any fixed drop, distinct remainders are divisors of a+d_i <=2a. The usual
+elementary bound tau(n) <<_eta n^eta proves (9.2). A drop interval containing
+no positive integer cannot occur for such a block.
+
+Substitute H asymp Q/T and X asymp aQ^2/T^6 into (9.1). Some term contributes
+at least a fixed positive fraction of the right side; treat them separately.
+Arbitrarily small powers a^eta below may be renamed between uses.
+
+* From X^5:
+  T^31 << a^(5+eta) Q^10 and hence
+  T^51 << a^(15+11eta). The exponent is 5/17.
+
+* From X^4 H^(1/2):
+  T^51 << a^(8+2eta) Q^17 and hence
+  T^85 << a^(25+19eta). The exponent is also 5/17.
+
+* From X^(44/9) H^(1/3):
+  \[
+  T^{276}\ll_\eta a^{44+9\eta}Q^{91},
+  \qquad
+  \boxed{T^{458}\ll_\eta a^{135+100\eta}.}
+  \]
+  This yields 135/458.
+
+The complementary scale K<C_1X implies
+
+\[
+T^{11}\ll a^2Q^3,\qquad T^{17}\ll_\eta a^{5+3\eta},
+\]
+
+again with exponent 5/17. The strict gap is
+
+\[
+135/458-5/17=5/7786>0.
+\]
+
+Choose eta sufficiently small relative to a prescribed epsilon and sum the
+O(log a) quotient blocks. The extra logarithm is absorbed into a^epsilon.
+All bounded T and bounded a cases are absorbed into the constant. This gives
+
+\[
+\boxed{P(a,b)\ll_\varepsilon a^{135/458+\varepsilon}.}
+\]
+
+At the final balance,
+
+\[
+T\sim a^{135/458},\quad Q\sim a^{188/458},\quad
+H\sim a^{53/458},\quad X\sim a^{24/458},\quad
+K\sim a^{29/458}.
+\]
+
+In particular K/X grows like a^(5/458), as required. The leading local term
+has exponent
+
+\[
+(44/9)(24/458)+(1/3)(53/458)=135/458.
+\]
+
+## 10. Verification and limits of the verification
+
+The accompanying scripts were executed in exact rational arithmetic and
+symbolic polynomial arithmetic. They check:
+
+1. Rational reconstruction from the eight orthogonality equations on 200
+   actual orbit starts, all with at least ten positive states. They recover
+   both q and b, verify positive variance and mu(1)=mu(x)=1, reproduce four
+   remainder steps, and verify the quartic remainder relation.
+2. Three generic parabola-parametrization identities.
+3. A synthetic rational parabola lying on the first quadratic, with distinct
+   leading nodes. Its raw determinant has degree twelve and leading
+   coefficient twelve. Its reconstructed quotient is a genuine rational
+   function, of numerator degree eight and denominator degree five, so the
+   monic normalization cannot be an identity for a fixed nonzero dividend.
+   This is an algebraic test, not a claimed family of actual orbit states.
+4. The proper-rational degree calculation (degrees twelve and nine) on an
+   explicit polynomial family, plus exact exponent arithmetic.
+5. Four generic determinant identities for the exceptional minor relations,
+   and the generic completion-of-squares identity for conics.
+6. Eighty coprime proper rational functions, at 161 integer parameters each,
+   testing the resultant divisibility condition at all their integral
+   values (77 such values in this fixed test set).
+
+The determinant identities and parametrization identities are symbolic
+checks. The orbit and rational-function samples are regression tests.
+Neither kind of computation proves the uniform counting estimates on its
+own. Sections 2--9 give the arguments; Section 1 states the exact dependencies
+on the preceding proof candidate. No independent-agent proof audits or formal
+verification were performed for this refinement.
+
+The remaining largest contribution comes from degree-three curve components.
+The argument does not assert that those components attain the cubic-root
+count, nor that the parabolic exception conditions are sufficient for an
+actual component to exist.
+
+## References and bundled dependency
+
+* `pierce_18_61_proof_candidate.md`, the preceding uploaded research note.
+  A copy is included under `dependencies/` in the check package.
+* R. Cluckers, P. Debes, Y. I. Hendel, K. H. Nguyen, F. Vermeulen,
+  *Improvements on dimension growth results and effective Hilbert's
+  irreducibility theorem*, Forum of Mathematics, Sigma 13 (2025), e153,
+  Corollary 2.2. DOI: 10.1017/fms.2025.10096.
+  Primary full text:
+  https://www.cambridge.org/core/journals/forum-of-mathematics-sigma/article/improvements-on-dimension-growth-results-and-effective-hilberts-irreducibility-theorem/A7BCAEBF00B8B165D6DDB3FFB9B40B97

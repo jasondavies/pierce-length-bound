@@ -1,0 +1,14 @@
+{
+  "repository": "https://github.com/AlexKontorovich/PrimeNumberTheoremAnd",
+  "revision": "c39a751132c88b6e8080b74c74023fd95b3d8be0",
+  "source": "PrimeNumberTheoremAnd/IEANTN/Mertens.lean",
+  "license": "Apache-2.0",
+  "upstream_sha256": "6f71a221604463ba1479872012cfb12b885a9e6a8f8abb87a08b4c12c4dca60b",
+  "adapted_sha256": "9fefe07926dbc01573efa37829019d5ef9ba4852cbace08bf0f38b3187849dc6",
+  "changes": [
+    "Extract only first Mertens theorem and its prerequisites.",
+    "Remove blueprint metadata, Euler-Maclaurin identity, and unused integral estimate for the prime-power error constant.",
+    "Use explicit bounded constant log(4)+6+E1.",
+    "Change namespace, module visibility, and imports to match Lean/Mathlib 4.35.0."
+  ]
+}
