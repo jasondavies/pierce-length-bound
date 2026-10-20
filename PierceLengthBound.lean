@@ -119,3 +119,6 @@ public import PierceLengthBound.JointLiftBound
 public import PierceLengthBound.PoweredJointGraphLowerDegree
 public import PierceLengthBound.PoweredJointPointCount
 public import PierceLengthBound.JointLiftMain
+public import PierceLengthBound.PivotExterior
+public import PierceLengthBound.PivotCurvature
+public import PierceLengthBound.LinearJointGraph
