@@ -10,7 +10,7 @@ public import PierceLengthBound
 /-!
 # Proved statements for Palomar
 
-The public import exposes the eleven theorems selected in `comparator.json`,
+The public import exposes the thirteen theorems selected in `comparator.json`,
 together with their definitions and proofs. `Challenge.lean` states these declarations
 independently using only Mathlib; the two modules must never import each other.
 -/

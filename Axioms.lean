@@ -17,6 +17,14 @@ axioms `propext`, `Classical.choice` and `Quot.sound`.
 
 open PierceLengthBound
 
+/-- info: 'PierceLengthBound.P_le_lattice_optimal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms P_le_lattice_optimal
+
+/-- info: 'PierceLengthBound.P_le_153_520' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms P_le_153_520
+
 /-- info: 'PierceLengthBound.P_le_joint_optimal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms P_le_joint_optimal

@@ -34,8 +34,8 @@
 For integers $a>b>0$, let $P(a,b)$ count the positive terms of the iteration
 $x\mapsto a\bmod x$, starting at $b$. We prove
 \[
- P(a,b)\ll_\varepsilon a^{\alpha_*+\varepsilon},\qquad
- \alpha_*=(1310-\sqrt{655})/4365=0.2942513246\ldots.
+ P(a,b)\ll_\varepsilon a^{\gamma_*+\varepsilon},\qquad
+ \gamma_*=\frac{471}{1559}-\frac{6\sqrt{105}}{7795}=0.2942294157\ldots.
 \]
 Each tail of the orbit carries a finite positive measure whose Hankel
 determinants are positive integers. We group short segments of the orbit by
@@ -46,7 +46,10 @@ integer determinants as coordinates raises the degree of these curves while
 keeping the coordinates small. A curve-counting theorem whose constants do not
 depend on the coefficients of the curve then bounds the number of segments
 in each group. Raising the added coordinates to suitable powers and balancing
-their sizes gives the exponent $\alpha_*$.
+their sizes gives the exponent $\alpha_*=(1310-\sqrt{655})/4365$. Finally, the
+drop and gap rows of a segment lie in a rank-three lattice determined by its group.
+Coordinates in a reduced basis shrink the curvature coordinates by the square of
+its shortest length, and few groups have a short vector; this gives $\gamma_*$.
 We also prove the elementary bound $P(a,b)\ll_\varepsilon a^{3/10+\varepsilon}$, a bound for
 orbits with few rises in their quotient increments, and positivity and integrality of
 the Hankel determinants.
@@ -85,7 +88,21 @@ Shallit's talk pages~\cite{ShallitTalks} report a bound $n^{3/10}$, described as
 exponent up to $\varepsilon$, and we make no claim about how the two arguments are related.
 
 Our strongest bound comes from the joint-invariant curve embedding of
-Section~\ref{sec:joint}.
+Section~\ref{sec:joint}, refined by the exterior lattice coordinates of
+Section~\ref{sec:lattice}.
+\begin{theorem}\label{thm:lattice}
+For every $\varepsilon>0$ there is $C_\varepsilon>0$, independent of $a,b$, such that
+\[
+ P(a,b)\le C_\varepsilon a^{\gamma_*+\varepsilon}\qquad(0<b<a),\qquad
+ \gamma_*=\frac{471}{1559}-\frac{6\sqrt{105}}{7795}.
+\]
+\end{theorem}
+
+Here $\gamma_*=0.2942294\ldots$ is the smaller root of $7795x^2-4710x+711$. The pair of
+powers $(m,n)=(3,2)$ in Corollary~\ref{cor:latticeexponent} gives the rational exponent
+$153/520=0.2942307\ldots$, which the formalization states separately. The joint-invariant
+argument alone gives the following slightly weaker bound.
+
 \begin{theorem}\label{thm:joint}
 For every $\varepsilon>0$ there is $C_\varepsilon>0$, independent of $a,b$, such that
 \[
@@ -99,7 +116,7 @@ pair of positive integers $(m,n)$, an explicit rational exponent
 (Corollary~\ref{cor:jointexponent}); the pairs $(1,1)$ and $(50,51)$ give
 $128/435$ and $2201/7480$, which are slightly larger than $\alpha_*$. The
 formalization states these two instances separately, alongside
-Theorem~\ref{thm:joint}.
+Theorem~\ref{thm:joint}. All of them are superseded by Theorem~\ref{thm:lattice}.
 
 \subsection*{Positive integers along the orbit}
 Write $k_i=q_{i+1}-q_i$ for the quotient increments and $d_i=b_i-b_{i+1}$ for the drops.
@@ -165,6 +182,16 @@ a box of side $B$ by $B^{1/\delta+o(1)}$, uniformly in the coefficients of the
 curve. Applied to the enlarged curves, it bounds the number of starts per
 pattern. Optimizing over the ratio $n/m$ gives $\alpha_*$
 (Section~\ref{sec:joint}).
+
+The box of side $\max(3H,S^m,Y^n)$ is the same for every pattern. But the drop and
+gap rows of a start lie in a rank-three lattice $\Lambda_p$ determined by its pattern
+$p$. In a reduced basis of $\Lambda_p$ the nodes have coordinates of size
+$H/\lambda(p)$, where $\lambda(p)$ is the length of a shortest vector, and the
+curvature coordinates, being $2\times2$ minors, have coordinates of size
+$S/\lambda(p)^2$. These are constant invertible linear changes of the old
+coordinates, so the graph degree is unchanged. Few patterns have a short vector:
+$\sum_p\lambda(p)^{-t}\ll a^{o(1)}X^{5-t/3}$ for $0\le t\le1$. Optimizing again over
+$n/m$ gives $\gamma_*$ (Section~\ref{sec:lattice}).
 
 The pattern count alone limits this method to exponents above $5/17=0.2941176\ldots$
 (Section~\ref{sec:limits}).
@@ -239,7 +266,9 @@ $45/152=0.29605\ldots$ & lattices of pivot gaps; few minor vectors with short ve
 \end{center}
 All four are superseded by Theorem~\ref{thm:joint} and are not proved here. Their proofs are
 formalized in the accompanying repository. Theorem~\ref{thm:joint} returns to the minor-vector
-count of the third row and improves the count within each pattern instead.
+count of the third row and improves the count within each pattern instead, and
+Theorem~\ref{thm:lattice} reuses the lattices and the short-vector count of the fourth row
+(Section~\ref{sec:lattice}).
 The repository also proves $P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$, with the short-sum theorem of
 Nair and Tenenbaum~\cite{NT} and the mean-value bound of de la Bret\`eche and
 Tenenbaum~\cite{BT} for the Erd\H{o}s--Hooley function taken as explicit hypotheses. This bound
@@ -252,11 +281,12 @@ Section~\ref{sec:rises} proves the rise bound, which is independent of the rest.
 Section~\ref{sec:hankel} constructs the moment model and proves Theorem~\ref{thm:hankel}, and
 Section~\ref{sec:patterns} develops the patterns and minor vectors. Section~\ref{sec:joint}
 proves Theorem~\ref{thm:joint}, with routine estimates for conics and graph degrees deferred to
-Appendices~\ref{app:conic} and~\ref{app:degree}. Section~\ref{sec:lean} describes the formal
+Appendices~\ref{app:conic} and~\ref{app:degree}, and Section~\ref{sec:lattice} refines it to
+Theorem~\ref{thm:lattice}. Section~\ref{sec:lean} describes the formal
 verification and Section~\ref{sec:limits} the limits of the method.
 
 \subsection*{Formal verification}
-Every step of the proofs of Theorems~\ref{thm:joint}, \ref{thm:main}, \ref{thm:rises}
+Every step of the proofs of Theorems~\ref{thm:lattice}, \ref{thm:joint}, \ref{thm:main}, \ref{thm:rises}
 and~\ref{thm:hankel} has been formalized in Lean~4~\cite{Lean} using Mathlib~\cite{Mathlib},
 without additional hypotheses.
 Section~\ref{sec:lean} describes the formalization. The constants in this paper are the
@@ -2038,20 +2068,341 @@ balance, at $\mathcal B\approx a^{0.117m}$. This gives the extra factor
 $a^{0.117/(10r_*+7)}\approx a^{0.0068}$.
 \end{remark}
 
+\section{Exterior lattice coordinates}\label{sec:lattice}
+
+We now prove Theorem~\ref{thm:lattice}. Proposition~\ref{prop:jointwindow} uses the same
+box for every pattern. But the drop and gap rows of a good start lie in a rank-three lattice
+determined by its pattern. In a reduced basis of that lattice the nodes have coordinates of
+size $H/\lambda$, where $\lambda$ is the length of a shortest lattice vector, and the
+curvature coordinates, being $2\times2$ minors, have coordinates of size $S/\lambda^2$. Few
+patterns have a short vector, so on average this shrinks the box. The degree of the graph is
+unchanged, because the new coordinates are constant invertible linear changes of the old ones.
+We keep the notation and the conventions on constants of Section~\ref{sec:joint}.
+
+\subsection{The lattice of a pattern}
+Let $p\ne0$ be the minor vector of a $3\times5$ integer matrix $\mathcal M$, with pivot $\pi$,
+$m=p_\pi$, pivot columns $c_1<c_2<c_3$, other columns $c_4<c_5$, and $u$, $v$ as in
+Proposition~\ref{prop:minorvec}. Let $\Lambda_p\subseteq\mathbb Z^3$ be the subgroup of $x$ with
+$m\mid u\cdot x$ and $m\mid v\cdot x$. It contains $m\mathbb Z^3$. Write $|x|$ for the Euclidean
+norm and $|x|_\infty$ for the sup norm, and let $\lambda(p)$ be the least sup norm of a nonzero
+vector of $\Lambda_p$. Then $|x|\ge\lambda(p)$ for every nonzero $x\in\Lambda_p$.
+
+\begin{lemma}[Lifting]\label{lem:lift}
+Let $L_c\in\mathbb Z^3$ be $me_a$ if $c=c_a$ is a pivot column, $u$ if $c=c_4$ and $v$ if
+$c=c_5$. For every row $x$ of $\mathcal M$ and every column $c$,
+$m\,x_c=L_c\cdot(x_{c_1},x_{c_2},x_{c_3})$. Moreover $\det(L_0,L_1,L_2)=m^2p_{012}$, and
+$|L_c|_\infty\le|m|$.
+\end{lemma}
+
+\begin{proof}
+The rows $L_c$ are the rows of $\mathcal M^{\mathsf T}\operatorname{adj}(\mathcal M_\pi^{\mathsf
+T})$, where $\mathcal M_\pi$ is the pivot $3\times3$ block. This is Cramer's rule. Both
+identities are polynomial identities in the fifteen entries, checked symbolically for each of
+the ten pivots. The bound holds because the pivot is maximal.
+\end{proof}
+
+So the pivot parts $x'=(x_{c_1},x_{c_2},x_{c_3})$ of the rows of $\mathcal M$ lie in
+$\Lambda_p$.
+
+\begin{lemma}[Index]\label{lem:index}
+If $t$ is a nonnegative integer and $(t+1)^3>|m|$, then $\lambda(p)\le t$.
+\end{lemma}
+
+\begin{proof}
+Write $g=\gcd(|m|,u)$, $n=|m|/g$ and $u=gu_0$. The proof of Proposition~\ref{prop:minorvec}
+gives $v=\mu u_0+nw$ with $\mu\in\mathbb Z$ and $w\in\mathbb Z^3$. Put
+$\psi(x)=\bigl(u_0\cdot x\bmod n,\ (\mu\lfloor u_0\cdot x/n\rfloor+w\cdot x)\bmod g\bigr)$,
+which takes at most $ng=|m|$ values. So there are points $x\ne x'$ of $[0,t]^3$ with
+$\psi(x)=\psi(x')$. Then $u_0\cdot(x-x')=n(f-f')$, where $f,f'$ are the two floors, so
+$u\cdot(x-x')=\pm m(f-f')$, and $v\cdot(x-x')=n\bigl(\mu(f-f')+w\cdot(x-x')\bigr)$ with the
+bracket divisible by $g$. Hence $x-x'\in\Lambda_p$.
+\end{proof}
+
+\begin{lemma}[Reduction]\label{lem:reduce}
+Let $\Lambda\subseteq\mathbb Z^3$ be a subgroup containing $m\mathbb Z^3$, $m\ge1$. There is a
+basis $b_1,b_2,b_3$ of $\Lambda$ with $\Delta=\det(b_1,b_2,b_3)$, $0<|\Delta|\le m^3$ and
+\[
+27\,|b_1|^2|b_2|^2|b_3|^2\le64\,\Delta^2 .
+\]
+Hence every $x\in\Lambda$ is $\sum\xi_ib_i$ with $\xi\in\mathbb Z^3$ and
+$27|b_i|^2\xi_i^2\le64|x|^2$.
+\end{lemma}
+
+\begin{proof}
+Let $I$ be the least nonzero $|\det|$ of a triple in $\Lambda$; the triple
+$(me_1,me_2,me_3)$ gives $I\le m^3$. A triple with $|\det|=I$ is a basis. Otherwise some
+$x\in\Lambda$ has a Cramer coordinate that is not an integer, say the first,
+$\det(x,b_2,b_3)/\Delta$, and subtracting the integer part of that coordinate times $b_1$ from
+$x$ gives a triple with smaller nonzero determinant. Among such bases
+minimize $d_1=|b_1|^2$, and then the Gram determinant $d_2=d_1|b_2|^2-\langle b_1,b_2\rangle^2$.
+Put $d_3=\Delta^2$.
+
+Choose $n$ with $|2(\langle b_1,b_2\rangle+nd_1)|\le d_1$. Then $(b_2+nb_1,b_1,b_3)$ is a basis, so
+$d_1\le|b_2+nb_1|^2$, and $d_1|b_2+nb_1|^2=d_2+(\langle b_1,b_2\rangle+nd_1)^2$. Hence
+$3d_1^2\le4d_2$.
+
+Let $B(y,z)=d_1\langle y,z\rangle-\langle b_1,y\rangle\langle b_1,z\rangle$, so that
+$B(b_2,b_2)=d_2$, and Sylvester's identity gives $B(b_2,b_2)B(b_3,b_3)-B(b_2,b_3)^2=d_1d_3$. Choose
+$n_2$ with $|2(B(b_2,b_3)+n_2d_2)|\le d_2$ and put $c=b_3+n_2b_2$. Then $(b_1,c,b_2)$ is a basis
+with first vector $b_1$, so $d_2\le d_1|c|^2-\langle b_1,c\rangle^2=B(c,c)$, while
+$d_2B(c,c)=(B(b_2,b_3)+n_2d_2)^2+d_1d_3$. Hence $3d_2^2\le4d_1d_3$.
+
+Finally choose $n_1$ with $|2(\langle b_1,c\rangle+n_1d_1)|\le d_1$, and use the basis
+$b_1$, $b_2'=b_2+nb_1$, $b_3'=c+n_1b_1$. The identities above give
+$3d_1|b_2'|^2\le4d_2$ and $4d_1d_2|b_3'|^2\le d_2^2+4d_1d_3+d_1^2d_2$. With the two inequalities
+this gives $9d_2|b_3'|^2\le16d_3$, and the product of the three bounds is the claim. For the
+coordinates, $\xi_1\Delta=\det(x,b_2,b_3)$, and Hadamard's inequality gives $\det(x,b_2,b_3)^2\le
+|x|^2|b_2|^2|b_3|^2$.
+\end{proof}
+
+\subsection{Few patterns have a short vector}
+
+\begin{lemma}\label{lem:dotcount}
+For $n\ge1$ and $x\in\mathbb Z^3$, at most $27n^2\gcd(n,x)$ vectors $w\in[-n,n]^3$ have
+$n\mid w\cdot x$. Here $\gcd(n,x)=\gcd(n,x_1,x_2,x_3)$.
+\end{lemma}
+
+\begin{proof}
+Reducing modulo $n$ loses a factor at most $27$. Let $K$ be the set of solutions in
+$[0,n)^3$, $e=\gcd(n,x)$ and $c\cdot x\equiv e\pmod n$ by B\'ezout. The map
+$(w,j)\mapsto(w+jc)\bmod n$ is injective on $K\times[0,n/e)$: equal images give
+$n\mid(j-j')e$, so $j=j'$, and then $w=w'$. Hence $|K|\,n/e\le n^3$.
+\end{proof}
+
+\begin{proposition}[Short vectors]\label{prop:short}
+Let $\mathcal S$ be a set of nonzero minor vectors with coordinates in $[-Z,Z]$, and let
+$\tau(m)\le\tau_0$ for $m\le Z$. Then for every $R\ge1$,
+\[
+\#\{p\in\mathcal S:\lambda(p)\le R\}\le393660\,R^3Z^4\tau_0^2 .
+\]
+\end{proposition}
+
+\begin{proof}
+If $\lambda(p)\le R$, some nonzero $x\in[-R,R]^3$ has $m\mid u\cdot x$. For fixed $x$, the
+encoding of Proposition~\ref{prop:minorvec} gives at most $20\sum_m N(m,x)$ such $p$, where
+$N(m,x)$ counts pairs $(u,v)$ with $m\mid u\times v$ and $m\mid u\cdot x$. For each $u$ there
+are at most $27m\gcd(m,u)^2$ vectors $v$. Grouping the $u$ by $g=\gcd(m,u)$ and writing
+$u=gu'$ with $(m/g)\mid u'\cdot x$, Lemma~\ref{lem:dotcount} gives
+$\sum_ug^2\le27m^2\tau(m)\gcd(m,x)$, so $N(m,x)\le729m^3\tau(m)\gcd(m,x)$. Finally
+$\sum_{0<|x|_\infty\le R}\gcd(m,x)\le27R^3\tau(m)$. A divisor $h>R$ of $m$ divides no nonzero
+$x$ in the box, and for $h\le R$ the multiples of $h$ number at most $(2R/h+1)^3$, with
+$h(2R/h+1)\le3R$.
+\end{proof}
+
+\begin{lemma}[Fractional weights]\label{lem:weights}
+Let $\mathcal S$ be a set of nonzero minor vectors with coordinates in $[-X,X]$, $X\ge1$, and
+let $1\le\tau_0$ with $\tau(m)\le\tau_0$ for $m\le X$. Then for $0\le t\le1$,
+\[
+ \sum_{p\in\mathcal S}\lambda(p)^{-t}\le3163861\,\tau_0^2X^{5-t/3}.
+\]
+\end{lemma}
+
+\begin{proof}
+Choose an integer $L$ with $X\le L^3\le8X$. By Lemma~\ref{lem:index}, $1\le\lambda(p)\le L$ for
+$p\in\mathcal S$. Writing $1/\lambda=1/L+\sum_{\lambda\le j<L}1/(j(j+1))$ and using
+Proposition~\ref{prop:short} with $Z=X$,
+\[
+ L\sum_{p\in\mathcal S}\frac1{\lambda(p)}
+ \le\#\mathcal S+L\sum_{j<L}\frac{393660\,j^3X^4\tau_0^2}{j(j+1)}
+ \le\#\mathcal S+393660\,X^4\tau_0^2L^3 .
+\]
+The proof of Proposition~\ref{prop:minorvec} gives $\#\mathcal S\le14581\,\tau_0X^5$, and
+$L^3\le8X$, so the right side is at most $3163861\,\tau_0^2X^5$. Since $L\ge X^{1/3}$, the sum
+of $1/\lambda(p)$ is at most $3163861\,\tau_0^2X^{5-1/3}$. The function $x\mapsto x^t$ is
+concave, so by Jensen's inequality
+$\sum\lambda^{-t}\le(\#\mathcal S)^{1-t}\bigl(\sum\lambda^{-1}\bigr)^t$, which is the claim.
+\end{proof}
+
+\subsection{Exterior coordinates}
+
+\begin{lemma}[Exterior coordinates]\label{lem:exterior}
+Let $b_1,b_2,b_3$ be a basis of $\Lambda\subseteq\mathbb Z^3$ as in Lemma~\ref{lem:reduce}, with
+$|b_i|\ge\lambda>0$. Let $x,x'\in\Lambda$ have coordinates $\xi,\xi'\in\mathbb Z^3$, and put
+$w=x\times x'$ and $c=\xi\times\xi'\in\mathbb Z^3$. Then
+\[
+ w=c_1\,b_2\times b_3+c_2\,b_3\times b_1+c_3\,b_1\times b_2,\qquad
+ b_i\cdot w=\Delta c_i,\qquad 27\lambda^4c_i^2\le64|w|^2 .
+\]
+\end{lemma}
+
+\begin{proof}
+The first identity follows by expanding $(\sum\xi_ib_i)\times(\sum\xi'_ib_i)$ bilinearly, and
+taking the dot product with $b_i$ gives the second. By Cauchy--Schwarz and
+Lemma~\ref{lem:reduce},
+\[
+ 27|b_1|^2|b_2|^2|b_3|^2c_i^2\le64\Delta^2c_i^2=64(b_i\cdot w)^2\le64|b_i|^2|w|^2 .
+\]
+Cancelling $|b_i|^2$ and using $|b_j|\ge\lambda$ for the other two vectors gives the claim.
+\end{proof}
+
+The lemma replaces a bound $|\xi|,|\xi'|\ll|x|/\lambda$, which would give $|c|\ll|x||x'|/\lambda^2$,
+by $|c|\ll|x\times x'|/\lambda^2$. This matters because the drop row is large while the
+curvature minors are small.
+
+\begin{lemma}[All curvature minors]\label{lem:allcurv}
+At a good start, all ten minors $D_{jl}=d_jk_l-d_lk_j$ with $0\le j<l\le4$ satisfy
+\[
+ |D_{jl}|\le S':=\left\lfloor\frac{9472A^3H^3}{a^2}\right\rfloor .
+\]
+\end{lemma}
+
+\begin{proof}
+Argue as in Lemma~\ref{lem:jointheights}, now for $j\le5$. The gaps $k_0,\dots,k_5$ are at most
+$H$, so $s_j\le5H$ and $\mu_{i+j}((s_j+x)^2)=s_j^2+2s_j+k_j+1\le37H^2$. This gives
+$d_j/a=k_j/q^2+\delta_j$ with $|\delta_j|\le74H^2/q^3$ for $j\le4$, hence $|D_{jl}|q^3\le148aH^3$,
+and $q\ge a/(4A)$ gives the claim.
+\end{proof}
+
+Now fix a pattern $p$ that occurs at a good start, and let $b_1,b_2,b_3$ be a basis of
+$\Lambda_p$ as in Lemma~\ref{lem:reduce}, with $|m|$ in place of $m$. Write $\lambda=\lambda(p)$.
+At a good start $i$ with pattern $p$, the pivot parts $d'$ and $k'$ of the drop and gap rows of
+$\widehat{\mathcal M}_i$ lie in $\Lambda_p$, with coordinates $\xi$ and $\eta$. Put
+\[
+ c=\xi\times\eta,\qquad w=d'\times k'.
+\]
+The entries of $w$ are, up to sign, the minors $D_{c_ac_b}$ of the pivot columns.
+
+\begin{lemma}[The new coordinates]\label{lem:latticecoords}
+There are matrices $B\in\mathrm{GL}_3(\mathbb Q)$ and $G\in\mathrm{GL}_3(\mathbb Q)$, depending
+only on $p$, such that at every good start with pattern $p$
+\[
+ (s_1,s_2,s_3)=B\eta,\qquad c=G\,W,\qquad
+ |\eta|_\infty\le\frac{3H}{\lambda},\qquad |c|_\infty\le\frac{8S'}{3\lambda^2}.
+\]
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:lift}, $m(k_0,k_1,k_2)=F k'$, where $F$ has rows $L_0,L_1,L_2$ and
+$\det F=m^2p_{012}\ne0$, since $p_{012}=L(i)\ge1$. With $k'=(b_1\,b_2\,b_3)\eta$ and the
+cumulative sums $s_j=k_0+\dots+k_{j-1}$, this gives $B$. Since $|k'|^2\le3H^2$ and $|b_i|\ge\lambda$,
+Lemma~\ref{lem:reduce} gives $|\eta_i|\le3H/\lambda$.
+
+For the curvature, the Binet--Cauchy identity
+$(\ell\cdot x)(\ell'\cdot x')-(\ell'\cdot x)(\ell\cdot x')=(\ell\times\ell')\cdot(x\times x')$
+applied to the rows of $F$ gives $m^2W=\operatorname{Cof}(F)\,w$, where $\operatorname{Cof}(F)$ has
+rows $L_1\times L_2$, $L_2\times L_0$, $L_0\times L_1$ and determinant $(\det F)^2\ne0$.
+Lemma~\ref{lem:exterior} gives $\Delta c=(b_1\,b_2\,b_3)^{\mathsf T}w$. Together,
+$c=m^2\Delta^{-1}(b_1\,b_2\,b_3)^{\mathsf T}\operatorname{Cof}(F)^{-1}W$, which defines $G$.
+Finally $|w|^2\le3S'^2$ by Lemma~\ref{lem:allcurv}, and Lemma~\ref{lem:exterior} gives
+$3\lambda^2|c_i|\le8S'$.
+\end{proof}
+
+\subsection{The lattice graph}
+On a retained component $C$ of degree $d\ge4$ of a pattern $p$, let $\Gamma'_{m,n}$ be the
+image of the graph of
+\[
+ \bigl(s_1,s_2,s_3,(GW)_0^m,(GW)_1^m,(GW)_2^m,J^n\bigr)
+\]
+under the linear map that replaces the nodes $s$ by $\eta=B^{-1}s$.
+
+\begin{lemma}[Degree of the lattice graph]\label{lem:latticedegree}
+The degree $\delta'$ of $\Gamma'_{m,n}$ satisfies
+$\delta_{\min}\le\delta'\le\bigl(247(m+n)+1\bigr)d$.
+\end{lemma}
+
+\begin{proof}
+An invertible linear change of the node coordinates preserves the affine Hilbert function, so we
+may keep the nodes $s$. The proof of Lemma~\ref{lem:jointpowereddegree} uses the curvature
+coordinates only through the pole envelope $\mathcal F$, through the points at which some
+coordinate attains it, and through the degrees of their numerators. For a constant invertible
+matrix $G$ and every point $P$,
+\[
+ \min_j\operatorname{ord}_P(GW)_j=\min_j\operatorname{ord}_P W_j :
+\]
+each $(GW)_j$ is a constant combination of the $W_l$, and each $W_l$ is a constant combination
+of the $(GW)_j$. So the pole envelope of $GW$ is $\mathcal F$, and it is attained by some
+$(GW)_j$ at every point of its support. The numerators of $GW$ are constant combinations of
+those of $W$, with the same degree bounds. The proof of Lemma~\ref{lem:jointpowereddegree}
+therefore applies unchanged.
+\end{proof}
+
+\subsection{The window bound and the optimized exponent}\label{sec:latticecount}
+
+\begin{proposition}[Lattice window bound]\label{prop:latticewindow}
+Fix positive integers $m,n$ and $\eta>0$, and put $h=\delta_{\min}=10n+7m$. For a window run
+in $[A,2A)$ with $T\ge36$ satisfying~\eqref{eq:jointscale},
+\[
+ T\ll_{m,n,\eta}a^\eta\left(X^5+X^4H^{1/2}+X^{5-1/(3h)}H^{1/h}
+ +X^{5-2m/(3h)}S'^{\,m/h}+X^5Y^{n/h}\right).
+\]
+\end{proposition}
+
+\begin{proof}
+The proof of Proposition~\ref{prop:jointwindow} applies, except for the remaining components of
+the nonexceptional patterns. For such a component of a pattern $p$, the good starts give
+integer points $(\eta,c^m,J^n)$ of $\Gamma'_{m,n}$, and distinct node triples give distinct
+points because $\eta$ determines $s$. By Lemma~\ref{lem:latticecoords} they lie in the box of side
+\[
+ \mathcal B_p=\max\Bigl(1,\frac{3H}{\lambda(p)},\Bigl(\frac{8S'}{3\lambda(p)^2}\Bigr)^m,Y^n\Bigr).
+\]
+By Lemma~\ref{lem:latticedegree} and~\eqref{eq:jointexternal}, there are
+$O_{m,n,\eta}(a^\eta\mathcal B_p^{1/h})$ of them, and
+\[
+ \mathcal B_p^{1/h}\le1+3H^{1/h}\lambda(p)^{-1/h}+8S'^{\,m/h}\lambda(p)^{-2m/h}+Y^{n/h}.
+\]
+Sum over the $O_\eta(a^\eta X^5)$ patterns. Since $h\ge2m$, both $1/h$ and $2m/h$ lie in
+$[0,1]$, and Lemma~\ref{lem:weights}, with $\tau_0=a^{o(1)}$, gives
+$\sum_p\lambda(p)^{-1/h}\ll a^\eta X^{5-1/(3h)}$ and
+$\sum_p\lambda(p)^{-2m/h}\ll a^\eta X^{5-2m/(3h)}$.
+\end{proof}
+
+\begin{corollary}\label{cor:latticeexponent}
+For fixed positive integers $m,n$, with $h=10n+7m$, and every $\varepsilon>0$,
+\[
+ P(a,b)\ll_{m,n,\varepsilon}a^{E'(m,n)+\varepsilon},\qquad
+ E'(m,n)=\max\left(\frac5{17},\ \frac{45h}{153h-1},\ \frac{45h-3m}{153h-11m},\
+ \frac{15h+6n}{51h+20n}\right).
+\]
+In particular $E'(3,2)=153/520$.
+\end{corollary}
+
+\begin{proof}
+Argue as in the proof of Corollary~\ref{cor:jointexponent}, with $S'\ll a/T^3$ in place of $S$
+in~\eqref{eq:jointscales}. The first two terms and the windows in which~\eqref{eq:jointscale}
+fails give the exponent $5/17$. For the third term, $T^{3h}\ll a^{O(\eta)}X^{15h-1}H^3$, and
+\eqref{eq:jointscales} gives $T^{153h-1}\ll a^{45h+O(\eta)}$. For the fourth,
+$T^{3h}\ll a^{O(\eta)}X^{15h-2m}S'^{\,3m}$ gives $T^{153h-11m}\ll a^{45h-3m+O(\eta)}$. For the
+fifth, $T^h\ll a^{O(\eta)}X^{5h}Y^n$ gives $T^{51h+20n}\ll a^{15h+6n+O(\eta)}$. For
+$(m,n)=(3,2)$, $h=41$ and the last three fractions are $1845/6272$, $153/520$ and $627/2131$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:lattice}]
+Set $r=n/m$. The last two fractions in $E'(m,n)$ become
+\[
+ E'_S(r)=\frac{450r+312}{1530r+1060},\qquad
+ E_Y(r)=\frac{156r+105}{530r+357},
+\]
+where $E_Y$ is the same function as in the proof of Theorem~\ref{thm:joint}. The first decreases
+and the second increases on $r>0$. Their crossing satisfies $15r^2=7$, so $r_*=\sqrt{105}/15$, and
+their common value is $\gamma_*=471/1559-6\sqrt{105}/7795$. The fraction $45h/(153h-1)$ decreases
+in $h$, and for $h\ge102$ it is at most $4590/15605<\gamma_*$; also $5/17<\gamma_*$. Choose a
+positive rational $r$ close to $r_*$ with $\max(E'_S(r),E_Y(r))<\gamma_*+\varepsilon/2$, write
+$r=n_0/m_0$, and take $(m,n)=(6m_0,6n_0)$, so that $h\ge102$. Then $E'(m,n)<\gamma_*+\varepsilon/2$,
+and Corollary~\ref{cor:latticeexponent} with loss $\varepsilon/2$ gives the theorem.
+\end{proof}
+
+\begin{remark}
+At the critical point the typical pattern has $\lambda(p)\approx X^{1/3}$, which shrinks the
+curvature box from $S$ to about $S/X^{2/3}$. The weighted count of Lemma~\ref{lem:weights}
+shows that this average saving is available uniformly: the patterns with an unusually short
+vector are few enough to pay for their larger boxes.
+\end{remark}
+
 \section{The Lean formalization}\label{sec:lean}
 
 The accompanying Lean~4 project uses toolchain \lean{v4.35.0} and Mathlib
 \lean{v4.35.0}. It proves every result of this paper, including the
-curve-counting input to Theorem~\ref{thm:joint}, without additional hypotheses.
+curve-counting input to Theorems~\ref{thm:lattice} and~\ref{thm:joint}, without additional
+hypotheses.
 It also proves the intermediate bounds listed in Section~\ref{sec:intro}; of these, only
 the log-log refinement takes hypotheses, namely two published analytic estimates.
 
 The strongest bound has the following statement:
 \begin{quote}\ttfamily\small
-theorem P\_le\_joint\_optimal :\\
+theorem P\_le\_lattice\_optimal :\\
 \hspace*{2em}$\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$,\\
 \hspace*{2em}0 < b $\to$ b < a $\to$ (P a b : $\mathbb R$) $\le$\\
-\hspace*{2em}C * (a : $\mathbb R$) \^{} (((1310 : $\mathbb R$) - Real.sqrt 655) / 4365 + $\varepsilon$)
+\hspace*{2em}C * (a : $\mathbb R$) \^{} ((471 : $\mathbb R$) / 1559 - 6 * Real.sqrt 105 / 7795 + $\varepsilon$)
 \end{quote}
 The order of the quantifiers makes the uniformity explicit: $C$ may depend
 on $\varepsilon$, but not on $a$ or $b$. Here \lean{P a b} is defined by
@@ -2070,6 +2421,8 @@ map from proof steps to modules.
 \toprule
 Result & Declaration & Module \\
 \midrule
+Theorem~\ref{thm:lattice}, $\gamma_*$ & \lean{P\_le\_lattice\_optimal} & \lean{LatticeJointMain}\\
+Theorem~\ref{thm:lattice}, $153/520$ & \lean{P\_le\_153\_520} & \lean{LatticeJointMain}\\
 Theorem~\ref{thm:joint}, $\alpha_*$ & \lean{P\_le\_joint\_optimal} & \lean{JointLiftMain}\\
 Theorem~\ref{thm:joint}, $2201/7480$ & \lean{P\_le\_2201\_7480} & \lean{JointLiftMain}\\
 Theorem~\ref{thm:joint}, $128/435$ & \lean{P\_le\_128\_435} & \lean{JointLiftMain}\\
@@ -2106,18 +2459,26 @@ counts, the graph-degree lower bounds, the powered pattern count and the window
 estimates; the repository README maps them to their modules. The transitive
 proof dependencies of the three public statements in \lean{JointLiftMain} are
 audited to exclude the weighted-lattice counting modules of the $45/152$ bound.
+The proof of Theorem~\ref{thm:lattice} is assembled in \lean{LatticeJointBound} and
+\lean{LatticeJointOptimization}: Lemma~\ref{lem:exterior} is \lean{wcoord\_spec} in
+\lean{PivotExterior}, Lemma~\ref{lem:latticecoords} is in \lean{PivotCurvature} and
+\lean{FixedDividendLatticeCoordinates}, Lemma~\ref{lem:latticedegree} is in
+\lean{LinearJointGraph}, and Lemma~\ref{lem:weights} is in \lean{LatticeJointWeights}.
+A second audit checks that its two public statements reach, among the weighted counts,
+exactly Proposition~\ref{prop:short} (\lean{short\_count}) and the reciprocal weight bound
+of Lemma~\ref{lem:weights}.
 The intermediate bound \lean{P\_le\_loglog} takes the propositions
 \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean} as hypotheses. They state the
 short-sum bound of~\cite{NT} for the Erd\H{o}s--Hooley function over intervals $(x,x+y]$ with
 $y\ge x^{1/4}$, and the mean-value bound of~\cite{BT}, including their existential constants and
 thresholds.
 
-The file \lean{Axioms.lean} audits the eleven public statements and their
+The file \lean{Axioms.lean} audits the thirteen public statements and their
 proof dependencies. The only logical axioms reported are \lean{propext},
 \lean{Classical.choice} and \lean{Quot.sound}, the standard axioms used by
 Mathlib. The proof library contains no \lean{sorry} and uses no
 \lean{native\_decide}. The separate Mathlib-only \lean{Challenge.lean}
-states the eleven results with deliberate theorem holes for comparison
+states the thirteen results with deliberate theorem holes for comparison
 with the proved \lean{Solution.lean}; neither module imports the other.
 Build instructions and the scope of the verification checks are recorded
 in the README.
@@ -2136,14 +2497,15 @@ visibility. The required Hadamard inequality is proved in
 
 \section{Limits of the method}\label{sec:limits}
 
-\emph{The threshold $5/17$.} In the proof of Corollary~\ref{cor:jointexponent}, three
+\emph{The threshold $5/17$.} In the proofs of Corollaries~\ref{cor:jointexponent}
+and~\ref{cor:latticeexponent}, three
 contributions give exactly the exponent $5/17$, up to the arbitrarily small loss: the
 pattern count $X^5$ (from components that are not retained and from conics), the
 exceptional patterns, and windows in which the line-exclusion
 condition~\eqref{eq:jointscale} fails. None of them involves the added coordinates $W$
 and $J$. So improving
-the coordinate embedding alone cannot go below $5/17=0.2941176\ldots$, which $\alpha_*$
-exceeds by about $1.3\cdot10^{-4}$. A stronger degree bound for the powered graphs may
+the coordinate embedding alone cannot go below $5/17=0.2941176\ldots$, which $\gamma_*$
+exceeds by about $1.1\cdot10^{-4}$. A stronger degree bound for the powered graphs may
 bring the exponent closer to $5/17$; going below it requires a sharper count of the
 patterns that actually occur along an orbit. No claim of optimality for the Pierce
 iteration is made.

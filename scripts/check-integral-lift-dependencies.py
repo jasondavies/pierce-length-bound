@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""After lake build, audit that the integral lift uses no weighted-count theorem.
+"""After lake build, audit the weighted-count dependencies of the main bounds.
+
+The integral lift and the joint-invariant bounds use no weighted-count theorem.
+The exterior-lattice bounds use exactly the short-vector count and the
+reciprocal weight bound, and none of the other weighted counts.
 
 Lean's module system hides imported theorem bodies by default. Import every
 project dependency with `import all` before traversing those bodies.
@@ -32,6 +36,7 @@ TARGETS = (
     "PierceLengthBound.PoweredJointGraphLowerDegree",
     "PierceLengthBound.PoweredJointPointCount",
     "PierceLengthBound.JointLiftMain",
+    "PierceLengthBound.LatticeJointMain",
 )
 IMPORT = re.compile(r"^(?:public )?import (?:all )?(\S+)", re.MULTILINE)
 
@@ -118,6 +123,40 @@ run_cmd do
     if let some value := ci.value? (allowOpaque := true) then
       pending := pending ++ value.getUsedConstants
   logInfo m!"Integral/joint-lift dependency audit passed ({seen.size} visited constants)."
+
+set_option maxHeartbeats 1000000 in
+run_cmd do
+  let env ← getEnv
+  let modules := env.allImportedModuleNames
+  let banned : Array Name := #[`PierceLengthBound.ConicWeights,
+    `PierceLengthBound.ParityWeights, `PierceLengthBound.ShortSum]
+  let bannedDeclarations : Array Name := #[`PierceLengthBound.lattice_fiber_count,
+    `PierceLengthBound.pattern_count_lattice, `PierceLengthBound.two_state_window_152]
+  let required : Array Name := #[`PierceLengthBound.short_count,
+    `PierceLengthBound.FixedDividend.reciprocal_sum_bound]
+  let mut pending := #[``PierceLengthBound.P_le_lattice_optimal,
+    ``PierceLengthBound.P_le_153_520]
+  let mut seen : Std.HashSet Name := {}
+  while !pending.isEmpty do
+    let name := pending.back!
+    pending := pending.pop
+    if seen.contains name then continue
+    seen := seen.insert name
+    if bannedDeclarations.contains name then
+      throwError "Unexpected weighted-count dependency: {name}"
+    let some idx := env.getModuleIdxFor? name | continue
+    let some mod := modules[idx.toNat]? | throwError "Missing module for {name}"
+    unless (`PierceLengthBound).isPrefixOf mod do continue
+    if banned.contains mod then
+      throwError "Unexpected weighted-count dependency: {name} in {mod}"
+    let some ci := env.find? name | throwError "Missing declaration {name}"
+    pending := pending ++ ci.type.getUsedConstants
+    if let some value := ci.value? (allowOpaque := true) then
+      pending := pending ++ value.getUsedConstants
+  for name in required do
+    unless seen.contains name do
+      throwError "Expected lattice dependency not reached: {name}"
+  logInfo m!"Exterior-lattice dependency audit passed ({seen.size} visited constants)."
 """
     with tempfile.TemporaryDirectory(prefix="pierce-lift-audit-") as directory:
         source = Path(directory) / "Audit.lean"

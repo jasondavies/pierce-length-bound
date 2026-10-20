@@ -12,15 +12,16 @@ public import Mathlib
 
 For natural numbers `0 < b < a`, repeatedly replace the positive remainder `x` by
 `a % x`, stopping at zero. `P a b` counts the positive terms, including `b`.
-The strongest result is `P(a,b) ≪_ε a^((1310 - sqrt 655)/4365 + ε)`.
-The rational joint-lift bounds and earlier exponents are also included.
+The strongest result is `P(a,b) ≪_ε a^(471/1559 - 6 sqrt 105/7795 + ε)`, from exterior
+lattice coordinates; its rational instance is `153/520`. The joint-lift bounds, including
+`(1310 - sqrt 655)/4365`, and earlier exponents are also included.
 The conjectured `O((log a)^2)` bound remains open.
 
 Two further results give a conditional logarithmic refinement and a bound in terms
 of rises in the quotient increments. The final theorem states positivity and
 integrality of the entire Hankel hierarchy of the orbit's exact moment model.
 
-All mathematical definitions below are supplied in full. Only the eleven theorem
+All mathematical definitions below are supplied in full. Only the thirteen theorem
 proofs have deliberate holes. In particular, the two analytic inputs are explicit
 propositions, not axioms: their proofs are outside this formalization. All constants
 in the length bounds are uniform in `a` and `b`.
@@ -43,6 +44,16 @@ def P (a : ℕ) : ℕ → ℕ
   | 0 => 0
   | b + 1 => P a (a % (b + 1)) + 1
 decreasing_by exact Nat.mod_lt _ (Nat.succ_pos _)
+
+/-- The optimized unconditional bound from exterior lattice coordinates. -/
+theorem P_le_lattice_optimal : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((471 : ℝ) / 1559 - 6 * Real.sqrt 105 / 7795 + ε) := by
+  sorry
+
+/-- The rational exterior-lattice bound from fixed powers 3 and 2. -/
+theorem P_le_153_520 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((153 : ℝ) / 520 + ε) := by
+  sorry
 
 /-- The optimized unconditional joint-invariant bound. -/
 theorem P_le_joint_optimal : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →

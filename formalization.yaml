@@ -6,9 +6,10 @@ project:
   description: >-
     For integers 0 < b < a, let P(a,b) count the positive terms obtained by
     repeatedly replacing x by a mod x, starting at b. This development proves
-    the uniform bound P(a,b) ≤ C_ε a^((1310-sqrt(655))/4365 + ε) for every ε > 0,
-    including the external coefficient-uniform affine-curve theorem. It also
-    proves the rational joint-lift exponents 2201/7480 and 128/435 and the
+    the uniform bound P(a,b) ≤ C_ε a^(471/1559 - 6 sqrt(105)/7795 + ε) for every
+    ε > 0, including the external coefficient-uniform affine-curve theorem, and its
+    rational instance 153/520. It also proves the joint-lift exponents
+    (1310-sqrt(655))/4365, 2201/7480 and 128/435 and the
     earlier exponents 45/152, 8/27, 11/37, 23/77, and 3/10. It also proves
     a bound O(a^(1/4) sqrt R), where R minus one counts rises in the quotient
     increments, and positivity and integrality of the orbit's Hankel invariants.
@@ -109,10 +110,10 @@ related_formalizations:
 
 status:
   scope: >-
-    Comparator is configured for the eleven main theorems listed in alignment below.
+    Comparator is configured for the thirteen main theorems listed in alignment below.
     Their definitions are given in full in the independent Mathlib-only
     Challenge module. The proof development has no sorry holes or custom
-    axioms. The eleven deliberate theorem holes in Challenge.lean are excluded
+    axioms. The thirteen deliberate theorem holes in Challenge.lean are excluded
     from these counts. NairTenenbaumDelta and BretecheTenenbaumMean are
     unproved propositions passed as hypotheses, not axioms. The paper's
     background literature and its remark about Shiu's theorem are not
@@ -148,7 +149,7 @@ automation:
 
 fidelity:
   divergences: >-
-    No known mismatch between the eleven compared Lean statements and their
+    No known mismatch between the thirteen compared Lean statements and their
     descriptions in the accompanying paper. The conditional result explicitly
     assumes two published analytic statements instead of formalizing their
     proofs. The natural-number orbit is frozen at zero, and P counts positive
@@ -158,6 +159,13 @@ review:
   status: "agent-reviewed"
   reviewers: ["OpenAI Codex"]
   notes: >-
+    On October 20, 2026 the exterior-lattice bounds P_le_lattice_optimal and
+    P_le_153_520 were added. The integrated build passes with 9569 jobs, both
+    dependency audits pass (the second confirms that these two bounds reach only
+    the weighted counts short_count and reciprocal_sum_bound), and Axioms.lean
+    reports only propext, Classical.choice and Quot.sound for all thirteen
+    statements. The sandboxed Comparator was not rerun: its sandbox cannot
+    reach the sibling checkout ../ccdn-dimension-growth.
     The dependency now uses the local sibling checkout ../ccdn-dimension-growth.
     Its integrated build passes with 9558 jobs at CCDN commit
     642822b5d2db7035e625a9f32b0af205a276b2fb. The axiom audit covers 2551 Pierce,
@@ -198,7 +206,16 @@ review:
 alignment:
   namespace: "PierceLengthBound"
   statements:
-    - source: "Optimized joint-invariant bound, Theorem 1.1"
+    - source: "Optimized exterior-lattice bound, Theorem 1.1"
+      lean: "PierceLengthBound.P_le_lattice_optimal"
+      module: "PierceLengthBound.LatticeJointMain"
+      status: proved
+      note: "Uniform in a and b, including the proved external curve theorem."
+    - source: "Rational exterior-lattice bound, Corollary 10.12"
+      lean: "PierceLengthBound.P_le_153_520"
+      module: "PierceLengthBound.LatticeJointMain"
+      status: proved
+    - source: "Optimized joint-invariant bound, Theorem 1.2"
       lean: "PierceLengthBound.P_le_joint_optimal"
       module: "PierceLengthBound.JointLiftMain"
       status: proved

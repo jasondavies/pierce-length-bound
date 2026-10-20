@@ -128,3 +128,5 @@ public import PierceLengthBound.LatticeJointWeights
 public import PierceLengthBound.LatticeJointLocalEstimate
 public import PierceLengthBound.LatticeJointWindow
 public import PierceLengthBound.LatticeJointBound
+public import PierceLengthBound.LatticeJointOptimization
+public import PierceLengthBound.LatticeJointMain

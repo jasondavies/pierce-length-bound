@@ -5,10 +5,12 @@ positive terms ([Open Problem Garden](https://www.openproblemgarden.org/op/a_dis
 Shallit asked whether `P(a, b) = O((log a)²)`. That question is **still open**. This repository
 proves, uniformly in `0 < b < a`:
 
-* **Strongest bound:** `P(a, b) ≤ C_ε · a^{α* + ε}`, where
-  `α* = (1310 − √655)/4365 = 0.2942513246…`. This is proved unconditionally,
-  including the external coefficient-uniform affine-curve counting theorem.
-* **Rational joint-lift bounds:** `2201/7480 + ε` and `128/435 + ε`.
+* **Strongest bound:** `P(a, b) ≤ C_ε · a^{γ* + ε}`, where
+  `γ* = 471/1559 − 6√105/7795 = 0.2942294157…`, and its rational instance `153/520 + ε`.
+  This is proved unconditionally, including the external coefficient-uniform affine-curve
+  counting theorem.
+* **Joint-lift bounds:** `α* = (1310 − √655)/4365 = 0.2942513246…`, and the rational
+  versions `2201/7480 + ε` and `128/435 + ε`.
 * **Earlier lattice bound:** `45/152 + ε`.
 * **Earlier steps:** `P(a, b) ≤ C_ε · a^{8/27 + ε}`, before that `a^{11/37 + ε}`, and before
   that `a^{23/77 + ε}`.
@@ -67,6 +69,35 @@ summation gives `T ≪ a^η (H X^{14/3} + X⁵)`, hence `T¹⁵² ≪ a^{45+O(η
 
 * `paper/pierce_length_bound.tex` (and `.pdf`): the paper.
 * `PierceLengthBound/`: Lean 4 / Mathlib formalisation of all of the above, with no `sorry`.
+
+## Exterior-lattice refinement
+
+The drop and gap rows of a start lie in the rank-three lattice `Λ_p` of its pattern. In a
+reduced basis the nodes have coordinates of size `H/λ(p)`, and the curvature coordinates, as
+`2×2` minors, have integer exterior coordinates of size `S/λ(p)²`. These are constant invertible
+linear changes of the old coordinates, so the joint graph keeps its degree `≥ 10n + 7m`. Summing
+over patterns with `∑_p λ(p)^{-t} ≪ a^{o(1)} X^{5-t/3}` (`0 ≤ t ≤ 1`) gives a five-term window
+bound with exponents `5/17`, `45h/(153h−1)`, `(45h−3m)/(153h−11m)` and `(15h+6n)/(51h+20n)`,
+`h = 10n + 7m`. The choice `(m, n) = (3, 2)` gives `153/520`, and optimizing `n/m` at `√105/15`
+gives `γ*`. [`LatticeJointMain.lean`](PierceLengthBound/LatticeJointMain.lean) exports
+`P_le_lattice_optimal` and `P_le_153_520`.
+
+| Module | Contents |
+|---|---|
+| `PivotExterior` | integer exterior coordinates in a reduced basis: `bᵢ·(x×y) = Δcᵢ`, `27λ⁴cᵢ² ≤ 64|x×y|²` (`wcoord_spec`) |
+| `PivotCurvature` | all ten curvature minors `≤ 9472A³H³/a²`, and `c = G W` with `det G ≠ 0` (`lattice_curvature_coordinates`) |
+| `LinearJointGraph` | invertible constant matrices preserve pole envelopes; the graph of `(nodes, (GW)ᵐ, Jⁿ)` keeps degree `≥ 10n + 7m` |
+| `LatticeJointPointCount` | the points `(y, cᵐ, Jⁿ)` in the pattern box `max(3H/λ, (8S'/3λ²)ᵐ, Yⁿ)`, and the curve count there |
+| `LatticeJointPatternCount` | component and pattern counts in the lattice box |
+| `LatticeJointWeights` | `∑_p λ(p)^{-t} ≤ 3163861 τ² X^{5-t/3}` for `0 ≤ t ≤ 1` |
+| `LatticeJointLocalEstimate` | the five-term local estimate |
+| `LatticeJointWindow` | integer-power branches and the window exponents |
+| `LatticeJointBound` | `P_le_lattice_joint` for all powers, and `P_le_153_520` |
+| `LatticeJointOptimization` | the crossing `15r² = 7` and `P_le_lattice_optimal` |
+
+Unlike the joint-lift bounds, these use the short-vector count `short_count` and the reciprocal
+weight bound `reciprocal_sum_bound`. The dependency audit checks that these are the only
+weighted counts they reach.
 
 ## Joint-invariant refinement
 
@@ -212,7 +243,10 @@ and `PoweredJointPointCount` applies the curve theorem to this box.
 all window ranges and dyadic summation. `PoweredJointBound` concludes the
 optimized algebraic exponent and its explicit rational version.
 
-The local-dependency build passes (9558 jobs). Its axiom audit covers 2551
+With the exterior-lattice bounds the build passes with 9569 jobs, both dependency audits pass, and
+`Axioms.lean` checks all thirteen public statements; the sandboxed Comparator has not been rerun,
+because its sandbox cannot reach the sibling CCDN checkout. Before that extension, the
+local-dependency build passed (9558 jobs). Its axiom audit covers 2551
 Pierce, 1145 counting and 555 curve-vendor declarations, allowing only
 `propext`, `Classical.choice` and `Quot.sound`. The weighted-counting
 independence audit also passes. This check used CCDN commit
@@ -222,7 +256,9 @@ eleven public results with Lean, NanoDa and con-ron. That historical result
 does not validate the changed dependency; a fresh Comparator run remains
 outstanding. The earlier verified Lean sources are preserved in commit
 `bdb8dc13f2a08063be87a3d18f91a0842d27ce67`.
-After building, `python3 scripts/check-integral-lift-dependencies.py` checks the optimized and
+After building, `python3 scripts/check-integral-lift-dependencies.py` checks that the
+exterior-lattice bounds reach exactly the weighted counts `short_count` and `reciprocal_sum_bound`,
+and checks the optimized and
 both rational joint-lift bounds, the powered graph degree and point count, and both the `151/513`
 and `128/435` pattern reductions, the actual joint-cover and conic gap counts,
 the local-order developments, normalized infinity degree, and function-parameter
@@ -254,11 +290,19 @@ Build with `lake exe cache get` (to download the compiled Mathlib) and then `lak
 (`weak.linter.mathlibStandardSet`). It also builds the independent Palomar Challenge
 and Solution modules and audits every exported declaration from the
 `PierceLengthBound` modules for nonstandard axioms.
-The eleven `sorry` warnings
+The thirteen `sorry` warnings
 in `Challenge.lean` are deliberate statement holes; the proof development has none.
 The main theorems are
 
 ```lean
+theorem PierceLengthBound.P_le_lattice_optimal : ∀ ε > (0 : ℝ), ∃ C > 0,
+    ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((471 : ℝ) / 1559 - 6 * Real.sqrt 105 / 7795 + ε)
+
+theorem PierceLengthBound.P_le_153_520 : ∀ ε > (0 : ℝ), ∃ C > 0,
+    ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((153 : ℝ) / 520 + ε)
+
 theorem PierceLengthBound.P_le_joint_optimal : ∀ ε > (0 : ℝ), ∃ C > 0,
     ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ (((1310 : ℝ) - Real.sqrt 655) / 4365 + ε)
@@ -297,7 +341,7 @@ theorem PierceLengthBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr :
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n
 ```
 
-`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all eleven;
+`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all thirteen;
 `Axioms.lean` checks this with `#guard_msgs` as part of `lake build`; it can also be run
 with `lake env lean Axioms.lean`. `P_le_loglog` depends on the two
 papers only through its hypotheses.
@@ -348,8 +392,8 @@ module visibility are adapted. The upstream commit and changes are recorded in
 
 ## Palomar submission
 
-[Challenge.lean](Challenge.lean) independently states all eleven main results using only
-Mathlib imports and complete mathematical definitions. Its eleven theorem proofs are
+[Challenge.lean](Challenge.lean) independently states all thirteen main results using only
+Mathlib imports and complete mathematical definitions. Its thirteen theorem proofs are
 deliberate holes. [Solution.lean](Solution.lean) exposes the original proved declarations;
 neither module imports the other. [comparator.json](comparator.json) selects the results,
 and [formalization.yaml](formalization.yaml) records their scope, provenance, automation,

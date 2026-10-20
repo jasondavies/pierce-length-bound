@@ -2,6 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
+    "PierceLengthBound.P_le_lattice_optimal",
+    "PierceLengthBound.P_le_153_520",
     "PierceLengthBound.P_le_joint_optimal",
     "PierceLengthBound.P_le_2201_7480",
     "PierceLengthBound.P_le_128_435",
