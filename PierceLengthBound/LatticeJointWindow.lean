@@ -1,0 +1,355 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
+module
+
+public import PierceLengthBound.LatticeJointLocalEstimate
+public import PierceLengthBound.PoweredJointWindow
+
+/-!
+# Window exponents for the exterior lattice coordinates
+
+The five-term local estimate splits into five integer-power branches. One generic window lemma
+(`window_branch_exponent`) turns a branch `T^L ≤ K X^q B` with a box bound `B T^u ≪ a^v` into
+`T^{L+10q+u} ≪ a^{3q+v}`. With `h = 10n + 7m` the five branches give the exponents
+`5/17`, `5/17`, `45h/(153h-1)`, `(45h-3m)/(153h-11m)` and `(15h+6n)/(51h+20n)`.
+-/
+
+@[expose] public section
+namespace PierceLengthBound.FixedDividend
+open Finset
+
+/-- Five possible dominant terms in the lattice count. -/
+def LatticeJointCountBranches (K T H X S Y h m n : ℕ) : Prop :=
+  T ≤ K * X ^ 5 ∨ T ^ 2 ≤ K * H * X ^ 8 ∨ T ^ (3 * h) ≤ K * X ^ (15 * h - 1) * H ^ 3 ∨
+    T ^ (3 * h) ≤ K * X ^ (15 * h - 2 * m) * S ^ (3 * m) ∨ T ^ h ≤ K * X ^ (5 * h) * Y ^ n
+
+lemma rpow_pow_natCast {x r : ℝ} (hx : 0 ≤ x) (k : ℕ) {e : ℕ} (he : r * k = e) :
+    (x ^ r) ^ k = x ^ e := by
+  rw [← Real.rpow_natCast, ← Real.rpow_mul hx, he, Real.rpow_natCast]
+
+set_option maxHeartbeats 1000000 in
+-- The five-term real inequality requires normalization of several real powers.
+/-- The five-term estimate implies the five integer-power branches. -/
+theorem lattice_joint_branches_of_five_term_count {T H X S Y R m n : ℕ} (hm : 0 < m)
+    (hcount : let h : ℝ := ((10 * n + 7 * m : ℕ) : ℝ)
+      (T : ℝ) ≤ R * ((X : ℝ) ^ 5 + (X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ) +
+        (X : ℝ) ^ (5 - (1 / h) / 3) * (H : ℝ) ^ (1 / h) +
+        (X : ℝ) ^ (5 - (2 * m / h) / 3) * (S : ℝ) ^ (m / h) +
+        (X : ℝ) ^ 5 * (Y : ℝ) ^ (n / h))) :
+    LatticeJointCountBranches ((5 * (R + 1)) ^ (3 * (10 * n + 7 * m)))
+      T H X S Y (10 * n + 7 * m) m n := by
+  dsimp only at hcount
+  set hN := 10 * n + 7 * m with hNdef
+  have hN1 : 1 ≤ hN := by omega
+  set h : ℝ := (hN : ℝ)
+  have hh : (0 : ℝ) < h := by simp only [h]; exact_mod_cast (show 0 < hN by omega)
+  let D := 5 * (R + 1)
+  have hD : 1 ≤ D := by dsimp [D]; omega
+  have hDle (k : ℕ) (hk : 1 ≤ k) (hk' : k ≤ 3 * hN) : D ^ k ≤ D ^ (3 * hN) :=
+    Nat.pow_le_pow_right hD hk'
+  have hXr : (0 : ℝ) ≤ X := Nat.cast_nonneg _
+  have t1 : 0 ≤ (X : ℝ) ^ 5 := by positivity
+  have t2 : 0 ≤ (X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ) := by positivity
+  have t3 : 0 ≤ (X : ℝ) ^ (5 - (1 / h) / 3) * (H : ℝ) ^ (1 / h) := by positivity
+  have t4 : 0 ≤ (X : ℝ) ^ (5 - (2 * m / h) / 3) * (S : ℝ) ^ (m / h) := by positivity
+  have t5 : 0 ≤ (X : ℝ) ^ 5 * (Y : ℝ) ^ (n / h) := by positivity
+  have hcase : (T : ℝ) ≤ D * (X : ℝ) ^ 5 ∨
+      (T : ℝ) ≤ D * ((X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ)) ∨
+      (T : ℝ) ≤ D * ((X : ℝ) ^ (5 - (1 / h) / 3) * (H : ℝ) ^ (1 / h)) ∨
+      (T : ℝ) ≤ D * ((X : ℝ) ^ (5 - (2 * m / h) / 3) * (S : ℝ) ^ (m / h)) ∨
+      (T : ℝ) ≤ D * ((X : ℝ) ^ 5 * (Y : ℝ) ^ (n / h)) := by
+    by_contra hc
+    push Not at hc
+    dsimp [D] at hc
+    push_cast at hc
+    nlinarith only [hcount, hc.1, hc.2.1, hc.2.2.1, hc.2.2.2.1, hc.2.2.2.2, t1, t2, t3, t4, t5]
+  have hT0 : (0 : ℝ) ≤ T := Nat.cast_nonneg _
+  have hD0 : (0 : ℝ) ≤ D := Nat.cast_nonneg _
+  rcases hcase with c | c | c | c | c
+  · left
+    have hn : T ≤ D * X ^ 5 := by exact_mod_cast c
+    exact hn.trans (Nat.mul_le_mul_right _ (by simpa using hDle 1 le_rfl (by omega)))
+  · right; left
+    have hp := pow_le_pow_left₀ hT0 c 2
+    have hs : ((H : ℝ) ^ (1 / 2 : ℝ)) ^ 2 = H := by
+      rw [rpow_pow_natCast (Nat.cast_nonneg _) 2 (e := 1) (by norm_num), pow_one]
+    have hn : T ^ 2 ≤ D ^ 2 * H * X ^ 8 := by
+      have he : (T : ℝ) ^ 2 ≤ (D : ℝ) ^ 2 * H * (X : ℝ) ^ 8 := by
+        simpa only [mul_pow, hs, ← pow_mul, mul_assoc, mul_left_comm, mul_comm,
+          Nat.reduceMul] using hp
+      exact_mod_cast he
+    exact hn.trans (Nat.mul_le_mul_right _ (Nat.mul_le_mul_right _
+      (hDle 2 (by norm_num) (by omega))))
+  · right; right; left
+    have hp := pow_le_pow_left₀ hT0 c (3 * hN)
+    have hx : ((X : ℝ) ^ (5 - (1 / h) / 3)) ^ (3 * hN) = (X : ℝ) ^ (15 * hN - 1) :=
+      rpow_pow_natCast hXr _ (by
+        simp only [h]; push_cast [Nat.cast_sub (show 1 ≤ 15 * hN by omega)]
+        field_simp; ring)
+    have hHp : ((H : ℝ) ^ (1 / h)) ^ (3 * hN) = (H : ℝ) ^ 3 :=
+      rpow_pow_natCast (Nat.cast_nonneg _) _ (by simp only [h]; push_cast; field_simp)
+    have he : (T : ℝ) ^ (3 * hN) ≤ (D : ℝ) ^ (3 * hN) * (X : ℝ) ^ (15 * hN - 1) * (H : ℝ) ^ 3 := by
+      rw [mul_pow, mul_pow, hx, hHp] at hp
+      linarith
+    exact_mod_cast he
+  · right; right; right; left
+    have hp := pow_le_pow_left₀ hT0 c (3 * hN)
+    have hx : ((X : ℝ) ^ (5 - (2 * m / h) / 3)) ^ (3 * hN) = (X : ℝ) ^ (15 * hN - 2 * m) :=
+      rpow_pow_natCast hXr _ (by
+        simp only [h]; push_cast [Nat.cast_sub (show 2 * m ≤ 15 * hN by omega)]
+        field_simp; ring)
+    have hSp : ((S : ℝ) ^ ((m : ℝ) / h)) ^ (3 * hN) = (S : ℝ) ^ (3 * m) :=
+      rpow_pow_natCast (Nat.cast_nonneg _) _ (by simp only [h]; push_cast; field_simp)
+    have he : (T : ℝ) ^ (3 * hN) ≤
+        (D : ℝ) ^ (3 * hN) * (X : ℝ) ^ (15 * hN - 2 * m) * (S : ℝ) ^ (3 * m) := by
+      rw [mul_pow, mul_pow, hx, hSp] at hp
+      linarith
+    exact_mod_cast he
+  · right; right; right; right
+    have hp := pow_le_pow_left₀ hT0 c hN
+    have hYp : ((Y : ℝ) ^ ((n : ℝ) / h)) ^ hN = (Y : ℝ) ^ n :=
+      rpow_pow_natCast (Nat.cast_nonneg _) _ (by simp only [h]; field_simp)
+    have he : (T : ℝ) ^ hN ≤ (D : ℝ) ^ hN * (X : ℝ) ^ (5 * hN) * (Y : ℝ) ^ n := by
+      rw [mul_pow, mul_pow, hYp, ← pow_mul] at hp
+      calc (T : ℝ) ^ hN ≤ _ := hp
+        _ = _ := by ring
+    have hn : T ^ hN ≤ D ^ hN * X ^ (5 * hN) * Y ^ n := by exact_mod_cast he
+    exact hn.trans (Nat.mul_le_mul_right _ (Nat.mul_le_mul_right _ (hDle hN hN1 (by omega))))
+
+/-- **The generic window lemma.** A branch `T^L ≤ K X^q B` with a box bound `B T^u ≤ F a^v`. -/
+theorem window_branch_exponent {T X B A a H K C E D F L q u v : ℕ} (ha : 0 < a)
+    (hcount : T ^ L ≤ K * X ^ q * B) (hgap : H * (A * T) ≤ C * a)
+    (hheight : X * a ^ 3 ≤ E * A ^ 4 * H ^ 6) (hbox : B * T ^ u ≤ F * a ^ v)
+    (hdrop : T ^ 2 ≤ D * A) :
+    T ^ (L + 10 * q + u) ≤ K * (E * C ^ 6 * D ^ 2) ^ q * F * a ^ (3 * q + v) := by
+  have h6 : X * T ^ 6 * A ^ 2 ≤ E * C ^ 6 * a ^ 3 := by
+    apply Nat.le_of_mul_le_mul_right (c := a ^ 3) _ (by positivity)
+    calc X * T ^ 6 * A ^ 2 * a ^ 3 = (X * a ^ 3) * A ^ 2 * T ^ 6 := by ring
+      _ ≤ (E * A ^ 4 * H ^ 6) * A ^ 2 * T ^ 6 := by gcongr
+      _ = E * (H * (A * T)) ^ 6 := by ring
+      _ ≤ E * (C * a) ^ 6 := by gcongr
+      _ = E * C ^ 6 * a ^ 3 * a ^ 3 := by ring
+  have h10 : X * T ^ 10 ≤ E * C ^ 6 * D ^ 2 * a ^ 3 := by
+    calc X * T ^ 10 = X * T ^ 6 * (T ^ 2) ^ 2 := by ring
+      _ ≤ X * T ^ 6 * (D * A) ^ 2 := by gcongr
+      _ = D ^ 2 * (X * T ^ 6 * A ^ 2) := by ring
+      _ ≤ D ^ 2 * (E * C ^ 6 * a ^ 3) := by gcongr
+      _ = _ := by ring
+  calc T ^ (L + 10 * q + u) = T ^ L * (T ^ 10) ^ q * T ^ u := by
+        rw [pow_add, pow_add, pow_mul]
+    _ ≤ (K * X ^ q * B) * (T ^ 10) ^ q * T ^ u := by gcongr
+    _ = K * (X * T ^ 10) ^ q * (B * T ^ u) := by rw [mul_pow]; ring
+    _ ≤ K * (E * C ^ 6 * D ^ 2 * a ^ 3) ^ q * (F * a ^ v) := by gcongr
+    _ = _ := by rw [mul_pow, ← pow_mul, pow_add]; ring
+
+lemma gap_cube_box {H A T C D a : ℕ} (hgap : H * (A * T) ≤ C * a) (hdrop : T ^ 2 ≤ D * A) :
+    H * T ^ 3 ≤ C * D * a := by
+  calc H * T ^ 3 = H * T * T ^ 2 := by ring
+    _ ≤ H * T * (D * A) := by gcongr
+    _ = D * (H * (A * T)) := by ring
+    _ ≤ D * (C * a) := by gcongr
+    _ = _ := by ring
+
+lemma pivot_curvature_box {S H A T C a : ℕ} (ha : 0 < a) (hgap : H * (A * T) ≤ C * a)
+    (hS : S * a ^ 2 ≤ 9472 * A ^ 3 * H ^ 3) : S * T ^ 3 ≤ 9472 * C ^ 3 * a := by
+  apply Nat.le_of_mul_le_mul_right (c := a ^ 2) _ (by positivity)
+  calc S * T ^ 3 * a ^ 2 = (S * a ^ 2) * T ^ 3 := by ring
+    _ ≤ (9472 * A ^ 3 * H ^ 3) * T ^ 3 := by gcongr
+    _ = 9472 * (H * (A * T)) ^ 3 := by ring
+    _ ≤ 9472 * (C * a) ^ 3 := by gcongr
+    _ = _ := by ring
+
+/-- A constant covering all window ranges for fixed coordinate powers. -/
+def latticeJointWindowBase (m n : ℕ) : ℕ :=
+  1 + 122449 + 3609600 ^ 5 * 56 ^ 30 * 8 ^ 10 + 3609600 ^ 8 * 56 ^ 49 * 8 ^ 17 +
+    (3609600 * 56 ^ 6 * 8 ^ 2) ^ (15 * (10 * n + 7 * m) - 1) * (56 * 8) ^ 3 +
+    (3609600 * 56 ^ 6 * 8 ^ 2) ^ (15 * (10 * n + 7 * m) - 2 * m) * (9472 * 56 ^ 3) ^ (3 * m) +
+    (3609600 * 56 ^ 6 * 8 ^ 2) ^ (5 * (10 * n + 7 * m)) *
+      (1259991040 * 56 ^ 10 * 8 ^ 5) ^ n +
+    124928 * 3609600 * 56 ^ 11 * 8 ^ 3
+
+/-- The window exponents of the lattice coordinates. -/
+noncomputable def latticeExponentH (h : ℕ) : ℝ := ((45 * h : ℕ) : ℝ) / (153 * h - 1 : ℕ)
+
+noncomputable def latticeExponentS (h m : ℕ) : ℝ :=
+  ((45 * h - 3 * m : ℕ) : ℝ) / (153 * h - 11 * m : ℕ)
+
+noncomputable def latticeExponentY (h n : ℕ) : ℝ :=
+  ((15 * h + 6 * n : ℕ) : ℝ) / (51 * h + 20 * n : ℕ)
+
+set_option exponentiation.threshold 1000 in
+set_option maxHeartbeats 1000000 in
+-- Five branches, each with its own power of the window constants.
+/-- Every window is bounded at any exponent dominating the three lattice ratios and the
+complementary exponent `5/17`. -/
+theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
+    (hm : 0 < m)
+    (hα : (5 : ℝ) / 17 ≤ α) (hHexp : latticeExponentH (10 * n + 7 * m) ≤ α)
+    (hSexp : latticeExponentS (10 * n + 7 * m) m ≤ α)
+    (hYexp : latticeExponentY (10 * n + 7 * m) n ≤ α)
+    (hT : 36 ≤ T) (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3)
+    (hdrop : T * (T - 1) ≤ 4 * A * Δ)
+    (hlocal : let H := 28 * a / (A * T) + 1
+      let X := 3609600 * A ^ 4 * H ^ 6 / a ^ 3
+      let S := 9472 * A ^ 3 * H ^ 3 / a ^ 2
+      let Y := 1259991040 * A ^ 5 * H ^ 10 / a ^ 4
+      124928 * A ^ 4 * H ^ 5 * X < a ^ 3 →
+        LatticeJointCountBranches K T H X S Y (10 * n + 7 * m) m n) :
+    (T : ℝ) ≤ (latticeJointWindowBase m n * (K + 1) *
+      Δ ^ (30 * (10 * n + 7 * m) + 5 * n + 17) : ℕ) * (a : ℝ) ^ α := by
+  set h := 10 * n + 7 * m with hdef
+  have hh1 : 1 ≤ h := by omega
+  have hA : 1 ≤ A := by
+    by_contra hc
+    have hz : A = 0 := by omega
+    simp [hz] at hdrop
+    omega
+  have hΔ : 1 ≤ Δ := by
+    by_contra hc
+    have hz : Δ = 0 := by omega
+    simp [hz] at hdrop
+    omega
+  have ha : 1 ≤ a := by
+    by_contra hc
+    have hz : a = 0 := by omega
+    simp [hz] at hsix
+    omega
+  set e := 30 * h + 5 * n + 17
+  let B := latticeJointWindowBase m n * (K + 1) * Δ ^ e
+  have hc : 1 ≤ latticeJointWindowBase m n := by unfold latticeJointWindowBase; omega
+  have hB : 1 ≤ B := Nat.one_le_iff_ne_zero.mpr (by dsimp [B]; positivity)
+  have hbase : latticeJointWindowBase m n ≤ B := by
+    calc latticeJointWindowBase m n = latticeJointWindowBase m n * 1 * 1 := by ring
+      _ ≤ B := by
+        dsimp [B]
+        gcongr
+        · omega
+        · exact Nat.one_le_pow e Δ hΔ
+  have hT2 : T ^ 2 ≤ (8 * Δ) * A := by
+    have : T ≤ 2 * (T - 1) := by omega
+    nlinarith
+  have hcoeff {c f : ℕ} (hc : c ≤ latticeJointWindowBase m n) (hf : f ≤ e) :
+      c * K * Δ ^ f ≤ B := by
+    dsimp only [B]
+    gcongr
+    all_goals omega
+  have hfin {N r c f : ℕ} (hN : 0 < N) (hc : c ≤ latticeJointWindowBase m n) (hf : f ≤ e)
+      (hT : T ^ N ≤ c * K * Δ ^ f * a ^ r) (hr : (r : ℝ) / N ≤ α) :
+      (T : ℝ) ≤ (B : ℝ) * (a : ℝ) ^ α :=
+    window_real_bound_of_power ha hB hN (hT.trans (Nat.mul_le_mul_right _ (hcoeff hc hf))) hr
+  by_cases hbig : 28 * a < A * T
+  · have h' := window_large_mean_gap ha hsix hbig
+    have h'' : T ^ 4 ≤ B * a ^ 1 := by
+      simpa using h'.trans (Nat.mul_le_mul_right a
+        ((show 122449 ≤ latticeJointWindowBase m n by unfold latticeJointWindowBase; omega).trans
+          hbase))
+    apply window_real_bound_of_power ha hB (by decide : 0 < 4) h''
+    norm_num only [Nat.cast_one, Nat.cast_ofNat]
+    exact (by norm_num : (1 : ℝ) / 4 ≤ 5 / 17).trans hα
+  let H := 28 * a / (A * T) + 1
+  let X := 3609600 * A ^ 4 * H ^ 6 / a ^ 3
+  have hH : H * (A * T) ≤ 56 * a := by
+    have := Nat.div_mul_le_self (28 * a) (A * T)
+    dsimp only [H]
+    rw [add_mul, one_mul]
+    omega
+  have hX : X * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6 := Nat.div_mul_le_self _ _
+  have hE : 3609600 * 56 ^ 6 * (8 * Δ) ^ 2 = (3609600 * 56 ^ 6 * 8 ^ 2) * Δ ^ 2 := by ring
+  by_cases hscale : 124928 * A ^ 4 * H ^ 5 * X < a ^ 3
+  · rcases hlocal hscale with c | c | c | c | c
+    · -- `T ≤ K X⁵`
+      have hw := window_branch_exponent (L := 1) (q := 5) (u := 0) (v := 0) (B := 1) (F := 1)
+        (by omega) (by simpa using c) hH hX (by simp) hT2
+      apply hfin (N := 51) (r := 15) (c := 3609600 ^ 5 * 56 ^ 30 * 8 ^ 10) (f := 10)
+        (by decide) (by unfold latticeJointWindowBase; omega) (by omega)
+      · calc T ^ 51 ≤ K * (3609600 * 56 ^ 6 * (8 * Δ) ^ 2) ^ 5 * 1 * a ^ (3 * 5 + 0) := hw
+          _ = _ := by ring
+      · exact (by norm_num : ((15 : ℕ) : ℝ) / (51 : ℕ) ≤ 5 / 17).trans hα
+    · -- `T² ≤ K H X⁸`
+      have hw := window_branch_exponent (L := 2) (q := 8) (u := 3) (v := 1) (B := H) (K := K)
+        (F := 56 * (8 * Δ)) (by omega) (c.trans (le_of_eq (by ring)))
+        hH hX (by simpa using gap_cube_box hH hT2) hT2
+      apply hfin (N := 85) (r := 25) (c := 3609600 ^ 8 * 56 ^ 49 * 8 ^ 17) (f := 17)
+        (by decide) (by unfold latticeJointWindowBase; omega) (by omega)
+      · calc T ^ 85 ≤ K * (3609600 * 56 ^ 6 * (8 * Δ) ^ 2) ^ 8 * (56 * (8 * Δ)) *
+            a ^ (3 * 8 + 1) := hw
+          _ = _ := by ring
+      · exact (by norm_num : ((25 : ℕ) : ℝ) / (85 : ℕ) ≤ 5 / 17).trans hα
+    · -- `T^{3h} ≤ K X^{15h-1} H³`
+      have hbox : H ^ 3 * T ^ 9 ≤ (56 * (8 * Δ)) ^ 3 * a ^ 3 := by
+        have := Nat.pow_le_pow_left (gap_cube_box hH hT2) 3
+        calc H ^ 3 * T ^ 9 = (H * T ^ 3) ^ 3 := by ring
+          _ ≤ _ := this
+          _ = _ := by ring
+      have hw := window_branch_exponent (L := 3 * h) (q := 15 * h - 1) (u := 9) (v := 3)
+        (by omega) c hH hX hbox hT2
+      apply hfin (N := 3 * h + 10 * (15 * h - 1) + 9) (r := 3 * (15 * h - 1) + 3)
+        (c := (3609600 * 56 ^ 6 * 8 ^ 2) ^ (15 * h - 1) * (56 * 8) ^ 3)
+        (f := 2 * (15 * h - 1) + 3) (by omega)
+        (by unfold latticeJointWindowBase; rw [← hdef]; omega)
+        (by omega)
+      · calc _ ≤ _ := hw
+          _ = _ := by rw [hE, mul_pow, ← pow_mul]; ring
+      · refine le_trans (le_of_eq ?_) hHexp
+        unfold latticeExponentH
+        congr 1 <;> push_cast [Nat.cast_sub (show 1 ≤ 15 * h by omega),
+          Nat.cast_sub (show 1 ≤ 153 * h by omega)] <;> ring
+    · -- `T^{3h} ≤ K X^{15h-2m} S^{3m}`
+      let S := 9472 * A ^ 3 * H ^ 3 / a ^ 2
+      have hS := pivot_curvature_box (S := S) (by omega) hH (Nat.div_mul_le_self _ _)
+      have hbox : S ^ (3 * m) * T ^ (9 * m) ≤ (9472 * 56 ^ 3) ^ (3 * m) * a ^ (3 * m) := by
+        have := Nat.pow_le_pow_left hS (3 * m)
+        calc S ^ (3 * m) * T ^ (9 * m) = (S * T ^ 3) ^ (3 * m) := by
+              rw [mul_pow, ← pow_mul]; ring_nf
+          _ ≤ _ := this
+          _ = _ := by rw [mul_pow]
+      have hw := window_branch_exponent (L := 3 * h) (q := 15 * h - 2 * m) (u := 9 * m)
+        (v := 3 * m) (by omega) c hH hX hbox hT2
+      apply hfin (N := 3 * h + 10 * (15 * h - 2 * m) + 9 * m)
+        (r := 3 * (15 * h - 2 * m) + 3 * m)
+        (c := (3609600 * 56 ^ 6 * 8 ^ 2) ^ (15 * h - 2 * m) * (9472 * 56 ^ 3) ^ (3 * m))
+        (f := 2 * (15 * h - 2 * m)) (by omega)
+        (by unfold latticeJointWindowBase; rw [← hdef]; omega)
+        (by omega)
+      · calc _ ≤ _ := hw
+          _ = _ := by rw [hE, mul_pow, ← pow_mul]; ring
+      · refine le_trans (le_of_eq ?_) hSexp
+        unfold latticeExponentS
+        congr 1 <;> push_cast [Nat.cast_sub (show 2 * m ≤ 15 * h by omega),
+          Nat.cast_sub (show 3 * m ≤ 45 * h by omega),
+          Nat.cast_sub (show 11 * m ≤ 153 * h by omega)] <;> ring
+    · -- `T^h ≤ K X^{5h} Yⁿ`
+      have hY : (1259991040 * A ^ 5 * H ^ 10 / a ^ 4) ^ n * T ^ (20 * n) ≤
+          (1259991040 * 56 ^ 10 * (8 * Δ) ^ 5) ^ n * a ^ (6 * n) :=
+        powered_rank_five_height (by omega) (by omega) hH (Nat.div_mul_le_self _ _) hT2
+      have hw := window_branch_exponent (L := h) (q := 5 * h) (u := 20 * n) (v := 6 * n)
+        (by omega) c hH hX hY hT2
+      apply hfin (N := h + 10 * (5 * h) + 20 * n) (r := 3 * (5 * h) + 6 * n)
+        (c := (3609600 * 56 ^ 6 * 8 ^ 2) ^ (5 * h) * (1259991040 * 56 ^ 10 * 8 ^ 5) ^ n)
+        (f := 10 * h + 5 * n) (by omega) (by unfold latticeJointWindowBase; rw [← hdef]; omega)
+        (by omega)
+      · calc _ ≤ _ := hw
+          _ = _ := by rw [hE, mul_pow, mul_pow, mul_pow, ← pow_mul, ← pow_mul, pow_add]; ring
+      · refine le_trans (le_of_eq ?_) hYexp
+        unfold latticeExponentY
+        congr 1 <;> push_cast <;> ring
+  · have hw := remainder_window_small_exponent (by omega : 0 < a) (by omega : 0 < A)
+      (by omega : a ^ 3 ≤ 124928 * A ^ 4 * H ^ 5 * X) hH hX hT2
+    have h' : T ^ 17 ≤ B * a ^ 5 := by
+      calc T ^ 17 ≤ 124928 * 3609600 * 56 ^ 11 * (8 * Δ) ^ 3 * a ^ 5 := hw
+        _ = (124928 * 3609600 * 56 ^ 11 * 8 ^ 3 * Δ ^ 3) * a ^ 5 := by ring
+        _ ≤ B * a ^ 5 := by
+          apply Nat.mul_le_mul_right
+          dsimp [B]
+          have hc' : 124928 * 3609600 * 56 ^ 11 * 8 ^ 3 ≤ latticeJointWindowBase m n := by
+            unfold latticeJointWindowBase; omega
+          calc _ ≤ latticeJointWindowBase m n * Δ ^ e :=
+              Nat.mul_le_mul hc' (Nat.pow_le_pow_right hΔ (by omega))
+            _ = latticeJointWindowBase m n * 1 * Δ ^ e := by ring
+            _ ≤ _ := by gcongr; omega
+    exact window_real_bound_of_power ha hB (by decide : 0 < 17) h' hα
+
+end PierceLengthBound.FixedDividend

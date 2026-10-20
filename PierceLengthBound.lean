@@ -122,3 +122,9 @@ public import PierceLengthBound.JointLiftMain
 public import PierceLengthBound.PivotExterior
 public import PierceLengthBound.PivotCurvature
 public import PierceLengthBound.LinearJointGraph
+public import PierceLengthBound.LatticeJointPointCount
+public import PierceLengthBound.LatticeJointPatternCount
+public import PierceLengthBound.LatticeJointWeights
+public import PierceLengthBound.LatticeJointLocalEstimate
+public import PierceLengthBound.LatticeJointWindow
+public import PierceLengthBound.LatticeJointBound
