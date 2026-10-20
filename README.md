@@ -70,10 +70,9 @@ summation gives `T ≪ a^η (H X^{14/3} + X⁵)`, hence `T¹⁵² ≪ a^{45+O(η
 
 ## Joint-invariant refinement
 
-The [original proof candidate](paper/pierce_joint_lift_proof_candidate.txt) proposed
-`128/435 = 0.2942528735…`, followed by the powered-coordinate optimization
+The joint-invariant argument gives `128/435 = 0.2942528735…`, followed by the
+powered-coordinate optimization
 `(1310 − √655)/4365 = 0.2942513246…` and its rational approximation `2201/7480`.
-It extends the [151/513 candidate](paper/pierce_151_513_proof_candidate.txt).
 All three bounds are now proved unconditionally, including external curve counting.
 [`JointLiftMain.lean`](PierceLengthBound/JointLiftMain.lean) exports the public
 statements `P_le_joint_optimal`, `P_le_2201_7480` and `P_le_128_435`.
@@ -120,8 +119,8 @@ degree at most 24, and even degree for nonexceptional components. The complete
 exceptional-pattern count `O(X^4 log(2X))` is proved. The conic development now
 derives bounded integer parameters, monic quotient normalization, cubic quotient
 degree, and properness of the actual `I₃` function after at most 492 exceptional
-points. The conic height and divisor-count development is recorded in the
-[formalization status](paper/pierce_joint_lift_status.txt).
+points. These conic estimates give the gap-vector count in
+[`OrbitConicGapCount.lean`](PierceLengthBound/OrbitConicGapCount.lean).
 
 `IntegralLiftGraph` constructs the prime ideal of a rational graph, proves its
 old-coordinate contraction is the original prime ideal, and places actual
@@ -221,17 +220,15 @@ independence audit also passes. This check used CCDN commit
 The previous vendored checkpoint passed the full sandboxed Comparator for all
 eleven public results with Lean, NanoDa and con-ron. That historical result
 does not validate the changed dependency; a fresh Comparator run remains
-outstanding. The [status record](paper/pierce_joint_lift_status.txt) distinguishes
-the two configurations.
+outstanding. The earlier verified Lean sources are preserved in commit
+`bdb8dc13f2a08063be87a3d18f91a0842d27ce67`.
 After building, `python3 scripts/check-integral-lift-dependencies.py` checks the optimized and
 both rational joint-lift bounds, the powered graph degree and point count, and both the `151/513`
 and `128/435` pattern reductions, the actual joint-cover and conic gap counts,
 the local-order developments, normalized infinity degree, and function-parameter
 zero/pole fiber comparisons, branch transport, the actual extra normalized zero,
 the curvature pole-degree lower bound, and the retained graph-degree range for
-independence from weighted counting. See the
-[current status](paper/pierce_joint_lift_status.txt) and the
-[151/513 record](paper/pierce_151_513_status.txt) for precise scopes.
+independence from weighted counting.
 
 For reproducible exact checks (requires SymPy):
 

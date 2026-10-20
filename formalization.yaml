@@ -175,7 +175,8 @@ review:
     verified all 89,181 exported declarations, NanoDa and Lean's full replay
     accepted the solution, and all eleven statements matched the independent
     Challenge. The 508 Lean source files in that review copy matched the
-    historical snapshot recorded in paper/pierce_joint_lift_status.txt.
+    vendored checkpoint preserved in commit
+    bdb8dc13f2a08063be87a3d18f91a0842d27ce67.
     Earlier checker resource failures were repaired by making equivalent
     algebra and coefficient conversions explicit before
     substituting large resultants. No hypotheses or checker limits were changed.
