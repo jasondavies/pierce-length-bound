@@ -85,7 +85,7 @@ def lean_source_files(root: Path) -> list[Path]:
 
 def main() -> int:
     subprocess.run([sys.executable, str(Path(__file__).resolve().with_name(
-        "check-curve-counting-vendor.py"))], check=True)
+        "check-curve-counting-dependency.py"))], check=True)
     root = Path(__file__).resolve().parents[1]
     failed = False
     for path in lean_source_files(root):

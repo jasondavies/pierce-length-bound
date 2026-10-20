@@ -56,8 +56,12 @@ sources:
     relationship: other
     note: >-
       The coefficient-uniform affine-curve estimate is proved in the separate
-      ccdn-dimension-growth project and imported through a source-hashed snapshot
-      in vendor/ccdn-dimension-growth. It is not an unproved hypothesis or axiom.
+      ccdn-dimension-growth project and imported as the Lake package
+      ccdn_dimension_growth from the local sibling path ../ccdn-dimension-growth.
+      That checkout is required to build this project. It is not an unproved
+      hypothesis or axiom. The public CCDN repository has not yet been created;
+      after publication this path dependency must become a Git dependency
+      pinned to a full commit SHA before a portable public submission.
   - title: "Short sums of certain arithmetic functions"
     authors: ["M. Nair", "Gérald Tenenbaum"]
     type: article
@@ -105,7 +109,7 @@ related_formalizations:
 
 status:
   scope: >-
-    Comparator covers the eleven main theorems listed in alignment below.
+    Comparator is configured for the eleven main theorems listed in alignment below.
     Their definitions are given in full in the independent Mathlib-only
     Challenge module. The proof development has no sorry holes or custom
     axioms. The eleven deliberate theorem holes in Challenge.lean are excluded
@@ -154,17 +158,26 @@ review:
   status: "agent-reviewed"
   reviewers: ["OpenAI Codex"]
   notes: >-
-    On October 20, 2026 the optimized joint-lift theorem, both rational versions,
-    and the external affine-curve counting theorem passed the integrated Lean
-    build and axiom audit. The proof dependency audit excludes weighted-lattice
-    counting from these new bounds. The manuscript, independent Challenge and
-    comparator alignment were extended to all eleven public results. The final
-    standard sandboxed Comparator passed: con-ron verified all 89,181 exported
-    declarations, NanoDa and Lean's full replay accepted the solution, and all
-    eleven statements matched the independent Challenge. All 508 Lean source
-    files in the review copy match the worktree snapshot recorded in
-    SUBMISSION_REVIEW.txt. Earlier checker resource failures were repaired by
-    making equivalent algebra and coefficient conversions explicit before
+    The dependency now uses the local sibling checkout ../ccdn-dimension-growth.
+    Its integrated build passes with 9558 jobs at CCDN commit
+    642822b5d2db7035e625a9f32b0af205a276b2fb. The axiom audit covers 2551 Pierce,
+    1145 counting and 555 curve-vendor declarations, allowing only propext,
+    Classical.choice and Quot.sound. The weighted-counting independence audit
+    passes with 6976 visited constants. A fresh Comparator run for this changed
+    dependency remains outstanding. The local path is not a version pin and
+    requires the sibling checkout to reproduce the build.
+    At the previous vendored checkpoint on October 20, 2026, the optimized
+    joint-lift theorem, both rational versions, and the external affine-curve
+    theorem passed the integrated Lean build and axiom audit. The dependency
+    audit excluded weighted-lattice counting from these new bounds. The
+    manuscript, independent Challenge and comparator alignment included all
+    eleven public results. The standard sandboxed Comparator passed: con-ron
+    verified all 89,181 exported declarations, NanoDa and Lean's full replay
+    accepted the solution, and all eleven statements matched the independent
+    Challenge. The 508 Lean source files in that review copy matched the
+    historical snapshot recorded in paper/pierce_joint_lift_status.txt.
+    Earlier checker resource failures were repaired by making equivalent
+    algebra and coefficient conversions explicit before
     substituting large resultants. No hypotheses or checker limits were changed.
     The October 19, 2026 Codex review read the full paper, checked the definitions
     and theorem statements against it, inspected the main proof dependencies,

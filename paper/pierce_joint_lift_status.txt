@@ -8,13 +8,33 @@ alpha*=(1310-sqrt(655))/4365. All geometric, counting and analytic inputs,
 including the external coefficient-uniform affine-curve counting theorem,
 are proved. No weighted-lattice counting estimate is used by these bounds.
 The manuscript, Challenge, Solution and submission metadata include them.
-Final artifact verification is complete: the full build, axiom audit and
-weighted-counting independence audit pass. The full sandboxed Comparator
-accepts all eleven public results with Lean, NanoDa and con-ron. See
-SUBMISSION_REVIEW.txt for the exact source snapshot and verification record.
+The counting dependency now uses Lake's local sibling path
+../ccdn-dimension-growth. That checkout must be present beside this repository.
+The previous vendored checkpoint passed the full build, axiom audit,
+weighted-counting independence audit and sandboxed Comparator for all eleven
+public results with Lean, NanoDa and con-ron. Those historical kernel results
+do not validate the updated dependency.
+
+Fresh local-dependency verification passes at CCDN commit
+642822b5d2db7035e625a9f32b0af205a276b2fb: 9558 Lake jobs; 2551 Pierce,
+1145 AffineCurveCounting and 555 curve-vendor declarations audited, allowing
+only propext, Classical.choice and Quot.sound. The weighted-counting
+independence audit passes with 6976 visited constants. Source and dependency
+checks pass, including the sibling library's 25 vendor hashes and 394 reachable
+modules. The bridge imports AffineCurveCounting.AffineCurveBound directly,
+without the broader full-paper module root. The local path is not a version
+pin. A fresh Comparator run for this dependency configuration remains outstanding.
+
+The public repository jasondavies/ccdn-dimension-growth has not been created.
+This local setup cannot yet be reproduced from a clean hosted checkout of the
+Pierce repository alone. After publishing CCDN, replace the sibling path with
+a Git dependency pinned to a full commit SHA and rerun verification before
+public submission.
 
 The development record below is chronological: earlier statements of remaining
-hypotheses are superseded by the current status and final verification record.
+hypotheses are superseded by the proved mathematical endpoints. Build and
+kernel results apply only to the dependency configurations recorded at their
+respective historical checkpoints.
 
 Source
 ------
@@ -420,14 +440,13 @@ by d(d-1). AffineCurveCounting.affineCurveBound proves the exact AffineCurveBoun
 target: for every n>=2, one constant C(n)>0 works for all prime ideals with
 positive affine Hilbert degree d and all real B>=1, giving
 C(n)*d³*B^(1/d)*(log B+d). There is no external counting hypothesis.
-The dependency and application bridge are now present. The exact audited
-source worktree is pinned by a 224-file SHA-256 manifest in
-vendor/ccdn-dimension-growth/upstream.json, with all mathematical source copied
-unchanged. This is a source snapshot, not a claim that the base Git commit
-contains the subsequent proof work. The parent package uses its existing
-Mathlib/toolchain and omits the dependency's standalone Axioms library to avoid
-a module-name conflict. The parent audit now checks all imported counting and
-Bombieri--Vaaler declarations as well as Pierce declarations.
+At this historical integration checkpoint, the dependency used a 224-file
+source-hashed snapshot with unchanged mathematical source. Its Lake
+configuration shared the parent Mathlib/toolchain and omitted the dependency's
+standalone Axioms library to avoid a module-name conflict. The parent audit
+checked imported counting and Bombieri--Vaaler declarations as well as Pierce
+declarations. That vendored setup has since been replaced by the local sibling
+dependency described at the start of this record.
 CurveCounting proves the bridge for the existing filtered coordinate spaces
 and finite sets of integral points. CurveCountingDegreeRange absorbs all
 bounded-degree factors into a single constant; CurveCountingCoordinates
@@ -625,43 +644,46 @@ PoweredJointBound proves the bound for every fixed pair of positive powers,
 then m=50,n=51 gives 2201/7480 and integer-power approximation gives alpha*.
 JointLiftMain exports the three unconditional public theorems.
 
-Final verification
-------------------
-The mathematical proof and final artifact verification are complete. The
-updated 32-page manuscript and PDF, Challenge, Solution, metadata and README
-include all three joint-lift results. The standard sandboxed Comparator passed
+Historical verification of the vendored checkpoint
+--------------------------------------------------
+The mathematical proof and artifact verification were complete at this
+vendored checkpoint. The updated 32-page manuscript and PDF, Challenge,
+Solution, metadata and README included all three joint-lift results.
+The standard sandboxed Comparator passed
 for all eleven public statements: con-ron accepted 89,181 declarations, NanoDa
 accepted the solution, and Lean's full kernel replay and Challenge comparison
-passed. All 508 Lean source files match the verified review copy.
+passed. All 508 Lean source files at that checkpoint matched the verified
+review copy.
 
 Earlier checker resource failures were repaired by normalizing ring operations,
 coefficient maps, casts and coordinates before substituting large resultants.
-The final full check uses the standard checker settings and permitted axioms.
-There are no remaining formalization or local verification obligations for the
-three joint-lift bounds or their external affine-curve counting input. The
+The full check used the standard checker settings and permitted axioms.
+It closed the formalization and local verification obligations for the
+three joint-lift bounds and their external affine-curve input at that checkpoint.
+It does not verify the later local-path dependency configuration. The
 separate conditional logarithmic refinement retains its stated analytic
 hypotheses. No public submission or independent human review is claimed.
 
-Validation
-----------
-The current integrated lake build passed (9561 jobs). Axioms.lean audited
-2551 Pierce, 1140 AffineCurveCounting and 555 curve-vendor declarations,
+Historical validation of the vendored checkpoint
+------------------------------------------------
+The integrated lake build at that checkpoint passed (9561 jobs). Axioms.lean
+audited 2551 Pierce, 1140 AffineCurveCounting and 555 curve-vendor declarations,
 allowing only propext, Classical.choice and Quot.sound.
-The snapshot checker validates all 224 pinned files and nested provenance.
+The snapshot checker validated all 224 pinned files and nested provenance.
 The dependency audit passed (6976 visited constants), including the optimized
 and rational joint-lift bounds and excluding weighted-counting dependencies.
 Challenge contains eleven deliberate statement holes, outside the proof library.
-The source checker passes (167 lines / 7254 bytes in Challenge), and the pinned
-Palomar metadata validator passes. All nine Git dependencies match their
-manifest revisions and have clean tracked sources. Exact arithmetic and both
-fixed-dividend scripts pass. The PDF compiles with no undefined references,
+The source checker passed (167 lines / 7254 bytes in Challenge), and the pinned
+Palomar metadata validator passed. All nine Git dependencies matched their
+manifest revisions and had clean tracked sources. Exact arithmetic and both
+fixed-dividend scripts passed. The PDF compiled with no undefined references,
 missing citations or overfull boxes; two cosmetic underfull notices remain.
 
-The standalone verification record for the pinned curve-counting checkpoint
-reports 9262 build jobs and the same 1140 project plus 555 vendor declarations.
-All 224 pinned files match the recorded snapshot hashes. The canonical
+The standalone verification record for that curve-counting checkpoint
+reported 9262 build jobs and the same 1140 project plus 555 vendor declarations.
+All 224 pinned files matched the recorded snapshot hashes. The canonical
 ccdn-dimension-growth repository has since advanced beyond this snapshot.
-The Comparator copy matches all 508 Lean source files. Their sorted JSON
-path-to-SHA256 inventory has SHA-256
+The Comparator copy matched all 508 Lean source files at that checkpoint.
+Their sorted JSON path-to-SHA256 inventory has SHA-256
 5414ec28211e0c10d6ba4de48c8f930634b28d7c639f393ec551ab72cf440fed.
 The candidate source hash remains unchanged. No independent human review is asserted.

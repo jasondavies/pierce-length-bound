@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import AffineCurveCounting
+public import AffineCurveCounting.AffineCurveBound
 public import PierceLengthBound.FixedDividendFilteredIntersection
 public import PierceLengthBound.FixedDividendComponents
 
