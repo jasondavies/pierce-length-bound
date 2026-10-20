@@ -49,13 +49,11 @@ keeping the coordinates small. A curve-counting theorem whose constants do not
 depend on the coefficients of the curve then bounds the number of segments
 in each group. Raising the added coordinates to suitable powers and balancing
 their sizes gives the exponent $\alpha_*$.
-We also prove several elementary intermediate bounds, a bound for orbits
-with few rises in their quotient increments, and positivity and integrality of
+We also prove the elementary bound $P(a,b)\ll_\varepsilon a^{3/10+\varepsilon}$, a bound for
+orbits with few rises in their quotient increments, and positivity and integrality of
 the Hankel determinants.
-The main result and its curve-counting input are formalized in Lean~4 with
-Mathlib without proof holes or additional axioms.
-A separate refinement $P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$ is formalized
-with two published analytic estimates as explicit hypotheses. Shallit's conjectured
+All results, including the curve-counting input, are formalized in Lean~4 with
+Mathlib without proof holes or additional axioms. Shallit's conjectured
 $O((\log a)^2)$ bound remains open.
 \end{abstract}
 
@@ -115,7 +113,7 @@ determinants $I_r(i)$ are positive integers; $I_1$, $I_2$ and $I_3$ are the
 remainder, the drop, and the curvature $D$ of three consecutive steps
 (Section~\ref{sec:curv}). The ten $3\times3$ minors of an explicit
 $3\times5$ integer matrix of drops and increments have size at most
-$X\asymp A^4H^6/a^3$ (Section~\ref{sec:827}). Their vector is the
+$X\asymp A^4H^6/a^3$ (Section~\ref{sec:minors}). Their vector is the
 \emph{pattern} of $i$, and there are $a^{o(1)}X^5$ possible patterns.
 
 Fix a pattern. The increments are then determined by the three
@@ -154,24 +152,12 @@ $\alpha_*$ exceeds $5/17=0.2941176\ldots$ by only $1.3\cdot10^{-4}$
 
 \subsection*{Reading guide}
 Sections~\ref{sec:curv}--\ref{sec:six} contain the elementary window bounds,
-the six-step identity and the proof of Theorem~\ref{thm:main}. The proof of
-Theorem~\ref{thm:joint} then uses:
-\begin{itemize}
-\item the moment model and Theorem~\ref{thm:hankel} (Section~\ref{sec:hankel});
-\item the pattern matrix and Lemmas~\ref{lem:pattern}, \ref{lem:multid}
-and~\ref{lem:labels}, and the good starts of
-Proposition~\ref{prop:twostate} (Section~\ref{sec:2377});
-\item only Lemma~\ref{lem:signs} from Section~\ref{sec:1137};
-\item the minor vectors of Section~\ref{sec:827}
-(Lemma~\ref{lem:expand} and Propositions~\ref{prop:allminors}
-and~\ref{prop:minorvec});
-\item and Section~\ref{sec:joint} itself.
-\end{itemize}
-The short-interval divisor refinement (Section~\ref{sec:short}), the rise
-bound (Section~\ref{sec:rises}), the slice and norm-equation counts of
-Section~\ref{sec:1137} and the lattice refinement of Section~\ref{sec:45152}
-are not needed for Theorem~\ref{thm:joint}. Section~\ref{sec:lean} describes
-the formal verification and Section~\ref{sec:limits} the limits of the method.
+the six-step identity and the proof of Theorem~\ref{thm:main}.
+Section~\ref{sec:rises} proves the rise bound, which is independent of the rest.
+Section~\ref{sec:hankel} constructs the moment model and proves Theorem~\ref{thm:hankel}, and
+Section~\ref{sec:patterns} develops the patterns and minor vectors. Section~\ref{sec:joint}
+proves Theorem~\ref{thm:joint}. Section~\ref{sec:lean} describes the formal verification and
+Section~\ref{sec:limits} the limits of the method.
 
 \subsection*{Elementary window bounds}
 The simplest of our bounds is the following.
@@ -224,28 +210,11 @@ T^6A^2\ll a^3,
 \end{equation}
 with no divisor function at all (Proposition~\ref{prop:six}).
 
-With~\eqref{eq:intro3} in hand, the only remaining loss is in the drop bound~\eqref{eq:intro1}. That
-loss comes from the number of divisors of $a+h$ in $[A,2A)$ as $h$ ranges over a short interval.
-Section~\ref{sec:short} shows that any bound $\ll y\,G(x)$ for such counts over intervals
-$(x,x+y]$ with $y\ge x^{1/4}$, uniform in $A$ and with $G(x)\ll x^{1/40}$, gives
-$P(a,b)\ll a^{3/10}G(a)^{1/5}$ (Theorem~\ref{thm:generic}).
-The counts are majorised by the Erd\H{o}s--Hooley function. Combining the short-sum theorem of
-Nair and Tenenbaum~\cite{NT} with the recent mean-value bound of de la Bret\`eche and
-Tenenbaum~\cite{BT} gives $G(x)=(\log\log x)^{5/2}$, and hence the following.
-
-\begin{theorem}\label{thm:loglog}
-Assume the theorem of Nair--Tenenbaum stated as~\eqref{eq:NT} and the theorem of de la
-Bret\`eche--Tenenbaum stated as~\eqref{eq:BT} below. Then
-\[
-P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}\qquad\text{uniformly for integers }0<b<a .
-\]
-\end{theorem}
-
-Both hypotheses are published theorems. They are hypotheses only in the sense of the
-formalisation: we have not formalised their proofs. Any other short-interval divisor bound
-can be used in their place. For example, Shiu's theorem~\cite{Shiu} gives
-$\sum_{x<n\le x+y}\tau(n)\ll y\log x$ for $y\ge x^{1/4}$, and hence
-$P(a,b)\ll a^{3/10}(\log a)^{1/5}$; we have not formalised that either.
+With~\eqref{eq:intro3} in hand, the only remaining loss in this argument is the divisor
+factor in the drop bound~\eqref{eq:intro1}. It comes from the number of divisors of $a+h$ in
+$[A,2A)$ as $h$ ranges over a short interval. Short-interval estimates for the
+Erd\H{o}s--Hooley function reduce it to a factor $(\log\log a)^{1/2}$ (see the intermediate bounds
+below), but no such estimate can lower the exponent $3/10$ (Section~\ref{sec:limits}).
 
 \subsection*{Structured trajectories and the Hankel hierarchy}
 Write $k_i=q_{i+1}-q_i$ for the quotient increments, and put
@@ -274,80 +243,34 @@ integers whenever the remaining orbit has at least $r$ positive terms.
 The first four agree with $b_i$, $b_i-b_{i+1}$, $D$ and $L$ in the
 nonterminal ranges specified in Theorem~\ref{thm:hankel}.
 
-\subsection*{Below \texorpdfstring{$3/10$}{3/10}}
-The following four bounds lie between Theorems~\ref{thm:main} and~\ref{thm:joint}.
-They introduce, one at a time, the pattern-counting ingredients that
-Theorem~\ref{thm:joint} builds on, together with a lattice refinement that it does not need.
-
-\begin{theorem}\label{thm:2377}
-For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
-\[
-P(a,b)\le C_\varepsilon\, a^{23/77+\varepsilon}\qquad\text{for all integers }0<b<a .
-\]
-\end{theorem}
-
-Here $23/77=0.298701\ldots$, a saving of $1/770$ over $3/10$. The proof (Section~\ref{sec:2377})
-uses the fourth Hankel invariant $I_4=L$ as an integer, not only as a positive number. At the
-critical configuration $L$ has bounded size. The labels $L(i),L(i+1),L(i+2)$ and four
-cofactors of an explicit $3\times4$ integer matrix form a \emph{pattern} of seven integers. Two
-consecutive states give two linear equations and one quadratic equation in five consecutive
-quotient increments, and the quadratic has a positive leading coefficient. An exact identity
-$I_4(i)\,\pi_i(-q_i)=a\det(\mu_i(x^{j+l}))_{j,l<4}$, with $\pi_i$ the degree-four orthogonal
-polynomial of the moment model, makes $q_i$ a root of a quartic that is fixed by the pattern and
-the increments. So each pattern accounts for $O(H^2)$ states, where $H$ bounds the increments.
-The number of patterns is controlled by Hadamard's inequality applied to the moment model.
-
-Counting the solutions of the quadratic equation more carefully gives a further improvement.
-
-\begin{theorem}\label{thm:1137}
-For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
-\[
-P(a,b)\le C_\varepsilon\, a^{11/37+\varepsilon}\qquad\text{for all integers }0<b<a .
-\]
-\end{theorem}
-
-Here $11/37=0.297297\ldots$, a saving of $1/370$ over $3/10$. The extra input
-(Section~\ref{sec:1137}) is that the quadratic part is nondegenerate with an indefinite binary restriction,
-by exact sign identities for the cofactors. So each slice is a binary norm equation, which has
-$a^{o(1)}$ solutions of size $a^{O(1)}$, uniformly in its coefficients, when its right-hand
-side is nonzero. There are at most two exceptional slices, which are counted separately.
-
-\begin{theorem}\label{thm:827}
-For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
-\[
-P(a,b)\le C_\varepsilon\, a^{8/27+\varepsilon}\qquad\text{for all integers }0<b<a .
-\]
-\end{theorem}
-
-Here $8/27=0.296296\ldots$. The seven pattern integers are signed coordinates of the vector of
-$3\times3$ minors of a $3\times5$ integer matrix (Section~\ref{sec:827}). All ten minors are
-bounded by $X$, and such minor vectors number $X^{5+o(1)}$ rather than $X^7$. From
-Section~\ref{sec:827} on, the \emph{pattern} of a state means this vector of ten minors, which
-determines the seven integers above.
-
-\begin{theorem}\label{thm:45152}
-For every $\varepsilon>0$ there is a constant $C_\varepsilon$ such that
-\[
-P(a,b)\le C_\varepsilon\, a^{45/152+\varepsilon}\qquad\text{for all integers }0<b<a .
-\]
-\end{theorem}
-
-Here $45/152=0.296052\ldots$. The pivot gaps of a state lie in a lattice $\Lambda_p\subseteq\mathbb
-Z^3$ of index at most $X$ determined by its minor vector $p$ (Section~\ref{sec:45152}). If the
-shortest vector of $\Lambda_p$ has length $\lambda$, a reduced basis cuts the ternary quadratic
-into $O(H/\lambda+1)$ slices, and only $X^{4+o(1)}t^3$ minor vectors have $\lambda\le t$. This
-gives $T\ll a^{o(1)}(HX^{14/3}+X^5)$ in place of $T\ll a^{o(1)}HX^5$.
-
-The joint-invariant argument returns to the ordinary minor-pattern count
-of Section~\ref{sec:827} and improves the count within each pattern. Its
-additional input is the affine-curve theorem used in Section~\ref{sec:joint}.
+\subsection*{Intermediate bounds}
+The development of Theorem~\ref{thm:joint} passed through a sequence of weaker exponents. Each
+counts the patterns of Section~\ref{sec:patterns}, and the states belonging to each pattern,
+more efficiently than the last.
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Exponent & Main new input & Lean declaration\\
+\midrule
+$23/77=0.29870\ldots$ & $I_4$ as an integer label; $O(H^2)$ states per pattern & \lean{P\_le\_23\_77}\\
+$11/37=0.29729\ldots$ & nondegenerate ternary quadratic; norm equations on slices & \lean{P\_le\_11\_37}\\
+$8/27=0.29629\ldots$ & patterns as minor vectors; $X^{5+o(1)}$ of them & \lean{P\_le\_8\_27}\\
+$45/152=0.29605\ldots$ & lattices of pivot gaps; few minor vectors with short vectors & \lean{P\_le\_45\_152}\\
+\bottomrule
+\end{tabular}
+\end{center}
+All four are superseded by Theorem~\ref{thm:joint} and are not proved here. Their proofs are
+formalised in the accompanying repository. Theorem~\ref{thm:joint} returns to the minor-vector
+count of the third row and improves the count within each pattern instead.
+The repository also proves $P(a,b)\ll a^{3/10}\sqrt{\log\log 3a}$, with the short-sum theorem of
+Nair and Tenenbaum~\cite{NT} and the mean-value bound of de la Bret\`eche and
+Tenenbaum~\cite{BT} for the Erd\H{o}s--Hooley function taken as explicit hypotheses. This bound
+too is superseded by Theorem~\ref{thm:joint}.
 
 \subsection*{Formal verification}
-Every step of the proofs of Theorems~\ref{thm:joint}, \ref{thm:main}, \ref{thm:2377}, \ref{thm:1137},
-\ref{thm:827} and~\ref{thm:45152} has been formalised in Lean~4~\cite{Lean}
-using Mathlib~\cite{Mathlib}. So have Proposition~\ref{prop:six}, Theorem~\ref{thm:generic},
-the deduction of Theorem~\ref{thm:loglog} from~\eqref{eq:NT} and~\eqref{eq:BT},
-Theorem~\ref{thm:rises} and Theorem~\ref{thm:hankel}.
+Every step of the proofs of Theorems~\ref{thm:joint}, \ref{thm:main}, \ref{thm:rises}
+and~\ref{thm:hankel}, and of Proposition~\ref{prop:six}, has been formalised in
+Lean~4~\cite{Lean} using Mathlib~\cite{Mathlib}, without additional hypotheses.
 Section~\ref{sec:lean} describes the formalisation. The constants in this paper are the
 constants in the Lean proof.
 The accompanying repository contains the proof source, independent submission
@@ -716,116 +639,6 @@ and another proof of Theorem~\ref{thm:main}. The Lean proof of Theorem~\ref{thm:
 Corollary~\ref{cor:window}.
 \end{remark}
 
-\section{Divisors over short intervals}\label{sec:short}
-
-For $A\ge1$ let $\tau_A(n)=\#\{d\mid n:\ A\le d<2A\}$.
-
-\begin{proposition}[Drop count]\label{prop:dropcount}
-For a window run of length $T\ge2$ and any $Y\ge\lfloor 2A/(T-1)\rfloor$,
-\[
-T\le 2\sum_{a<n\le a+Y}\tau_A(n).
-\]
-\end{proposition}
-
-\begin{proof}
-This is the proof of Proposition~\ref{prop:drop}, stopped before the divisor bound. The good
-indices $j$ have $1\le h_j\le\lfloor 2A/(T-1)\rfloor$, and $j\mapsto x_j$ maps those with $h_j=h$
-injectively into the divisors of $a+h$ in $[A,2A)$.
-\end{proof}
-
-\begin{definition}
-Let $G\colon\mathbb N\to\mathbb R$. We say that $\mathrm{SD}(G)$ holds if there are $C,x_0$ such
-that for all integers $x\ge x_0$, $x^{1/4}\le y\le x$ and $A\ge1$,
-\[
-\sum_{x<n\le x+y}\tau_A(n)\le C\,y\,G(x).
-\]
-\end{definition}
-
-\begin{lemma}[Geometric sums]\label{lem:geom}
-Let $\alpha,\beta,s,t>0$ and $K\ge0$. Then
-\[
-\sum_{k<K}\min\bigl(\alpha2^{-sk},\ \beta2^{tk}\bigr)\le
-\Bigl(\frac1{1-2^{-s}}+\frac{2^t}{2^t-1}\Bigr)\alpha^{t/(s+t)}\beta^{s/(s+t)} .
-\]
-\end{lemma}
-
-\begin{proof}
-Let $M=\alpha^{t/(s+t)}\beta^{s/(s+t)}$. Then $(\alpha2^{-sk})^t(\beta2^{tk})^s=M^{s+t}$, so for each
-$k$ either $\beta2^{tk}\le M$ or $\alpha2^{-sk}<M$. The terms $\beta2^{tk}\le M$ grow with ratio
-$2^t$, so they sum to at most $M2^t/(2^t-1)$. The terms $\alpha2^{-sk}<M$ decay with ratio $2^{-s}$,
-so they sum to at most $M/(1-2^{-s})$.
-\end{proof}
-
-\begin{theorem}\label{thm:generic}
-Suppose $\mathrm{SD}(G)$ holds, $G\ge1$, and $G(x)\ll x^{1/40}$. Then
-$P(a,b)\ll a^{3/10}\,G(a)^{1/5}$ uniformly for $0<b<a$.
-\end{theorem}
-
-\begin{proof}
-Small $a$ are handled by $P(a,b)\le b<a$. Fix a dyadic window $[A,2A)$, $A=2^k$, with
-$T\ge20$ visits. Proposition~\ref{prop:six} gives $T\le\alpha A^{-1/3}$, where
-$\alpha=(96\cdot10^6)^{1/6}a^{1/2}$. Take $Y=\max(\lfloor 2A/(T-1)\rfloor,\lceil a^{1/4}\rceil)\le a$
-in Proposition~\ref{prop:dropcount}. With $H=\lfloor 2A/(T-1)\rfloor$, $\mathrm{SD}(G)$ gives
-$T\le 2CG(a)(H+a^{1/4}+1)$. Multiplying by $T-1$, using $H(T-1)\le2A$, and solving the quadratic
-gives $T\le1+2CG(a)(a^{1/4}+1)+2\sqrt{CG(a)A}$, hence, as $T\ge20$, $T\le\gamma+\beta A^{1/2}$,
-where $\beta=4\sqrt{CG(a)}$ and $\gamma=4CG(a)(a^{1/4}+1)$. So
-every window satisfies
-\[
-T_k\le 19+\gamma+\min\bigl(\alpha\,2^{-k/3},\ \beta\,2^{k/2}\bigr).
-\]
-Lemma~\ref{lem:geom} with $s=1/3$ and $t=1/2$, where $1/(1-2^{-1/3})+\sqrt2/(\sqrt2-1)<9$, gives
-\[
-\sum_{k}\min\bigl(\alpha\,2^{-k/3},\ \beta\,2^{k/2}\bigr)\le 9\,\alpha^{3/5}\beta^{2/5}\ll a^{3/10}G(a)^{1/5},
-\]
-with no factor $\log a$. The remaining terms contribute
-$(\log_2a+1)(19+\gamma)\ll a^{1/100}\cdot a^{1/4}G(a)$. This is
-$\ll a^{3/10}G(a)^{1/5}$, because $G(a)^{4/5}\ll a^{1/50}$.
-\end{proof}
-
-\subsection*{The Erd\H{o}s--Hooley function}
-Let $\Delta_{\mathrm H}(n)=\max_{u\in\mathbb R}\#\{d\mid n:\ e^u<d\le e^{u+1}\}$. Taking
-$e^{u+1}=2A$, and using $e>2$, gives $\tau_A(n)\le\Delta_{\mathrm H}(n)$. We use two published
-theorems.
-
-\begin{enumerate}
-\item[(NT)] Nair and Tenenbaum~\cite{NT} prove a general upper bound for short sums of
-functions $F$ satisfying $F(mn)\le\min(\lambda_1^{\Omega(m)},\lambda_2m^\varepsilon)F(n)$ for $(m,n)=1$. Since
-$\Delta_{\mathrm H}(mn)\le\tau(m)\Delta_{\mathrm H}(n)$ for $(m,n)=1$, the function
-$\Delta_{\mathrm H}$ satisfies this with $\lambda_1=2$ for every $\varepsilon>0$. Their bound, for the
-polynomial $X$, gives for every fixed $\sigma>0$, $x$ large and $x^{\sigma}\le y\le x$
-\begin{equation}\label{eq:NT}
-\sum_{x<n\le x+y}\Delta_{\mathrm H}(n)\ll_\sigma\frac{y}{\log x}\sum_{n\le x}\frac{\Delta_{\mathrm H}(n)}{n}.
-\end{equation}
-We use it with $\sigma=1/4$. In the parameters of their Theorem~1, the
-polynomial degree is $g=1$; take $\varepsilon=1/16$ and $\delta=1$.
-Then $4g^2\varepsilon=1/4$ and the required
-class is $\mathcal M_1(2,B,1/48)$ for a suitable $B$. The same consequence is displayed
-immediately after equation~(2) of their paper.
-\item[(BT)] de la Bret\`eche and Tenenbaum~\cite[Theorem~1.1]{BT} prove that for large $x$
-\begin{equation}\label{eq:BT}
-\sum_{n\le x}\Delta_{\mathrm H}(n)\ll x\,(\log\log x)^{5/2}.
-\end{equation}
-\end{enumerate}
-
-\begin{lemma}\label{lem:partial}
-Assume~\eqref{eq:BT}, and let $\ell(x)=\max(1,\log\log x)$. Then
-$\sum_{n\le x}\Delta_{\mathrm H}(n)/n\ll\log x\cdot\ell(x)^{5/2}$ for large $x$.
-\end{lemma}
-
-\begin{proof}
-Split $n$ into dyadic blocks $2^j\le n<2^{j+1}\le 2x$. The terms with $n$ below the threshold
-of~\eqref{eq:BT} contribute $O(1)$, since $\Delta_{\mathrm H}(n)\le n$. Each remaining block
-contributes at most $2^{-j}\sum_{n\le 2^{j+1}}\Delta_{\mathrm H}(n)\ll\ell(2x)^{5/2}$, and
-$\ell(2x)\le2\ell(x)$. There are at most $\log_2x+1\le 3\log x$ blocks.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:loglog}]
-By~\eqref{eq:NT} and Lemma~\ref{lem:partial}, $\sum_{x<n\le x+y}\tau_A(n)\le
-\sum_{x<n\le x+y}\Delta_{\mathrm H}(n)\ll y\,\ell(x)^{5/2}$ for $x^{1/4}\le y\le x$. So
-$\mathrm{SD}(G)$ holds with $G=\ell^{5/2}$, which satisfies $G\ge1$ and $G(x)\ll x^{1/40}$.
-Theorem~\ref{thm:generic} gives $P(a,b)\ll a^{3/10}\ell(a)^{1/2}\ll a^{3/10}\sqrt{\log\log3a}$.
-\end{proof}
-
 \section{Rises in the quotient increments}\label{sec:rises}
 
 Throughout this section $k_i=q_{i+1}-q_i\ge1$, $d_i=b_i-b_{i+1}\ge1$, and a
@@ -911,9 +724,24 @@ smallest value. Then $sh_*\le\lfloor a/A\rfloor$ and
 $a^3\le26244h_*^3A^4$, so $s^3a^3\le26244A^4(a/A)^3\le26244Aa^3$.
 \end{proof}
 
+\begin{lemma}[Geometric sums]\label{lem:geom}
+Let $\alpha,\beta,s,t>0$ and $K\ge0$. Then
+\[
+\sum_{k<K}\min\bigl(\alpha2^{-sk},\ \beta2^{tk}\bigr)\le
+\Bigl(\frac1{1-2^{-s}}+\frac{2^t}{2^t-1}\Bigr)\alpha^{t/(s+t)}\beta^{s/(s+t)} .
+\]
+\end{lemma}
+
+\begin{proof}
+Let $M=\alpha^{t/(s+t)}\beta^{s/(s+t)}$. Then $(\alpha2^{-sk})^t(\beta2^{tk})^s=M^{s+t}$, so for each
+$k$ either $\beta2^{tk}\le M$ or $\alpha2^{-sk}<M$. The terms $\beta2^{tk}\le M$ grow with ratio
+$2^t$, so they sum to at most $M2^t/(2^t-1)$. The terms $\alpha2^{-sk}<M$ decay with ratio $2^{-s}$,
+so they sum to at most $M/(1-2^{-s})$.
+\end{proof}
+
 \begin{proof}[Proof of Theorem~\ref{thm:rises}]
 The rises inside a window are rises of the orbit, so $\rho+1\le R$. Combining the three parts
-of Proposition~\ref{prop:rises}, as in the proof of Theorem~\ref{thm:generic}, gives for the
+of Proposition~\ref{prop:rises} gives for the
 window $[2^k,2^{k+1})$ (when $6A>a$, part (2) gives $T-1\le a/A<6\le30A^{1/3}$)
 \[
 T_k\le 1+\sqrt R\,\min\bigl(\sqrt{8a}\,2^{-k/2},\ \sqrt2\,2^{k/2}\bigr)
@@ -1026,9 +854,10 @@ $q_i,q_{i+1},q_{i+2}$. Similarly $I_4(i)$ depends only on $b_i,\dots,b_{i+3}$ an
 $q_i,\dots,q_{i+4}$: the later remainders cancel.
 \end{remark}
 
-\section{Breaking the exponent \texorpdfstring{$3/10$}{3/10}}\label{sec:2377}
+\section{Patterns}\label{sec:patterns}
 
-In this section we prove Theorem~\ref{thm:2377}. We keep the notation of
+In this section we develop the patterns used in Section~\ref{sec:joint}, together with the
+bounds on their size and number. We keep the notation of
 Section~\ref{sec:hankel}: $b_0>b_1>\dots>b_{N-1}>0$ is the positive part of the orbit,
 $N=P(a,b)$, and $q_i=\lfloor a/b_i\rfloor$.
 
@@ -1038,12 +867,14 @@ $T\asymp a^{3/10}$ remainders in a window $[A,2A)$ with $A\asymp a^{3/5}$, quoti
 $q\asymp a^{2/5}$ and typical increments $k\asymp a^{1/10}$. At this scale the four-term Hankel
 invariant $I_4(i)=L(i)$ has size $\asymp aH^6/q^4\asymp 1$, where $H$ bounds the increments.
 The idea is that a positive integer of bounded size carries information. The labels
-$I_4(i),I_4(i+1),I_4(i+2)$, together with four further integers of the same size, determine a
+$I_4(i),I_4(i+1),I_4(i+2)$, together with four further integers of the same size, form a
 \emph{pattern}. States with a given pattern satisfy two linear equations and one quadratic
-equation in five consecutive increments. So a pattern accounts for at most $O(H^2)$
-increment tuples, and each tuple for at most four states. At the balanced point this
-gives $T\ll H^2\asymp a^{1/5}$, a large saving. Moving away from the balanced point costs a
-power of the pattern size, and optimising gives the exponent $23/77$.
+equation in five consecutive increments (Lemma~\ref{lem:pattern}), and the quotient $q_i$ is a
+root of a quartic fixed by the pattern and the increments (Lemma~\ref{lem:multid}). So the
+problem becomes one of counting patterns, and the states belonging to each pattern. Counting the
+latter with these equations alone already improves on $3/10$ (see the intermediate bounds in
+Section~\ref{sec:intro}). Section~\ref{sec:joint} instead keeps the fixed dividend $a$ in the
+equations.
 
 \subsection{The pattern matrix}
 Fix a state $i$ with $i+6<N$ and write, for $m\ge0$,
@@ -1085,43 +916,21 @@ the measure $\nu_i$ of Section~\ref{sec:hankel}. The three rows of $\mathcal M_i
 $\nu_i(\pi_i)=0$ and $\mu_i(x\pi_i)=\mu_i(x^2\pi_i)=0$, and $\nu_i(xf)=\mu_i(f)-q_i\nu_i(f)$ turns these
 into $\nu_i(x^j\pi_i)=0$ for $j\le3$. In particular $U_m(i)/I_4(i)$ are tail sums of the
 Newton coefficients of $\pi_i$: writing $\pi_i=\sum_{l\le4}\gamma_lF_l$, one has $U_m(i)/I_4(i)=\gamma_{m+1}+\dots+\gamma_4$,
-and $\gamma_0=-C_0=I_4(i+1)/I_4(i)$. This interpretation is not needed for
-the elementary count in this section; it will be used in Section~\ref{sec:joint}.
+and $\gamma_0=-C_0=I_4(i+1)/I_4(i)$. This interpretation is used in Section~\ref{sec:joint}.
 \end{remark}
 
 The \emph{pattern} of $i$ is the vector of seven integers
 \[
 \theta(i)=\bigl(L(i),\,L(i+1),\,L(i+2),\,U_1(i),\,U_2(i),\,U_1(i+1),\,U_2(i+1)\bigr),
 \]
-and its \emph{gaps} are $\kappa(i)=(k_0,\dots,k_4)$. By Lemma~\ref{lem:pattern},
-$\theta(i)$ determines $U(i)$ and $U(i+1)$ completely.
-
-\subsection{Three consequences}
-
-\begin{lemma}[The reduced quadratic]\label{lem:quad}
-Write $\theta(i)=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)$ and $\kappa(i)=(k_0,\dots,k_4)$. Then
-\[
-N_1N_0(N_1+N_0)\,k_3^2+\beta\,k_3+\gamma=0,
-\]
-where $\beta$ and $\gamma$ are polynomials in $\theta(i)$, $k_1$ and $k_2$ alone.
-\end{lemma}
-
-\begin{proof}
-Lemma~\ref{lem:pattern}(2) for the $k$-row at $i$ and at $i+1$ gives
+and we write $\theta(i)=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)$. By Lemma~\ref{lem:pattern},
+$\theta(i)$ determines $U(i)=(-N_1,u_1,u_2,N_0)$ and $U(i+1)=(-N_2,v_1,v_2,N_1)$ completely,
+and the $k$-relations at $i$ and $i+1$ read
 \[
 N_1k_0=u_1k_1+u_2k_2+N_0k_3,\qquad N_1k_4=N_2k_1-v_1k_2-v_2k_3 .
 \]
-Substitute these into $N_1^2\sum_mU_m(i)r_m=0$. Since $k_0$ enters the $r_m$ at most
-quadratically and $k_4$ only linearly, the result is a polynomial in $(\theta,k_1,k_2,k_3)$.
-The coefficient of $k_3^2$ comes from $-N_1\cdot N_1^2k_0^2$, from $N_0\cdot N_1^2\cdot 2k_0k_3$ and
-from $N_0\cdot N_1^2k_3^2$, and it equals
-$-N_1N_0^2+2N_1N_0^2+N_1^2N_0=N_1N_0(N_1+N_0)$. Explicitly
-\begin{align*}
-\beta&=2N_1^2N_0(k_1+k_2)+N_1^2u_2+2N_1N_0(u_1k_1+u_2k_2)-N_1N_0v_2,\\
-\gamma&=N_1(u_1k_1+u_2k_2)^2+N_1^2\bigl(u_1k_1^2+2u_2k_1k_2+u_2k_2^2+u_1k_2-N_1k_1\bigr)
-+N_0N_1(N_2k_1-v_1k_2).
-\end{align*}
-\end{proof}
+
+\subsection{Two identities}
 
 \begin{lemma}[The multiplicity identity]\label{lem:multid}
 Let $F_m(Y)=\prod_{l<m}(Y-s_l)$ and $\mathcal Q_i(Y)=\sum_{m=0}^{3}U_m(i)\,F_m(Y)\,(Y-s_m-1)$.
@@ -1168,169 +977,6 @@ $\mu_{i+m}(x^2)=k_m+1$, $\mu_{i+m}(x^3)=k_m^2+2k_m+k_{m+1}+1$, the product equal
 claim, $a=q_ib_i+b_{i+1}<2A(q_i+1)\le4Aq_i$, so $L(i)a^4\le256A^4L(i)q_i^4\le 256A^4aG$.
 \end{proof}
 
-\subsection{The size of a pattern}
-
-\begin{lemma}\label{lem:psize}
-Let $1\le k_0,\dots,k_5\le H$ and $A\ge1$. Suppose $N_0=L(i)$ and $N_1=L(i+1)$ satisfy
-$N_0a^3\le256A^4G(k_0,\dots,k_4)$ and $N_1a^3\le256A^4G(k_1,\dots,k_5)$, and that the
-\emph{scale condition}
-\begin{equation}\label{eq:scale}
-237568\,A^4H^5\le a^3
-\end{equation}
-holds. Then $L(i)$, $L(i+1)$, $|U_1(i)|$ and $|U_2(i)|$ are all at most $172032\,A^4H^6/a^3$.
-\end{lemma}
-
-\begin{proof}
-Put $V=k_1k_2(k_1+k_2)$ and $\Delta_4=k_0\cdot k_1s_2\cdot k_2(k_1+k_2)s_3$. Expanding $G$ and
-bounding each of the three error terms by $56H^5$, $170H^5$ and $238H^5$ gives
-$G(k_0,\dots,k_4)\le\Delta_4+464H^5$. Also $\Delta_4\le 6H^3V$, because
-$\Delta_4=k_0s_2s_3\cdot V$. Similarly $G(k_1,\dots,k_5)\le 6H^3V+464H^5$, because the
-corresponding product is $V\cdot k_3(k_2+k_3)(k_1+k_2+k_3)$. By~\eqref{eq:scale} and $N_0,N_1\ge1$,
-$256A^4\cdot464H^5\le a^3/2\le N_ja^3/2$ for $j=0,1$, so
-\[
-N_0a^3,\ N_1a^3\le 3072\,A^4H^3V .
-\]
-Since $N_0\ge1$, this and~\eqref{eq:scale} give $V\ge 77H^2$.
-
-Now solve for $(u_1,u_2)=(U_1(i),U_2(i))$ from the $k$- and $r$-relations of
-Lemma~\ref{lem:pattern}. These read $u_1k_1+u_2k_2=N_1k_0-N_0k_3$ and
-$u_1r_1+u_2r_2=N_1r_0-N_0r_3$. The determinant is
-\[
-\delta=k_1r_2-k_2r_1=k_1k_2(k_1+k_2)+k_1k_3-k_2^2\ \ge\ V-H^2\ \ge\ V/2 .
-\]
-Using $r_m\le (2m+2)H^2$, Cramer's rule gives $|u_j|\delta\le 14(N_0+N_1)H^3$, hence
-\[
-|u_j|\,V a^3\le 28H^3(N_0+N_1)a^3\le 28H^3\cdot 6144A^4H^3V ,
-\]
-that is, $|u_j|a^3\le172032A^4H^6$. Finally $N_ja^3\le3072A^4H^3V\le6144A^4H^6$, since
-$V\le2H^3$.
-\end{proof}
-
-The point of the argument is in the first paragraph. The two adjacent labels share the
-Vandermonde factor $V$, so the ratio $L(i+1)/L(i)$ never enters the bound.
-
-\subsection{The counting lemma}
-
-\begin{proposition}\label{prop:pcount}
-Let $\mathcal G$ be a set of states $i$ with $i+8<N$. Suppose that for each $i\in\mathcal G$
-all entries of $\theta(i)$ have absolute value at most $M$, and all entries of $\kappa(i)$ lie
-in $[1,H]$. Then $|\mathcal G|\le 8(2M+1)^7H^2$.
-\end{proposition}
-
-\begin{proof}
-\emph{(i) At most four states per $(\theta,\kappa)$.} If $\theta(i)=\theta$ and
-$\kappa(i)=\kappa$, then by Lemma~\ref{lem:multid} $q_i$ is a root of the polynomial
-$\mathcal Q(-q)-aH_4(\kappa)$. This polynomial depends only on $(\theta,\kappa)$, and it has
-degree four and leading coefficient $\theta_0\ge1$. Since $q_i$ is strictly increasing in $i$,
-there are at most four such states.
-
-\emph{(ii) At most two values of $\kappa$ per $(\theta,k_1,k_2)$.} By Lemma~\ref{lem:quad},
-$k_3$ is a root of a quadratic whose coefficients depend only on $(\theta,k_1,k_2)$. The
-leading coefficient is $N_1N_0(N_1+N_0)>0$. The two linear relations then determine $k_0$ and
-$k_4$, because $N_1\ne0$.
-
-\emph{(iii)} There are at most $(2M+1)^7H^2$ values of $(\theta,k_1,k_2)$.
-\end{proof}
-
-\subsection{The window bound}
-
-\begin{proposition}\label{prop:twostate}
-Let $b_s,\dots,b_{s+T-1}$ be a window run in $[A,2A)$ with $T\ge36$, and put
-$H=\lfloor 28a/(AT)\rfloor+1$ and $M=\lfloor172032A^4H^6/a^3\rfloor$. If~\eqref{eq:scale}
-holds, then
-\[
-T\le 16\,(2M+1)^7H^2 .
-\]
-\end{proposition}
-
-\begin{proof}
-Call a start $i$ \emph{good} if $s\le i$, $i+9\le s+T$ and $q_{j+1}-q_j\le H$ for $i\le j\le i+6$,
-that is, $k_0,\dots,k_6\le H$ at state $i$.
-
-\emph{Most starts are good.} Let $\mathcal B$ be the set of $j\in[s,s+T-1)$ with $q_{j+1}-q_j>H$. Then
-$|\mathcal B|(H+1)\le q_{s+T-1}-q_s\le a/A$. Since $H\cdot AT>28a$, this gives
-$28|\mathcal B|\le T$. Each $j\in\mathcal B$ spoils at most seven starts, so at least
-$T-9-7|\mathcal B|\ge T/2$ starts are good, as $T\ge36$.
-
-\emph{Good starts satisfy Proposition~\ref{prop:pcount}.} Let $i$ be good. Then $i+8<N$, and
-$b_i,b_{i+1},b_{i+2}<2A$. So Lemma~\ref{lem:labels} applies at $i$, $i+1$ and $i+2$.
-Lemma~\ref{lem:psize} at $i$ and at $i+1$ bounds all seven entries of $\theta(i)$ by $M$.
-Therefore $T/2\le 8(2M+1)^7H^2$.
-\end{proof}
-
-\subsection{Proof of Theorem~\ref{thm:2377}}
-
-\begin{proposition}\label{prop:77}
-Let $T\ge36$ be the length of a window run in $[A,2A)$. Then $T^{77}\le C_{77}\Delta^{22}a^{23}$
-for an absolute constant $C_{77}$.
-\end{proposition}
-
-\begin{proof}
-We prove this with
-\[
-C_{77}=122449^{20}+(8\cdot237568\cdot56^5)^{11}+(64\cdot50176)^{11}
-+8^{16}\cdot16\cdot3^7\cdot172032^7\cdot56^{44}.
-\]
-We use Proposition~\ref{prop:six}, $T^6A^2\le96\cdot10^6a^3$, and
-Proposition~\ref{prop:drop}, which gives $T^2\le 2T(T-1)\le 8A\Delta$.
-
-\emph{Case $AT>28a$.} Then $784a^2T^4\le T^6A^2\le96\cdot10^6a^3$, so $T^4\le122449\,a$ and
-$T^{77}\le 122449^{20}a^{20}$.
-
-From now on $AT\le28a$, so $H\cdot AT\le 28a+AT\le 56a$.
-
-\emph{Case~\eqref{eq:scale} fails.} Then $a^3(AT)^5<237568A^4(H\,AT)^5\le 237568\cdot56^5A^4a^5$,
-so $AT^5\le237568\cdot56^5a^2$. Hence $T^7=T^5T^2\le 8\Delta\,AT^5\le 8\cdot237568\cdot56^5\,\Delta a^2$.
-Raise this to the eleventh power.
-
-\emph{Case~\eqref{eq:scale} holds and $M=0$.} Then $T\le16H^2$, so
-$T(AT)^2\le16(56a)^2$. Hence $T^7=T^3(T^2)^2\le 64\Delta^2\,T^3A^2\le 64\cdot50176\,\Delta^2a^2$.
-This case is in fact vacuous: the proof of Proposition~\ref{prop:twostate} provides a good
-start $i$, and there $1\le L(i)\le M$ by Lemma~\ref{lem:psize}. We treat it anyway, here and
-in the analogous proofs below, so that the constants match the formal proof.
-
-\emph{Case~\eqref{eq:scale} holds and $M\ge1$.} Then $2M+1\le3M$ and $Ma^3\le172032A^4H^6$, so
-\[
-T\,a^{21}\le 16\cdot3^7\,(Ma^3)^7H^2\le 16\cdot3^7\cdot172032^7\,A^{28}H^{44}.
-\]
-Multiplying by $(AT)^{44}$ and using $H\cdot AT\le56a$ gives
-$T^{45}A^{16}\le 16\cdot3^7\cdot172032^7\cdot56^{44}\,a^{23}$. Finally
-\[
-T^{77}=T^{45}(T^2)^{16}\le 8^{16}\Delta^{16}\,T^{45}A^{16}
-\le 8^{16}\cdot16\cdot3^7\cdot172032^7\cdot56^{44}\,\Delta^{16}a^{23}.
-\]
-In every case $T^{77}\le C_{77}\Delta^{22}a^{23}$.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:2377}]
-This is the argument of Theorem~\ref{thm:main}, with Proposition~\ref{prop:77} in place of
-Corollary~\ref{cor:window}. Let $\varepsilon>0$ and choose an integer $m>1/\varepsilon$. By
-Lemma~\ref{lem:div}, $\Delta^{22m}\le C_{22m}\cdot32a^7$, so every dyadic window has
-$T\le35$ or
-\[
-T^{77m}\le C_{77}^m\,C_{22m}\,32\;a^{23m+7}.
-\]
-Since $(23m+7)/(77m)=23/77+1/(11m)\le23/77+\varepsilon/2$, each of the $\lfloor\log_2a\rfloor+1$
-windows has $T\ll_\varepsilon a^{23/77+\varepsilon/2}$, and the theorem follows.
-\end{proof}
-
-\begin{remark}\label{rem:2377}
-In terms of the scales, Proposition~\ref{prop:twostate} says $T\ll X^7H^2$, where
-$X=A^4H^6/a^3$ bounds the seven pattern integers and $H\asymp a/(AT)$. Thus
-$X\asymp a^3/(A^2T^6)$ and $T^{45}A^{16}\ll a^{23}$. The drop bound $A\gg T^2/\Delta$ then gives
-$T^{77}\ll\Delta^{16}a^{23}$. The scale condition~\eqref{eq:scale} says $Q^4\gg aH^5$, where
-$B=a/A$, and its failure gives the stronger bound $T\ll a^{2/7+o(1)}$.
-\end{remark}
-
-\section{The ternary quadratic and the exponent \texorpdfstring{$11/37$}{11/37}}\label{sec:1137}
-
-Proposition~\ref{prop:pcount} uses only one coefficient of the reduced quadratic. Here we use
-all of it, which saves a factor $H$ in the count per pattern and proves
-Theorem~\ref{thm:1137}. We keep the notation of Section~\ref{sec:2377}, and, as in
-Lemma~\ref{lem:quad}, write a pattern as
-$\theta=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)=(L(i),L(i+1),L(i+2),U_1(i),U_2(i),U_1(i+1),U_2(i+1))$.
-In particular $A$ is still the scale of the window $[A,2A)$.
-
 \subsection{Signs}
 Throughout this subsection the pattern and gaps arise from the same state,
 so the cofactor relations of Lemma~\ref{lem:pattern} remain in force.
@@ -1351,159 +997,33 @@ u_1S(k_1,k_2,k_3)&=N_1E(k_0,k_1,k_2,k_3)+N_0S(k_2,k_3,k_4),\\
 since the Cramer determinant is $k_1r_2-k_2r_1=S(k_1,k_2,k_3)$.
 \end{proof}
 
-\subsection{The ternary relation}
-For a pattern $\theta$ let
-\begin{align*}
-F_\theta(x,y,z)={}&(u_1x+u_2y+N_0z)^2+N_1u_1x^2+N_1u_2y^2+N_0N_1z^2+2N_1u_2xy+2N_0N_1xz\\
-&+2N_0N_1yz+(N_0N_2-N_1^2)x+(N_1u_1-N_0v_1)y+(N_1u_2-N_0v_2)z .
-\end{align*}
 
-\begin{lemma}\label{lem:tern}
-At every state $i$ with $i+7<N$, $F_{\theta(i)}(k_1,k_2,k_3)=0$. Write $F_\theta=\alpha x^2+\beta xy+\gamma
-y^2+d(z)x+e(z)y+f(z)$. Then $\alpha=u_1(u_1+N_1)$,
-$\beta^2-4\alpha\gamma=-4N_1u_2(N_1+u_1)(u_1-u_2)$, and
-\[
-(\beta d_1-2\alpha e_1)^2+(\beta^2-4\alpha\gamma)(4\alpha f_2-d_1^2)
-=16\,N_0N_1^2u_1(N_0-u_2)(N_1+u_1)^2(u_1-u_2),
-\]
-where $d_1,e_1,f_2$ are the coefficients of $z,z,z^2$ in $d,e,f$, respectively.
-In particular, under the
-hypotheses of Lemma~\ref{lem:signs}, $\alpha>0$, $\beta^2-4\alpha\gamma>0$ and the last
-quantity is nonzero.
+\subsection{Good starts}
+
+\begin{lemma}[Good starts]\label{lem:good}
+Let $b_s,\dots,b_{s+T-1}$ be a window run in $[A,2A)$ with $T\ge36$, and put
+$H=\lfloor 28a/(AT)\rfloor+1$. Call a start $i$ \emph{good} if $s\le i$, $i+9\le s+T$ and
+$q_{j+1}-q_j\le H$ for $i\le j\le i+6$, that is, $k_0,\dots,k_6\le H$ at state $i$. Then at least
+$T/2$ starts are good, and every good start satisfies $i+8<N$ and $b_i,b_{i+1},b_{i+2}<2A$.
 \end{lemma}
 
 \begin{proof}
-The identity
-$N_1F_\theta(k_1,k_2,k_3)=N_1^2R+(N_0N_1k_3-N_1^2k_0+N_1u_1k_1+N_1u_2k_2)K_0-N_0N_1K_1$, where $K_0$, $K_1$
-and $R$ are the $k$-relations at $i$, $i+1$ and the $r$-relation at $i$, gives the first claim.
-The rest is expansion. So $F_\theta\equiv N_1R$ modulo the two linear relations.
+Let $\mathcal B$ be the set of $j\in[s,s+T-1)$ with $q_{j+1}-q_j>H$. Then
+$|\mathcal B|(H+1)\le q_{s+T-1}-q_s\le a/A$. Since $H\cdot AT>28a$, this gives
+$28|\mathcal B|\le T$. Each $j\in\mathcal B$ spoils at most seven starts, so at least
+$T-9-7|\mathcal B|\ge T/2$ starts are good, as $T\ge36$. The last assertion is immediate,
+since the states $i,\dots,i+8$ lie in the window.
 \end{proof}
 
-\subsection{Norm equations}
+\subsection{The full minor vector}\label{sec:minors}
+The seven pattern integers are not independent: they are coordinates of a single vector of
+$3\times3$ minors. If all ten minors are at most $X$ in absolute value, there are only
+$X^{5+o(1)}$ such vectors (Proposition~\ref{prop:minorvec}), rather than the $X^7$ choices of seven
+independent integers.
 
-\begin{lemma}[Norm equations]\label{lem:norm}
-Let $D\ge1$, $m\ne0$, $B\ge1$ be integers and $Z=B(\lfloor\sqrt D\rfloor+2)$. The number of
-$(x,y)\in[-B,B]^2$ with $x^2-Dy^2=m$ is at most $2\tau(|m|)^3(\log_3Z^2+1)$.
-\end{lemma}
-
-\begin{proof}
-If $D=h^2$ then $(x-hy)(x+hy)=m$, and $x-hy$ is one of the $2\tau(|m|)$ signed divisors of $m$;
-it determines $(x,y)$. Otherwise write $D=df^2$ with $d>1$ squarefree, so $d$ is not a square
-and $\sqrt d$ is irrational. For a solution put $g=\gcd(x,fy)$, $u=x/g$, $w=fy/g$ and
-$n=u^2-dw^2$, so that $m=g^2n$. Since $\gcd(u,w)=1$ and $n\equiv u^2\pmod w$, $w$ is invertible
-modulo $n$. Let $t\in[0,|n|)$ be the residue of $uw^{-1}$; then $t^2\equiv d$ and $u\equiv tw$
-modulo $n$.
-
-\emph{The residues.} The number of square roots of $d$ modulo $c\ge1$ is at most $\tau(c)^2$. Modulo
-$p^e$ it is at most four. If $p\mid d$, either $e=1$ and the only root is $0$, or $e\ge2$ and a
-root would force $p^2\mid d$. If $p\nmid d$ is odd, two roots $r,s$ satisfy
-$p^e\mid(s-r)(s+r)$, and $p$ cannot divide both factors, so $s\equiv\pm r$. If $p=2\nmid d$,
-then $s,r$ are odd, one of $(s\mp r)/2$ is odd, and $s\equiv\pm r\pmod{2^{e-1}}$. The count is
-submultiplicative over coprime factors, by the Chinese remainder theorem, and $4\le\tau(p^e)^2$.
-
-\emph{A class.} Fix $g$ (with $g^2\mid m$), $t$ and the sign of $\xi=u+w\sqrt d$. Two
-solutions $(u,w),(u',w')$ in this class satisfy $n\mid uu'-dww'$ and $n\mid wu'-uw'$. So
-$\xi=\xi'\varepsilon$ with $\varepsilon=r+s\sqrt d$, where $r=(uu'-dww')/n$, $s=(wu'-uw')/n$ and
-$r^2-ds^2=1$. If $|\xi|>|\xi'|$ then $\varepsilon>1$, and then $\varepsilon\ge3$: indeed
-$\varepsilon^{-1}=r-s\sqrt d\in(0,1)$, so $2r=\varepsilon+\varepsilon^{-1}>2$, hence $r\ge2$, and
-$\varepsilon<3$ would give $\varepsilon+\varepsilon^{-1}<4$. Now $|u|+|w|\sqrt d\le|x|+|y|\sqrt
-D\le Z$, so $|\xi|,|\bar\xi|\le Z$, and $|\xi\bar\xi|=|n|\ge1$ gives $Z|\xi|\ge1$. Hence the map
-$\xi\mapsto\lfloor\log_3(Z|\xi|)\rfloor$ is injective on the class, with values in
-$[0,\log_3Z^2]$.
-
-There are at most $\tau(|m|)$ values of $g$, $\tau(|m|)^2$ of $t$ and two signs.
-\end{proof}
-
-The argument is the classical one; compare Vaughan and Wooley~\cite[Lemma~3.5]{VW}.
-
-\subsection{Slices}
-
-\begin{lemma}[Slices]\label{lem:slice}
-Let $F(x,y,z)=\alpha x^2+\beta xy+\gamma y^2+(d_1z+d_0)x+(e_1z+e_0)y+f_2z^2+f_1z+f_0$ have integer
-coefficients bounded by $K$, with $\alpha>0$, $D=\beta^2-4\alpha\gamma>0$ and
-$\ell=(\beta d_1-2\alpha e_1)^2+D(4\alpha f_2-d_1^2)\ne0$. Let $H\ge1$, and suppose that
-$2\tau(|m|)^3(\log_3\bigl((11K^2H(3K+2))^2\bigr)+1)\le \omega$ for all integers $0<|m|\le116K^4H^2$. Then $F$ has at most
-$(2H+1)(\omega+4)$ zeros in $[-H,H]^3$.
-\end{lemma}
-
-\begin{proof}
-Put $t=2\alpha x+\beta y+d(z)$, $\Lambda(z)=\beta d(z)-2\alpha e(z)$, $s=Dy+\Lambda(z)$ and
-$\mathcal N(z)=\Lambda(z)^2+D(4\alpha f(z)-d(z)^2)$. Completing squares gives
-$s^2-Dt^2=\mathcal N(z)-4\alpha DF$. In the box, $|s|,|t|\le11K^2H$,
-$\sqrt D\le3K$ and $|\mathcal N(z)|\le116K^4H^2$. For fixed $z$ the map $(x,y)\mapsto(s,t)$
-is injective. So if $\mathcal N(z)\ne0$ the slice has at most $\omega$ zeros, by
-Lemma~\ref{lem:norm}. The $z^2$-coefficient of $\mathcal N$ is $\ell\ne0$, so at most two
-slices have $\mathcal N(z)=0$. In such a slice $s^2=Dt^2$, which for fixed $y$ is a
-quadratic in $x$ with leading coefficient $4\alpha^2D\ne0$, so it has at most
-$2(2H+1)$ zeros.
-\end{proof}
-
-\subsection{The count}
-
-\begin{proposition}\label{prop:pcount2}
-Under the hypotheses of Proposition~\ref{prop:pcount}, let $K=4M^2$, and suppose $\omega$ satisfies
-the hypothesis of Lemma~\ref{lem:slice}. Then $|\mathcal G|\le4(2M+1)^7(2H+1)(\omega+4)$.
-\end{proposition}
-
-\begin{proof}
-As before, at most four states share $(\theta,\kappa)$, and $\kappa$ is determined by
-$(\theta,k_1,k_2,k_3)$. For a fixed $\theta$, the triples $(k_1,k_2,k_3)$ are zeros of
-$F_\theta$ in $[1,H]^3$ (Lemma~\ref{lem:tern}). The coefficients of $F_\theta$ are at most
-$4M^2$, and Lemmas~\ref{lem:signs} and~\ref{lem:tern} give the nondegeneracy hypotheses of
-Lemma~\ref{lem:slice}.
-\end{proof}
-
-Let $P_1(a)=10^{300}a^{100}$, let $\tau^*(X)=\max_{n\le X}\tau(n)$ with the convention
-$\tau(0)=0$, and let $\Xi(a)=2\tau^*(P_1(a))^3(\log_3P_1(a)+1)+4$. In every window
-$H\le29a$ and $M\le10^{16}a^7$; the same bound holds for the larger $M$ of
-Proposition~\ref{prop:twostate3} below. Hence $K=4M^2$ satisfies
-$116K^4H^2\le P_1(a)$ and $(11K^2H(3K+2))^2\le P_1(a)$, so $\omega=\Xi(a)-4$ satisfies the
-hypothesis of Lemma~\ref{lem:slice}. The argument of Proposition~\ref{prop:twostate} then gives:
-
-\begin{proposition}\label{prop:twostate2}
-In the setting of Proposition~\ref{prop:twostate}, if~\eqref{eq:scale} holds then
-$T\le 24(2M+1)^7H\,\Xi(a)$.
-\end{proposition}
-
-\begin{proposition}\label{prop:74}
-For every window run with $T\ge36$, $T^{74}\le C_{74}\Delta^{19}\Xi(a)^{19}a^{22}$ for an
-absolute constant $C_{74}$.
-\end{proposition}
-
-\begin{proof}
-We prove this with
-$C_{74}=122449^{19}+(8\cdot237568\cdot56^5)^{11}+10752^{19}+8^{15}\cdot24\cdot3^7\cdot172032^7\cdot56^{43}$.
-The four cases of Proposition~\ref{prop:77} carry over. If $AT>28a$, then $T^4\le122449a$. If
-the scale condition fails, then $T^7\le8\cdot237568\cdot56^5\Delta a^2$. If $M=0$, then
-$T^2A\le1344\,\Xi a$ and $T^4\le10752\,\Delta\Xi a$. If $M\ge1$, then
-$Ta^{21}\le24\cdot3^7\cdot172032^7A^{28}H^{43}\Xi$, so $T^{44}A^{15}\le
-24\cdot3^7\cdot172032^7\cdot56^{43}\,\Xi a^{22}$, and $T^{74}=T^{44}(T^2)^{15}\le(8A\Delta)^{15}T^{44}$.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:1137}]
-By the divisor bound $\tau(n)^k\le C_kn$, both $\Delta$ and $\tau^*(P_1(a))$ are
-$O_\eta(a^\eta)$, and $\log_3P_1(a)\ll_\eta a^\eta$. So $\Xi(a)\ll_\eta a^\eta$, and
-Proposition~\ref{prop:74} gives $T\ll_\eta a^{(22+38\eta)/74}$ for every dyadic window. Since
-$22/74=11/37$, summing over the $O(\log a)$ windows proves the theorem.
-\end{proof}
-
-\begin{remark}
-In terms of the scales, the count per pattern is now $O(Ha^\eta)$ instead of $O(H^2)$. So
-$T\ll a^\eta X^7H$, which gives $T^{44}\ll a^{7+\eta}B^{15}$ with $B=a/A$, and with $B\ll a^{1+\eta}/T^2$ the
-bound $T^{74}\ll a^{22+O(\eta)}$. At the critical point $T\approx a^{11/37}$, $B\approx
-a^{15/37}$, $H\approx a^{4/37}$ and $X\approx a^{1/37}$.
-\end{remark}
-
-\section{Ten minors and the exponent \texorpdfstring{$8/27$}{8/27}}\label{sec:827}
-
-The seven pattern integers of Section~\ref{sec:1137} were counted as if they were independent.
-They are not: they are coordinates of a single vector of $3\times3$ minors. Counting such vectors
-directly saves a factor $X^2$ and proves Theorem~\ref{thm:827}.
-
-\subsection{The full minor vector}
 Let $\mathcal M_i$ now be the $3\times5$ matrix with rows $(d_0,\dots,d_4)$, $(k_0,\dots,k_4)$
 and $(r_0,\dots,r_4)$, and let $p_{c_1c_2c_3}$ be its minor on columns $c_1<c_2<c_3$. Expanding
-the cofactors of Section~\ref{sec:2377} gives
+the cofactors above gives
 \[
 \theta(i)=(p_{012},\,p_{123},\,p_{234},\,p_{023},\,-p_{013},\,p_{134},\,-p_{124}).
 \]
@@ -1528,15 +1048,12 @@ satisfies $|p|\,a^3\le3609600\,A^4H^6$.
 \end{proposition}
 
 \begin{proof}
-Subtracting the expansions for $j$ and $j+1$ gives
+Subtracting the expansions of Lemma~\ref{lem:expand} for $j$ and $j+1$ gives
 $d_j/a=k_j/q^2-(r_j+k_j)/q^3+e_{j+1}-e_j$. So replacing the first row by
 $d'_j=d_j-a(q^{-2}-q^{-3})k_j+aq^{-3}r_j=a(e_{j+1}-e_j)$ changes no minor. Now
 $|d'_j|\le235aH^3/q^4$, $|k_j|\le H$ and $|r_j|\le10H^2$, so $|p|\le14100\,aH^6/q^4$. Finally
 $a\le4Aq$.
 \end{proof}
-
-This replaces Lemma~\ref{lem:psize}, and the scale condition~\eqref{eq:scale} is no longer
-needed.
 
 \subsection{Counting minor vectors}
 
@@ -1562,302 +1079,6 @@ $27mg^2$ choices. Summing over $u$, grouped by $g=d\mid m$, gives
 $\sum_u g^2\le\sum_{d\mid m}d^2(3m/d)^3\le27m^3\tau(m)$, so at most $729m^4\tau(m)$ pairs
 $(u,v)$. There are ten pivots and two signs.
 \end{proof}
-
-\subsection{The bound}
-
-\begin{proposition}\label{prop:twostate3}
-For a window run in $[A,2A)$ with $T\ge36$, let $H=\lfloor28a/(AT)\rfloor+1$ and
-$M=\lfloor3609600A^4H^6/a^3\rfloor$. Then $T\ll(M+1)^5H\,\Xi(a)^2$ and
-\[
-T^{54}\ll\Delta^{14}\Xi(a)^{28}a^{16}.
-\]
-\end{proposition}
-
-\begin{proof}
-Explicitly, we prove $T\le24\cdot14581\,(M+1)^5H\,\Xi(a)^2$ and $T^{54}\le C_{54}\Delta^{14}\Xi(a)^{28}a^{16}$
-with $C_{54}=122449^{14}+(448\cdot24\cdot14581)^{14}+8^{11}\cdot32\cdot24\cdot14581\cdot3609600^5\cdot56^{31}$.
-As in Propositions~\ref{prop:twostate} and~\ref{prop:pcount2}, at least $T/2$ starts are good, at
-most four good starts share $(\theta,\kappa)$, and there are at most $(2H+1)(\omega+4)$ gap triples per
-pattern.
-Since $\theta$ is a function of the minor vector, there are at most
-$1+14580M^5\tau^*(M)\le14581(M+1)^5\Xi(a)$ patterns, by Propositions~\ref{prop:allminors}
-and~\ref{prop:minorvec}. For the second bound, if $AT>28a$ then $T^4\le122449a$. Otherwise
-$HAT\le56a$. If $M=0$ then
-$T^4\le448\cdot24\cdot14581\,\Delta\Xi^2a$. Otherwise $Ta^{15}\le32\cdot24\cdot14581\cdot3609600^5
-A^{20}H^{31}\Xi^2$, hence $T^{32}A^{11}\ll\Xi^2a^{16}$ and $T^{54}\le(8A\Delta)^{11}T^{32}$.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:827}]
-Since $\Delta,\Xi(a)\ll_\eta a^\eta$, every window has $T\ll a^{(16+42\eta)/54}$, and $16/54=8/27$.
-Choose $\eta$ sufficiently small in terms of $\varepsilon$, include the
-bounded-length windows, and sum over the $O(\log a)$ dyadic windows.
-\end{proof}
-
-\begin{remark}
-In terms of the scales, $T\ll a^\eta X^5H$, so $T^{32}\ll a^{5+\eta}B^{11}$ and $T^{54}\ll
-a^{16+O(\eta)}$. At the critical point $T\approx a^{8/27}$, $B\approx a^{11/27}$, $H\approx a^{3/27}$
-and $X\approx a^{1/27}$.
-\end{remark}
-
-\section{Lattices of minor vectors and the exponent \texorpdfstring{$45/152$}{45/152}}\label{sec:45152}
-
-Proposition~\ref{prop:twostate3} allows $(2H+1)(\omega+4)$ gap vectors for every minor vector. But
-the gap vector of a state is not an arbitrary point of $[1,H]^5$: it lies in a rank-three
-lattice determined by its minor vector. If that lattice has no short vectors, the slices of the
-ternary quadratic are few. If it has a short vector, the minor vector satisfies an extra
-congruence, and few minor vectors do. Balancing the two proves Theorem~\ref{thm:45152}. The
-argument uses only integer arithmetic. Instead of the geometry of numbers it uses a reduced
-basis obtained by minimising determinants and lengths directly.
-
-\subsection{The lattice of a minor vector}
-Let $p\ne0$ be the minor vector of a $3\times5$ integer matrix $\mathcal M$, with pivot $\pi$,
-$m=p_\pi$, pivot columns $c_1<c_2<c_3$, other columns $c_4<c_5$, and $u$, $v$ as in
-Proposition~\ref{prop:minorvec}. Let $\Lambda_p\subseteq\mathbb Z^3$ be the subgroup of $x$ with
-$m\mid u\cdot x$ and $m\mid v\cdot x$. It contains $m\mathbb Z^3$. Let $\lambda(p)$ be the least
-sup-norm of a nonzero vector of $\Lambda_p$.
-Subscripts on $L_c$ and $p_{abc}$ retain the original column labels
-$0,\dots,4$; $c_1,c_2,c_3$ enumerate the chosen pivot. We use
-$\gcd(n,x)$ for $\gcd(n,x_1,x_2,x_3)$ when $x\in\mathbb Z^3$.
-
-\begin{lemma}[Lifting]\label{lem:lift}
-Let $L_c$ be $me_a$ if $c=c_a$ is a pivot column, $u$ if $c=c_4$ and $v$ if $c=c_5$. For every
-row $x$ of $\mathcal M$ and every column $c$, $m\,x_c=L_c\cdot(x_{c_1},x_{c_2},x_{c_3})$.
-Moreover $\det(L_1,L_2,L_3)=m^2p_{123}$.
-\end{lemma}
-
-\begin{proof}
-The rows $L_c$ are the rows of $\mathcal M^{\mathsf T}\operatorname{adj}(\mathcal M_\pi^{\mathsf
-T})$, where $\mathcal M_\pi$ is the pivot $3\times3$ block. This is Cramer's rule. Both claims
-are polynomial identities in the fifteen entries, checked symbolically for each of the ten
-pivots.
-\end{proof}
-
-So the pivot gaps $k'=(k_{c_1},k_{c_2},k_{c_3})$ of a state lie in $\Lambda_p$. The five gaps
-of the state are $k_c=L_c\cdot k'/m$, and since $p_{123}=L(i+1)\ge1$, the gaps $(k_1,k_2,k_3)$ are an
-invertible linear image of $k'$.
-
-\begin{lemma}[Index]\label{lem:index}
-If $t$ is a nonnegative integer and $(t+1)^3>|m|$, then $\lambda(p)\le t$.
-\end{lemma}
-
-\begin{proof}
-Write $g=\gcd(|m|,u)$, $n=|m|/g$ and $u=gu_0$. The proof of Proposition~\ref{prop:minorvec}
-gives $v=\mu u_0+nw$ with $\mu=c\cdot v\in\mathbb Z$ and $w\in\mathbb Z^3$. Put
-$\psi(x)=\bigl(u_0\cdot x\bmod n,\ (\mu\lfloor u_0\cdot x/n\rfloor+w\cdot x)\bmod g\bigr)$,
-which takes at most $ng=|m|$ values. Two points $x\ne y$ of $[0,t]^3$ with
-$\psi(x)=\psi(y)$ exist. Then $u_0\cdot(x-y)=n(q-q')$ with $q,q'$ the two floors, so
-$u\cdot(x-y)=\pm m(q-q')$, and $v\cdot(x-y)=n\bigl(\mu(q-q')+w\cdot(x-y)\bigr)$ with the
-bracket divisible by $g$. So $x-y\in\Lambda_p$.
-\end{proof}
-
-Since $\psi(x)=\psi(y)$ forces $x-y\in\Lambda_p$, the same argument shows that $\Lambda_p$ has
-index at most $|m|$ in $\mathbb Z^3$.
-
-\subsection{Reduced bases}
-
-Here $|v|$ denotes the Euclidean norm, while $|v|_\infty$ denotes the sup norm
-used to define $\lambda(p)$. In particular, $|v|\ge |v|_\infty$.
-
-\begin{lemma}[Reduction]\label{lem:reduce}
-Let $\Lambda\subseteq\mathbb Z^3$ be a subgroup containing $m\mathbb Z^3$, $m\ge1$. There is a
-basis $b_1,b_2,b_3$ of $\Lambda$ with $\delta=\det(b_1,b_2,b_3)$, $0<|\delta|\le m^3$ and
-\[
-27\,|b_1|^2|b_2|^2|b_3|^2\le64\,\delta^2 .
-\]
-Hence every $w\in\Lambda$ is $\sum y_ib_i$ with $y\in\mathbb Z^3$ and $27|b_i|^2y_i^2\le64|w|^2$.
-\end{lemma}
-
-\begin{proof}
-Let $I$ be the least nonzero $|\det|$ of a triple in $\Lambda$; the triple
-$(me_1,me_2,me_3)$ gives $I\le m^3$. A triple with $|\det|=I$ is a basis. Otherwise some
-$w\in\Lambda$ has a Cramer coordinate that is not an integer, say the first,
-$\det(w,b_2,b_3)/\delta$, and $w-\lfloor\cdot\rfloor b_1$ gives a triple with smaller nonzero
-determinant. Among such bases
-minimise $d_1=|b_1|^2$, and then the Gram determinant $d_2=d_1|b_2|^2-\langle b_1,b_2\rangle^2$.
-Put $d_3=\delta^2$.
-
-Choose $n$ with $|2(\langle b_1,b_2\rangle+nd_1)|\le d_1$. Then $(b_2+nb_1,b_1,b_3)$ is a basis, so
-$d_1\le|b_2+nb_1|^2$, and $d_1|b_2+nb_1|^2=d_2+(\langle b_1,b_2\rangle+nd_1)^2$. Hence
-$3d_1^2\le4d_2$.
-
-Let $B(y,z)=d_1\langle y,z\rangle-\langle b_1,y\rangle\langle b_1,z\rangle$, so that
-$B(b_2,b_2)=d_2$, and Sylvester's identity gives $B(b_2,b_2)B(b_3,b_3)-B(b_2,b_3)^2=d_1d_3$. Choose
-$n_2$ with $|2(B(b_2,b_3)+n_2d_2)|\le d_2$ and put $c=b_3+n_2b_2$. Then $(b_1,c,b_2)$ is a basis
-with first vector $b_1$, so $d_2\le d_1|c|^2-\langle b_1,c\rangle^2=B(c,c)$, while
-$d_2B(c,c)=(B(b_2,b_3)+n_2d_2)^2+d_1d_3$. Hence $3d_2^2\le4d_1d_3$.
-
-Finally choose $n_1$ with $|2(\langle b_1,c\rangle+n_1d_1)|\le d_1$, and use the basis
-$b_1$, $b_2'=b_2+nb_1$, $b_3'=c+n_1b_1$. The identities above give
-$3d_1|b_2'|^2\le4d_2$ and $4d_1d_2|b_3'|^2\le d_2^2+4d_1d_3+d_1^2d_2$. With the two inequalities
-this gives $9d_2|b_3'|^2\le16d_3$, and the product of the three bounds is the claim. For the
-coordinates, $y_1\delta=\det(w,b_2,b_3)$ and Hadamard's inequality $\det(w,b_2,b_3)^2\le
-|w|^2|b_2|^2|b_3|^2$.
-\end{proof}
-
-\subsection{Few minor vectors have a short vector}
-
-\begin{lemma}\label{lem:dotcount}
-For $n\ge1$ and $x\in\mathbb Z^3$, at most $27n^2\gcd(n,x)$ vectors $w\in[-n,n]^3$ have
-$n\mid w\cdot x$.
-\end{lemma}
-
-\begin{proof}
-Reducing modulo $n$ loses a factor at most $27$. Let $K$ be the set of solutions in
-$[0,n)^3$, $e=\gcd(n,x)$ and $c\cdot x\equiv e\pmod n$ by B\'ezout. The map
-$(w,j)\mapsto(w+jc)\bmod n$ is injective on $K\times[0,n/e)$: equal images give
-$n\mid(j-j')e$, so $j=j'$, and then $w=w'$. Hence $|K|\,n/e\le n^3$.
-\end{proof}
-
-\begin{proposition}[Short vectors]\label{prop:short}
-Let $\mathcal S$ be a set of nonzero minor vectors with coordinates in $[-Y,Y]$, and let
-$\tau(m)\le\tau_0$ for $m\le Y$. Then for every $R\ge1$,
-\[
-\#\{p\in\mathcal S:\lambda(p)\le R\}\le393660\,R^3Y^4\tau_0^2 .
-\]
-\end{proposition}
-
-\begin{proof}
-If $\lambda(p)\le R$, some nonzero $x\in[-R,R]^3$ has $m\mid u\cdot x$. For fixed $x$, the
-encoding of Proposition~\ref{prop:minorvec} gives at most $20\sum_m N(m,x)$ such $p$, where
-$N(m,x)$ counts pairs $(u,v)$ with $m\mid u\times v$ and $m\mid u\cdot x$. For each $u$ there
-are at most $27m\gcd(m,u)^2$ vectors $v$. Grouping the $u$ by $g=\gcd(m,u)$ and writing
-$u=gu'$ with $(m/g)\mid u'\cdot x$, Lemma~\ref{lem:dotcount} gives
-$\sum_ug^2\le27m^2\tau(m)\gcd(m,x)$, so $N(m,x)\le729m^3\tau(m)\gcd(m,x)$. Finally
-$\sum_{0<|x|_\infty\le R}\gcd(m,x)\le27R^3\tau(m)$. A divisor $h>R$ of $m$ divides no nonzero
-$x$ in the box, and for $h\le R$ the multiples of $h$ number at most $(2R/h+1)^3$, with
-$h(2R/h+1)\le3R$.
-\end{proof}
-
-\subsection{One minor vector}
-
-\begin{lemma}[Definite norm equations]\label{lem:defnorm}
-For $D\ge1$ and $m\ne0$, the equation $x^2+Dy^2=m$ has at most $4\tau(|m|)^3$ integer
-solutions.
-\end{lemma}
-
-\begin{proof}
-As in Lemma~\ref{lem:norm}, with $D=df^2$, $d$ squarefree, each solution reduces to a primitive
-$u^2+dw^2=n$, $m=g^2n$, with a class $t\equiv uw^{-1}$, a square root of $-d$ modulo $n$. The
-count of square roots in the proof of Lemma~\ref{lem:norm} applies to $-d$ unchanged. Two
-solutions in a class give integers $r,s$ with $r^2+ds^2=1$, of which there are at most four.
-\end{proof}
-
-A ternary quadratic $F$ with quadratic part of Gram matrix $S$ has $\det(2S)$ multiplied by
-$\det(C)^2$ under a substitution $x=Cy$. In the notation of Lemma~\ref{lem:slice} one has the
-identity $\ell=-2\alpha\det(2S)$. For $F_\theta$, Lemma~\ref{lem:tern} therefore gives
-$\det(2S)=-8N_0N_1^2(N_0-u_2)(N_1+u_1)(u_1-u_2)\ne0$ under the hypotheses of Lemma~\ref{lem:signs},
-so the following lemma applies to $F_\theta$ after any invertible linear change of variables.
-
-\begin{lemma}[Plane substitution]\label{lem:planesub}
-Let $F$ be a ternary quadratic with integer coefficients whose quadratic part has Gram matrix
-$S$ with $\det(2S)\ne0$. There is a substitution $x=Cy$, where $C$ is a product of two integer
-matrices with entries in $\{0,\pm1\}$, determinant $\pm1$ and inverses with absolute row sums
-at most $2$, such that $F(Cy)$ has nonzero $y_1^2$ coefficient $\alpha$, nonzero binary
-discriminant $D$ in $(y_1,y_2)$, and $\ell\ne0$, in the notation of Lemma~\ref{lem:slice}.
-Moreover, the conclusion of Lemma~\ref{lem:slice} holds with $D>0$ replaced by $D\ne0$, under
-the same hypothesis on $\omega$.
-\end{lemma}
-
-\begin{proof}
-Since $\ell=-2\alpha\det(2S)$ and $\det(2S)$ changes only by the factor $\det(C)^2=1$, it
-suffices to make $\alpha$ and $D$ nonzero. First choose one of the planes
-$\langle e_1,e_2\rangle$, $\langle e_1,e_3\rangle$, $\langle e_2,e_3\rangle$,
-$\langle e_1+e_2,e_3\rangle$: if all four binary discriminants vanished then $\det(2S)$ would
-vanish, by an explicit combination with polynomial coefficients. Writing $f,g$
-for the displayed spanning vectors of the chosen plane, choose $f$, $g$ or
-$f+g$ as its first basis vector. With this, Lemma~\ref{lem:slice} holds
-for $\alpha\ne0$ and $D\ne0$ of either sign, under the same hypothesis on $\omega$. When
-$D<0$ each slice uses Lemma~\ref{lem:defnorm}, whose bound $4\tau(|m|)^3$ is at most
-$2\tau(|m|)^3(\log_3\bigl((11K^2H(3K+2))^2\bigr)+1)$ because $11K^2H(3K+2)\ge3$.
-\end{proof}
-
-\begin{proposition}[One minor vector]\label{prop:fibre}
-Let $p$ be a minor vector with all coordinates in $[-X,X]$, $X\ge1$, and suppose $\omega$ satisfies
-the hypothesis of Lemma~\ref{lem:slice} for $K=248832X^8$ and $12H+1$ in place of $H$. The good
-starts with minor vector $p$ have at most
-\[
-\bigl(8\lfloor3H/\lambda(p)\rfloor+3\bigr)(\omega+4)
-\]
-gap vectors $\kappa$.
-\end{proposition}
-
-\begin{proof}
-At a good start the gaps lie in $[1,H]$, and since $N_0=L(i)$ and $N_1=L(i+1)$ are positive
-integers, Lemma~\ref{lem:signs} gives $u_1>0>u_2$. Let $b_1,b_2,b_3$ be the basis of Lemma~\ref{lem:reduce} for $\Lambda_p$, with $|m|$ in
-place of $m$, and $\hat b_i$ their lifts $c\mapsto L_c\cdot b_i/m$ to $\mathbb Z^5$. Write
-$k'=\sum y_ib_i$. By Lemma~\ref{lem:lift}, $\kappa=\sum y_i\hat b_i$, so $(k_1,k_2,k_3)=\hat By$
-for the $3\times3$ matrix $\hat B$ of the lifts in columns $1,2,3$, and
-$m\det\hat B=p_{123}\delta\ne0$. So $y$ is a zero of $\tilde F=F_\theta\circ\hat B$, and
-$\det(2S_{\tilde F})=\det(2S_{F_\theta})(\det\hat B)^2\ne0$. Each $|b_i|^2\ge\lambda(p)^2$ and
-$|k'|^2\le3H^2$, so $\lambda(p)|y_i|\le3H$, and after the plane substitution the coordinates lie
-in $[-Y',Y']$ with $Y'=4\lfloor3H/\lambda(p)\rfloor+1\le12H+1$ (Lemma~\ref{lem:planesub}).
-Every nonzero integer basis vector has length at least one, so
-Lemma~\ref{lem:reduce} gives $|b_i|\le2X^3$. Maximality of the pivot bounds
-each entry of $L_c$ by $|m|$. Thus every lift is at most $6X^3$, and the coefficients of the final quadratic
-are at most $12^3\cdot4X^2\cdot(6X^3)^2=248832X^8$. Lemma~\ref{lem:slice}, in the form of
-Lemma~\ref{lem:planesub}, therefore bounds the zeros by $(2Y'+1)(\omega+4)$, and $y$ determines $\kappa$.
-\end{proof}
-
-\subsection{The bound}
-
-\begin{lemma}[Partial summation]\label{lem:abel}
-Let $t$ and $R_p$ for $p\in\mathcal S$ be integers with $1\le R_p\le t$, and let
-$\#\{p:R_p\le r\}\le Cr^3$ for $r\ge1$. Then
-$t\sum_p\lfloor n/R_p\rfloor\le n|\mathcal S|+nCt^3$ for every $n\ge0$.
-\end{lemma}
-
-\begin{proof}
-Write $1/r=1/t+\sum_{r\le j<t}1/(j(j+1))$ and exchange the sums:
-$\sum_p1/R_p\le|\mathcal S|/t+\sum_{j<t}Cj^3/(j(j+1))\le|\mathcal S|/t+Ct^2$.
-\end{proof}
-
-Let $P_2(a)=10^{1000}a^{400}$ and $\Xi_2(a)=2\tau^*(P_2(a))^3(\log_3P_2(a)+1)+4$. As in
-Section~\ref{sec:1137}, $\omega=\Xi_2(a)-4$ is admissible in every window, and
-$\Xi_2(a)\ll_\eta a^\eta$.
-
-\begin{proposition}\label{prop:twostate4}
-For a window run in $[A,2A)$ with $T\ge36$, let $H=\lfloor28a/(AT)\rfloor+1$ and
-$X=\lfloor3609600A^4H^6/a^3\rfloor+1$. Then
-\[
-T^3\ll\Xi_2(a)^9\,(H^3X^{14}+X^{15})\qquad\text{and}\qquad T^{152}\ll\Delta^{39}\Xi_2(a)^{117}a^{45}.
-\]
-\end{proposition}
-
-\begin{proof}
-Explicitly, we prove $T^3\le C_\star\,\Xi_2(a)^9\,(H^3X^{14}+X^{15})$ with $C_\star=32\cdot607461312^3$,
-and $T^{152}\le C_{152}\Delta^{39}\Xi_2(a)^{117}a^{45}$ with $C_{152}=122449^{38}+c_0^{13}+8^{31}c_A+8^{30}c_B$, where
-$c_0=1024\,C_\star\,56^3$, $c_A=2^{15}C_\star\,3609600^{14}56^{87}$ and $c_B=2^{16}C_\star\,3609600^{15}56^{90}$.
-Let $\mathcal S$ be the set of minor vectors of good starts and $\tau_0=\tau^*(P_2(a))$. At most
-four good starts share $(p,\kappa)$, and $T\le2|\mathcal G|$, so Proposition~\ref{prop:fibre}
-gives
-\[
-T\le8\,\Xi_2(a)\Bigl(8\sum_{p\in\mathcal S}\lfloor3H/\lambda(p)\rfloor+3|\mathcal S|\Bigr).
-\]
-Choose $t$ with $X\le t^3\le8X$. Lemma~\ref{lem:index} gives $\lambda(p)\le t$, and
-Proposition~\ref{prop:short} and Lemma~\ref{lem:abel} give
-$t\sum_p\lfloor3H/\lambda(p)\rfloor\le3H|\mathcal S|+3H\cdot393660X^4\tau_0^2t^3$, with
-$|\mathcal S|\le14581X^5\tau_0$. Hence $Tt\le607461312\,\Xi_2^3X^5(H+t)$, and cubing, with
-$(H+t)^3\le4(H^3+t^3)$ and $X\le t^3\le8X$, gives the first bound.
-
-For the second, if $AT>28a$ then $T^4\le122449a$. Otherwise $H\,AT\le56a$. If $X=1$ then
-$T^6A^3\le2C_\star\,56^3\Xi_2^9a^3$, and $T^{12}\le(8A\Delta)^3T^6\le c_0\Delta^3\Xi_2^9a^3$. If
-$X\ge2$, write $X=X_0+1\le2X_0$ with $X_0a^3\le3609600A^4H^6$. When $2X_0\le H^3$,
-$T^3a^{42}\ll\Xi_2^9A^{56}H^{87}$, so $T^{90}A^{31}\le c_A\Xi_2^9a^{45}$ and
-$T^{152}\le(8A\Delta)^{31}T^{90}$. When $2X_0>H^3$, $T^3a^{45}\ll\Xi_2^9A^{60}H^{90}$, so
-$T^{93}A^{30}\le c_B\Xi_2^9a^{45}$ and $T^{153}\le(8A\Delta)^{30}T^{93}$.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:45152}]
-Since $\Delta,\Xi_2(a)\ll_\eta a^\eta$, every window has $T\ll a^{(45+156\eta)/152}$. Summing over
-the $O(\log a)$ windows proves the theorem.
-\end{proof}
-
-\begin{remark}
-In terms of the scales, $T\ll a^\eta(HX^{14/3}+X^5)$: the factor $X^{1/3}$ saved over
-Proposition~\ref{prop:twostate3} is the typical $\lambda(p)$. At the critical point
-$T\approx a^{45/152}$, $B\approx a^{62/152}$, $H\approx a^{17/152}$ and $X\approx a^{6/152}$, and
-the term $X^5\approx a^{30/152}$ is smaller.
-\end{remark}
 
 \section{Joint integer invariants and the optimized bound}\label{sec:joint}
 
@@ -1890,7 +1111,7 @@ exponent (Sections~\ref{sec:jointgraph} and~\ref{sec:jointcount}).
 with their earlier meanings. In this section
 \begin{itemize}
 \item $\theta=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)$ are the pattern integers of
-Lemma~\ref{lem:quad}, with $N_0=I_4(i)$, and bars denote their normalised
+Section~\ref{sec:patterns}, with $N_0=I_4(i)$, and bars denote their normalised
 versions~\eqref{eq:jointbar};
 \item $s_j$ are the nodes, $k_j$ the gaps, $P_4,R_4$ the two orthogonal
 quartics, $\Psi$ the quartic norm and $f$ the pattern quadratic;
@@ -1908,9 +1129,9 @@ Put
  H=\left\lfloor\frac{28a}{AT}\right\rfloor+1,\qquad
  X=\left\lfloor\frac{3609600 A^4H^6}{a^3}\right\rfloor.
 \]
-As in Proposition~\ref{prop:twostate}, call a start $i$ \emph{good} if the
-window contains the nine states $i,\dots,i+8$ and the gaps $k_0,\dots,k_6$ at
-state $i$ are at most $H$; at least $T/2$ starts are good. By
+Let the good starts be as in Lemma~\ref{lem:good}: the window contains the
+nine states $i,\dots,i+8$, and the gaps $k_0,\dots,k_6$ at state $i$ are at
+most $H$. At least $T/2$ starts are good. By
 Proposition~\ref{prop:allminors}, the minor vector of a good start has all
 coordinates at most $X$, and $X\ge1$ because its coordinate $p_{012}=L(i)$ is a
 positive integer. We call this minor vector the \emph{pattern} of the start; it
@@ -1919,7 +1140,7 @@ $O_\eta(a^\eta X^5)$ patterns.
 
 The \emph{nodes} of state $i$ are $s_j=q_{i+j}-q_i$. They are the support
 points of the measure $\mu_i$ of Section~\ref{sec:hankel}, and the
-interpolation nodes of the Newton polynomials of Section~\ref{sec:2377}. The
+interpolation nodes of the Newton polynomials of Section~\ref{sec:patterns}. The
 three \emph{free nodes} $s_1,s_2,s_3$ of a good start are integers in $[0,3H]$.
 Distinct good starts with the same pattern have distinct free-node triples
 (Lemma~\ref{lem:jointcuts} below).
@@ -3033,10 +2254,10 @@ $a^{0.117/(10r_*+7)}\approx a^{0.0068}$.
 \section{The Lean formalisation}\label{sec:lean}
 
 The accompanying Lean~4 project uses toolchain \lean{v4.35.0} and Mathlib
-\lean{v4.35.0}. It proves the main results of this paper, including the
-curve-counting input to Theorem~\ref{thm:joint}. The logarithmic refinement
-is the one exception: its Lean proof takes the two published analytic
-estimates \eqref{eq:NT} and~\eqref{eq:BT} as explicit hypotheses.
+\lean{v4.35.0}. It proves every result of this paper, including the
+curve-counting input to Theorem~\ref{thm:joint}, without additional hypotheses.
+It also proves the intermediate bounds listed in Section~\ref{sec:intro}; of these, only
+the log-log refinement takes hypotheses, namely two published analytic estimates.
 
 The strongest bound has the following statement:
 \begin{quote}\ttfamily\small
@@ -3066,11 +2287,11 @@ Theorem~\ref{thm:joint}, $\alpha_*$ & \lean{P\_le\_joint\_optimal} & \lean{Joint
 Theorem~\ref{thm:joint}, $2201/7480$ & \lean{P\_le\_2201\_7480} & \lean{JointLiftMain}\\
 Theorem~\ref{thm:joint}, $128/435$ & \lean{P\_le\_128\_435} & \lean{JointLiftMain}\\
 Theorem~\ref{thm:main} & \lean{P\_le} & \lean{Main}\\
-Theorem~\ref{thm:2377} & \lean{P\_le\_23\_77} & \lean{TwentyThreeMain}\\
-Theorem~\ref{thm:1137} & \lean{P\_le\_11\_37} & \lean{ElevenMain}\\
-Theorem~\ref{thm:827} & \lean{P\_le\_8\_27} & \lean{EightMain}\\
-Theorem~\ref{thm:45152} & \lean{P\_le\_45\_152} & \lean{FortyFiveMain}\\
-Theorem~\ref{thm:loglog} & \lean{P\_le\_loglog} & \lean{Hooley}\\
+Intermediate, $23/77$ & \lean{P\_le\_23\_77} & \lean{TwentyThreeMain}\\
+Intermediate, $11/37$ & \lean{P\_le\_11\_37} & \lean{ElevenMain}\\
+Intermediate, $8/27$ & \lean{P\_le\_8\_27} & \lean{EightMain}\\
+Intermediate, $45/152$ & \lean{P\_le\_45\_152} & \lean{FortyFiveMain}\\
+Intermediate, log-log & \lean{P\_le\_loglog} & \lean{Hooley}\\
 Theorem~\ref{thm:rises} & \lean{P\_le\_rises} & \lean{RisesMain}\\
 Theorem~\ref{thm:hankel} & \lean{hankelInv\_pos\_int} & \lean{Hankel}\\
 \bottomrule
@@ -3097,11 +2318,12 @@ The other main ingredients are the parity cover, the ordinary and conic gap
 counts, the graph-degree lower bounds, the powered pattern count and the window
 estimates; the repository README maps them to their modules. The transitive
 proof dependencies of the three public statements in \lean{JointLiftMain} are
-audited to exclude the weighted-lattice counting modules of
-Section~\ref{sec:45152}. In contrast, \lean{P\_le\_loglog} takes the
-propositions \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean}, which
-state \eqref{eq:NT} (with $\sigma=1/4$) and~\eqref{eq:BT}, including their
-existential constants and thresholds.
+audited to exclude the weighted-lattice counting modules of the $45/152$ bound.
+The intermediate bound \lean{P\_le\_loglog} takes the propositions
+\lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean} as hypotheses. They state the
+short-sum bound of~\cite{NT} for the Erd\H{o}s--Hooley function over intervals $(x,x+y]$ with
+$y\ge x^{1/4}$, and the mean-value bound of~\cite{BT}, including their existential constants and
+thresholds.
 
 The file \lean{Axioms.lean} audits the eleven public statements and their
 proof dependencies. The only logical axioms reported are \lean{propext},
@@ -3142,26 +2364,24 @@ iteration is made.
 \emph{The earlier arguments.} Proposition~\ref{prop:six} removes the divisor loss from the local bound, but on its own the
 exponent is still $3/10$. The local bound $T\ll a^{1/2}A^{-1/3}$ and the drop bound $T\ll A^{1/2}$ (up to
 the divisor factor) both allow $T\asymp a^{3/10}$ at $A\asymp a^{3/5}$. Even an ideal
-short-interval divisor estimate with $G$ constant leaves this balance unchanged. So sharpening
+short-interval divisor estimate, removing the divisor factor entirely, leaves this balance unchanged. So sharpening
 constants or improving the divisor counts in that argument cannot give a logarithmic bound.
 To improve that argument, one needs to restrict \emph{which} configurations of the parameters $(u,v,w,z,D,E,F)$ can occur
 together along a single orbit. Theorem~\ref{thm:rises} is one restriction of this kind: a long
 orbit must have many rises in its quotient increments. Theorem~\ref{thm:hankel} supplies the
-natural candidates for further ones, the higher invariants $I_r$. Section~\ref{sec:2377} uses
-$I_4$ in exactly this way.
+natural candidates for further ones, the higher invariants $I_r$. The patterns of
+Section~\ref{sec:patterns} use $I_4$ in exactly this way.
 
-The count of Section~\ref{sec:1137} loses through the number of patterns, $X^7$, reduced to
-$X^5$ in Section~\ref{sec:827} and weighted by the lattices $\Lambda_p$ in
-Section~\ref{sec:45152}. With patterns at four consecutive states one has thirteen integers and
+The intermediate bounds count the states within each pattern using only the linear and
+quadratic relations among the increments. With patterns at four consecutive states one has thirteen integers and
 as many equations as unknown increments, so one might hope for $O(1)$ configurations per
 pattern. But the four-state equations have
 positive-dimensional families of solutions. For instance, the Newton coefficients
 $(\alpha,-3\alpha-1,3\alpha+3,-\alpha-3,1)$, with coefficient polynomial $(z-1)^3(z-\alpha)$, at
 every state, together with constant increments $k_j=t$, satisfy all the linear and quadratic
-relations for every $t$. Such families are excluded only by the remainder equations, which those earlier
+relations for every $t$. Such families are excluded only by the remainder equations, which those
 counts discard. The fixed-dividend curve equations of Section~\ref{sec:joint}
-retain this information. Section~\ref{sec:45152} uses only the first minimum of $\Lambda_p$, and slices in a
-single direction; the other two minima and the shape of the quadric in the lattice are not used.
+retain this information.
 
 There is no obvious monotonicity to exploit. The curvatures $D_i$ of successive blocks need
 not decrease. For $a=13242$ the orbit of $255$ begins
@@ -3173,19 +2393,18 @@ $24,12,6,111,30$, all for blocks that lie within a factor of two.
 
 \subsection*{Acknowledgements}
 The argument was developed with the help of GPT-6-Astra. This includes the use of
-orthogonal polynomials and adjacent labels behind Section~\ref{sec:2377}, the first proof of a
+orthogonal polynomials and adjacent labels behind Section~\ref{sec:patterns}, the first proof of a
 bound $a^{3/10-\delta}$ through resultants, the bounded-multiplicity form of
-Lemma~\ref{lem:multid}, the sign identities and the slice count behind Section~\ref{sec:1137},
-the observation that the pattern integers form a Pl\"ucker vector, and the proposal to weight
-minor vectors by the shortest vectors of their lattices. Subsequent AI-assisted
+Lemma~\ref{lem:multid}, the sign identities of Lemma~\ref{lem:signs} and the slice count behind
+the $11/37$ bound, the observation that the pattern integers form a Pl\"ucker vector, and the
+proposal to weight minor vectors by the shortest vectors of their lattices, behind the $45/152$
+bound. Subsequent AI-assisted
 work developed and formalised the joint-invariant graphs, their normalization
 and valuation arguments, the powered-coordinate optimization, and the external
 affine-curve counting theorem. OpenAI Codex assisted with this formalisation
 and with automated statement, dependency and submission checks. These checks
 are not independent human peer review. The new results of this paper and
-their stated deductions were verified in Lean~4 against Mathlib, with the
-analytic hypotheses and the unformalised application of Shiu's theorem
-identified above. We thank the Mathlib community, and the authors of \lean{openai/math}
+their stated deductions were verified in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \lean{openai/math}
 for the formalised divisor bound.
 
 \begin{thebibliography}{99}
@@ -3257,16 +2476,6 @@ Amer.\ Math.\ Monthly \textbf{36} (1929), 523--525.
 J.~O.~Shallit,
 \emph{Metric theory of Pierce expansions},
 Fibonacci Quart.\ \textbf{24} (1986), 22--40.
-
-\bibitem{VW}
-R.~C.~Vaughan and T.~D.~Wooley,
-\emph{Further improvements in Waring's problem},
-Acta Math.\ \textbf{174} (1995), 147--240.
-
-\bibitem{Shiu}
-P.~Shiu,
-\emph{A Brun--Titchmarsh theorem for multiplicative functions},
-J.\ Reine Angew.\ Math.\ \textbf{313} (1980), 161--170.
 
 \bibitem{ShallitTalks}
 J.~O.~Shallit,
