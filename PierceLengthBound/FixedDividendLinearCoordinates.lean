@@ -113,9 +113,9 @@ theorem matrix_coordinate_prime {K ι : Type*} [Field K] [Fintype ι] [Decidable
   exact I.zero_mem
 
 /-- The full rational zero locus transforms with its equations. -/
-theorem matrix_coordinate_zeroLocus {K : Type*} [Field K]
-    (C : Matrix (Fin 3) (Fin 3) K) (hC : C.det ≠ 0)
-    (I : Ideal (MvPolynomial (Fin 3) K)) (y : Fin 3 → K) :
+theorem matrix_coordinate_zeroLocus {K ι : Type*} [Field K] [Fintype ι] [DecidableEq ι]
+    (C : Matrix ι ι K) (hC : C.det ≠ 0)
+    (I : Ideal (MvPolynomial ι K)) (y : ι → K) :
     y ∈ coordinateZeroLocus (I.map (matrixSubstitution C).toRingHom) ↔
       C *ᵥ y ∈ coordinateZeroLocus I := by
   let e := matrixCoordinateEquiv C C⁻¹ (C.mul_nonsing_inv (isUnit_iff_ne_zero.mpr hC))

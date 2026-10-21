@@ -84,10 +84,10 @@ def lean_source_files(root: Path) -> list[Path]:
 
 
 def main() -> int:
-    subprocess.run([sys.executable, str(Path(__file__).resolve().with_name(
-        "check-curve-counting-dependency.py"))], check=True)
     root = Path(__file__).resolve().parents[1]
-    failed = False
+    # Project addition: the selected theorems must be listed identically everywhere.
+    failed = subprocess.run([sys.executable, str(Path(__file__).resolve().with_name(
+        "check-theorem-lists.py"))]).returncode != 0
     for path in lean_source_files(root):
         relative = path.relative_to(root)
         if path.is_symlink():

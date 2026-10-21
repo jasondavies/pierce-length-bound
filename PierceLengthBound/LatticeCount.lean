@@ -220,6 +220,15 @@ lemma liftv_bound {p : Fin 10 → ℤ} {b : Fin 3 → ℤ} (hb : b ∈ pivLat p)
 def ycoord (b1 b2 b3 x : Fin 3 → ℤ) : Fin 3 → ℤ :=
   ![det3 x b2 b3 / det3 b1 b2 b3, det3 b1 x b3 / det3 b1 b2 b3, det3 b1 b2 x / det3 b1 b2 b3]
 
+/-- A vector with entries at most `H` has squared length at most `3 H²`. -/
+lemma nrm3_le_of_abs_le {x : Fin 3 → ℤ} {H : ℕ} (hx : ∀ a, |x a| ≤ H) :
+    nrm3 x ≤ 3 * (H : ℤ) ^ 2 := by
+  have e : ∀ a, x a ^ 2 ≤ (H : ℤ) ^ 2 := fun a => by
+    rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (hx a) 2
+  have := e 0; have := e 1; have := e 2
+  simp only [nrm3, dot3] at *
+  nlinarith
+
 /-- **Coordinates in a reduced basis.** If every basis vector has length `≥ R` and `|xₐ| ≤ H`,
 then `R |yᵢ| ≤ 3H`. -/
 lemma ycoord_spec {b1 b2 b3 x : Fin 3 → ℤ} {R H : ℕ} (hD : det3 b1 b2 b3 ≠ 0)
@@ -247,12 +256,7 @@ lemma ycoord_spec {b1 b2 b3 x : Fin 3 → ℤ} {R H : ℕ} (hD : det3 b1 b2 b3 �
     · simp [ycoord, d2, Int.mul_ediv_cancel _ hD]
   rw [hyc]
   refine ⟨hyj, fun i => ?_⟩
-  have hnk : nrm3 x ≤ 3 * (H : ℤ) ^ 2 := by
-    have e : ∀ a, x a ^ 2 ≤ (H : ℤ) ^ 2 := fun a => by
-      rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (hx a) 2
-    have := e 0; have := e 1; have := e 2
-    simp only [nrm3, dot3] at *
-    nlinarith
+  have hnk := nrm3_le_of_abs_le hx
   have key : 27 * ((R : ℤ) * y i) ^ 2 ≤ 27 * (3 * (H : ℤ)) ^ 2 := by
     have hb : 27 * (nrm3 (![b1, b2, b3] i) * y i ^ 2) ≤ 64 * nrm3 x := by
       fin_cases i
@@ -270,6 +274,48 @@ lemma ycoord_spec {b1 b2 b3 x : Fin 3 → ℤ} {R H : ℕ} (hD : det3 b1 b2 b3 �
   have := sq_le_sq.mp (le_of_mul_le_mul_left key (by norm_num))
   rw [abs_mul, abs_of_pos hR, abs_of_nonneg (by positivity : (0 : ℤ) ≤ 3 * H)] at this
   exact this
+
+/-- A reduced basis of the pattern lattice (`reduced_basis`) whose vectors all have squared
+length at least `λ² = shortR p ^ 2`. -/
+theorem pattern_reduced_basis {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
+    ∃ b1 b2 b3 : Fin 3 → ℤ, b1 ∈ pivLat p ∧ b2 ∈ pivLat p ∧ b3 ∈ pivLat p ∧
+      det3 b1 b2 b3 ≠ 0 ∧
+      (∀ w ∈ pivLat p, det3 b1 b2 b3 ∣ det3 w b2 b3 ∧ det3 b1 b2 b3 ∣ det3 b1 w b3 ∧
+        det3 b1 b2 b3 ∣ det3 b1 b2 w) ∧
+      27 * (nrm3 b1 * nrm3 b2 * nrm3 b3) ≤ 64 * det3 b1 b2 b3 ^ 2 ∧
+      (0 : ℤ) < shortR p ∧ (shortR p : ℤ) ^ 2 ≤ nrm3 b1 ∧ (shortR p : ℤ) ^ 2 ≤ nrm3 b2 ∧
+      (shortR p : ℤ) ^ 2 ≤ nrm3 b3 := by
+  have hΛ : ∀ x : Fin 3 → ℤ, (∀ j, (((p (piv p)).natAbs : ℕ) : ℤ) ∣ x j) → x ∈ pivLat p :=
+    fun x h => pivLat_of_dvd fun j => Int.natAbs_dvd.mp (h j)
+  obtain ⟨b1, b2, b3, h1, h2, h3, hD, _, hbas, hred⟩ :=
+    reduced_basis (Λ := pivLat p) (Int.natAbs_pos.mpr hm) hΛ
+  obtain ⟨hR1, _, hRlow⟩ := shortR_spec hm
+  have hb10 : b1 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
+  have hb20 : b2 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
+  have hb30 : b3 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
+  exact ⟨b1, b2, b3, h1, h2, h3, hD, hbas, hred, by exact_mod_cast hR1, hRlow b1 h1 hb10,
+    hRlow b2 h2 hb20, hRlow b3 h3 hb30⟩
+
+/-- The pivot part of each row of a matrix with pattern `p` lies in the pattern lattice. -/
+lemma pivotPart_mem_pivLat {p : Fin 10 → ℤ} {M : Fin 3 → Fin 5 → ℤ} (hM : plk M = p)
+    (row : Fin 3) : (fun a => M row (pcol (piv p) a)) ∈ pivLat p := by
+  subst hM
+  have hlift := lift_row M (piv (plk M)) row
+  refine ⟨⟨M row (restc (piv (plk M)) 0), ?_⟩, ⟨M row (restc (piv (plk M)) 1), ?_⟩⟩
+  · have h := hlift (restc (piv (plk M)) 0)
+    rw [Lrow_rest0] at h
+    exact h.symm
+  · have h := hlift (restc (piv (plk M)) 1)
+    rw [Lrow_rest1] at h
+    exact h.symm
+
+/-- An orbit's pattern has a nonzero first minor `Lz`. -/
+lemma orbit_pattern_first {a b l : ℕ} (hba : b < a) (hl : l + 5 < P a b) :
+    plk (Mi a b l) 0 ≠ 0 := by
+  have h := congrFun (theta_eq (a := a) (b := b) l) 0
+  simp only [theta, projθ, Matrix.cons_val_zero] at h
+  have := Lz_pos hba (i := l) hl
+  omega
 
 /-- In a basis with `27 |b₁|²|b₂|²|b₃|² ≤ 64 D²`, `D² ≤ B` and all `|bᵢ|² ≥ 1`, each
 `27 |bᵢ|² ≤ 64 B`. -/

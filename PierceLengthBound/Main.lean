@@ -152,6 +152,13 @@ lemma root_le {x D c e k a : ℕ} (hk : k ≠ 0) (ha : 1 ≤ a) (h : x ^ k ≤ D
 def SlowGrowth (f : ℕ → ℕ) : Prop :=
   ∀ η > (0 : ℝ), ∃ C > 0, ∀ a : ℕ, 1 ≤ a → (f a : ℝ) ≤ C * (a : ℝ) ^ η
 
+lemma slowGrowth_const (c : ℕ) : SlowGrowth fun _ => c := by
+  intro η hη
+  refine ⟨c + 1, by positivity, fun a ha => ?_⟩
+  have := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
+  push_cast
+  nlinarith
+
 lemma SlowGrowth.mul {f g : ℕ → ℕ} (hf : SlowGrowth f) (hg : SlowGrowth g) :
     SlowGrowth fun a => f a * g a := by
   intro η hη

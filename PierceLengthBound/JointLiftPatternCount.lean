@@ -43,22 +43,8 @@ theorem jointLift_three_term_of_pattern_estimate {R : ℕ → ℕ}
   let X := selectedMinorHeight a A T
   let B := max (max H (selectedCurvatureHeight a A T)) (selectedRankFiveHeight a A T)
   have facts := fun i hi => selectedStart_spec hmem hsT (i := i) hi
-  have hmult : G.card ≤ 4 * (G.image fun i => (pm i, kap a b i)).card := by
-    apply pattern_gap_multiplicity (θ := theta a b) (Q := fun i => (qq a b i : ℤ))
-      (a := (a : ℤ)) (fun i _ => theta_eq i)
-    · intro i hi i' hi' h
-      have hP := (facts i hi).1
-      have hP' := (facts i' hi').1
-      simp only [Nat.cast_inj] at h
-      by_contra hne
-      rcases lt_or_gt_of_ne hne with hlt | hlt
-      · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h
-      · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h.symm
-    · intro i hi
-      simpa [theta] using Lz_pos hba (i := i) (by have := (facts i hi).1; omega)
-    · intro i hi
-      simpa [theta, kap] using mult_at (a := a) (b := b) (i := i)
-        (by have := (facts i hi).1; omega)
+  have hmult : G.card ≤ 4 * (G.image fun i => (pm i, kap a b i)).card :=
+    selectedStarts_card_le_pair_image hba hmem hsT
   have hp := pattern_sum_two_classes G pm (kap a b) (fun p => ∃ d, ExceptionalMinorRelation p d)
     (show (0 : ℝ) ≤ R a * (1 + (B : ℝ) ^ (1 / 17 : ℝ)) by positivity)
     (show (0 : ℝ) ≤ R a * (H : ℝ) ^ (1 / 2 : ℝ) by positivity)

@@ -58,6 +58,12 @@ lemma gram2_nonneg (x y : Fin 3 → ℤ) : 0 ≤ gram2 x y := by
       (x 0 * y 1 - x 1 * y 0) ^ 2 := by unfold gram2 nrm3 dot3; ring
   rw [this]; positivity
 
+/-- Cauchy–Schwarz in `ℤ³`. -/
+lemma dot3_sq_le (x y : Fin 3 → ℤ) : dot3 x y ^ 2 ≤ nrm3 x * nrm3 y := by
+  have := gram2_nonneg x y
+  unfold gram2 at this
+  linarith
+
 /-- Hadamard's inequality in `ℤ³`. -/
 lemma det3_sq_le (x y z : Fin 3 → ℤ) : det3 x y z ^ 2 ≤ nrm3 x * nrm3 y * nrm3 z := by
   set c0 := y 1 * z 2 - y 2 * z 1

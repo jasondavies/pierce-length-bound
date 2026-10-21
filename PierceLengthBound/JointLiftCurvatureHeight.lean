@@ -77,33 +77,35 @@ theorem curvature_reciprocal_expansion {a b m : ℕ} (hba : b < a)
     simp only [hs]
     ring
 
-/-- Uniform error at each of the four required shifted starts. -/
+/-- Uniform error at a shifted start whose quotient exceeds `q` by at most `r H`. With `r = 3`
+the constant is `17`, and with `r = 5` it is `37`. -/
 theorem curvature_error_le {a b m : ℕ} (hba : b < a) (hm : m + 2 < P a b)
-    {q H : ℝ} (hq : 0 < q) (hH : 1 ≤ H) (hqm : q ≤ qq a b m)
-    (hs : (qq a b m : ℝ) - q ≤ 3 * H) (hk : kk a b m ≤ H) :
-    curvatureError a b m q ≤ 17 * H ^ 2 / q ^ 3 := by
+    {q H r : ℝ} (hq : 0 < q) (hH : 1 ≤ H) (hr : 0 ≤ r) (hqm : q ≤ qq a b m)
+    (hs : (qq a b m : ℝ) - q ≤ r * H) (hk : kk a b m ≤ H) :
+    curvatureError a b m q ≤ (r ^ 2 + 2 * r + 2) * H ^ 2 / q ^ 3 := by
   have h := (curvature_reciprocal_expansion hba hm hq hqm).2.1
   rw [muF_shift_sq hba hm] at h
   apply h.trans
   apply div_le_div_of_nonneg_right _ (by positivity)
   have hs0 : 0 ≤ (qq a b m : ℝ) - q := by linarith
-  have hsq : ((qq a b m : ℝ) - q) ^ 2 ≤ (3 * H) ^ 2 := by gcongr
-  nlinarith [sq_nonneg (H - 1)]
+  have hsq : ((qq a b m : ℝ) - q) ^ 2 ≤ (r * H) ^ 2 := by gcongr
+  nlinarith [sq_nonneg (H - 1), mul_nonneg hr (sq_nonneg (H - 1))]
 
-
+/-- A drop differs from `a k / q²` by twice the error of `curvature_error_le`. -/
 lemma curvature_drop_error {a b m : ℕ} (hba : b < a) (hm : m + 3 < P a b)
-    {q H : ℝ} (hq : 0 < q) (hH : 1 ≤ H) (hqm : q ≤ qq a b m)
-    (hs0 : (qq a b m : ℝ) - q ≤ 3 * H)
-    (hs1 : (qq a b (m + 1) : ℝ) - q ≤ 3 * H)
+    {q H r : ℝ} (hq : 0 < q) (hH : 1 ≤ H) (hr : 0 ≤ r) (hqm : q ≤ qq a b m)
+    (hs0 : (qq a b m : ℝ) - q ≤ r * H)
+    (hs1 : (qq a b (m + 1) : ℝ) - q ≤ r * H)
     (hk0 : kk a b m ≤ H) (hk1 : kk a b (m + 1) ≤ H) :
-    |(dq a b m : ℝ) - (a : ℝ) / q ^ 2 * kk a b m| ≤ 34 * a * H ^ 2 / q ^ 3 := by
+    |(dq a b m : ℝ) - (a : ℝ) / q ^ 2 * kk a b m| ≤
+      2 * (r ^ 2 + 2 * r + 2) * a * H ^ 2 / q ^ 3 := by
   have ha : (0 : ℝ) < a := by exact_mod_cast (show 0 < a by omega)
   have hqm1 : q ≤ qq a b (m + 1) := hqm.trans (by
     exact_mod_cast (qq_le_of_le (a := a) (b := b) (by omega : m ≤ m + 1) (by omega)))
   have h0 := curvature_reciprocal_expansion hba (by omega : m + 2 < P a b) hq hqm
   have h1 := curvature_reciprocal_expansion hba (by omega : m + 1 + 2 < P a b) hq hqm1
-  have hb0 := curvature_error_le hba (by omega : m + 2 < P a b) hq hH hqm hs0 hk0
-  have hb1 := curvature_error_le hba (by omega : m + 1 + 2 < P a b) hq hH hqm1 hs1 hk1
+  have hb0 := curvature_error_le hba (by omega : m + 2 < P a b) hq hH hr hqm hs0 hk0
+  have hb1 := curvature_error_le hba (by omega : m + 1 + 2 < P a b) hq hH hr hqm1 hs1 hk1
   have he0 := (div_eq_iff ha.ne').mp h0.2.2
   have he1 := (div_eq_iff ha.ne').mp h1.2.2
   have he : (dq a b m : ℝ) - (a : ℝ) / q ^ 2 * kk a b m =
@@ -118,40 +120,42 @@ lemma curvature_drop_error {a b m : ℕ} (hba : b < a) (hm : m + 3 < P a b)
         exact abs_sub _ _
     _ = a * (curvatureError a b m q + curvatureError a b (m + 1) q) := by
       rw [abs_of_nonneg h0.1, abs_of_nonneg h1.1]
-    _ ≤ a * (17 * H ^ 2 / q ^ 3 + 17 * H ^ 2 / q ^ 3) := by gcongr
+    _ ≤ a * ((r ^ 2 + 2 * r + 2) * H ^ 2 / q ^ 3 + (r ^ 2 + 2 * r + 2) * H ^ 2 / q ^ 3) := by
+      gcongr
     _ = _ := by ring
 
-/-- Every actual curvature minor has the claimed uniform cubic height,
-without division by any gap. Only four future gaps are used. -/
-theorem orbit_curvature_minor_height {a b i H j l : ℕ}
-    (hba : b < a) (hi : i + 6 < P a b) (hH : 1 ≤ H)
-    (hk : ∀ t < 4, kq a b (i + t) ≤ H) (hj : j < 3) (hl : l < 3) :
+/-- The curvature minors among the first `c` columns have a uniform cubic height, without
+division by any gap; `c + 1` future gaps are used. The joint lift takes `c = 3` (constant `68`)
+and the lattice coordinates take `c = 5` (constant `148`). -/
+theorem orbit_curvature_minor_height (c : ℕ) {a b i H j l : ℕ}
+    (hba : b < a) (hi : i + c + 3 < P a b) (hH : 1 ≤ H)
+    (hk : ∀ t < c + 1, kq a b (i + t) ≤ H) (hj : j < c) (hl : l < c) :
     |(dq a b (i + j) : ℝ) * kq a b (i + l) - dq a b (i + l) * kq a b (i + j)| ≤
-      68 * a * (H : ℝ) ^ 3 / (qq a b i : ℝ) ^ 3 := by
+      4 * ((c : ℝ) ^ 2 + 2 * c + 2) * a * (H : ℝ) ^ 3 / (qq a b i : ℝ) ^ 3 := by
   have hq : (0 : ℝ) < qq a b i := by
     exact_mod_cast lt_of_lt_of_le Nat.zero_lt_one (qq_pos hba (by omega))
   have hHR : (1 : ℝ) ≤ H := by exact_mod_cast hH
-  have hkr (t : ℕ) (ht : t < 4) : kk a b (i + t) ≤ H := by
+  have hkr (t : ℕ) (ht : t < c + 1) : kk a b (i + t) ≤ H := by
     have h := hk t ht
     have h' : (kq a b (i + t) : ℝ) ≤ H := by exact_mod_cast h
     simpa only [kk, kq, Int.cast_sub, Int.cast_natCast] using h'
-  have hqr (t : ℕ) (ht : t < 4) : (qq a b i : ℝ) ≤ qq a b (i + t) := by
+  have hqr (t : ℕ) (ht : t < c + 1) : (qq a b i : ℝ) ≤ qq a b (i + t) := by
     exact_mod_cast (qq_le_of_le (by omega : i ≤ i + t) (by omega : i + t < P a b))
-  have hs (t : ℕ) (ht : t < 4) : (qq a b (i + t) : ℝ) - qq a b i ≤ 3 * H := by
+  have hs (t : ℕ) (ht : t < c + 1) : (qq a b (i + t) : ℝ) - qq a b i ≤ c * H := by
     rw [qq_eq_add_pt, add_sub_cancel_right, pt_eq_sum]
     calc (∑ m ∈ range t, kk a b (i + m)) ≤ ∑ _m ∈ range t, (H : ℝ) := by
           exact sum_le_sum (fun m hm => hkr m (by have := mem_range.mp hm; omega))
       _ = (t : ℝ) * H := by simp
-      _ ≤ 3 * H := by gcongr; exact_mod_cast (show t ≤ 3 by omega)
-  have hd (t : ℕ) (ht : t < 3) :
+      _ ≤ c * H := by gcongr; exact_mod_cast (show t ≤ c by omega)
+  have hd (t : ℕ) (ht : t < c) :
       |(dq a b (i + t) : ℝ) - (a : ℝ) / (qq a b i : ℝ)^2 * (kq a b (i + t) : ℝ)| ≤
-        34 * a * (H : ℝ)^2 / (qq a b i : ℝ)^3 := by
-    have h := curvature_drop_error hba (by omega : i + t + 3 < P a b) hq hHR
+        2 * ((c : ℝ) ^ 2 + 2 * c + 2) * a * (H : ℝ)^2 / (qq a b i : ℝ)^3 := by
+    have h := curvature_drop_error hba (by omega : i + t + 3 < P a b) hq hHR (Nat.cast_nonneg c)
       (hqr t (by omega)) (hs t (by omega))
       (by simpa only [Nat.add_assoc] using hs (t + 1) (by omega))
       (hkr t (by omega)) (by simpa only [Nat.add_assoc] using hkr (t + 1) (by omega))
     simpa only [kk, kq, Int.cast_sub, Int.cast_natCast] using h
-  have hab (t : ℕ) (ht : t < 3) : |(kq a b (i + t) : ℝ)| ≤ H := by
+  have hab (t : ℕ) (ht : t < c) : |(kq a b (i + t) : ℝ)| ≤ H := by
     have hp : (0 : ℝ) ≤ kq a b (i + t) := by
       exact_mod_cast (le_trans (by norm_num : (0 : ℤ) ≤ 1) (kq_pos (by omega : i + t + 1 < P a b)))
     rw [abs_of_nonneg hp]
@@ -160,7 +164,6 @@ theorem orbit_curvature_minor_height {a b i H j l : ℕ}
   convert h using 1
   ring
 
-
 /-- The three signed integer graph coordinates all satisfy the same height bound. -/
 theorem orbitCurvature_height {a b i H : ℕ} (hba : b < a) (hi : i + 6 < P a b)
     (hH : 1 ≤ H) (hk : ∀ t < 4, kq a b (i + t) ≤ H) (j : Fin 3) :
@@ -168,7 +171,8 @@ theorem orbitCurvature_height {a b i H : ℕ} (hba : b < a) (hi : i + 6 < P a b)
   have hq : (0 : ℝ) < qq a b i := by
     exact_mod_cast lt_of_lt_of_le Nat.zero_lt_one (qq_pos hba (by omega))
   have hm (r s : ℕ) (hr : r < 3) (hs : s < 3) :=
-    (le_div_iff₀ (pow_pos hq 3)).mp (orbit_curvature_minor_height hba hi hH hk hr hs)
+    (le_div_iff₀ (pow_pos hq 3)).mp ((orbit_curvature_minor_height 3 hba (by omega) hH hk hr hs
+      ).trans_eq (by push_cast; ring) : _ ≤ 68 * (a : ℝ) * (H : ℝ) ^ 3 / (qq a b i : ℝ) ^ 3)
   fin_cases j <;> norm_num [orbitCurvatureVector, curvatureVector]
   · exact_mod_cast hm 1 2 (by decide) (by decide)
   · exact_mod_cast hm 2 0 (by decide) (by decide)

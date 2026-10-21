@@ -28,7 +28,8 @@ def latticeJointExponent (m n : ℕ) : ℝ :=
   max (max ((5 : ℝ) / 17) (latticeExponentH (10 * n + 7 * m)))
     (max (latticeExponentS (10 * n + 7 * m) m) (latticeExponentY (10 * n + 7 * m) n))
 
-/-- Every fixed pair of positive powers gives its lattice exponent. -/
+/-- Every fixed pair of positive powers gives its lattice exponent (paper,
+`cor:latticeexponent`). -/
 theorem P_le_lattice_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
       (P a b : ℝ) ≤ C * (a : ℝ) ^ (latticeJointExponent m n + ε) := by
@@ -36,13 +37,9 @@ theorem P_le_lattice_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
   let h := 10 * n + 7 * m
   let K := fun a => (5 * (R a + 1)) ^ (3 * h)
   let C₀ := latticeJointWindowBase m n
-  let q := 30 * h + 5 * n + 17
+  let q := latticeJointWindowDeltaExponent m n
   let S := fun a => C₀ * (K a + 1) * tauMax (32 * a ^ 7) ^ q
-  have hconst (c : ℕ) : SlowGrowth (fun _ : ℕ => c) := by
-    intro η hη
-    refine ⟨c + 1, by positivity, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    nlinarith [show (0 : ℝ) ≤ c by positivity]
+  have hconst := slowGrowth_const
   have hK : SlowGrowth K := ((hconst 5).mul (slowGrowth_add_one hR)).pow (3 * h)
   have hS : SlowGrowth S := ((hconst C₀).mul (slowGrowth_add_one hK)).mul
     ((tauMax_slow 32 7).pow q)
@@ -71,7 +68,7 @@ theorem P_le_lattice_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
   intro hscale
   apply lattice_joint_branches_of_five_term_count (R := R a) hm
   simpa only [LatticeJointFiveTermEstimate, selectedGapHeight, selectedMinorHeight,
-    selectedPivotCurvatureHeight, selectedRankFiveHeight] using
+    selectedAllMinorHeight, selectedRankFiveHeight] using
     hcount a b s T (2 ^ k) hba hmem hsT (by omega) hscale
 
 /-- The explicit rational choice `m = 3`, `n = 2`. -/

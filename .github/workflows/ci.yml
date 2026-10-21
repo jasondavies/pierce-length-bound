@@ -34,7 +34,9 @@ jobs:
           python-version: "3.11.10"
       - name: Install the validator dependency
         run: python3 -m pip install --require-hashes -r .lake/palomar-tools/requirements.txt
-      - name: Validate metadata and source layout
+      - name: Check the pinned CCDN dependency metadata
+        run: python3 scripts/check-curve-counting-dependency.py
+      - name: Validate metadata, source layout, and theorem lists
         run: |
           python3 scripts/check-lean-sources.py
           PYTHONPATH=.lake/palomar-tools python3 - <<'PY'
@@ -46,27 +48,32 @@ jobs:
 
   lean:
     name: Build, audit axioms, and compare statements
+    # The fast metadata and source checks gate the long build.
+    needs: metadata
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - name: Check Lean source requirements
-        run: python3 scripts/check-lean-sources.py
-      - name: Check the pinned CCDN dependency metadata
-        run: python3 scripts/check-curve-counting-dependency.py
+      # The dependency checks read lakefile.toml with tomllib (Python 3.11 or later).
+      - name: Set up Python for the dependency checks
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.11.10"
       - uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9
         with:
           build: true
       - name: Check the fetched CCDN checkout
         run: python3 scripts/check-curve-counting-dependency.py --checkout
-      - name: Check the weighted-counting dependencies of the main bounds
-        run: python3 scripts/check-integral-lift-dependencies.py
+      - name: Check the weighted-count dependencies of the main bounds
+        run: python3 scripts/check-weighted-count-dependencies.py
       - name: Install Comparator's Linux sandbox
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq bubblewrap
+          # Ubuntu 24.04 and later restrict unprivileged user namespaces via AppArmor,
+          # which bwrap needs for Comparator's sandbox.
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-      - name: Compare all thirteen theorems with Lean, NanoDa, and con-ron
+      - name: Compare every theorem in comparator.json with Lean, NanoDa, and con-ron
         run: bash scripts/verify-comparator.sh

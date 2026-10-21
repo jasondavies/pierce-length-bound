@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.LinearJointGraph
-public import PierceLengthBound.PivotCurvature
+public import PierceLengthBound.LatticeCurvature
 public import PierceLengthBound.FixedDividendLatticeCurveCover
 public import PierceLengthBound.PoweredJointCountingSlack
 
@@ -27,25 +27,7 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Matrix Finset
 
-/-! ### Linear coordinate changes on a general index type -/
-
-/-- The rational zero locus transforms with its equations. -/
-theorem matrix_coordinate_zeroLocus_of {K ι : Type*} [Field K] [Fintype ι] [DecidableEq ι]
-    (C : Matrix ι ι K) (hC : C.det ≠ 0)
-    (I : Ideal (MvPolynomial ι K)) (y : ι → K) :
-    y ∈ coordinateZeroLocus (I.map (matrixSubstitution C).toRingHom) ↔
-      C *ᵥ y ∈ coordinateZeroLocus I := by
-  let e := matrixCoordinateEquiv C C⁻¹ (C.mul_nonsing_inv (isUnit_iff_ne_zero.mpr hC))
-    (C.nonsing_inv_mul (isUnit_iff_ne_zero.mpr hC))
-  constructor
-  · intro hy f hf
-    have h := hy (matrixSubstitution C f) (Ideal.mem_map_of_mem _ hf)
-    rwa [eval_matrixSubstitution] at h
-  · intro hy f hf
-    obtain ⟨g, hg, rfl⟩ := (Ideal.mem_map_iff_of_surjective e.toRingHom e.surjective).mp hf
-    change eval y (matrixSubstitution C g) = 0
-    rw [eval_matrixSubstitution]
-    exact hy g hg
+/-! ### Changing the node coordinates -/
 
 /-- The block matrix changing only the node coordinates of a graph. -/
 def nodeBlockMatrix (B : Matrix (Fin 3) (Fin 3) ℚ) : Matrix (Fin 3 ⊕ Fin 4) (Fin 3 ⊕ Fin 4) ℚ :=
@@ -60,65 +42,37 @@ lemma nodeBlockMatrix_mulVec (B : Matrix (Fin 3) (Fin 3) ℚ) (y : Fin 3 → ℚ
 
 /-! ### The fixed curvature data of a pattern -/
 
-/-- The matrix `G` and coordinates `c` of `lattice_curvature_coordinates`, chosen once for each
-pattern. -/
-def patternCurvatureData (p : Fin 10 → ℤ) :
-    Matrix (Fin 3) (Fin 3) ℚ × ((Fin 5 → ℤ) → (Fin 5 → ℤ) → Fin 3 → ℤ) := by
+/-- The matrix `G` of `lattice_curvature_coordinates`, chosen once for each pattern. The
+pattern graph depends on `G`; the coordinates `c` are recovered from `patternCurvature_spec`. -/
+def patternCurvatureMatrix (p : Fin 10 → ℤ) : Matrix (Fin 3) (Fin 3) ℚ := by
   classical
   exact if h : p 0 ≠ 0 ∧ ∃ M : Fin 3 → Fin 5 → ℤ, plk M = p then
-    (Classical.choose (lattice_curvature_coordinates h.1 h.2),
-      Classical.choose (Classical.choose_spec (lattice_curvature_coordinates h.1 h.2)).2)
-  else (1, fun _ _ _ => 0)
+    Classical.choose (lattice_curvature_coordinates h.1 h.2)
+  else 1
 
-def patternCurvatureMatrix (p : Fin 10 → ℤ) : Matrix (Fin 3) (Fin 3) ℚ :=
-  (patternCurvatureData p).1
-
-def patternCurvatureCoords (p : Fin 10 → ℤ) : (Fin 5 → ℤ) → (Fin 5 → ℤ) → Fin 3 → ℤ :=
-  (patternCurvatureData p).2
-
+/-- `lattice_curvature_coordinates` for the chosen matrix `patternCurvatureMatrix p`. -/
 theorem patternCurvature_spec {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
     (hp : ∃ M : Fin 3 → Fin 5 → ℤ, plk M = p) :
     (patternCurvatureMatrix p).det ≠ 0 ∧
-      ∀ M : Fin 3 → Fin 5 → ℤ, plk M = p →
-        (fun t => (patternCurvatureCoords p (M 0) (M 1) t : ℚ)) =
-          patternCurvatureMatrix p *ᵥ
+      ∃ c : (Fin 5 → ℤ) → (Fin 5 → ℤ) → Fin 3 → ℤ,
+        ∀ M : Fin 3 → Fin 5 → ℤ, plk M = p →
+          (fun t => (c (M 0) (M 1) t : ℚ)) = patternCurvatureMatrix p *ᵥ
             (fun t => ((curvatureVector (firstThree (M 0)) (firstThree (M 1)) t : ℤ) : ℚ)) ∧
-        ∀ S : ℕ, (∀ j l, |M 0 j * M 1 l - M 0 l * M 1 j| ≤ S) →
-          ∀ t, 3 * (shortR p : ℤ) ^ 2 * |patternCurvatureCoords p (M 0) (M 1) t| ≤ 8 * S := by
+          ∀ S : ℕ, (∀ j l, |M 0 j * M 1 l - M 0 l * M 1 j| ≤ S) →
+            ∀ t, 3 * (shortR p : ℤ) ^ 2 * |c (M 0) (M 1) t| ≤ 8 * S := by
   classical
   have h : p 0 ≠ 0 ∧ ∃ M : Fin 3 → Fin 5 → ℤ, plk M = p := ⟨h0, hp⟩
-  have hx := lattice_curvature_coordinates h.1 h.2
-  have hG := (Classical.choose_spec hx).1
-  have hc := Classical.choose_spec (Classical.choose_spec hx).2
-  simp only [patternCurvatureMatrix, patternCurvatureCoords, patternCurvatureData, h, ne_eq,
-    not_false_eq_true, and_self, ↓reduceDIte]
-  exact ⟨hG, hc⟩
-
-lemma firstThree_Mi (a b l : ℕ) :
-    curvatureVector (firstThree (Mi a b l 0)) (firstThree (Mi a b l 1)) =
-      orbitCurvatureVector a b l := by
-  funext t
-  fin_cases t <;> rfl
-
-lemma orbit_pattern_first {a b l : ℕ} (hba : b < a) (hl : l + 5 < P a b) :
-    plk (Mi a b l) 0 ≠ 0 := by
-  have h := congrFun (theta_eq (a := a) (b := b) l) 0
-  simp only [theta, projθ, Matrix.cons_val_zero] at h
-  have := Lz_pos hba (i := l) hl
-  omega
+  simp only [patternCurvatureMatrix, h, ne_eq, not_false_eq_true, and_self, ↓reduceDIte]
+  exact Classical.choose_spec (lattice_curvature_coordinates h.1 h.2)
 
 /-! ### Points of the linearly changed powered graph -/
-
-lemma orbitLinearJointGraph_congr {a b i l : ℕ} (h : theta a b i = theta a b l)
-    (Gm : Matrix (Fin 3) (Fin 3) ℚ) (m n : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ)) :
-    orbitLinearJointGraphIdeal Gm a b i m n I = orbitLinearJointGraphIdeal Gm a b l m n I := by
-  obtain ⟨hP, hD⟩ := orbitJoint_polynomials_congr h
-  simp only [orbitLinearJointGraphIdeal, orbitLinearJointNumerators, hP, hD]
 
 /-- The powered coordinates `(cᵐ, Jⁿ)` of a state. -/
 def latticePowers (c : Fin 3 → ℤ) (J m n : ℕ) : Fin 4 → ℤ :=
   ![c 0 ^ m, c 1 ^ m, c 2 ^ m, (J : ℤ) ^ n]
 
+/-- A state's nodes and powered coordinates `(cᵐ, Jⁿ)` lie on the linearly changed graph when
+`c = G W`. -/
 lemma orbitLinearJointGraph_point {a b l J : ℕ} (hba : b < a) (hl : l + 7 < P a b)
     (Gm : Matrix (Fin 3) (Fin 3) ℚ) (m n : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ))
     (hz : orbitFreeNodesQ a b l ∈ coordinateZeroLocus I)
@@ -169,15 +123,32 @@ lemma orbitLinearJointGraph_point {a b l J : ℕ} (hba : b < a) (hl : l + 7 < P 
 
 /-! ### The box -/
 
-/-- The box of the lattice coordinates of a pattern. -/
+/-- The box of the lattice coordinates of a pattern: nodes `3H/λ`, curvature coordinates
+`(8S'/(3λ²))ᵐ` and rank-five integers `Yⁿ` (paper, `lem:latticecoords`). The `max 1` keeps the
+box positive when the floor divisions vanish. -/
 def latticeJointBoxHeight (p : Fin 10 → ℤ) (a A T m n : ℕ) : ℕ :=
   max 1 (max (3 * selectedGapHeight a A T / shortR p)
-    (max ((8 * selectedPivotCurvatureHeight a A T / (3 * shortR p ^ 2)) ^ m)
+    (max ((8 * selectedAllMinorHeight a A T / (3 * shortR p ^ 2)) ^ m)
       (selectedRankFiveHeight a A T ^ n)))
 
 lemma latticeJointBoxHeight_pos (p : Fin 10 → ℤ) (a A T m n : ℕ) :
     1 ≤ latticeJointBoxHeight p a A T m n := le_max_left _ _
 
+lemma le_latticeJointBoxHeight_nodes (p : Fin 10 → ℤ) (a A T m n : ℕ) :
+    3 * selectedGapHeight a A T / shortR p ≤ latticeJointBoxHeight p a A T m n :=
+  (le_max_left _ _).trans (le_max_right _ _)
+
+lemma le_latticeJointBoxHeight_curvature (p : Fin 10 → ℤ) (a A T m n : ℕ) :
+    (8 * selectedAllMinorHeight a A T / (3 * shortR p ^ 2)) ^ m ≤
+      latticeJointBoxHeight p a A T m n :=
+  ((le_max_left _ _).trans (le_max_right _ _)).trans (le_max_right _ _)
+
+lemma le_latticeJointBoxHeight_rankFive (p : Fin 10 → ℤ) (a A T m n : ℕ) :
+    selectedRankFiveHeight a A T ^ n ≤ latticeJointBoxHeight p a A T m n :=
+  ((le_max_right _ _).trans (le_max_right _ _)).trans (le_max_right _ _)
+
+/-- The lattice box is at most the polynomial bound `10²⁵ᵏ a¹⁵ᵏ`, `k = m + n + 1`, of
+`poweredJointPointBoxHeight_polynomial`, so the logarithmic factor is unchanged. -/
 lemma latticeJointBoxHeight_polynomial {p : Fin 10 → ℤ} {a A T : ℕ} (ha : 1 ≤ a) (hA : A ≤ a)
     (m n : ℕ) : latticeJointBoxHeight p a A T m n ≤
       (10 ^ 25) ^ (m + n + 1) * a ^ (15 * (m + n + 1)) := by
@@ -186,16 +157,16 @@ lemma latticeJointBoxHeight_polynomial {p : Fin 10 → ℤ} {a A T : ℕ} (ha : 
     have := Nat.div_le_self (28 * a) (A * T)
     unfold selectedGapHeight
     omega
-  have hS : 8 * selectedPivotCurvatureHeight a A T ≤ 10 ^ 25 * a ^ 15 := by
-    have h1 : selectedPivotCurvatureHeight a A T ≤ 9472 * A ^ 3 * selectedGapHeight a A T ^ 3 :=
+  have hS : 8 * selectedAllMinorHeight a A T ≤ 10 ^ 25 * a ^ 15 := by
+    have h1 : selectedAllMinorHeight a A T ≤ 9472 * A ^ 3 * selectedGapHeight a A T ^ 3 :=
       Nat.div_le_self _ _
     have h2 : 9472 * A ^ 3 * selectedGapHeight a A T ^ 3 ≤ 9472 * a ^ 3 * (29 * a) ^ 3 := by
       gcongr
     have h3 : a ^ 6 ≤ a ^ 15 := Nat.pow_le_pow_right ha (by norm_num)
-    calc 8 * selectedPivotCurvatureHeight a A T ≤ 8 * (9472 * a ^ 3 * (29 * a) ^ 3) := by
+    calc 8 * selectedAllMinorHeight a A T ≤ 8 * (9472 * a ^ 3 * (29 * a) ^ 3) := by
           omega
-      _ = 1848100864 * a ^ 6 := by ring
-      _ ≤ 1848100864 * a ^ 15 := by gcongr
+      _ = (8 * 9472 * 29 ^ 3) * a ^ 6 := by ring
+      _ ≤ (8 * 9472 * 29 ^ 3) * a ^ 15 := by gcongr
       _ ≤ _ := by gcongr; norm_num
   have hbig : 1 ≤ (10 ^ 25) ^ (m + n + 1) * a ^ (15 * (m + n + 1)) :=
     Nat.one_le_iff_ne_zero.mpr (by positivity)
@@ -204,23 +175,35 @@ lemma latticeJointBoxHeight_polynomial {p : Fin 10 → ℤ} {a A T : ℕ} (ha : 
       _ ≤ (10 ^ 25 * a ^ 15) ^ (m + n + 1) :=
         Nat.pow_le_pow_right (by positivity) (by omega)
       _ = _ := by ring
-  have hold' : poweredJointPointBoxHeight a A T m n ≤
-      (10 ^ 25) ^ (m + n + 1) * a ^ (15 * (m + n + 1)) := hold
   apply max_le hbig
   apply max_le
   · have : 3 * selectedGapHeight a A T / shortR p ≤ 3 * selectedGapHeight a A T :=
       Nat.div_le_self _ _
-    exact this.trans ((le_max_left _ _).trans hold')
+    exact this.trans ((le_max_left _ _).trans hold)
   · apply max_le
-    · have hc : 8 * selectedPivotCurvatureHeight a A T / (3 * shortR p ^ 2) ≤ 10 ^ 25 * a ^ 15 :=
+    · have hc : 8 * selectedAllMinorHeight a A T / (3 * shortR p ^ 2) ≤ 10 ^ 25 * a ^ 15 :=
         (Nat.div_le_self _ _).trans hS
       calc _ ≤ (10 ^ 25 * a ^ 15) ^ m := Nat.pow_le_pow_left hc m
         _ ≤ (10 ^ 25 * a ^ 15) ^ (m + n + 1) :=
           Nat.pow_le_pow_right (by positivity) (by omega)
         _ = _ := by ring
-    · exact (le_max_right _ _ |>.trans (le_max_right _ _)).trans hold'
+    · exact (le_max_right _ _ |>.trans (le_max_right _ _)).trans hold
 
 /-! ### Counting -/
+
+/-- The curvature coordinates of `lattice_curvature_coordinates` fit in the curvature part of
+the box. -/
+lemma lattice_curvature_power_le {p : Fin 10 → ℤ} (hp0 : p 0 ≠ 0) {S m : ℕ} {c : ℤ}
+    (hc : 3 * (shortR p : ℤ) ^ 2 * |c| ≤ 8 * S) :
+    |c ^ m| ≤ (((8 * S / (3 * shortR p ^ 2)) ^ m : ℕ) : ℤ) := by
+  have hR : (0 : ℤ) < 3 * (shortR p : ℤ) ^ 2 := by
+    have := (shortR_spec (piv_ne_zero hp0)).1
+    positivity
+  have h1 : |c| ≤ (8 * (S : ℤ)) / (3 * (shortR p : ℤ) ^ 2) :=
+    Int.le_ediv_of_mul_le hR (by linarith)
+  rw [abs_pow]
+  push_cast
+  exact pow_le_pow_left₀ (abs_nonneg _) (by exact_mod_cast h1) m
 
 /-- Uniform counting of the gap vectors of one full pattern on one component, in the lattice
 box. -/
@@ -262,7 +245,7 @@ theorem selected_latticeJointGraph_gap_count (m n lo hi : ℕ) (hlo : 0 < lo) (h
   have hj0P := (facts j0 hj0).1
   have hp0 : p 0 ≠ 0 := by
     rw [← hpat j0 hj0]; exact orbit_pattern_first hba (by omega)
-  obtain ⟨hGdet, hGspec⟩ := patternCurvature_spec hp0 ⟨Mi a b i, rfl⟩
+  obtain ⟨hGdet, c0, hGspec⟩ := patternCurvature_spec hp0 ⟨Mi a b i, rfl⟩
   set Gm := patternCurvatureMatrix p
   -- node coordinates in a reduced basis of the pattern lattice
   set V := G.image (kap a b)
@@ -304,7 +287,7 @@ theorem selected_latticeJointGraph_gap_count (m n lo hi : ℕ) (hlo : 0 < lo) (h
     (fun l hl => by have := (facts l hl).1; omega) hθ
   choose J _hJpos hJ hJheight using fun k : V =>
     selected_rankFive_positive_integer hba hmem hsT (hG (hl k))
-  let cc := fun k : V => patternCurvatureCoords p (Mi a b (l k) 0) (Mi a b (l k) 1)
+  let cc := fun k : V => c0 (Mi a b (l k) 0) (Mi a b (l k) 1)
   let z (k : V) : Fin 3 ⊕ Fin 4 → ℤ := Sum.elim (y k.val) (latticePowers (cc k) (J k) m n)
   have hz_inj : Function.Injective z := by
     intro k k' he
@@ -319,37 +302,18 @@ theorem selected_latticeJointGraph_gap_count (m n lo hi : ℕ) (hlo : 0 < lo) (h
     intro w hw t
     obtain ⟨k, _, rfl⟩ := mem_image.mp hw
     have hlk := hl k
-    have hlkP := (facts _ hlk).1
-    have hBn : 3 * selectedGapHeight a A T / shortR p ≤ Bx :=
-      (le_max_left _ _).trans (le_max_right _ _)
-    have hBc : (8 * selectedPivotCurvatureHeight a A T / (3 * shortR p ^ 2)) ^ m ≤ Bx :=
-      ((le_max_left _ _).trans (le_max_right _ _)).trans (le_max_right _ _)
-    have hBy : selectedRankFiveHeight a A T ^ n ≤ Bx :=
-      ((le_max_right _ _).trans (le_max_right _ _)).trans (le_max_right _ _)
     have hZ : |z k t| ≤ (Bx : ℤ) := by
       cases t with
       | inl t =>
         have h := ((hnodes k.val k.property).1 t)
-        exact h.trans (by exact_mod_cast hBn)
+        exact h.trans (by exact_mod_cast le_latticeJointBoxHeight_nodes p a A T m n)
       | inr t =>
         have hcb := (hGspec (Mi a b (l k)) (hpat _ hlk)).2
-          (selectedPivotCurvatureHeight a A T) (fun j r =>
+          (selectedAllMinorHeight a A T) (fun j r =>
             selected_curvature_minor_bound hba hmem hsT (hG hlk) j.isLt r.isLt)
-        have hR : (0 : ℤ) < 3 * (shortR p : ℤ) ^ 2 := by
-          have := (shortR_spec (p := p) (by
-            intro hz0; have := piv_max p 0; rw [hz0, abs_zero] at this
-            exact hp0 (abs_eq_zero.mp (le_antisymm this (abs_nonneg _))))).1
-          positivity
-        have hcur (r : Fin 3) : |cc k r| ^ m ≤
-            ((8 * selectedPivotCurvatureHeight a A T / (3 * shortR p ^ 2)) ^ m : ℕ) := by
-          have h1 : |cc k r| ≤ (8 * (selectedPivotCurvatureHeight a A T : ℤ)) /
-              (3 * (shortR p : ℤ) ^ 2) :=
-            Int.le_ediv_of_mul_le hR (by linarith [hcb r])
-          push_cast
-          exact pow_le_pow_left₀ (abs_nonneg _) (by exact_mod_cast h1) m
-        have hcurB (r : Fin 3) : |cc k r ^ m| ≤ (Bx : ℤ) := by
-          rw [abs_pow]
-          exact (hcur r).trans (by exact_mod_cast hBc)
+        have hcurB (r : Fin 3) : |cc k r ^ m| ≤ (Bx : ℤ) :=
+          (lattice_curvature_power_le hp0 (hcb r)).trans
+            (by exact_mod_cast le_latticeJointBoxHeight_curvature p a A T m n)
         fin_cases t
         · exact hcurB 0
         · exact hcurB 1
@@ -358,14 +322,14 @@ theorem selected_latticeJointGraph_gap_count (m n lo hi : ℕ) (hlo : 0 < lo) (h
           rw [abs_pow, abs_of_nonneg (Int.natCast_nonneg _)]
           have h1 : (J k : ℤ) ^ n ≤ (selectedRankFiveHeight a A T : ℤ) ^ n :=
             pow_le_pow_left₀ (Int.natCast_nonneg _) (by exact_mod_cast hJheight k) n
-          exact h1.trans (by exact_mod_cast hBy)
+          exact h1.trans (by exact_mod_cast le_latticeJointBoxHeight_rankFive p a A T m n)
     exact_mod_cast hZ
   have hSpts : ∀ w ∈ Sz, (fun t => (w t : ℚ)) ∈ coordinateZeroLocus I' := by
     intro w hw
     obtain ⟨k, _, rfl⟩ := mem_image.mp hw
     have hlk := hl k
     have hlkP := (facts _ hlk).1
-    apply (matrix_coordinate_zeroLocus_of Cb hCb _ _).mpr
+    apply (matrix_coordinate_zeroLocus Cb hCb _ _).mpr
     have hcast : (fun t => (z k t : ℚ)) =
         Sum.elim (fun t => (y k.val t : ℚ)) (fun j => (latticePowers (cc k) (J k) m n j : ℚ)) := by
       funext t; cases t <;> rfl

@@ -44,8 +44,10 @@ theorem sum_rpow_le_card_rpow_mul {ι : Type*} (s : Finset ι) (z : ι → ℝ)
   linarith [show (s.card : ℝ) * ((s.card : ℝ) ^ t)⁻¹ * (∑ i ∈ s, z i) ^ t =
     (s.card : ℝ) * (((s.card : ℝ) ^ t)⁻¹ * (∑ i ∈ s, z i) ^ t) by ring]
 
-/-- **Fractional lattice weights.** For `0 ≤ t ≤ 1`,
-`∑_p λ_p^{-t} ≤ 3163861 τ² X^{5 - t/3}`. -/
+/-- **Fractional lattice weights** (paper, `lem:weights`). For `0 ≤ t ≤ 1`,
+`∑_p λ_p^{-t} ≤ 3163861 τ² X^{5 - t/3}`. Here `3163861 = 14581 + 8 · 393660`: `14581` is the
+constant of the pattern count `ordinary_minor_count`, and `8 · 393660` comes from the short-vector
+count `short_count` with `L³ ≤ 8X`. -/
 theorem shortR_weight_sum {S : Finset (Fin 10 → ℤ)} {X τ : ℕ}
     (hX : 1 ≤ X) (hτ1 : 1 ≤ τ)
     (hS : ∀ p ∈ S, (∀ t, |p t| ≤ X) ∧ PluckerRel p ∧ p (piv p) ≠ 0)
@@ -132,12 +134,7 @@ theorem shortR_weight_sum {S : Finset (Fin 10 → ℤ)} {X τ : ℕ}
 def latticeWeightSlack (a : ℕ) : ℕ := 3163861 * tauMax (10 ^ 16 * a ^ 7) ^ 2
 
 lemma latticeWeightSlack_slow : SlowGrowth latticeWeightSlack := by
-  have hc : SlowGrowth (fun _ : ℕ => 3163861) := by
-    intro η hη
-    refine ⟨3163861, by norm_num, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    norm_num
-    linarith
+  have hc := slowGrowth_const 3163861
   have ht := tauMax_slow (10 ^ 16) 7
   have he : latticeWeightSlack = fun a => 3163861 * (tauMax (10 ^ 16 * a ^ 7) *
       tauMax (10 ^ 16 * a ^ 7)) := by
@@ -163,16 +160,8 @@ theorem selected_pattern_weight_sum {a b s T A : ℕ} (hba : b < a)
   · intro p hp
     obtain ⟨i, hi, rfl⟩ := mem_image.mp hp
     have hP := (selectedStart_spec hmem hsT hi).1
-    refine ⟨selectedStart_minor_height hba hmem hsT hi, plucker _, ?_⟩
-    intro hz
-    have h0 : plk (Mi a b i) 0 ≠ 0 := by
-      have h := congrFun (theta_eq (a := a) (b := b) i) 0
-      simp only [theta, projθ, Matrix.cons_val_zero] at h
-      have := Lz_pos hba (i := i) (by omega)
-      omega
-    have := piv_max (plk (Mi a b i)) 0
-    rw [hz, abs_zero] at this
-    exact h0 (abs_eq_zero.mp (le_antisymm this (abs_nonneg _)))
+    exact ⟨selectedStart_minor_height hba hmem hsT hi, plucker _,
+      piv_ne_zero (orbit_pattern_first hba (by omega))⟩
 
 end
 end PierceLengthBound.FixedDividend

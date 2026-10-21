@@ -23,22 +23,26 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
 
+/-- A power of a maximum is at most the sum of the powers. -/
 lemma max_rpow_le_add {u v r : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) :
     (max u v) ^ r ≤ u ^ r + v ^ r := by
   rcases le_total u v with h | h
   · rw [max_eq_right h]; linarith [Real.rpow_nonneg hu r]
   · rw [max_eq_left h]; linarith [Real.rpow_nonneg hv r]
 
+/-- For `c ≥ 1`, powers with exponent at most `1` are at most `c`. -/
 lemma rpow_le_self_of_le_one {c r : ℝ} (hc : 1 ≤ c) (hr : r ≤ 1) : c ^ r ≤ c := by
   calc c ^ r ≤ c ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hc hr
     _ = c := Real.rpow_one c
 
+/-- `((y ^ k : ℕ) : ℝ) ^ (1 / h) = y ^ (k / h)`. -/
 lemma natCast_pow_rpow (y : ℕ) (k : ℕ) {h : ℝ} :
     (((y ^ k : ℕ) : ℝ)) ^ (1 / h) = (y : ℝ) ^ ((k : ℝ) / h) := by
   rw [Nat.cast_pow, ← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg _)]
   congr 1; ring
 
-/-- The `1/h`-th power of the lattice box splits into the three coordinate terms. -/
+/-- The `1/h`-th power of the lattice box splits into the three coordinate terms (paper,
+`prop:latticewindow`). -/
 theorem lattice_box_rpow_le {H S Y lam m n : ℕ} (hlam : 1 ≤ lam) {h : ℝ} (h1 : 1 ≤ h)
     (hm : (2 * m : ℝ) ≤ h) :
     ((max 1 (max (3 * H / lam) (max ((8 * S / (3 * lam ^ 2)) ^ m) (Y ^ n))) : ℕ) : ℝ) ^
@@ -114,23 +118,21 @@ def LatticeJointFiveTermEstimate (m n : ℕ) (R : ℕ → ℕ) : Prop :=
     let h : ℝ := ((10 * n + 7 * m : ℕ) : ℝ)
     let H : ℝ := selectedGapHeight a A T
     let X : ℝ := selectedMinorHeight a A T
-    let S : ℝ := selectedPivotCurvatureHeight a A T
+    let S : ℝ := selectedAllMinorHeight a A T
     let Y : ℝ := selectedRankFiveHeight a A T
     (T : ℝ) ≤ R a * (X ^ 5 + X ^ 4 * H ^ (1 / 2 : ℝ) +
       X ^ (5 - (1 / h) / 3) * H ^ (1 / h) + X ^ (5 - (2 * m / h) / 3) * S ^ (m / h) +
       X ^ 5 * Y ^ (n / h))
 
-/-- The slack of the five-term estimate. -/
+/-- The slack of the five-term estimate: `8 = 4 · 2` from the pattern multiplicity and the
+selected starts, and `2 O + Ex + 8 W` dominates the coefficients of the five terms (the `2` from
+`1 + (1 + …)` in the pattern count and the `8` from the curvature coefficient). -/
 def latticeJointSlack (R : ℕ → ℕ) (a : ℕ) : ℕ :=
   8 * R a * (2 * ordinaryPatternSlack a + exceptionalPatternSlack a + 8 * latticeWeightSlack a)
 
 lemma latticeJointSlack_slow {R : ℕ → ℕ} (hR : SlowGrowth R) :
     SlowGrowth (latticeJointSlack R) := by
-  have hc (c : ℕ) : SlowGrowth (fun _ : ℕ => c) := by
-    intro η hη
-    refine ⟨c + 1, by positivity, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    nlinarith [show (0 : ℝ) ≤ c by positivity]
+  have hc := slowGrowth_const
   have hsum : SlowGrowth (fun a => 2 * ordinaryPatternSlack a + exceptionalPatternSlack a +
       8 * latticeWeightSlack a) :=
     slowGrowth_add (slowGrowth_add ((hc 2).mul ordinaryPatternSlack_slow)
@@ -150,7 +152,7 @@ theorem lattice_joint_five_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m) {R 
   set h : ℝ := (hN : ℝ)
   set H := selectedGapHeight a A T
   set X := selectedMinorHeight a A T
-  set S := selectedPivotCurvatureHeight a A T
+  set S := selectedAllMinorHeight a A T
   set Y := selectedRankFiveHeight a A T
   have facts := fun i hi => selectedStart_spec hmem hsT (i := i) hi
   have hh1 : (1 : ℝ) ≤ h := by
@@ -160,22 +162,8 @@ theorem lattice_joint_five_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m) {R 
   have hm2 : (2 * m : ℝ) ≤ h := by
     simp only [h, hN]; push_cast; nlinarith [show (0 : ℝ) ≤ n from Nat.cast_nonneg n,
       show (0 : ℝ) ≤ m from Nat.cast_nonneg m]
-  have hmult : G.card ≤ 4 * (G.image fun i => (pm i, kap a b i)).card := by
-    apply pattern_gap_multiplicity (θ := theta a b) (Q := fun i => (qq a b i : ℤ))
-      (a := (a : ℤ)) (fun i _ => theta_eq i)
-    · intro i hi i' hi' hq
-      have hP := (facts i hi).1
-      have hP' := (facts i' hi').1
-      simp only [Nat.cast_inj] at hq
-      by_contra hne
-      rcases lt_or_gt_of_ne hne with hlt | hlt
-      · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne hq
-      · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne hq.symm
-    · intro i hi
-      simpa [theta] using Lz_pos hba (i := i) (by have := (facts i hi).1; omega)
-    · intro i hi
-      simpa [theta, kap] using mult_at (a := a) (b := b) (i := i)
-        (by have := (facts i hi).1; omega)
+  have hmult : G.card ≤ 4 * (G.image fun i => (pm i, kap a b i)).card :=
+    selectedStarts_card_le_pair_image hba hmem hsT
   have hs : ((G.image fun i => (pm i, kap a b i)).card : ℝ) ≤
       ∑ p ∈ Pset, (((G.filter fun i => pm i = p).image (kap a b)).card : ℝ) := by
     exact_mod_cast pair_image_card_le_sum G pm (kap a b)
@@ -193,16 +181,9 @@ theorem lattice_joint_five_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m) {R 
     · linarith
     · obtain ⟨i, hi, rfl⟩ := mem_image.mp hp
       have hP := (facts i hi).1
-      have hp0 : plk (Mi a b i) (piv (plk (Mi a b i))) ≠ 0 := by
-        intro hz
-        have := piv_max (plk (Mi a b i)) 0
-        rw [hz, abs_zero] at this
-        exact orbit_pattern_first hba (l := i) (by omega)
-          (abs_eq_zero.mp (le_antisymm this (abs_nonneg _)))
-      have hl := (shortR_spec hp0).1
+      have hl := (shortR_spec (piv_ne_zero (orbit_pattern_first hba (l := i) (by omega)))).1
       have hbox := lattice_box_rpow_le (H := H) (S := S) (Y := Y) (m := m) (n := n) hl hh1 hm2
       refine hc.trans ?_
-      have hR0 : (0 : ℝ) ≤ R a := Nat.cast_nonneg _
       rw [add_zero]
       calc (R a : ℝ) * (1 + (latticeJointBoxHeight (plk (Mi a b i)) a A T m n : ℝ) ^
             (1 / ((10 * n + 7 * m : ℕ) : ℝ))) ≤ (R a : ℝ) * (1 + (1 + 3 * (H : ℝ) ^ (1 / h) *
@@ -270,22 +251,24 @@ theorem lattice_joint_five_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m) {R 
   have hgoal : (latticeJointSlack R a : ℝ) = 8 * Ra * (2 * O + Ex + 8 * W) := by
     simp only [latticeJointSlack, Ra, O, Ex, W]; push_cast; ring
   rw [hgoal]
-  have e1 : (2 * (m : ℝ) / h) = 2 * m / h := rfl
-  refine hbound.trans ?_
-  nlinarith [mul_nonneg hRa hO, mul_nonneg hRa hEx, mul_nonneg hRa hW,
-    mul_nonneg (mul_nonneg hRa hO) (mul_nonneg hx5 t3), mul_nonneg (mul_nonneg hRa hO) hx5,
-    mul_nonneg (mul_nonneg hRa hW) (mul_nonneg hxa t1),
-    mul_nonneg (mul_nonneg hRa hW) (mul_nonneg hxb t2),
-    mul_nonneg (mul_nonneg hRa hEx) (mul_nonneg hx4 t4),
-    mul_nonneg (mul_nonneg hRa hEx) hx5, mul_nonneg (mul_nonneg hRa hW) hx5,
-    mul_nonneg (mul_nonneg hRa hO) (mul_nonneg hxa t1),
-    mul_nonneg (mul_nonneg hRa hO) (mul_nonneg hxb t2),
-    mul_nonneg (mul_nonneg hRa hO) (mul_nonneg hx4 t4),
-    mul_nonneg (mul_nonneg hRa hEx) (mul_nonneg hxa t1),
-    mul_nonneg (mul_nonneg hRa hEx) (mul_nonneg hxb t2),
-    mul_nonneg (mul_nonneg hRa hEx) (mul_nonneg hx5 t3),
-    mul_nonneg (mul_nonneg hRa hW) (mul_nonneg hx4 t4),
-    mul_nonneg (mul_nonneg hRa hW) (mul_nonneg hx5 t3)]
+  -- each term of `hbound` is at most `8 Ra Σ` times the matching term of the goal
+  set Csum := 2 * O + Ex + 8 * W
+  have e1 := mul_le_mul_of_nonneg_right (show 2 * O ≤ Csum by linarith) hx5
+  have e2 := mul_le_mul_of_nonneg_right (show O ≤ Csum by linarith) (mul_nonneg hx5 t3)
+  have e3 := mul_le_mul_of_nonneg_right (show 3 * W ≤ Csum by linarith) (mul_nonneg hxa t1)
+  have e4 := mul_le_mul_of_nonneg_right (show 8 * W ≤ Csum by linarith) (mul_nonneg hxb t2)
+  have e5 := mul_le_mul_of_nonneg_right (show Ex ≤ Csum by linarith) (mul_nonneg hx4 t4)
+  have hterms : (O * (X : ℝ) ^ 5) * (2 + (Y : ℝ) ^ ((n : ℝ) / h)) +
+      3 * (H : ℝ) ^ (1 / h) * (W * (X : ℝ) ^ (5 - (1 / h) / 3)) +
+      8 * (S : ℝ) ^ ((m : ℝ) / h) * (W * (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3)) +
+      (H : ℝ) ^ (1 / 2 : ℝ) * (Ex * (X : ℝ) ^ 4) ≤
+      Csum * ((X : ℝ) ^ 5 + (X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ) +
+        (X : ℝ) ^ (5 - (1 / h) / 3) * (H : ℝ) ^ (1 / h) +
+        (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3) * (S : ℝ) ^ ((m : ℝ) / h) +
+        (X : ℝ) ^ 5 * (Y : ℝ) ^ ((n : ℝ) / h)) := by
+    linarith
+  have := mul_le_mul_of_nonneg_left hterms (by positivity : (0 : ℝ) ≤ 8 * Ra)
+  refine hbound.trans ((le_of_eq ?_).trans (this.trans (le_of_eq ?_))) <;> ring
 
 /-- Every fixed pair of positive powers has the five-term local bound. -/
 theorem latticeJointFiveTermEstimate_exists (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :

@@ -5,11 +5,23 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.PoweredJointGraphLowerDegree
+public import PierceLengthBound.PoweredJointGraph
+public import PierceLengthBound.PoweredPoleOrder
+public import PierceLengthBound.JointLiftOptimization
+public import PierceLengthBound.GraphPoleDegree
+public import PierceLengthBound.JointLiftCurvatureDegree
+public import PierceLengthBound.JointLiftGraphDegree
+public import PierceLengthBound.JointLiftPointBox
 
-/-! Replace the three curvature coordinates by a constant invertible linear combination of
-them. An invertible constant matrix leaves the pole envelope unchanged at every branch, so the
-powered graph keeps the degree lower bound `10n + 7m` of the original coordinates. -/
+/-!
+# Linearly changed joint graphs
+
+Replace the three curvature coordinates `W` by `G W` for a constant invertible matrix `G`. An
+invertible constant matrix leaves the pole envelope unchanged at every branch, so the powered
+graph keeps the degree lower bound `10n + 7m` (paper, `lem:latticedegree`). The powered graph of
+`PoweredJointGraph` is the case `G = 1` (`orbitLinearJointGraphIdeal_one`), and
+`PoweredJointGraphLowerDegree` derives its bounds from the ones here.
+-/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -52,6 +64,11 @@ def linearJointNumerators {σ : Type*} (G : Matrix (Fin 3) (Fin 3) ℚ)
   ![∑ l : Fin 3, C (G 0 l) * P l.castSucc, ∑ l : Fin 3, C (G 1 l) * P l.castSucc,
     ∑ l : Fin 3, C (G 2 l) * P l.castSucc, P 3]
 
+@[simp] lemma linearJointNumerators_one {σ : Type*} (P : Fin 4 → MvPolynomial σ ℚ) :
+    linearJointNumerators 1 P = P := by
+  funext j
+  fin_cases j <;> simp [linearJointNumerators, Matrix.one_apply]
+
 lemma linearJointNumerators_castSucc {σ : Type*} (G : Matrix (Fin 3) (Fin 3) ℚ)
     (P : Fin 4 → MvPolynomial σ ℚ) (j : Fin 3) :
     linearJointNumerators G P j.castSucc = ∑ l : Fin 3, C (G j l) * P l.castSucc := by
@@ -86,15 +103,29 @@ lemma linear_jointGraphFieldCoordinates {σ F : Type*} [Field F] [Algebra ℚ F]
   rw [← MvPolynomial.algebraMap_eq, Ideal.Quotient.mk_algebraMap]
   exact ι.commutes _
 
+/-- The powered numerators of the orbit graph `(nodes, (G W)ᵐ, Jⁿ)`. -/
 def orbitLinearJointNumerators (G : Matrix (Fin 3) (Fin 3) ℚ) (a b i m n : ℕ) :
     Fin 4 → MvPolynomial (Fin 3) ℚ :=
   poweredGraphNumerators (linearJointNumerators G (orbitJointNumerators a b i))
     (orbitJointDenominator a b i) (jointCoordinatePowers m n) (m + n)
 
+/-- The ideal of the orbit graph `(nodes, (G W)ᵐ, Jⁿ)` over the component `I`. -/
 def orbitLinearJointGraphIdeal (G : Matrix (Fin 3) (Fin 3) ℚ) (a b i m n : ℕ)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) : Ideal (MvPolynomial (Fin 3 ⊕ Fin 4) ℚ) :=
   jointGraphIdeal I (orbitLinearJointNumerators G a b i m n)
     (orbitJointDenominator a b i ^ (m + n))
+
+lemma orbitLinearJointGraphIdeal_one (a b i m n : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ)) :
+    orbitLinearJointGraphIdeal 1 a b i m n I = orbitPoweredJointGraphIdeal a b i m n I := by
+  simp only [orbitLinearJointGraphIdeal, orbitLinearJointNumerators, linearJointNumerators_one,
+    orbitPoweredJointGraphIdeal, orbitPoweredJointNumerators]
+
+/-- The graph depends on the start only through its pattern. -/
+lemma orbitLinearJointGraph_congr {a b i l : ℕ} (h : theta a b i = theta a b l)
+    (Gm : Matrix (Fin 3) (Fin 3) ℚ) (m n : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ)) :
+    orbitLinearJointGraphIdeal Gm a b i m n I = orbitLinearJointGraphIdeal Gm a b l m n I := by
+  obtain ⟨hP, hD⟩ := orbitJoint_polynomials_congr h
+  simp only [orbitLinearJointGraphIdeal, orbitLinearJointNumerators, hP, hD]
 
 /-- The linearly changed powered graph has the same uniform upper degree bound. -/
 theorem orbitLinearJointGraph_degree_bounds {a b i d : ℕ} (G : Matrix (Fin 3) (Fin 3) ℚ)
@@ -105,22 +136,11 @@ theorem orbitLinearJointGraph_degree_bounds {a b i d : ℕ} (G : Matrix (Fin 3) 
     (orbitLinearJointGraphIdeal G a b i m n I).IsPrime ∧
     ∃ δ : ℕ, d ≤ δ ∧ δ ≤ ((m + n) * 247 + 1) * d ∧ ∃ M : ℕ, ∃ c : ℤ, ∀ k ≥ M,
       (Module.finrank ℚ (filteredCoordinateSpace (orbitLinearJointGraphIdeal G a b i m n I) k)
-        : ℤ) = (δ : ℤ) * k + c := by
-  have hp := jointLift_polynomial_degrees (orbitLiftNumeratorQ a b i)
-    (orbitLiftDenominatorQ a b i) (jointRankFivePolynomial a b i) (Lz a b i : ℚ)
-    (jointGapPolynomials a b i) (orbitLift_polynomial_degrees a b i).1
-    (orbitLift_polynomial_degrees a b i).2 (jointRankFivePolynomial_degree a b i)
-    (jointGapPolynomials_degree a b i)
-  have hP : ∀ j, (orbitJointNumerators a b i j).totalDegree ≤ 247 := by
-    intro j
-    fin_cases j
-    · exact (hp.2.1 0).trans (by norm_num)
-    · exact (hp.2.1 1).trans (by norm_num)
-    · exact (hp.2.1 2).trans (by norm_num)
-    · exact hp.2.2
-  exact powered_jointGraph_degree_bounds I _ _ (orbitJoint_denominator_not_mem hba hi I hz)
+        : ℤ) = (δ : ℤ) * k + c :=
+  powered_jointGraph_degree_bounds I _ _ (orbitJoint_denominator_not_mem hba hi I hz)
     (jointCoordinatePowers m n) (m + n) 247 (jointCoordinatePowers_le m n)
-    (linearJointNumerators_totalDegree G _ hP) (hp.1.trans (by norm_num)) hd
+    (linearJointNumerators_totalDegree G _ (orbitJoint_totalDegree_le a b i).1)
+    (orbitJoint_totalDegree_le a b i).2 hd
 
 set_option synthInstance.maxHeartbeats 200000 in
 -- The two normalized chart models and their residue fields have nested scalar towers.

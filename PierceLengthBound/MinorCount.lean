@@ -346,6 +346,13 @@ noncomputable def piv (p : Fin 10 → ℤ) : Fin 10 :=
 lemma piv_max (p : Fin 10 → ℤ) (t : Fin 10) : |p t| ≤ |p (piv p)| :=
   (Classical.choose_spec (exists_max_image univ (fun t => |p t|) univ_nonempty)).2 t (mem_univ t)
 
+/-- The pivot entry is nonzero as soon as `p 0` is. -/
+lemma piv_ne_zero {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0) : p (piv p) ≠ 0 := by
+  intro hz
+  have := piv_max p 0
+  rw [hz, abs_zero] at this
+  exact h0 (abs_eq_zero.mp (le_antisymm this (abs_nonneg _)))
+
 /-- **The minor-vector count, refined.** Vectors of height `≤ Y` satisfying the Plücker relations,
 with nonzero pivot `m` and `P |m| u` for the first row `u` of the pivot, number at most
 `20 ∑_{m ≤ Y} #{(u, v) ∈ crossSet m : P m u}`. -/

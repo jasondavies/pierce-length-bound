@@ -20,7 +20,9 @@ noncomputable section
 open Finset
 
 /-- Every supported nonexceptional component has the required powered-graph
-count, including components on which either retained identity fails. -/
+count, including components on which either retained identity fails: then one of the cuts
+bounds its starts by `404 d ≤ 404 · 24 = 9696` (`jointResolventPolynomial_identity_or_card_bound`;
+the normalization cut gives `166 d`). -/
 theorem selected_powered_joint_component_gap_count_slow (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ {a b s T A i : ℕ}, b < a →
       (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →

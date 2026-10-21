@@ -11,6 +11,18 @@ name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"
 rev = "v4.35.0"
 
+[[require]]
+name = "openai_math"
+path = "vendor/openai-math"
+
+# The CCDN curve-counting library. Its own lakefile.toml declares the package name
+# `ccdn_dimension_growth` (from its original repository name), which this name must match.
+# scripts/check-curve-counting-dependency.py treats this rev as the single source of truth.
+[[require]]
+name = "ccdn_dimension_growth"
+git = "https://github.com/jasondavies/ccdn-linear-growth"
+rev = "9ade6200d053ceef5f6ccc4154ae30c6056be150"
+
 [[lean_lib]]
 name = "PierceLengthBound"
 
@@ -22,12 +34,3 @@ name = "Solution"
 
 [[lean_lib]]
 name = "Axioms"
-
-[[require]]
-name = "openai_math"
-path = "vendor/openai-math"
-
-[[require]]
-name = "ccdn_dimension_growth"
-git = "https://github.com/jasondavies/ccdn-linear-growth"
-rev = "9ade6200d053ceef5f6ccc4154ae30c6056be150"

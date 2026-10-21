@@ -13,23 +13,15 @@ public import PierceLengthBound.LatticeCount
 Let `b₁, b₂, b₃` be a reduced basis of a lattice `Λ ⊆ ℤ³`, and let `x, y ∈ Λ` have
 coordinates `ξ, η`. The cross product `x × y` has the integer coordinates `c = ξ × η` in the
 basis `b₂ × b₃, b₃ × b₁, b₁ × b₂` (`cross3_coords`), and `bᵢ · (x × y) = Δ cᵢ` with
-`Δ = det(b₁, b₂, b₃)`. Cauchy–Schwarz and the reduction bound `27 |b₁|²|b₂|²|b₃|² ≤ 64 Δ²` then
-give `27 R⁴ cᵢ² ≤ 64 |x × y|²` when every `|bⱼ| ≥ R` (`wcoord_spec`). So a short lattice
-shrinks the box of the cross product quadratically in `R`.
+`Δ = det(b₁, b₂, b₃)`. Cauchy–Schwarz and the reduction bound `27 |b₁|²|b₂|²|b₃|² ≤ 64 Δ²`
+(`reduced_basis`, paper `lem:reduce`) then give `27 R⁴ cᵢ² ≤ 64 |x × y|²` when every
+`|bⱼ| ≥ R` (`wcoord_spec`, paper `lem:exterior`). The pattern lattice takes `R = λ = shortR p`,
+so the box of the cross product shrinks by the factor `λ²`.
 -/
 
 @[expose] public section
 
 namespace PierceLengthBound
-
-lemma det3_eq_dot3_cross3 (x y z : Fin 3 → ℤ) : det3 x y z = dot3 x (cross3 y z) := by
-  simp only [det3, dot3, cross3_zero, cross3_one, cross3_two]; ring
-
-/-- Cauchy–Schwarz in `ℤ³`. -/
-lemma dot3_sq_le (x y : Fin 3 → ℤ) : dot3 x y ^ 2 ≤ nrm3 x * nrm3 y := by
-  have := gram2_nonneg x y
-  unfold gram2 at this
-  linarith
 
 /-- Cramer's rule in a basis of a lattice: the coordinates `ycoord` are exact. -/
 lemma ycoord_repr {b1 b2 b3 x : Fin 3 → ℤ} (hD : det3 b1 b2 b3 ≠ 0)
@@ -59,9 +51,10 @@ lemma cross3_coords (b1 b2 b3 ξ η : Fin 3 → ℤ) (j : Fin 3) :
 def wcoord (b1 b2 b3 x y : Fin 3 → ℤ) : Fin 3 → ℤ :=
   cross3 (ycoord b1 b2 b3 x) (ycoord b1 b2 b3 y)
 
-/-- **Exterior coordinates in a reduced basis.** If every basis vector has length `≥ R`, the
-integer coordinates `c` of `x × y` satisfy `bᵢ · (x × y) = Δ cᵢ` and
-`27 R⁴ cᵢ² ≤ 64 |x × y|²`. -/
+/-- **Exterior coordinates in a reduced basis.** Let `x, y` lie in the lattice spanned by
+`b₁, b₂, b₃` (`hdx`, `hdy`: Cramer's rule gives integer coordinates), and let every basis vector
+have length `≥ R`. Then `x × y = c₀ (b₂ × b₃) + c₁ (b₃ × b₁) + c₂ (b₁ × b₂)` for the integer
+coordinates `c = wcoord`, `bᵢ · (x × y) = Δ cᵢ`, and `27 R⁴ cᵢ² ≤ 64 |x × y|²`. -/
 theorem wcoord_spec {b1 b2 b3 x y : Fin 3 → ℤ} {R : ℕ} (hD : det3 b1 b2 b3 ≠ 0)
     (hdx : det3 b1 b2 b3 ∣ det3 x b2 b3 ∧ det3 b1 b2 b3 ∣ det3 b1 x b3 ∧
       det3 b1 b2 b3 ∣ det3 b1 b2 x)
@@ -133,12 +126,7 @@ theorem wcoord_bound {b1 b2 b3 x y : Fin 3 → ℤ} {R S : ℕ} (hD : det3 b1 b2
     (hS : ∀ a, |cross3 x y a| ≤ S) (i : Fin 3) :
     3 * (R : ℤ) ^ 2 * |wcoord b1 b2 b3 x y i| ≤ 8 * S := by
   have h := (wcoord_spec hD hdx hdy hred hR n1 n2 n3).2.2 i
-  have hw : nrm3 (cross3 x y) ≤ 3 * (S : ℤ) ^ 2 := by
-    have e : ∀ a, cross3 x y a ^ 2 ≤ (S : ℤ) ^ 2 := fun a => by
-      rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (hS a) 2
-    have := e 0; have := e 1; have := e 2
-    simp only [nrm3, dot3] at *
-    nlinarith
+  have hw := nrm3_le_of_abs_le hS
   have hsq : (3 * (R : ℤ) ^ 2 * |wcoord b1 b2 b3 x y i|) ^ 2 ≤ (8 * (S : ℤ)) ^ 2 := by
     have : (3 * (R : ℤ) ^ 2 * |wcoord b1 b2 b3 x y i|) ^ 2 =
         9 * ((R : ℤ) ^ 4 * wcoord b1 b2 b3 x y i ^ 2) := by rw [mul_pow, sq_abs]; ring

@@ -63,24 +63,10 @@ theorem lattice_node_coordinates {p : Fin 10 → ℤ} {H : ℕ} {V : Finset (Fin
   classical
   obtain ⟨k0, hk0⟩ := hV
   obtain ⟨_, M, hM, _⟩ := hVs k0 hk0
-  have hm : p (piv p) ≠ 0 := by
-    intro hz
-    have := piv_max p 0
-    rw [hz, abs_zero] at this
-    exact h0 (abs_eq_zero.mp (le_antisymm this (abs_nonneg _)))
+  have hm := piv_ne_zero h0
   let τ := piv p
   let m := p τ
-  have hΛ : ∀ x : Fin 3 → ℤ, (∀ j, ((m.natAbs : ℕ) : ℤ) ∣ x j) → x ∈ pivLat p :=
-    fun x h => pivLat_of_dvd fun j => Int.natAbs_dvd.mp (h j)
-  obtain ⟨b1, b2, b3, h1, h2, h3, hD, _, hbas, hred⟩ :=
-    reduced_basis (Λ := pivLat p) (Int.natAbs_pos.mpr hm) hΛ
-  obtain ⟨hR1, _, hRlow⟩ := shortR_spec hm
-  have hb10 : b1 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
-  have hb20 : b2 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
-  have hb30 : b3 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
-  have n1 := hRlow b1 h1 hb10
-  have n2 := hRlow b2 h2 hb20
-  have n3 := hRlow b3 h3 hb30
+  obtain ⟨b1, b2, b3, h1, h2, h3, hD, hbas, hred, hRpos, n1, n2, n3⟩ := pattern_reduced_basis hm
   let kp := fun k : Fin 5 → ℤ => fun j => k (pcol τ j)
   let yc := fun k : Fin 5 → ℤ => ycoord b1 b2 b3 (kp k)
   have hlift : ∀ k ∈ V, ∀ j, m * k j = dot3 (Lrow p τ j) (kp k) := by
@@ -90,14 +76,8 @@ theorem lattice_node_coordinates {p : Fin 10 → ℤ} {H : ℕ} {V : Finset (Fin
     simpa only [hMk, hrow] using h
   have hmem : ∀ k ∈ V, kp k ∈ pivLat p := by
     intro k hk
-    refine ⟨⟨k (restc τ 0), ?_⟩, ⟨k (restc τ 1), ?_⟩⟩
-    · have h := hlift k hk (restc τ 0)
-      rw [Lrow_rest0] at h
-      exact h.symm
-    · have h := hlift k hk (restc τ 1)
-      rw [Lrow_rest1] at h
-      exact h.symm
-  have hRpos : (0 : ℤ) < shortR p := by exact_mod_cast hR1
+    obtain ⟨_, Mk, hMk, hrow⟩ := hVs k hk
+    simpa only [hrow] using pivotPart_mem_pivLat hMk 1
   have hcoord : ∀ k ∈ V,
       (∀ j, kp k j = yc k 0 * b1 j + yc k 1 * b2 j + yc k 2 * b3 j) ∧
       ∀ j, (shortR p : ℤ) * |yc k j| ≤ 3 * H := by

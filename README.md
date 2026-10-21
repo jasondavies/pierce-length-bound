@@ -9,7 +9,7 @@ proves, uniformly in `0 < b < a`:
   `γ* = 471/1559 − 6√105/7795 = 0.2942294157…`, and its rational instance `153/520 + ε`.
   This is proved unconditionally, including the external coefficient-uniform affine-curve
   counting theorem.
-* **Joint-lift bounds:** `α* = (1310 − √655)/4365 = 0.2942513246…`, and the rational
+* **Joint-invariant bounds:** `α* = (1310 − √655)/4365 = 0.2942513246…`, and the rational
   versions `2201/7480 + ε` and `128/435 + ε`.
 * **Earlier lattice bound:** `45/152 + ε`.
 * **Earlier steps:** `P(a, b) ≤ C_ε · a^{8/27 + ε}`, before that `a^{11/37 + ε}`, and before
@@ -19,7 +19,7 @@ proves, uniformly in `0 < b < a`:
 * **Assuming two published theorems:** `P(a, b) ≪ a^{3/10} √(log log 3a)`. The theorems are
   Nair–Tenenbaum, Acta Math. 180 (1998), on short sums of the Erdős–Hooley `Δ`-function, and
   de la Bretèche–Tenenbaum, Acta Arith. 219 (2025), Thm 1.1, `∑_{n≤x} Δ(n) ≪ x (log log x)^{5/2}`.
-  Both are stated in Lean as explicit hypotheses. Their proofs are not formalised.
+  Both are stated in Lean as explicit hypotheses. Their proofs are not formalized.
 * **Structured trajectories:** `P(a, b) ≪ a^{1/4} √R`, where `R − 1` is the number of rises
   `kᵢ < k_{i+1}` in the quotient increments. In particular nonincreasing increments give
   `P(a, b) ≪ a^{1/4}`.
@@ -28,275 +28,79 @@ proves, uniformly in `0 < b < a`:
   and `I₄ = L` in the nonterminal ranges specified in the paper. In particular the last two
   identities require `i + 3 < P(a,b)` and `i + 5 < P(a,b)`, respectively, with zero-based indexing.
 
-The `3/10` bound rests on two exact identities. The first, for three consecutive steps, shows
-that the curvature `D = dv − eu` is a positive integer. The second, for six consecutive steps,
-produces a further positive integer `L` with `q w L = J E + S F`. That gives the local bound
-`T⁶ A² ≤ 96·10⁶ a³` for the number `T` of remainders in `[A, 2A)`, with no divisor-function loss.
+## Repository layout
 
-The bounds below `3/10` use `L = I₄` as an integer, not just as a positive number. A 3×4 integer matrix
-built from four drops and five increments has cofactors `(-L(i+1), U₁, U₂, L(i))`. The seven
-integers `L(i), L(i+1), L(i+2), U₁(i), U₂(i), U₁(i+1), U₂(i+1)` form a *pattern*. Its size is
-bounded via Hadamard's inequality on the moment model. States with a given pattern satisfy:
-
-* two linear equations and one quadratic in five consecutive increments, with leading
-  coefficient `L(i)L(i+1)(L(i)+L(i+1)) > 0`;
-* the quartic identity `I₄(i) pᵢ(-qᵢ) = a det(μᵢ(x^{j+l}))`, so at most four states share a point.
-
-So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷⁷ ≪ Δ²²a²³` (exponent 23/77).
-
-For `11/37`, exact Cramer identities give `U₁ > 0 > U₂`, so the quadratic part in `(k₁, k₂, k₃)` is
-nondegenerate with an indefinite binary restriction. Apart from at most two exceptional slices,
-each slice is a norm equation `x² − δy² = m` with `m ≠ 0`, which
-has `≤ 2τ(|m|)³(log₃((B(⌊√δ⌋ + 2))²) + 1)` solutions in `[−B, B]²`, uniformly in the
-coefficients. This is proved in
-full: square roots modulo prime powers, CRT, and the separation `ε ≥ 3` of norm-one numbers. So
-each pattern covers `O(H a^η)` states, `T ≪ a^η X⁷ H`, and `T⁷⁴ ≪ a^{22+O(η)}`.
-
-For `8/27`, the seven pattern integers are signed `3×3` minors of one `3×5` integer matrix. An exact
-expansion of `b/a` with a positive remainder bounds all ten minors by `X`. Minor vectors of height `≤ Y`
-number `≤ 1 + 20 ∑_{m≤Y} 729 m⁴ τ(m)`, via a maximal pivot, the Plücker relations, and the congruence
-`v ≡ μu₀ (mod m/g)`. So `T ≪ a^η X⁵ H` and `T⁵⁴ ≪ a^{16+O(η)}`.
-
-For `45/152`, the pivot gaps `k'` of a state lie in the lattice
-`Λ_p = {x ∈ ℤ³ : m ∣ u·x, m ∣ v·x}` of its minor vector, and `m kᶜ = Lᶜ · k'` recovers all five gaps.
-The cross relation makes the index `≤ |m|`, so `Λ_p` has a vector of length `λ(p) ≤ X^{1/3}`
-(pigeonhole). A reduced basis with `27|b₁|²|b₂|²|b₃|² ≤ 64 det²`, built by minimising the
-determinant, then `|b₁|²`, then a Gram determinant (integer arithmetic only), gives coordinates
-`λ(p)|yᵢ| ≤ 3H`. After a plane choice the slice count applies to `F_θ` in those coordinates,
-with definite slices handled by a definite norm count. So one minor vector covers
-`O((H/λ(p) + 1) a^η)` gap vectors. Only `≪ R³X⁴τ²` minor vectors have `λ(p) ≤ R`, and partial
-summation gives `T ≪ a^η (H X^{14/3} + X⁵)`, hence `T¹⁵² ≪ a^{45+O(η)}`.
-
+* `PierceLengthBound/` and `PierceLengthBound.lean`: the Lean 4 / Mathlib formalization of all of
+  the above, with no `sorry`. The [module maps](#module-maps) below locate each step.
+* `Challenge.lean`, `Solution.lean`, `comparator.json`: the independent statements, the proved
+  declarations, and the Comparator configuration for [Palomar](#palomar-submission).
+* `Axioms.lean`: the axiom audit, built by `lake build`.
+* `formalization.yaml`: Palomar metadata (scope, provenance, automation, and review status).
 * `paper/pierce_length_bound.tex` (and `.pdf`): the paper.
-* `PierceLengthBound/`: Lean 4 / Mathlib formalisation of all of the above, with no `sorry`.
+* `scripts/`: source, metadata, dependency, and exact-arithmetic checks.
+* `vendor/openai-math/`: one vendored file, described under [Dependencies](#dependencies).
 
-## Exterior-lattice refinement
+## Building and checking
 
-The drop and gap rows of a start lie in the rank-three lattice `Λ_p` of its pattern. In a
-reduced basis the nodes have coordinates of size `H/λ(p)`, and the curvature coordinates, as
-`2×2` minors, have integer exterior coordinates of size `S/λ(p)²`. These are constant invertible
-linear changes of the old coordinates, so the joint graph keeps its degree `≥ 10n + 7m`. Summing
-over patterns with `∑_p λ(p)^{-t} ≪ a^{o(1)} X^{5-t/3}` (`0 ≤ t ≤ 1`) gives a five-term window
-bound with exponents `5/17`, `45h/(153h−1)`, `(45h−3m)/(153h−11m)` and `(15h+6n)/(51h+20n)`,
-`h = 10n + 7m`. The choice `(m, n) = (3, 2)` gives `153/520`, and optimizing `n/m` at `√105/15`
-gives `γ*`. [`LatticeJointMain.lean`](PierceLengthBound/LatticeJointMain.lean) exports
-`P_le_lattice_optimal` and `P_le_153_520`.
+The project uses Lean `v4.35.0` and Mathlib `v4.35.0`. The curve-counting library is the Lake
+package `ccdn_dimension_growth`, a Git dependency on
+[`jasondavies/ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth) pinned in
+`lakefile.toml` to commit `9ade6200d053ceef5f6ccc4154ae30c6056be150`. The package name differs
+from the repository name because CCDN's own `lakefile.toml` still declares its original name,
+which the requirement must match. `lakefile.toml` is the source of truth for the pin:
+`scripts/check-curve-counting-dependency.py` checks that `lake-manifest.json`, this README,
+`formalization.yaml` and the paper agree with it, and with `--checkout` that the fetched checkout
+uses the same Lean toolchain and Mathlib revision as this project. Lake fetches the dependency into
+`.lake/packages`.
 
-| Module | Contents |
-|---|---|
-| `PivotExterior` | integer exterior coordinates in a reduced basis: `bᵢ·(x×y) = Δcᵢ`, `27λ⁴cᵢ² ≤ 64|x×y|²` (`wcoord_spec`) |
-| `PivotCurvature` | all ten curvature minors `≤ 9472A³H³/a²`, and `c = G W` with `det G ≠ 0` (`lattice_curvature_coordinates`) |
-| `LinearJointGraph` | invertible constant matrices preserve pole envelopes; the graph of `(nodes, (GW)ᵐ, Jⁿ)` keeps degree `≥ 10n + 7m` |
-| `LatticeJointPointCount` | the points `(y, cᵐ, Jⁿ)` in the pattern box `max(3H/λ, (8S'/3λ²)ᵐ, Yⁿ)`, and the curve count there |
-| `LatticeJointPatternCount` | component and pattern counts in the lattice box |
-| `LatticeJointWeights` | `∑_p λ(p)^{-t} ≤ 3163861 τ² X^{5-t/3}` for `0 ≤ t ≤ 1` |
-| `LatticeJointLocalEstimate` | the five-term local estimate |
-| `LatticeJointWindow` | integer-power branches and the window exponents |
-| `LatticeJointBound` | `P_le_lattice_joint` for all powers, and `P_le_153_520` |
-| `LatticeJointOptimization` | the crossing `15r² = 7` and `P_le_lattice_optimal` |
-
-Unlike the joint-lift bounds, these use the short-vector count `short_count` and the reciprocal
-weight bound `reciprocal_sum_bound`. The dependency audit checks that these are the only
-weighted counts they reach.
-
-## Joint-invariant refinement
-
-The joint-invariant argument gives `128/435 = 0.2942528735…`, followed by the
-powered-coordinate optimization
-`(1310 − √655)/4365 = 0.2942513246…` and its rational approximation `2201/7480`.
-All three bounds are now proved unconditionally, including external curve counting.
-[`JointLiftMain.lean`](PierceLengthBound/JointLiftMain.lean) exports the public
-statements `P_le_joint_optimal`, `P_le_2201_7480` and `P_le_128_435`.
-The manuscript and submission statements include these results.
-
-The new joint lift adjoins three integer curvature minors and the positive
-integer rank-five invariant `I₅ = A D` to the three gap coordinates. It uses
-the ordinary `X^5` pattern count, with proved subpolynomial divisor slack.
-No weighted-lattice counting estimate is used by any of the three joint-lift proofs.
-
-`JointLiftAlgebra` proves the curvature reconstruction and dot-product identities
-and the actual identity `I₅ = A D`, including positivity and integrality.
-`JointLiftCurvatureHeight` proves the first-order reciprocal expansion and the
-uniform bound `|W_j| q³ ≤ 68 a H³` for all three actual curvature coordinates.
-`JointLiftRankFiveHeight` proves the Newton Gram product bound `1230460 H^10`,
-the actual rank-five height, and its exact floored selected box.
-`JointLiftCoordinates`, `JointLiftGraph`, `JointLiftGraphDegree` and
-`JointLiftPointBox` construct the actual prime seven-dimensional graph, prove
-its degree exists and is at most `247d`, and place all selected states with the
-same minor pattern on that graph as integer points in a uniform box.
-`JointLiftDirection` proves the algebraic nonconstancy of the projective
-curvature direction on degree-at-least-three components of an irreducible quadric,
-with an actual rational joint-graph specialization.
-`JointLiftCurvatureNonvanishing` proves the curvature coordinates have no common
-zero on the affine graph and constructs the extra finite zero of a nonzero
-curvature combination. `FixedDividendPolynomialSection` proves the general
-bound of `m*d` points for a proper degree-`m` polynomial cut. The actual
-normalization and raw-resolvent cuts now have proved degrees at most 166 and
-404, respectively, with corresponding bounds on supported states.
-`JointLiftPatternCount` exports `P_le_128_435_of_pattern_estimate`, with the
-ordinary and exceptional pattern sums, multiplicity bound, all window ranges,
-rounding, divisor slack and dyadic summation proved. `JointLiftBound` discharges
-both per-pattern estimates and exports the unconditional `P_le_128_435`.
-
-`JointLiftOptimization` proves the exact optimal crossing, the minimum of the
-two displayed exponent functions, rational approximation by fixed positive
-integer powers, and the `m=50, n=51` calculation. `PoweredJointBound` applies
-these results to the completed geometric and analytic estimates and proves
-the optimized global Pierce bound.
-
-The shared `FixedDividend*.lean` development proves the resultant identity,
-quadratic irreducibility, relative primality, a rational component cover of total
-degree at most 24, and even degree for nonexceptional components. The complete
-exceptional-pattern count `O(X^4 log(2X))` is proved. The conic development now
-derives bounded integer parameters, monic quotient normalization, cubic quotient
-degree, and properness of the actual `I₃` function after at most 492 exceptional
-points. These conic estimates give the gap-vector count in
-[`OrbitConicGapCount.lean`](PierceLengthBound/OrbitConicGapCount.lean).
-
-`IntegralLiftGraph` constructs the prime ideal of a rational graph, proves its
-old-coordinate contraction is the original prime ideal, and places actual
-orbit `I₃` points on that graph. The newer general `JointLiftGraphDegree`
-development supplies upper Hilbert-degree bounds from common-denominator formulas.
-`JointLiftInfinityOrder` now proves the rank-five pole order `5e/2` and even
-infinity multiplicity for every discrete valuation centered on the actual
-nonexceptional chart. `JointLiftQuotientOrder` and `JointLiftLocalOrders` prove
-the quotient, resolvent and curvature order calculations from their local
-inputs. `ChartNodeUnits` and `ChartNodeOrders` derive exact node-difference
-orders from the actual resultant unit. `ChartRawDeterminantOrders` proves
-orders `−3e` for both consecutive cubic determinants and `−6e` for the fourth
-determinant on the actual components. `JointLiftRetainedOrders` now derives the
-quotient and rank-three orders from the retained normalization and resolvent
-equations, with all coefficient bounds proved. `JointLiftChartOrders` connects
-these calculations to the actual four graph coordinates: their orders are
-`3t`, at least `3t`, `3t`, and `−5t`, where `e = 2t`. It also proves that the
-curvature coordinates cannot all have positive order over the original affine
-part. `ChartNormalization` and `AffineNormalization` now prove finite Dedekind
-normalization of both chart rings. `JointLiftNormalizedOrders` and
-`JointLiftNormalizedFiniteOrders` construct normalized integer-valued branch
-orders and apply these coordinate calculations to them. `NormalizationFiberDegree`
-proves that normalization preserves the infinity fiber dimension.
-`NormalizationInfinityDegree` identifies all normalized infinity branches and
-proves that the sum of their multiplicities times their residue-field degrees
-equals the original Hilbert degree `d`. `NormalizedFiberOrders` identifies those
-multiplicities with the canonical branch orders. `FunctionParameterNormalization`
-proves equality of the weighted zero and pole fiber degrees by normalizing the
-parameter lines for a transcendental function and its reciprocal. It constructs
-the associated canonical orders and identifies their parameter and inverse orders.
-`FunctionParameterChange` and `ChartFunctionParameters` prove that every
-transcendental function on the actual curve gives a finite field extension.
-`JointLiftCurvatureTranscendence` proves that the curvature combination giving
-the extra finite zero is transcendental. `IntegralBranchOrders` constructs centers
-on parameter normalizations and proves regularity of integral elements.
-`BranchValuationComparison` and `BranchResidueComparison` prove that this transport
-preserves the exact normalized order and residue degree. `BranchZeroDegree`
-proves the weighted zero-count inequality, including the extra degree from one
-additional zero. `JointLiftPoleCoverage` and `JointLiftPoleDegree` locate every
-pole of a curvature combination on the affine normalization and bound its
-function-field degree by the curvature pole-envelope degree.
-`JointLiftFiniteZero` constructs the actual extra normalized zero outside the
-old infinity fiber. `JointLiftCurvatureDegree` combines it with the weighted
-infinity orders to prove `3*d + 2 ≤ 2*deg(F)` for the curvature pole envelope
-on a retained component. `GraphFunctionField`, `ValuationLinearCombination`, and
-`GraphPoleDegree` compare the coordinate pole envelope with graph Hilbert degree.
-`JointLiftGraphLowerDegree` proves `4*d + 1 ≤ δ` for the actual retained graph,
-and the range `17 ≤ δ ≤ 247*d` when the component degree is at least four.
-The earlier `151/513` conditional reduction remains available.
-
-The external coefficient-uniform affine-curve theorem is proved in
-[`ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth). `CCDN.affineCurveBound` gives
-`C(n) * d³ * B^(1/d) * (log B + d)` for every prime affine curve over `ℚ`
-in ambient dimension `n ≥ 2`, using its actual affine Hilbert degree and every
-real `B ≥ 1`. Its proof includes the plane theorem, bounded degree-preserving
-projections, and uniform box rescaling. There is no external counting hypothesis.
-The theorem is imported through the Lake package `ccdn_dimension_growth`, a Git
-dependency pinned to commit `9ade6200d053ceef5f6ccc4154ae30c6056be150`. Lake fetches it into `.lake/packages`.
-
-`CurveCounting` identifies the coordinate-ring and point-count interfaces;
-`CurveCountingDegreeRange` absorbs bounded-degree factors, and
-`CurveCountingCoordinates` handles arbitrary finite index types, including
-`Fin 3 ⊕ Fin 4`. `CurveCountingCover` sums over finite prime-component covers.
-
-`OrbitGapCoordinates` proves that the three node coordinates distinguish
-complete gap vectors within a fixed pattern. `JointLiftPointCount` applies the
-proved counting theorem to actual seven-coordinate integer points.
-`JointLiftCountingSlack` absorbs the logarithm using the proved polynomial box
-bound, and `JointLiftCoverCount` counts gap vectors over at most 24 components
-with a proved `SlowGrowth` coefficient. `OrbitConicGapCount` similarly applies
-the conic divisor estimate directly to distinct gap vectors. The graph-degree
-range needed for the seventeenth-root term is now proved on retained components.
-`JointLiftComponentCount` combines conics, the two bounded cuts, and retained
-graphs. `JointLiftNonexceptionalCount` sums their actual prime-component cover.
-`OrbitCurveGapCount` and `OrbitPatternCurveCount` prove the ordinary square-root
-count after excluding lines at the actual window scale. `JointLiftBound`
-combines these to prove the full pattern estimate and the `128/435` length bound.
-
-`PoweredJointGraph` constructs the graph with coordinates `W_j^m` and `J^n`,
-proving its upper degree bound `((m+n)*247+1)*d`. `PoweredPoleOrder` proves that
-powers multiply pole orders and envelopes. `PoweredJointGraphLowerDegree`
-proves `(5*n+3*m)*d+2*m ≤ 2*δ`, hence `δ ≥ 10*n+7*m` for `d≥4`.
-`PoweredJointPointBox` supplies actual integer points in `max(3H,S^m,Y^n)`,
-and `PoweredJointPointCount` applies the curve theorem to this box.
-`PoweredJointCountingSlack`, `PoweredJointComponentCount`, and
-`PoweredJointPatternCount` discharge the powered logarithmic and counting inputs.
-`PoweredJointExponent`, `PoweredJointWindow` and `WindowRealReduction` prove
-all window ranges and dyadic summation. `PoweredJointBound` concludes the
-optimized algebraic exponent and its explicit rational version.
-
-On October 21, 2026, with CCDN advanced to `9ade6200d053ceef5f6ccc4154ae30c6056be150`,
-the build passed (9566 jobs), both dependency audits passed, and the axiom audit checked
-2684 Pierce, 1013 CCDN and 555 curve-vendor declarations using only `propext`,
-`Classical.choice` and `Quot.sound`. In an isolated copy with matching Lean sources and
-dependency configuration, the sandboxed Comparator accepted all thirteen statements with
-Lean, NanoDa and con-ron; con-ron verified 88,684 declarations. The pinned commit was also
-successfully fetched from GitHub.
-
-On October 20, 2026, from a clean copy with CCDN pinned to `e0ea22e4d68316fddf939b8239f670ed5a53b66a` and all packages
-fetched from scratch, the build passes (9563 jobs), both dependency audits pass, `Axioms.lean`
-checks all thirteen public statements, and the full sandboxed Comparator accepts all thirteen:
-con-ron verified 89,501 declarations, and NanoDa and Lean's kernel accepted the solution.
-Before the exterior-lattice extension, the local-dependency build passed (9558 jobs). Its axiom audit covers 2551
-Pierce, 1145 counting and 555 curve-vendor declarations, allowing only
-`propext`, `Classical.choice` and `Quot.sound`. The weighted-counting
-independence audit also passes. This check used CCDN commit
-`642822b5d2db7035e625a9f32b0af205a276b2fb`; the path dependency itself is not pinned.
-The previous vendored checkpoint passed the full sandboxed Comparator for all
-eleven public results with Lean, NanoDa and con-ron. These earlier results are historical
-checkpoints; the October 21 run validates the current dependency. The earlier verified Lean sources are preserved in commit
-`bdb8dc13f2a08063be87a3d18f91a0842d27ce67`.
-After building, `python3 scripts/check-integral-lift-dependencies.py` checks that the
-exterior-lattice bounds reach exactly the weighted counts `short_count` and `reciprocal_sum_bound`,
-and checks the optimized and
-both rational joint-lift bounds, the powered graph degree and point count, and both the `151/513`
-and `128/435` pattern reductions, the actual joint-cover and conic gap counts,
-the local-order developments, normalized infinity degree, and function-parameter
-zero/pole fiber comparisons, branch transport, the actual extra normalized zero,
-the curvature pole-degree lower bound, and the retained graph-degree range for
-independence from weighted counting.
-
-For reproducible exact checks (requires SymPy):
+Build and check, in order:
 
 ```sh
+python3 scripts/check-lean-sources.py                       # source layout and theorem lists
+python3 scripts/check-curve-counting-dependency.py          # CCDN pin metadata
+lake exe cache get                                          # download compiled Mathlib
+lake build
+python3 scripts/check-curve-counting-dependency.py --checkout
+python3 scripts/check-weighted-count-dependencies.py
+bash scripts/verify-comparator.sh                           # Linux with bubblewrap only
+```
+
+* `lake build` runs Mathlib's standard linters (`weak.linter.mathlibStandardSet`) and builds the
+  Palomar `Challenge` and `Solution` modules. The `sorry` warnings in `Challenge.lean`, one per
+  selected theorem, are deliberate statement holes; the proof development has none.
+* `lake build` also builds `Axioms.lean` (or run `lake env lean Axioms.lean`). Its `#guard_msgs`
+  checks show that every theorem in `comparator.json` depends only on `propext`,
+  `Classical.choice` and `Quot.sound`, and it audits every exported declaration of
+  `PierceLengthBound`, of CCDN, and of CCDN's vendored Bombieri–Vaaler development
+  (`ArithmeticHeights`) for nonstandard axioms. `P_le_loglog` depends on the two analytic papers
+  only through its hypotheses.
+* `scripts/check-lean-sources.py` also checks that `comparator.json`, `Challenge.lean`,
+  `Axioms.lean`, `formalization.yaml` and the Lean block below list the same theorems in the
+  same order.
+* `scripts/check-weighted-count-dependencies.py` checks which weighted lattice counts the main
+  bounds reach; its docstring lists the audited roots and the banned and required declarations.
+* `scripts/verify-comparator.sh` compares the statements and proofs with Lean's kernel, NanoDa
+  and con-ron, as Palomar does. The sandboxed Comparator needs Linux; a successful macOS Lean
+  build alone does not establish a Palomar verification pass.
+
+Exact-arithmetic checks supplement the formal proof; finite numerical checks do not establish
+the asymptotic bounds. `scripts/check-math.py` (standard library only) checks the moment
+construction and local identities with exact rational arithmetic on 2,274 deterministic sample
+orbits. Two further scripts require SymPy:
+
+```sh
+python3 scripts/check-math.py
 python3 scripts/check-fixed-dividend.py
 python3 scripts/check-fixed-dividend-lines.py
 ```
 
-## Lean
+**Latest verification run** (October 21, 2026, CCDN commit `9ade620`): `lake build`, both
+weighted-count dependency audits and the axiom audit passed. In an isolated copy with matching
+Lean sources and dependency configuration, the sandboxed Comparator accepted all selected
+statements with Lean, NanoDa and con-ron; con-ron verified 88,655 declarations. This is an agent review, not an
+independent human review, and the full Palomar mechanical preflight is still outstanding.
 
-The curve-counting library is a Git dependency on
-[`jasondavies/ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth), pinned in `lakefile.toml` and
-`lake-manifest.json` to the full commit `9ade6200d053ceef5f6ccc4154ae30c6056be150`. Both projects use Mathlib
-`56a005855ea17e0b0958f73ec801ae140b0a1679` (`v4.35.0`).
-`python3 scripts/check-curve-counting-dependency.py` checks the pin, and with `--checkout`,
-after a build, it also checks the fetched source tree.
-
-Build with `lake exe cache get` (to download the compiled Mathlib) and then `lake build`
-(Lean `v4.35.0`, Mathlib `v4.35.0`). The build runs Mathlib's standard linters
-(`weak.linter.mathlibStandardSet`). It also builds the independent Palomar Challenge
-and Solution modules and audits every exported declaration from the
-`PierceLengthBound` modules for nonstandard axioms.
-The thirteen `sorry` warnings
-in `Challenge.lean` are deliberate statement holes; the proof development has none.
-The main theorems are
+### Main theorem statements
 
 ```lean
 theorem PierceLengthBound.P_le_lattice_optimal : ∀ ε > (0 : ℝ), ∃ C > 0,
@@ -345,99 +149,262 @@ theorem PierceLengthBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr :
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n
 ```
 
-`#print axioms` gives only `propext`, `Classical.choice`, `Quot.sound` for all thirteen;
-`Axioms.lean` checks this with `#guard_msgs` as part of `lake build`; it can also be run
-with `lake env lean Axioms.lean`. `P_le_loglog` depends on the two
-papers only through its hypotheses.
+## Proof outlines
 
-| File | Contents |
+### The `3/10` bound and the pattern bounds
+
+The `3/10` bound rests on two exact identities. The first, for three consecutive steps, shows
+that the curvature `D = dv − eu` is a positive integer. The second, for six consecutive steps,
+produces a further positive integer `L` with `q w L = J E + S F`. That gives the local bound
+`T⁶ A² ≤ 96·10⁶ a³` for the number `T` of remainders in `[A, 2A)`, with no divisor-function loss.
+
+The bounds below `3/10` use `L = I₄` as an integer, not just as a positive number. A 3×4 integer matrix
+built from four drops and five increments has cofactors `(-L(i+1), U₁, U₂, L(i))`. The seven
+integers `L(i), L(i+1), L(i+2), U₁(i), U₂(i), U₁(i+1), U₂(i+1)` form a *pattern*. Its size is
+bounded via Hadamard's inequality on the moment model. States with a given pattern satisfy:
+
+* two linear equations and one quadratic in five consecutive increments, with leading
+  coefficient `L(i)L(i+1)(L(i)+L(i+1)) > 0`;
+* the quartic identity `I₄(i) pᵢ(-qᵢ) = a det(μᵢ(x^{j+l}))`, so at most four states share a point.
+
+So each pattern covers `O(H²)` states, giving `T ≪ X⁷H²` and hence `T⁷⁷ ≪ Δ²²a²³` (exponent 23/77).
+
+For `11/37`, exact Cramer identities give `U₁ > 0 > U₂`, so the quadratic part in `(k₁, k₂, k₃)` is
+nondegenerate with an indefinite binary restriction. Apart from at most two exceptional slices,
+each slice is a norm equation `x² − δy² = m` with `m ≠ 0`, which
+has `≤ 2τ(|m|)³(log₃((B(⌊√δ⌋ + 2))²) + 1)` solutions in `[−B, B]²`, uniformly in the
+coefficients. This is proved in
+full: square roots modulo prime powers, CRT, and the separation `ε ≥ 3` of norm-one numbers. So
+each pattern covers `O(H a^η)` states, `T ≪ a^η X⁷ H`, and `T⁷⁴ ≪ a^{22+O(η)}`.
+
+For `8/27`, the seven pattern integers are signed `3×3` minors of one `3×5` integer matrix. An exact
+expansion of `b/a` with a positive remainder bounds all ten minors by `X`. Minor vectors of height `≤ Y`
+number `≤ 1 + 20 ∑_{m≤Y} 729 m⁴ τ(m)`, via a maximal pivot, the Plücker relations, and the congruence
+`v ≡ μu₀ (mod m/g)`. So `T ≪ a^η X⁵ H` and `T⁵⁴ ≪ a^{16+O(η)}`.
+
+For `45/152`, the pivot gaps `k'` of a state lie in the lattice
+`Λ_p = {x ∈ ℤ³ : m ∣ u·x, m ∣ v·x}` of its minor vector, and `m kᶜ = Lᶜ · k'` recovers all five gaps.
+The cross relation makes the index `≤ |m|`, so `Λ_p` has a vector of length `λ(p) ≤ X^{1/3}`
+(pigeonhole). A reduced basis with `27|b₁|²|b₂|²|b₃|² ≤ 64 det²`, built by minimizing the
+determinant, then `|b₁|²`, then a Gram determinant (integer arithmetic only), gives coordinates
+`λ(p)|yᵢ| ≤ 3H`. After a plane choice the slice count applies to `F_θ` in those coordinates,
+with definite slices handled by a definite norm count. So one minor vector covers
+`O((H/λ(p) + 1) a^η)` gap vectors. Only `≪ R³X⁴τ²` minor vectors have `λ(p) ≤ R`, and partial
+summation gives `T ≪ a^η (H X^{14/3} + X⁵)`, hence `T¹⁵² ≪ a^{45+O(η)}`.
+
+### Exterior-lattice refinement
+
+The drop and gap rows of a start lie in the rank-three lattice `Λ_p` of its pattern. In a
+reduced basis the nodes have coordinates of size `H/λ(p)`, and the curvature coordinates, as
+`2×2` minors, have integer exterior coordinates of size `S/λ(p)²`. These are constant invertible
+linear changes of the old coordinates, so the joint graph keeps its degree `≥ 10n + 7m`. Summing
+over patterns with `∑_p λ(p)^{-t} ≪ a^{o(1)} X^{5-t/3}` (`0 ≤ t ≤ 1`) gives a five-term window
+bound with exponents `5/17`, `45h/(153h−1)`, `(45h−3m)/(153h−11m)` and `(15h+6n)/(51h+20n)`,
+`h = 10n + 7m`, where `m` and `n` are the powers of the curvature coordinates and of the
+rank-five invariant. The choice `(m, n) = (3, 2)` gives `153/520`, and optimizing `n/m` at
+`√105/15` gives `γ*`.
+
+Unlike the joint-invariant bounds, these use weighted lattice counts: the short-vector count
+`short_count` and the reciprocal weight bound `reciprocal_sum_bound`. The weighted-count
+dependency audit checks that these are the only weighted counts they reach.
+
+### Joint-invariant refinement
+
+The joint lift adjoins three integer curvature minors `W` and the positive integer rank-five
+invariant `I₅ = A D` to the three gap coordinates of a pattern. Over each prime component of the
+pattern curve these seven coordinates define a graph, and all selected states with the same
+minor pattern are integer points of that graph in a uniform box. The ordinary `X⁵` pattern
+count suffices, with subpolynomial divisor slack; no weighted-lattice count is used.
+
+The geometric core is a lower bound for the graph degree `δ`. Over a nonexceptional component
+of Hilbert degree `d`, exact orders on the normalization give the rank-five coordinate poles of
+order `5e/2` at the old infinity branches. A transcendental curvature combination has an extra
+finite zero, which forces its pole envelope to have degree at least `(3d + 2)/2`, and these
+curvature poles lie on branches distinct from the old infinity poles. Together they give
+`4d + 1 ≤ δ ≤ 247d`, hence `δ ≥ 17` when `d ≥ 4`. Lines are excluded at the window scale,
+conics and bounded polynomial cuts are counted separately, and exceptional patterns contribute
+`O(X⁴ log 2X)`. The affine-curve count on these graphs gives `128/435 = 0.2942528735…`.
+
+Raising the curvature coordinates to a power `m` and the rank-five invariant to a power `n`
+gives a graph of degree `δ ≥ 10n + 7m` when `d ≥ 4`. Optimizing the two resulting exponents
+gives `α* = (1310 − √655)/4365 = 0.2942513246…`, and `m = 50`, `n = 51` gives `2201/7480`.
+
+### External curve counting
+
+The coefficient-uniform affine-curve theorem is proved in
+[`ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth). `CCDN.affineCurveBound`
+gives `C(n) * d³ * B^(1/d) * (log B + d)` for every prime affine curve over `ℚ` in ambient
+dimension `n ≥ 2`, using its actual affine Hilbert degree and every real `B ≥ 1`. Its proof
+includes the plane theorem, bounded degree-preserving projections, and uniform box rescaling.
+There is no external counting hypothesis.
+
+## Module maps
+
+All modules are in `PierceLengthBound/`; the `.lean` extension is omitted.
+
+### Core and earlier bounds
+
+| Module | Contents |
 |---|---|
-| `Defs.lean` | `P`, the orbit `orb`; check `P 35 22 = 7` |
-| `Block.lean` | curvature `D = dv − eu`: identity `Dz = df + ude + (u−1)e²`, `D ≥ 1`, fiber equation `x M(q) = a N(q) + D`, size bounds |
-| `Fiber.lean` | a fixed `(u, v, D)` allows at most `max_{n ≤ 32a⁷} τ(n)` starting points |
-| `Window.lean` | for a run of `T` terms in `[A, 2A)`: `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
-| `Main.lean` | dyadic decomposition, `P_le_of_visits` (window bounds `T^N ≤ K S(a) aʳ` with `S(a) ≪ a^η` give `P ≪ a^{r/N+ε}`), and the unconditional theorem `P_le` |
-| `SixStep.lean` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `TwentyThreeMain.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10` |
-| `ShortSum.lean` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
-| `Geometric.lean` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}`, and the general form `∑_k min(α 2^{−sk}, β 2^{tk}) ≪ α^{t/(s+t)} β^{s/(s+t)}` (`sum_min_le_gen`) |
-| `Conditional.lean` | any short-interval divisor bound `≪ y G(x)` for `x^{1/4} ≤ y ≤ x`, with `1 ≤ G(x) ≪ x^{1/40}`, gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
-| `Rises.lean` | the arithmetic-progression bound `q⁴ ≤ 324 h³ a`, runs, the multiplicity lemma, and the three window bounds |
-| `RisesMain.lean` | `P_le_rises`: `P ≪ a^{1/4} √R` |
-| `Hankel.lean` | the moment model, `I_r(i) ∈ ℤ_{>0}` (`hankelInv_pos_int`), and `I₁ = b`, `I₂ = d`, `I₃ = D`, `I₄ = L` |
-| `Hadamard.lean` | Hadamard's inequality `det G ≤ ∏ Gᵢᵢ` for positive definite real matrices |
-| `Functional.lean` | the moment functionals `μᵢ`, `νᵢ` on polynomials, the Newton basis, shift rules, `νᵢ(f²) ≤ μᵢ(f²)/qᵢ` |
-| `Gram.lean` | `Iᵣ(i) ≤ a ∏ⱼ μᵢ(Fⱼ²)/qᵢʳ`, and the label bound `L(i) qᵢ⁴ ≤ a · gramP` |
-| `TwoState.lean` | the cofactors, null relations, reduced quadratic, the multiplicity identity, root counting |
-| `PatternBound.lean` | the seven pattern integers are `≤ 172032 A⁴H⁶/a³` under the scale condition |
-| `PatternCount.lean` | the counting lemma `#G ≤ 8 (2M+1)⁷ H²` |
-| `TwentyThreeMain.lean` | good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
-| `NormCount.lean` | the norm-equation lemma: square roots mod `m` (`≤ τ(m)²`), norm-one separation, and `norm_count` |
-| `SliceCount.lean` | the slice lemma: slices of a ternary quadratic via completing squares, for either sign of the binary discriminant (`slice_count_ne`, `slice_count`) |
-| `ElevenCount.lean` | the sign identities, the ternary relation `F_θ(k₁,k₂,k₃) = 0`, and the refined count |
-| `ElevenMain.lean` | the window bound, `T⁷⁴ ≤ C Δ¹⁹ Ξ¹⁹ a²²`, slack factors `≪ a^η`, and `P_le_11_37` |
-| `MinorCount.lean` | the Plücker relations, the congruence count `27 m g²`, and `minor_vector_count` |
-| `MinorHeight.lean` | the expansion of `b/a` (`nu_expand`) and the uniform bound on all ten minors |
-| `EightMain.lean` | the pattern as signed minors, the window bound, `T⁵⁴ ≤ C Δ¹⁴ Ξ²⁸ a¹⁶`, and `P_le_8_27` |
-| `DefiniteNorm.lean` | the definite norm count: `x² + δy² = m` has `≤ 4τ(|m|)³` solutions |
-| `Reduce3.lean` | reduced bases of lattices in `ℤ³`: `27 |b₁|²|b₂|²|b₃|² ≤ 64 det²`, and coordinate bounds |
-| `TernComp.lean` | ternary quadratics under substitution, the plane choice, and the slice count for a coefficient vector |
-| `ShortVec.lean` | the lifting identities, the lattice `Λ_p`, the pigeonhole bound, and `short_count` |
-| `LatticeCount.lean` | coordinates in a reduced basis (`ycoord_spec`), the gap vectors of one minor vector (`lattice_fiber_count`), and `pattern_count_lattice` |
-| `FortyFiveMain.lean` | partial summation, the window bound `T³ ≤ C Ξ⁹ (H³X¹⁴ + X¹⁵)`, `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`, and `P_le_45_152` |
-| `Hooley.lean` | Erdős–Hooley `Δ`, the hypotheses `NairTenenbaumDelta` and `BretecheTenenbaumMean`, partial summation, and `P_le_loglog` |
+| `Defs` | `P`, the orbit `orb`; check `P 35 22 = 7` |
+| `Block` | curvature `D = dv − eu`: identity `Dz = df + ude + (u−1)e²`, `D ≥ 1`, fiber equation `x M(q) = a N(q) + D`, size bounds |
+| `Fiber` | a fixed `(u, v, D)` allows at most `max_{n ≤ 32a⁷} τ(n)` starting points |
+| `Window` | for a run of `T` terms in `[A, 2A)`: `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
+| `Main` | dyadic decomposition, `P_le_of_visits` (window bounds `T^N ≤ K S(a) aʳ` with `S(a) ≪ a^η` give `P ≪ a^{r/N+ε}`), and the unconditional theorem `P_le` |
+| `SixStep` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `TwentyThreeMain.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10` |
+| `ShortSum` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
+| `Geometric` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}`, and the general form `∑_k min(α 2^{−sk}, β 2^{tk}) ≪ α^{t/(s+t)} β^{s/(s+t)}` (`sum_min_le_gen`) |
+| `Conditional` | any short-interval divisor bound `≪ y G(x)` for `x^{1/4} ≤ y ≤ x`, with `1 ≤ G(x) ≪ x^{1/40}`, gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
+| `Rises` | the arithmetic-progression bound `q⁴ ≤ 324 h³ a`, runs, the multiplicity lemma, and the three window bounds |
+| `RisesMain` | `P_le_rises`: `P ≪ a^{1/4} √R` |
+| `Hankel` | the moment model, `I_r(i) ∈ ℤ_{>0}` (`hankelInv_pos_int`), and `I₁ = b`, `I₂ = d`, `I₃ = D`, `I₄ = L` |
+| `Hadamard` | Hadamard's inequality `det G ≤ ∏ Gᵢᵢ` for positive definite real matrices |
+| `Functional` | the moment functionals `μᵢ`, `νᵢ` on polynomials, the Newton basis, shift rules, `νᵢ(f²) ≤ μᵢ(f²)/qᵢ` |
+| `Gram` | `Iᵣ(i) ≤ a ∏ⱼ μᵢ(Fⱼ²)/qᵢʳ`, and the label bound `L(i) qᵢ⁴ ≤ a · gramP` |
+| `TwoState` | the cofactors, null relations, reduced quadratic, the multiplicity identity, root counting |
+| `PatternBound` | the seven pattern integers are `≤ 172032 A⁴H⁶/a³` under the scale condition |
+| `PatternCount` | the counting lemma `#G ≤ 8 (2M+1)⁷ H²` |
+| `TwentyThreeMain` | good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
+| `NormCount` | the norm-equation lemma: square roots mod `m` (`≤ τ(m)²`), norm-one separation, and `norm_count` |
+| `SliceCount` | the slice lemma: slices of a ternary quadratic via completing squares, for either sign of the binary discriminant (`slice_count_ne`, `slice_count`) |
+| `ElevenCount` | the sign identities, the ternary relation `F_θ(k₁,k₂,k₃) = 0`, and the refined count |
+| `ElevenMain` | the window bound, `T⁷⁴ ≤ C Δ¹⁹ Ξ¹⁹ a²²`, slack factors `≪ a^η`, and `P_le_11_37` |
+| `MinorCount` | the Plücker relations, the congruence count `27 m g²`, and `minor_vector_count` |
+| `MinorHeight` | the expansion of `b/a` (`nu_expand`) and the uniform bound on all ten minors |
+| `EightMain` | the pattern as signed minors, the window bound, `T⁵⁴ ≤ C Δ¹⁴ Ξ²⁸ a¹⁶`, and `P_le_8_27` |
+| `DefiniteNorm` | the definite norm count: `x² + δy² = m` has `≤ 4τ(\|m\|)³` solutions |
+| `Reduce3` | reduced bases of lattices in `ℤ³`: `27 \|b₁\|²\|b₂\|²\|b₃\|² ≤ 64 det²`, and coordinate bounds |
+| `TernComp` | ternary quadratics under substitution, the plane choice, and the slice count for a coefficient vector |
+| `ShortVec` | the lifting identities, the lattice `Λ_p`, the pigeonhole bound, and `short_count` |
+| `LatticeCount` | coordinates in a reduced basis, the gap vectors of one minor vector (`lattice_fiber_count`), and `pattern_count_lattice` |
+| `FortyFiveMain` | partial summation, the window bound `T³ ≤ C Ξ⁹ (H³X¹⁴ + X¹⁵)`, `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`, and `P_le_45_152` |
+| `Hooley` | Erdős–Hooley `Δ`, the hypotheses `NairTenenbaumDelta` and `BretecheTenenbaumMean`, partial summation, and `P_le_loglog` |
 
-## Vendored code
+### Exterior-lattice chain
 
-`vendor/openai-math/` is a path-required Lake package. It contains a single file from
-[openai/math](https://github.com/openai/math) (Apache-2.0): the divisor bound
-`τ(n)^k ≤ C_k n` (`exists_divisors_power_bound`). Proof bodies are unchanged; imports and
-module visibility are adapted. The upstream commit and changes are recorded in
-[UPSTREAM.md](vendor/openai-math/UPSTREAM.md).
+[`LatticeJointMain`](PierceLengthBound/LatticeJointMain.lean) exports `P_le_lattice_optimal` and
+`P_le_153_520`. The chain also uses `short_count` (`ShortVec`), `reciprocal_sum_bound`
+(`FixedDividendWeights`), and the joint-invariant graph, component and curve-counting modules
+below.
+
+| Module | Contents |
+|---|---|
+| `LatticeExterior` | integer exterior coordinates in a reduced basis: `bᵢ·(x×y) = Δcᵢ`, `27λ⁴cᵢ² ≤ 64\|x×y\|²` (`wcoord_spec`) |
+| `LatticeCurvature` | all ten curvature minors `≤ 9472A³H³/a²`, and `c = G W` with `det G ≠ 0` (`lattice_curvature_coordinates`) |
+| `LinearJointGraph` | invertible constant matrices preserve pole envelopes; the graph of `(nodes, (GW)ᵐ, Jⁿ)` keeps degree `≥ 10n + 7m` (the powered graph is the case `G = 1`) |
+| `LatticeJointPointCount` | the points `(y, cᵐ, Jⁿ)` in the pattern box `max(3H/λ, (8S'/3λ²)ᵐ, Yⁿ)`, and the curve count there |
+| `LatticeJointPatternCount` | the component count in the lattice box; pattern counts from `JointPatternCount` |
+| `LatticeJointWeights` | `∑_p λ(p)^{-t} ≤ 3163861 τ² X^{5-t/3}` for `0 ≤ t ≤ 1` |
+| `LatticeJointLocalEstimate` | the five-term local estimate |
+| `LatticeJointWindow` | integer-power branches and the window exponents |
+| `LatticeJointBound` | `P_le_lattice_joint` for all powers, and `P_le_153_520` |
+| `LatticeJointOptimization` | the crossing `15r² = 7` and `P_le_lattice_optimal` |
+
+### Joint-invariant chain
+
+[`JointLiftMain`](PierceLengthBound/JointLiftMain.lean) exports `P_le_joint_optimal`,
+`P_le_2201_7480` and `P_le_128_435`.
+
+| Module | Contents |
+|---|---|
+| `JointLiftAlgebra` | curvature reconstruction and dot-product identities; `I₅ = A D`, with positivity and integrality |
+| `JointLiftCurvatureHeight` | first-order reciprocal expansion; `\|W_j\| q³ ≤ 68 a H³` for all three curvature coordinates |
+| `JointLiftRankFiveHeight` | the Newton Gram product bound `1230460 H¹⁰`, the rank-five height, and its floored selected box |
+| `JointLiftCoordinates`, `JointLiftFieldCoordinates` | polynomial graph coordinates with a common denominator, agreeing with the rational curvature formulas |
+| `IntegralLiftGraph`, `JointLiftGraph` | the prime ideal of a rational graph; its contraction to the old coordinates is the original prime |
+| `JointLiftGraphDegree` | upper Hilbert-degree bounds (at most `247d`) from common-denominator formulas |
+| `JointLiftPointBox` | selected states with one minor pattern as integer points of the graph in a uniform box |
+| `JointLiftDirection` | nonconstancy of the projective curvature direction on components of degree at least three of an irreducible quadric |
+| `JointLiftCurvatureNonvanishing` | no common zero of the curvature coordinates on the affine graph; the extra finite zero of a curvature combination |
+| `FixedDividendPolynomialSection` | at most `m·d` points on a proper degree-`m` polynomial cut |
+| `JointLiftNormalizationCut`, `JointLiftResolventCut`, `JointLiftRetainedIdentities` | the normalization and raw-resolvent cuts, of degrees at most 166 and 404, and the identities they impose on retained components |
+| `JointLiftInfinityOrder` | rank-five pole order `5e/2` and even infinity multiplicity at every valuation centered on the nonexceptional chart |
+| `JointLiftQuotientOrder`, `JointLiftLocalOrders` | quotient, resolvent and curvature orders from their local inputs |
+| `ChartNodeUnits`, `ChartNodeOrders` | exact node-difference orders from the resultant unit |
+| `ChartRawDeterminantOrders` | orders `−3e` for both consecutive cubic determinants and `−6e` for the fourth |
+| `JointLiftRetainedOrders` | quotient and rank-three orders from the retained normalization and resolvent equations |
+| `JointLiftChartOrders` | orders `3t`, `≥ 3t`, `3t` and `−5t` of the four graph coordinates (`e = 2t`); the curvature coordinates cannot all have positive order over the affine part |
+| `ChartNormalization`, `AffineNormalization` | finite Dedekind normalization of both chart rings |
+| `JointLiftNormalizedOrders`, `JointLiftNormalizedFiniteOrders` | normalized integer-valued branch orders, with the coordinate order calculations applied to them |
+| `NormalizationFiberDegree`, `NormalizationInfinityDegree`, `NormalizedFiberOrders` | normalization preserves the infinity fiber; multiplicities times residue degrees sum to `d` and equal the canonical branch orders |
+| `FunctionParameterNormalization`, `FunctionParameterChange`, `ChartFunctionParameters` | equal weighted zero and pole fiber degrees for a transcendental function; every transcendental function on the curve is a finite parameter |
+| `JointLiftCurvatureTranscendence` | the curvature combination with the extra finite zero is transcendental |
+| `IntegralBranchOrders`, `BranchValuationComparison`, `BranchResidueComparison` | centers on parameter normalizations; branch transport preserves normalized orders and residue degrees |
+| `BranchZeroDegree` | the weighted zero-count inequality, including the extra degree from one additional zero |
+| `JointLiftPoleCoverage`, `JointLiftPoleDegree` | every pole of a curvature combination lies on the affine normalization; its degree is bounded by the curvature pole envelope |
+| `JointLiftFiniteZero` | the extra normalized zero, outside the old infinity fiber |
+| `JointLiftCurvatureDegree` | `3d + 2 ≤ 2 deg(F)` for the curvature pole envelope on a retained component |
+| `GraphFunctionField`, `ValuationLinearCombination`, `GraphPoleDegree` | the coordinate pole envelope is bounded by the graph Hilbert degree |
+| `JointLiftGraphLowerDegree` | `4d + 1 ≤ δ` on retained graphs, and `17 ≤ δ ≤ 247d` when `d ≥ 4` |
+| `CurveCounting`, `CurveCountingDegreeRange`, `CurveCountingCoordinates`, `CurveCountingCover` | the CCDN theorem on Pierce coordinate rings: bounded-degree factors, arbitrary finite index types (including `Fin 3 ⊕ Fin 4`), and finite prime-component covers |
+| `OrbitGapCoordinates` | the three node coordinates distinguish complete gap vectors within a pattern |
+| `JointLiftPointCount`, `JointLiftCountingSlack` | the curve count on seven-coordinate integer points; the logarithm absorbed via the polynomial box bound |
+| `JointLiftCoverCount` | gap vectors over at most 24 components, with a `SlowGrowth` coefficient |
+| `OrbitConicGapCount` | the conic divisor estimate applied directly to distinct gap vectors |
+| `OrbitCurveGapCount`, `OrbitPatternCurveCount` | the square-root count after excluding lines at the window scale |
+| `JointLiftComponentCount`, `JointLiftNonexceptionalCount` | conics, the two bounded cuts and retained graphs, summed over the prime-component cover |
+| `JointLiftExponent`, `JointLiftWindow`, `JointLiftLocalEstimate`, `JointLiftGlobalReduction` | exponent arithmetic, window branches and the global reduction for `128/435` |
+| `JointLiftPatternCount` | `P_le_128_435_of_pattern_estimate`: pattern sums, multiplicity, window ranges, rounding, divisor slack and dyadic summation |
+| `JointLiftBound` | both per-pattern estimates and `P_le_128_435` |
+| `JointLiftOptimization` | the optimal crossing, the minimum of the two exponent functions, and approximation by fixed integer powers |
+| `PoweredJointGraph`, `PoweredPoleOrder` | the graph with coordinates `W_jᵐ` and `Jⁿ`, of degree at most `((m+n)·247+1)d`; powers multiply pole orders |
+| `PoweredJointGraphLowerDegree` | `δ ≥ 10n + 7m` for `d ≥ 4`, the case `G = 1` of `LinearJointGraph` |
+| `PoweredJointPointBox`, `PoweredJointPointCount` | integer points in the box `max(3H, Sᵐ, Yⁿ)` and the curve count there |
+| `PoweredJointCountingSlack`, `PoweredJointComponentCount`, `PoweredJointNonexceptionalCount`, `PoweredJointPatternCount`, `PoweredJointLocalEstimate` | the powered logarithmic and counting inputs |
+| `JointPatternCount` | from component counts to nonexceptional and per-pattern estimates, for any box; shared by the powered and lattice chains |
+| `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges and dyadic summation |
+| `PoweredJointBound` | the optimized exponent and its rational version `m = 50`, `n = 51` |
+
+### Shared and supporting modules
+
+| Modules | Contents |
+|---|---|
+| `FixedDividend*` | the fixed-dividend resultant identity, quadratic irreducibility, relative primality, a rational component cover of total degree at most 24, even degree of nonexceptional components, line exclusion, conic plane models, and filtered Hilbert-degree infinity charts; also proved components of the unfinished `13/44` and `18/61` refinements (checked in `Axioms.lean`) |
+| `Exceptional*` | the exceptional-pattern count `O(X⁴ log 2X)` |
+| `IntegralLift*` | bounded integer conic parameters, monic quotient normalization, cubic quotient degree, and properness of the `I₃` lift after at most 492 exceptional points; the conditional `151/513` reduction |
+| `Conic*` | conic arithmetic, integer values of rational functions, and coefficient heights; the conditional `135/458` reduction |
+| `Parity*` | the conditional `180/611` reduction |
+| `Chart*`, `Branch*`, `Normalization*`, `NormalizedBranchValuation`, `CurveNormalization`, `ParameterFiberDegree`, `LinearFunctionDegree` | chart and normalization infrastructure for branch orders and function-field degrees |
+| `NewtonCoefficientDegrees`, `RawDeterminantTotalDegree`, `OrbitPatternGeometry` | coefficient degrees of the Newton quartic and raw determinants; transport of component data within a pattern |
+
+## Dependencies
+
+* [Mathlib](https://github.com/leanprover-community/mathlib4) `v4.35.0`.
+* CCDN (`ccdn-linear-growth`), the curve-counting library described above and pinned as described
+  under [Building and checking](#building-and-checking). It vendors the Bombieri–Vaaler
+  development of `rwst/Subspace-Theorems` (as `ArithmeticHeights`) and adapts Mertens' first
+  theorem, with provenance recorded in its vendor directory.
+* `vendor/openai-math/` is a path-required Lake package. It contains a single file from
+  [openai/math](https://github.com/openai/math) (Apache-2.0): the divisor bound
+  `τ(n)^k ≤ C_k n` (`exists_divisors_power_bound`). Proof bodies are unchanged; imports and
+  module visibility are adapted. The upstream commit and changes are recorded in
+  [UPSTREAM.md](vendor/openai-math/UPSTREAM.md).
 
 ## Palomar submission
 
-[Challenge.lean](Challenge.lean) independently states all thirteen main results using only
-Mathlib imports and complete mathematical definitions. Its thirteen theorem proofs are
-deliberate holes. [Solution.lean](Solution.lean) exposes the original proved declarations;
-neither module imports the other. [comparator.json](comparator.json) selects the results,
-and [formalization.yaml](formalization.yaml) records their scope, provenance, automation,
-and review status. This repository is the substantive development, not a thin wrapper.
+[Challenge.lean](Challenge.lean) independently states every theorem selected in
+[comparator.json](comparator.json), using only Mathlib imports and complete mathematical
+definitions; their proofs are deliberate holes. [Solution.lean](Solution.lean) exposes the
+original proved declarations; neither module imports the other.
+[formalization.yaml](formalization.yaml) records their scope, provenance, automation, and review
+status. This repository is the substantive development, not a thin wrapper.
 
-Run the local preparation checks:
+The intended public repository is `jasondavies/pierce-length-bound`. Before submission:
 
-```sh
-python3 scripts/check-lean-sources.py
-python3 scripts/check-math.py
-lake exe cache get
-lake build
-python3 scripts/check-curve-counting-dependency.py --checkout
-python3 scripts/check-integral-lift-dependencies.py
-```
+1. Run the [checks above](#building-and-checking), and confirm the automation and review account
+   in `formalization.yaml`.
+2. Push all intended changes, and obtain the full commit SHA with `git rev-parse HEAD`.
+3. Run **Full Palomar mechanical preflight** from the repository's Actions tab on that revision.
+   It uses Palomar's pinned reusable workflow in `full` mode with the `palomar-standard-v1`
+   execution profile. Require `status: pass` in its mechanical report; the ordinary CI build and
+   standalone Comparator are not a substitute. This preflight does not perform editorial review
+   or register the result.
+4. Submit that immutable revision with the repository root as the project and the default
+   `comparator.json` and `formalization.yaml` paths. See
+   [Palomar's requirements](https://palomar-registry.org/how-to-submit) and the
+   [submission form](https://submit.palomar-registry.org/). Agents should use the
+   [documented HTTPS protocol](https://submit.palomar-registry.org/llms.txt), not drive the form.
 
-On Linux with `bubblewrap` installed, run `bash scripts/verify-comparator.sh` to compare
-the statements and proofs using Lean's kernel, NanoDa, and con-ron. The standard
-sandboxed Comparator needs Linux; a successful macOS Lean build alone does not
-establish a Palomar verification pass.
-
-The intended public repository is `jasondavies/pierce-length-bound`. Before submission,
-confirm the automation and review account
-in `formalization.yaml`, push all intended changes there, and obtain the full
-commit SHA with `git rev-parse HEAD`.
-Run **Full Palomar mechanical preflight** from the repository's Actions tab on that
-revision. It uses Palomar's pinned reusable workflow in `full` mode with the
-`palomar-standard-v1` execution profile. Require `status: pass` in its mechanical report;
-the ordinary CI build and standalone Comparator are not a substitute for this check.
-This preflight does not perform editorial review or register the result.
-
-`scripts/check-math.py` independently checks the moment construction and local identities using
-exact rational arithmetic on 2,274 deterministic sample orbits. It supplements the formal proof;
-finite numerical checks do not establish the asymptotic bounds.
-
-Submit that immutable revision with the repository root as the
-project and the default `comparator.json` and `formalization.yaml` paths. See
-[Palomar's requirements](https://palomar-registry.org/how-to-submit) and the
-[submission form](https://submit.palomar-registry.org/). Agents should use the
-[documented HTTPS protocol](https://submit.palomar-registry.org/llms.txt), not drive the form.
 Repository preparation does not itself submit or register a result.
 
 ## Hexagon submission
@@ -450,8 +417,8 @@ The contributor must sign in with an ORCID iD, select the distribution license, 
 the AI-use and human-understanding disclosures. The paper and metadata identify GPT-6-Astra;
 the contributor should describe their own understanding and review accurately.
 
-## Licence
+## License
 
 Copyright 2026 Jason Davies. Licensed under the Apache License, Version 2.0; see
-[LICENSE](LICENSE). The vendored file keeps its own Apache-2.0 licence
+[LICENSE](LICENSE). The vendored file keeps its own Apache-2.0 license
 ([vendor/openai-math/LICENSE](vendor/openai-math/LICENSE)).

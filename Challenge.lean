@@ -21,10 +21,10 @@ Two further results give a conditional logarithmic refinement and a bound in ter
 of rises in the quotient increments. The final theorem states positivity and
 integrality of the entire Hankel hierarchy of the orbit's exact moment model.
 
-All mathematical definitions below are supplied in full. Only the thirteen theorem
-proofs have deliberate holes. In particular, the two analytic inputs are explicit
-propositions, not axioms: their proofs are outside this formalization. All constants
-in the length bounds are uniform in `a` and `b`.
+All mathematical definitions below are supplied in full. Only the proofs of the theorems
+selected in `comparator.json` have deliberate holes. In particular, the two analytic inputs
+are explicit propositions, not axioms: their proofs are outside this formalization. All
+constants in the length bounds are uniform in `a` and `b`.
 -/
 
 @[expose] public section
@@ -50,7 +50,8 @@ theorem P_le_lattice_optimal : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 <
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((471 : ℝ) / 1559 - 6 * Real.sqrt 105 / 7795 + ε) := by
   sorry
 
-/-- The rational exterior-lattice bound from fixed powers 3 and 2. -/
+/-- The rational exterior-lattice bound, with powers `m = 3` of the curvature coordinates
+and `n = 2` of the rank-five invariant. -/
 theorem P_le_153_520 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((153 : ℝ) / 520 + ε) := by
   sorry
@@ -60,7 +61,8 @@ theorem P_le_joint_optimal : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b
     (P a b : ℝ) ≤ C * (a : ℝ) ^ (((1310 : ℝ) - Real.sqrt 655) / 4365 + ε) := by
   sorry
 
-/-- The rational bound from fixed powers 50 and 51. -/
+/-- The rational joint-invariant bound, with powers `m = 50` of the curvature coordinates
+and `n = 51` of the rank-five invariant. -/
 theorem P_le_2201_7480 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((2201 : ℝ) / 7480 + ε) := by
   sorry

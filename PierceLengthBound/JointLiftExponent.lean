@@ -48,14 +48,16 @@ def selectedCurvatureHeight (a A T : ℕ) : ℕ :=
 def selectedRankFiveHeight (a A T : ℕ) : ℕ :=
   1259991040 * A ^ 5 * selectedGapHeight a A T ^ 10 / a ^ 4
 
-lemma curvature_height_times_cube {a A T C S H : ℕ} (ha : 0 < a) (hA : 0 < A)
-    (hgap : H * (A * T) ≤ C * a) (hS : S * a ^ 2 ≤ 4352 * A ^ 3 * H ^ 3) :
-    S * T ^ 3 ≤ 4352 * C ^ 3 * a := by
+/-- A curvature height `S ≤ K A³ H³/a²` times `T³` is linear in `a`. The joint lift takes
+`K = 4352` and the exterior lattice coordinates `K = 9472`. -/
+lemma curvature_height_times_cube {a A T C S H K : ℕ} (ha : 0 < a) (hA : 0 < A)
+    (hgap : H * (A * T) ≤ C * a) (hS : S * a ^ 2 ≤ K * A ^ 3 * H ^ 3) :
+    S * T ^ 3 ≤ K * C ^ 3 * a := by
   apply Nat.le_of_mul_le_mul_right (c := A ^ 3 * a ^ 2) ?_ (by positivity)
   calc _ = (S * a ^ 2) * A ^ 3 * T ^ 3 := by ring
-    _ ≤ (4352 * A ^ 3 * H ^ 3) * A ^ 3 * T ^ 3 := by gcongr
-    _ = 4352 * A ^ 3 * (H * (A * T)) ^ 3 := by ring
-    _ ≤ 4352 * A ^ 3 * (C * a) ^ 3 := by gcongr
+    _ ≤ (K * A ^ 3 * H ^ 3) * A ^ 3 * T ^ 3 := by gcongr
+    _ = K * A ^ 3 * (H * (A * T)) ^ 3 := by ring
+    _ ≤ K * A ^ 3 * (C * a) ^ 3 := by gcongr
     _ = _ := by ring
 
 lemma max_curvature_height_times_cube {a A T C S H D : ℕ} (hA : 0 < A) (hD : 1 ≤ D)

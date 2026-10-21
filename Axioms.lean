@@ -11,8 +11,11 @@ import Lean.Util.CollectAxioms
 /-!
 # Axiom check
 
-`lake env lean Axioms.lean` fails unless each main theorem depends only on the three standard
-axioms `propext`, `Classical.choice` and `Quot.sound`.
+`lake env lean Axioms.lean` (also run by `lake build`) fails unless each theorem selected in
+`comparator.json` depends only on the three standard axioms `propext`, `Classical.choice` and
+`Quot.sound`. The `#print axioms` checks below also record proved components of unfinished
+refinements. The final check audits every exported declaration of `PierceLengthBound`, of the
+CCDN library, and of CCDN's vendored Bombieri–Vaaler development (`ArithmeticHeights`).
 -/
 
 open PierceLengthBound
@@ -135,7 +138,6 @@ open PierceLengthBound
 
 /-! Actual orbit identities and universal resultant degree bounds. -/
 
-
 /-- info: 'PierceLengthBound.FixedDividend.orbit_fixed_dividend_identity' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
@@ -186,7 +188,8 @@ open PierceLengthBound
 #guard_msgs in
 #print axioms FixedDividend.orbit_no_exceptional_line
 
-/-! Audit all exported mathematical declarations, including intermediate results.
+/-! Audit all exported mathematical declarations, including intermediate results, from
+`PierceLengthBound`, CCDN and CCDN's vendored `ArithmeticHeights`.
 The separate exercise statements in Challenge are intentionally outside this scope. -/
 
 open Lean Elab Command
@@ -199,22 +202,25 @@ run_cmd do
   let allowed : Array Name := #[``propext, ``Classical.choice, ``Quot.sound]
   let mut checked : Nat := 0
   let mut curve : Nat := 0
-  let mut curveVendor : Nat := 0
+  let mut heights : Nat := 0
   for (name, _) in env.constants.toList do
     let some idx := env.getModuleIdxFor? name | continue
-    let some mod := modules[idx.toNat]? | throwError "Missing module for {name}"
+    let some mod := modules[idx.toNat]? | throwError "Missing module for {name}; \
+      the environment's module table is inconsistent, so rebuild with `lake build`"
     let isPierce := (`PierceLengthBound).isPrefixOf mod
     let isCurve := (`CCDN).isPrefixOf mod
-    let isCurveVendor := (`ArithmeticHeights).isPrefixOf mod
-    if !isPierce && !isCurve && !isCurveVendor then continue
+    let isHeights := (`ArithmeticHeights).isPrefixOf mod
+    if !isPierce && !isCurve && !isHeights then continue
     let axioms ← collectAxioms name
     let bad := axioms.filter fun a => !allowed.contains a
     unless bad.isEmpty do
       throwError "Disallowed axioms in {name}: {bad}"
     if isPierce then checked := checked + 1
     if isCurve then curve := curve + 1
-    if isCurveVendor then curveVendor := curveVendor + 1
-  unless checked > 0 ∧ curve > 0 ∧ curveVendor > 0 do
-    throwError "Axiom audit coverage failure"
+    if isHeights then heights := heights + 1
+  unless checked > 0 ∧ curve > 0 ∧ heights > 0 do
+    throwError "Axiom audit coverage failure: found {checked} PierceLengthBound, {curve} CCDN \
+      and {heights} ArithmeticHeights declarations. Each must be positive; if CCDN renamed \
+      its `CCDN` or vendored `ArithmeticHeights` module prefix, update the prefixes above."
   logInfo m!"Axiom audit passed: {checked} PierceLengthBound, {curve} CCDN \
-    and {curveVendor} curve-vendor declarations; only {allowed}."
+    and {heights} ArithmeticHeights declarations; only {allowed}."

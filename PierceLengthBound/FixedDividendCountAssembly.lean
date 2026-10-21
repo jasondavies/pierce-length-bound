@@ -56,6 +56,28 @@ def curveCountSlack (R : ℕ → ℕ) (a : ℕ) : ℕ :=
   (8 ^ 6 * (14581 * (14581 + 8 * 393660)) ^ 3) * R a ^ 6 *
     tauMax (10 ^ 16 * a ^ 7) ^ 9
 
+/-- Each pair of a pattern and a gap vector comes from at most four selected starts. -/
+theorem selectedStarts_card_le_pair_image {a b s T A : ℕ} (hba : b < a)
+    (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b) :
+    (selectedStarts a b s T A).card ≤
+      4 * ((selectedStarts a b s T A).image fun i => (plk (Mi a b i), kap a b i)).card := by
+  have facts := fun i hi => selectedStart_spec hmem hsT (i := i) hi
+  apply pattern_gap_multiplicity (θ := theta a b) (Q := fun i => (qq a b i : ℤ))
+    (a := (a : ℤ)) (fun i _ => theta_eq i)
+  · intro i hi i' hi' h
+    have hP := (facts i hi).1
+    have hP' := (facts i' hi').1
+    simp only [Nat.cast_inj] at h
+    by_contra hne
+    rcases lt_or_gt_of_ne hne with hlt | hlt
+    · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h
+    · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h.symm
+  · intro i hi
+    simpa [theta] using Lz_pos hba (i := i) (by have := (facts i hi).1; omega)
+  · intro i hi
+    simpa [theta, kap] using mult_at (a := a) (b := b) (i := i)
+      (by have := (facts i hi).1; omega)
+
 /-- The required per-pattern estimate implies the local window estimate. -/
 theorem localWindowCount_of_selectedPatternCount {R : ℕ → ℕ}
     (hcurve : SelectedPatternCount R) : LocalWindowCount (curveCountSlack R) := by
@@ -69,22 +91,8 @@ theorem localWindowCount_of_selectedPatternCount {R : ℕ → ℕ}
   let τ := tauMax (10 ^ 16 * a ^ 7)
   have hc := selectedStarts_card hba hmem hsT hT
   have facts := fun i hi => selectedStart_spec hmem hsT (i := i) hi
-  have hmult : G.card ≤ 4 * (G.image fun i => (pm i, kap a b i)).card := by
-    apply pattern_gap_multiplicity (θ := theta a b) (Q := fun i => (qq a b i : ℤ))
-      (a := (a : ℤ)) (fun i _ => theta_eq i)
-    · intro i hi i' hi' h
-      have hP := (facts i hi).1
-      have hP' := (facts i' hi').1
-      simp only [Nat.cast_inj] at h
-      by_contra hne
-      rcases lt_or_gt_of_ne hne with hlt | hlt
-      · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h
-      · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h.symm
-    · intro i hi
-      simpa [theta] using Lz_pos hba (i := i) (by have := (facts i hi).1; omega)
-    · intro i hi
-      simpa [theta, kap] using mult_at (a := a) (b := b) (i := i)
-        (by have := (facts i hi).1; omega)
+  have hmult : G.card ≤ 4 * (G.image fun i => (pm i, kap a b i)).card :=
+    selectedStarts_card_le_pair_image hba hmem hsT
   have hcount := pattern_curve_count_sum (H := (H : ℝ)) (K := (R a : ℝ)) hmult
     (hcurve a b s T A hba hmem hsT hT hscale)
   have hM : 1 ≤ M := selectedMinorHeight_pos hba hmem hsT hT

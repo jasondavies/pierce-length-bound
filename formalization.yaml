@@ -116,10 +116,10 @@ related_formalizations:
 
 status:
   scope: >-
-    Comparator is configured for the thirteen main theorems listed in alignment below.
+    Comparator is configured for the main theorems listed in alignment below.
     Their definitions are given in full in the independent Mathlib-only
     Challenge module. The proof development has no sorry holes or custom
-    axioms. The thirteen deliberate theorem holes in Challenge.lean are excluded
+    axioms. The deliberate theorem holes in Challenge.lean are excluded
     from these counts. NairTenenbaumDelta and BretecheTenenbaumMean are
     unproved propositions passed as hypotheses, not axioms. The paper's
     background literature and its remark about Shiu's theorem are not
@@ -143,8 +143,9 @@ automation:
         exact-rational numerical checks, Lean builds and axiom audits,
         module-system migration, independent Challenge and Comparator setup,
         metadata, and CI preparation. Subsequent work formalized the rational curve
-        geometry, normalization and valuation arguments, joint invariant graphs,
-        powered counting and optimized exponent, and the external curve-counting theorem.
+        geometry, normalization and valuation arguments, joint-invariant graphs,
+        powered counting and the optimized joint-invariant exponent, the
+        exterior-lattice bounds, and the external curve-counting theorem.
   notes: >-
     The paper credits AI language models with contributions to the orthogonal
     polynomial and adjacent-label approach, the resultant bound, bounded
@@ -155,7 +156,7 @@ automation:
 
 fidelity:
   divergences: >-
-    No known mismatch between the thirteen compared Lean statements and their
+    No known mismatch between the compared Lean statements and their
     descriptions in the accompanying paper. The conditional result explicitly
     assumes two published analytic statements instead of formalizing their
     proofs. The natural-number orbit is frozen at zero, and P counts positive
@@ -165,60 +166,29 @@ review:
   status: "agent-reviewed"
   reviewers: ["OpenAI Codex"]
   notes: >-
-    On October 21, 2026 the CCDN dependency was advanced to
-    9ade6200d053ceef5f6ccc4154ae30c6056be150, with its moved module import and
-    provenance-check script updated. The build passed with 9566 jobs, both
-    dependency audits passed, and the axiom audit checked 2684 Pierce, 1013
-    CCDN and 555 curve-vendor declarations using only propext, Classical.choice
-    and Quot.sound. An isolated copy with matching Lean sources and dependency
-    configuration passed the standard sandboxed Comparator for all thirteen
-    statements with Lean, NanoDa and con-ron; con-ron verified 88,684 declarations.
-    The pinned commit was also successfully fetched from GitHub.
-    On October 20, 2026 the exterior-lattice bounds P_le_lattice_optimal and
-    P_le_153_520 were added. The integrated build passes with 9569 jobs, both
-    dependency audits pass (the second confirms that these two bounds reach only
-    the weighted counts short_count and reciprocal_sum_bound), and Axioms.lean
-    reports only propext, Classical.choice and Quot.sound for all thirteen
-    statements. With the CCDN Git dependency jasondavies/ccdn-linear-growth
-    pinned to commit e0ea22e4d68316fddf939b8239f670ed5a53b66a, a clean copy
-    with every package fetched from scratch passed the build
-    with 9563 jobs and both audits. The standard sandboxed Comparator
-    accepted all thirteen statements: con-ron verified 89,501 declarations, and
-    NanoDa and Lean's kernel accepted the solution.
-    Earlier, with the local sibling checkout ../ccdn-dimension-growth, the
-    integrated build passed with 9558 jobs at CCDN commit
-    642822b5d2db7035e625a9f32b0af205a276b2fb. The axiom audit covers 2551 Pierce,
-    1145 counting and 555 curve-vendor declarations, allowing only propext,
-    Classical.choice and Quot.sound. The weighted-counting independence audit
-    passes with 6976 visited constants.
-    At the previous vendored checkpoint on October 20, 2026, the optimized
-    joint-lift theorem, both rational versions, and the external affine-curve
-    theorem passed the integrated Lean build and axiom audit. The dependency
-    audit excluded weighted-lattice counting from these new bounds. The
-    manuscript, independent Challenge and comparator alignment included all
-    eleven public results. The standard sandboxed Comparator passed: con-ron
-    verified all 89,181 exported declarations, NanoDa and Lean's full replay
-    accepted the solution, and all eleven statements matched the independent
-    Challenge. The 508 Lean source files in that review copy matched the
-    vendored checkpoint preserved in commit
-    bdb8dc13f2a08063be87a3d18f91a0842d27ce67.
-    Earlier checker resource failures were repaired by making equivalent
-    algebra and coefficient conversions explicit before
-    substituting large resultants. No hypotheses or checker limits were changed.
-    The October 19, 2026 Codex review read the full paper, checked the definitions
-    and theorem statements against it, inspected the main proof dependencies,
-    and ran the Lean build and eight-theorem axiom audit. Sandboxed Comparator
-    accepted all eight theorems with Lean, NanoDa, and con-ron in a self-contained
-    local copy. The reproducible scripts/check-math.py checked 26,554 exact-rational
-    Hankel determinants through order six on 2,274 orbits, plus curvature,
-    six-step, pattern, quartic and minor identities. The review corrected the
-    description of quadratic nondegeneracy, the Nair–Tenenbaum parameter mapping,
-    and the scope of the no-sorry claim; it found no defect in the eight proved
-    results. This is an automated review, not independent human peer review.
-    The existing provenance record reports no additional human review; the
-    maintainer has identified GPT-6-Astra but has not further specified personal
-    review coverage. Full Palomar mechanical preflight and editorial review
-    remain outstanding. No external endorsement is claimed.
+    Latest run, October 21, 2026, with the CCDN dependency pinned to
+    9ade6200d053ceef5f6ccc4154ae30c6056be150: the Lean build, both weighted-count
+    dependency audits and the axiom audit passed. The axiom audit covers every
+    exported PierceLengthBound, CCDN and vendored ArithmeticHeights declaration and
+    allows only propext, Classical.choice and Quot.sound. In an isolated copy with
+    matching Lean sources and dependency configuration, the standard sandboxed
+    Comparator accepted every selected statement with Lean, NanoDa and con-ron;
+    con-ron verified 88,655 declarations.
+    Earlier checker resource failures were repaired by making algebra and
+    coefficient conversions explicit, without changing hypotheses or checker limits.
+    An October 19, 2026 Codex review, which predates the joint-invariant and
+    exterior-lattice bounds, read the full paper, checked the definitions and
+    theorem statements against it, and inspected the main proof dependencies. It
+    corrected the description of quadratic nondegeneracy, the Nair–Tenenbaum
+    parameter mapping, and the scope of the no-sorry claim. The reproducible
+    scripts/check-math.py checks 26,554 exact-rational Hankel determinants through
+    order six on 2,274 orbits, plus curvature, six-step, pattern, quartic and minor
+    identities.
+    This is an automated review, not independent human peer review. The existing
+    provenance record reports no additional human review; the maintainer has
+    identified GPT-6-Astra but has not further specified personal review coverage.
+    Full Palomar mechanical preflight and editorial review remain outstanding. No
+    external endorsement is claimed.
 
 alignment:
   namespace: "PierceLengthBound"
