@@ -29,4 +29,5 @@ path = "vendor/openai-math"
 
 [[require]]
 name = "ccdn_dimension_growth"
-path = "../ccdn-dimension-growth"
+git = "https://github.com/jasondavies/ccdn-linear-growth"
+rev = "9ade6200d053ceef5f6ccc4154ae30c6056be150"

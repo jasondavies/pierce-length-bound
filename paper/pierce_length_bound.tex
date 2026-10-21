@@ -2443,9 +2443,9 @@ Theorem~\ref{thm:hankel} are proved in the same module as
 \lean{hankelInv\_one} through \lean{hankelInv\_four}.
 
 For the curve theorem~\eqref{eq:jointexternal}, the separate library
-\lean{ccdn-dimension-growth} proves the real-$B$ version, including the plane
+\lean{ccdn-linear-growth} proves the real-$B$ version, including the plane
 estimate, degree-preserving projection and box rescaling. The Pierce development
-imports it as a proved theorem and applies it to the defining prime ideals
+imports it, pinned to commit \lean{9ade620}, as a proved theorem and applies it to the defining prime ideals
 of its curves, using the same affine Hilbert degree as in
 Section~\ref{sec:joint}. Thus the curve count is a proved dependency, not a
 hypothesis of the Pierce bound.

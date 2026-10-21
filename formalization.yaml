@@ -57,12 +57,9 @@ sources:
     relationship: other
     note: >-
       The coefficient-uniform affine-curve estimate is proved in the separate
-      ccdn-dimension-growth project and imported as the Lake package
-      ccdn_dimension_growth from the local sibling path ../ccdn-dimension-growth.
-      That checkout is required to build this project. It is not an unproved
-      hypothesis or axiom. The public CCDN repository has not yet been created;
-      after publication this path dependency must become a Git dependency
-      pinned to a full commit SHA before a portable public submission.
+      ccdn-linear-growth project and imported as the Lake package
+      ccdn_dimension_growth, a Git dependency pinned to commit
+      9ade6200d053ceef5f6ccc4154ae30c6056be150. It is not an unproved hypothesis or axiom.
   - title: "Short sums of certain arithmetic functions"
     authors: ["M. Nair", "Gérald Tenenbaum"]
     type: article
@@ -100,6 +97,15 @@ sources:
       results, not as a formal dependency or a claim of independent review.
 
 related_formalizations:
+  - id: "https://github.com/jasondavies/ccdn-linear-growth/tree/9ade6200d053ceef5f6ccc4154ae30c6056be150"
+    relationship: builds-on
+    note: >-
+      The coefficient-uniform affine-curve theorem CCDN.affineCurveBound, imported as
+      the pinned Lake dependency ccdn_dimension_growth. That project itself vendors
+      the Bombieri–Vaaler development of rwst/Subspace-Theorems at commit
+      09835cb23557ae5ae0cf55a9c4ab9055f5d60338 and adapts Mertens' first theorem from
+      PrimeNumberTheoremAnd at commit c39a751132c88b6e8080b74c74023fd95b3d8be0, with
+      provenance recorded in its vendor directory.
   - id: "https://github.com/openai/math/tree/1581d4cbdd69a0faf34b2089614fe2a814316a6a"
     relationship: builds-on
     note: >-
@@ -159,21 +165,32 @@ review:
   status: "agent-reviewed"
   reviewers: ["OpenAI Codex"]
   notes: >-
+    On October 21, 2026 the CCDN dependency was advanced to
+    9ade6200d053ceef5f6ccc4154ae30c6056be150, with its moved module import and
+    provenance-check script updated. The build passed with 9566 jobs, both
+    dependency audits passed, and the axiom audit checked 2684 Pierce, 1013
+    CCDN and 555 curve-vendor declarations using only propext, Classical.choice
+    and Quot.sound. An isolated copy with matching Lean sources and dependency
+    configuration passed the standard sandboxed Comparator for all thirteen
+    statements with Lean, NanoDa and con-ron; con-ron verified 88,684 declarations.
+    The pinned commit was also successfully fetched from GitHub.
     On October 20, 2026 the exterior-lattice bounds P_le_lattice_optimal and
     P_le_153_520 were added. The integrated build passes with 9569 jobs, both
     dependency audits pass (the second confirms that these two bounds reach only
     the weighted counts short_count and reciprocal_sum_bound), and Axioms.lean
     reports only propext, Classical.choice and Quot.sound for all thirteen
-    statements. The sandboxed Comparator was not rerun: its sandbox cannot
-    reach the sibling checkout ../ccdn-dimension-growth.
-    The dependency now uses the local sibling checkout ../ccdn-dimension-growth.
-    Its integrated build passes with 9558 jobs at CCDN commit
+    statements. With the CCDN Git dependency jasondavies/ccdn-linear-growth
+    pinned to commit e0ea22e4d68316fddf939b8239f670ed5a53b66a, a clean copy
+    with every package fetched from scratch passed the build
+    with 9563 jobs and both audits. The standard sandboxed Comparator
+    accepted all thirteen statements: con-ron verified 89,501 declarations, and
+    NanoDa and Lean's kernel accepted the solution.
+    Earlier, with the local sibling checkout ../ccdn-dimension-growth, the
+    integrated build passed with 9558 jobs at CCDN commit
     642822b5d2db7035e625a9f32b0af205a276b2fb. The axiom audit covers 2551 Pierce,
     1145 counting and 555 curve-vendor declarations, allowing only propext,
     Classical.choice and Quot.sound. The weighted-counting independence audit
-    passes with 6976 visited constants. A fresh Comparator run for this changed
-    dependency remains outstanding. The local path is not a version pin and
-    requires the sibling checkout to reproduce the build.
+    passes with 6976 visited constants.
     At the previous vendored checkpoint on October 20, 2026, the optimized
     joint-lift theorem, both rational versions, and the external affine-curve
     theorem passed the integrated Lean build and axiom audit. The dependency

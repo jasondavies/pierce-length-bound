@@ -203,14 +203,13 @@ and the range `17 ≤ δ ≤ 247*d` when the component degree is at least four.
 The earlier `151/513` conditional reduction remains available.
 
 The external coefficient-uniform affine-curve theorem is proved in
-`ccdn-dimension-growth`. `CCDN.affineCurveBound` gives
+[`ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth). `CCDN.affineCurveBound` gives
 `C(n) * d³ * B^(1/d) * (log B + d)` for every prime affine curve over `ℚ`
 in ambient dimension `n ≥ 2`, using its actual affine Hilbert degree and every
 real `B ≥ 1`. Its proof includes the plane theorem, bounded degree-preserving
 projections, and uniform box rescaling. There is no external counting hypothesis.
-The theorem is imported through the Lake package `ccdn_dimension_growth`,
-using the local sibling path `../ccdn-dimension-growth`. A checkout of that
-library must be present beside this repository.
+The theorem is imported through the Lake package `ccdn_dimension_growth`, a Git
+dependency pinned to commit `9ade6200d053ceef5f6ccc4154ae30c6056be150`. Lake fetches it into `.lake/packages`.
 
 `CurveCounting` identifies the coordinate-ring and point-count interfaces;
 `CurveCountingDegreeRange` absorbs bounded-degree factors, and
@@ -243,18 +242,26 @@ and `PoweredJointPointCount` applies the curve theorem to this box.
 all window ranges and dyadic summation. `PoweredJointBound` concludes the
 optimized algebraic exponent and its explicit rational version.
 
-With the exterior-lattice bounds the build passes with 9569 jobs, both dependency audits pass, and
-`Axioms.lean` checks all thirteen public statements; the sandboxed Comparator has not been rerun,
-because its sandbox cannot reach the sibling CCDN checkout. Before that extension, the
-local-dependency build passed (9558 jobs). Its axiom audit covers 2551
+On October 21, 2026, with CCDN advanced to `9ade6200d053ceef5f6ccc4154ae30c6056be150`,
+the build passed (9566 jobs), both dependency audits passed, and the axiom audit checked
+2684 Pierce, 1013 CCDN and 555 curve-vendor declarations using only `propext`,
+`Classical.choice` and `Quot.sound`. In an isolated copy with matching Lean sources and
+dependency configuration, the sandboxed Comparator accepted all thirteen statements with
+Lean, NanoDa and con-ron; con-ron verified 88,684 declarations. The pinned commit was also
+successfully fetched from GitHub.
+
+On October 20, 2026, from a clean copy with CCDN pinned to `e0ea22e4d68316fddf939b8239f670ed5a53b66a` and all packages
+fetched from scratch, the build passes (9563 jobs), both dependency audits pass, `Axioms.lean`
+checks all thirteen public statements, and the full sandboxed Comparator accepts all thirteen:
+con-ron verified 89,501 declarations, and NanoDa and Lean's kernel accepted the solution.
+Before the exterior-lattice extension, the local-dependency build passed (9558 jobs). Its axiom audit covers 2551
 Pierce, 1145 counting and 555 curve-vendor declarations, allowing only
 `propext`, `Classical.choice` and `Quot.sound`. The weighted-counting
 independence audit also passes. This check used CCDN commit
 `642822b5d2db7035e625a9f32b0af205a276b2fb`; the path dependency itself is not pinned.
 The previous vendored checkpoint passed the full sandboxed Comparator for all
-eleven public results with Lean, NanoDa and con-ron. That historical result
-does not validate the changed dependency; a fresh Comparator run remains
-outstanding. The earlier verified Lean sources are preserved in commit
+eleven public results with Lean, NanoDa and con-ron. These earlier results are historical
+checkpoints; the October 21 run validates the current dependency. The earlier verified Lean sources are preserved in commit
 `bdb8dc13f2a08063be87a3d18f91a0842d27ce67`.
 After building, `python3 scripts/check-integral-lift-dependencies.py` checks that the
 exterior-lattice bounds reach exactly the weighted counts `short_count` and `reciprocal_sum_bound`,
@@ -275,15 +282,12 @@ python3 scripts/check-fixed-dividend-lines.py
 
 ## Lean
 
-Place the existing `ccdn-dimension-growth` checkout beside this repository,
-so that its `lakefile.toml` is at `../ccdn-dimension-growth/lakefile.toml`.
-The local Lake dependency uses that working tree, including any uncommitted
-changes; it is not an immutable version pin.
-
-The public repository `jasondavies/ccdn-dimension-growth` has not been created
-yet. A checkout of this repository alone therefore cannot fetch the counting
-dependency. After publishing the CCDN repository, replace the local path with
-a Git dependency pinned to a full commit SHA and rerun verification.
+The curve-counting library is a Git dependency on
+[`jasondavies/ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth), pinned in `lakefile.toml` and
+`lake-manifest.json` to the full commit `9ade6200d053ceef5f6ccc4154ae30c6056be150`. Both projects use Mathlib
+`56a005855ea17e0b0958f73ec801ae140b0a1679` (`v4.35.0`).
+`python3 scripts/check-curve-counting-dependency.py` checks the pin, and with `--checkout`,
+after a build, it also checks the fetched source tree.
 
 Build with `lake exe cache get` (to download the compiled Mathlib) and then `lake build`
 (Lean `v4.35.0`, Mathlib `v4.35.0`). The build runs Mathlib's standard linters
@@ -399,25 +403,24 @@ neither module imports the other. [comparator.json](comparator.json) selects the
 and [formalization.yaml](formalization.yaml) records their scope, provenance, automation,
 and review status. This repository is the substantive development, not a thin wrapper.
 
-With the sibling CCDN checkout in place, run the local preparation checks:
+Run the local preparation checks:
 
 ```sh
 python3 scripts/check-lean-sources.py
-python3 scripts/check-curve-counting-dependency.py --checkout
 python3 scripts/check-math.py
 lake exe cache get
 lake build
+python3 scripts/check-curve-counting-dependency.py --checkout
+python3 scripts/check-integral-lift-dependencies.py
 ```
 
 On Linux with `bubblewrap` installed, run `bash scripts/verify-comparator.sh` to compare
 the statements and proofs using Lean's kernel, NanoDa, and con-ron. The standard
 sandboxed Comparator needs Linux; a successful macOS Lean build alone does not
-establish a Palomar verification pass. The sibling dependency must also be
-available to the verifier. The current local-path setup is not portable to a
-clean hosted checkout.
+establish a Palomar verification pass.
 
 The intended public repository is `jasondavies/pierce-length-bound`. Before submission,
-publish and pin the CCDN dependency, confirm the automation and review account
+confirm the automation and review account
 in `formalization.yaml`, push all intended changes there, and obtain the full
 commit SHA with `git rev-parse HEAD`.
 Run **Full Palomar mechanical preflight** from the repository's Actions tab on that

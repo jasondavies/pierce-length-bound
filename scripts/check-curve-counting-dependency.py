@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Check the local CCDN dependency metadata, optionally inspecting its checkout.
+"""Check the pinned CCDN dependency metadata, optionally inspecting its checkout.
 
 The default check needs only this repository, so it can run before dependencies
-are available. Use --checkout to check the sibling source tree as well.
+are available. Use --checkout after `lake build` (or `lake update`) to check the
+fetched source tree in .lake/packages as well.
 """
 import argparse
 from pathlib import Path
@@ -13,7 +14,9 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 DEPENDENCY_NAME = "ccdn_dimension_growth"
-DEPENDENCY_PATH = "../ccdn-dimension-growth"
+DEPENDENCY_URL = "https://github.com/jasondavies/ccdn-linear-growth"
+DEPENDENCY_REVISION = "9ade6200d053ceef5f6ccc4154ae30c6056be150"
+DEPENDENCY_DIRECTORY = ROOT / ".lake" / "packages" / DEPENDENCY_NAME
 LEAN_TOOLCHAIN = "leanprover/lean4:v4.35.0"
 MATHLIB_REVISION = "56a005855ea17e0b0958f73ec801ae140b0a1679"
 
@@ -50,25 +53,33 @@ def check_metadata() -> None:
     config, manifest = read_metadata(ROOT)
     requirement = named_entry(config["require"], DEPENDENCY_NAME, "lakefile.toml")
     package = named_entry(manifest["packages"], DEPENDENCY_NAME, "lake-manifest.json")
-    if requirement.get("path") != DEPENDENCY_PATH or "git" in requirement:
-        raise ValueError(f"lakefile.toml: {DEPENDENCY_NAME} must use path {DEPENDENCY_PATH}")
-    if package.get("type") != "path" or package.get("dir") != DEPENDENCY_PATH:
-        raise ValueError("lake-manifest.json: CCDN path must match lakefile.toml")
+    if (requirement.get("git") != DEPENDENCY_URL or requirement.get("rev") != DEPENDENCY_REVISION
+            or "path" in requirement):
+        raise ValueError(
+            f"lakefile.toml: {DEPENDENCY_NAME} must be {DEPENDENCY_URL} at {DEPENDENCY_REVISION}")
+    if (package.get("type") != "git" or package.get("url") != DEPENDENCY_URL
+            or package.get("rev") != DEPENDENCY_REVISION
+            or package.get("inputRev") != DEPENDENCY_REVISION):
+        raise ValueError("lake-manifest.json: CCDN pin must match lakefile.toml")
     check_toolchain(ROOT)
     check_mathlib(config, manifest, str(ROOT))
 
 
 def check_checkout() -> None:
-    dependency = ROOT / DEPENDENCY_PATH
+    dependency = DEPENDENCY_DIRECTORY
     if not dependency.is_dir():
-        raise ValueError(f"CCDN checkout is missing: {dependency}")
+        raise ValueError(f"CCDN checkout is missing (run lake build first): {dependency}")
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=dependency, check=True,
+                          capture_output=True, text=True).stdout.strip()
+    if head != DEPENDENCY_REVISION:
+        raise ValueError(f"{dependency}: checked out {head}, expected {DEPENDENCY_REVISION}")
     config, manifest = read_metadata(dependency)
     if config.get("name") != DEPENDENCY_NAME:
         raise ValueError(f"{dependency}/lakefile.toml: expected package {DEPENDENCY_NAME}")
     check_toolchain(dependency)
     check_mathlib(config, manifest, str(dependency))
     subprocess.run(
-        [sys.executable, str(dependency / "scripts" / "check_sources.py")],
+        [sys.executable, str(dependency / "scripts" / "check-provenance.py")],
         cwd=dependency,
         check=True,
     )
@@ -78,7 +89,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--checkout", action="store_true",
-        help="also verify the sibling checkout's toolchain, Mathlib pin, and source checks",
+        help="also verify the fetched checkout's revision, toolchain, Mathlib pin, and sources",
     )
     args = parser.parse_args()
     try:
@@ -90,7 +101,7 @@ def main() -> int:
         return 1
     except subprocess.CalledProcessError as error:
         return error.returncode
-    print(f"Curve-counting dependency metadata verified: {DEPENDENCY_PATH}.")
+    print(f"Curve-counting dependency metadata verified: {DEPENDENCY_URL} at {DEPENDENCY_REVISION}.")
     if args.checkout:
         print("CCDN checkout source checks passed; a Lean build and axiom audit are separate.")
     return 0

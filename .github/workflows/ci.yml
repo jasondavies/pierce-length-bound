@@ -54,19 +54,19 @@ jobs:
           persist-credentials: false
       - name: Check Lean source requirements
         run: python3 scripts/check-lean-sources.py
-      - name: Check the local CCDN dependency
-        # Until CCDN is published and pinned as a Git dependency, the build
-        # requires a sibling checkout at ../ccdn-dimension-growth.
-        run: python3 scripts/check-curve-counting-dependency.py --checkout
+      - name: Check the pinned CCDN dependency metadata
+        run: python3 scripts/check-curve-counting-dependency.py
       - uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9
         with:
           build: true
-      - name: Check joint-lift independence from weighted counting
+      - name: Check the fetched CCDN checkout
+        run: python3 scripts/check-curve-counting-dependency.py --checkout
+      - name: Check the weighted-counting dependencies of the main bounds
         run: python3 scripts/check-integral-lift-dependencies.py
       - name: Install Comparator's Linux sandbox
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq bubblewrap
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-      - name: Compare all eleven theorems with Lean, NanoDa, and con-ron
+      - name: Compare all thirteen theorems with Lean, NanoDa, and con-ron
         run: bash scripts/verify-comparator.sh
