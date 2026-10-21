@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.LatticeJointPointCount
-public import PierceLengthBound.PoweredJointPatternCount
+public import PierceLengthBound.OrbitConicGapCount
 public import PierceLengthBound.JointPatternCount
 
 /-! The per-pattern count in exterior lattice coordinates: conics, bounded cuts and the
@@ -19,8 +19,8 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
 
-/-- The lattice box `latticeJointBoxHeight`, as a function of the pattern. -/
-abbrev latticeJointBox (m n : ℕ) : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → ℝ := fun p a A T =>
+/-- The lattice box `latticeJointBoxHeight`, as a real function of the pattern. -/
+abbrev latticeJointBox (m n : ℕ) (p : Fin 10 → ℤ) (a A T : ℕ) : ℝ :=
   (latticeJointBoxHeight p a A T m n : ℝ)
 
 /-- Every supported nonexceptional component has the lattice-box count. A component either
@@ -29,29 +29,19 @@ its starts by `404 d ≤ 404 · 24 = 9696` (`jointResolventPolynomial_identity_o
 the normalization cut gives `166 d`). -/
 theorem selected_lattice_joint_component_gap_count_slow (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧
-      JointComponentCount (latticeJointBox m n) (10 * n + 7 * m) R := by
+      JointComponentCount (latticeJointBox m n) (1 / ((10 * n + 7 * m : ℕ) : ℝ)) R := by
   classical
   obtain ⟨Rc, hRc, hc⟩ := orbit_conic_gap_count_slow
   obtain ⟨Rg, hRg, hg⟩ := selected_latticeJointGraph_gap_count_slow m n
     (10 * n + 7 * m) (((m + n) * 247 + 1) * 24) (by omega) (by omega)
-  have hR : SlowGrowth (fun a => Rc a + Rg a + 9696) := by
-    intro η hη
-    obtain ⟨Cc, hCc, hbc⟩ := hRc η hη
-    obtain ⟨Cg, hCg, hbg⟩ := hRg η hη
-    refine ⟨Cc + Cg + 9696, by positivity, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    have := hbc a ha
-    have := hbg a ha
-    push_cast
-    nlinarith
+  have hR : SlowGrowth (fun a => Rc a + Rg a + 9696) :=
+    slowGrowth_add (slowGrowth_add hRc hRg) (slowGrowth_const 9696)
   refine ⟨fun a => Rc a + Rg a + 9696, hR, ?_⟩
   intro a b s T A i hba hmem hsT hT hne I hI hf he hd G hG hpat hz
-  beta_reduce
   let B : ℝ := latticeJointBoxHeight (plk (Mi a b i)) a A T m n
   have hpow : 0 ≤ B ^ (1 / ((10 * n + 7 * m : ℕ) : ℝ)) := by positivity
   push_cast at hpow
-  have hθ (l) (hl : l ∈ G) : theta a b i = theta a b l := by
-    rw [theta_eq, theta_eq, hpat l hl]
+  have hθ := theta_eq_of_plk_eq hpat
   have hsmall (h : ((G.image (kap a b)).card : ℝ) ≤ 9696) :
       ((G.image (kap a b)).card : ℝ) ≤
         ((Rc a + Rg a + 9696 : ℕ) : ℝ) * (1 + B ^ (1 / ((10 * n + 7 * m : ℕ) : ℝ))) := by
@@ -122,17 +112,14 @@ theorem selected_lattice_joint_component_gap_count_slow (m n : ℕ) (hm : 0 < m)
 /-- Per-pattern estimates in the lattice box: square-root counting for exceptional patterns, and
 a constant plus the lattice graph count otherwise. -/
 def LatticeJointPatternEstimate (m n : ℕ) (R : ℕ → ℕ) : Prop :=
-  JointPatternEstimate (latticeJointBox m n) (10 * n + 7 * m) R
+  JointPatternEstimate (latticeJointBox m n) (1 / ((10 * n + 7 * m : ℕ) : ℝ)) R
 
 /-- The lattice-box pattern estimate holds with a proved subpolynomial coefficient. -/
 theorem latticeJointPatternEstimate_exists (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ LatticeJointPatternEstimate m n R := by
   obtain ⟨Rc, hRc, hcount⟩ := selected_lattice_joint_component_gap_count_slow m n hm hn
-  obtain ⟨Rn, hRn, hcountn⟩ :=
-    jointNonexceptionalCount_of_components (B := latticeJointBox m n)
-      (fun _ _ _ _ => Nat.cast_nonneg _) hRc hcount
-  exact jointPatternEstimate_of_nonexceptional (B := latticeJointBox m n)
-    (fun _ _ _ _ => Nat.cast_nonneg _) hRn hcountn
+  obtain ⟨Rn, hRn, hcountn⟩ := jointNonexceptionalCount_of_components hRc hcount
+  exact jointPatternEstimate_of_nonexceptional hRn hcountn
 
 end
 end PierceLengthBound.FixedDividend

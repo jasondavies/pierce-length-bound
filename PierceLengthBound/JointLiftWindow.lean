@@ -110,7 +110,7 @@ theorem window_227070_of_joint_lift_count {a A T Δ K : ℕ}
         have hY : Y * T ^ 20 ≤ 1259991040 * 56 ^ 10 * (8 * Δ) ^ 5 * a ^ 6 :=
           rank_five_height_times_twenty (by omega) (by omega) hH (Nat.div_mul_le_self _ _) hT2
         have hm := remainder_window_joint_box_exponent
-          (by omega : 0 < a) (by omega : 0 < A) h hH hX hY hT2
+          (by omega : 0 < a) h hH hX hY hT2
         have h' : T ^ 887 ≤ B * a ^ 261 := by
           calc T ^ 887 ≤ K * 3609600 ^ 85 * 56 ^ 510 *
               (1259991040 * 56 ^ 10 * (8 * Δ) ^ 5) * (8 * Δ) ^ 170 * a ^ 261 := hm
@@ -124,7 +124,7 @@ theorem window_227070_of_joint_lift_count {a A T Δ K : ℕ}
         have hbox := max_curvature_height_times_cube (by omega : 0 < A)
           (show 1 ≤ 8 * Δ by omega) hH hS hT2
         have hm := remainder_window_joint_box_exponent
-          (by omega : 0 < a) (by omega : 0 < A) h hH hX (u := 3) (v := 1) (by simpa only [pow_one] using hbox) hT2
+          (by omega : 0 < a) h hH hX (u := 3) (v := 1) (by simpa only [pow_one] using hbox) hT2
         have h' : T ^ 870 ≤ B * a ^ 256 := by
           calc T ^ 870 ≤ K * 3609600 ^ 85 * 56 ^ 510 *
               ((4352 * 56 ^ 3 + 56) * (8 * Δ)) * (8 * Δ) ^ 170 * a ^ 256 := hm

@@ -18,7 +18,9 @@ columns of the drop and gap rows lie in the pattern lattice, so the cross produc
 pivot parts has integer coordinates `c` in the exterior of a reduced basis, with
 `3 λ² |cᵢ| ≤ 8 S` (`wcoord_bound`). The old curvature vector `W` of columns `0, 1, 2` satisfies
 `m² W = Cof · w` (Binet–Cauchy), so `c = G W` for a rational matrix `G` with nonzero determinant
-that depends only on the pattern (`lattice_curvature_coordinates`).
+that depends only on the pattern (`lattice_curvature_coordinates`, paper `lem:latticecoords`).
+Here `m` is the pivot entry, which the paper writes `p_π`, and `Δ` is the lattice determinant,
+which the paper writes `V`.
 -/
 
 @[expose] public section
@@ -51,46 +53,10 @@ theorem selected_curvature_minor_bound {a b s T A i : ℕ} (hba : b < a)
   have hh : |dq a b (i + j) * kq a b (i + l) - dq a b (i + l) * kq a b (i + j)| *
       (qq a b i : ℤ) ^ 3 ≤ 148 * (a : ℤ) * selectedGapHeight a A T ^ 3 := by
     exact_mod_cast hr
-  have hqw := window_quotient_lower hba (by omega : i < P a b) hA
-  have hqZ : (a : ℤ) ≤ 4 * A * qq a b i := by exact_mod_cast hqw
-  set e := |dq a b (i + j) * kq a b (i + l) - dq a b (i + l) * kq a b (i + j)|
-  have he : 0 ≤ e := abs_nonneg _
-  have hb : e * (a : ℤ) ^ 3 ≤ 9472 * (a : ℤ) * A ^ 3 * (selectedGapHeight a A T : ℤ) ^ 3 := by
-    calc _ ≤ e * (4 * (A : ℤ) * qq a b i) ^ 3 := by gcongr
-      _ = (64 * (A : ℤ) ^ 3) * (e * (qq a b i : ℤ) ^ 3) := by ring
-      _ ≤ (64 * (A : ℤ) ^ 3) * (148 * (a : ℤ) * (selectedGapHeight a A T : ℤ) ^ 3) := by
-        gcongr
-      _ = _ := by ring
-  have ha : (0 : ℤ) < a := by exact_mod_cast (show 0 < a by omega)
-  have hb' : e * (a : ℤ) ^ 2 ≤ 9472 * (A : ℤ) ^ 3 * (selectedGapHeight a A T : ℤ) ^ 3 := by
-    apply (mul_le_mul_iff_right₀ ha).mp
-    convert hb using 1 <;> ring
-  have hd := Int.le_ediv_of_mul_le (by positivity : (0 : ℤ) < (a : ℤ) ^ 2) hb'
-  simpa only [selectedAllMinorHeight, Int.natCast_div, Nat.cast_mul, Nat.cast_pow,
-    Nat.cast_ofNat] using hd
+  exact le_cubic_height_div (abs_nonneg _) (by omega)
+    (window_quotient_lower hba (by omega : i < P a b) hA) hh (by norm_num)
 
 /-! ### Transport from the exterior coordinates to the old curvature vector -/
-
-/-- Binet–Cauchy in `ℤ³`. -/
-lemma binet_cauchy3 (a b x y : Fin 3 → ℤ) :
-    dot3 a x * dot3 b y - dot3 b x * dot3 a y = dot3 (cross3 a b) (cross3 x y) := by
-  simp only [dot3, cross3_zero, cross3_one, cross3_two]; ring
-
-/-- The matrix of cofactor rows `l₁ × l₂, l₂ × l₀, l₀ × l₁`. -/
-def cofRows (l0 l1 l2 : Fin 3 → ℤ) : Matrix (Fin 3) (Fin 3) ℤ :=
-  Matrix.of ![cross3 l1 l2, cross3 l2 l0, cross3 l0 l1]
-
-lemma cofRows_det (l0 l1 l2 : Fin 3 → ℤ) : (cofRows l0 l1 l2).det = det3 l0 l1 l2 ^ 2 := by
-  rw [det_fin_three]
-  simp only [cofRows, of_apply, cons_val_zero, cons_val_one, cons_val_two, head_cons, tail_cons,
-    cross3_zero, cross3_one, cross3_two, det3]
-  ring
-
-lemma rows_det (b1 b2 b3 : Fin 3 → ℤ) :
-    (Matrix.of ![b1, b2, b3]).det = det3 b1 b2 b3 := by
-  rw [det_fin_three]
-  simp only [of_apply, cons_val_zero, cons_val_one, cons_val_two, head_cons, tail_cons, det3]
-  ring
 
 /-- The first three entries of a row of five gaps or drops. -/
 def firstThree (x : Fin 5 → ℤ) : Fin 3 → ℤ := fun j => x (Fin.castLE (by decide) j)
@@ -119,7 +85,7 @@ theorem lattice_curvature_coordinates {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
   have hm := piv_ne_zero h0
   set τ := piv p
   set m := p τ
-  obtain ⟨b1, b2, b3, -, -, -, hD, hbas, hred, hRpos, n1, n2, n3⟩ := pattern_reduced_basis hm
+  obtain ⟨b1, b2, b3, -, -, -, hD, -, hbas, hred, hRpos, n1, n2, n3⟩ := pattern_reduced_basis hm
   let piv3 := fun x : Fin 5 → ℤ => fun a => x (pcol τ a)
   let c := fun d k : Fin 5 → ℤ => wcoord b1 b2 b3 (piv3 d) (piv3 k)
   let Cm := cofRows (Lrow p τ 0) (Lrow p τ 1) (Lrow p τ 2)
@@ -137,7 +103,7 @@ theorem lattice_curvature_coordinates {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
     exact pow_ne_zero _ (mul_ne_zero (pow_ne_zero _ hm) h0)
   have hN : N.det = Δ * κ ^ 2 := by
     change (Matrix.of ![b1, b2, b3] * Cm.adjugate).det = _
-    rw [det_mul, rows_det, det_adjugate, Fintype.card_fin]
+    rw [det_mul, det_of_rows3, det_adjugate, Fintype.card_fin]
   have hNq : (N.map (Int.cast : ℤ → ℚ)).det = (N.det : ℚ) :=
     ((Int.castRingHom ℚ).map_det N).symm
   let r : ℚ := (m : ℚ) ^ 2 / ((Δ : ℚ) * κ)
@@ -170,14 +136,10 @@ theorem lattice_curvature_coordinates {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
       have k0 := hlift 1 0; have k1 := hlift 1 1; have k2 := hlift 1 2
       funext t
       simp only [Cm, cofRows, mulVec, of_apply, hdot, hW, Pi.smul_apply, smul_eq_mul]
-      fin_cases t
-      · simp only [Fin.zero_eta, cons_val_zero, w, ← binet_cauchy3, ← l1, ← l2, ← k1, ← k2]
-        ring
-      · simp only [Fin.mk_one, cons_val_one, cons_val_zero, w, ← binet_cauchy3, ← l0, ← l2,
-          ← k0, ← k2]
-        ring
-      · simp only [Fin.reduceFinMk, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd,
-          Matrix.tail_cons, Matrix.head_cons, w, ← binet_cauchy3, ← l0, ← l1, ← k0, ← k1]
+      fin_cases t <;>
+        simp only [Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, cons_val_zero, cons_val_one,
+          cons_val_two, head_cons, tail_cons, w, ← binet_cauchy3, ← l0, ← l1, ← l2, ← k0, ← k1,
+          ← k2] <;>
         ring
     -- `Bᵀ w = Δ c`
     have hBw : Bt *ᵥ w = Δ • c (M 0) (M 1) := by
@@ -206,8 +168,7 @@ theorem lattice_curvature_coordinates {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
     simp only [r, eq_intCast]
     field_simp
     linear_combination htq
-  · exact wcoord_bound hD (hbas _ (hmem 0)) (hbas _ (hmem 1)) hred hRpos n1 n2 n3
-      (fun a => hS (pcol τ (a + 1)) (pcol τ (a + 2))) t
+  · exact wcoord_bound spec.2.2 (fun a => hS (pcol τ (a + 1)) (pcol τ (a + 2))) t
 
 end
 end PierceLengthBound.FixedDividend

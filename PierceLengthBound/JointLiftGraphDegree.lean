@@ -156,6 +156,22 @@ theorem jointGraph_filtered_finrank_le {K σ ι : Type*} [Field K] [Finite σ] [
   rw [← filteredCoordinateSpace_ker_finrank, ← filteredCoordinateSpace_ker_finrank, hker] at hh
   exact hh
 
+/-- The orbit's joint numerators have total degree at most `247` and its denominator at most
+`244` (`jointLift_polynomial_degrees`: `244` for the curvature numerators, `247` for the
+rank-five numerator). -/
+lemma orbitJoint_totalDegree_le (a b i : ℕ) :
+    (∀ j, (orbitJointNumerators a b i j).totalDegree ≤ 247) ∧
+      (orbitJointDenominator a b i).totalDegree ≤ 244 := by
+  have hp := jointLift_polynomial_degrees (orbitLiftNumeratorQ a b i)
+    (orbitLiftDenominatorQ a b i) (jointRankFivePolynomial a b i) (Lz a b i : ℚ)
+    (jointGapPolynomials a b i) (orbitLift_polynomial_degrees a b i).1
+    (orbitLift_polynomial_degrees a b i).2 (jointRankFivePolynomial_degree a b i)
+    (jointGapPolynomials_degree a b i)
+  refine ⟨fun j => ?_, hp.1⟩
+  induction j using Fin.lastCases with
+  | last => exact hp.2.2
+  | cast j => exact (hp.2.1 j).trans (by norm_num)
+
 /-- In particular, the unpowered joint graph has filtration growth at most
 that of its original curve with the degree parameter multiplied by 247. -/
 theorem orbitJointGraph_filtered_finrank_le {a b i : ℕ} (hba : b < a)
@@ -163,19 +179,10 @@ theorem orbitJointGraph_filtered_finrank_le {a b i : ℕ} (hba : b < a)
     (hz : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I) (N : ℕ) :
     Module.finrank ℚ (filteredCoordinateSpace (orbitJointGraphIdeal a b i I) N) ≤
       Module.finrank ℚ (filteredCoordinateSpace I (247 * N)) := by
-  have hd := jointLift_polynomial_degrees (orbitLiftNumeratorQ a b i)
-    (orbitLiftDenominatorQ a b i) (jointRankFivePolynomial a b i) (Lz a b i : ℚ)
-    (jointGapPolynomials a b i) (orbitLift_polynomial_degrees a b i).1
-    (orbitLift_polynomial_degrees a b i).2 (jointRankFivePolynomial_degree a b i)
-    (jointGapPolynomials_degree a b i)
+  obtain ⟨hP, hD⟩ := orbitJoint_totalDegree_le a b i
   apply jointGraph_filtered_finrank_le I _ _ (orbitJoint_denominator_not_mem hba hi I hz)
-  · exact le_trans (Nat.add_le_add_right hd.1 1) (by norm_num)
-  · intro j
-    fin_cases j
-    · exact (hd.2.1 0).trans (by norm_num)
-    · exact (hd.2.1 1).trans (by norm_num)
-    · exact (hd.2.1 2).trans (by norm_num)
-    · exact hd.2.2
+  · exact le_trans (Nat.add_le_add_right hD 1) (by norm_num)
+  · exact hP
 
 /-- Projection onto the original variables supplies the reverse filtered inequality. -/
 theorem jointGraph_filtered_finrank_ge {K σ ι : Type*} [Field K] [Finite σ] [Finite ι]
@@ -296,20 +303,11 @@ theorem orbitJointGraph_degree_bounds {a b i d : ℕ} (hba : b < a) (hi : i + 7 
     ∃ δ : ℕ, d ≤ δ ∧ δ ≤ 247 * d ∧ ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
       (Module.finrank ℚ (filteredCoordinateSpace (orbitJointGraphIdeal a b i I) n) : ℤ) =
         (δ : ℤ) * n + c := by
-  have hp := jointLift_polynomial_degrees (orbitLiftNumeratorQ a b i)
-    (orbitLiftDenominatorQ a b i) (jointRankFivePolynomial a b i) (Lz a b i : ℚ)
-    (jointGapPolynomials a b i) (orbitLift_polynomial_degrees a b i).1
-    (orbitLift_polynomial_degrees a b i).2 (jointRankFivePolynomial_degree a b i)
-    (jointGapPolynomials_degree a b i)
+  obtain ⟨hP, hD⟩ := orbitJoint_totalDegree_le a b i
   apply jointGraph_degree_bounds I _ _ (orbitJoint_denominator_not_mem hba hi I hz)
     (D := 247) _ _ hd
-  · exact le_trans (Nat.add_le_add_right hp.1 1) (by norm_num)
-  · intro j
-    fin_cases j
-    · exact (hp.2.1 0).trans (by norm_num)
-    · exact (hp.2.1 1).trans (by norm_num)
-    · exact (hp.2.1 2).trans (by norm_num)
-    · exact hp.2.2
+  · exact le_trans (Nat.add_le_add_right hD 1) (by norm_num)
+  · exact hP
 
 end
 end PierceLengthBound.FixedDividend

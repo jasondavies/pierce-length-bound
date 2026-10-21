@@ -220,15 +220,6 @@ lemma liftv_bound {p : Fin 10 → ℤ} {b : Fin 3 → ℤ} (hb : b ∈ pivLat p)
 def ycoord (b1 b2 b3 x : Fin 3 → ℤ) : Fin 3 → ℤ :=
   ![det3 x b2 b3 / det3 b1 b2 b3, det3 b1 x b3 / det3 b1 b2 b3, det3 b1 b2 x / det3 b1 b2 b3]
 
-/-- A vector with entries at most `H` has squared length at most `3 H²`. -/
-lemma nrm3_le_of_abs_le {x : Fin 3 → ℤ} {H : ℕ} (hx : ∀ a, |x a| ≤ H) :
-    nrm3 x ≤ 3 * (H : ℤ) ^ 2 := by
-  have e : ∀ a, x a ^ 2 ≤ (H : ℤ) ^ 2 := fun a => by
-    rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (hx a) 2
-  have := e 0; have := e 1; have := e 2
-  simp only [nrm3, dot3] at *
-  nlinarith
-
 /-- **Coordinates in a reduced basis.** If every basis vector has length `≥ R` and `|xₐ| ≤ H`,
 then `R |yᵢ| ≤ 3H`. -/
 lemma ycoord_spec {b1 b2 b3 x : Fin 3 → ℤ} {R H : ℕ} (hD : det3 b1 b2 b3 ≠ 0)
@@ -277,9 +268,9 @@ lemma ycoord_spec {b1 b2 b3 x : Fin 3 → ℤ} {R H : ℕ} (hD : det3 b1 b2 b3 �
 
 /-- A reduced basis of the pattern lattice (`reduced_basis`) whose vectors all have squared
 length at least `λ² = shortR p ^ 2`. -/
-theorem pattern_reduced_basis {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
+lemma pattern_reduced_basis {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
     ∃ b1 b2 b3 : Fin 3 → ℤ, b1 ∈ pivLat p ∧ b2 ∈ pivLat p ∧ b3 ∈ pivLat p ∧
-      det3 b1 b2 b3 ≠ 0 ∧
+      det3 b1 b2 b3 ≠ 0 ∧ (det3 b1 b2 b3).natAbs ≤ (p (piv p)).natAbs ^ 3 ∧
       (∀ w ∈ pivLat p, det3 b1 b2 b3 ∣ det3 w b2 b3 ∧ det3 b1 b2 b3 ∣ det3 b1 w b3 ∧
         det3 b1 b2 b3 ∣ det3 b1 b2 w) ∧
       27 * (nrm3 b1 * nrm3 b2 * nrm3 b3) ≤ 64 * det3 b1 b2 b3 ^ 2 ∧
@@ -287,13 +278,13 @@ theorem pattern_reduced_basis {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
       (shortR p : ℤ) ^ 2 ≤ nrm3 b3 := by
   have hΛ : ∀ x : Fin 3 → ℤ, (∀ j, (((p (piv p)).natAbs : ℕ) : ℤ) ∣ x j) → x ∈ pivLat p :=
     fun x h => pivLat_of_dvd fun j => Int.natAbs_dvd.mp (h j)
-  obtain ⟨b1, b2, b3, h1, h2, h3, hD, _, hbas, hred⟩ :=
+  obtain ⟨b1, b2, b3, h1, h2, h3, hD, hDm, hbas, hred⟩ :=
     reduced_basis (Λ := pivLat p) (Int.natAbs_pos.mpr hm) hΛ
   obtain ⟨hR1, _, hRlow⟩ := shortR_spec hm
   have hb10 : b1 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
   have hb20 : b2 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
   have hb30 : b3 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
-  exact ⟨b1, b2, b3, h1, h2, h3, hD, hbas, hred, by exact_mod_cast hR1, hRlow b1 h1 hb10,
+  exact ⟨b1, b2, b3, h1, h2, h3, hD, hDm, hbas, hred, by exact_mod_cast hR1, hRlow b1 h1 hb10,
     hRlow b2 h2 hb20, hRlow b3 h3 hb30⟩
 
 /-- The pivot part of each row of a matrix with pattern `p` lies in the pattern lattice. -/
@@ -308,14 +299,6 @@ lemma pivotPart_mem_pivLat {p : Fin 10 → ℤ} {M : Fin 3 → Fin 5 → ℤ} (h
   · have h := hlift (restc (piv (plk M)) 1)
     rw [Lrow_rest1] at h
     exact h.symm
-
-/-- An orbit's pattern has a nonzero first minor `Lz`. -/
-lemma orbit_pattern_first {a b l : ℕ} (hba : b < a) (hl : l + 5 < P a b) :
-    plk (Mi a b l) 0 ≠ 0 := by
-  have h := congrFun (theta_eq (a := a) (b := b) l) 0
-  simp only [theta, projθ, Matrix.cons_val_zero] at h
-  have := Lz_pos hba (i := l) hl
-  omega
 
 /-- In a basis with `27 |b₁|²|b₂|²|b₃|² ≤ 64 D²`, `D² ≤ B` and all `|bᵢ|² ≥ 1`, each
 `27 |bᵢ|² ≤ 64 B`. -/
@@ -377,27 +360,14 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
   set τ := piv p with hτ
   set m := p τ with hmdef
   have hpl : PluckerRel p := hMx ▸ plucker Mx
-  have hm6 : |p 6| ≤ |m| := piv_max p 6
-  have hm : m ≠ 0 := by
-    intro h; rw [h, abs_zero] at hm6; have := abs_nonneg (p 6); rw [abs_of_pos (by omega)] at hm6
-    omega
+  have hm : m ≠ 0 := piv_ne_zero (by omega : p 6 ≠ 0)
   have hmM : |m| ≤ M := hpM τ
   have hM : (1 : ℤ) ≤ M := by exact_mod_cast hM1
   -- the reduced basis
-  have hΛ : ∀ x : Fin 3 → ℤ, (∀ j, ((m.natAbs : ℕ) : ℤ) ∣ x j) → x ∈ pivLat p :=
-    fun x h => pivLat_of_dvd fun j => Int.natAbs_dvd.mp (h j)
-  obtain ⟨b1, b2, b3, h1, h2, h3, hD, hDm, hbas, hred⟩ :=
-    reduced_basis (Λ := pivLat p) (Int.natAbs_pos.mpr hm) hΛ
+  obtain ⟨b1, b2, b3, h1, h2, h3, hD, hDm, hbas, hred, hRpos, n1, n2, n3⟩ :=
+    pattern_reduced_basis hm
   set D := det3 b1 b2 b3 with hDdef
-  obtain ⟨hR1, -, hRlow⟩ := shortR_spec hm
   set R := shortR p with hRdef
-  have hRpos : (0 : ℤ) < R := by exact_mod_cast hR1
-  have hb10 : b1 ≠ 0 := by intro h0; apply hD; rw [hDdef, h0]; simp [det3]
-  have hb20 : b2 ≠ 0 := by intro h0; apply hD; rw [hDdef, h0]; simp [det3]
-  have hb30 : b3 ≠ 0 := by intro h0; apply hD; rw [hDdef, h0]; simp [det3]
-  have n1 := hRlow b1 h1 hb10
-  have n2 := hRlow b2 h2 hb20
-  have n3 := hRlow b3 h3 hb30
   have hR2 : (1 : ℤ) ≤ (R : ℤ) ^ 2 := by nlinarith
   -- size of the basis
   have hD2 : D ^ 2 ≤ ((M : ℤ) ^ 3) ^ 2 := by

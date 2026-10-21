@@ -8,8 +8,6 @@ Scanner functions follow PalomarSubmission/scripts/source_requirements.py.
 import json
 import os
 import re
-import subprocess
-import sys
 from pathlib import Path
 
 COMMENT_MARKER = re.compile(r"/-|-/")
@@ -85,9 +83,7 @@ def lean_source_files(root: Path) -> list[Path]:
 
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
-    # Project addition: the selected theorems must be listed identically everywhere.
-    failed = subprocess.run([sys.executable, str(Path(__file__).resolve().with_name(
-        "check-theorem-lists.py"))]).returncode != 0
+    failed = False
     for path in lean_source_files(root):
         relative = path.relative_to(root)
         if path.is_symlink():
@@ -112,7 +108,10 @@ def main() -> int:
         print(f"{challenge.name}: Challenge must be a regular source file")
         return 1
     data = challenge.read_bytes()
-    lines = physical_lines(data.decode("utf-8"))
+    try:
+        lines = physical_lines(data.decode("utf-8"))
+    except UnicodeDecodeError:
+        return 1  # Already reported as not valid UTF-8 by the scan above.
     if len(data) > 100 * 1024 or lines > 1_000:
         print(f"{challenge.name}: exceeds the Challenge limit of 1,000 lines or 100 KiB")
         failed = True

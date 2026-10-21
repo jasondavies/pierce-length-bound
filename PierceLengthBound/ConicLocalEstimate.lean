@@ -76,12 +76,7 @@ theorem P_le_135_458_of_three_term_estimate {R : ℕ → ℕ} (hR : SlowGrowth R
     (hlocal : ConicThreeTermEstimate R) :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
       (P a b : ℝ) ≤ C * (a : ℝ) ^ ((135 : ℝ) / 458 + ε) := by
-  have hc : SlowGrowth (fun _ : ℕ => 3) := by
-    intro η hη
-    refine ⟨3, by norm_num, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    norm_num
-    linarith
+  have hc : SlowGrowth (fun _ : ℕ => 3) := slowGrowth_const _
   apply P_le_135_458_of_conic_count ((hc.mul (slowGrowth_add_one hR)).pow 9)
   intro a b s T A hba hmem hsT hT hscale
   exact conic_branches_of_three_term_count (hlocal a b s T A hba hmem hsT hT hscale)

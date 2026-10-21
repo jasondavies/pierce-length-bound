@@ -4,12 +4,15 @@
 Two audits run in one Lean file:
 
 1. Joint-lift audit. The joint-invariant bounds `P_le_joint_optimal`, `P_le_2201_7480`
-   and `P_le_128_435`, and the intermediate joint-lift and fixed-dividend results listed
-   as roots below, use none of the weighted-lattice machinery of the `45/152` bound
-   (short-vector counts, lattice fiber counts and reciprocal or fractional weights).
+   and `P_le_128_435`, the main intermediate joint-lift and fixed-dividend results, and
+   the conditional `151/513` reduction `P_le_151_513_of_pattern_estimate` use none of
+   the weighted-lattice machinery of the `45/152` bound (short-vector counts, lattice
+   fiber counts and reciprocal or fractional weights) and none of the short-interval
+   divisor sums (`ShortSum`).
 2. Exterior-lattice audit. The lattice bounds `P_le_lattice_optimal` and `P_le_153_520`
    reach exactly two weighted counts, `short_count` and
-   `FixedDividend.reciprocal_sum_bound`, and none of the others.
+   `FixedDividend.reciprocal_sum_bound`, and none of the others; `ShortSum` is banned
+   here too.
 
 The traversal follows the types and values of every reachable `PierceLengthBound`
 declaration. Declarations are written as ``Foo.bar`` literals, so a renamed declaration
@@ -86,15 +89,20 @@ run_cmd do
       pending := pending ++ children
     return seen
 
-  -- Audit 1: the joint-lift and fixed-dividend bounds avoid the `45/152` weighted-lattice
-  -- machinery entirely. Each root is a public bound or a main intermediate result.
-  let jointRoots : Array Name := #[``PierceLengthBound.P_le_joint_optimal,
+  -- Audit 1: the joint-invariant and fixed-dividend results avoid the `45/152`
+  -- weighted-lattice machinery entirely.
+  -- Public roots: the joint-invariant bounds of the Challenge.
+  let jointPublicRoots : Array Name := #[
+    ``PierceLengthBound.P_le_joint_optimal,
     ``PierceLengthBound.P_le_2201_7480,
-    ``PierceLengthBound.P_le_128_435,
+    ``PierceLengthBound.P_le_128_435]
+  -- Intermediate roots: the main intermediate results that README.md and the paper present
+  -- as free of weighted counts. They are listed explicitly because the public bounds need
+  -- not reach all of them, so auditing the public roots alone would not cover them.
+  let jointIntermediateRoots : Array Name := #[
     ``PierceLengthBound.FixedDividend.orbitPoweredJointGraph_retained_degree_range,
     ``PierceLengthBound.FixedDividend.selected_poweredJointGraph_gap_count,
     ``PierceLengthBound.FixedDividend.jointLiftPatternEstimate_exists,
-    ``PierceLengthBound.FixedDividend.P_le_151_513_of_pattern_estimate,
     ``PierceLengthBound.FixedDividend.P_le_128_435_of_pattern_estimate,
     ``PierceLengthBound.FixedDividend.selected_jointGraph_cover_gap_count_slow,
     ``PierceLengthBound.FixedDividend.orbit_conic_gap_count_slow,
@@ -125,6 +133,12 @@ run_cmd do
     ``PierceLengthBound.FixedDividend.retained_curvature_pole_degree_lower_bound,
     ``PierceLengthBound.FixedDividend.jointGraph_pole_envelope_degree_le_hilbert,
     ``PierceLengthBound.FixedDividend.orbitJointGraph_retained_degree_range]
+  -- Conditional roots: the conditional `151/513` reduction from a pattern estimate
+  -- (the `IntegralLift*` modules). It is not part of the joint lift, but is held to the
+  -- same bans.
+  let conditionalRoots : Array Name := #[
+    ``PierceLengthBound.FixedDividend.P_le_151_513_of_pattern_estimate]
+  let jointRoots := jointPublicRoots ++ jointIntermediateRoots ++ conditionalRoots
   -- Banned modules: the reciprocal and half-power minor-lattice weights
   -- (`FixedDividendWeights`), the cube-root and quarter-power weights of the proposed
   -- `135/458` and `180/611` refinements (`ConicWeights`, `ParityWeights`), and the
@@ -199,7 +213,12 @@ def main() -> int:
     with tempfile.TemporaryDirectory(prefix="pierce-weighted-audit-") as directory:
         source = Path(directory) / "Audit.lean"
         source.write_text("module\n" + imports + "\n" + AUDIT, encoding="utf-8")
-        return subprocess.run(["lake", "env", "lean", str(source)], cwd=ROOT).returncode
+        try:
+            return subprocess.run(["lake", "env", "lean", str(source)], cwd=ROOT).returncode
+        except FileNotFoundError:
+            print("Weighted-count dependency audit failed: `lake` was not found on PATH; "
+                  "install elan and run `lake build` first", file=sys.stderr)
+            return 1
 
 
 if __name__ == "__main__":

@@ -7,6 +7,8 @@ module
 
 public import PierceLengthBound.IntegralLiftPatternCount
 public import PierceLengthBound.JointLiftLocalEstimate
+public import PierceLengthBound.JointLiftComponentCount
+public import PierceLengthBound.JointPatternCount
 
 /-! Ordinary pattern counting for the integral-coordinate lift. No weighted
 lattice incidence estimate occurs in the count or in its proof. -/
@@ -18,17 +20,7 @@ open Finset
 /-- Geometric estimates remaining per full pattern: square-root counting for
 exceptional patterns, and a constant plus seventeenth-root graph count otherwise. -/
 def JointLiftPatternEstimate (R : ℕ → ℕ) : Prop :=
-  ∀ a b s T A : ℕ, b < a →
-    (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
-    s + T ≤ P a b → 36 ≤ T →
-    124928 * A ^ 4 * selectedGapHeight a A T ^ 5 * selectedMinorHeight a A T < a ^ 3 →
-    ∀ p ∈ (selectedStarts a b s T A).image (fun i => plk (Mi a b i)),
-      ((((selectedStarts a b s T A).filter fun i => plk (Mi a b i) = p).image
-        (kap a b)).card : ℝ) ≤
-      if ∃ d, ExceptionalMinorRelation p d then
-        (R a : ℝ) * (selectedGapHeight a A T : ℝ) ^ (1 / 2 : ℝ)
-      else (R a : ℝ) * (1 + (max (max (selectedGapHeight a A T) (selectedCurvatureHeight a A T)) (selectedRankFiveHeight a A T) : ℝ) ^
-        (1 / 17 : ℝ))
+  JointPatternEstimate jointLiftBox (1 / 17) R
 
 /-- Assemble the ordinary full-pattern count, exceptional-pattern count, and
 quartic multiplicity into the displayed local estimate. -/
@@ -42,9 +34,6 @@ theorem jointLift_three_term_of_pattern_estimate {R : ℕ → ℕ}
   let H := selectedGapHeight a A T
   let X := selectedMinorHeight a A T
   let B := max (max H (selectedCurvatureHeight a A T)) (selectedRankFiveHeight a A T)
-  have facts := fun i hi => selectedStart_spec hmem hsT (i := i) hi
-  have hmult : G.card ≤ 4 * (G.image fun i => (pm i, kap a b i)).card :=
-    selectedStarts_card_le_pair_image hba hmem hsT
   have hp := pattern_sum_two_classes G pm (kap a b) (fun p => ∃ d, ExceptionalMinorRelation p d)
     (show (0 : ℝ) ≤ R a * (1 + (B : ℝ) ^ (1 / 17 : ℝ)) by positivity)
     (show (0 : ℝ) ≤ R a * (H : ℝ) ^ (1 / 2 : ℝ) by positivity)
@@ -53,11 +42,10 @@ theorem jointLift_three_term_of_pattern_estimate {R : ℕ → ℕ}
     (show (((G.image pm).filter fun p => ∃ d, ExceptionalMinorRelation p d).card : ℝ) ≤
         exceptionalPatternSlack a * (X : ℝ) ^ 4 by
       exact_mod_cast selected_exceptional_pattern_count_slack hba hmem hsT hT)
-    (by simpa only [G, pm, H, B, Nat.cast_max] using hcurve a b s T A hba hmem hsT hT hscale)
-  have hTcard := selectedStarts_card hba hmem hsT hT
-  change T ≤ 2 * G.card at hTcard
+    (by simpa only [G, pm, H, B, jointLiftBox, Nat.cast_max] using
+      hcurve a b s T A hba hmem hsT hT hscale)
   have hTc : (T : ℝ) ≤ 8 * ((G.image fun i => (pm i, kap a b i)).card : ℝ) := by
-    exact_mod_cast (show T ≤ 8 * (G.image fun i => (pm i, kap a b i)).card by omega)
+    exact_mod_cast le_eight_mul_pair_image hba hmem hsT hT
   dsimp only
   have hO : (ordinaryPatternSlack a : ℝ) ≤ ordinaryPatternSlack a + exceptionalPatternSlack a :=
     le_add_of_nonneg_right (Nat.cast_nonneg _)

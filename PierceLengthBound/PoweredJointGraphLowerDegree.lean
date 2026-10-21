@@ -7,9 +7,8 @@ module
 
 public import PierceLengthBound.LinearJointGraph
 
-/-! Integer powers multiply the two disjoint pole contributions, giving the
-actual degree lower bound for every fixed pair of positive coordinate powers. The powered graph
-is the linearly changed graph of `LinearJointGraph` with `G = 1`. -/
+/-! The degree range of the powered graph, as the case `G = 1` of the linearly changed graph of
+`LinearJointGraph`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

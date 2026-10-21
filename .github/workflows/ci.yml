@@ -36,7 +36,9 @@ jobs:
         run: python3 -m pip install --require-hashes -r .lake/palomar-tools/requirements.txt
       - name: Check the pinned CCDN dependency metadata
         run: python3 scripts/check-curve-counting-dependency.py
-      - name: Validate metadata, source layout, and theorem lists
+      - name: Check the selected theorem lists
+        run: python3 scripts/check-theorem-lists.py
+      - name: Validate metadata and source layout
         run: |
           python3 scripts/check-lean-sources.py
           PYTHONPATH=.lake/palomar-tools python3 - <<'PY'

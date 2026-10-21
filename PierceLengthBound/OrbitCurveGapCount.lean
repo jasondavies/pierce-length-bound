@@ -85,11 +85,7 @@ theorem selected_curve_gap_count_slow :
   let M := ⌈C * (3 : ℝ) ^ (1 / (2 : ℝ)) * 2⌉₊ + 1
   have hM : C * (3 : ℝ) ^ (1 / (2 : ℝ)) * 2 ≤ (M : ℝ) := by
     exact (Nat.le_ceil _).trans (by simp only [M, Nat.cast_add, Nat.cast_one]; linarith)
-  have hMs : SlowGrowth (fun _ : ℕ => M) := by
-    intro η hη
-    refine ⟨M, by dsimp [M]; positivity, fun a ha => ?_⟩
-    exact le_mul_of_one_le_right (Nat.cast_nonneg M)
-      (Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le)
+  have hMs : SlowGrowth (fun _ : ℕ => M) := slowGrowth_const _
   refine ⟨fun a => M * (Nat.log 2 (87 * a ^ 1) + 1),
     hMs.mul (polynomial_log_slow 87 1), ?_⟩
   intro a b s T A i hba hmem hsT I hI hd G hG hθ hz

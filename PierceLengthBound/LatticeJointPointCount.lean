@@ -62,7 +62,7 @@ theorem patternCurvature_spec {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
             ∀ t, 3 * (shortR p : ℤ) ^ 2 * |c (M 0) (M 1) t| ≤ 8 * S := by
   classical
   have h : p 0 ≠ 0 ∧ ∃ M : Fin 3 → Fin 5 → ℤ, plk M = p := ⟨h0, hp⟩
-  simp only [patternCurvatureMatrix, h, ne_eq, not_false_eq_true, and_self, ↓reduceDIte]
+  rw [patternCurvatureMatrix, dite_cond_eq_true (eq_true h)]
   exact Classical.choose_spec (lattice_curvature_coordinates h.1 h.2)
 
 /-! ### Points of the linearly changed powered graph -/
@@ -70,6 +70,10 @@ theorem patternCurvature_spec {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
 /-- The powered coordinates `(cᵐ, Jⁿ)` of a state. -/
 def latticePowers (c : Fin 3 → ℤ) (J m n : ℕ) : Fin 4 → ℤ :=
   ![c 0 ^ m, c 1 ^ m, c 2 ^ m, (J : ℤ) ^ n]
+
+@[simp] lemma latticePowers_castSucc (c : Fin 3 → ℤ) (J m n : ℕ) (t : Fin 3) :
+    latticePowers c J m n t.castSucc = c t ^ m := by
+  fin_cases t <;> rfl
 
 /-- A state's nodes and powered coordinates `(cᵐ, Jⁿ)` lie on the linearly changed graph when
 `c = G W`. -/
@@ -105,17 +109,15 @@ lemma orbitLinearJointGraph_point {a b l J : ℕ} (hba : b < a) (hl : l + 7 < P 
     funext j
     simp only [orbitLinearJointNumerators, poweredGraphNumerators, map_mul, map_pow]
     rw [powered_fraction _ _ hD (jointCoordinatePowers_le m n j)]
-    fin_cases j
-    · simp only [Fin.zero_eta]
-      rw [show (0 : Fin 4) = (0 : Fin 3).castSucc from rfl, hlin 0]
-      simp [latticePowers, jointCoordinatePowers]
-    · simp only [Fin.mk_one]
-      rw [show (1 : Fin 4) = (1 : Fin 3).castSucc from rfl, hlin 1]
-      simp [latticePowers, jointCoordinatePowers]
-    · rw [show (⟨2, by decide⟩ : Fin 4) = (2 : Fin 3).castSucc from rfl, hlin 2]
-      simp [latticePowers, jointCoordinatePowers]
-    · change (eval (orbitFreeNodesQ a b l) (orbitJointNumerators a b l 3) /
-        eval (orbitFreeNodesQ a b l) (orbitJointDenominator a b l)) ^ n = _
+    induction j using Fin.lastCases with
+    | cast t =>
+      rw [hlin t, jointCoordinatePowers_castSucc, latticePowers_castSucc]
+      push_cast
+      rfl
+    | last =>
+      change (eval (orbitFreeNodesQ a b l) (orbitJointNumerators a b l 3) /
+        eval (orbitFreeNodesQ a b l) (orbitJointDenominator a b l)) ^ n =
+          ((latticePowers c J m n 3 : ℤ) : ℚ)
       rw [orbitJoint_rankFive_evaluation hba hl, hj]
       simp [latticePowers]
   rw [he] at hh
@@ -197,7 +199,7 @@ lemma lattice_curvature_power_le {p : Fin 10 → ℤ} (hp0 : p 0 ≠ 0) {S m : �
     (hc : 3 * (shortR p : ℤ) ^ 2 * |c| ≤ 8 * S) :
     |c ^ m| ≤ (((8 * S / (3 * shortR p ^ 2)) ^ m : ℕ) : ℤ) := by
   have hR : (0 : ℤ) < 3 * (shortR p : ℤ) ^ 2 := by
-    have := (shortR_spec (piv_ne_zero hp0)).1
+    have := shortR_pos hp0
     positivity
   have h1 : |c| ≤ (8 * (S : ℤ)) / (3 * (shortR p : ℤ) ^ 2) :=
     Int.le_ediv_of_mul_le hR (by linarith)
@@ -240,8 +242,7 @@ theorem selected_latticeJointGraph_gap_count (m n lo hi : ℕ) (hlo : 0 < lo) (h
     positivity
   obtain ⟨j0, hj0⟩ := hne
   have facts (l) (hl : l ∈ G) := selectedStart_spec hmem hsT (hG hl)
-  have hθ (l) (hl : l ∈ G) : theta a b i = theta a b l := by
-    rw [theta_eq, theta_eq, hpat l hl]
+  have hθ := theta_eq_of_plk_eq hpat
   have hj0P := (facts j0 hj0).1
   have hp0 : p 0 ≠ 0 := by
     rw [← hpat j0 hj0]; exact orbit_pattern_first hba (by omega)
@@ -365,11 +366,7 @@ theorem selected_latticeJointGraph_gap_count_slow (m n lo hi : ℕ)
   let M := ⌈C * 2⌉₊ + 1
   have hM : C * 2 ≤ (M : ℝ) := by
     exact (Nat.le_ceil _).trans (by simp only [M, Nat.cast_add, Nat.cast_one]; linarith)
-  have hMs : SlowGrowth (fun _ : ℕ => M) := by
-    intro η hη
-    refine ⟨M, by dsimp [M]; positivity, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    exact le_mul_of_one_le_right (Nat.cast_nonneg M) hp
+  have hMs : SlowGrowth (fun _ : ℕ => M) := slowGrowth_const _
   refine ⟨fun a => M * (Nat.log 2 ((10 ^ 25) ^ (m + n + 1) * a ^ (15 * (m + n + 1))) + 1),
     hMs.mul (polynomial_log_slow ((10 ^ 25) ^ (m + n + 1)) (15 * (m + n + 1))), ?_⟩
   intro a b s T A i hba hmem hsT hT I hI hd G hG hpat hz

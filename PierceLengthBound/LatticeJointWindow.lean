@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.LatticeJointLocalEstimate
 public import PierceLengthBound.PoweredJointWindow
+public import PierceLengthBound.RealPowerBounds
 
 /-!
 # Window exponents for the exterior lattice coordinates
@@ -25,22 +26,6 @@ open Finset
 def LatticeJointCountBranches (K T H X S Y h m n : ℕ) : Prop :=
   T ≤ K * X ^ 5 ∨ T ^ 2 ≤ K * H * X ^ 8 ∨ T ^ (3 * h) ≤ K * X ^ (15 * h - 1) * H ^ 3 ∨
     T ^ (3 * h) ≤ K * X ^ (15 * h - 2 * m) * S ^ (3 * m) ∨ T ^ h ≤ K * X ^ (5 * h) * Y ^ n
-
-/-- An integer power of a real power with an integer product exponent. -/
-lemma rpow_pow_natCast {x r : ℝ} (hx : 0 ≤ x) (k : ℕ) {e : ℕ} (he : r * k = e) :
-    (x ^ r) ^ k = x ^ e := by
-  rw [← Real.rpow_natCast, ← Real.rpow_mul hx, he, Real.rpow_natCast]
-
-/-- If `T` is at most `R` times a sum of five nonnegative terms, it is at most `5 (R + 1)` times
-one of them. -/
-lemma le_of_le_sum_five {T R t₀ t₁ t₂ t₃ t₄ : ℝ} (h₀ : 0 ≤ t₀) (h₁ : 0 ≤ t₁) (h₂ : 0 ≤ t₂)
-    (h₃ : 0 ≤ t₃) (h₄ : 0 ≤ t₄) (hT : T ≤ R * (t₀ + t₁ + t₂ + t₃ + t₄)) :
-    T ≤ 5 * (R + 1) * t₀ ∨ T ≤ 5 * (R + 1) * t₁ ∨ T ≤ 5 * (R + 1) * t₂ ∨
-      T ≤ 5 * (R + 1) * t₃ ∨ T ≤ 5 * (R + 1) * t₄ := by
-  by_contra hc
-  push Not at hc
-  obtain ⟨c₀, c₁, c₂, c₃, c₄⟩ := hc
-  nlinarith
 
 /-- The five-term estimate implies the five integer-power branches. -/
 theorem lattice_joint_branches_of_five_term_count {T H X S Y R m n : ℕ} (hm : 0 < m)

@@ -77,11 +77,7 @@ theorem selected_poweredJointGraph_gap_count_slow (m n lo hi : ℕ)
   let M := ⌈C * (3 : ℝ) ^ (1 / (lo : ℝ)) * 2⌉₊ + 1
   have hM : C * (3 : ℝ) ^ (1 / (lo : ℝ)) * 2 ≤ (M : ℝ) := by
     exact (Nat.le_ceil _).trans (by simp only [M, Nat.cast_add, Nat.cast_one]; linarith)
-  have hMs : SlowGrowth (fun _ : ℕ => M) := by
-    intro η hη
-    refine ⟨M, by dsimp [M]; positivity, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    exact le_mul_of_one_le_right (Nat.cast_nonneg M) hp
+  have hMs : SlowGrowth (fun _ : ℕ => M) := slowGrowth_const _
   refine ⟨fun a => M * (Nat.log 2 ((10 ^ 25) ^ (m + n + 1) * a ^ (15 * (m + n + 1))) + 1),
     hMs.mul (polynomial_log_slow ((10 ^ 25) ^ (m + n + 1)) (15 * (m + n + 1))), ?_⟩
   intro a b s T A i hba hmem hsT hT I hI hd G hG hθ hz

@@ -78,6 +78,15 @@ theorem selectedStarts_card_le_pair_image {a b s T A : ℕ} (hba : b < a)
     simpa [theta, kap] using mult_at (a := a) (b := b) (i := i)
       (by have := (facts i hi).1; omega)
 
+/-- At least `T/8` pairs of a pattern and a gap vector occur among the selected starts. -/
+theorem le_eight_mul_pair_image {a b s T A : ℕ} (hba : b < a)
+    (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
+    (hT : 36 ≤ T) :
+    T ≤ 8 * ((selectedStarts a b s T A).image fun i => (plk (Mi a b i), kap a b i)).card := by
+  have h1 := selectedStarts_card hba hmem hsT hT
+  have h2 := selectedStarts_card_le_pair_image hba hmem hsT
+  omega
+
 /-- The required per-pattern estimate implies the local window estimate. -/
 theorem localWindowCount_of_selectedPatternCount {R : ℕ → ℕ}
     (hcurve : SelectedPatternCount R) : LocalWindowCount (curveCountSlack R) := by
@@ -112,10 +121,7 @@ theorem localWindowCount_of_selectedPatternCount {R : ℕ → ℕ}
       simp only [pm]
       rw [← e]
       exact_mod_cast this
-    intro h0
-    have hle := piv_max (pm i) 6
-    rw [h0, abs_zero, abs_of_pos (by omega : (0 : ℤ) < pm i 6)] at hle
-    omega
+    exact piv_ne_zero (by omega : pm i 6 ≠ 0)
   have hTc : (T : ℝ) ≤ 8 * R a * Real.sqrt H *
       ∑ p ∈ S, Real.sqrt ((1 : ℝ) / shortR p) := by
     have hc' : (T : ℝ) ≤ 2 * G.card := by exact_mod_cast hc
@@ -136,13 +142,8 @@ theorem localWindowCount_of_selectedPatternCount {R : ℕ → ℕ}
 /-- The weighted-count slack is subpolynomial whenever the per-pattern slack is. -/
 lemma curveCountSlack_slow {R : ℕ → ℕ} (hR : SlowGrowth R) :
     SlowGrowth (curveCountSlack R) := by
-  have hc : SlowGrowth (fun _ : ℕ => 8 ^ 6 * (14581 * (14581 + 8 * 393660)) ^ 3) := by
-    intro η hη
-    let C : ℕ := 8 ^ 6 * (14581 * (14581 + 8 * 393660)) ^ 3
-    refine ⟨(C : ℝ) + 1, by positivity, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    change (C : ℝ) ≤ _
-    nlinarith [show (0 : ℝ) ≤ C from Nat.cast_nonneg C]
+  have hc : SlowGrowth (fun _ : ℕ => 8 ^ 6 * (14581 * (14581 + 8 * 393660)) ^ 3) :=
+    slowGrowth_const _
   exact (hc.mul (hR.pow 6)).mul ((tauMax_slow (10 ^ 16) 7).pow 9)
 
 /-- Conditional conclusion with only the per-pattern geometric count left open. -/

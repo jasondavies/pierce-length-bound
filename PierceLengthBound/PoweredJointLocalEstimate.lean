@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PoweredJointPatternCount
+public import PierceLengthBound.IntegralLiftPatternCount
 
 /-! Assemble the proved powered pattern counts into the three local terms
 and extract integer-power count branches without changing their exponents. -/
@@ -92,9 +93,6 @@ theorem powered_joint_three_term_of_pattern_estimate {m n : ℕ} {R : ℕ → �
   let H := selectedGapHeight a A T
   let X := selectedMinorHeight a A T
   let B := max (max H (selectedCurvatureHeight a A T ^ m)) (selectedRankFiveHeight a A T ^ n)
-  have facts := fun i hi => selectedStart_spec hmem hsT (i := i) hi
-  have hmult : G.card ≤ 4 * (G.image fun i => (pm i, kap a b i)).card :=
-    selectedStarts_card_le_pair_image hba hmem hsT
   have hp := pattern_sum_two_classes G pm (kap a b) (fun p => ∃ d, ExceptionalMinorRelation p d)
     (show (0 : ℝ) ≤ R a * (1 + (B : ℝ) ^ (1 / ((10 * n + 7 * m : ℕ) : ℝ))) by positivity)
     (show (0 : ℝ) ≤ R a * (H : ℝ) ^ (1 / 2 : ℝ) by positivity)
@@ -104,10 +102,8 @@ theorem powered_joint_three_term_of_pattern_estimate {m n : ℕ} {R : ℕ → �
         exceptionalPatternSlack a * (X : ℝ) ^ 4 by
       exact_mod_cast selected_exceptional_pattern_count_slack hba hmem hsT hT)
     (by simpa only [G, pm, H, B, Nat.cast_max, Nat.cast_pow] using hcurve a b s T A hba hmem hsT hT hscale)
-  have hTcard := selectedStarts_card hba hmem hsT hT
-  change T ≤ 2 * G.card at hTcard
   have hTc : (T : ℝ) ≤ 8 * ((G.image fun i => (pm i, kap a b i)).card : ℝ) := by
-    exact_mod_cast (show T ≤ 8 * (G.image fun i => (pm i, kap a b i)).card by omega)
+    exact_mod_cast le_eight_mul_pair_image hba hmem hsT hT
   dsimp only
   have hO : (ordinaryPatternSlack a : ℝ) ≤ ordinaryPatternSlack a + exceptionalPatternSlack a :=
     le_add_of_nonneg_right (Nat.cast_nonneg _)

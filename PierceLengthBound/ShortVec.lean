@@ -280,6 +280,10 @@ theorem shortR_spec {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
         mul_self_nonneg (x 2)]
     linarith
 
+/-- The minimum of the pattern lattice is positive when `p 0 ≠ 0`. -/
+lemma shortR_pos {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0) : 0 < shortR p :=
+  (shortR_spec (piv_ne_zero h0)).1
+
 lemma shortR_le {p : Fin 10 → ℤ} {L : ℕ} (h : HasShort p L) : shortR p ≤ L := Nat.sInf_le h
 
 /-! ### Counting patterns with a short vector -/

@@ -8,7 +8,10 @@ module
 public import PierceLengthBound.JointLiftAlgebra
 public import PierceLengthBound.JointLiftExponent
 
-/-! First-order reciprocal expansion for the uniform curvature-minor height. -/
+/-! First-order reciprocal expansion for the uniform curvature-minor height. The height of the
+minors among the first `c` columns (`orbit_curvature_minor_height`) serves the joint lift
+(`c = 3`, constant `68`) and the exterior lattice coordinates (`c = 5`, constant `148`), and
+`le_cubic_height_div` turns either into a selected box. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -173,11 +176,29 @@ theorem orbitCurvature_height {a b i H : ℕ} (hba : b < a) (hi : i + 6 < P a b)
   have hm (r s : ℕ) (hr : r < 3) (hs : s < 3) :=
     (le_div_iff₀ (pow_pos hq 3)).mp ((orbit_curvature_minor_height 3 hba (by omega) hH hk hr hs
       ).trans_eq (by push_cast; ring) : _ ≤ 68 * (a : ℝ) * (H : ℝ) ^ 3 / (qq a b i : ℝ) ^ 3)
-  fin_cases j <;> norm_num [orbitCurvatureVector, curvatureVector]
-  · exact_mod_cast hm 1 2 (by decide) (by decide)
-  · exact_mod_cast hm 2 0 (by decide) (by decide)
-  · exact_mod_cast hm 0 1 (by decide) (by decide)
+  have h12 := hm 1 2 (by decide) (by decide)
+  have h20 := hm 2 0 (by decide) (by decide)
+  have h01 := hm 0 1 (by decide) (by decide)
+  fin_cases j <;> norm_num [orbitCurvatureVector, curvatureVector] <;>
+    first | exact_mod_cast h12 | exact_mod_cast h20 | exact_mod_cast h01
 
+/-- A quantity with `e q³ ≤ K a H³` at a start with `a ≤ 4 A q` satisfies
+`e ≤ 64 K A³ H³ / a²`, using `q³ ≥ a³/(64 A³)`. -/
+lemma le_cubic_height_div {e : ℤ} {q a A H K K' : ℕ} (he : 0 ≤ e) (ha : 0 < a)
+    (hq : a ≤ 4 * A * q) (h : e * (q : ℤ) ^ 3 ≤ K * a * H ^ 3) (hK : 64 * K = K') :
+    e ≤ ((K' * A ^ 3 * H ^ 3 / a ^ 2 : ℕ) : ℤ) := by
+  have hqZ : (a : ℤ) ≤ 4 * A * q := by exact_mod_cast hq
+  have hb : e * (a : ℤ) ^ 3 ≤ K' * (a : ℤ) * A ^ 3 * H ^ 3 := by
+    calc _ ≤ e * (4 * (A : ℤ) * q) ^ 3 := by gcongr
+      _ = (64 * (A : ℤ) ^ 3) * (e * (q : ℤ) ^ 3) := by ring
+      _ ≤ (64 * (A : ℤ) ^ 3) * (K * (a : ℤ) * H ^ 3) := by gcongr
+      _ = _ := by rw [← hK]; push_cast; ring
+  have haZ : (0 : ℤ) < a := by exact_mod_cast ha
+  have hb' : e * (a : ℤ) ^ 2 ≤ K' * (A : ℤ) ^ 3 * H ^ 3 := by
+    apply (mul_le_mul_iff_right₀ haZ).mp
+    convert hb using 1 <;> ring
+  have hd := Int.le_ediv_of_mul_le (by positivity : (0 : ℤ) < (a : ℤ) ^ 2) hb'
+  simpa only [Int.natCast_div, Nat.cast_mul, Nat.cast_pow] using hd
 
 /-- All selected curvature coordinates lie in the exact joint-lift box. -/
 theorem selected_orbitCurvature_bound {a b s T A i : ℕ} (hba : b < a)
@@ -188,21 +209,8 @@ theorem selected_orbitCurvature_bound {a b s T A i : ℕ} (hba : b < a)
   have hh := orbitCurvature_height hba (by omega : i + 6 < P a b)
     (show 1 ≤ selectedGapHeight a A T from Nat.le_add_left 1 _)
     (fun t ht => (hk t (by omega)).2) j
-  have hq := window_quotient_lower hba (by omega : i < P a b) hA
-  have hqZ : (a : ℤ) ≤ 4 * A * qq a b i := by exact_mod_cast hq
-  have hb : |orbitCurvatureVector a b i j| * (a : ℤ) ^ 3 ≤
-      4352 * (a : ℤ) * A ^ 3 * (selectedGapHeight a A T : ℤ) ^ 3 := by
-    calc _ ≤ |orbitCurvatureVector a b i j| * (4 * (A : ℤ) * qq a b i) ^ 3 := by gcongr
-      _ = (64 * (A : ℤ) ^ 3) * (|orbitCurvatureVector a b i j| * (qq a b i : ℤ) ^ 3) := by ring
-      _ ≤ (64 * (A : ℤ) ^ 3) * (68 * (a : ℤ) * (selectedGapHeight a A T : ℤ) ^ 3) := by gcongr
-      _ = _ := by ring
-  have ha : (0 : ℤ) < a := by exact_mod_cast (show 0 < a by omega)
-  have hb' : |orbitCurvatureVector a b i j| * (a : ℤ) ^ 2 ≤
-      4352 * (A : ℤ) ^ 3 * (selectedGapHeight a A T : ℤ) ^ 3 := by
-    apply (mul_le_mul_iff_right₀ ha).mp
-    convert hb using 1 <;> ring
-  have hd := Int.le_ediv_of_mul_le (by positivity : (0 : ℤ) < (a : ℤ) ^ 2) hb'
-  simpa only [selectedCurvatureHeight, Int.natCast_div, Nat.cast_mul, Nat.cast_pow, Nat.cast_ofNat] using hd
+  exact le_cubic_height_div (abs_nonneg _) (by omega)
+    (window_quotient_lower hba (by omega : i < P a b) hA) (by exact_mod_cast hh) (by norm_num)
 
 end
 end PierceLengthBound.FixedDividend

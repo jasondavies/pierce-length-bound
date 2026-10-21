@@ -19,6 +19,11 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
 
+/-- The box of the powered joint graph; it does not depend on the pattern. -/
+abbrev poweredJointBox (m n : ℕ) (_p : Fin 10 → ℤ) (a A T : ℕ) : ℝ :=
+  (max (max (selectedGapHeight a A T) (selectedCurvatureHeight a A T ^ m))
+    (selectedRankFiveHeight a A T ^ n) : ℝ)
+
 /-- Every supported nonexceptional component has the required powered-graph
 count, including components on which either retained identity fails: then one of the cuts
 bounds its starts by `404 d ≤ 404 · 24 = 9696` (`jointResolventPolynomial_identity_or_card_bound`;
@@ -42,16 +47,8 @@ theorem selected_powered_joint_component_gap_count_slow (m n : ℕ) (hm : 0 < m)
   obtain ⟨Rc, hRc, hc⟩ := orbit_conic_gap_count_slow
   obtain ⟨Rg, hRg, hg⟩ := selected_poweredJointGraph_gap_count_slow m n
     (10 * n + 7 * m) (((m + n) * 247 + 1) * 24) (by omega) (by omega)
-  have hR : SlowGrowth (fun a => Rc a + Rg a + 9696) := by
-    intro η hη
-    obtain ⟨Cc, hCc, hbc⟩ := hRc η hη
-    obtain ⟨Cg, hCg, hbg⟩ := hRg η hη
-    refine ⟨Cc + Cg + 9696, by positivity, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    have := hbc a ha
-    have := hbg a ha
-    push_cast
-    nlinarith
+  have hR : SlowGrowth (fun a => Rc a + Rg a + 9696) :=
+    slowGrowth_add (slowGrowth_add hRc hRg) (slowGrowth_const 9696)
   refine ⟨fun a => Rc a + Rg a + 9696, hR, ?_⟩
   intro a b s T A i hba hmem hsT hT hne I hI hf he hd G hG hθ hz
   let B : ℝ := max (max (selectedGapHeight a A T : ℝ) (selectedCurvatureHeight a A T ^ m))

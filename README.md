@@ -38,69 +38,12 @@ proves, uniformly in `0 < b < a`:
 * `formalization.yaml`: Palomar metadata (scope, provenance, automation, and review status).
 * `paper/pierce_length_bound.tex` (and `.pdf`): the paper.
 * `scripts/`: source, metadata, dependency, and exact-arithmetic checks.
+* `.github/workflows/`: `ci.yml` runs the checks below on pushes and pull requests;
+  `palomar-preflight.yml` runs the manual Full Palomar mechanical preflight (see
+  [Palomar submission](#palomar-submission)).
 * `vendor/openai-math/`: one vendored file, described under [Dependencies](#dependencies).
 
-## Building and checking
-
-The project uses Lean `v4.35.0` and Mathlib `v4.35.0`. The curve-counting library is the Lake
-package `ccdn_dimension_growth`, a Git dependency on
-[`jasondavies/ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth) pinned in
-`lakefile.toml` to commit `9ade6200d053ceef5f6ccc4154ae30c6056be150`. The package name differs
-from the repository name because CCDN's own `lakefile.toml` still declares its original name,
-which the requirement must match. `lakefile.toml` is the source of truth for the pin:
-`scripts/check-curve-counting-dependency.py` checks that `lake-manifest.json`, this README,
-`formalization.yaml` and the paper agree with it, and with `--checkout` that the fetched checkout
-uses the same Lean toolchain and Mathlib revision as this project. Lake fetches the dependency into
-`.lake/packages`.
-
-Build and check, in order:
-
-```sh
-python3 scripts/check-lean-sources.py                       # source layout and theorem lists
-python3 scripts/check-curve-counting-dependency.py          # CCDN pin metadata
-lake exe cache get                                          # download compiled Mathlib
-lake build
-python3 scripts/check-curve-counting-dependency.py --checkout
-python3 scripts/check-weighted-count-dependencies.py
-bash scripts/verify-comparator.sh                           # Linux with bubblewrap only
-```
-
-* `lake build` runs Mathlib's standard linters (`weak.linter.mathlibStandardSet`) and builds the
-  Palomar `Challenge` and `Solution` modules. The `sorry` warnings in `Challenge.lean`, one per
-  selected theorem, are deliberate statement holes; the proof development has none.
-* `lake build` also builds `Axioms.lean` (or run `lake env lean Axioms.lean`). Its `#guard_msgs`
-  checks show that every theorem in `comparator.json` depends only on `propext`,
-  `Classical.choice` and `Quot.sound`, and it audits every exported declaration of
-  `PierceLengthBound`, of CCDN, and of CCDN's vendored Bombieri–Vaaler development
-  (`ArithmeticHeights`) for nonstandard axioms. `P_le_loglog` depends on the two analytic papers
-  only through its hypotheses.
-* `scripts/check-lean-sources.py` also checks that `comparator.json`, `Challenge.lean`,
-  `Axioms.lean`, `formalization.yaml` and the Lean block below list the same theorems in the
-  same order.
-* `scripts/check-weighted-count-dependencies.py` checks which weighted lattice counts the main
-  bounds reach; its docstring lists the audited roots and the banned and required declarations.
-* `scripts/verify-comparator.sh` compares the statements and proofs with Lean's kernel, NanoDa
-  and con-ron, as Palomar does. The sandboxed Comparator needs Linux; a successful macOS Lean
-  build alone does not establish a Palomar verification pass.
-
-Exact-arithmetic checks supplement the formal proof; finite numerical checks do not establish
-the asymptotic bounds. `scripts/check-math.py` (standard library only) checks the moment
-construction and local identities with exact rational arithmetic on 2,274 deterministic sample
-orbits. Two further scripts require SymPy:
-
-```sh
-python3 scripts/check-math.py
-python3 scripts/check-fixed-dividend.py
-python3 scripts/check-fixed-dividend-lines.py
-```
-
-**Latest verification run** (October 21, 2026, CCDN commit `9ade620`): `lake build`, both
-weighted-count dependency audits and the axiom audit passed. In an isolated copy with matching
-Lean sources and dependency configuration, the sandboxed Comparator accepted all selected
-statements with Lean, NanoDa and con-ron; con-ron verified 88,655 declarations. This is an agent review, not an
-independent human review, and the full Palomar mechanical preflight is still outstanding.
-
-### Main theorem statements
+## Main theorem statements
 
 ```lean
 theorem PierceLengthBound.P_le_lattice_optimal : ∀ ε > (0 : ℝ), ∃ C > 0,
@@ -148,6 +91,67 @@ theorem PierceLengthBound.P_le_rises : ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a
 theorem PierceLengthBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr : r ≤ P a b - i) :
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n
 ```
+
+## Building and checking
+
+The project uses Lean `v4.35.0` and Mathlib `v4.35.0`. The curve-counting library is the Lake
+package `ccdn_dimension_growth`, a Git dependency on
+[`jasondavies/ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth) pinned in
+`lakefile.toml` to commit `9ade6200d053ceef5f6ccc4154ae30c6056be150`. The package name differs
+from the repository name because CCDN's own `lakefile.toml` still declares its original name,
+which the requirement must match. `lakefile.toml` is the source of truth for the pin:
+`scripts/check-curve-counting-dependency.py` checks that `lake-manifest.json`, this README,
+`formalization.yaml` and the paper agree with it, and with `--checkout` that the fetched checkout
+uses the same Lean toolchain and Mathlib revision as this project. Lake fetches the dependency into
+`.lake/packages`.
+
+The check scripts require Python 3.11+ (standard library only, except the two SymPy scripts
+marked below). Build and check, in order:
+
+```sh
+python3 scripts/check-lean-sources.py                       # source layout
+python3 scripts/check-theorem-lists.py                      # selected theorem lists agree
+python3 scripts/check-curve-counting-dependency.py          # CCDN pin metadata
+lake exe cache get                                          # download compiled Mathlib
+lake build
+python3 scripts/check-curve-counting-dependency.py --checkout
+python3 scripts/check-weighted-count-dependencies.py
+bash scripts/verify-comparator.sh                           # Linux with bubblewrap only
+```
+
+* `lake build` runs Mathlib's standard linters (`weak.linter.mathlibStandardSet`) and builds the
+  Palomar `Challenge` and `Solution` modules. The `sorry` warnings in `Challenge.lean`, one per
+  selected theorem, are deliberate statement holes; the proof development has none.
+* `lake build` also builds `Axioms.lean` (or run `lake env lean Axioms.lean`). Its `#guard_msgs`
+  checks show that every theorem in `comparator.json` depends only on `propext`,
+  `Classical.choice` and `Quot.sound`, and it audits every exported declaration of
+  `PierceLengthBound`, of CCDN, and of CCDN's vendored Bombieri–Vaaler development
+  (`ArithmeticHeights`) for nonstandard axioms. `P_le_loglog` depends on the two analytic papers
+  only through its hypotheses.
+* `scripts/check-theorem-lists.py` checks that `comparator.json`, `Challenge.lean`,
+  `Axioms.lean`, `formalization.yaml` and the Lean block under
+  [Main theorem statements](#main-theorem-statements) list the same theorems in the same order.
+* `scripts/check-weighted-count-dependencies.py` checks which weighted lattice counts the main
+  bounds reach; the audited roots and the banned and required declarations are listed in the
+  `AUDIT` Lean block of the script.
+* `scripts/verify-comparator.sh` compares the statements and proofs with Lean's kernel, NanoDa
+  and con-ron, as Palomar does. The sandboxed Comparator needs Linux; a successful macOS Lean
+  build alone does not establish a Palomar verification pass.
+
+Exact-arithmetic checks supplement the formal proof; finite numerical checks do not establish
+the asymptotic bounds. `scripts/check-math.py` (standard library only) checks the moment
+construction and local identities with exact rational arithmetic on 2,274 deterministic sample
+orbits. Two further scripts require SymPy:
+
+```sh
+python3 scripts/check-math.py
+python3 scripts/check-fixed-dividend.py                     # requires SymPy
+python3 scripts/check-fixed-dividend-lines.py               # requires SymPy
+```
+
+The latest verification run is recorded in `review.notes` of
+[formalization.yaml](formalization.yaml). It is an agent review, not an independent human
+review, and the full Palomar mechanical preflight is still outstanding.
 
 ## Proof outlines
 
@@ -335,14 +339,14 @@ below.
 | `JointLiftFiniteZero` | the extra normalized zero, outside the old infinity fiber |
 | `JointLiftCurvatureDegree` | `3d + 2 ≤ 2 deg(F)` for the curvature pole envelope on a retained component |
 | `GraphFunctionField`, `ValuationLinearCombination`, `GraphPoleDegree` | the coordinate pole envelope is bounded by the graph Hilbert degree |
-| `JointLiftGraphLowerDegree` | `4d + 1 ≤ δ` on retained graphs, and `17 ≤ δ ≤ 247d` when `d ≥ 4` |
+| `JointLiftGraphLowerDegree` | `4d + 1 ≤ δ` on retained graphs (the case `G = 1`, `m = n = 1` of `LinearJointGraph`), and `17 ≤ δ ≤ 247d` when `d ≥ 4` |
 | `CurveCounting`, `CurveCountingDegreeRange`, `CurveCountingCoordinates`, `CurveCountingCover` | the CCDN theorem on Pierce coordinate rings: bounded-degree factors, arbitrary finite index types (including `Fin 3 ⊕ Fin 4`), and finite prime-component covers |
 | `OrbitGapCoordinates` | the three node coordinates distinguish complete gap vectors within a pattern |
 | `JointLiftPointCount`, `JointLiftCountingSlack` | the curve count on seven-coordinate integer points; the logarithm absorbed via the polynomial box bound |
 | `JointLiftCoverCount` | gap vectors over at most 24 components, with a `SlowGrowth` coefficient |
 | `OrbitConicGapCount` | the conic divisor estimate applied directly to distinct gap vectors |
 | `OrbitCurveGapCount`, `OrbitPatternCurveCount` | the square-root count after excluding lines at the window scale |
-| `JointLiftComponentCount`, `JointLiftNonexceptionalCount` | conics, the two bounded cuts and retained graphs, summed over the prime-component cover |
+| `JointLiftComponentCount`, `JointLiftNonexceptionalCount` | conics, the two bounded cuts and retained graphs; the sum over the prime-component cover comes from `JointPatternCount` |
 | `JointLiftExponent`, `JointLiftWindow`, `JointLiftLocalEstimate`, `JointLiftGlobalReduction` | exponent arithmetic, window branches and the global reduction for `128/435` |
 | `JointLiftPatternCount` | `P_le_128_435_of_pattern_estimate`: pattern sums, multiplicity, window ranges, rounding, divisor slack and dyadic summation |
 | `JointLiftBound` | both per-pattern estimates and `P_le_128_435` |
@@ -351,8 +355,9 @@ below.
 | `PoweredJointGraphLowerDegree` | `δ ≥ 10n + 7m` for `d ≥ 4`, the case `G = 1` of `LinearJointGraph` |
 | `PoweredJointPointBox`, `PoweredJointPointCount` | integer points in the box `max(3H, Sᵐ, Yⁿ)` and the curve count there |
 | `PoweredJointCountingSlack`, `PoweredJointComponentCount`, `PoweredJointNonexceptionalCount`, `PoweredJointPatternCount`, `PoweredJointLocalEstimate` | the powered logarithmic and counting inputs |
-| `JointPatternCount` | from component counts to nonexceptional and per-pattern estimates, for any box; shared by the powered and lattice chains |
-| `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges and dyadic summation |
+| `JointPatternCount` | from component counts to nonexceptional and per-pattern estimates, for any box and exponent; shared by the joint-lift, powered and lattice chains |
+| `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges and dyadic summation; `window_branch_exponent` is the window lemma shared by all chains |
+| `RealPowerBounds` | elementary real-power inequalities: concavity over a finite sum, powers of maxima, one dominant term among five |
 | `PoweredJointBound` | the optimized exponent and its rational version `m = 50`, `n = 51` |
 
 ### Shared and supporting modules

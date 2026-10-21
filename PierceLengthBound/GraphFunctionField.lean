@@ -170,5 +170,49 @@ theorem jointGraph_linear_function_degree_le {K σ τ F : Type*}
   congr 1
   exact φ.commutes (c j)
 
+/-- The graph ideal is the kernel of evaluation at the field coordinates of the graph. -/
+theorem jointGraphIdeal_eq_ker_aeval {K σ τ F : Type*} [Field K] [Field F] [Algebra K F]
+    (I : Ideal (MvPolynomial σ K)) (P : τ → MvPolynomial σ K) (D : MvPolynomial σ K)
+    (ι : (MvPolynomial σ K ⧸ I) →ₐ[K] F) (hι : Function.Injective ι)
+    (hD : ι (Ideal.Quotient.mk I D) ≠ 0) :
+    jointGraphIdeal I P D = RingHom.ker (aeval (jointGraphFieldCoordinates I P D ι)) := by
+  have hcomp : (graphFieldMap I D ι hD).comp (jointGraphMap I P D) =
+      aeval (jointGraphFieldCoordinates I P D ι) := by
+    apply MvPolynomial.algHom_ext
+    intro j
+    rw [aeval_X, AlgHom.comp_apply, ← jointGraphFieldQuotientMap_mk,
+      jointGraphFieldQuotientMap_X]
+  ext f
+  rw [jointGraphIdeal, RingHom.mem_ker, RingHom.mem_ker, ← hcomp, AlgHom.comp_apply]
+  constructor
+  · intro h
+    rw [h, map_zero]
+  · intro h
+    exact graphFieldMap_injective I D ι hι hD (h.trans (map_zero _).symm)
+
+attribute [local instance] FractionRing.liftAlgebra in
+/-- Two graphs with the same rational coordinates `P/D = P'/D'` on the component `I` have the
+same ideal. -/
+theorem jointGraphIdeal_congr {K σ τ : Type*} [Field K] (I : Ideal (MvPolynomial σ K))
+    [I.IsPrime] {P P' : τ → MvPolynomial σ K} {D D' : MvPolynomial σ K} (hD : D ∉ I)
+    (hD' : D' ∉ I) (h : ∀ j, P j * D' - P' j * D ∈ I) :
+    jointGraphIdeal I P D = jointGraphIdeal I P' D' := by
+  let R := MvPolynomial σ K ⧸ I
+  let F := FractionRing R
+  let ι : R →ₐ[K] F := IsScalarTower.toAlgHom K R F
+  have hι : Function.Injective ι := IsFractionRing.injective R F
+  have hne {E : MvPolynomial σ K} (hE : E ∉ I) : ι (Ideal.Quotient.mk I E) ≠ 0 :=
+    (map_ne_zero_iff _ hι).mpr (by rwa [ne_eq, Ideal.Quotient.eq_zero_iff_mem])
+  rw [jointGraphIdeal_eq_ker_aeval I P D ι hι (hne hD),
+    jointGraphIdeal_eq_ker_aeval I P' D' ι hι (hne hD')]
+  congr 2
+  funext j
+  cases j with
+  | inl j => rfl
+  | inr j =>
+    simp only [jointGraphFieldCoordinates, Sum.elim_inr]
+    rw [div_eq_div_iff (hne hD) (hne hD'), ← map_mul, ← map_mul, ← map_mul, ← map_mul,
+      ← sub_eq_zero, ← map_sub, ← map_sub, Ideal.Quotient.eq_zero_iff_mem.mpr (h j), map_zero]
+
 end
 end PierceLengthBound.FixedDividend

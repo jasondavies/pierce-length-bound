@@ -66,7 +66,7 @@ theorem lattice_node_coordinates {p : Fin 10 → ℤ} {H : ℕ} {V : Finset (Fin
   have hm := piv_ne_zero h0
   let τ := piv p
   let m := p τ
-  obtain ⟨b1, b2, b3, h1, h2, h3, hD, hbas, hred, hRpos, n1, n2, n3⟩ := pattern_reduced_basis hm
+  obtain ⟨b1, b2, b3, h1, h2, h3, hD, -, hbas, hred, hRpos, n1, n2, n3⟩ := pattern_reduced_basis hm
   let kp := fun k : Fin 5 → ℤ => fun j => k (pcol τ j)
   let yc := fun k : Fin 5 → ℤ => ycoord b1 b2 b3 (kp k)
   have hlift : ∀ k ∈ V, ∀ j, m * k j = dot3 (Lrow p τ j) (kp k) := by

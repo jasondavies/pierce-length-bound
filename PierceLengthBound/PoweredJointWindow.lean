@@ -116,7 +116,7 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
             (1259991040 * 56 ^ 10 * (8 * Δ) ^ 5) ^ n * a ^ (6 * n) :=
           powered_rank_five_height (by omega) (by omega) hH (Nat.div_mul_le_self _ _) hT2
         have hc := remainder_window_powered_box_exponent
-          (by omega : 0 < a) (by omega : 0 < A) h hH hX hY hT2
+          (by omega : 0 < a) h hH hX hY hT2
         have h' : T ^ (51 * L + 20 * n) ≤ B * a ^ (15 * L + 6 * n) := by
           calc _ ≤ K * 3609600 ^ (5 * L) * 56 ^ (30 * L) *
               (1259991040 * 56 ^ 10 * (8 * Δ) ^ 5) ^ n * (8 * Δ) ^ (10 * L) *
@@ -134,7 +134,7 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
         have hbox := max_powered_curvature_height hm (by omega : 0 < A)
           (show 1 ≤ 8 * Δ by omega) (show 1 ≤ H from Nat.le_add_left 1 _) hH hS hT2
         have hc := remainder_window_powered_box_exponent
-          (by omega : 0 < a) (by omega : 0 < A) h hH hX hbox hT2
+          (by omega : 0 < a) h hH hX hbox hT2
         have h' : T ^ (51 * L + 3 * m) ≤ B * a ^ (15 * L + m) := by
           calc _ ≤ K * 3609600 ^ (5 * L) * 56 ^ (30 * L) *
               ((4352 * 56 ^ 3 + 56) * (8 * Δ)) ^ m * (8 * Δ) ^ (10 * L) *

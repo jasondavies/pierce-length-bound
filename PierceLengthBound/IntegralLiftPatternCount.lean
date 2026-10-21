@@ -36,12 +36,7 @@ theorem ordinary_minor_count {S : Finset (Fin 10 → ℤ)} {X τ : ℕ}
 def ordinaryPatternSlack (a : ℕ) : ℕ := 14581 * tauMax (10 ^ 16 * a ^ 7)
 
 lemma ordinaryPatternSlack_slow : SlowGrowth ordinaryPatternSlack := by
-  have hc : SlowGrowth (fun _ : ℕ => 14581) := by
-    intro η hη
-    refine ⟨14581, by norm_num, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    norm_num
-    linarith
+  have hc : SlowGrowth (fun _ : ℕ => 14581) := slowGrowth_const _
   exact hc.mul (tauMax_slow (10 ^ 16) 7)
 
 /-- The selected full patterns have an `X^5` count with proved subpolynomial slack. -/
@@ -115,9 +110,6 @@ theorem integralLift_three_term_of_pattern_estimate {R : ℕ → ℕ}
   let H := selectedGapHeight a A T
   let X := selectedMinorHeight a A T
   let B := max H (selectedLiftHeight a A T)
-  have facts := fun i hi => selectedStart_spec hmem hsT (i := i) hi
-  have hmult : G.card ≤ 4 * (G.image fun i => (pm i, kap a b i)).card :=
-    selectedStarts_card_le_pair_image hba hmem hsT
   have hp := pattern_sum_two_classes G pm (kap a b) (fun p => ∃ d, ExceptionalMinorRelation p d)
     (show (0 : ℝ) ≤ R a * (1 + (B : ℝ) ^ (1 / 10 : ℝ)) by positivity)
     (show (0 : ℝ) ≤ R a * (H : ℝ) ^ (1 / 2 : ℝ) by positivity)
@@ -127,10 +119,8 @@ theorem integralLift_three_term_of_pattern_estimate {R : ℕ → ℕ}
         exceptionalPatternSlack a * (X : ℝ) ^ 4 by
       exact_mod_cast selected_exceptional_pattern_count_slack hba hmem hsT hT)
     (by simpa only [G, pm, H, B, Nat.cast_max] using hcurve a b s T A hba hmem hsT hT hscale)
-  have hTcard := selectedStarts_card hba hmem hsT hT
-  change T ≤ 2 * G.card at hTcard
   have hTc : (T : ℝ) ≤ 8 * ((G.image fun i => (pm i, kap a b i)).card : ℝ) := by
-    exact_mod_cast (show T ≤ 8 * (G.image fun i => (pm i, kap a b i)).card by omega)
+    exact_mod_cast le_eight_mul_pair_image hba hmem hsT hT
   dsimp only
   have hO : (ordinaryPatternSlack a : ℝ) ≤ ordinaryPatternSlack a + exceptionalPatternSlack a :=
     le_add_of_nonneg_right (Nat.cast_nonneg _)
@@ -147,25 +137,9 @@ theorem integralLift_three_term_of_pattern_estimate {R : ℕ → ℕ}
     _ = _ := by simp only [integralLiftPatternSlack, Nat.cast_mul, Nat.cast_add,
         Nat.cast_ofNat, Nat.cast_max, B, H, X]; ring
 
-lemma slowGrowth_add {F G : ℕ → ℕ} (hF : SlowGrowth F) (hG : SlowGrowth G) :
-    SlowGrowth (fun a => F a + G a) := by
-  intro η hη
-  obtain ⟨C, hC, hc⟩ := hF η hη
-  obtain ⟨D, hD, hd⟩ := hG η hη
-  refine ⟨C + D, by positivity, fun a ha => ?_⟩
-  have h1 := hc a ha
-  have h2 := hd a ha
-  push_cast
-  nlinarith
-
 lemma integralLiftPatternSlack_slow {R : ℕ → ℕ} (hR : SlowGrowth R) :
     SlowGrowth (integralLiftPatternSlack R) := by
-  have hc : SlowGrowth (fun _ : ℕ => 8) := by
-    intro η hη
-    refine ⟨8, by norm_num, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    norm_num
-    linarith
+  have hc : SlowGrowth (fun _ : ℕ => 8) := slowGrowth_const _
   exact (hc.mul hR).mul (slowGrowth_add ordinaryPatternSlack_slow exceptionalPatternSlack_slow)
 
 /-- The final exponent now depends only on the two unweighted per-pattern

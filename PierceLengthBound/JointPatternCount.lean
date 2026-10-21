@@ -7,15 +7,17 @@ module
 
 public import PierceLengthBound.FixedDividendRationalParityCover
 public import PierceLengthBound.OrbitPatternCurveCount
-public import PierceLengthBound.JointLiftPatternCount
+public import PierceLengthBound.ExceptionalOrbitCount
 
 /-!
 # Pattern counts from component counts
 
 The steps from a count on one component of a nonexceptional pattern to the per-pattern estimate
-do not depend on the box of the graph count. They are stated here for a box `B p a A T` and an
-exponent `1 / h`, and used by the powered joint graph (`PoweredJointPatternCount`) and the
-exterior lattice coordinates (`LatticeJointPatternCount`).
+do not depend on the box of the graph count. They are stated here for a box `B p a A T` of the
+pattern `p` and an exponent `e`, and used by the joint lift (`JointLiftPatternCount`, `e = 1/17`),
+the powered joint graph (`PoweredJointPatternCount`) and the exterior lattice coordinates
+(`LatticeJointPatternCount`), each with `e = 1/h`. The box is inferred from the count, and its
+nonnegativity is discharged by `positivity`.
 -/
 
 @[expose] public section
@@ -23,9 +25,11 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
 
+variable (B : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → ℝ) (e : ℝ)
+
 /-- A count on every supported nonexceptional component, with coefficient `R` and graph count
-`B ^ (1 / h)` in the box `B p a A T` of the pattern `p`. -/
-def JointComponentCount (B : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → ℝ) (h : ℕ) (R : ℕ → ℕ) : Prop :=
+`B ^ e` in the box `B p a A T` of the pattern `p`. -/
+def JointComponentCount (R : ℕ → ℕ) : Prop :=
   ∀ {a b s T A i : ℕ}, b < a →
     (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
     s + T ≤ P a b → 36 ≤ T →
@@ -38,10 +42,10 @@ def JointComponentCount (B : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → ℝ) (
         (∀ l ∈ G, plk (Mi a b l) = plk (Mi a b i)) →
         (∀ l ∈ G, orbitFreeNodesQ a b l ∈ coordinateZeroLocus I) →
         ((G.image (kap a b)).card : ℝ) ≤ (R a : ℝ) *
-          (1 + B (plk (Mi a b i)) a A T ^ (1 / (h : ℝ)))
+          (1 + B (plk (Mi a b i)) a A T ^ e)
 
 /-- The same count for all the starts of one nonexceptional pattern. -/
-def JointNonexceptionalCount (B : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → ℝ) (h : ℕ) (R : ℕ → ℕ) : Prop :=
+def JointNonexceptionalCount (R : ℕ → ℕ) : Prop :=
   ∀ {a b s T A i : ℕ}, b < a →
     (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
     s + T ≤ P a b → 36 ≤ T → i + 7 < P a b →
@@ -49,11 +53,11 @@ def JointNonexceptionalCount (B : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → �
     ∀ G : Finset ℕ, G ⊆ selectedStarts a b s T A →
       (∀ l ∈ G, plk (Mi a b l) = plk (Mi a b i)) →
       ((G.image (kap a b)).card : ℝ) ≤ (R a : ℝ) *
-        (1 + B (plk (Mi a b i)) a A T ^ (1 / (h : ℝ)))
+        (1 + B (plk (Mi a b i)) a A T ^ e)
 
 /-- Per-pattern estimates: square-root counting for exceptional patterns, and a constant plus
-the graph count `B ^ (1 / h)` otherwise. -/
-def JointPatternEstimate (B : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → ℝ) (h : ℕ) (R : ℕ → ℕ) : Prop :=
+the graph count `B ^ e` otherwise. -/
+def JointPatternEstimate (R : ℕ → ℕ) : Prop :=
   ∀ a b s T A : ℕ, b < a →
     (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
     s + T ≤ P a b → 36 ≤ T →
@@ -63,19 +67,18 @@ def JointPatternEstimate (B : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → ℝ) 
         (kap a b)).card : ℝ) ≤
       if ∃ d, ExceptionalMinorRelation p d then
         (R a : ℝ) * (selectedGapHeight a A T : ℝ) ^ (1 / 2 : ℝ)
-      else (R a : ℝ) * (1 + B p a A T ^ (1 / (h : ℝ)))
+      else (R a : ℝ) * (1 + B p a A T ^ e)
 
 /-- A nonexceptional pattern has at most twenty-four components, so a component count gives
 the pattern count with `24` times the coefficient. -/
-theorem jointNonexceptionalCount_of_components {B : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → ℝ} {h : ℕ}
-    (hB : ∀ p a A T, 0 ≤ B p a A T) {R : ℕ → ℕ} (hR : SlowGrowth R)
-    (hcount : JointComponentCount B h R) :
-    ∃ R' : ℕ → ℕ, SlowGrowth R' ∧ JointNonexceptionalCount B h R' := by
+theorem jointNonexceptionalCount_of_components {B e} {R : ℕ → ℕ} (hR : SlowGrowth R)
+    (hcount : JointComponentCount B e R)
+    (hB : ∀ p a A T, 0 ≤ B p a A T := by intros; positivity) :
+    ∃ R' : ℕ → ℕ, SlowGrowth R' ∧ JointNonexceptionalCount B e R' := by
   classical
   refine ⟨fun a => 24 * R a, (slowGrowth_const 24).mul hR, ?_⟩
   intro a b s T A i hba hmem hsT hT hi hne G hG hpat
-  have hθ (l) (hl : l ∈ G) : theta a b i = theta a b l := by
-    rw [theta_eq, theta_eq, hpat l hl]
+  have hθ := theta_eq_of_plk_eq hpat
   obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
   have hL : (Lz a b i : ℚ) ≠ 0 := by
     have := Lz_pos hba (by omega : i + 5 < P a b)
@@ -95,7 +98,7 @@ theorem jointNonexceptionalCount_of_components {B : (Fin 10 → ℤ) → ℕ →
     omega
   let U (I : Ideal (MvPolynomial (Fin 3) ℚ)) :=
     G.filter (fun l => orbitFreeNodesQ a b l ∈ coordinateZeroLocus I)
-  set E : ℝ := (R a : ℝ) * (1 + B (plk (Mi a b i)) a A T ^ (1 / (h : ℝ)))
+  set E : ℝ := (R a : ℝ) * (1 + B (plk (Mi a b i)) a A T ^ e)
   have hE : 0 ≤ E :=
     mul_nonneg (Nat.cast_nonneg _) (add_nonneg zero_le_one (Real.rpow_nonneg (hB _ _ _ _) _))
   have hsub : G.image (kap a b) ⊆ S.biUnion (fun I => (U I).image (kap a b)) := by
@@ -119,17 +122,15 @@ theorem jointNonexceptionalCount_of_components {B : (Fin 10 → ℤ) → ℕ →
         ∑ I ∈ S, (((U I).image (kap a b)).card : ℝ) := by exact_mod_cast hcard
     _ ≤ ∑ _I ∈ S, E := sum_le_sum hU
     _ = (S.card : ℝ) * E := by simp only [sum_const, nsmul_eq_mul]
-    _ ≤ 24 * E := by
-      gcongr
-      exact_mod_cast hS
+    _ ≤ 24 * E := mul_le_mul_of_nonneg_right (by exact_mod_cast hS) hE
     _ = _ := by simp only [E, Nat.cast_mul, Nat.cast_ofNat]; ring
 
 /-- Square-root counting for exceptional patterns and the nonexceptional count otherwise give
 the per-pattern estimate. -/
-theorem jointPatternEstimate_of_nonexceptional {B : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → ℝ} {h : ℕ}
-    (hB : ∀ p a A T, 0 ≤ B p a A T) {Rn : ℕ → ℕ} (hRn : SlowGrowth Rn)
-    (hcountn : JointNonexceptionalCount B h Rn) :
-    ∃ R : ℕ → ℕ, SlowGrowth R ∧ JointPatternEstimate B h R := by
+theorem jointPatternEstimate_of_nonexceptional {B e} {Rn : ℕ → ℕ} (hRn : SlowGrowth Rn)
+    (hcountn : JointNonexceptionalCount B e Rn)
+    (hB : ∀ p a A T, 0 ≤ B p a A T := by intros; positivity) :
+    ∃ R : ℕ → ℕ, SlowGrowth R ∧ JointPatternEstimate B e R := by
   classical
   obtain ⟨Re, hRe, he⟩ := selected_pattern_curve_gap_count_slow
   refine ⟨fun a => Re a + Rn a, slowGrowth_add hRe hRn, ?_⟩
@@ -141,9 +142,8 @@ theorem jointPatternEstimate_of_nonexceptional {B : (Fin 10 → ℤ) → ℕ →
   let G := (selectedStarts a b s T A).filter (fun l => plk (Mi a b l) = plk (Mi a b i))
   have hG : G ⊆ selectedStarts a b s T A := filter_subset _ _
   have hpat (l) (hl : l ∈ G) : plk (Mi a b l) = plk (Mi a b i) := (mem_filter.mp hl).2
-  have hθ (l) (hl : l ∈ G) : theta a b i = theta a b l := by
-    rw [theta_eq, theta_eq, hpat l hl]
-  have hpow : 0 ≤ B (plk (Mi a b i)) a A T ^ (1 / (h : ℝ)) := Real.rpow_nonneg (hB _ _ _ _) _
+  have hθ := theta_eq_of_plk_eq hpat
+  have hpow : 0 ≤ B (plk (Mi a b i)) a A T ^ e := Real.rpow_nonneg (hB _ _ _ _) _
   change ((G.image (kap a b)).card : ℝ) ≤ _
   split_ifs with hex
   · calc ((G.image (kap a b)).card : ℝ) ≤
@@ -158,12 +158,12 @@ theorem jointPatternEstimate_of_nonexceptional {B : (Fin 10 → ℤ) → ℕ →
       by_contra hnot
       exact hex (orbit_exceptional_minor_relation hba (by omega : i + 6 < P a b) hnot)
     calc ((G.image (kap a b)).card : ℝ) ≤ (Rn a : ℝ) *
-          (1 + B (plk (Mi a b i)) a A T ^ (1 / (h : ℝ))) :=
+          (1 + B (plk (Mi a b i)) a A T ^ e) :=
         hcountn hba hmem hsT hT hi7 hne G hG hpat
       _ ≤ _ := by
         push_cast
         exact mul_le_mul_of_nonneg_right (le_add_of_nonneg_left (Nat.cast_nonneg _))
-          (by positivity)
+          (add_nonneg zero_le_one hpow)
 
 end
 end PierceLengthBound.FixedDividend

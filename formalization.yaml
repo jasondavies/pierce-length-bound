@@ -8,9 +8,9 @@ project:
     repeatedly replacing x by a mod x, starting at b. This development proves
     the uniform bound P(a,b) ≤ C_ε a^(471/1559 - 6 sqrt(105)/7795 + ε) for every
     ε > 0, including the external coefficient-uniform affine-curve theorem, and its
-    rational instance 153/520. It also proves the joint-lift exponents
-    (1310-sqrt(655))/4365, 2201/7480 and 128/435 and the
-    earlier exponents 45/152, 8/27, 11/37, 23/77, and 3/10. It also proves
+    rational instance 153/520. It also proves the joint-invariant exponents
+    (1310-sqrt(655))/4365, 2201/7480 and 128/435 and the earlier exponents
+    45/152, 8/27, 11/37, 23/77, and 3/10. It also proves
     a bound O(a^(1/4) sqrt R), where R minus one counts rises in the quotient
     increments, and positivity and integrality of the orbit's Hankel invariants.
     A separate conditional theorem gives O(a^(3/10) sqrt(log log(3a))) assuming
@@ -173,7 +173,7 @@ review:
     allows only propext, Classical.choice and Quot.sound. In an isolated copy with
     matching Lean sources and dependency configuration, the standard sandboxed
     Comparator accepted every selected statement with Lean, NanoDa and con-ron;
-    con-ron verified 88,655 declarations.
+    con-ron verified 88,645 declarations.
     Earlier checker resource failures were repaired by making algebra and
     coefficient conversions explicit, without changing hypotheses or checker limits.
     An October 19, 2026 Codex review, which predates the joint-invariant and
@@ -198,7 +198,7 @@ alignment:
       module: "PierceLengthBound.LatticeJointMain"
       status: proved
       note: "Uniform in a and b, including the proved external curve theorem."
-    - source: "Rational exterior-lattice bound, Corollary 10.12"
+    - source: "Rational exterior-lattice bound, Corollary 10.12 with (m, n) = (3, 2)"
       lean: "PierceLengthBound.P_le_153_520"
       module: "PierceLengthBound.LatticeJointMain"
       status: proved
@@ -207,45 +207,45 @@ alignment:
       module: "PierceLengthBound.JointLiftMain"
       status: proved
       note: "Uniform in a and b, including the proved external curve theorem."
-    - source: "Rational powered joint-invariant bound"
+    - source: "Rational powered joint-invariant bound, Corollary 9.14 with (m, n) = (50, 51)"
       lean: "PierceLengthBound.P_le_2201_7480"
       module: "PierceLengthBound.JointLiftMain"
       status: proved
-    - source: "Unpowered joint-invariant bound"
+    - source: "Unpowered joint-invariant bound, Corollary 9.14 with (m, n) = (1, 1)"
       lean: "PierceLengthBound.P_le_128_435"
       module: "PierceLengthBound.JointLiftMain"
       status: proved
-    - source: "Earlier lattice bound"
+    - source: "Earlier lattice bound, Section 1 (Intermediate bounds)"
       lean: "PierceLengthBound.P_le_45_152"
       module: "PierceLengthBound.FortyFiveMain"
       status: proved
       note: "Uniform in a and b; C may depend on the positive epsilon."
-    - source: "Minor-vector counting bound"
+    - source: "Minor-vector counting bound, Section 1 (Intermediate bounds)"
       lean: "PierceLengthBound.P_le_8_27"
       module: "PierceLengthBound.EightMain"
       status: proved
-    - source: "Ternary slicing bound"
+    - source: "Ternary slicing bound, Section 1 (Intermediate bounds)"
       lean: "PierceLengthBound.P_le_11_37"
       module: "PierceLengthBound.ElevenMain"
       status: proved
-    - source: "Seven-integer pattern bound"
+    - source: "Seven-integer pattern bound, Section 1 (Intermediate bounds)"
       lean: "PierceLengthBound.P_le_23_77"
       module: "PierceLengthBound.TwentyThreeMain"
       status: proved
-    - source: "Unconditional 3/10 bound"
+    - source: "Unconditional 3/10 bound, Theorem 1.3"
       lean: "PierceLengthBound.P_le"
       module: "PierceLengthBound.Main"
       status: proved
-    - source: "Conditional logarithmic refinement"
+    - source: "Conditional logarithmic refinement, Section 1 (Intermediate bounds)"
       lean: "PierceLengthBound.P_le_loglog"
       module: "PierceLengthBound.Hooley"
       status: proved
       note: "Conditional on NairTenenbaumDelta and BretecheTenenbaumMean."
-    - source: "Trajectories with few rises"
+    - source: "Trajectories with few rises, Theorem 1.4"
       lean: "PierceLengthBound.P_le_rises"
       module: "PierceLengthBound.RisesMain"
       status: proved
-    - source: "Positive integer Hankel hierarchy"
+    - source: "Positive integer Hankel hierarchy, Theorem 7.2"
       lean: "PierceLengthBound.hankelInv_pos_int"
       module: "PierceLengthBound.Hankel"
       status: proved

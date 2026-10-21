@@ -75,12 +75,7 @@ theorem P_le_151_513_of_three_term_estimate {R : ℕ → ℕ} (hR : SlowGrowth R
     (hlocal : IntegralLiftThreeTermEstimate R) :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
       (P a b : ℝ) ≤ C * (a : ℝ) ^ ((151 : ℝ) / 513 + ε) := by
-  have hc : SlowGrowth (fun _ : ℕ => 3) := by
-    intro η hη
-    refine ⟨3, by norm_num, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    norm_num
-    linarith
+  have hc : SlowGrowth (fun _ : ℕ => 3) := slowGrowth_const _
   apply P_le_151_513_of_integral_lift_count ((hc.mul (slowGrowth_add_one hR)).pow 10)
   intro a b s T A hba hmem hsT hT hscale
   apply integral_lift_branches_of_three_term_count

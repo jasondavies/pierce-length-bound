@@ -64,6 +64,15 @@ lemma dot3_sq_le (x y : Fin 3 → ℤ) : dot3 x y ^ 2 ≤ nrm3 x * nrm3 y := by
   unfold gram2 at this
   linarith
 
+/-- A vector with entries at most `H` has squared length at most `3 H²`. -/
+lemma nrm3_le_of_abs_le {x : Fin 3 → ℤ} {H : ℕ} (hx : ∀ a, |x a| ≤ H) :
+    nrm3 x ≤ 3 * (H : ℤ) ^ 2 := by
+  have e : ∀ a, x a ^ 2 ≤ (H : ℤ) ^ 2 := fun a => by
+    rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (hx a) 2
+  have := e 0; have := e 1; have := e 2
+  simp only [nrm3, dot3] at *
+  nlinarith
+
 /-- Hadamard's inequality in `ℤ³`. -/
 lemma det3_sq_le (x y z : Fin 3 → ℤ) : det3 x y z ^ 2 ≤ nrm3 x * nrm3 y * nrm3 z := by
   set c0 := y 1 * z 2 - y 2 * z 1

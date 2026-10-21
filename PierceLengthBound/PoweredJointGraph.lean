@@ -93,6 +93,10 @@ theorem powered_jointGraph_degree_bounds {K σ τ : Type*} [Field K] [Finite σ]
 /-- The three curvature coordinates use `m`; the rank-five coordinate uses `n`. -/
 def jointCoordinatePowers (m n : ℕ) : Fin 4 → ℕ := ![m, m, m, n]
 
+@[simp] lemma jointCoordinatePowers_castSucc (m n : ℕ) (j : Fin 3) :
+    jointCoordinatePowers m n j.castSucc = m := by
+  fin_cases j <;> rfl
+
 lemma jointCoordinatePowers_le (m n : ℕ) (j : Fin 4) :
     jointCoordinatePowers m n j ≤ m + n := by
   fin_cases j <;> simp [jointCoordinatePowers]
@@ -105,39 +109,6 @@ def orbitPoweredJointGraphIdeal (a b i m n : ℕ) (I : Ideal (MvPolynomial (Fin 
     Ideal (MvPolynomial (Fin 3 ⊕ Fin 4) ℚ) :=
   jointGraphIdeal I (orbitPoweredJointNumerators a b i m n)
     (orbitJointDenominator a b i ^ (m + n))
-
-/-- The orbit's joint numerators and denominator all have total degree at most `247`
-(`jointLift_polynomial_degrees`: `244` for the denominator and curvature numerators, `247` for
-the rank-five numerator). -/
-lemma orbitJoint_totalDegree_le (a b i : ℕ) :
-    (∀ j, (orbitJointNumerators a b i j).totalDegree ≤ 247) ∧
-      (orbitJointDenominator a b i).totalDegree ≤ 247 := by
-  have hp := jointLift_polynomial_degrees (orbitLiftNumeratorQ a b i)
-    (orbitLiftDenominatorQ a b i) (jointRankFivePolynomial a b i) (Lz a b i : ℚ)
-    (jointGapPolynomials a b i) (orbitLift_polynomial_degrees a b i).1
-    (orbitLift_polynomial_degrees a b i).2 (jointRankFivePolynomial_degree a b i)
-    (jointGapPolynomials_degree a b i)
-  refine ⟨fun j => ?_, hp.1.trans (by norm_num)⟩
-  fin_cases j
-  · exact (hp.2.1 0).trans (by norm_num)
-  · exact (hp.2.1 1).trans (by norm_num)
-  · exact (hp.2.1 2).trans (by norm_num)
-  · exact hp.2.2
-
-/-- The actual powered graph has a uniform upper degree bound for every pair
-of fixed powers. Its constant is independent of the orbit and the pattern. -/
-theorem orbitPoweredJointGraph_degree_bounds {a b i d : ℕ} (hba : b < a)
-    (hi : i + 7 < P a b) (m n : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
-    (hz : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I)
-    (hd : ∃ M : ℕ, ∃ c : ℤ, ∀ k ≥ M,
-      (Module.finrank ℚ (filteredCoordinateSpace I k) : ℤ) = (d : ℤ) * k + c) :
-    (orbitPoweredJointGraphIdeal a b i m n I).IsPrime ∧
-    ∃ δ : ℕ, d ≤ δ ∧ δ ≤ ((m + n) * 247 + 1) * d ∧ ∃ M : ℕ, ∃ c : ℤ, ∀ k ≥ M,
-      (Module.finrank ℚ (filteredCoordinateSpace (orbitPoweredJointGraphIdeal a b i m n I) k)
-        : ℤ) = (δ : ℤ) * k + c :=
-  powered_jointGraph_degree_bounds I _ _ (orbitJoint_denominator_not_mem hba hi I hz)
-    (jointCoordinatePowers m n) (m + n) 247 (jointCoordinatePowers_le m n)
-    (orbitJoint_totalDegree_le a b i).1 (orbitJoint_totalDegree_le a b i).2 hd
 
 end
 end PierceLengthBound.FixedDividend

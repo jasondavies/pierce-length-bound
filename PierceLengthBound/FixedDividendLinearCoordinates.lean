@@ -112,7 +112,7 @@ theorem matrix_coordinate_prime {K ι : Type*} [Field K] [Fintype ι] [Decidable
   rw [hz]
   exact I.zero_mem
 
-/-- The full rational zero locus transforms with its equations. -/
+/-- The zero locus over `K` transforms with its equations. -/
 theorem matrix_coordinate_zeroLocus {K ι : Type*} [Field K] [Fintype ι] [DecidableEq ι]
     (C : Matrix ι ι K) (hC : C.det ≠ 0)
     (I : Ideal (MvPolynomial ι K)) (y : ι → K) :
@@ -132,10 +132,10 @@ theorem matrix_coordinate_zeroLocus {K ι : Type*} [Field K] [Fintype ι] [Decid
 
 /-- A finite component cover remains a cover after changing coordinates, without
 increasing its cardinality. -/
-theorem matrix_coordinate_component_cover {K : Type*} [Field K]
-    (C : Matrix (Fin 3) (Fin 3) K) (hC : C.det ≠ 0)
-    (S : Finset (Ideal (MvPolynomial (Fin 3) K))) :
-    ∃ S' : Finset (Ideal (MvPolynomial (Fin 3) K)), S'.card ≤ S.card ∧
+theorem matrix_coordinate_component_cover {K ι : Type*} [Field K] [Fintype ι] [DecidableEq ι]
+    (C : Matrix ι ι K) (hC : C.det ≠ 0)
+    (S : Finset (Ideal (MvPolynomial ι K))) :
+    ∃ S' : Finset (Ideal (MvPolynomial ι K)), S'.card ≤ S.card ∧
       (∀ y, (∃ I ∈ S', y ∈ coordinateZeroLocus I) ↔
         ∃ I ∈ S, C *ᵥ y ∈ coordinateZeroLocus I) ∧
       ∀ J ∈ S', ∃ I ∈ S, J = I.map (matrixSubstitution C).toRingHom := by

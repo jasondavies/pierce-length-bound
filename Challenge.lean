@@ -13,8 +13,8 @@ public import Mathlib
 For natural numbers `0 < b < a`, repeatedly replace the positive remainder `x` by
 `a % x`, stopping at zero. `P a b` counts the positive terms, including `b`.
 The strongest result is `P(a,b) ≪_ε a^(471/1559 - 6 sqrt 105/7795 + ε)`, from exterior
-lattice coordinates; its rational instance is `153/520`. The joint-lift bounds, including
-`(1310 - sqrt 655)/4365`, and earlier exponents are also included.
+lattice coordinates; its rational instance is `153/520`. The joint-invariant bounds,
+including `(1310 - sqrt 655)/4365`, and earlier exponents are also included.
 The conjectured `O((log a)^2)` bound remains open.
 
 Two further results give a conditional logarithmic refinement and a bound in terms

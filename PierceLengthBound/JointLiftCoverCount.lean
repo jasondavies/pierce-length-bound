@@ -36,12 +36,7 @@ theorem selected_jointGraph_cover_gap_count_slow (lo : ℕ) (hlo : 0 < lo)
               (selectedRankFiveHeight a A T) : ℝ) ^ (1 / (lo : ℝ)) := by
   classical
   obtain ⟨R, hR, hcount⟩ := selected_jointGraph_gap_count_slow lo hlo hlohi
-  have h24 : SlowGrowth (fun _ : ℕ => 24) := by
-    intro η hη
-    refine ⟨24, by norm_num, fun a ha => ?_⟩
-    have := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    norm_num
-    linarith
+  have h24 : SlowGrowth (fun _ : ℕ => 24) := slowGrowth_const _
   refine ⟨fun a => 24 * R a, h24.mul hR, ?_⟩
   intro a b s T A i hba hmem hsT hT S hS hdegree G hG hθ hcover
   let U (I : Ideal (MvPolynomial (Fin 3) ℚ)) :=

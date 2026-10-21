@@ -18,6 +18,11 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
 
+/-- The box of the joint-lift graph; it does not depend on the pattern. -/
+abbrev jointLiftBox (_p : Fin 10 → ℤ) (a A T : ℕ) : ℝ :=
+  (max (max (selectedGapHeight a A T) (selectedCurvatureHeight a A T))
+    (selectedRankFiveHeight a A T) : ℝ)
+
 /-- Every supported nonexceptional component has the required seventeenth-root
 count, including components on which either retained identity fails. -/
 theorem selected_joint_component_gap_count_slow :
@@ -38,16 +43,8 @@ theorem selected_joint_component_gap_count_slow :
   classical
   obtain ⟨Rc, hRc, hc⟩ := orbit_conic_gap_count_slow
   obtain ⟨Rg, hRg, hg⟩ := selected_jointGraph_gap_count_slow 17 (by decide) (by decide)
-  have hR : SlowGrowth (fun a => Rc a + Rg a + 9696) := by
-    intro η hη
-    obtain ⟨Cc, hCc, hbc⟩ := hRc η hη
-    obtain ⟨Cg, hCg, hbg⟩ := hRg η hη
-    refine ⟨Cc + Cg + 9696, by positivity, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    have := hbc a ha
-    have := hbg a ha
-    push_cast
-    nlinarith
+  have hR : SlowGrowth (fun a => Rc a + Rg a + 9696) :=
+    slowGrowth_add (slowGrowth_add hRc hRg) (slowGrowth_const 9696)
   refine ⟨fun a => Rc a + Rg a + 9696, hR, ?_⟩
   intro a b s T A i hba hmem hsT hT hne I hI hf he hd G hG hθ hz
   let B : ℝ := max (max (selectedGapHeight a A T : ℝ) (selectedCurvatureHeight a A T))

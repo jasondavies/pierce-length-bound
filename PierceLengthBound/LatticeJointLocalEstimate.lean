@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.LatticeJointPatternCount
 public import PierceLengthBound.LatticeJointWeights
+public import PierceLengthBound.RealPowerBounds
 
 /-!
 # The five-term local estimate
@@ -22,24 +23,6 @@ with `h = 10n + 7m`.
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
-
-/-- A power of a maximum is at most the sum of the powers. -/
-lemma max_rpow_le_add {u v r : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) :
-    (max u v) ^ r ≤ u ^ r + v ^ r := by
-  rcases le_total u v with h | h
-  · rw [max_eq_right h]; linarith [Real.rpow_nonneg hu r]
-  · rw [max_eq_left h]; linarith [Real.rpow_nonneg hv r]
-
-/-- For `c ≥ 1`, powers with exponent at most `1` are at most `c`. -/
-lemma rpow_le_self_of_le_one {c r : ℝ} (hc : 1 ≤ c) (hr : r ≤ 1) : c ^ r ≤ c := by
-  calc c ^ r ≤ c ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hc hr
-    _ = c := Real.rpow_one c
-
-/-- `((y ^ k : ℕ) : ℝ) ^ (1 / h) = y ^ (k / h)`. -/
-lemma natCast_pow_rpow (y : ℕ) (k : ℕ) {h : ℝ} :
-    (((y ^ k : ℕ) : ℝ)) ^ (1 / h) = (y : ℝ) ^ ((k : ℝ) / h) := by
-  rw [Nat.cast_pow, ← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg _)]
-  congr 1; ring
 
 /-- The `1/h`-th power of the lattice box splits into the three coordinate terms (paper,
 `prop:latticewindow`). -/
@@ -132,12 +115,11 @@ def latticeJointSlack (R : ℕ → ℕ) (a : ℕ) : ℕ :=
 
 lemma latticeJointSlack_slow {R : ℕ → ℕ} (hR : SlowGrowth R) :
     SlowGrowth (latticeJointSlack R) := by
-  have hc := slowGrowth_const
   have hsum : SlowGrowth (fun a => 2 * ordinaryPatternSlack a + exceptionalPatternSlack a +
       8 * latticeWeightSlack a) :=
-    slowGrowth_add (slowGrowth_add ((hc 2).mul ordinaryPatternSlack_slow)
-      exceptionalPatternSlack_slow) ((hc 8).mul latticeWeightSlack_slow)
-  exact ((hc 8).mul hR).mul hsum
+    slowGrowth_add (slowGrowth_add ((slowGrowth_const 2).mul ordinaryPatternSlack_slow)
+      exceptionalPatternSlack_slow) ((slowGrowth_const 8).mul latticeWeightSlack_slow)
+  exact ((slowGrowth_const 8).mul hR).mul hsum
 
 /-- Summing the pattern estimate with the fractional lattice weights. -/
 theorem lattice_joint_five_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m) {R : ℕ → ℕ}
@@ -162,8 +144,6 @@ theorem lattice_joint_five_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m) {R 
   have hm2 : (2 * m : ℝ) ≤ h := by
     simp only [h, hN]; push_cast; nlinarith [show (0 : ℝ) ≤ n from Nat.cast_nonneg n,
       show (0 : ℝ) ≤ m from Nat.cast_nonneg m]
-  have hmult : G.card ≤ 4 * (G.image fun i => (pm i, kap a b i)).card :=
-    selectedStarts_card_le_pair_image hba hmem hsT
   have hs : ((G.image fun i => (pm i, kap a b i)).card : ℝ) ≤
       ∑ p ∈ Pset, (((G.filter fun i => pm i = p).image (kap a b)).card : ℝ) := by
     exact_mod_cast pair_image_card_le_sum G pm (kap a b)
@@ -181,7 +161,7 @@ theorem lattice_joint_five_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m) {R 
     · linarith
     · obtain ⟨i, hi, rfl⟩ := mem_image.mp hp
       have hP := (facts i hi).1
-      have hl := (shortR_spec (piv_ne_zero (orbit_pattern_first hba (l := i) (by omega)))).1
+      have hl := shortR_pos (orbit_pattern_first hba (l := i) (by omega))
       have hbox := lattice_box_rpow_le (H := H) (S := S) (Y := Y) (m := m) (n := n) hl hh1 hm2
       refine hc.trans ?_
       rw [add_zero]
@@ -214,10 +194,8 @@ theorem lattice_joint_five_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m) {R 
       8 * (S : ℝ) ^ ((m : ℝ) / h) * ∑ p ∈ Pset, ((shortR p : ℝ)⁻¹) ^ (2 * (m : ℝ) / h)) := by
     simp only [f, ← mul_sum, sum_add_distrib, sum_const, nsmul_eq_mul]
     ring
-  have hTcard := selectedStarts_card hba hmem hsT hT
-  change T ≤ 2 * G.card at hTcard
   have hTc : (T : ℝ) ≤ 8 * ((G.image fun i => (pm i, kap a b i)).card : ℝ) := by
-    exact_mod_cast (show T ≤ 8 * (G.image fun i => (pm i, kap a b i)).card by omega)
+    exact_mod_cast le_eight_mul_pair_image hba hmem hsT hT
   have hX1 : (1 : ℝ) ≤ X := by exact_mod_cast selectedMinorHeight_pos hba hmem hsT hT
   set W := (latticeWeightSlack a : ℝ)
   set O := (ordinaryPatternSlack a : ℝ)

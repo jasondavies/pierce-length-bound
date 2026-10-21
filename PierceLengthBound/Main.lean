@@ -159,6 +159,17 @@ lemma slowGrowth_const (c : ℕ) : SlowGrowth fun _ => c := by
   push_cast
   nlinarith
 
+lemma slowGrowth_add {F G : ℕ → ℕ} (hF : SlowGrowth F) (hG : SlowGrowth G) :
+    SlowGrowth (fun a => F a + G a) := by
+  intro η hη
+  obtain ⟨C, hC, hc⟩ := hF η hη
+  obtain ⟨D, hD, hd⟩ := hG η hη
+  refine ⟨C + D, by positivity, fun a ha => ?_⟩
+  have h1 := hc a ha
+  have h2 := hd a ha
+  push_cast
+  nlinarith
+
 lemma SlowGrowth.mul {f g : ℕ → ℕ} (hf : SlowGrowth f) (hg : SlowGrowth g) :
     SlowGrowth fun a => f a * g a := by
   intro η hη
@@ -173,10 +184,7 @@ lemma SlowGrowth.mul {f g : ℕ → ℕ} (hf : SlowGrowth f) (hg : SlowGrowth g)
 
 lemma SlowGrowth.pow {f : ℕ → ℕ} (hf : SlowGrowth f) (n : ℕ) : SlowGrowth fun a => f a ^ n := by
   induction n with
-  | zero =>
-    intro η hη
-    exact ⟨1, one_pos, fun a ha => by
-      simpa using Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le⟩
+  | zero => simpa using slowGrowth_const 1
   | succ n ih => simpa only [pow_succ] using ih.mul hf
 
 /-- **The divisor maximum on a polynomial range grows slowly**: `τ*(c aᵉ) ≪_η a^η`. -/

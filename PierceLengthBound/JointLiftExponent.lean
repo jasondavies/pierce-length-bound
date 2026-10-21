@@ -15,29 +15,13 @@ namespace PierceLengthBound.FixedDividend
 
 /-- A degree-seventeen graph bound with a box of controlled scaled height. -/
 theorem remainder_window_joint_box_exponent {T H X B A a C E D F K u v : ℕ}
-    (ha : 0 < a) (hA : 0 < A) (hcount : T ^ 17 ≤ K * X ^ 85 * B)
+    (ha : 0 < a) (hcount : T ^ 17 ≤ K * X ^ 85 * B)
     (hgap : H * (A * T) ≤ C * a) (hheight : X * a ^ 3 ≤ E * A ^ 4 * H ^ 6)
     (hbox : B * T ^ u ≤ F * a ^ v) (hdrop : T ^ 2 ≤ D * A) :
     T ^ (867 + u) ≤ K * E ^ 85 * C ^ 510 * F * D ^ 170 * a ^ (255 + v) := by
-  have h1 : T ^ 17 * a ^ 255 ≤ K * E ^ 85 * A ^ 340 * H ^ 510 * B := by
-    calc T ^ 17 * a ^ 255 ≤ (K * X ^ 85 * B) * a ^ 255 := by gcongr
-      _ = K * B * (X * a ^ 3) ^ 85 := by ring
-      _ ≤ K * B * (E * A ^ 4 * H ^ 6) ^ 85 := by gcongr
-      _ = _ := by ring
-  have h2 : (T ^ (527 + u) * A ^ 170) * (A ^ 340 * a ^ 255) ≤
-      (K * E ^ 85 * C ^ 510 * F * a ^ (255 + v)) * (A ^ 340 * a ^ 255) := by
-    calc _ = (T ^ 17 * a ^ 255) * (A * T) ^ 510 * T ^ u := by
-          simp only [pow_add]; ring
-      _ ≤ (K * E ^ 85 * A ^ 340 * H ^ 510 * B) * (A * T) ^ 510 * T ^ u := by gcongr
-      _ = K * E ^ 85 * A ^ 340 * (H * (A * T)) ^ 510 * (B * T ^ u) := by ring
-      _ ≤ K * E ^ 85 * A ^ 340 * (C * a) ^ 510 * (F * a ^ v) := by gcongr
-      _ = _ := by simp only [pow_add]; ring
-  have h3 := Nat.le_of_mul_le_mul_right h2 (by positivity : 0 < A ^ 340 * a ^ 255)
-  calc T ^ (867 + u) = T ^ (527 + u) * (T ^ 2) ^ 170 := by
-        simp only [pow_add]; ring
-    _ ≤ T ^ (527 + u) * (D * A) ^ 170 := by gcongr
-    _ = (T ^ (527 + u) * A ^ 170) * D ^ 170 := by ring
-    _ ≤ (K * E ^ 85 * C ^ 510 * F * a ^ (255 + v)) * D ^ 170 := by gcongr
+  have h := window_branch_exponent (L := 17) (q := 85) ha hcount hgap hheight hbox hdrop
+  calc T ^ (867 + u) = T ^ (17 + 10 * 85 + u) := by norm_num
+    _ ≤ _ := h
     _ = _ := by ring
 
 /-- The curvature box uses the uniform 68/q^3 bound and q >= a/(4A). -/
@@ -60,10 +44,11 @@ lemma curvature_height_times_cube {a A T C S H K : ℕ} (ha : 0 < a) (hA : 0 < A
     _ ≤ K * A ^ 3 * (C * a) ^ 3 := by gcongr
     _ = _ := by ring
 
-lemma max_curvature_height_times_cube {a A T C S H D : ℕ} (hA : 0 < A) (hD : 1 ≤ D)
-    (hgap : H * (A * T) ≤ C * a) (hS : S * T ^ 3 ≤ 4352 * C ^ 3 * a)
+/-- The larger of the gap and curvature heights times `T³` is linear in `a`. -/
+lemma max_curvature_height_times_cube {a A T C S H D K : ℕ} (hA : 0 < A) (hD : 1 ≤ D)
+    (hgap : H * (A * T) ≤ C * a) (hS : S * T ^ 3 ≤ K * C ^ 3 * a)
     (hdrop : T ^ 2 ≤ D * A) :
-    max H S * T ^ 3 ≤ (4352 * C ^ 3 + C) * D * a := by
+    max H S * T ^ 3 ≤ (K * C ^ 3 + C) * D * a := by
   have hH : H * T ^ 3 ≤ C * D * a := by
     apply Nat.le_of_mul_le_mul_right (c := A) ?_ hA
     calc H * T ^ 3 * A = (H * (A * T)) * T ^ 2 := by ring
@@ -71,9 +56,9 @@ lemma max_curvature_height_times_cube {a A T C S H D : ℕ} (hA : 0 < A) (hD : 1
       _ = _ := by ring
   rcases le_total H S with h | h
   · rw [max_eq_right h]
-    calc S * T ^ 3 ≤ 4352 * C ^ 3 * a := hS
-      _ = 4352 * C ^ 3 * 1 * a := by ring
-      _ ≤ (4352 * C ^ 3 + C) * D * a := by gcongr; omega
+    calc S * T ^ 3 ≤ K * C ^ 3 * a := hS
+      _ = K * C ^ 3 * 1 * a := by ring
+      _ ≤ (K * C ^ 3 + C) * D * a := by gcongr; omega
   · rw [max_eq_left h]
     exact hH.trans (by gcongr; omega)
 

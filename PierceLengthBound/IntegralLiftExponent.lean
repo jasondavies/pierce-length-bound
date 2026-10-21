@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.ConicWindow
 public import PierceLengthBound.FixedDividendSelection
+public import PierceLengthBound.WindowRealReduction
 
 /-! Exact exponent arithmetic for the additional integral Hankel coordinate.
 These implications retain the geometric graph-count estimate as a premise. -/
@@ -16,27 +17,14 @@ namespace PierceLengthBound.FixedDividend
 
 /-- The graph box bound and degree-ten count give exponent `151/513`. -/
 theorem remainder_window_integral_lift_exponent {T H X B A a C E D F K : ℕ}
-    (ha : 0 < a) (hA : 0 < A) (hcount : T ^ 10 ≤ K * X ^ 50 * B)
+    (ha : 0 < a) (hcount : T ^ 10 ≤ K * X ^ 50 * B)
     (hgap : H * (A * T) ≤ C * a) (hheight : X * a ^ 3 ≤ E * A ^ 4 * H ^ 6)
     (hbox : B * T ^ 3 ≤ F * a) (hdrop : T ^ 2 ≤ D * A) :
     T ^ 513 ≤ K * E ^ 50 * C ^ 300 * F * D ^ 100 * a ^ 151 := by
-  have h1 : T ^ 10 * a ^ 150 ≤ K * E ^ 50 * A ^ 200 * H ^ 300 * B := by
-    calc T ^ 10 * a ^ 150 ≤ (K * X ^ 50 * B) * a ^ 150 := by gcongr
-      _ = K * B * (X * a ^ 3) ^ 50 := by ring
-      _ ≤ K * B * (E * A ^ 4 * H ^ 6) ^ 50 := by gcongr
-      _ = _ := by ring
-  have h2 : (T ^ 313 * A ^ 100) * (A ^ 200 * a ^ 150) ≤
-      (K * E ^ 50 * C ^ 300 * F * a ^ 151) * (A ^ 200 * a ^ 150) := by
-    calc _ = (T ^ 10 * a ^ 150) * (A * T) ^ 300 * T ^ 3 := by ring
-      _ ≤ (K * E ^ 50 * A ^ 200 * H ^ 300 * B) * (A * T) ^ 300 * T ^ 3 := by gcongr
-      _ = K * E ^ 50 * A ^ 200 * (H * (A * T)) ^ 300 * (B * T ^ 3) := by ring
-      _ ≤ K * E ^ 50 * A ^ 200 * (C * a) ^ 300 * (F * a) := by gcongr
-      _ = _ := by ring
-  have h3 := Nat.le_of_mul_le_mul_right h2 (by positivity : 0 < A ^ 200 * a ^ 150)
-  calc T ^ 513 = T ^ 313 * (T ^ 2) ^ 100 := by ring
-    _ ≤ T ^ 313 * (D * A) ^ 100 := by gcongr
-    _ = (T ^ 313 * A ^ 100) * D ^ 100 := by ring
-    _ ≤ (K * E ^ 50 * C ^ 300 * F * a ^ 151) * D ^ 100 := by gcongr
+  have h := window_branch_exponent (L := 10) (q := 50) (u := 3) (v := 1) ha hcount hgap hheight
+    (by simpa only [pow_one] using hbox) hdrop
+  calc T ^ 513 = T ^ (10 + 10 * 50 + 3) := by norm_num
+    _ ≤ _ := h
     _ = _ := by ring
 
 /-- The selected integral-coordinate height in remainder-window notation. -/

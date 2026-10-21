@@ -34,6 +34,19 @@ theorem theta_eq (i : ℕ) : theta a b i = projθ (plk (Mi a b i)) := by
   simp [theta, projθ, plk, Mi, trip, minor3, Lz, U1z, U2z, sixL, pU1, pU2, rq, sq, kq, dq,
     Nat.add_assoc] <;> ring
 
+/-- Starts with the same pattern have the same projected invariants. -/
+lemma theta_eq_of_plk_eq {i : ℕ} {G : Finset ℕ} (hpat : ∀ l ∈ G, plk (Mi a b l) = plk (Mi a b i))
+    (l : ℕ) (hl : l ∈ G) : theta a b i = theta a b l := by
+  rw [theta_eq, theta_eq, hpat l hl]
+
+/-- An orbit's pattern has a nonzero first minor `Lz`. -/
+lemma orbit_pattern_first {l : ℕ} (hba : b < a) (hl : l + 5 < P a b) :
+    plk (Mi a b l) 0 ≠ 0 := by
+  have h := congrFun (theta_eq (a := a) (b := b) l) 0
+  simp only [theta, projθ, Matrix.cons_val_zero] at h
+  have := Lz_pos hba (i := l) hl
+  omega
+
 section Window
 
 /-- **The window bound with minor vectors.** -/

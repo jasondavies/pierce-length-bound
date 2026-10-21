@@ -39,9 +39,8 @@ theorem P_le_lattice_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
   let C₀ := latticeJointWindowBase m n
   let q := latticeJointWindowDeltaExponent m n
   let S := fun a => C₀ * (K a + 1) * tauMax (32 * a ^ 7) ^ q
-  have hconst := slowGrowth_const
-  have hK : SlowGrowth K := ((hconst 5).mul (slowGrowth_add_one hR)).pow (3 * h)
-  have hS : SlowGrowth S := ((hconst C₀).mul (slowGrowth_add_one hK)).mul
+  have hK : SlowGrowth K := ((slowGrowth_const 5).mul (slowGrowth_add_one hR)).pow (3 * h)
+  have hS : SlowGrowth S := ((slowGrowth_const C₀).mul (slowGrowth_add_one hK)).mul
     ((tauMax_slow 32 7).pow q)
   have hα : (5 : ℝ) / 17 ≤ latticeJointExponent m n := (le_max_left _ _).trans (le_max_left _ _)
   apply P_le_of_real_visits hS (by linarith : 0 ≤ latticeJointExponent m n)

@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.FixedDividendWeights
 public import PierceLengthBound.IntegralLiftPatternCount
+public import PierceLengthBound.RealPowerBounds
 
 /-!
 # Fractional lattice weights over patterns
@@ -21,28 +22,6 @@ the exterior lattice coordinates, `1/h` and `2m/h`, lie in this range.
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
-
-/-- Concavity: `∑ zᵢᵗ ≤ N^{1-t} (∑ zᵢ)ᵗ` for `0 ≤ t ≤ 1`. -/
-theorem sum_rpow_le_card_rpow_mul {ι : Type*} (s : Finset ι) (z : ι → ℝ)
-    (hz : ∀ i ∈ s, 0 ≤ z i) {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
-    ∑ i ∈ s, z i ^ t ≤ (s.card : ℝ) ^ (1 - t) * (∑ i ∈ s, z i) ^ t := by
-  rcases s.eq_empty_or_nonempty with rfl | hs
-  · simp only [sum_empty]; positivity
-  have hN : (0 : ℝ) < s.card := by exact_mod_cast hs.card_pos
-  have hw : ∑ _i ∈ s, (s.card : ℝ)⁻¹ = 1 := by
-    rw [sum_const, nsmul_eq_mul]; field_simp
-  have hj := (Real.concaveOn_rpow ht0 ht1).le_map_sum (t := s) (w := fun _ => (s.card : ℝ)⁻¹)
-    (p := z) (fun _ _ => by positivity) hw (fun i hi => Set.mem_Ici.mpr (hz i hi))
-  simp only [smul_eq_mul, ← mul_sum] at hj
-  have hsum : 0 ≤ ∑ i ∈ s, z i := sum_nonneg hz
-  rw [Real.mul_rpow (by positivity) hsum, Real.inv_rpow hN.le] at hj
-  have hsplit : (s.card : ℝ) ^ (1 - t) = (s.card : ℝ) * ((s.card : ℝ) ^ t)⁻¹ := by
-    rw [Real.rpow_sub hN, Real.rpow_one, div_eq_mul_inv]
-  rw [hsplit]
-  have := mul_le_mul_of_nonneg_left hj hN.le
-  rw [← mul_assoc (s.card : ℝ) (s.card : ℝ)⁻¹, mul_inv_cancel₀ hN.ne', one_mul] at this
-  linarith [show (s.card : ℝ) * ((s.card : ℝ) ^ t)⁻¹ * (∑ i ∈ s, z i) ^ t =
-    (s.card : ℝ) * (((s.card : ℝ) ^ t)⁻¹ * (∑ i ∈ s, z i) ^ t) by ring]
 
 /-- **Fractional lattice weights** (paper, `lem:weights`). For `0 ≤ t ≤ 1`,
 `∑_p λ_p^{-t} ≤ 3163861 τ² X^{5 - t/3}`. Here `3163861 = 14581 + 8 · 393660`: `14581` is the

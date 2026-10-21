@@ -124,6 +124,7 @@ public import PierceLengthBound.LatticeCurvature
 public import PierceLengthBound.LinearJointGraph
 public import PierceLengthBound.LatticeJointPointCount
 public import PierceLengthBound.LatticeJointPatternCount
+public import PierceLengthBound.RealPowerBounds
 public import PierceLengthBound.LatticeJointWeights
 public import PierceLengthBound.LatticeJointLocalEstimate
 public import PierceLengthBound.LatticeJointWindow

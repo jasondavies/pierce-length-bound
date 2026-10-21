@@ -363,10 +363,7 @@ theorem two_state_window_152 (hba : b < a) {s T A : ℕ}
       have e := congrFun (theta_eq (a := a) (b := b) i) 1
       simp only [theta, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_zero, projθ] at e
       simp only [pm]; rw [← e]; exact_mod_cast this
-    intro h0
-    have hle := piv_max (pm i) 6
-    rw [h0, abs_zero, abs_of_pos (by omega : (0 : ℤ) < pm i 6)] at hle
-    omega
+    exact piv_ne_zero (by omega : pm i 6 ≠ 0)
   have hτX : ∀ m ∈ Icc 1 X, m.divisors.card ≤ τ0 := fun m hm =>
     tau_le_tauMax ((mem_Icc.mp hm).2.trans P3)
   have hSc : S.card ≤ 14581 * X ^ 5 * τ0 := by

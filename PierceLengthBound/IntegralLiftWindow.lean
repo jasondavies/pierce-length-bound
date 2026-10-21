@@ -107,7 +107,7 @@ theorem window_26163_of_integral_lift_count {a A T Δ K : ℕ}
       have hbox := max_lift_height_times_cube (by omega : 0 < A)
         (show 1 ≤ 8 * Δ by omega) hH hS hT2
       have hm := remainder_window_integral_lift_exponent
-        (by omega : 0 < a) (by omega : 0 < A) h hH hX hbox hT2
+        (by omega : 0 < a) h hH hX hbox hT2
       have h' : T ^ 513 ≤ B * a ^ 151 := by
         calc T ^ 513 ≤ K * 3609600 ^ 50 * 56 ^ 300 *
             ((896 * 56 ^ 3 + 56) * (8 * Δ)) * (8 * Δ) ^ 100 * a ^ 151 := hm

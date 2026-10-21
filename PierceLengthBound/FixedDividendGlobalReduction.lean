@@ -29,14 +29,8 @@ def LocalWindowCount (K : ℕ → ℕ) : Prop :=
     T ^ 6 ≤ K a * selectedGapHeight a A T ^ 3 * selectedMinorHeight a A T ^ 29
 
 lemma slowGrowth_add_one {K : ℕ → ℕ} (hK : SlowGrowth K) :
-    SlowGrowth (fun a => K a + 1) := by
-  intro η hη
-  obtain ⟨C, hC, h⟩ := hK η hη
-  refine ⟨C + 1, by positivity, fun a ha => ?_⟩
-  have hpow : 1 ≤ (a : ℝ) ^ η := Real.one_le_rpow (by exact_mod_cast ha) hη.le
-  have := h a ha
-  push_cast
-  nlinarith
+    SlowGrowth (fun a => K a + 1) :=
+  slowGrowth_add hK (slowGrowth_const 1)
 
 /-- Every remainder window has the desired 305th-power bound, provided the local
 count is available with the indicated slack. -/

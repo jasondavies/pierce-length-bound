@@ -12,6 +12,7 @@ import argparse
 from pathlib import Path
 import json
 import re
+import shlex
 import subprocess
 import sys
 import tomllib
@@ -23,11 +24,11 @@ DEPENDENCY_NAME = "ccdn_dimension_growth"
 DEPENDENCY_URL = "https://github.com/jasondavies/ccdn-linear-growth"
 DEPENDENCY_DIRECTORY = ROOT / ".lake" / "packages" / DEPENDENCY_NAME
 FULL_SHA = re.compile(r"[0-9a-f]{40}")
-# Files that must cite the full pinned SHA, and any GitHub tree/commit link to CCDN in them
-# must use it.
+# Files that must cite the full pinned SHA, and any GitHub tree/commit/blob link to CCDN in
+# them must use it.
 CITING_FILES = ("README.md", "formalization.yaml")
 PAPER = Path("paper") / "pierce_length_bound.tex"
-CCDN_LINK = re.compile(r"ccdn-linear-growth/(?:tree|commit)/([0-9a-f]{7,40})")
+CCDN_LINK = re.compile(r"ccdn-linear-growth/(?:tree|commit|blob)/([0-9a-f]{7,40})")
 
 
 def named_entry(entries: list[dict], name: str, location: str) -> dict:
@@ -114,11 +115,15 @@ def check_checkout(revision: str, mathlib: str) -> None:
            read_toolchain(ROOT))
     expect(f"{dependency}/lake-manifest.json", "Mathlib rev",
            mathlib_revision(config, manifest, dependency), mathlib)
-    subprocess.run(
+    # Capture only stderr, so that it can be reported on failure; stdout passes through.
+    provenance = subprocess.run(
         [sys.executable, str(dependency / "scripts" / "check-provenance.py")],
         cwd=dependency,
         check=True,
+        stderr=subprocess.PIPE,
+        text=True,
     )
+    sys.stderr.write(provenance.stderr)
 
 
 def main() -> int:
@@ -136,6 +141,11 @@ def main() -> int:
         print(f"Curve-counting dependency check failed: {error}", file=sys.stderr)
         return 1
     except subprocess.CalledProcessError as error:
+        print(f"Curve-counting dependency check failed: `{shlex.join(map(str, error.cmd))}` "
+              f"exited with status {error.returncode}", file=sys.stderr)
+        if error.stderr:
+            sys.stderr.write(error.stderr if error.stderr.endswith("\n")
+                             else error.stderr + "\n")
         return error.returncode
     print(f"Curve-counting dependency metadata verified: {DEPENDENCY_URL} at {revision}.")
     if args.checkout:

@@ -1,7 +1,6 @@
 name: Full Palomar mechanical preflight
 
-# Run manually after publishing and pinning the CCDN Git dependency and
-# pushing the intended snapshot to the public repository.
+# Run manually after pushing the intended snapshot to the public repository.
 # This verifies the selected commit; it does not submit or register the result.
 on:
   workflow_dispatch:

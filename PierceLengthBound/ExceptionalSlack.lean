@@ -58,12 +58,7 @@ def exceptionalPatternSlack (a : ℕ) : ℕ :=
   88574872 * (Nat.log 2 (3 * 10 ^ 16 * a ^ 7) + 1)
 
 theorem exceptionalPatternSlack_slow : SlowGrowth exceptionalPatternSlack := by
-  have hc : SlowGrowth (fun _ : ℕ => 88574872) := by
-    intro η hη
-    refine ⟨88574872, by norm_num, fun a ha => ?_⟩
-    have h := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    norm_num
-    linarith
+  have hc : SlowGrowth (fun _ : ℕ => 88574872) := slowGrowth_const _
   exact hc.mul (polynomial_log_slow (3 * 10 ^ 16) 7)
 
 /-- The exceptional-pattern contribution now has a proved `X⁴` coefficient

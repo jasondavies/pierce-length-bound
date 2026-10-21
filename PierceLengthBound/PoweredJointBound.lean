@@ -41,13 +41,8 @@ theorem P_le_powered_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
   let C₀ := poweredJointWindowBase m n L
   let q := 17 + 10 * L + 5 * n + m
   let S := fun a => C₀ * (K a + 1) * tauMax (32 * a ^ 7) ^ q
-  have hconst (c : ℕ) : SlowGrowth (fun _ : ℕ => c) := by
-    intro η hη
-    refine ⟨c + 1, by positivity, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    nlinarith [show (0 : ℝ) ≤ c by positivity]
-  have hK : SlowGrowth K := ((hconst 3).mul (slowGrowth_add_one hR)).pow L
-  have hS : SlowGrowth S := ((hconst C₀).mul (slowGrowth_add_one hK)).mul
+  have hK : SlowGrowth K := ((slowGrowth_const 3).mul (slowGrowth_add_one hR)).pow L
+  have hS : SlowGrowth S := ((slowGrowth_const C₀).mul (slowGrowth_add_one hK)).mul
     ((tauMax_slow 32 7).pow q)
   have hα := poweredJointExponent_ge_base (n := n) hm
   apply P_le_of_real_visits hS (by linarith : 0 ≤ poweredJointExponent m n)

@@ -346,10 +346,10 @@ noncomputable def piv (p : Fin 10 → ℤ) : Fin 10 :=
 lemma piv_max (p : Fin 10 → ℤ) (t : Fin 10) : |p t| ≤ |p (piv p)| :=
   (Classical.choose_spec (exists_max_image univ (fun t => |p t|) univ_nonempty)).2 t (mem_univ t)
 
-/-- The pivot entry is nonzero as soon as `p 0` is. -/
-lemma piv_ne_zero {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0) : p (piv p) ≠ 0 := by
+/-- The pivot entry is nonzero as soon as some entry is. -/
+lemma piv_ne_zero {p : Fin 10 → ℤ} {t : Fin 10} (h0 : p t ≠ 0) : p (piv p) ≠ 0 := by
   intro hz
-  have := piv_max p 0
+  have := piv_max p t
   rw [hz, abs_zero] at this
   exact h0 (abs_eq_zero.mp (le_antisymm this (abs_nonneg _)))
 

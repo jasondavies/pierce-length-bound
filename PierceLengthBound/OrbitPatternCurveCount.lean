@@ -30,12 +30,7 @@ theorem selected_pattern_curve_gap_count_slow :
           (selectedGapHeight a A T : ℝ) ^ (1 / (2 : ℝ)) := by
   classical
   obtain ⟨R, hR, hcount⟩ := selected_curve_gap_count_slow
-  have h24 : SlowGrowth (fun _ : ℕ => 24) := by
-    intro η hη
-    refine ⟨24, by norm_num, fun a ha => ?_⟩
-    have := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    norm_num
-    linarith
+  have h24 : SlowGrowth (fun _ : ℕ => 24) := slowGrowth_const _
   refine ⟨fun a => 24 * R a, h24.mul hR, ?_⟩
   intro a b s T A i hba hmem hsT hT hi hscale G hG hθ
   obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)

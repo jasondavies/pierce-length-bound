@@ -7,8 +7,9 @@ set -euo pipefail
 # comparator` that ships in this project's own toolchain, replaying the proof
 # through Lean's kernel and the toolchain's bundled independent kernels
 # (NanoDa and con-ron). Nothing is built from a pin; everything that judges
-# comes from `lean-toolchain`, which Palomar requires to be v4.35.0-rc2 or
-# later.
+# comes from `lean-toolchain`, which Palomar requires to be at least
+# `minimum_toolchain_tag`.
+minimum_toolchain_tag=v4.35.0-rc2
 repository_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$repository_root"
 
@@ -24,7 +25,7 @@ prefix=$(lean --print-prefix)
 for tool in lake leanexport leanchecker nanoda_bin con-ron; do
   if [ ! -x "$prefix/bin/$tool" ]; then
     echo "error: toolchain $toolchain does not bundle $tool" >&2
-    echo "Palomar requires leanprover/lean4:v4.35.0-rc2 or later" >&2
+    echo "Palomar requires leanprover/lean4:$minimum_toolchain_tag or later" >&2
     exit 1
   fi
 done

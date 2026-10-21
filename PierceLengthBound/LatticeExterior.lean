@@ -13,7 +13,8 @@ public import PierceLengthBound.LatticeCount
 Let `b₁, b₂, b₃` be a reduced basis of a lattice `Λ ⊆ ℤ³`, and let `x, y ∈ Λ` have
 coordinates `ξ, η`. The cross product `x × y` has the integer coordinates `c = ξ × η` in the
 basis `b₂ × b₃, b₃ × b₁, b₁ × b₂` (`cross3_coords`), and `bᵢ · (x × y) = Δ cᵢ` with
-`Δ = det(b₁, b₂, b₃)`. Cauchy–Schwarz and the reduction bound `27 |b₁|²|b₂|²|b₃|² ≤ 64 Δ²`
+`Δ = det(b₁, b₂, b₃)`. (The paper writes `β_i`, `V`, `ξ, ζ` and `λ` for `bᵢ`, `Δ`, `ξ, η` and
+`R`.) Cauchy–Schwarz and the reduction bound `27 |b₁|²|b₂|²|b₃|² ≤ 64 Δ²`
 (`reduced_basis`, paper `lem:reduce`) then give `27 R⁴ cᵢ² ≤ 64 |x × y|²` when every
 `|bⱼ| ≥ R` (`wcoord_spec`, paper `lem:exterior`). The pattern lattice takes `R = λ = shortR p`,
 so the box of the cross product shrinks by the factor `λ²`.
@@ -114,23 +115,44 @@ theorem wcoord_spec {b1 b2 b3 x y : Fin 3 → ℤ} {R : ℕ} (hD : det3 b1 b2 b3
   · exact key _ (nrm3 b1) (nrm3 b2) _ hn3 (d3 ▸ dot3_sq_le b3 w)
       (by linarith [show nrm3 b3 * nrm3 b1 * nrm3 b2 = nrm3 b1 * nrm3 b2 * nrm3 b3 by ring]) n1 n2
 
-/-- **The sup-norm form.** If every entry of `x × y` is at most `S` and every basis vector has
-length `≥ R`, the exterior coordinates satisfy `3 R² |cᵢ| ≤ 8 S`. -/
-theorem wcoord_bound {b1 b2 b3 x y : Fin 3 → ℤ} {R S : ℕ} (hD : det3 b1 b2 b3 ≠ 0)
-    (hdx : det3 b1 b2 b3 ∣ det3 x b2 b3 ∧ det3 b1 b2 b3 ∣ det3 b1 x b3 ∧
-      det3 b1 b2 b3 ∣ det3 b1 b2 x)
-    (hdy : det3 b1 b2 b3 ∣ det3 y b2 b3 ∧ det3 b1 b2 b3 ∣ det3 b1 y b3 ∧
-      det3 b1 b2 b3 ∣ det3 b1 b2 y)
-    (hred : 27 * (nrm3 b1 * nrm3 b2 * nrm3 b3) ≤ 64 * det3 b1 b2 b3 ^ 2) (hR : (0 : ℤ) < R)
-    (n1 : (R : ℤ) ^ 2 ≤ nrm3 b1) (n2 : (R : ℤ) ^ 2 ≤ nrm3 b2) (n3 : (R : ℤ) ^ 2 ≤ nrm3 b3)
-    (hS : ∀ a, |cross3 x y a| ≤ S) (i : Fin 3) :
-    3 * (R : ℤ) ^ 2 * |wcoord b1 b2 b3 x y i| ≤ 8 * S := by
-  have h := (wcoord_spec hD hdx hdy hred hR n1 n2 n3).2.2 i
+/-- **The sup-norm form.** If `27 R⁴ cᵢ² ≤ 64 |w|²` (the last part of `wcoord_spec`, with
+`w = x × y`) and every entry of `w` is at most `S`, then `3 R² |cᵢ| ≤ 8 S`. -/
+theorem wcoord_bound {c w : Fin 3 → ℤ} {R S : ℕ}
+    (hc : ∀ i, 27 * ((R : ℤ) ^ 4 * c i ^ 2) ≤ 64 * nrm3 w) (hS : ∀ a, |w a| ≤ S) (i : Fin 3) :
+    3 * (R : ℤ) ^ 2 * |c i| ≤ 8 * S := by
+  have h := hc i
   have hw := nrm3_le_of_abs_le hS
-  have hsq : (3 * (R : ℤ) ^ 2 * |wcoord b1 b2 b3 x y i|) ^ 2 ≤ (8 * (S : ℤ)) ^ 2 := by
-    have : (3 * (R : ℤ) ^ 2 * |wcoord b1 b2 b3 x y i|) ^ 2 =
-        9 * ((R : ℤ) ^ 4 * wcoord b1 b2 b3 x y i ^ 2) := by rw [mul_pow, sq_abs]; ring
+  have hsq : (3 * (R : ℤ) ^ 2 * |c i|) ^ 2 ≤ (8 * (S : ℤ)) ^ 2 := by
+    have : (3 * (R : ℤ) ^ 2 * |c i|) ^ 2 = 9 * ((R : ℤ) ^ 4 * c i ^ 2) := by
+      rw [mul_pow, sq_abs]; ring
     nlinarith
   exact (sq_le_sq₀ (by positivity) (by positivity)).mp hsq
+
+/-! ### Binet–Cauchy and cofactor rows -/
+
+/-- Binet–Cauchy in `ℤ³`. -/
+lemma binet_cauchy3 (a b x y : Fin 3 → ℤ) :
+    dot3 a x * dot3 b y - dot3 b x * dot3 a y = dot3 (cross3 a b) (cross3 x y) := by
+  simp only [dot3, cross3_zero, cross3_one, cross3_two]; ring
+
+/-- The matrix of cofactor rows `l₁ × l₂, l₂ × l₀, l₀ × l₁`. -/
+def cofRows (l0 l1 l2 : Fin 3 → ℤ) : Matrix (Fin 3) (Fin 3) ℤ :=
+  Matrix.of ![cross3 l1 l2, cross3 l2 l0, cross3 l0 l1]
+
+/-- `det Cof(L) = det(L)²`. -/
+lemma cofRows_det (l0 l1 l2 : Fin 3 → ℤ) : (cofRows l0 l1 l2).det = det3 l0 l1 l2 ^ 2 := by
+  rw [Matrix.det_fin_three]
+  simp only [cofRows, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+    Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons,
+    cross3_zero, cross3_one, cross3_two, det3]
+  ring
+
+/-- The determinant of the matrix with rows `b₁, b₂, b₃`. -/
+lemma det_of_rows3 (b1 b2 b3 : Fin 3 → ℤ) :
+    (Matrix.of ![b1, b2, b3]).det = det3 b1 b2 b3 := by
+  rw [Matrix.det_fin_three]
+  simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
+    Matrix.head_cons, Matrix.tail_cons, det3]
+  ring
 
 end PierceLengthBound

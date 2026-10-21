@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Check that every list of the selected theorems matches comparator.json, in order.
 
-comparator.json `theorem_names` is the source of truth. The same names, in the same
-order, must be the `theorem` declarations of the Challenge module, the first
-`#print axioms` checks in Axioms.lean, the `lean` entries of the formalization.yaml
-alignment, and the theorems displayed in README.md's Lean block.
+comparator.json `theorem_names` is the source of truth and must be nonempty. The same
+names, in the same order, must be the `theorem` declarations of the Challenge module, the
+first `#print axioms` checks in Axioms.lean, the `lean` entries of the formalization.yaml
+alignment, and the theorems in the first Lean code block after README.md's "Main theorem
+statements" heading (at any heading level).
 """
 import json
 import re
@@ -12,7 +13,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-THEOREM = re.compile(r"^theorem\s+(\S+)", re.MULTILINE)
+# A theorem name ends at the first whitespace, colon or binder opener.
+THEOREM = re.compile(r"^theorem\s+([^\s:({\[]+)", re.MULTILINE)
 NAMESPACE = re.compile(r"^namespace\s+(\S+)", re.MULTILINE)
 # The expected message names the declaration in full; `#print axioms` may abbreviate it.
 AXIOM_CHECK = re.compile(
@@ -20,6 +22,7 @@ AXIOM_CHECK = re.compile(
     re.DOTALL,
 )
 ALIGNMENT_LEAN = re.compile(r"^\s+lean:\s*\"?([^\"\s]+)\"?\s*$", re.MULTILINE)
+README_HEADING = re.compile(r"^#+\s+Main theorem statements\s*$", re.MULTILINE)
 README_LEAN_BLOCK = re.compile(r"^```lean\n(.*?)^```", re.MULTILINE | re.DOTALL)
 
 
@@ -51,19 +54,28 @@ def alignment_entries(path: Path) -> list[str]:
 
 
 def readme_theorems(path: Path) -> list[str]:
-    blocks = README_LEAN_BLOCK.findall(path.read_text(encoding="utf-8"))
-    return [name for block in blocks for name in THEOREM.findall(block)]
+    text = path.read_text(encoding="utf-8")
+    heading = README_HEADING.search(text)
+    if heading is None:
+        raise ValueError(f"{path.name}: no \"Main theorem statements\" heading")
+    block = README_LEAN_BLOCK.search(text, heading.end())
+    if block is None:
+        raise ValueError(f"{path.name}: no ```lean block after \"Main theorem statements\"")
+    return THEOREM.findall(block.group(1))
 
 
 def main() -> int:
     config = json.loads((ROOT / "comparator.json").read_text(encoding="utf-8"))
     expected = config["theorem_names"]
+    if not isinstance(expected, list) or not expected:
+        raise ValueError("comparator.json: theorem_names must be a nonempty list")
     challenge = ROOT / (config["challenge_module"].replace(".", "/") + ".lean")
     lists = {
         challenge.name + " theorems": challenge_theorems(challenge),
-        "Axioms.lean first #print axioms checks": axiom_checks(ROOT / "Axioms.lean")[:len(expected)],
+        "Axioms.lean first #print axioms checks":
+            axiom_checks(ROOT / "Axioms.lean")[:len(expected)],
         "formalization.yaml alignment": alignment_entries(ROOT / "formalization.yaml"),
-        "README.md Lean block": readme_theorems(ROOT / "README.md"),
+        "README.md main theorem statements": readme_theorems(ROOT / "README.md"),
     }
     failed = False
     for source, found in lists.items():

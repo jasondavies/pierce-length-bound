@@ -76,12 +76,7 @@ def integerValueSlack (d C e a : ℕ) : ℕ :=
   2 * d * tauMax ((2 * d).factorial * C ^ (2 * d) * a ^ (e * (2 * d)))
 
 theorem integerValueSlack_slow (d C e : ℕ) : SlowGrowth (integerValueSlack d C e) := by
-  have hc : SlowGrowth (fun _ : ℕ => 2 * d) := by
-    intro η hη
-    refine ⟨2 * d + 1, by positivity, fun a ha => ?_⟩
-    have hp := Real.one_le_rpow (by exact_mod_cast ha : (1 : ℝ) ≤ a) hη.le
-    push_cast
-    nlinarith [show (0 : ℝ) ≤ d from Nat.cast_nonneg d]
+  have hc : SlowGrowth (fun _ : ℕ => 2 * d) := slowGrowth_const _
   exact hc.mul (tauMax_slow ((2 * d).factorial * C ^ (2 * d)) (e * (2 * d)))
 
 /-- Polynomial coefficient height yields the required subpolynomial count. -/

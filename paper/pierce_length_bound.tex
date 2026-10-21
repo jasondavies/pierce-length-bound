@@ -46,9 +46,10 @@ integer determinants as coordinates raises the degree of these curves while
 keeping the coordinates small. A curve-counting theorem whose constants do not
 depend on the coefficients of the curve then bounds the number of segments
 in each group. Raising the added coordinates to suitable powers and balancing
-their sizes gives the exponent $\alpha_*=(1310-\sqrt{655})/4365$. Finally, the
-drop and increment rows of a segment lie in a rank-three lattice determined by its group.
-Writing these rows in a reduced basis of the lattice divides the curvature coordinates by
+their sizes gives the exponent $\alpha_*=(1310-\sqrt{655})/4365$. Finally, restricted to
+three pivot columns, the rows of drops and of gaps (quotient increments) of a segment lie in
+a rank-three lattice determined by its group.
+Writing them in a reduced basis of the lattice divides the curvature coordinates by
 the square of its minimum, and few groups have a short vector; this gives $\gamma_*$.
 We also prove the elementary bound $P(a,b)\ll_\varepsilon a^{3/10+\varepsilon}$, a bound for
 orbits with few rises in their quotient increments, and positivity and integrality of
@@ -184,9 +185,10 @@ pattern. Optimizing over the ratio $n/m$ gives $\alpha_*$
 (Section~\ref{sec:joint}).
 
 The box of side $\max(3H,S^m,Y^n)$ is the same for every pattern, and
-Section~\ref{sec:lattice} refines it. The drop and increment rows of the matrix of an
-index $i$ lie in a rank-three lattice $\Lambda_p$ determined by the pattern $p$ of $i$.
-Let $\lambda(p)$ be the sup norm of a shortest nonzero vector of $\Lambda_p$. In a reduced
+Section~\ref{sec:lattice} refines it. The pattern $p$ of an index $i$ determines three pivot
+columns of its matrix, and the pivot parts (the entries in these columns) of the drop and gap
+(quotient increment) rows lie in a rank-three lattice $\Lambda_p\subseteq\mathbb Z^3$.
+Let $\lambda(p)$ be the least sup norm of a nonzero vector of $\Lambda_p$. In a reduced
 basis of $\Lambda_p$ the curvature coordinates become integers of size
 $O(S/\lambda(p)^2)$, and few patterns have a short vector:
 $\sum_p\lambda(p)^{-t}\ll a^{o(1)}X^{5-t/3}$ for $0\le t\le1$. The change of basis is
@@ -1087,25 +1089,27 @@ $a\le4Aq$.
 
 \begin{proposition}[Minor vectors]\label{prop:minorvec}
 The number of vectors of minors of integer $3\times5$ matrices with all coordinates in $[-X,X]$ is
-at most $1+20\sum_{m\le X}729\,m^4\tau(m)\ll X^{5+o(1)}$.
+at most $1+20\sum_{\kappa\le X}729\,\kappa^4\tau(\kappa)\ll X^{5+o(1)}$.
 \end{proposition}
 
 \begin{proof}
-For a nonzero vector $p$ choose a pivot $\pi$ with $|p_\pi|=|m|$ maximal, and let $c_4,c_5$ be
-the two columns outside $\pi$. Let $u_a$ ($v_a$) be the minor with the $a$-th pivot column replaced
-by $c_4$ ($c_5$), with the sign of the column permutation. By Cramer's rule and the Pl\"ucker
-relations, the remaining three minors satisfy $m\,p_{w_a}=\pm(u\times v)_a$ (thirty polynomial
-identities, checked symbolically). So $p$ is determined by $(\pi,\operatorname{sgn}m,|m|,u,v)$,
-where $|u_a|,|v_a|\le|m|$ and $|m|$ divides every coordinate of $u\times v$.
+For a nonzero vector $p$ choose a pivot $\pi$ with $\kappa=|p_\pi|$ maximal, and let $c_4,c_5$ be
+the two columns outside $\pi$. Let $u_r$ ($v_r$) be the minor with the $r$-th pivot column
+replaced by $c_4$ ($c_5$), with the sign of the column permutation. By Cramer's rule and the
+Pl\"ucker relations, the remaining three minors satisfy $p_\pi\,p_{w_r}=\pm(u\times v)_r$
+(thirty polynomial identities, checked symbolically). So $p$ is determined by
+$(\pi,\operatorname{sgn}p_\pi,\kappa,u,v)$, where $|u_r|,|v_r|\le\kappa$ and $\kappa$ divides
+every coordinate of $u\times v$.
 
-Fix $m\ge1$ and $u$, and let $g=\gcd(m,u_1,u_2,u_3)$, $n=m/g$, $u=gu_0$. By B\'ezout there are
-$c\in\mathbb Z^3$ and $x\in\mathbb Z$ with $c\cdot u_0+xn=1$. If $m\mid u\times v$, then
-$n\mid u_0\times v$, and the identity
-$v-(c\cdot v)u_0=xn\,v+c\times(v\times u_0)$ shows $v\equiv(c\cdot v)u_0\pmod n$. Hence $v$ lies
-in one of $n$ classes modulo $n$, each meeting $[-m,m]^3$ in at most $(3g)^3$ points: at most
-$27mg^2$ choices. Summing over $u$, grouped by $g=d\mid m$, gives
-$\sum_u g^2\le\sum_{d\mid m}d^2(3m/d)^3\le27m^3\tau(m)$, so at most $729m^4\tau(m)$ pairs
-$(u,v)$. There are ten pivots and two signs.
+Fix $\kappa\ge1$ and $u$, and let $g=\gcd(\kappa,u_1,u_2,u_3)$, $\ell=\kappa/g$, $u=gu_0$. By
+B\'ezout there are $z\in\mathbb Z^3$ and $t\in\mathbb Z$ with $z\cdot u_0+t\ell=1$. If
+$\kappa\mid u\times v$, then $\ell\mid u_0\times v$, and the identity
+$v-(z\cdot v)u_0=t\ell\,v+z\times(v\times u_0)$ shows $v=\mu u_0+\ell y$ with $\mu=z\cdot v$ and
+$y\in\mathbb Z^3$. Hence $v$ lies in one of $\ell$ classes modulo $\ell$, each meeting
+$[-\kappa,\kappa]^3$ in at most $(3g)^3$ points: at most $27\kappa g^2$ choices. Summing over
+$u$, grouped by $g=e\mid\kappa$, gives
+$\sum_u g^2\le\sum_{e\mid\kappa}e^2(3\kappa/e)^3\le27\kappa^3\tau(\kappa)$, so at most
+$729\kappa^4\tau(\kappa)$ pairs $(u,v)$. There are ten pivots and two signs.
 \end{proof}
 
 \section{Joint integer invariants and the optimized bound}\label{sec:joint}
@@ -2082,11 +2086,14 @@ where $S'$ differs from $S$ only in its constant (Lemma~\ref{lem:allcurv}). In e
 replaced by $H/X^{1/3}$ and $S$ by $S/X^{2/3}$, while $Y$ is unchanged. The node term stays
 below the critical exponent, so of the two fractions balanced in the proof of
 Theorem~\ref{thm:joint} only the curvature fraction improves, and the crossing moves from
-$\alpha_*=0.2942513\ldots$ to $\gamma_*=0.2942294\ldots$.
+$\alpha_*=0.2942513\ldots$ to $\gamma_*=0.2942294\ldots$. Every pattern has
+$\lambda(p)\ll X^{1/3}$ (Lemma~\ref{lem:index}), and the weighted count of
+Lemma~\ref{lem:weights} shows that this saving is available on average: the patterns with an
+unusually short vector are few enough to pay for their larger boxes.
 
 Section~\ref{sec:latticepattern} attaches to each pattern $p$ a rank-three lattice
-$\Lambda_p\subseteq\mathbb Z^3$ that contains the pivot parts of the rows of
-$\widehat{\mathcal M}_i$, and gives it a reduced basis. Section~\ref{sec:latticeshort} shows
+$\Lambda_p\subseteq\mathbb Z^3$ that contains the restrictions of the rows of
+$\widehat{\mathcal M}_i$ to three pivot columns, and gives it a reduced basis. Section~\ref{sec:latticeshort} shows
 that few patterns have a short vector in $\Lambda_p$. Section~\ref{sec:latticeexterior} writes
 the nodes and the curvature coordinates in the reduced basis.
 Section~\ref{sec:latticegraph} checks that this linear change of coordinates keeps the degree
@@ -2095,18 +2102,24 @@ patterns and optimizes the exponent.
 
 \subsection{The lattice of a pattern}\label{sec:latticepattern}
 Let $p\ne0$ be the minor vector of a $3\times5$ integer matrix $\mathcal M$, with pivot $\pi$
-and $u$, $v$ as in the proof of Proposition~\ref{prop:minorvec}; so $|p_\pi|$ is maximal among
-the coordinates of $p$. Put $\kappa=|p_\pi|\ge1$, and let $j_1<j_2<j_3$ be the pivot columns
-and $j_4<j_5$ the other two. Let $\Lambda_p\subseteq\mathbb Z^3$ be the subgroup of $x$ with
+as in the proof of Proposition~\ref{prop:minorvec}; so $|p_\pi|$ is maximal among the
+coordinates of $p$. Put $\kappa=|p_\pi|\ge1$, let $j_1<j_2<j_3$ be the pivot columns and
+$j_4<j_5$ the other two, and call $x_\pi=(x_{j_1},x_{j_2},x_{j_3})$ the \emph{pivot part} of a
+row $x$ of $\mathcal M$. Let $u,v\in\mathbb Z^3$ be as in that proof: $u_r$ ($v_r$) is the minor
+with the $r$-th pivot column replaced by column $j_4$ ($j_5$), with the sign of the column
+permutation. So the coordinates of $u$ and $v$ are, up to sign, coordinates of $p$, and
+$p_\pi x_{j_4}=u\cdot x_\pi$ and $p_\pi x_{j_5}=v\cdot x_\pi$ for every row $x$
+(Lemma~\ref{lem:lift}). Let $\Lambda_p\subseteq\mathbb Z^3$ be the subgroup of $x$ with
 $\kappa\mid u\cdot x$ and $\kappa\mid v\cdot x$. It contains $\kappa\mathbb Z^3$. Write $|x|$
 for the Euclidean norm and $|x|_\infty$ for the sup norm, and let the \emph{minimum}
 $\lambda(p)$ be the least sup norm of a nonzero vector of $\Lambda_p$. Then
 $|x|\ge\lambda(p)$ for every nonzero $x\in\Lambda_p$.
 
 \begin{lemma}[Lifting]\label{lem:lift}
-For a column $l$, let $L_l\in\mathbb Z^3$ be $p_\pi e_a$ if $l=j_a$ is a pivot column, $u$ if
-$l=j_4$ and $v$ if $l=j_5$. For every row $x$ of $\mathcal M$ and every column $l$,
-$p_\pi x_l=L_l\cdot(x_{j_1},x_{j_2},x_{j_3})$. Moreover $\det(L_0,L_1,L_2)=p_\pi^2p_{012}$,
+For a column $l$, let $L_l\in\mathbb Z^3$ be $p_\pi\mathbf e_r$ if $l=j_r$ is a pivot column,
+$u$ if $l=j_4$ and $v$ if $l=j_5$, where $\mathbf e_1,\mathbf e_2,\mathbf e_3$ is the standard
+basis. For every row $x$ of $\mathcal M$ and every column $l$, $p_\pi x_l=L_l\cdot x_\pi$.
+Moreover $\det(L_0,L_1,L_2)=p_\pi^2p_{012}$,
 and $|L_l|_\infty\le\kappa$.
 \end{lemma}
 
@@ -2114,27 +2127,26 @@ and $|L_l|_\infty\le\kappa$.
 The rows $L_l$ are the rows of $\mathcal M^{\mathsf T}\operatorname{adj}(\mathcal M_\pi^{\mathsf
 T})$, where $\mathcal M_\pi$ is the pivot $3\times3$ block. This is Cramer's rule. Both
 identities are polynomial identities in the fifteen entries, checked symbolically for each of
-the ten pivots. The coordinates of $u$ and $v$ are, up to sign, coordinates of $p$, so the
-bound holds by maximality of $|p_\pi|$.
+the ten pivots. The bound holds because the coordinates of $u$ and $v$ are, up to sign,
+coordinates of $p$, and $|p_\pi|$ is maximal.
 \end{proof}
 
-So the pivot parts $x'=(x_{j_1},x_{j_2},x_{j_3})$ of the rows of $\mathcal M$ lie in
-$\Lambda_p$.
+So the pivot parts $x_\pi$ of the rows of $\mathcal M$ lie in $\Lambda_p$.
 
 \begin{lemma}[Index]\label{lem:index}
-If $t$ is a nonnegative integer and $(t+1)^3>\kappa$, then $\lambda(p)\le t$.
+If $K$ is a nonnegative integer and $(K+1)^3>\kappa$, then $\lambda(p)\le K$.
 \end{lemma}
 
 \begin{proof}
 Write $g=\gcd(\kappa,u)$, $\ell=\kappa/g$ and $u=gu_0$. The proof of
-Proposition~\ref{prop:minorvec} gives $v=\mu u_0+\ell w$ with $\mu\in\mathbb Z$ and
-$w\in\mathbb Z^3$. Put
-$\psi(x)=\bigl(u_0\cdot x\bmod \ell,\ (\mu\lfloor u_0\cdot x/\ell\rfloor+w\cdot x)\bmod g\bigr)$,
-which takes at most $\ell g=\kappa$ values. The box $[0,t]^3$ has $(t+1)^3>\kappa$ points, so
-by pigeonhole there are points $x\ne x'$ of $[0,t]^3$ with $\psi(x)=\psi(x')$. Then
+Proposition~\ref{prop:minorvec} gives $v=\mu u_0+\ell y$ with $\mu\in\mathbb Z$ and
+$y\in\mathbb Z^3$. Put
+$\psi(x)=\bigl(u_0\cdot x\bmod \ell,\ (\mu\lfloor u_0\cdot x/\ell\rfloor+y\cdot x)\bmod g\bigr)$,
+which takes at most $\ell g=\kappa$ values. The box $[0,K]^3$ has $(K+1)^3>\kappa$ points, so
+by pigeonhole there are points $x\ne x'$ of $[0,K]^3$ with $\psi(x)=\psi(x')$. Then
 $u_0\cdot(x-x')=\ell(f-f')$, where $f,f'$ are the two floors, so $u\cdot(x-x')=\kappa(f-f')$,
-and $v\cdot(x-x')=\ell\bigl(\mu(f-f')+w\cdot(x-x')\bigr)$ with the bracket divisible by $g$.
-Hence $x-x'$ is a nonzero vector of $\Lambda_p$ with sup norm at most $t$.
+and $v\cdot(x-x')=\ell\bigl(\mu(f-f')+y\cdot(x-x')\bigr)$ with the bracket divisible by $g$.
+Hence $x-x'$ is a nonzero vector of $\Lambda_p$ with sup norm at most $K$.
 \end{proof}
 
 The constant $64/27=(4/3)(16/9)$ in the next lemma comes from the two size-reduction
@@ -2155,7 +2167,7 @@ $27|\beta_i|^2\xi_i^2\le64|x|^2$.
 
 \begin{proof}
 Let $V$ be the least nonzero $|\det|$ of a triple in $\Lambda$; the triple
-$(\kappa e_1,\kappa e_2,\kappa e_3)$ gives $V\le\kappa^3$. A triple
+$(\kappa\mathbf e_1,\kappa\mathbf e_2,\kappa\mathbf e_3)$ gives $V\le\kappa^3$. A triple
 $(\beta_1,\beta_2,\beta_3)$ with $|\det|=V$ is a basis: if not, some $x\in\Lambda$ has a Cramer
 coordinate that is not an integer, say the first, $\det(x,\beta_2,\beta_3)/\det(\beta_1,\beta_2,
 \beta_3)$, and subtracting the integer part of that coordinate times $\beta_1$ from $x$ gives a
@@ -2163,45 +2175,46 @@ triple with smaller nonzero determinant. Among all bases (all have $|\det|=V$) m
 $g_1=|\beta_1|^2$, and then the Gram determinant
 $g_2=g_1|\beta_2|^2-\langle\beta_1,\beta_2\rangle^2$. Put $g_3=V^2$.
 
-Choose an integer $t_1$ with $|2(\langle\beta_1,\beta_2\rangle+t_1g_1)|\le g_1$. Then
-$(\beta_2+t_1\beta_1,\beta_1,\beta_3)$ is a basis, so $g_1\le|\beta_2+t_1\beta_1|^2$, and
-$g_1|\beta_2+t_1\beta_1|^2=g_2+(\langle\beta_1,\beta_2\rangle+t_1g_1)^2$. Hence
+Choose an integer $z_1$ with $|2(\langle\beta_1,\beta_2\rangle+z_1g_1)|\le g_1$. Then
+$(\beta_2+z_1\beta_1,\beta_1,\beta_3)$ is a basis, so $g_1\le|\beta_2+z_1\beta_1|^2$, and
+$g_1|\beta_2+z_1\beta_1|^2=g_2+(\langle\beta_1,\beta_2\rangle+z_1g_1)^2$. Hence
 $3g_1^2\le4g_2$.
 
 Let $\langle x,x'\rangle_1=g_1\langle x,x'\rangle-\langle\beta_1,x\rangle\langle\beta_1,x'\rangle$,
 so that $\langle\beta_2,\beta_2\rangle_1=g_2$, and Sylvester's identity gives
 $\langle\beta_2,\beta_2\rangle_1\langle\beta_3,\beta_3\rangle_1-\langle\beta_2,\beta_3\rangle_1^2
-=g_1g_3$. Choose an integer $t_2$ with $|2(\langle\beta_2,\beta_3\rangle_1+t_2g_2)|\le g_2$ and
-put $y=\beta_3+t_2\beta_2$. Then $(\beta_1,y,\beta_2)$ is a basis with first vector $\beta_1$,
+=g_1g_3$. Choose an integer $z_2$ with $|2(\langle\beta_2,\beta_3\rangle_1+z_2g_2)|\le g_2$ and
+put $y=\beta_3+z_2\beta_2$. Then $(\beta_1,y,\beta_2)$ is a basis with first vector $\beta_1$,
 so $g_2\le g_1|y|^2-\langle\beta_1,y\rangle^2=\langle y,y\rangle_1$, while
-$g_2\langle y,y\rangle_1=(\langle\beta_2,\beta_3\rangle_1+t_2g_2)^2+g_1g_3$. Hence
+$g_2\langle y,y\rangle_1=(\langle\beta_2,\beta_3\rangle_1+z_2g_2)^2+g_1g_3$. Hence
 $3g_2^2\le4g_1g_3$.
 
-Finally choose an integer $t_3$ with $|2(\langle\beta_1,y\rangle+t_3g_1)|\le g_1$, and use the
-basis $\beta_1$, $\beta_2'=\beta_2+t_1\beta_1$, $\beta_3'=y+t_3\beta_1$. The identities above
+Finally choose an integer $z_3$ with $|2(\langle\beta_1,y\rangle+z_3g_1)|\le g_1$, and use the
+basis $\beta_1$, $\beta_2'=\beta_2+z_1\beta_1$, $\beta_3'=y+z_3\beta_1$. The identities above
 give $3g_1|\beta_2'|^2\le4g_2$ and
 $4g_1g_2|\beta_3'|^2\le g_2^2+4g_1g_3+g_1^2g_2$. With the two inequalities this gives
 $9g_2|\beta_3'|^2\le16g_3$. Since $|\beta_1|^2=g_1$, the product of the bounds
-$|\beta_2'|^2\le\frac43g_2/g_1$ and $|\beta_3'|^2\le\frac{16}9g_3/g_2$ is the claim.
+$|\beta_2'|^2\le\frac43g_2/g_1$ and $|\beta_3'|^2\le\frac{16}9g_3/g_2$ is the claim for the
+basis $\beta_1,\beta_2',\beta_3'$; rename $\beta_2',\beta_3'$ as $\beta_2,\beta_3$.
 Replacing $\beta_1$ by $-\beta_1$ if necessary makes the determinant positive. For the
 coordinates, $\xi_1V=\det(x,\beta_2,\beta_3)$, and Hadamard's inequality gives
 $\det(x,\beta_2,\beta_3)^2\le|x|^2|\beta_2|^2|\beta_3|^2$, so
-$27|\beta_1|^2\xi_1^2V^2\le64V^2|x|^2$.
+$27|\beta_1|^2\xi_1^2V^2\le64V^2|x|^2$; likewise for $\xi_2$ and $\xi_3$.
 \end{proof}
 
 \subsection{Few patterns have a short vector}\label{sec:latticeshort}
 
 \begin{lemma}[Divisibility count]\label{lem:dotcount}
 For $\ell\ge1$ and $x\in\mathbb Z^3$, at most $27\ell^2\gcd(\ell,x)$ vectors
-$w\in[-\ell,\ell]^3$ have $\ell\mid w\cdot x$. Here $\gcd(\ell,x)=\gcd(\ell,x_1,x_2,x_3)$.
+$y\in[-\ell,\ell]^3$ have $\ell\mid y\cdot x$. Here $\gcd(\ell,x)=\gcd(\ell,x_1,x_2,x_3)$.
 \end{lemma}
 
 \begin{proof}
 Each residue class modulo $\ell$ meets $[-\ell,\ell]^3$ in at most $3^3$ points, so it suffices
 to show that the set $\mathcal K$ of solutions in $[0,\ell)^3$ has at most $\ell^2e$ elements, where
-$e=\gcd(\ell,x)$. By B\'ezout choose $y\in\mathbb Z^3$ with $y\cdot x\equiv e\pmod\ell$. The map
-$(w,j)\mapsto(w+jy)\bmod\ell$ is injective on $\mathcal K\times[0,\ell/e)$: equal images give
-$\ell\mid(j-j')e$, so $j=j'$, and then $w=w'$. Hence $|\mathcal K|\,\ell/e\le\ell^3$.
+$e=\gcd(\ell,x)$. By B\'ezout choose $z\in\mathbb Z^3$ with $z\cdot x\equiv e\pmod\ell$. The map
+$(y,j)\mapsto(y+jz)\bmod\ell$ is injective on $\mathcal K\times[0,\ell/e)$: equal images give
+$\ell\mid(j-j')e$, so $j=j'$, and then $y=y'$. Hence $|\mathcal K|\,\ell/e\le\ell^3$.
 \end{proof}
 
 \begin{proposition}[Short vectors]\label{prop:short}
@@ -2213,13 +2226,13 @@ $\tau(j)\le\tau_0$ for $1\le j\le X$. Then for every $\rho\ge1$,
 \end{proposition}
 
 \begin{proof}
-If $\lambda(p)\le\rho$, some nonzero $x\in[-\rho,\rho]^3$ has $\kappa\mid u\cdot x$, where
-$\kappa=|p_\pi|\le X$. For fixed $x$, the encoding $p\mapsto(\pi,\operatorname{sgn}p_\pi,\kappa,u,v)$
+If $\lambda(p)\le\rho$, some nonzero $x\in[-\rho,\rho]^3$ lies in $\Lambda_p$, so
+$\kappa\mid u\cdot x$, where $\kappa=|p_\pi|\le X$; we drop the condition $\kappa\mid v\cdot x$. For fixed $x$, the encoding $p\mapsto(\pi,\operatorname{sgn}p_\pi,\kappa,u,v)$
 of the proof of Proposition~\ref{prop:minorvec} gives at most $20\sum_{\kappa\le X}N(\kappa,x)$
 such $p$, where $N(\kappa,x)$ counts pairs $(u,v)$ in $[-\kappa,\kappa]^3$ with
 $\kappa\mid u\times v$ and $\kappa\mid u\cdot x$. By the proof of
 Proposition~\ref{prop:minorvec}, for each $u$ there are at most $27\kappa\gcd(\kappa,u)^2$
-vectors $v$. Group the $u$ by $g=\gcd(\kappa,u)$ and write $u=gu'$ with $(\kappa/g)\mid u'\cdot x$.
+vectors $v$. Group the $u$ by $g=\gcd(\kappa,u)$ and write $u=gu_0$ with $(\kappa/g)\mid u_0\cdot x$.
 Lemma~\ref{lem:dotcount} with $\ell=\kappa/g$, and $\gcd(\kappa/g,x)\le\gcd(\kappa,x)$, give
 \[
  \sum_ug^2\le\sum_{g\mid\kappa}g^2\cdot27\Bigl(\frac\kappa g\Bigr)^2\gcd(\kappa,x)
@@ -2236,13 +2249,13 @@ swapping the sums,
 Indeed, a divisor $e>\rho$ of $\kappa$ divides no nonzero $x$ in the box, and for $e\le\rho$
 the multiples of $e$ number at most $(2\rho/e+1)^3$, with
 $e(2\rho/e+1)^3=(2\rho+e)^3/e^2\le27\rho^3$. Summing over $x$ and over $\kappa\le X$ gives at
-most $20\cdot729\cdot27\,\rho^3\tau_0^2\sum_{\kappa\le X}\kappa^3$, and
-$20\cdot729\cdot27=393660$.
+most $20\cdot729\cdot27\,\rho^3\tau_0^2\sum_{\kappa\le X}\kappa^3\le393660\,\rho^3X^4\tau_0^2$,
+since $\sum_{\kappa\le X}\kappa^3\le X^4$ and $20\cdot729\cdot27=393660$.
 \end{proof}
 
 \begin{lemma}[Fractional weights]\label{lem:weights}
 Let $\mathcal S$ be a set of nonzero minor vectors with coordinates in $[-X,X]$, $X\ge1$, and
-let $1\le\tau_0$ with $\tau(j)\le\tau_0$ for $1\le j\le X$. Then for $0\le t\le1$,
+let $\tau_0\ge1$ satisfy $\tau(j)\le\tau_0$ for $1\le j\le X$. Then for $0\le t\le1$,
 \[
  \sum_{p\in\mathcal S}\lambda(p)^{-t}\le3163861\,\tau_0^2X^{5-t/3}.
 \]
@@ -2290,7 +2303,7 @@ Cancelling $|\beta_i|^2$ and using $|\beta_j|\ge\lambda$ for the other two vecto
 claim.
 \end{proof}
 
-The lemma replaces a bound $|\xi|,|\xi'|\ll|x|/\lambda$, which would give
+The lemma replaces the bounds $|\xi|\ll|x|/\lambda$ and $|\xi'|\ll|x'|/\lambda$, which would give
 $|c|\ll|x||x'|/\lambda^2$, by $|c|\ll|x\times x'|/\lambda^2$. This matters because the drop row
 is large while the curvature minors are small.
 
@@ -2306,7 +2319,8 @@ At a good start, all ten minors $D_{jl}=d_jk_l-d_lk_j$ with $0\le j<l\le4$ satis
 \end{lemma}
 
 \begin{proof}
-Argue as in Lemma~\ref{lem:jointheights}, now for $j\le5$. The gaps $k_0,\dots,k_5$ are at most
+Argue as in Lemma~\ref{lem:jointheights}, using the expansions for $j\le5$, hence $d_j$ for
+$j\le4$. The gaps $k_0,\dots,k_5$ are at most
 $H$, so $s_j\le5H$ and
 $\mu_{i+j}((s_j+x)^2)=s_j^2+2s_j+k_j+1\le(5^2+2\cdot5+2)H^2=37H^2$. This gives
 $d_j/a=k_j/q^2+\delta_j$ with $|\delta_j|\le2\cdot37H^2/q^3$ for $j\le4$, hence
@@ -2316,12 +2330,12 @@ $|D_{jl}|\le4^3\cdot148A^3H^3/a^2=9472A^3H^3/a^2$.
 
 Now fix a pattern $p$ that occurs at a good start, and let $\beta_1,\beta_2,\beta_3$ be a
 basis of $\Lambda_p$ as in Lemma~\ref{lem:reduce}. Write $\lambda=\lambda(p)$. At a good start
-$i$ with pattern $p$, the pivot parts $d'$ and $k'$ of the drop and gap rows of
+$i$ with pattern $p$, the pivot parts $d_\pi$ and $k_\pi$ of the drop and gap rows of
 $\widehat{\mathcal M}_i$ lie in $\Lambda_p$, with coordinates $\xi$ and $\zeta$. Put
 \[
- c=\xi\times\zeta,\qquad w=d'\times k'.
+ c=\xi\times\zeta,\qquad w=d_\pi\times k_\pi.
 \]
-The entries of $w$ are, up to sign, the minors $D_{j_aj_b}$ of the pivot columns. The next lemma
+The entries of $w$ are, up to sign, the minors $D_{jl}$ with $j,l$ pivot columns. The next lemma
 shows that $c=G_pW$ for a constant matrix $G_p$. We use $c$ rather than $G_pW$ because $c$ is
 visibly integral, while $G_p$ has rational entries.
 
@@ -2335,17 +2349,19 @@ every good start with pattern $p$
 \end{lemma}
 
 \begin{proof}
-By Lemma~\ref{lem:lift}, $p_\pi(k_0,k_1,k_2)=\mathcal Lk'$, where $\mathcal L$ has rows
-$L_0,L_1,L_2$ and $\det\mathcal L=p_\pi^2p_{012}\ne0$, since $p_{012}\ge1$ at a good start.
-With $k'=(\beta_1\,\beta_2\,\beta_3)\zeta$ and the cumulative sums $s_j=k_0+\dots+k_{j-1}$,
-this gives $B_p$. Since $|k'|^2\le3H^2$ and $|\beta_i|\ge\lambda$, Lemma~\ref{lem:reduce} gives
+By Lemma~\ref{lem:lift}, $p_\pi(k_0,k_1,k_2)=\mathcal Lk_\pi$, where $\mathcal L$ has rows
+$L_0,L_1,L_2$ and $\det\mathcal L=p_\pi^2p_{012}\ne0$, since $p_{012}=N_0=I_4(i)\ge1$ at a good
+start. With $k_\pi=(\beta_1\,\beta_2\,\beta_3)\zeta$ and the cumulative sums $s_j=k_0+\dots+k_{j-1}$,
+this gives $B_p$. Since $|k_\pi|^2\le3H^2$ and $|\beta_i|\ge\lambda$, Lemma~\ref{lem:reduce} gives
 $|\zeta_i|\le(8/3)H/\lambda\le3H/\lambda$.
 
-For the curvature, the Binet--Cauchy identity
-$(y\cdot x)(y'\cdot x')-(y'\cdot x)(y\cdot x')=(y\times y')\cdot(x\times x')$ applied to the
-rows of $\mathcal L$ gives $p_\pi^2W=\operatorname{Cof}(\mathcal L)\,w$, where
-$\operatorname{Cof}(\mathcal L)$ has rows $L_1\times L_2$, $L_2\times L_0$, $L_0\times L_1$ and
-determinant $(\det\mathcal L)^2\ne0$. Lemma~\ref{lem:exterior} gives
+For the curvature, $W=(D_{12},-D_{02},D_{01})=(d_0,d_1,d_2)\times(k_0,k_1,k_2)$, and
+$p_\pi(d_0,d_1,d_2)=\mathcal Ld_\pi$. Let $\operatorname{Cof}(\mathcal L)$ have rows
+$L_1\times L_2$, $L_2\times L_0$, $L_0\times L_1$; its determinant is
+$(\det\mathcal L)^2\ne0$. The Binet--Cauchy identity
+$(L\cdot x)(L'\cdot y)-(L'\cdot x)(L\cdot y)=(L\times L')\cdot(x\times y)$, applied to pairs of
+rows of $\mathcal L$, gives $(\mathcal Lx)\times(\mathcal Ly)=\operatorname{Cof}(\mathcal L)(x\times
+y)$, so $p_\pi^2W=\operatorname{Cof}(\mathcal L)\,w$. Lemma~\ref{lem:exterior} gives
 $Vc=(\beta_1\,\beta_2\,\beta_3)^{\mathsf T}w$. Together,
 $c=p_\pi^2V^{-1}(\beta_1\,\beta_2\,\beta_3)^{\mathsf T}\operatorname{Cof}(\mathcal L)^{-1}W$,
 which defines $G_p$. Finally $|w|^2\le3S'^2$ by Lemma~\ref{lem:allcurv}, and
@@ -2389,8 +2405,7 @@ combination of the $c_j$, so for every point $P$
 \]
 This gives (1) for $c$, and it shows that the pole envelope of $c$ is $\mathcal F$, which gives
 (2) and (3). The numerators of $c$ over $\Omega$ are constant combinations of those of $W$,
-which gives (4). The proof of Lemma~\ref{lem:jointpowereddegree} therefore applies unchanged,
-with $\delta_{\min}=h$.
+which gives (4). The proof of Lemma~\ref{lem:jointpowereddegree} therefore applies unchanged.
 \end{proof}
 
 \subsection{The window bound and the optimized exponent}\label{sec:latticecount}
@@ -2456,18 +2471,11 @@ their common value is $\gamma_*=471/1559-6\sqrt{105}/7795$. The fraction $45h/(1
 in $h$, and it is below $\gamma_*$ once $h>\gamma_*/(153\gamma_*-45)\approx17.2$; also
 $5/17<\gamma_*$. Choose a positive rational $r$ close to $r_*$ with
 $\max(E'_S(r),E_Y(r))<\gamma_*+\varepsilon/2$, write $r=n_0/m_0$, and take
-$(m,n)=(6m_0,6n_0)$, as in the Lean proof. Then $h=6(10n_0+7m_0)\ge102$, which is more than
-enough: for $h\ge102$ the fraction $45h/(153h-1)$ is at most $4590/15605<\gamma_*$. So
+$(m,n)=(6m_0,6n_0)$; any scaling with $h\ge18$ works, and the Lean proof uses $6$. Then
+$h=6(10n_0+7m_0)\ge102$, and the fraction $45h/(153h-1)$ is at most $4590/15605<\gamma_*$. So
 $E'(m,n)<\gamma_*+\varepsilon/2$, and Corollary~\ref{cor:latticeexponent} with loss
 $\varepsilon/2$ gives the theorem.
 \end{proof}
-
-\begin{remark}
-At the critical point the typical pattern has $\lambda(p)\approx X^{1/3}$, which shrinks the
-curvature box from $S$ to about $S/X^{2/3}$. The weighted count of Lemma~\ref{lem:weights}
-shows that this average saving is available uniformly: the patterns with an unusually short
-vector are few enough to pay for their larger boxes.
-\end{remark}
 
 \section{The Lean formalization}\label{sec:lean}
 
@@ -2540,18 +2548,19 @@ counts, the graph-degree lower bounds, the powered pattern count and the window
 estimates; the repository README maps them to their modules.
 The proof of Theorem~\ref{thm:lattice} is assembled in \lean{LatticeJointBound}
 and \lean{LatticeJointOptimization}. In it, Lemma~\ref{lem:exterior} is \lean{wcoord\_spec} in
-\lean{LatticeExterior}, Lemma~\ref{lem:latticecoords} is in \lean{LatticeCurvature} and
-\lean{FixedDividendLatticeCoordinates}, Lemma~\ref{lem:latticedegree} is in
-\lean{LinearJointGraph}, and Lemma~\ref{lem:weights} is in \lean{LatticeJointWeights}.
+\lean{LatticeExterior}, Lemma~\ref{lem:latticedegree} is in \lean{LinearJointGraph},
+Lemma~\ref{lem:weights} is in \lean{LatticeJointWeights}, and Lemma~\ref{lem:latticecoords} is
+in \lean{LatticeCurvature}, \lean{LatticeJointPointCount} and
+\lean{FixedDividendLatticeCoordinates}.
 
-The transitive proof dependencies of both theorems are audited, and the two audits differ
-because the two proofs use the weighted-lattice counting modules of the $45/152$ bound
-differently. The first shows that the three public statements in \lean{JointLiftMain}, for
-Theorem~\ref{thm:joint}, depend on none of these modules. The second shows that the two public
-statements in \lean{LatticeJointMain}, for Theorem~\ref{thm:lattice}, reach only the
-weighted counts \lean{short\_count} (Proposition~\ref{prop:short}, in \lean{ShortVec}) and
-\lean{reciprocal\_sum\_bound}, the reciprocal sum behind Lemma~\ref{lem:weights}. Both
-audits are run by \lean{scripts/check-weighted-count-dependencies.py}.
+The script \lean{scripts/check-weighted-count-dependencies.py} audits the transitive proof
+dependencies of both theorems for use of the weighted-lattice counting modules of the
+$45/152$ bound. The first audit shows that the three
+public statements in \lean{JointLiftMain}, for Theorem~\ref{thm:joint}, depend on none of
+these modules. The second shows that the two public statements in \lean{LatticeJointMain},
+for Theorem~\ref{thm:lattice}, reach only the weighted counts \lean{short\_count}
+(Proposition~\ref{prop:short}, in \lean{ShortVec}) and \lean{reciprocal\_sum\_bound} (the
+reciprocal sum behind Lemma~\ref{lem:weights}, in \lean{FixedDividendWeights}).
 
 The intermediate bound \lean{P\_le\_loglog} takes the propositions
 \lean{NairTenenbaumDelta} and \lean{BretecheTenenbaumMean} as hypotheses. They state the

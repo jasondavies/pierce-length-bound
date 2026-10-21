@@ -10,7 +10,6 @@ public import PierceLengthBound.PoweredPoleOrder
 public import PierceLengthBound.JointLiftOptimization
 public import PierceLengthBound.GraphPoleDegree
 public import PierceLengthBound.JointLiftCurvatureDegree
-public import PierceLengthBound.JointLiftGraphDegree
 public import PierceLengthBound.JointLiftPointBox
 
 /-!
@@ -122,10 +121,23 @@ lemma orbitLinearJointGraphIdeal_one (a b i m n : ℕ) (I : Ideal (MvPolynomial 
 
 /-- The graph depends on the start only through its pattern. -/
 lemma orbitLinearJointGraph_congr {a b i l : ℕ} (h : theta a b i = theta a b l)
-    (Gm : Matrix (Fin 3) (Fin 3) ℚ) (m n : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ)) :
-    orbitLinearJointGraphIdeal Gm a b i m n I = orbitLinearJointGraphIdeal Gm a b l m n I := by
+    (G : Matrix (Fin 3) (Fin 3) ℚ) (m n : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ)) :
+    orbitLinearJointGraphIdeal G a b i m n I = orbitLinearJointGraphIdeal G a b l m n I := by
   obtain ⟨hP, hD⟩ := orbitJoint_polynomials_congr h
   simp only [orbitLinearJointGraphIdeal, orbitLinearJointNumerators, hP, hD]
+
+/-- With first powers the powered graph is the original joint graph: `P D / D² = P / D`. -/
+lemma orbitPoweredJointGraphIdeal_one_one {a b i : ℕ} (I : Ideal (MvPolynomial (Fin 3) ℚ))
+    [I.IsPrime] (hD : orbitJointDenominator a b i ∉ I) :
+    orbitPoweredJointGraphIdeal a b i 1 1 I = orbitJointGraphIdeal a b i I := by
+  refine jointGraphIdeal_congr I (fun h => hD (Ideal.IsPrime.mem_of_pow_mem ‹_› 2 h)) hD
+    fun j => ?_
+  have h1 : jointCoordinatePowers 1 1 j = 1 := by fin_cases j <;> rfl
+  simp only [orbitPoweredJointNumerators, poweredGraphNumerators, h1, pow_one]
+  rw [show orbitJointNumerators a b i j * orbitJointDenominator a b i ^ (1 + 1 - 1) *
+      orbitJointDenominator a b i - orbitJointNumerators a b i j *
+      orbitJointDenominator a b i ^ (1 + 1) = 0 by ring]
+  exact I.zero_mem
 
 /-- The linearly changed powered graph has the same uniform upper degree bound. -/
 theorem orbitLinearJointGraph_degree_bounds {a b i d : ℕ} (G : Matrix (Fin 3) (Fin 3) ℚ)
@@ -140,7 +152,7 @@ theorem orbitLinearJointGraph_degree_bounds {a b i d : ℕ} (G : Matrix (Fin 3) 
   powered_jointGraph_degree_bounds I _ _ (orbitJoint_denominator_not_mem hba hi I hz)
     (jointCoordinatePowers m n) (m + n) 247 (jointCoordinatePowers_le m n)
     (linearJointNumerators_totalDegree G _ (orbitJoint_totalDegree_le a b i).1)
-    (orbitJoint_totalDegree_le a b i).2 hd
+    ((orbitJoint_totalDegree_le a b i).2.trans (by norm_num)) hd
 
 set_option synthInstance.maxHeartbeats 200000 in
 -- The two normalized chart models and their residue fields have nested scalar towers.
@@ -293,9 +305,7 @@ theorem retained_linearJointGraph_degree_lower_bound {a b i d δ N m k : ℕ} {c
     rw [hWp]
     change m * n q ≤ discretePoleOrder (normalizedBranchOrder q F)
       (V' j ^ jointCoordinatePowers m k j.castSucc)
-    have hpower : jointCoordinatePowers m k j.castSucc = m := by
-      fin_cases j <;> rfl
-    rw [hpower, discretePoleOrder_pow, he, henv q]
+    rw [jointCoordinatePowers_castSucc, discretePoleOrder_pow, he, henv q]
   have hinfinityPole (p) (hp : p ∈ B) : ∃ j, (5 * k) * t p ≤
       discretePoleOrder (normalizedBranchOrder p F) (Wp j) := by
     refine ⟨Sum.inr 3, ?_⟩
