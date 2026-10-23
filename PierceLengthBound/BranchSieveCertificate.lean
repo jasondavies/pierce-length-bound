@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
+public import PierceLengthBound.BranchSieveSpecialization
 public import Mathlib.FieldTheory.Finite.Extension
-public import Mathlib.RingTheory.Polynomial.GaussLemma
 import Mathlib.Tactic
 
 /-! An explicit finite-field irreducibility certificate for the sextic specialization
@@ -467,39 +467,10 @@ lemma branchSexticSpecialization_isPrimitive : branchSexticSpecialization.IsPrim
   convert dvd_sub (dvd_add h4 (h0.mul_left 36283)) (h6.mul_left 203743) using 1
   norm_num
 
-private lemma primitive_irreducible_of_mod71
-    {p : ℤ[X]} (hp : p.IsPrimitive)
-    (hdegree : (p.map (Int.castRingHom (ZMod 71))).natDegree = p.natDegree)
-    (hirr : Irreducible (p.map (Int.castRingHom (ZMod 71)))) : Irreducible p := by
-  let φ := Int.castRingHom (ZMod 71)
-  refine ⟨hirr.not_isUnit ∘ IsUnit.map (mapRingHom φ), fun a b hab ↦ ?_⟩
-  have hm : p.map φ = a.map φ * b.map φ := by rw [hab, Polynomial.map_mul]
-  have hma0 : a.map φ ≠ 0 := (mul_ne_zero_iff.mp (hm ▸ hirr.ne_zero)).1
-  have hmb0 : b.map φ ≠ 0 := (mul_ne_zero_iff.mp (hm ▸ hirr.ne_zero)).2
-  have ha0 : a ≠ 0 := by intro h; simp [h] at hma0
-  have hb0 : b ≠ 0 := by intro h; simp [h] at hmb0
-  have hsum : (a.map φ).natDegree + (b.map φ).natDegree = a.natDegree + b.natDegree := by
-    rw [← natDegree_mul hma0 hmb0, ← hm, hdegree, hab, natDegree_mul ha0 hb0]
-  have ha_le : (a.map φ).natDegree ≤ a.natDegree := natDegree_map_le
-  have hb_le : (b.map φ).natDegree ≤ b.natDegree := natDegree_map_le
-  have hunit : ∀ q : ℤ[X], q.natDegree = 0 → q ∣ p → IsUnit q := by
-    intro q hq hqp
-    have hqC := eq_C_of_natDegree_eq_zero hq
-    rw [hqC] at hqp ⊢
-    exact isUnit_C.mpr (hp _ hqp)
-  rcases hirr.isUnit_or_isUnit hm with hma | hmb
-  · left
-    apply hunit a _ ⟨b, hab⟩
-    have := natDegree_eq_zero_of_isUnit hma
-    omega
-  · right
-    apply hunit b _ ⟨a, hab.trans (mul_comm a b)⟩
-    have := natDegree_eq_zero_of_isUnit hmb
-    omega
-
 /-- The exact specialized sextic is irreducible over the integers. -/
 theorem branchSexticSpecialization_irreducible : Irreducible branchSexticSpecialization := by
-  apply primitive_irreducible_of_mod71 branchSexticSpecialization_isPrimitive
+  apply primitive_irreducible_of_degree_preserving_specialization (Int.castRingHom (ZMod 71))
+    branchSexticSpecialization_isPrimitive
   · have hdegree : branchSexticSpecialization.natDegree = 6 := by
       unfold branchSexticSpecialization
       compute_degree <;> norm_num
