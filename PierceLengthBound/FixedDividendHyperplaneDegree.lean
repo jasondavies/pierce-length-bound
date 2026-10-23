@@ -22,12 +22,13 @@ noncomputable section
 /-- Powers of a nonzero element times point separators are jointly independent
 when that element vanishes under all point evaluations. -/
 theorem separator_powers_independent {K A ι : Type*} [Field K] [CommRing A]
-    [IsDomain A] [Algebra K A] [Fintype ι] [DecidableEq ι]
+    [IsDomain A] [Algebra K A] [Finite ι] [DecidableEq ι]
     (φ : ι → A →ₐ[K] K) (h : ι → A) (l : A) (hl : l ≠ 0)
     (hzero : ∀ i, φ i l = 0)
     (hsep : ∀ i j, φ i (h j) = if i = j then 1 else 0) (N : ℕ) :
     LinearIndependent K (fun t : ι × Fin N => h t.1 * l ^ t.2.val) := by
   classical
+  cases nonempty_fintype ι
   induction N with
   | zero => exact linearIndependent_empty_type
   | succ N ih =>
@@ -56,11 +57,12 @@ theorem separator_powers_independent {K A ι : Type*} [Field K] [CommRing A]
     refine Fin.cases (hconst i) (fun k => hcoeff (i, k)) k
 
 /-- Explicit polynomial interpolation at a finite family of distinct affine points. -/
-theorem exists_point_separators {K σ ι : Type*} [Field K] [Fintype ι] [DecidableEq ι]
+theorem exists_point_separators {K σ ι : Type*} [Field K] [Finite ι] [DecidableEq ι]
     (z : ι → σ → K) (hz : Function.Injective z) :
     ∃ h : ι → MvPolynomial σ K, ∀ i j,
       MvPolynomial.eval (z i) (h j) = if i = j then 1 else 0 := by
   classical
+  cases nonempty_fintype ι
   have hex (i : ι) : ∃ h : MvPolynomial σ K,
       MvPolynomial.eval (z i) h = 1 ∧
       ∀ j, j ≠ i → MvPolynomial.eval (z j) h = 0 := by
@@ -91,8 +93,7 @@ theorem exists_point_separators {K σ ι : Type*} [Field K] [Fintype ι] [Decida
 
 /-- Distinct points in a proper hyperplane section force a corresponding lower
 bound for the filtered coordinate-space growth. -/
-theorem hyperplane_points_filtered_lower {K σ ι : Type*} [Field K] [Fintype σ]
-    [Fintype ι] [DecidableEq ι]
+theorem hyperplane_points_filtered_lower {K σ ι : Type*} [Field K] [Finite σ] [Fintype ι]
     (p : Ideal (MvPolynomial σ K)) [p.IsPrime]
     (l : MvPolynomial σ K) (hl : l ∉ p) (hld : l.totalDegree ≤ 1)
     (z : ι → σ → K) (hz : Function.Injective z)
@@ -135,8 +136,7 @@ theorem hyperplane_points_filtered_lower {K σ ι : Type*} [Field K] [Fintype σ
 
 /-- A proper hyperplane section of a prime curve contains at most its affine
 Hilbert degree many distinct rational points. -/
-theorem hyperplane_section_card_le_degree {K σ ι : Type*} [Field K] [Fintype σ]
-    [Fintype ι] [DecidableEq ι]
+theorem hyperplane_section_card_le_degree {K σ ι : Type*} [Field K] [Finite σ] [Fintype ι]
     (p : Ideal (MvPolynomial σ K)) [p.IsPrime] (d : ℕ)
     (hdegree : ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
       (Module.finrank K (filteredCoordinateSpace p n) : ℤ) = (d : ℤ) * n + c)

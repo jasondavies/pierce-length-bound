@@ -49,18 +49,21 @@ theorem exists_component_separator {R : Type*} [CommRing R] (I : Ideal R)
     rintro ⟨q, _, hq⟩
     exact hrnot q hq
   · intro q hq hne
-    exact q.prod_mem (i := ⟨q, Finset.mem_erase.mpr ⟨hne, hq⟩⟩) (by simp) (hrmem ⟨q, Finset.mem_erase.mpr ⟨hne, hq⟩⟩)
+    exact q.prod_mem (i := ⟨q, Finset.mem_erase.mpr ⟨hne, hq⟩⟩) (by simp)
+      (hrmem ⟨q, Finset.mem_erase.mpr ⟨hne, hq⟩⟩)
 
 /-- Independent families remain jointly independent when linear maps separate
 one family from all the others. -/
 theorem linearIndependent_of_separating_maps {K V ι κ : Type*} [Field K]
-    [AddCommGroup V] [Module K V] [Fintype ι] [Fintype κ]
+    [AddCommGroup V] [Module K V] [Finite ι] [Finite κ]
     (W : ι → Type*) [∀ i, AddCommGroup (W i)] [∀ i, Module K (W i)]
     (φ : ∀ i, V →ₗ[K] W i) (v : ι → κ → V)
     (hoff : ∀ i j, i ≠ j → ∀ k, φ i (v j k) = 0)
     (hon : ∀ i, LinearIndependent K (fun k => φ i (v i k))) :
     LinearIndependent K (fun p : ι × κ => v p.1 p.2) := by
   classical
+  cases nonempty_fintype ι
+  cases nonempty_fintype κ
   rw [Fintype.linearIndependent_iff]
   intro a ha p
   obtain ⟨i, k⟩ := p
@@ -81,7 +84,8 @@ lemma transcendental_powers_independent {K A : Type*} [Field K] [CommRing A] [Al
   have h := (Polynomial.basisMonomials K).linearIndependent.map'
     (Polynomial.aeval y).toLinearMap
     (LinearMap.ker_eq_bot.mpr (transcendental_iff_injective.mp hy))
-  simpa [Function.comp_def, Polynomial.coe_basisMonomials, Polynomial.monomial_one_right_eq_X_pow] using h
+  simpa [Function.comp_def, Polynomial.coe_basisMonomials,
+    Polynomial.monomial_one_right_eq_X_pow] using h
 
 end
 end PierceLengthBound.FixedDividend

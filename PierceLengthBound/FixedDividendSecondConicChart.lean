@@ -13,7 +13,6 @@ public import PierceLengthBound.FixedDividendRationalParabolicModel
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
-set_option maxHeartbeats 4000000
 
 /-- A nonscalar normalized node prevents an additional affine linear equation
 with nonzero coefficient on that node. -/
@@ -46,6 +45,8 @@ lemma chart_no_affine_linear_relation_second {K F : Type*}
       map_zero, zero_mul, add_zero, add_zero, hz0', mul_one] using ht
   exact hns (-a0 / a1) (algebra_scalar_of_linear_eq ha1 hrel)
 
+set_option maxHeartbeats 3200000 in
+-- This proof uses about 1.7M heartbeats (`#count_heartbeats`).
 /-- The actual plane model has zero leading discriminant. -/
 theorem rational_nonexceptional_conic_plane_geometry_second
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)

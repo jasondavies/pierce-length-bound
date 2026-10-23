@@ -44,9 +44,9 @@ def quarticSylvester {R : Type*} [CommRing R] (a b : Fin 4 → R) : Matrix (Fin 
      0, 0, 1, b 3, 0, 0, 1, a 3;
      0, 0, 0, 1, 0, 0, 0, 1]
 
-set_option maxRecDepth 8000 in
-set_option maxHeartbeats 8000000 in
--- Expand the fixed-size determinants once to certify the universal Bézout identity.
+set_option maxHeartbeats 400000 in
+-- Expanding both 8 × 8 determinants to certify the universal Bézout identity uses
+-- about 290k heartbeats (`#count_heartbeats`).
 theorem quarticSylvester_det {R : Type*} [CommRing R] (a b : Fin 4 → R) :
     (quarticSylvester a b).det = (quarticBezout a b).det := by
   simp [quarticSylvester, quarticBezout, Matrix.det_succ_row_zero,
@@ -138,8 +138,6 @@ def changedBezout {R : Type*} [CommRing R] (c e s : Fin 4 → R) (a b d : R) :=
   newtonBasisChange a b d * quarticBezout (firstNewtonCoeffs c s) (nextNewtonCoeffs e s) *
     (newtonBasisChange a b d).transpose
 
-set_option maxRecDepth 8000 in
-set_option maxHeartbeats 8000000 in
 -- Normalize the ten polynomial entries of the fixed-size Bézout certificate.
 lemma changedBezout03_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j : Fin 4) :
     ((changedBezout (C ∘ c) (C ∘ e) (nodes03 a)
@@ -156,8 +154,6 @@ lemma changedBezout03_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j
 def nodes12 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
   ![C (a 0) + X, C (a 1) + X, C (a 2), C (a 3)]
 
-set_option maxRecDepth 8000 in
-set_option maxHeartbeats 8000000 in
 -- Normalize the polynomial entries of the fixed-size Bézout certificate.
 lemma changedBezout12_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j : Fin 4) :
     ((changedBezout (C ∘ c) (C ∘ e) (nodes12 a)
@@ -174,8 +170,6 @@ lemma changedBezout12_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j
 def nodes23 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
   ![C (a 0), C (a 1) + X, C (a 2) + X, C (a 3)]
 
-set_option maxRecDepth 8000 in
-set_option maxHeartbeats 8000000 in
 -- Normalize the polynomial entries of the fixed-size Bézout certificate.
 lemma changedBezout23_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j : Fin 4) :
     ((changedBezout (C ∘ c) (C ∘ e) (nodes23 a)
@@ -192,8 +186,6 @@ lemma changedBezout23_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j
 def nodes14 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
   ![C (a 0) + X, C (a 1), C (a 2), C (a 3) + X]
 
-set_option maxRecDepth 8000 in
-set_option maxHeartbeats 8000000 in
 -- Normalize the polynomial entries of the fixed-size Bézout certificate.
 lemma changedBezout14_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j : Fin 4) :
     ((changedBezout (C ∘ c) (C ∘ e) (nodes14 a)

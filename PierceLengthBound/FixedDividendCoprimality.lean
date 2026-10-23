@@ -130,17 +130,23 @@ lemma radialMap_norm_coeff {K : Type*} [CommRing K] (ρ u v ρ' u' v' : K) :
 lemma radialMap_quadratic_degree {K : Type*} [CommRing K] (ρ u v ρ' u' v' : K) :
     (radialMap (curveQuadratic ρ u v ρ' u' v')).natDegree ≤ 2 := by
   rw [radialMap_quadratic]
-  simp [affineQuadratic, lineQuadratic, lineNodes, lineGaps, fourthNode, coeffs,
-    Fin.sum_univ_succ]
+  simp only [affineQuadratic, lineQuadratic, coeffs, lineNodes, Pi.zero_apply, map_zero,
+    Fin.isValue, zero_add, fourthNode, lineGaps, Matrix.cons_val, Fin.sum_univ_succ,
+    Matrix.cons_val_zero, Fin.castSucc_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+    zero_pow, Matrix.cons_val_succ, Fin.castSucc_succ, Nat.reduceAdd, Finset.univ_unique,
+    Fin.default_eq_zero, Matrix.cons_val_fin_one, one_mul, Finset.sum_singleton]
   compute_degree
 
-set_option maxHeartbeats 800000 in
 -- Check the degree after both gap eliminations in the complete norm formula.
 lemma radialMap_norm_degree {K : Type*} [CommRing K] (ρ u v ρ' u' v' : K) :
     (radialMap (curveNorm ρ u v ρ' u' v')).natDegree ≤ 3 := by
   rw [radialMap_norm]
-  simp [affineNorm, lineNorm, lineNodes, extendedLineGaps, lineGaps, fourthNode, coeffs,
-    Fin.sum_univ_succ]
+  simp only [affineNorm, lineNorm, coeffs, lineNodes, Pi.zero_apply, map_zero, Fin.isValue,
+    zero_add, fourthNode, lineGaps, Matrix.cons_val, extendedLineGaps, Matrix.cons_val_zero,
+    Matrix.cons_val_one, Matrix.cons_val_succ, Fin.sum_univ_succ, Fin.castSucc_zero, ne_eq,
+    OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, add_zero, zero_mul,
+    Fin.castSucc_succ, Nat.reduceAdd, Finset.univ_unique, Fin.default_eq_zero,
+    Matrix.cons_val_fin_one, one_mul, Finset.sum_singleton]
   compute_degree
 
 
@@ -151,7 +157,8 @@ lemma radialMap_resultant {K : Type*} [CommRing K] (ρ u v ρ' u' v' : K) :
   have hn : radialMap ∘ completeNodes (MvPolynomial.C ρ) (MvPolynomial.C u)
       (MvPolynomial.C v) MvPolynomial.X =
       affineNodes (completeNodes (MvPolynomial.C ρ) (MvPolynomial.C u) (MvPolynomial.C v) 0)
-        (completeNodes (MvPolynomial.C ρ) (MvPolynomial.C u) (MvPolynomial.C v) MvPolynomial.X) := by
+        (completeNodes (MvPolynomial.C ρ) (MvPolynomial.C u) (MvPolynomial.C v)
+          MvPolynomial.X) := by
     funext j
     fin_cases j <;> simp [completeNodes, fourthNode, affineNodes]
     ring

@@ -56,8 +56,6 @@ lemma completeDirection_moment_one {R : Type*} [CommRing R] (ρ u v : R) (z : Fi
   simp [coeffs, completeDirection, fourthNode, Fin.sum_univ_succ]
   ring
 
-set_option maxRecDepth 8000 in
-set_option maxHeartbeats 8000000 in
 -- Expand the eliminated-node formulas and certify their leading coefficients.
 lemma affineQuadratic_coeff_two {R : Type*} [CommRing R] (ρ u v ρ' u' v' : R) (a z : Fin 3 → R) :
     (affineQuadratic ρ u v ρ' u' v' a z).coeff 2 =
@@ -67,8 +65,6 @@ lemma affineQuadratic_coeff_two {R : Type*} [CommRing R] (ρ u v ρ' u' v' : R) 
     Matrix.cons_val_succ, zero_pow (by decide : 2 ≠ 0), zero_add]
   compute_degree <;> simp [completeDirection, fourthNode]
 
-set_option maxRecDepth 8000 in
-set_option maxHeartbeats 8000000 in
 -- Expand the eliminated-node formulas and certify their leading coefficients.
 lemma affineNorm_coeff_three {R : Type*} [CommRing R] (ρ u v ρ' u' v' : R) (a z : Fin 3 → R) :
     (affineNorm ρ u v ρ' u' v' a z).coeff 3 =

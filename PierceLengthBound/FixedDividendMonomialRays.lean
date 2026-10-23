@@ -20,10 +20,11 @@ noncomputable section
 open MvPolynomial
 
 /-- Bounded exponent sets are finite. -/
-instance finite_boundedStandardExponents {K σ : Type*} [Field K] [Fintype σ]
+instance finite_boundedStandardExponents {K σ : Type*} [Field K] [Finite σ]
     (I : Ideal (MvPolynomial σ K)) (m : MonomialOrder σ) (N : ℕ) :
     Finite (boundedStandardExponents I m N) := by
   classical
+  cases nonempty_fintype σ
   let e := boundedExponentEquivSym σ N
   let f : boundedStandardExponents I m N → Sym (Option σ) N :=
     fun a => e ⟨a.val, a.property.2⟩
@@ -35,7 +36,7 @@ instance finite_boundedStandardExponents {K σ : Type*} [Field K] [Fintype σ]
 
 /-- A standard monomial with two large exponents supplies an entire square of
 independent quotient classes in degree at most `2B`. -/
-theorem standard_square_le_filtered {K σ : Type*} [Field K] [Fintype σ]
+theorem standard_square_le_filtered {K σ : Type*} [Field K] [Finite σ]
     [LinearOrder σ] (I : Ideal (MvPolynomial σ K)) (B : ℕ)
     {a : σ →₀ ℕ} (ha : a ∈ standardExponents I MonomialOrder.degLex)
     {i j : σ} (hij : i ≠ j) (hi : B ≤ a i) (hj : B ≤ a j) :
@@ -71,7 +72,7 @@ theorem standard_square_le_filtered {K σ : Type*} [Field K] [Fintype σ]
 
 /-- Under a linear Hilbert bound, at most one exponent can exceed a fixed
 threshold. This excludes every two-dimensional monomial quadrant. -/
-theorem standard_at_most_one_large {K σ : Type*} [Field K] [Fintype σ]
+theorem standard_at_most_one_large {K σ : Type*} [Field K] [Finite σ]
     [LinearOrder σ] (I : Ideal (MvPolynomial σ K)) (C : ℕ)
     (hbound : ∀ N ≥ 14, Module.finrank K (filteredCoordinateSpace I N) ≤ C * (N + 2))
     {a : σ →₀ ℕ} (ha : a ∈ standardExponents I MonomialOrder.degLex)

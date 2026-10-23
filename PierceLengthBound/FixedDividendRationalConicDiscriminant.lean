@@ -20,7 +20,6 @@ norm residue; no geometric classification premise is assumed.
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
-set_option maxHeartbeats 1000000
 open MvPolynomial
 
 lemma affine_plane_top_component {K : Type*} [Field K] (n0 n1 n2 e : K) :
@@ -63,6 +62,8 @@ lemma chart_no_affine_linear_relation {K F : Type*}
       map_zero, zero_mul, add_zero, hz0', mul_one] using ht
   exact hns (-a0 / a1) (algebra_scalar_of_linear_eq ha1 hrel)
 
+set_option maxHeartbeats 800000 in
+-- This proof uses about 475k heartbeats (`#count_heartbeats`).
 /-- The actual plane model has zero leading discriminant. -/
 theorem rational_nonexceptional_conic_plane_geometry
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)

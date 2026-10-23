@@ -20,7 +20,6 @@ nonzero. The only coordinate choice is a nonzero third plane coefficient.
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
-set_option maxHeartbeats 1000000
 
 /-- Exact binary coefficients obtained by eliminating the third node. -/
 def rationalPlaneConicCoefficients (ρ u v ρ' u' v' n0 n1 n2 e : ℚ) : Fin 6 → ℚ :=

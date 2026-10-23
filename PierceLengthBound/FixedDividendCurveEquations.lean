@@ -111,7 +111,9 @@ theorem orbit_curveEquation_zero {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b
   have hn : completeNodes (patternRho a b i) (patternU a b i) (patternV a b i)
       (orbitFreeNodes a b i) = (fun j : Fin 4 => pt a b i ((j : ℕ) + 1)) := by
     funext j
-    fin_cases j <;> simp [completeNodes, orbitFreeNodes]
+    fin_cases j <;> simp only [completeNodes, orbitFreeNodes, Fin.isValue, Fin.zero_eta,
+      Fin.mk_one, Fin.reduceFinMk, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val,
+      Nat.reduceAdd, zero_add]
     exact orbit_fourthNode (i := i) hba (by omega)
   simp only [curveEquation, map_sub, map_mul, eval_C, map_pow,
     eval_curveResultant, eval_curveNorm]

@@ -14,7 +14,6 @@ parabolic equation in one of two coordinate orders. -/
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
-set_option maxHeartbeats 1000000
 
 /-- Uniform bounded integral plane model from common rational pattern
 numerators. All discriminant and nonvanishing conclusions are proved from the

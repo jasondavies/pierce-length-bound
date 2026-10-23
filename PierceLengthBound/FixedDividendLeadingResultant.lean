@@ -48,8 +48,6 @@ def newtonBezout {R : Type*} [CommRing R] (c e s : Fin 4 → R) : Matrix (Fin 4)
   let b33 := e₃ - c₃ - s₄
   !![b00, b01, b02, b03; b01, b11, b12, b13; b02, b12, b22, b23; b03, b13, b23, b33]
 
-set_option maxRecDepth 8000 in
-set_option maxHeartbeats 8000000 in
 -- Certify the explicit fixed-size change of basis once over an arbitrary coefficient ring.
 lemma changedBezout_eq_newtonBezout {R : Type*} [CommRing R] (c e s : Fin 4 → R) :
     changedBezout c e s (s 0) (s 1) (s 2) = newtonBezout c e s := by
@@ -72,11 +70,12 @@ def affineNodes {R : Type*} [CommRing R] (a z : Fin 4 → R) : Fin 4 → R[X] :=
 lemma newtonBezout_degree {R : Type*} [CommRing R] (c e a z : Fin 4 → R) (i j : Fin 4) :
     (newtonBezout (C ∘ c) (C ∘ e) (affineNodes a z) i j).natDegree ≤
       4 - max i.val j.val := by
-  fin_cases i <;> fin_cases j <;> simp only [newtonBezout, Fin.isValue, Function.comp_apply, affineNodes,
-      Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, of_apply, cons_val', cons_val_zero,
-      cons_val_fin_one, cons_val_one, cons_val, max_self, tsub_zero, zero_le,
-      sup_of_le_right, sup_of_le_left, Nat.add_one_sub_one, Nat.reduceSub,
-      Nat.one_le_ofNat, Nat.reduceLeDiff] <;> compute_degree
+  fin_cases i <;> fin_cases j <;>
+    simp only [newtonBezout, Fin.isValue, Function.comp_apply, affineNodes, Fin.zero_eta,
+      Fin.mk_one, Fin.reduceFinMk, of_apply, cons_val', cons_val_zero, cons_val_fin_one,
+      cons_val_one, cons_val, max_self, tsub_zero, zero_le, sup_of_le_right, sup_of_le_left,
+      Nat.add_one_sub_one, Nat.reduceSub, Nat.one_le_ofNat, Nat.reduceLeDiff] <;>
+    compute_degree
 
 /-- Leading coefficients of the four diagonal entries. -/
 lemma newtonBezout_diagonal_coeffs {R : Type*} [CommRing R] (c e a z : Fin 4 → R) :

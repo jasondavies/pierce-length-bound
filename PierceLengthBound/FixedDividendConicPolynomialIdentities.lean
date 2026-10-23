@@ -15,7 +15,6 @@ quadratic parameter. At most twenty-four points can avoid this conclusion. -/
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
-set_option maxHeartbeats 1000000
 
 /-- More than twice the equation degree in integral component points suffices
 for a symbolic identity under the actual quadratic parametrization. -/

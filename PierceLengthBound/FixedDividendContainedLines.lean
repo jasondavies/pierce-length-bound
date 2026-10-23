@@ -84,9 +84,14 @@ theorem exceptional_line_obstruction {A a ρ u v ρ' u' v' x y z : ℝ} {d : Fin
   have hp := congrArg (fun p : ℝ[X] => p.eval 1) hq
   have hm := congrArg (fun p : ℝ[X] => p.eval (-1)) hq
   fin_cases d
-  all_goals simp [ExceptionalRelation] at hr
-  all_goals simp [exceptionalNorm, exceptionalQuadratic, exceptionalNodes,
-    nodes03, nodes12, nodes23, nodes14, eval_lineNorm, eval_lineQuadratic] at hD hp hm
+  all_goals simp only [ExceptionalRelation, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta,
+    Fin.mk_one, Fin.reduceFinMk, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one,
+    Matrix.cons_val] at hr
+  all_goals simp only [exceptionalNorm, exceptionalQuadratic, exceptionalNodes, nodes03, nodes12,
+    nodes23, nodes14, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.zero_eta, Fin.mk_one,
+    Fin.reduceFinMk, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val, Matrix.cons_val',
+    Matrix.cons_val_fin_one, eval_lineNorm, eval_lineQuadratic, eval_C, eval_add, eval_X,
+    eval_zero, add_zero] at hD hp hm
   · rw [hr] at hD hp hm ⊢
     exact Or.inl (line_obstruction_03 hρ hp hm hD)
   · rw [hr] at hD hp hm ⊢
