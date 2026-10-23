@@ -88,7 +88,9 @@ lemma firstNewtonQuartic_coeff_totalDegree {R σ : Type*} [CommRing R]
   have h0 := hs 0
   have h1 := hs 1
   have h2 := hs 2
-  fin_cases i <;> simp [firstNewtonCoeffs]
+  fin_cases i <;> simp only [firstNewtonCoeffs, Fin.isValue, Function.comp_apply, Fin.zero_eta,
+    Fin.mk_one, Fin.reduceFinMk, cons_val_zero, cons_val_one, cons_val, totalDegree_C, zero_le,
+    ge_iff_le]
   all_goals fixed_dividend_mv_degree
 
 lemma nextNewtonQuartic_coeff_totalDegree {R σ : Type*} [CommRing R]
@@ -102,7 +104,8 @@ lemma nextNewtonQuartic_coeff_totalDegree {R σ : Type*} [CommRing R]
   have h1 := hs 1
   have h2 := hs 2
   have h3 := hs 3
-  fin_cases i <;> simp [nextNewtonCoeffs]
+  fin_cases i <;> simp only [nextNewtonCoeffs, Fin.isValue, Function.comp_apply, Fin.zero_eta,
+    Fin.mk_one, Fin.reduceFinMk, cons_val_zero, cons_val_one, cons_val, ge_iff_le]
   all_goals fixed_dividend_mv_degree
 
 lemma coeff_mul_X_pow_totalDegree {R σ : Type*} [CommRing R]
@@ -254,7 +257,8 @@ theorem orbit_eval_curveMomentSystem {a b i : ℕ} (hba : b < a) (hi : i + 7 < P
   have hn : completeNodes (patternRho a b i) (patternU a b i) (patternV a b i)
       (orbitFreeNodes a b i) = fun j : Fin 4 => pt a b i (j.val + 1) := by
     funext j
-    fin_cases j <;> simp [completeNodes, orbitFreeNodes]
+    fin_cases j <;> simp only [completeNodes, orbitFreeNodes, Fin.isValue, cons_val_zero,
+      cons_val_one, cons_val, Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, zero_add, Nat.reduceAdd]
     exact orbit_fourthNode hba (by omega)
   rw [hn]
   unfold newtonMomentSystem orbitMomentSystem

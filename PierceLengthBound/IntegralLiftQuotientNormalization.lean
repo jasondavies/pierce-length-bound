@@ -15,7 +15,6 @@ public import PierceLengthBound.ConicParabola
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
-set_option maxHeartbeats 1000000
 
 def orbitQuotientNumeratorQ (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   orbitCurveCofactorsQ a b i 1 - orbitCurveCofactorsQ a b i 2
@@ -63,7 +62,8 @@ lemma clearedNewtonQuartic_div {K : Type*} [Field K]
     clearedNewtonQuartic c s n d =
       (firstNewtonQuartic c ![s 0, s 1, s 2, 0]).eval (-(n / d)) * d ^ 4 := by
   simp only [clearedNewtonQuartic, firstNewtonQuartic, eval_add, eval_mul, eval_sub,
-    eval_C, eval_X, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons]
+    eval_C, eval_X, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
+    Matrix.head_cons, Matrix.tail_cons]
   field_simp
   ring
 

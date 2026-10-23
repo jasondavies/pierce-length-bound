@@ -99,7 +99,6 @@ theorem rationalGraph_point {K σ : Type*} [Field K]
   rw [AlgHom.comp_apply, hf0, map_zero] at he
   exact he.symm
 
-
 set_option synthInstance.maxHeartbeats 200000 in
 -- Nested quotient/localization algebras require additional instance-search time.
 lemma rationalGraphMap_rename {K σ : Type*} [Field K]
@@ -161,8 +160,6 @@ theorem orbitLiftGraphIdeal_isPrime {a b i : ℕ} (hba : b < a) (hi : i + 7 < P 
     (orbitLiftGraphIdeal a b i I).IsPrime :=
   rationalGraphIdeal_isPrime I _ _ (orbitLift_denominator_not_mem hba hi I hx)
 
-set_option maxHeartbeats 2000000 in
--- Comparing the expanded cofactor expressions is expensive.
 /-- The fourth coordinate of the actual graph point is the positive integer I3. -/
 theorem orbitLiftGraph_point {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ))

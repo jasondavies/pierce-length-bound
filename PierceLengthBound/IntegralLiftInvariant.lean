@@ -129,7 +129,8 @@ theorem selected_integralLiftCoordinate_bound {a b s T A i : ℕ} (hba : b < a)
     apply (mul_le_mul_iff_right₀ ha).mp
     convert hb using 1 <;> ring
   have hd := Int.le_ediv_of_mul_le (by positivity : (0 : ℤ) < (a : ℤ) ^ 2) hb'
-  simpa only [selectedLiftHeight, Int.natCast_div, Nat.cast_mul, Nat.cast_pow, Nat.cast_ofNat] using hd
+  simpa only [selectedLiftHeight, Int.natCast_div, Nat.cast_mul, Nat.cast_pow, Nat.cast_ofNat]
+    using hd
 
 end
 end PierceLengthBound.FixedDividend

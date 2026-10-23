@@ -92,7 +92,8 @@ theorem window_227070_of_joint_lift_count {a A T Δ K : ℕ}
       have h' : T ^ 51 ≤ B * a ^ 15 := by
         calc T ^ 51 ≤ K * 3609600 ^ 5 * 56 ^ 30 * (8 * Δ) ^ 10 * a ^ 15 := hm
           _ = (3609600 ^ 5 * 56 ^ 30 * 8 ^ 10 * K * Δ ^ 10) * a ^ 15 := by ring
-          _ ≤ _ := Nat.mul_le_mul_right _ (hcoeff (by unfold jointLiftWindowBase; omega) (by norm_num))
+          _ ≤ _ := Nat.mul_le_mul_right _
+            (hcoeff (by unfold jointLiftWindowBase; omega) (by norm_num))
       exact window_power_lift (by omega) ha hB h' (m := 4453)
         (by norm_num) (by norm_num) (by norm_num)
     · have hm := remainder_window_exceptional_conic_exponent
@@ -100,7 +101,8 @@ theorem window_227070_of_joint_lift_count {a A T Δ K : ℕ}
       have h' : T ^ 85 ≤ B * a ^ 25 := by
         calc T ^ 85 ≤ K * 3609600 ^ 8 * 56 ^ 49 * (8 * Δ) ^ 17 * a ^ 25 := hm
           _ = (3609600 ^ 8 * 56 ^ 49 * 8 ^ 17 * K * Δ ^ 17) * a ^ 25 := by ring
-          _ ≤ _ := Nat.mul_le_mul_right _ (hcoeff (by unfold jointLiftWindowBase; omega) (by norm_num))
+          _ ≤ _ := Nat.mul_le_mul_right _
+            (hcoeff (by unfold jointLiftWindowBase; omega) (by norm_num))
       exact window_power_lift (by omega) ha hB h' (m := 2672)
         (by norm_num) (by norm_num) (by norm_num)
     · let S := 4352 * A ^ 3 * H ^ 3 / a ^ 2
@@ -114,8 +116,10 @@ theorem window_227070_of_joint_lift_count {a A T Δ K : ℕ}
         have h' : T ^ 887 ≤ B * a ^ 261 := by
           calc T ^ 887 ≤ K * 3609600 ^ 85 * 56 ^ 510 *
               (1259991040 * 56 ^ 10 * (8 * Δ) ^ 5) * (8 * Δ) ^ 170 * a ^ 261 := hm
-            _ = (3609600 ^ 85 * 56 ^ 520 * 1259991040 * 8 ^ 175 * K * Δ ^ 175) * a ^ 261 := by ring
-            _ ≤ _ := Nat.mul_le_mul_right _ (hcoeff (by unfold jointLiftWindowBase; omega) (by norm_num))
+            _ = (3609600 ^ 85 * 56 ^ 520 * 1259991040 * 8 ^ 175 * K * Δ ^ 175) * a ^ 261 := by
+              ring
+            _ ≤ _ := Nat.mul_le_mul_right _
+              (hcoeff (by unfold jointLiftWindowBase; omega) (by norm_num))
         exact window_power_lift (by omega) ha hB h' (m := 256)
           (by norm_num) (by norm_num) (by norm_num)
       · rw [max_eq_left hSY] at h
@@ -128,8 +132,10 @@ theorem window_227070_of_joint_lift_count {a A T Δ K : ℕ}
         have h' : T ^ 870 ≤ B * a ^ 256 := by
           calc T ^ 870 ≤ K * 3609600 ^ 85 * 56 ^ 510 *
               ((4352 * 56 ^ 3 + 56) * (8 * Δ)) * (8 * Δ) ^ 170 * a ^ 256 := hm
-            _ = (3609600 ^ 85 * 56 ^ 510 * (4352 * 56 ^ 3 + 56) * 8 ^ 171 * K * Δ ^ 171) * a ^ 256 := by ring
-            _ ≤ _ := Nat.mul_le_mul_right _ (hcoeff (by unfold jointLiftWindowBase; omega) (by norm_num))
+            _ = (3609600 ^ 85 * 56 ^ 510 * (4352 * 56 ^ 3 + 56) * 8 ^ 171 * K * Δ ^ 171) *
+                a ^ 256 := by ring
+            _ ≤ _ := Nat.mul_le_mul_right _
+              (hcoeff (by unfold jointLiftWindowBase; omega) (by norm_num))
         exact window_power_lift (by omega) ha hB h' (m := 261)
           (by norm_num) (by norm_num) (by norm_num)
   · have hm := remainder_window_small_exponent (by omega : 0 < a) (by omega : 0 < A)

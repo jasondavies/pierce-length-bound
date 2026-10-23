@@ -96,11 +96,13 @@ theorem selected_powered_joint_component_gap_count_slow (m n : ℕ) (hm : 0 < m)
       rcases hnorm with hnorm | hnorm
       · rcases hres with hres | hres
         · obtain ⟨hQ, hQdeg⟩ := orbitCurveQuadraticQ_prime_degree hba hj7
-          obtain ⟨δ, hδ, hδupper, hgraph⟩ := orbitPoweredJointGraph_retained_degree_range hm hn hba hj7
-            hnej I hf' he' (hz j hj) hnorm hres _ hQ hQdeg hf' hd4 hdegree
+          obtain ⟨δ, hδ, hδupper, hgraph⟩ :=
+            orbitPoweredJointGraph_retained_degree_range hm hn hba hj7
+              hnej I hf' he' (hz j hj) hnorm hres _ hQ hQdeg hf' hd4 hdegree
           have hcount := hg hba hmem hsT (by omega : 0 < T) I hI
             ⟨δ, hδ, hδupper.trans (Nat.mul_le_mul_left _ hd24), hgraph⟩ G hG hθj hz
-          change ((G.image (kap a b)).card : ℝ) ≤ (Rg a : ℝ) * B ^ (1 / ((10 * n + 7 * m : ℕ) : ℝ)) at hcount
+          change ((G.image (kap a b)).card : ℝ) ≤
+            (Rg a : ℝ) * B ^ (1 / ((10 * n + 7 * m : ℕ) : ℝ)) at hcount
           change _ ≤ ((Rc a + Rg a + 9696 : ℕ) : ℝ) * (1 + B ^ (1 / ((10 * n + 7 * m : ℕ) : ℝ)))
           push_cast at hcount ⊢
           nlinarith [(show (0 : ℝ) ≤ Rc a by positivity), (show (0 : ℝ) ≤ Rg a by positivity)]

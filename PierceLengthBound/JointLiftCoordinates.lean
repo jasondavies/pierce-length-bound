@@ -39,7 +39,8 @@ lemma jointGapPolynomials_degree (a b i : ℕ) (j : Fin 5) :
   generalize hx0 : (X 0 : MvPolynomial (Fin 3) ℚ) = x0 at *
   generalize hx1 : (X 1 : MvPolynomial (Fin 3) ℚ) = x1 at *
   generalize hx2 : (X 2 : MvPolynomial (Fin 3) ℚ) = x2 at *
-  fin_cases j <;> simp [jointGapPolynomials, lineGaps, fourthNode, hx0, hx1, hx2]
+  fin_cases j <;> simp only [jointGapPolynomials, lineGaps, Fin.isValue, hx0, hx1, hx2, fourthNode,
+    Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, cons_val_zero, cons_val_one, cons_val, ge_iff_le]
   all_goals fixed_dividend_mv_degree
 
 /-- The rank-five coordinate is polynomial in the original three variables. -/
@@ -117,7 +118,9 @@ theorem jointLift_polynomial_degrees (P Q J : MvPolynomial (Fin 3) ℚ) (A : ℚ
     omega
   refine ⟨hd, ?_, ?_⟩
   · intro j
-    fin_cases j <;> simp [jointLiftNumerators]
+    fin_cases j <;> simp only [jointLiftNumerators, Fin.isValue, neg_add_rev, Fin.zero_eta,
+      Fin.castSucc_zero, Fin.mk_one, Fin.castSucc_one, Fin.reduceFinMk, Fin.reduceCastSucc,
+      cons_val_zero, cons_val_one, cons_val]
     · exact (totalDegree_mul _ _).trans (by have := hk 1; omega)
     · rw [← neg_add_rev, totalDegree_neg]
       apply (totalDegree_add _ _).trans
@@ -210,9 +213,12 @@ theorem orbitJoint_curvature_evaluation {a b i : ℕ} (hba : b < a) (hi : i + 7 
     rw [Fin.sum_univ_three, orbitCurvature_third] at hz
     exact_mod_cast hz
   apply (div_eq_iff hd).mpr
-  fin_cases j <;> simp [orbitJointNumerators, jointLiftNumerators, orbitJointDenominator,
-    jointLiftDenominator, eval_rawHankelThree, jointGapPolynomials_eval hba hi,
-    ← hpdef, ← hqdef]
+  fin_cases j <;> simp only [orbitJointNumerators, jointLiftNumerators, orbitJointDenominator,
+    jointLiftDenominator, eval_rawHankelThree, jointGapPolynomials_eval hba hi, ← hpdef, ← hqdef,
+    Fin.isValue, map_intCast, neg_add_rev, Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk,
+    Fin.castSucc_zero, Fin.castSucc_one, Fin.reduceCastSucc, cons_val_zero, cons_val_one, cons_val,
+    map_add, map_neg, map_mul, map_sub, Fin.coe_ofNat_eq_mod, Nat.zero_mod, Nat.one_mod,
+    Nat.reduceMod, add_zero]
   · rw [hp]
     linear_combination (q * (kq a b (i + 1) : ℚ)) * heQ
   · rw [hp]

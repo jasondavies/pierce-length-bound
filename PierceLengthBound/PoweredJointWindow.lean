@@ -78,7 +78,8 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
   · have h := window_large_mean_gap ha hsix hbig
     have h' : T ^ 4 ≤ B * a ^ 1 := by
       simpa using h.trans (Nat.mul_le_mul_right a
-        ((show 122449 ≤ poweredJointWindowBase m n L by unfold poweredJointWindowBase; omega).trans hbase))
+        ((show 122449 ≤ poweredJointWindowBase m n L by
+          unfold poweredJointWindowBase; omega).trans hbase))
     apply window_real_bound_of_power ha hB (by decide : 0 < 4) h'
     norm_num only [Nat.cast_one, Nat.cast_ofNat]
     exact (by norm_num : (1 : ℝ) / 4 ≤ 5 / 17).trans hα
@@ -97,7 +98,8 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
       have h' : T ^ 51 ≤ B * a ^ 15 := by
         calc T ^ 51 ≤ K * 3609600 ^ 5 * 56 ^ 30 * (8 * Δ) ^ 10 * a ^ 15 := hm
           _ = (3609600 ^ 5 * 56 ^ 30 * 8 ^ 10 * K * Δ ^ 10) * a ^ 15 := by ring
-          _ ≤ _ := Nat.mul_le_mul_right _ (hcoeff (by unfold poweredJointWindowBase; omega) (by omega))
+          _ ≤ _ := Nat.mul_le_mul_right _
+            (hcoeff (by unfold poweredJointWindowBase; omega) (by omega))
       apply window_real_bound_of_power ha hB (by decide : 0 < 51) h'
       exact (by norm_num : (15 : ℝ) / 51 ≤ 5 / 17).trans hα
     · have hm := remainder_window_exceptional_conic_exponent
@@ -105,7 +107,8 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
       have h' : T ^ 85 ≤ B * a ^ 25 := by
         calc T ^ 85 ≤ K * 3609600 ^ 8 * 56 ^ 49 * (8 * Δ) ^ 17 * a ^ 25 := hm
           _ = (3609600 ^ 8 * 56 ^ 49 * 8 ^ 17 * K * Δ ^ 17) * a ^ 25 := by ring
-          _ ≤ _ := Nat.mul_le_mul_right _ (hcoeff (by unfold poweredJointWindowBase; omega) (by omega))
+          _ ≤ _ := Nat.mul_le_mul_right _
+            (hcoeff (by unfold poweredJointWindowBase; omega) (by omega))
       apply window_real_bound_of_power ha hB (by decide : 0 < 85) h'
       exact (by norm_num : (25 : ℝ) / 85 ≤ 5 / 17).trans hα
     · let S := 4352 * A ^ 3 * H ^ 3 / a ^ 2

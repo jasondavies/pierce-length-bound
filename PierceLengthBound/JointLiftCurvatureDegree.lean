@@ -92,7 +92,6 @@ theorem retained_curvature_normalized_zero_order
 
 set_option synthInstance.maxHeartbeats 200000 in
 -- The parameter algebra, chart, normalization and residue fields form nested scalar towers.
-set_option maxHeartbeats 800000 in
 /-- The actual extra zero and all old infinity branches give the curvature
 combination a function-field degree of at least 3d/2 + 1. -/
 theorem retained_curvature_function_degree_lower_bound {a b i d N : ℕ} {c₀ : ℤ}

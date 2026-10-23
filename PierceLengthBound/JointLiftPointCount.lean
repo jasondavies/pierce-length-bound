@@ -92,7 +92,6 @@ theorem selected_jointGraph_gap_count (lo : ℕ) (hlo : 0 < lo) (hlohi : lo ≤ 
         obtain ⟨j, _, rfl⟩ := mem_image.mp hw
         exact hpoint j)
     rwa [hScard] at hc
-
   · have he : G = ∅ := Finset.not_nonempty_iff_eq_empty.mp hne
     simp only [he, image_empty, card_empty, Nat.cast_zero]
     positivity

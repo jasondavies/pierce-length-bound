@@ -22,8 +22,6 @@ def hankelThree {R : Type*} [CommRing R] (v : ℕ → R) : R :=
 def hankelMixed {R : Type*} [CommRing R] (v : ℕ → R) : R :=
   (!![v 0, v 1, v 3; v 1, v 2, v 4; v 2, v 3, v 5]).det
 
-set_option maxHeartbeats 2000000 in
--- Expanding both 3-by-3 determinants after three substitutions needs extra heartbeats.
 /-- The candidate's resolvent formula with its denominator cleared. No
 invertibility hypothesis is needed for this polynomial identity. -/
 theorem hankel_three_resolvent {R : Type*} [CommRing R]

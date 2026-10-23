@@ -15,7 +15,6 @@ unless they contain at most 492 distinct supported orbit coordinate points. -/
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
-set_option maxHeartbeats 1000000
 
 def orbitFreeNodesZ (a b i : ℕ) : Fin 3 → ℤ :=
   fun j => (qq a b (i + (j.val + 1)) : ℤ) - qq a b i

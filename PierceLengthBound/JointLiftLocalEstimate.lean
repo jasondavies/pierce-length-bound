@@ -13,8 +13,6 @@ local hypothesis, retaining every slack factor explicitly. -/
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 
-set_option maxHeartbeats 1000000 in
--- The three-term real inequality requires normalization of the nested maximum.
 /-- The displayed joint-coordinate estimate implies the three integer-power branches. -/
 theorem joint_lift_branches_of_three_term_count {T H X S Y R : ℕ}
     (hcount : (T : ℝ) ≤ R * ((X : ℝ) ^ 5 + (X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ) +

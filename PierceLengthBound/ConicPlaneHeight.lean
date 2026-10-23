@@ -89,7 +89,7 @@ theorem three_points_integer_plane_height {z : Fin 3 → Fin 3 → ℤ} {H : ℕ
   · rw [abs_neg]
     have hs (j : Fin 3) : |n j * z 0 j| ≤ 8 * (H : ℤ) ^ 3 := by
       calc |n j * z 0 j| = |n j| * |z 0 j| := abs_mul ..
-        _ ≤ (8 * (H : ℤ) ^ 2) * H := by gcongr; exact hnH j; exact hb 0 j
+        _ ≤ (8 * (H : ℤ) ^ 2) * H := by gcongr; exacts [hnH j, hb 0 j]
         _ = _ := by ring
     have h1 := abs_add_le (n 0 * z 0 0 + n 1 * z 0 1) (n 2 * z 0 2)
     have h2 := abs_add_le (n 0 * z 0 0) (n 1 * z 0 1)
@@ -124,8 +124,8 @@ lemma integerPlanePolynomial_coeff (n : Fin 3 → ℤ) (c : ℤ) (j : Fin 3) :
     intro he
     have := congrArg (fun f : Fin 3 →₀ ℕ => f j) he
     simp at this
-  simp only [integerPlanePolynomial, MvPolynomial.coeff_add, MvPolynomial.coeff_sum,
-    MvPolynomial.coeff_C_mul, MvPolynomial.coeff_C, MvPolynomial.coeff_X]
+  simp only [integerPlanePolynomial, AddMonoidAlgebra.coeff_add, Finsupp.coe_add, Pi.add_apply,
+    MvPolynomial.coeff_sum, MvPolynomial.coeff_C_mul, MvPolynomial.coeff_C, MvPolynomial.coeff_X]
   simp [Finsupp.single_eq_single_iff, hz]
 
 lemma integerPlanePolynomial_ne_zero {n : Fin 3 → ℤ} (hn : n ≠ 0) (c : ℤ) :

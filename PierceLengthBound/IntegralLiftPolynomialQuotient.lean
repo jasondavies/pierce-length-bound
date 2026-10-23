@@ -14,7 +14,6 @@ public import PierceLengthBound.IntegralLiftParabola
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
-set_option maxHeartbeats 1000000
 
 lemma map_clearedNewtonQuartic {R S : Type*} [CommRing R] [CommRing S]
     (f : R →+* S) (c : Fin 4 → R) (s : Fin 3 → R) (n d : R) :
@@ -47,7 +46,8 @@ theorem normalization_polynomial_quotient {K : Type*} [Field K]
     ∃ q : Polynomial K,
       algebraMap (Polynomial K) (RatFunc K) q =
         algebraMap (Polynomial K) (RatFunc K) n / algebraMap (Polynomial K) (RatFunc K) d ∧
-      C A * parabolaV c (fun j => q + (![0, s 0, s 1, s 2] : Fin 4 → Polynomial K) j) = C a * M := by
+      C A * parabolaV c (fun j => q + (![0, s 0, s 1, s 2] : Fin 4 → Polynomial K) j) =
+        C a * M := by
   let f := algebraMap (Polynomial K) (RatFunc K)
   have hf : Function.Injective f := IsFractionRing.injective _ _
   have hdf : f d ≠ 0 := by simpa only [map_zero] using hf.ne hd

@@ -78,7 +78,8 @@ lemma jointExponentY_sub {r s : ℝ} (hr : 0 < r) (hs : 0 < s) :
 theorem jointOptimal_rational_approximation {ε : ℝ} (hε : 0 < ε) :
     ∃ r : ℚ, 0 < r ∧
       max (jointExponentS r) (jointExponentY r) < jointOptimalExponent + ε := by
-  obtain ⟨r, hr, hrε⟩ := exists_rat_btwn (show jointOptimalRatio < jointOptimalRatio + ε by linarith)
+  obtain ⟨r, hr, hrε⟩ :=
+    exists_rat_btwn (show jointOptimalRatio < jointOptimalRatio + ε by linarith)
   have hr0 : (0 : ℝ) < r := jointOptimalRatio_pos.trans hr
   refine ⟨r, by exact_mod_cast hr0, max_lt ?_ ?_⟩
   · have h := jointExponentS_antitone jointOptimalRatio_pos hr.le
