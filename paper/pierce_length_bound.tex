@@ -88,18 +88,18 @@ rational exponent $4317/14677=0.2941336785\ldots$
 The curve-counting bounds of this paper (Theorems~\ref{thm:polar},
 \ref{thm:joint} and~\ref{thm:lattice}) all lie just above
 $5/17=0.2941176\ldots$, and Theorem~\ref{thm:polar} is within
-$1.6\cdot10^{-5}$ of it. We first explain
-where $5/17$ comes from, since it organizes the whole argument.
+$1.6\cdot10^{-5}$ of it. We first introduce the integer invariants of an
+orbit, and then explain where $5/17$ comes from, since it organizes the whole
+argument.
 
 \subsection*{From integer invariants to curves}
 Write $k_i=q_{i+1}-q_i$ for the quotient increments and
-$d_i=b_i-b_{i+1}$ for the drops. Four consecutive terms $x,y,z,w$ have drops
-$d,e,f$ and two consecutive quotient increments $u,v$. Their curvature
-$D=dv-eu$ satisfies
+$d_i=b_i-b_{i+1}$ for the drops. The \emph{curvature}
+$D_i=d_ik_{i+1}-d_{i+1}k_i$ of four consecutive terms satisfies
 \begin{equation}\label{eq:intro-curv}
- Dz=df+ude+(u-1)e^2.
+ D_ib_{i+2}=d_id_{i+2}+k_id_id_{i+1}+(k_i-1)d_{i+1}^2.
 \end{equation}
-Thus $D$ is a positive integer, although its defining terms largely cancel,
+Thus $D_i$ is a positive integer, although its defining terms largely cancel,
 and it is small when the drops are small. A six-term identity supplies a
 second positive integer $L$ and controls the quotient by the small
 parameters of a single block (Section~\ref{sec:six}).
@@ -120,8 +120,8 @@ Erd\H{o}s and Shallit's divisor argument shows that a drop value can repeat
 only $a^{o(1)}$ times; hence $A\ge T^{2-o(1)}$. Similarly the quotients
 increase by at most $a/A$ across the window, so a fixed proportion of starts
 have their next few increments bounded by $H\asymp a/(AT)\le a^{1+o(1)}/T^3$.
-For such a start the ten maximal minors of a $3\times5$ matrix of drops and
-increments, among them $I_4(i),I_4(i+1),I_4(i+2)$, are integers of absolute
+For such a start the ten maximal minors of a $3\times5$ matrix whose rows
+are drops, increments and a quadratic expression in the increments, among them $I_4(i),I_4(i+1),I_4(i+2)$, are integers of absolute
 value at most
 \[
  X\asymp\frac{A^4H^6}{a^3}\asymp\frac{a^3}{A^2T^6}\le\frac{a^{3+o(1)}}{T^{10}}.
@@ -142,7 +142,8 @@ coefficient-uniform bound of Castryck, Cluckers, Dittmann and
 Nguyen~\cite{CCDN} says that an integral curve over $\mathbb Q$ of degree
 $\delta$ has at most $B^{1/\delta+o(1)}$ integer points in a box of size
 $B$, whatever its coefficients. So a pattern carries $B^{1/\delta+o(1)}$
-starts, and the exponent tends to $5/17$ as $\delta$ grows with $B$ fixed.
+starts. Since $B\le a^{O(1)}$, the factor $B^{1/\delta}$ becomes $a^{o(1)}$ as
+$\delta\to\infty$, so the exponent tends to $5/17$ as the degree grows.
 Every refinement below is a way of raising $\delta$, or of shrinking $B$,
 for almost all patterns.
 
@@ -247,7 +248,7 @@ $\tau(n)\ll_\eta n^\eta$. For a window of $T$ remainders in $[A,2A)$,
 where $\Delta\ll_\eta a^\eta$ is a maximum of the divisor function
 (Section~\ref{sec:proof310}). The first is the
 Erd\H{o}s--Shallit drop argument. For the second, there are few small triples
-$(u,v,D)$, and a divisor argument bounds how often a triple can occur.
+$(k_i,k_{i+1},D_i)$, and a divisor argument bounds how often a triple can occur.
 Multiplying the second bound by the square of the first eliminates $A$
 and gives $T^{10}\ll a^3\Delta^3$.
 The six-step identity further gives
@@ -468,12 +469,12 @@ Let $h_j=x_j-x_{j+1}\ge1$ for $0\le j\le T-2$. The total drop is
 $\sum_jh_j=x_0-x_{T-1}\le A-1$. Thus fewer than $(T-1)/2$ drops exceed
 $2A/(T-1)$. The remaining set $\mathcal S$ has $2|\mathcal S|\ge T$.
 
-For $j\in\mathcal S$ we have $1\le h_j\le H:=\lfloor 2A/(T-1)\rfloor$. Also
+For $j\in\mathcal S$ we have $1\le h_j\le\bar h:=\lfloor 2A/(T-1)\rfloor$. Also
 $a+h_j=q_jx_j+x_{j+1}+x_j-x_{j+1}=(q_j+1)x_j$, so $x_j\mid a+h_j$. Moreover
 $a+h_j\le 2a\le 32a^7$. Since $j\mapsto x_j$ is injective, at most $\tau(a+h)\le\Delta$ indices
-in $\mathcal S$ have $h_j=h$. Hence $|\mathcal S|\le H\Delta$, and
+in $\mathcal S$ have $h_j=h$. Hence $|\mathcal S|\le\bar h\Delta$, and
 \[
-T(T-1)\le 2|\mathcal S|(T-1)\le 2\Delta\,H(T-1)\le 4A\Delta. \qedhere
+T(T-1)\le 2|\mathcal S|(T-1)\le 2\Delta\,\bar h(T-1)\le 4A\Delta. \qedhere
 \]
 \end{proof}
 
@@ -502,11 +503,11 @@ $DAT^2\le 2u(sT)^2\le 288uA^2$, so $DT^2\le 288uA$, and then
 \[
 D\,T^3\le 288\,u\,AT\le 3456\,a .
 \]
-Thus the triple $(u,v,D)$ of a small block lies in $[1,U]^2\times[1,D^*]$, where
+Thus the triple $(u,v,D)$ of a small block lies in $[1,U^*]^2\times[1,D^*]$, where
 \[
-U=\lfloor 12a/(AT)\rfloor\le a,\qquad D^*=\lfloor 3456a/T^3\rfloor\le 2a .
+U^*=\lfloor 12a/(AT)\rfloor\le a,\qquad D^*=\lfloor 3456a/T^3\rfloor\le 2a .
 \]
-The inequalities $U\le a$ and $D^*\le 2a$ hold because $AT\ge12$ and $T^3\ge1728$.
+The inequalities $U^*\le a$ and $D^*\le 2a$ hold because $AT\ge12$ and $T^3\ge1728$.
 
 Now fix such a triple and consider the small blocks that have it. By Lemma~\ref{lem:fiber-eq},
 each one gives a point $q=q_j=\lfloor a/x_j\rfloor$ of the set $Q$ of Lemma~\ref{lem:fiber}.
@@ -514,7 +515,7 @@ The map $j\mapsto q_j$ is injective on these blocks: $q_j$ determines $x_j=\Lamb
 $x_j$ determines $j$. By Lemma~\ref{lem:fiber}, at most $\Delta$ small blocks share a triple.
 Consequently
 \[
-\frac T2\le |\mathcal S|\le U^2D^*\Delta
+\frac T2\le |\mathcal S|\le (U^*)^2D^*\Delta
 \le\left(\frac{12a}{AT}\right)^2\frac{3456a}{T^3}\Delta,
 \]
 which is the claimed bound.
@@ -537,9 +538,8 @@ $2^k\le b_i<2^{k+1}$. Every $b_i$ with $i<P$ lies in $[1,a)$, so
 $P=\sum_{0\le k\le \log_2 a}T_k$. Since $(b_i)$ is decreasing, the indices counted by $T_k$
 are consecutive. So when $T_k>0$ they form a window run in $[A,2A)$ with $A=2^k$.
 
-For every $\eta>0$, Lemma~\ref{lem:div} gives $\Delta\ll_\eta a^\eta$,
-since its defining maximum is over $n\le32a^7$. Taking $\eta=5\varepsilon/3$
-in Corollary~\ref{cor:window} yields
+Inserting $\Delta\ll_\eta a^\eta$ with $\eta=5\varepsilon/3$ into
+Corollary~\ref{cor:window} yields
 $T_k\ll_\varepsilon a^{3/10+\varepsilon/2}$; the windows with $T_k<12$
 satisfy the same estimate. There are $O(\log a)\ll_\varepsilon a^{\varepsilon/2}$
 windows, so summing proves Theorem~\ref{thm:main}. \hfill$\square$
@@ -640,9 +640,17 @@ and another proof of Theorem~\ref{thm:main}.
 \section{The Hankel hierarchy}\label{sec:hankel}
 
 From now on we write $N=P(a,b)$, so that
-$b_0>\dots>b_{N-1}>0=b_N$, and $k_i=q_{i+1}-q_i$. For each remaining tail we construct a probability measure
-on its quotient differences. Reweighting by the reciprocal quotient will
-make its total mass equal to $b_i/a$.
+$b_0>\dots>b_{N-1}>0=b_N$, and $k_i=q_{i+1}-q_i$. The division equation
+gives $b_i/a=(1-b_{i+1}/a)/q_i$, and iterating it expresses $b_i/a$ as the
+alternating Pierce series in the tail quotients $q_i,q_{i+1},\dots$. The
+construction below rewrites this series as a Stieltjes transform,
+\[
+ \frac{b_i}a=\int\frac{d\mu_i(x)}{q_i+x},
+\]
+of a probability measure $\mu_i$ on the quotient gaps $q_{i+j}-q_i$
+(Lemma~\ref{lem:moments}(2)). The measure $\nu_i=\mu_i/(q_i+x)$ then has total
+mass $b_i/a$, and the Hankel determinants of its moments are the integer
+invariants we need.
 
 Put $p_i(j)=q_{i+j}-q_i$ for $0\le j<N-i$; the symbols $p_i,w_i$
 are local to this construction. Define the weights backwards from
@@ -890,7 +898,7 @@ and the $k$-relations at $i$ and $i+1$ read
 N_1k_0=u_1k_1+u_2k_2+N_0k_3,\qquad N_1k_4=N_2k_1-v_1k_2-v_2k_3 .
 \]
 
-\subsection{Two identities}
+\subsection{The normalization identity and the label bound}
 
 \begin{lemma}[The normalization identity]\label{lem:multid}
 Let $i+6<N$, let $\pi_i$ be as in Lemma~\ref{lem:orthquartic}, and let
@@ -930,7 +938,7 @@ $\pi_i$.
 \end{proof}
 
 \begin{lemma}[Labels]\label{lem:labels}
-Let $i+6<N$ and put
+Let $i+6<N$ and put $\mathcal G=\prod_{j<4}\mu_i(F_j^2)$. Explicitly,
 \[
 \mathcal G(k_0,\dots,k_4)=(k_0+1)\bigl(k_1s_2+s_2+k_1+k_2+1\bigr)
 \bigl(k_2(k_1+k_2)s_3+g_3\bigr),
@@ -950,7 +958,8 @@ proof of Theorem~\ref{thm:hankel}. By Hadamard's inequality,
 \]
 since $\nu_i=\mu_i/(q_i+x)\le\mu_i/q_i$ on the nonnegative support. By the shift
 rule~\eqref{eq:moment-shift} and the moments $\mu_{i+m}(1)=\mu_{i+m}(x)=1$,
-$\mu_{i+m}(x^2)=k_m+1$, $\mu_{i+m}(x^3)=k_m^2+2k_m+k_{m+1}+1$, the product equals $\mathcal G$; that is, $\mathcal G=\prod_{j<4}\mu_i(F_j^2)$. For the second
+$\mu_{i+m}(x^2)=k_m+1$, $\mu_{i+m}(x^3)=k_m^2+2k_m+k_{m+1}+1$, the product
+$\prod_{j<4}\mu_i(F_j^2)$ expands to the displayed formula. For the second
 claim, $a=q_ib_i+b_{i+1}<2A(q_i+1)\le4Aq_i$, so $L(i)a^4\le256A^4L(i)q_i^4\le 256A^4a\mathcal G$.
 \end{proof}
 
@@ -958,8 +967,8 @@ claim, $a=q_ib_i+b_{i+1}<2A(q_i+1)\le4Aq_i$, so $L(i)a^4\le256A^4L(i)q_i^4\le 25
 Throughout this subsection the pattern and gaps arise from the same state,
 so the cofactor relations of Lemma~\ref{lem:pattern} remain in force.
 Besides the polynomial $\sigma$ of Section~\ref{sec:six}, put
-$\omega(x,y,z,w)=x^2z+(2x-1)yz+xz^2+xw$. Both $\sigma$ and $\omega$ are positive at
-positive integers.
+$\tilde\sigma(y_1,y_2,y_3,y_4)=y_1^2y_3+(2y_1-1)y_2y_3+y_1y_3^2+y_1y_4$. Both $\sigma$
+and $\tilde\sigma$ are positive at positive integers.
 
 \begin{lemma}[Signs]\label{lem:signs}
 If $N_0,N_1\ge1$ and $k_0,\dots,k_4\ge1$, then $u_1>0>u_2$.
@@ -969,8 +978,8 @@ If $N_0,N_1\ge1$ and $k_0,\dots,k_4\ge1$, then $u_1>0>u_2$.
 Solving the $k$- and $r$-relations of Lemma~\ref{lem:pattern} for $(u_1,u_2)$ by Cramer's rule
 gives the exact identities
 \begin{align*}
-u_1\sigma(k_1,k_2,k_3)&=N_1\omega(k_0,k_1,k_2,k_3)+N_0\sigma(k_2,k_3,k_4),\\
--u_2\sigma(k_1,k_2,k_3)&=N_1\sigma(k_0,k_1,k_2)+N_0\omega(k_1,k_2,k_3,k_4),
+u_1\sigma(k_1,k_2,k_3)&=N_1\tilde\sigma(k_0,k_1,k_2,k_3)+N_0\sigma(k_2,k_3,k_4),\\
+-u_2\sigma(k_1,k_2,k_3)&=N_1\sigma(k_0,k_1,k_2)+N_0\tilde\sigma(k_1,k_2,k_3,k_4),
 \end{align*}
 since the Cramer determinant is $k_1r_2-k_2r_1=\sigma(k_1,k_2,k_3)$.
 \end{proof}
@@ -1057,7 +1066,8 @@ replaced by $c_4$ ($c_5$), with the sign of the column permutation. Write
 $\mathcal M=\mathcal M_\pi(I\mid B)$ up to a permutation of columns, where $\mathcal M_\pi$ is the
 pivot block; by Cramer's rule the two columns of $B$ are $\mathbf u/p_\pi$ and $\mathbf v/p_\pi$. The minors of
 $(I\mid B)$ are $\pm1$, the entries of $B$, and the $2\times2$ minors of $B$; multiplying by
-$\det\mathcal M_\pi=p_\pi$ shows that the three minors $p_{w_r}$ using both $c_4$ and $c_5$ satisfy
+$\det\mathcal M_\pi=p_\pi$ shows that the three minors $p_{w_r}$ using both $c_4$ and $c_5$, where
+$w_r$ consists of $c_4$, $c_5$ and the $r$th pivot column, satisfy
 $p_\pi\,p_{w_r}=\pm(\mathbf u\times \mathbf v)_r$. So $p$ is determined by
 $(\pi,\operatorname{sgn}p_\pi,\kappa,\mathbf u,\mathbf v)$, where $|\mathbf u_r|,|\mathbf v_r|\le\kappa$ and $\kappa$ divides
 every coordinate of $\mathbf u\times \mathbf v$.
@@ -1177,7 +1187,9 @@ $f=\sum_{j=0}^4\gamma_j(s_j^2+k_j)$, the \emph{pattern quadratic}, and let
  &+\bar N_2r_1-\bar v_1r_2-\bar v_2r_3-k_4(2s_4+k_4),
 \end{align*}
 where $r_j=k_j(s_j+s_{j+1})+k_{j+1}$ for $j=1,2,3$. This is a cubic
-polynomial in the free nodes, the \emph{quartic norm}.
+polynomial in the free nodes, the \emph{quartic norm}: at a good start it is
+the squared norm $\nu_i(P_4^2)$ of the orthogonal quartic
+(Lemma~\ref{lem:jointcurve}).
 
 The degree of an affine curve is that of its projective closure, equivalently
 the leading coefficient of its affine Hilbert function.
@@ -1250,8 +1262,11 @@ Two further identities distinguish the components on which the later rational
 functions have the required behavior. We give their definitions before
 stating the component bounds.
 
-Form the $8\times9$ matrix of coefficients of
-$P_4,xP_4,x^2P_4,x^3P_4,Z,xZ,x^2Z,x^3Z$ in the basis
+The idea is that the two orthogonal polynomials $P_4$ and $Z$ determine the
+moment vector of $\nu_i$ up to scale, and the two normalized division
+equations fix the scale; this recovers $q_i$ and $I_3(i)$ as rational
+functions of the free nodes. Concretely, form the $8\times9$ matrix of
+coefficients of $P_4,xP_4,x^2P_4,x^3P_4,Z,xZ,x^2Z,x^3Z$ in the basis
 $1,x,\dots,x^8$. Let $c_j$ be $(-1)^j$ times the minor obtained by
 deleting column $j$, and define
 \[
@@ -1508,12 +1523,21 @@ are $C_0,\dots,C_4$, then
 The other three relations follow by the same column additions and
 permutations.
 
-A fixed zero minor reduces the Pl\"ucker relations to
-three integer vectors $\mathbf x,\mathbf y,\mathbf z$ of height $O(X)$
-with $\mathbf x\times\mathbf y=0$ and
-$\mathbf x\cdot\mathbf z=\mathbf y\cdot\mathbf z=0$.
-These vectors are signed rearrangements of the nine remaining minors,
-so they determine the minor vector.
+A fixed zero minor reduces the Pl\"ucker relations to a simple shape by
+Grassmann duality. Up to sign, the ten minors $p_{abc}$ are the Pl\"ucker
+coordinates $q_{de}$, $\{a,b,c,d,e\}=\{0,\dots,4\}$, of the orthogonal
+complement of the row space, a $2$-plane in $\mathbb Q^5$. After permuting
+columns we may take the vanishing minor to be $q_{34}=0$. The Pl\"ucker
+relations $q_{ij}q_{kl}-q_{ik}q_{jl}+q_{il}q_{jk}=0$ then say exactly that
+the integer vectors
+\[
+ \mathbf x=(q_{03},q_{13},q_{23}),\qquad \mathbf y=(q_{04},q_{14},q_{24}),\qquad
+ \mathbf z=(q_{12},-q_{02},q_{01})
+\]
+satisfy $\mathbf x\times\mathbf y=0$ and
+$\mathbf x\cdot\mathbf z=\mathbf y\cdot\mathbf z=0$. They have height $O(X)$
+and are signed rearrangements of the nine remaining minors, so they determine
+the minor vector.
 The case $\mathbf x=\mathbf y=0$ has $O(X^3)$ choices. Otherwise write
 $\mathbf x=r\mathbf v$, $\mathbf y=s\mathbf v$ with $\mathbf v$ primitive.
 In a dyadic range $R\le|\mathbf v|_\infty<2R$, there are $O(R^3)$
@@ -1528,21 +1552,21 @@ ranges proves the pattern count. Since $X\le a^{O(1)}$, the logarithm is
 absorbed into $a^\eta$.
 
 Now suppose that a line contained in the zero set of~\eqref{eq:jointcurve} passes
-through the free-node triple $s$ of a good start, with direction $v$. Extend $v$ to the five
-nodes linearly, as in Section~\ref{sec:jointcurve}, and write $s(t)=s+tv$. Both equations
+through the free-node triple $s$ of a good start, with direction $w$. Extend $w$ to the five
+nodes linearly, as in Section~\ref{sec:jointcurve}, and write $s(t)=s+tw$. Both equations
 of~\eqref{eq:jointcurve} hold identically in $t$.
 \begin{enumerate}
 \item The resultant has degree at most ten in $t$, so the $t^{12}$ coefficient of the second
-equation, $-a\bigl(\sum_j\gamma_jv_j^3\bigr)^4$, vanishes. Then $\Psi(s(t))$ has degree at most
+equation, $-a\bigl(\sum_j\gamma_jw_j^3\bigr)^4$, vanishes. Then $\Psi(s(t))$ has degree at most
 two, so $\Psi^4$ has degree at most eight, and the $t^{10}$ coefficient
-$[\mathcal R]_{10}(v)$ of the resultant, given by~\eqref{eq:joint-resultant-leading}, vanishes
-too: two coordinates of $v$ coincide.
+$[\mathcal R]_{10}(w)$ of the resultant, given by~\eqref{eq:joint-resultant-leading}, vanishes
+too: two coordinates of $w$ coincide.
 \item The direction satisfies the four moment equations of Lemma~\ref{lem:jointleading}: those
 of orders zero and one by the definition of the nodes, order two from the $t^2$ coefficient of
 $f$, and order three from step~(1). The grouping argument in the proof of
 Lemma~\ref{lem:jointleading} then shows that the pattern is exceptional, with exactly two
 groups of equal coordinates, of sizes two and three. After scaling, and in the order
-of~\eqref{eq:jointexceptional}, $v$ is one of
+of~\eqref{eq:jointexceptional}, $w$ is one of
 \[
  (0,1,1,0,1),\quad (0,1,1,0,0),\quad
  (0,0,1,1,0),\quad (0,1,0,0,1).
@@ -1552,8 +1576,8 @@ follows from a row and column degree count in the Newton-basis Bezout matrix use
 of Lemma~\ref{lem:jointleading}, in which coinciding leading nodes lower the degrees of the
 corresponding entries. Hence
 $\Psi^4$ has degree at most six, $\Psi(s(t))$ is affine in $t$, and its second difference
-$\Psi(s+v)+\Psi(s-v)-2\Psi(s)$ vanishes.
-\item Expanding this second difference, and using $f=0$ at $s\pm v$, gives respectively
+$\Psi(s+w)+\Psi(s-w)-2\Psi(s)$ vanishes.
+\item Expanding this second difference, and using $f=0$ at $s\pm w$, gives respectively
 \[
  -2\bar N_1s_3,\qquad 2(\bar N_1+\bar u_1)(k_1-1),\qquad 2(\bar u_2-1)(k_2-1),\qquad
  2\bigl((\bar u_1-\bar u_2)-(s_4-s_1)\bigr).
@@ -1791,23 +1815,23 @@ The pattern quadratic is irreducible, so its restriction to this plane
 is nonzero and has degree at most two.  Every curve contained in this
 plane section therefore has degree at most two, contrary to $d\ge4$.
 
-Choose the free-node triple $z_*\in C(\mathbb Q)$ of a good start.  All the $W_j$
+Choose the free-node triple $\mathbf s_*\in C(\mathbb Q)$ of a good start.  All the $W_j$
 are regular there, because their common reconstruction denominator
-does not vanish at a good start.  Write $w_j=W_j(z_*)$.
+does not vanish at a good start.  Write $w_j=W_j(\mathbf s_*)$.
 The identity $W\cdot(r_0,r_1,r_2)=N_0\ne0$ gives $w\ne0$.
-Choose $h$ with $w_h\ne0$.  At least one function
-$w_hW_j-w_jW_h$ is nonzero: otherwise
-$W=(W_h/w_h)w$, contradicting the preceding paragraph.
+Choose $l$ with $w_l\ne0$.  At least one function
+$w_lW_j-w_jW_l$ is nonzero: otherwise
+$W=(W_l/w_l)w$, contradicting the preceding paragraph.
 Take such a function for $\phi$.  It has rational coefficients and
-satisfies $\phi(z_*)=0$.
+satisfies $\phi(\mathbf s_*)=0$.
 
-This zero survives normalization even if $z_*$ is singular.
-Indeed, write $\phi=g/g_0$ near $z_*$, with $g$ not identically zero on $C$,
-$g(z_*)=0$ and $g_0(z_*)\ne0$.
-The finite normalization has a closed point $P_0$ above $z_*$.
+This zero survives normalization even if $\mathbf s_*$ is singular.
+Indeed, write $\phi=g/g_0$ near $\mathbf s_*$, with $g$ not identically zero on $C$,
+$g(\mathbf s_*)=0$ and $g_0(\mathbf s_*)\ne0$.
+The finite normalization has a closed point $P_0$ above $\mathbf s_*$.
 In its discrete valuation ring the numerator is in the maximal ideal
 and the denominator is a unit, so $\operatorname{ord}_{P_0}(\phi)>0$.
-Since $z_*$ is affine, $P_0$ does not lie in $E_\infty$.
+Since $\mathbf s_*$ is affine, $P_0$ does not lie in $E_\infty$.
 \end{proof}
 
 \begin{lemma}[The curvature pole degree]\label{lem:jointpoledegree}
@@ -2262,18 +2286,18 @@ basis of $\Lambda_p$ as in Lemma~\ref{lem:reduce}. Write $\lambda=\lambda(p)$. A
 $i$ with pattern $p$, the pivot parts $d_\pi$ and $k_\pi$ of the drop and gap rows of
 $\widehat{\mathcal M}_i$ lie in $\Lambda_p$, with coordinates $\xi$ and $\zeta$. Put
 \[
- c=\xi\times\zeta,\qquad w=d_\pi\times k_\pi.
+ W'=\xi\times\zeta,\qquad w=d_\pi\times k_\pi.
 \]
 The entries of $w$ are, up to sign, the minors $D_{jl}$ with $j,l$ pivot columns. The next lemma
-shows that $c=G_pW$ for a constant matrix $G_p$. We use $c$ rather than $G_pW$ because $c$ is
+shows that $W'=G_pW$ for a constant matrix $G_p$. We use $W'$ rather than $G_pW$ because $W'$ is
 visibly integral, while $G_p$ has rational entries.
 
 \begin{lemma}[Coordinates in the reduced basis]\label{lem:latticecoords}
 There are matrices $B_p,G_p\in\mathrm{GL}_3(\mathbb Q)$, depending only on $p$, such that at
 every good start with pattern $p$
 \[
- (s_1,s_2,s_3)=B_p\zeta,\qquad c=G_pW,\qquad
- |\zeta|_\infty\le\frac{3H}{\lambda},\qquad |c|_\infty\le\frac{8S'}{3\lambda^2}.
+ (s_1,s_2,s_3)=B_p\zeta,\qquad W'=G_pW,\qquad
+ |\zeta|_\infty\le\frac{3H}{\lambda},\qquad |W'|_\infty\le\frac{8S'}{3\lambda^2}.
 \]
 \end{lemma}
 
@@ -2291,18 +2315,18 @@ $(\det\mathcal L)^2\ne0$. The Binet--Cauchy identity
 $(L\cdot x)(L'\cdot y)-(L'\cdot x)(L\cdot y)=(L\times L')\cdot(x\times y)$, applied to pairs of
 rows of $\mathcal L$, gives $(\mathcal Lx)\times(\mathcal Ly)=\operatorname{Cof}(\mathcal L)(x\times
 y)$, so $p_\pi^2W=\operatorname{Cof}(\mathcal L)\,w$. Lemma~\ref{lem:exterior} gives
-$Vc=(\beta_1\,\beta_2\,\beta_3)^{\mathsf T}w$. Together,
-$c=p_\pi^2V^{-1}(\beta_1\,\beta_2\,\beta_3)^{\mathsf T}\operatorname{Cof}(\mathcal L)^{-1}W$,
+$VW'=(\beta_1\,\beta_2\,\beta_3)^{\mathsf T}w$. Together,
+$W'=p_\pi^2V^{-1}(\beta_1\,\beta_2\,\beta_3)^{\mathsf T}\operatorname{Cof}(\mathcal L)^{-1}W$,
 which defines $G_p$. Finally $|w|^2\le3S'^2$ by Lemma~\ref{lem:allcurv}, and
-Lemma~\ref{lem:exterior} gives $3\lambda^2|c_i|\le8S'$.
+Lemma~\ref{lem:exterior} gives $3\lambda^2|W'_i|\le8S'$.
 \end{proof}
 
 \subsection{The lattice graph}\label{sec:latticegraph}
 On a retained nonexceptional component $C$ of degree $d\ge4$ of a pattern $p$, regard
-$c=G_pW$ as a vector of rational functions on $C$, and let $\Gamma'_{m,n}$ be the image of the
+$W'=G_pW$ as a vector of rational functions on $C$, and let $\Gamma'_{m,n}$ be the image of the
 graph of
 \[
- \bigl(s_1,s_2,s_3,c_1^m,c_2^m,c_3^m,J^n\bigr)
+ \bigl(s_1,s_2,s_3,(W'_1)^m,(W'_2)^m,(W'_3)^m,J^n\bigr)
 \]
 under the linear map that replaces the nodes $s$ by $\zeta=B_p^{-1}s$.
 
@@ -2326,14 +2350,14 @@ $\frac{5n}2E_\infty+m\mathcal F$; its construction uses only this envelope.
 \item The $W_j$ have a common denominator $\Omega$ and numerators of degree at most $D_W$
 (Appendix~\ref{app:degree}).
 \end{enumerate}
-Each of these is unchanged when $W$ is replaced by $c=G_pW$ for a constant invertible matrix
-$G_p$. Each $c_j$ is a constant combination of the $W_l$, and each $W_l$ is a constant
-combination of the $c_j$, so for every point $P$
+Each of these is unchanged when $W$ is replaced by $W'=G_pW$ for a constant invertible matrix
+$G_p$. Each $W'_j$ is a constant combination of the $W_l$, and each $W_l$ is a constant
+combination of the $W'_j$, so for every point $P$
 \[
  \min_j\operatorname{ord}_Pc_j=\min_l\operatorname{ord}_P W_l .
 \]
-This gives (1) for $c$, and it shows that the pole envelope of $c$ is $\mathcal F$, which gives
-(2) and (3). The numerators of $c$ over $\Omega$ are constant combinations of those of $W$,
+This gives (1) for $W'$, and it shows that the pole envelope of $W'$ is $\mathcal F$, which gives
+(2) and (3). The numerators of $W'$ over $\Omega$ are constant combinations of those of $W$,
 which gives (4). The proof of Lemma~\ref{lem:jointpowereddegree} therefore applies unchanged.
 \end{proof}
 
@@ -2351,7 +2375,7 @@ satisfying~\eqref{eq:jointscale},
 \begin{proof}
 The proof of Proposition~\ref{prop:jointwindow} applies, except for the remaining components of
 the nonexceptional patterns. For such a component of a pattern $p$, the good starts give
-integer points $(\zeta,c_1^m,c_2^m,c_3^m,J^n)$ of $\Gamma'_{m,n}$, and distinct node triples
+integer points $(\zeta,(W'_1)^m,(W'_2)^m,(W'_3)^m,J^n)$ of $\Gamma'_{m,n}$, and distinct node triples
 give distinct points because $\zeta$ determines $s$. By Lemma~\ref{lem:latticecoords} they lie
 in the box of side
 \[
@@ -2639,6 +2663,15 @@ less than $24$ occur for relatively few patterns.
 
 \subsection{An explicit label for a branch at infinity}
 
+The plan is as follows. At a branch at infinity of a nonexceptional
+component, the residue field contains the ratio $t$ of two leading nodes,
+which is a root of a fixed sextic, and a square root $\beta$ coming from the
+fixed-dividend equation. If the minimal polynomial of $t+c\beta$ has degree
+twelve for some slope $c$, every branch at infinity has residue degree at
+least twelve; since its multiplicity $e$ is even, the component then has the
+maximal degree $24$. The \emph{label} below is a polynomial whose
+irreducibility certifies this, and which can be sieved over patterns.
+
 Let $P$ be a point above infinity on the normalization of a nonexceptional component.
 The five leading nodes are distinct by Lemma~\ref{lem:jointleading}.
 Scale them to $(0,1,t,y,z)$, and put
@@ -2685,7 +2718,7 @@ For example, the identities
 $\gamma_j\prod_{l\ne j}(z_j-z_l)=V_5$ for $0\le j<4$
 follow by evaluating the first four moment relations; their product is
 \eqref{eq:branchbarycentric}.
-Let $y_\infty=1/s_1$ on this chart. The value
+Let $y_\infty=1/s_1$. The value
 $\eta_P=(y_\infty^5\Psi^2)(P)\in\kappa(P)$ is defined and nonzero, because
 $\operatorname{ord}_P\Psi=-5e_P/2$.
 Taking leading terms in the curve equation gives
@@ -3177,7 +3210,7 @@ of rises among its $T-1$ increments. Then:
 \item $(T-1)^2\le 2(\rho+1)(A-1)$;
 \item $T-1\le\lfloor a/A\rfloor$;
 \item if $6A\le a$, then $T-1=\ell+s$ with $\ell^2\le 8(\rho+1)\lfloor a/A\rfloor$ and
-$s^3\le 26244\,A$.
+$s^3\le 26244\,A$, where $26244=324\cdot3^4$.
 \end{enumerate}
 \end{proposition}
 
@@ -3191,17 +3224,19 @@ $\sum_jd_j=x_0-x_{T-1}\le A-1$ give the claim.
 
 (2) The increments are $\ge1$, and they sum to $q_{T-1}-q_0\le\lfloor a/A\rfloor$.
 
-(3) Call an increment $h$ \emph{low} if $26244h^3A^4<a^3$. Five consecutive equal increments
+(3) Put $c_{\rm low}=324\cdot3^4=26244$; the factor $324$ comes from Lemma~\ref{lem:ap}
+and $3^4$ from the bound $a<3Aq$ below. Call an increment $h$ \emph{low} if
+$c_{\rm low}h^3A^4<a^3$. Five consecutive equal increments
 $h$ inside the run give six quotients in arithmetic progression. Lemma~\ref{lem:ap} then
 gives $q^4\le324h^3a$. On the other hand, $a<3Aq$, which follows from $a=qx_0+x_1$,
-$x_1<x_0<2A$ and $6A\le a$. Together these give $a^3\le26244h^3A^4$, so $h$ is not low.
+$x_1<x_0<2A$ and $6A\le a$. Together these give $a^3\le c_{\rm low}h^3A^4$, so $h$ is not low.
 Within a run the increments are nonincreasing, so equal values are consecutive. Hence each
 low value occurs at most $4$ times per run, and at most $4(\rho+1)$ times in all.
 Lemma~\ref{lem:mult} bounds the number $\ell$ of low increments by
 $\ell^2\le8(\rho+1)\sum_jk_j\le8(\rho+1)\lfloor a/A\rfloor$. Let $s$ be the number of high
 increments. If $s=0$, its bound is immediate. Otherwise let $h_*$ be their
 smallest value. Then $sh_*\le\lfloor a/A\rfloor$ and
-$a^3\le26244h_*^3A^4$, so $s^3a^3\le26244A^4(a/A)^3\le26244Aa^3$.
+$a^3\le c_{\rm low}h_*^3A^4$, so $s^3a^3\le c_{\rm low}A^4(a/A)^3=c_{\rm low}Aa^3$.
 \end{proof}
 
 \begin{lemma}[Geometric sums]\label{lem:geom}
@@ -3333,7 +3368,9 @@ loss, its two window bounds balance at $A\asymp a^{3/5}$
 (Section~\ref{sec:proof310}), so better constants or short-interval divisor
 estimates alone do not change that exponent.
 
-Nor do the curvatures necessarily decrease. For $a=13242$, the orbit of
+Finally, there is no obvious monotone quantity along an orbit that could
+replace the window-by-window counting; in particular the curvatures need not
+decrease. For $a=13242$, the orbit of
 $255$ begins
 \[
  255,\ 237,\ 207,\ 201,\ 177,\ 144,\ 138,\ 132,\ldots
