@@ -25,6 +25,8 @@ cross relation `m ∣ u × v` makes the index at most `|m|`. Few patterns have a
 @[expose] public section
 
 namespace PierceLengthBound
+open scoped Matrix
+open Matrix (vec3_dotProduct)
 
 open Finset
 
@@ -43,52 +45,42 @@ def Lrow (p : Fin 10 → ℤ) (τ : Fin 10) (c : Fin 5) : Fin 3 → ℤ :=
 
 /-- **Lifting.** Each row of the matrix is recovered from its pivot columns. -/
 theorem lift_row (M : Fin 3 → Fin 5 → ℤ) (τ : Fin 10) (r : Fin 3) (c : Fin 5) :
-    plk M τ * M r c = dot3 (Lrow (plk M) τ c) (fun a => M r (pcol τ a)) := by
+    plk M τ * M r c = Lrow (plk M) τ c ⬝ᵥ (fun a => M r (pcol τ a)) := by
   fin_cases τ <;> fin_cases c <;>
     simp only [plk, minor3, Fin.isValue, trip, Fin.mk_one, Matrix.cons_val_one,
-        Matrix.cons_val_zero, Fin.reduceFinMk, dot3, Lrow, Nat.succ_eq_add_one, Nat.reduceAdd, role,
-        Matrix.cons_val', Matrix.cons_val, Matrix.cons_val_fin_one, uVec, puS, Int.reduceNeg, puX,
-        neg_mul, one_mul, neg_add_rev, neg_sub, vVec, pvS, pvX, pcol, zero_mul, add_zero, zero_add,
-        Fin.zero_eta] <;>
+        Matrix.cons_val_zero, Fin.reduceFinMk, vec3_dotProduct, Lrow, Nat.succ_eq_add_one,
+        Nat.reduceAdd, role, Matrix.cons_val', Matrix.cons_val, Matrix.cons_val_fin_one, uVec, puS,
+        Int.cast_id, Int.reduceNeg, puX, neg_mul, one_mul, neg_add_rev, neg_sub, vVec, pvS, pvX,
+        pcol, zero_mul, add_zero, zero_add, Fin.zero_eta] <;>
     fin_cases r <;> simp only [Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, Fin.isValue] <;> ring
 
 /-- **The determinant of the rows `1, 2, 3`.** -/
 theorem lift_det (M : Fin 3 → Fin 5 → ℤ) (τ : Fin 10) :
     det3 (Lrow (plk M) τ 1) (Lrow (plk M) τ 2) (Lrow (plk M) τ 3) = plk M τ ^ 2 * plk M 6 := by
   fin_cases τ <;>
-    simp [Lrow, role, det3, plk, trip, minor3, uVec, vVec, puX, puS, pvX, pvS] <;> ring
+    simp [Lrow, role, det3_apply, plk, trip, minor3, uVec, vVec, puX, puS, pvX, pvS] <;> ring
 
 /-! ### The lattice -/
 
-lemma dot3_add_right (u x y : Fin 3 → ℤ) : dot3 u (x + y) = dot3 u x + dot3 u y := by
-  simp [dot3]; ring
-
-lemma dot3_neg_right (u x : Fin 3 → ℤ) : dot3 u (-x) = -dot3 u x := by simp [dot3]; ring
-
-lemma dot3_sub_right (u x y : Fin 3 → ℤ) : dot3 u (x - y) = dot3 u x - dot3 u y := by
-  simp [dot3]; ring
-
 /-- The pattern lattice in pivot coordinates. -/
 def pivLat (p : Fin 10 → ℤ) : AddSubgroup (Fin 3 → ℤ) where
-  carrier := {x | p (piv p) ∣ dot3 (uVec p (piv p)) x ∧ p (piv p) ∣ dot3 (vVec p (piv p)) x}
+  carrier := {x | p (piv p) ∣ uVec p (piv p) ⬝ᵥ x ∧ p (piv p) ∣ vVec p (piv p) ⬝ᵥ x}
   add_mem' := by
     intro x y hx hy
-    simp only [Set.mem_ofPred_eq, dot3_add_right] at hx hy ⊢
+    simp only [Set.mem_ofPred_eq, dotProduct_add] at hx hy ⊢
     exact ⟨dvd_add hx.1 hy.1, dvd_add hx.2 hy.2⟩
-  zero_mem' := by simp [dot3]
+  zero_mem' := by simp [vec3_dotProduct]
   neg_mem' := by
     intro x hx
-    simp only [Set.mem_ofPred_eq, dot3_neg_right, dvd_neg] at hx ⊢
+    simp only [Set.mem_ofPred_eq, dotProduct_neg, dvd_neg] at hx ⊢
     exact hx
 
-lemma dvd_dot3_of_dvd {d : ℤ} {x : Fin 3 → ℤ} (h : ∀ j, d ∣ x j) (w : Fin 3 → ℤ) :
-    d ∣ dot3 w x := by
-  unfold dot3
-  exact dvd_add (dvd_add (dvd_mul_of_dvd_right (h 0) _) (dvd_mul_of_dvd_right (h 1) _))
-    (dvd_mul_of_dvd_right (h 2) _)
+lemma dvd_dotProduct_of_dvd {d : ℤ} {x : Fin 3 → ℤ} (h : ∀ j, d ∣ x j) (w : Fin 3 → ℤ) :
+    d ∣ w ⬝ᵥ x :=
+  Finset.dvd_sum fun j _ => dvd_mul_of_dvd_right (h j) _
 
 lemma pivLat_of_dvd {p : Fin 10 → ℤ} {x : Fin 3 → ℤ} (h : ∀ j, p (piv p) ∣ x j) :
-    x ∈ pivLat p := ⟨dvd_dot3_of_dvd h _, dvd_dot3_of_dvd h _⟩
+    x ∈ pivLat p := ⟨dvd_dotProduct_of_dvd h _, dvd_dotProduct_of_dvd h _⟩
 
 /-- `Λ_p` has a nonzero vector of sup norm at most `R`. -/
 def HasShort (p : Fin 10 → ℤ) (R : ℕ) : Prop := ∃ x ∈ pivLat p, x ≠ 0 ∧ ∀ j, |x j| ≤ R
@@ -100,14 +92,14 @@ theorem pivLat_short {p : Fin 10 → ℤ} (hpl : PluckerRel p) (hm : p (piv p) �
   set τ := piv p
   set m := (p τ).natAbs
   have hm0 : 0 < m := Int.natAbs_pos.mpr hm
-  have hd : ∀ a, (m : ℤ) ∣ cross3 (uVec p τ) (vVec p τ) a := fun a =>
+  have hd : ∀ a, (m : ℤ) ∣ (uVec p τ ⨯₃ vVec p τ) a := fun a =>
     Int.natAbs_dvd.mpr (piv_cross hpl a)
   obtain ⟨n, u', lam, hn, hmg, hu, hv⟩ := cross_cong hm0 hd
   set g : ℤ := (gcd4 m (uVec p τ) : ℤ)
   have hg : 0 < g := Int.natCast_pos.mpr (gcd4_pos hm0 _)
   choose w hw using hv
   set ψ : (Fin 3 → ℤ) → ℤ × ℤ := fun x =>
-    (dot3 u' x % n, (lam * (dot3 u' x / n) + dot3 w x) % g)
+    ((u' ⬝ᵥ x) % n, (lam * ((u' ⬝ᵥ x) / n) + w ⬝ᵥ x) % g)
   have hmaps : ∀ x ∈ Fintype.piFinset (fun _ : Fin 3 => Icc (0 : ℤ) L),
       ψ x ∈ Ico (0 : ℤ) n ×ˢ Ico (0 : ℤ) g := fun x _ =>
     mem_product.mpr ⟨mem_Ico.mpr ⟨Int.emod_nonneg _ hn.ne', Int.emod_lt_of_pos _ hn⟩,
@@ -125,25 +117,25 @@ theorem pivLat_short {p : Fin 10 → ℤ} (hpl : PluckerRel p) (hm : p (piv p) �
   obtain ⟨x, hx, y, hy, hne, hxy⟩ := exists_ne_map_eq_of_card_lt_of_maps_to hcard hmaps
   simp only [ψ, Prod.mk.injEq] at hxy
   obtain ⟨h1, h2⟩ := hxy
-  set A := dot3 u' x
-  set B := dot3 u' y
+  set A := u' ⬝ᵥ x
+  set B := u' ⬝ᵥ y
   have hAB : A - B = n * (A / n - B / n) := by
     have e1 := Int.mul_ediv_add_emod A n
     have e2 := Int.mul_ediv_add_emod B n
     linear_combination -e1 + e2 + h1
-  have hdu : ∀ z, dot3 (uVec p τ) z = g * dot3 u' z := fun z => by
-    simp only [dot3, hu]; ring
-  have hdv : ∀ z, dot3 (vVec p τ) z = lam * dot3 u' z + n * dot3 w z := fun z => by
+  have hdu : ∀ z, uVec p τ ⬝ᵥ z = g * u' ⬝ᵥ z := fun z => by
+    simp only [vec3_dotProduct, hu]; ring
+  have hdv : ∀ z, vVec p τ ⬝ᵥ z = lam * u' ⬝ᵥ z + n * w ⬝ᵥ z := fun z => by
     have := hw 0; have := hw 1; have := hw 2
-    simp only [dot3]; linear_combination (z 0) * hw 0 + (z 1) * hw 1 + (z 2) * hw 2
-  have hg2 : g ∣ lam * (A / n - B / n) + dot3 w (x - y) := by
+    simp only [vec3_dotProduct]; linear_combination (z 0) * hw 0 + (z 1) * hw 1 + (z 2) * hw 2
+  have hg2 : g ∣ lam * (A / n - B / n) + w ⬝ᵥ (x - y) := by
     have := Int.ModEq.dvd h2.symm
-    rw [dot3_sub_right]
+    rw [dotProduct_sub]
     convert this using 1; ring
   refine ⟨x - y, ⟨Int.natAbs_dvd.mp ?_, Int.natAbs_dvd.mp ?_⟩, sub_ne_zero.mpr hne, fun j => ?_⟩
-  · rw [hdu, dot3_sub_right, hAB]
+  · rw [hdu, dotProduct_sub, hAB]
     exact ⟨A / n - B / n, by rw [hmg]; ring⟩
-  · rw [hdv, dot3_sub_right, hAB]
+  · rw [hdv, dotProduct_sub, hAB]
     obtain ⟨k, hk⟩ := hg2
     refine ⟨k, ?_⟩
     rw [hmg]
@@ -195,7 +187,7 @@ theorem shortR_spec {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
     have : (shortR p : ℤ) ^ 2 ≤ x j ^ 2 := by
       rw [← sq_abs (x j)]; exact pow_le_pow_left₀ h0 hj 2
     have : x j ^ 2 ≤ nrm3 x := by
-      unfold nrm3 dot3
+      simp only [nrm3, vec3_dotProduct]
       fin_cases j <;> simp <;> nlinarith [mul_self_nonneg (x 0), mul_self_nonneg (x 1),
         mul_self_nonneg (x 2)]
     linarith
@@ -210,7 +202,7 @@ lemma shortR_le {p : Fin 10 → ℤ} {L : ℕ} (h : HasShort p L) : shortR p ≤
 
 /-- **Solutions of `n ∣ w·x` in a box**: at most `27 n² gcd(n, x)`. -/
 theorem card_dot_dvd_le {n : ℕ} (hn : 0 < n) (x : Fin 3 → ℤ) :
-    ((ibox3 n).filter fun w => (n : ℤ) ∣ dot3 w x).card ≤ 27 * n ^ 2 * gcd4 n x := by
+    ((ibox3 n).filter fun w => (n : ℤ) ∣ w ⬝ᵥ x).card ≤ 27 * n ^ 2 * gcd4 n x := by
   classical
   set e := gcd4 n x
   have he0 : 0 < e := gcd4_pos hn x
@@ -222,25 +214,25 @@ theorem card_dot_dvd_le {n : ℕ} (hn : 0 < n) (x : Fin 3 → ℤ) :
     · exact h
   have hnZ : (0 : ℤ) < n := by exact_mod_cast hn
   set K := (Fintype.piFinset fun _ : Fin 3 => Ico (0 : ℤ) n).filter fun w =>
-    (n : ℤ) ∣ dot3 w x
+    (n : ℤ) ∣ w ⬝ᵥ x
   -- step 1: reduce modulo `n`
-  have step1 : ((ibox3 n).filter fun w => (n : ℤ) ∣ dot3 w x).card ≤ 27 * K.card := by
+  have step1 : ((ibox3 n).filter fun w => (n : ℤ) ∣ w ⬝ᵥ x).card ≤ 27 * K.card := by
     refine card_le_mul_card_image_of_maps_to (f := fun (w : Fin 3 → ℤ) (j : Fin 3) => w j % (n : ℤ))
       (t := K) (fun w hw => ?_) 27 fun r _ => ?_
     · obtain ⟨-, hd⟩ := mem_filter.mp hw
       refine mem_filter.mpr ⟨Fintype.mem_piFinset.mpr fun j => mem_Ico.mpr
         ⟨Int.emod_nonneg _ hnZ.ne', Int.emod_lt_of_pos _ hnZ⟩, ?_⟩
-      have : (n : ℤ) ∣ dot3 w x - dot3 (fun j => w j % (n : ℤ)) x := by
-        have e : dot3 w x - dot3 (fun j => w j % (n : ℤ)) x =
+      have : (n : ℤ) ∣ w ⬝ᵥ x - (fun j => w j % (n : ℤ)) ⬝ᵥ x := by
+        have e : w ⬝ᵥ x - (fun j => w j % (n : ℤ)) ⬝ᵥ x =
             (w 0 - w 0 % n) * x 0 + (w 1 - w 1 % n) * x 1 + (w 2 - w 2 % n) * x 2 := by
-          simp only [dot3]; ring
+          simp only [vec3_dotProduct]; ring
         rw [e]
         exact dvd_add (dvd_add (dvd_mul_of_dvd_left (Int.dvd_self_sub_emod ..) _)
           (dvd_mul_of_dvd_left (Int.dvd_self_sub_emod ..) _))
           (dvd_mul_of_dvd_left (Int.dvd_self_sub_emod ..) _)
       have := dvd_sub hd this
       simpa using this
-    · have hsub : ((ibox3 n).filter fun w => (n : ℤ) ∣ dot3 w x).filter
+    · have hsub : ((ibox3 n).filter fun w => (n : ℤ) ∣ w ⬝ᵥ x).filter
           (fun w => (fun j => w j % (n : ℤ)) = r) ⊆
           Fintype.piFinset fun j => (Icc (-(n : ℤ)) n).filter fun y => (n : ℤ) ∣ y - r j := by
         intro w hw
@@ -261,8 +253,8 @@ theorem card_dot_dvd_le {n : ℕ} (hn : 0 < n) (x : Fin 3 → ℤ) :
   -- step 2: a free action of `ℤ/n'` on the residues
   obtain ⟨s0, c0, c1, c2, hbz⟩ := gcd4_bezout n x
   set cc : Fin 3 → ℤ := ![c0, c1, c2]
-  have hcc : dot3 cc x = e - n * s0 := by
-    simp only [dot3, cc, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
+  have hcc : cc ⬝ᵥ x = e - n * s0 := by
+    simp only [vec3_dotProduct, cc, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
       Matrix.head_cons, Matrix.tail_cons]
     linear_combination hbz
   have step2 : K.card * n' ≤ n ^ 3 := by
@@ -279,14 +271,12 @@ theorem card_dot_dvd_le {n : ℕ} (hn : 0 < n) (x : Fin 3 → ℤ) :
       have hdot : (n : ℤ) ∣ ((wk.2 : ℤ) - wk'.2) * e := by
         have h1 := (mem_filter.mp hw).2
         have h2 := (mem_filter.mp hw').2
-        have h3 : (n : ℤ) ∣ dot3 (fun j => (wk.1 j - wk'.1 j) + ((wk.2 : ℤ) - wk'.2) * cc j) x := by
-          have := dvd_dot3_of_dvd (x := fun j => (wk.1 j - wk'.1 j) + ((wk.2 : ℤ) - wk'.2) * cc j)
-            hd x
-          rwa [show ∀ y z : Fin 3 → ℤ, dot3 y z = dot3 z y from fun y z => by
-            simp only [dot3]; ring] at this
-        have e1 : dot3 (fun j => (wk.1 j - wk'.1 j) + ((wk.2 : ℤ) - wk'.2) * cc j) x =
-            dot3 wk.1 x - dot3 wk'.1 x + ((wk.2 : ℤ) - wk'.2) * dot3 cc x := by
-          simp only [dot3]; ring
+        have h3 : (n : ℤ) ∣ (fun j => (wk.1 j - wk'.1 j) + ((wk.2 : ℤ) - wk'.2) * cc j) ⬝ᵥ x := by
+          rw [dotProduct_comm]
+          exact dvd_dotProduct_of_dvd hd x
+        have e1 : (fun j => (wk.1 j - wk'.1 j) + ((wk.2 : ℤ) - wk'.2) * cc j) ⬝ᵥ x =
+            wk.1 ⬝ᵥ x - wk'.1 ⬝ᵥ x + ((wk.2 : ℤ) - wk'.2) * cc ⬝ᵥ x := by
+          simp only [vec3_dotProduct]; ring
         rw [e1, hcc] at h3
         have := dvd_sub (dvd_sub h3 h1) (dvd_neg.mpr h2)
         have h4 : (n : ℤ) ∣ ((wk.2 : ℤ) - wk'.2) * (n * s0) := dvd_mul_of_dvd_right
@@ -339,12 +329,12 @@ lemma gcd4_dvd_gcd4 {e m : ℕ} (h : e ∣ m) (x : Fin 3 → ℤ) : gcd4 e x ∣
 
 /-- `∑_{u : m ∣ u·x} gcd(m, u)² ≤ 27 m² τ(m) gcd(m, x)`. -/
 theorem sum_gcd4_sq_dot_le {m : ℕ} (hm : 0 < m) (x : Fin 3 → ℤ) :
-    ∑ u ∈ (ibox3 m).filter (fun u => (m : ℤ) ∣ dot3 u x), gcd4 m u ^ 2 ≤
+    ∑ u ∈ (ibox3 m).filter (fun u => (m : ℤ) ∣ u ⬝ᵥ x), gcd4 m u ^ 2 ≤
       27 * m ^ 2 * m.divisors.card * gcd4 m x := by
   classical
   rw [← sum_fiberwise_of_maps_to (g := fun u => gcd4 m u) (t := m.divisors)
     (fun u _ => Nat.mem_divisors.mpr ⟨gcd4_dvd_m m u, hm.ne'⟩)]
-  calc ∑ d ∈ m.divisors, ∑ u ∈ ((ibox3 m).filter (fun u => (m : ℤ) ∣ dot3 u x)).filter
+  calc ∑ d ∈ m.divisors, ∑ u ∈ ((ibox3 m).filter (fun u => (m : ℤ) ∣ u ⬝ᵥ x)).filter
           (fun u => gcd4 m u = d), gcd4 m u ^ 2
       ≤ ∑ _d ∈ m.divisors, 27 * m ^ 2 * gcd4 m x := by
         refine sum_le_sum fun d hd => ?_
@@ -355,11 +345,11 @@ theorem sum_gcd4_sq_dot_le {m : ℕ} (hm : 0 < m) (x : Fin 3 → ℤ) :
           rcases Nat.eq_zero_or_pos e with h | h
           · rw [h, mul_zero] at he; omega
           · exact h
-        set F := ((ibox3 m).filter (fun u => (m : ℤ) ∣ dot3 u x)).filter fun u => gcd4 m u = d
+        set F := ((ibox3 m).filter (fun u => (m : ℤ) ∣ u ⬝ᵥ x)).filter fun u => gcd4 m u = d
         have hF : F.card ≤ 27 * e ^ 2 * gcd4 m x := by
           have hdZ : (d : ℤ) ≠ 0 := by exact_mod_cast hd0.ne'
           refine (card_le_card_of_injOn (fun u a => u a / d)
-            (t := (ibox3 e).filter fun w => (e : ℤ) ∣ dot3 w x) (fun u hu => ?_)
+            (t := (ibox3 e).filter fun w => (e : ℤ) ∣ w ⬝ᵥ x) (fun u hu => ?_)
             (fun u hu u' hu' h => ?_)).trans ?_
           · obtain ⟨hu1, hgd⟩ := mem_filter.mp (mem_coe.mp hu)
             obtain ⟨hub, hux⟩ := mem_filter.mp hu1
@@ -373,8 +363,8 @@ theorem sum_gcd4_sq_dot_le {m : ℕ} (hm : 0 < m) (x : Fin 3 → ℤ) :
               refine mem_Icc.mpr ⟨?_, ?_⟩
               · by_contra hc; push Not at hc; nlinarith
               · by_contra hc; push Not at hc; nlinarith
-            · have e1 : dot3 u x = d * dot3 (fun a => u a / d) x := by
-                simp only [dot3]; rw [hdv 0, hdv 1, hdv 2]
+            · have e1 : u ⬝ᵥ x = d * (fun a => u a / d) ⬝ᵥ x := by
+                simp only [vec3_dotProduct]; rw [hdv 0, hdv 1, hdv 2]
                 simp only [Int.mul_ediv_cancel_left _ hdZ]; ring
               rw [e1, show (m : ℤ) = d * e by exact_mod_cast he] at hux
               exact (mul_dvd_mul_iff_left hdZ).mp hux
@@ -450,18 +440,18 @@ theorem sum_gcd4_box_le {m : ℕ} (hm : 0 < m) (R : ℕ) :
 
 /-- **The admissible `(u, v)` with `m ∣ u·x`.** -/
 theorem card_crossSet_dot {m : ℕ} (hm : 0 < m) (x : Fin 3 → ℤ) :
-    ((crossSet m).filter fun uv => (m : ℤ) ∣ dot3 uv.1 x).card ≤
+    ((crossSet m).filter fun uv => (m : ℤ) ∣ uv.1 ⬝ᵥ x).card ≤
       729 * m ^ 3 * m.divisors.card * gcd4 m x := by
   classical
-  set T := (ibox3 m).filter fun u => (m : ℤ) ∣ dot3 u x
+  set T := (ibox3 m).filter fun u => (m : ℤ) ∣ u ⬝ᵥ x
   rw [card_eq_sum_card_fiberwise (f := Prod.fst) (t := T) (fun uv huv => by
     obtain ⟨h1, h2⟩ := mem_filter.mp huv
     exact mem_filter.mpr ⟨(mem_product.mp (mem_filter.mp h1).1).1, h2⟩)]
-  calc ∑ u ∈ T, (((crossSet m).filter fun uv => (m : ℤ) ∣ dot3 uv.1 x).filter
+  calc ∑ u ∈ T, (((crossSet m).filter fun uv => (m : ℤ) ∣ uv.1 ⬝ᵥ x).filter
           fun uv => uv.1 = u).card
       ≤ ∑ u ∈ T, 27 * m * gcd4 m u ^ 2 := by
         refine sum_le_sum fun u _ => le_trans (card_le_card_of_injOn Prod.snd
-          (t := (ibox3 m).filter fun v => ∀ a, (m : ℤ) ∣ cross3 u v a) (fun uv huv => ?_)
+          (t := (ibox3 m).filter fun v => ∀ a, (m : ℤ) ∣ (u ⨯₃ v) a) (fun uv huv => ?_)
           (fun uv huv uv' huv' h => ?_)) (card_cross_fiber hm u)
         · obtain ⟨h1, h2⟩ := mem_filter.mp (mem_coe.mp huv)
           obtain ⟨h3, -⟩ := mem_filter.mp h1
@@ -479,9 +469,9 @@ theorem card_crossSet_dot {m : ℕ} (hm : 0 < m) (x : Fin 3 → ℤ) :
 /-- **The minor-vector count with a divisibility condition.** -/
 theorem minor_vector_count_dot {S : Finset (Fin 10 → ℤ)} {Y : ℕ} (x : Fin 3 → ℤ)
     (hS : ∀ p ∈ S, (∀ t, |p t| ≤ Y) ∧ PluckerRel p ∧ p (piv p) ≠ 0 ∧
-      p (piv p) ∣ dot3 (uVec p (piv p)) x) :
-    S.card ≤ 20 * ∑ m ∈ Icc 1 Y, ((crossSet m).filter fun uv => (m : ℤ) ∣ dot3 uv.1 x).card :=
-  minor_vector_count_of (fun m u => (m : ℤ) ∣ dot3 u x) fun p hp =>
+      p (piv p) ∣ uVec p (piv p) ⬝ᵥ x) :
+    S.card ≤ 20 * ∑ m ∈ Icc 1 Y, ((crossSet m).filter fun uv => (m : ℤ) ∣ uv.1 ⬝ᵥ x).card :=
+  minor_vector_count_of (fun m u => (m : ℤ) ∣ u ⬝ᵥ x) fun p hp =>
     ⟨(hS p hp).1, (hS p hp).2.1, (hS p hp).2.2.1, Int.natAbs_dvd.mpr (hS p hp).2.2.2⟩
 
 /-- **Few patterns have a short vector.** -/
@@ -492,7 +482,7 @@ theorem short_count {S : Finset (Fin 10 → ℤ)} {Y R τ0 : ℕ}
   classical
   set X0 := (ibox3 R).filter fun x => x ≠ 0
   have hsub : S.filter (fun p => shortR p ≤ R) ⊆
-      X0.biUnion fun x => S.filter fun p => p (piv p) ∣ dot3 (uVec p (piv p)) x := by
+      X0.biUnion fun x => S.filter fun p => p (piv p) ∣ uVec p (piv p) ⬝ᵥ x := by
     intro p hp
     obtain ⟨hpS, hR⟩ := mem_filter.mp hp
     obtain ⟨-, ⟨x, hx, hx0, hxb⟩, -⟩ := shortR_spec (hS p hpS).2.2
@@ -501,7 +491,7 @@ theorem short_count {S : Finset (Fin 10 → ℤ)} {Y R τ0 : ℕ}
       mem_filter.mpr ⟨hpS, hx.1⟩⟩
   have hY : ∀ m ∈ Icc 1 Y, m ≤ Y := fun m hm => (mem_Icc.mp hm).2
   calc (S.filter fun p => shortR p ≤ R).card
-      ≤ ∑ x ∈ X0, (S.filter fun p => p (piv p) ∣ dot3 (uVec p (piv p)) x).card :=
+      ≤ ∑ x ∈ X0, (S.filter fun p => p (piv p) ∣ uVec p (piv p) ⬝ᵥ x).card :=
         (card_le_card hsub).trans card_biUnion_le
     _ ≤ ∑ x ∈ X0, 20 * ∑ m ∈ Icc 1 Y, 729 * m ^ 3 * m.divisors.card * gcd4 m x := by
         refine sum_le_sum fun x _ => (minor_vector_count_dot (Y := Y) x fun p hp => ?_).trans ?_

@@ -12,6 +12,7 @@ public import Mathlib.NumberTheory.Harmonic.Bounds
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
+open scoped Matrix
 noncomputable section
 open MvPolynomial Finset
 
@@ -93,7 +94,7 @@ theorem zeroChartFibers_gcd_count (B : HypersurfaceChartPolynomial)
           w.1 = w0.1 ∧ w.2.1 = w0.2.1 :=
         integerFirstVertex_injective ((mem_filter.mp hw).2.trans hw0x.symm)
       have hi : (T.filter fun w => key w = x).card ≤
-          ((ibox3 w0.1).filter fun v => ∀ j, (w0.1 : ℤ) ∣ cross3 w0.2.1 v j).card := by
+          ((ibox3 w0.1).filter fun v => ∀ j, (w0.1 : ℤ) ∣ (w0.2.1 ⨯₃ v) j).card := by
         apply card_le_card_of_injOn (fun w => w.2.2)
         · intro w hw
           obtain ⟨hwm, hwu⟩ := hcoords w hw

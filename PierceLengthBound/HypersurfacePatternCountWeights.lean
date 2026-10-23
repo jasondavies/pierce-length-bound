@@ -26,7 +26,7 @@ open Finset
 
 /-- A nonzero vector of sup norm at most `R` in the normal congruence lattice. -/
 def NormalHasShort (n : ℕ) (u : Fin 3 → ℤ) (R : ℕ) : Prop :=
-  ∃ z : Fin 3 → ℤ, (n : ℤ) ∣ dot3 u z ∧ z ≠ 0 ∧ ∀ j, |z j| ≤ R
+  ∃ z : Fin 3 → ℤ, (n : ℤ) ∣ u ⬝ᵥ z ∧ z ≠ 0 ∧ ∀ j, |z j| ≤ R
 
 /-- The least nonzero sup norm in the normal congruence lattice. -/
 def normalShortR (n : ℕ) (u : Fin 3 → ℤ) : ℕ := sInf {R : ℕ | NormalHasShort n u R}
@@ -34,7 +34,7 @@ def normalShortR (n : ℕ) (u : Fin 3 → ℤ) : ℕ := sInf {R : ℕ | NormalHa
 lemma normalHasShort_nonempty {n : ℕ} (hn : 0 < n) (u : Fin 3 → ℤ) :
     NormalHasShort n u n := by
   refine ⟨![(n : ℤ), 0, 0], ?_, ?_, ?_⟩
-  · simp [dot3]
+  · simp
   · intro hz
     have := congrFun hz 0
     simp at this
@@ -65,7 +65,7 @@ theorem normal_lattice_short {n L : ℕ} (hn : 0 < n) (u : Fin 3 → ℤ)
     (hL : n < (L + 1) ^ 3) : NormalHasShort n u L := by
   classical
   have hnZ : (0 : ℤ) < n := by exact_mod_cast hn
-  let ψ : (Fin 3 → ℤ) → ℤ := fun x => dot3 u x % n
+  let ψ : (Fin 3 → ℤ) → ℤ := fun x => (u ⬝ᵥ x) % n
   have hmaps : ∀ x ∈ Fintype.piFinset (fun _ : Fin 3 => Icc (0 : ℤ) L),
       ψ x ∈ Ico (0 : ℤ) n := fun x _ => mem_Ico.mpr
     ⟨Int.emod_nonneg _ hnZ.ne', Int.emod_lt_of_pos _ hnZ⟩
@@ -77,7 +77,7 @@ theorem normal_lattice_short {n L : ℕ} (hn : 0 < n) (u : Fin 3 → ℤ)
     simpa only [pow_succ, pow_zero, one_mul] using hL
   obtain ⟨x, hx, y, hy, hne, hxy⟩ := exists_ne_map_eq_of_card_lt_of_maps_to hcard hmaps
   refine ⟨x - y, ?_, sub_ne_zero.mpr hne, fun j => ?_⟩
-  · rw [dot3_sub_right]
+  · rw [dotProduct_sub]
     exact Int.ModEq.dvd hxy.symm
   · have hxj := mem_Icc.mp (Fintype.mem_piFinset.mp hx j)
     have hyj := mem_Icc.mp (Fintype.mem_piFinset.mp hy j)
@@ -93,7 +93,7 @@ theorem normal_short_count {n : ℕ} (hn : 0 < n) (R : ℕ) :
   classical
   let Z := (ibox3 R).filter fun z => z ≠ 0
   have hsub : (ibox3 n).filter (fun u => normalShortR n u ≤ R) ⊆
-      Z.biUnion fun z => (ibox3 n).filter fun u => (n : ℤ) ∣ dot3 u z := by
+      Z.biUnion fun z => (ibox3 n).filter fun u => (n : ℤ) ∣ u ⬝ᵥ z := by
     intro u hu
     obtain ⟨hub, huR⟩ := mem_filter.mp hu
     obtain ⟨_, z, hdz, hz, hzb⟩ := normalShortR_spec hn u
@@ -101,7 +101,7 @@ theorem normal_short_count {n : ℕ} (hn : 0 < n) (R : ℕ) :
     exact Fintype.mem_piFinset.mpr fun j => mem_Icc.mpr
       (abs_le.mp ((hzb j).trans (by exact_mod_cast huR)))
   calc ((ibox3 n).filter fun u => normalShortR n u ≤ R).card
-      ≤ ∑ z ∈ Z, ((ibox3 n).filter fun u => (n : ℤ) ∣ dot3 u z).card :=
+      ≤ ∑ z ∈ Z, ((ibox3 n).filter fun u => (n : ℤ) ∣ u ⬝ᵥ z).card :=
         (card_le_card hsub).trans card_biUnion_le
     _ ≤ ∑ z ∈ Z, 27 * n ^ 2 * gcd4 n z := sum_le_sum fun z _ => card_dot_dvd_le hn z
     _ = 27 * n ^ 2 * ∑ z ∈ Z, gcd4 n z := by rw [mul_sum]

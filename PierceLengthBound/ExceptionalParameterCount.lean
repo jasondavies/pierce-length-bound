@@ -18,7 +18,7 @@ noncomputable section
 def exceptionalNormals (X Z : ℕ) : Finset (Fin 3 → ℤ) := by
   classical
   exact (ibox3 (2 * Z)).filter fun z =>
-    (∃ c, dot3 c z = 1) ∧ ∃ j, Z ≤ (z j).natAbs ∧ (z j).natAbs ≤ X
+    (∃ c, c ⬝ᵥ z = 1) ∧ ∃ j, Z ≤ (z j).natAbs ∧ (z j).natAbs ≤ X
 
 /-- Two scalar multiples of a primitive direction. -/
 def exceptionalScalars (X Z : ℕ) : Finset (ℤ × ℤ) :=
@@ -26,7 +26,7 @@ def exceptionalScalars (X Z : ℕ) : Finset (ℤ × ℤ) :=
 
 /-- Integer points in the plane normal to `z`. -/
 def exceptionalPlane (X : ℕ) (z : Fin 3 → ℤ) : Finset (Fin 3 → ℤ) :=
-  (ibox3 X).filter fun t => dot3 z t = 0
+  (ibox3 X).filter fun t => z ⬝ᵥ t = 0
 
 /-- Parameter tuples for one dyadic range. -/
 def exceptionalParameters (X Z : ℕ) :

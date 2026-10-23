@@ -44,44 +44,44 @@ lemma Lrow_abs_le (p : Fin 10 → ℤ) (c : Fin 5) (a : Fin 3) :
     have hs := (sign_sq (piv p) a).1
     have : |puS (piv p) a| = 1 := by
       rcases Int.eq_one_or_neg_one_of_mul_eq_one hs with h | h <;> simp [h]
-    simp only [uVec, abs_mul, this, one_mul]; exact piv_max p _
+    simp only [uVec, Int.cast_id, abs_mul, this, one_mul]; exact piv_max p _
   have hv : ∀ a, |vVec p (piv p) a| ≤ |p (piv p)| := fun a => by
     have hs := (sign_sq (piv p) a).2.1
     have : |pvS (piv p) a| = 1 := by
       rcases Int.eq_one_or_neg_one_of_mul_eq_one hs with h | h <;> simp [h]
-    simp only [vVec, abs_mul, this, one_mul]; exact piv_max p _
+    simp only [vVec, Int.cast_id, abs_mul, this, one_mul]; exact piv_max p _
   unfold Lrow
   generalize role (piv p) c = r
   fin_cases r <;> fin_cases a <;> simp [hu, hv]
 
 /-- The pivot divides every lifting row against a lattice vector. -/
 lemma Lrow_dvd {p : Fin 10 → ℤ} {b : Fin 3 → ℤ} (hb : b ∈ pivLat p) (c : Fin 5) :
-    p (piv p) ∣ dot3 (Lrow p (piv p) c) b := by
+    p (piv p) ∣ Lrow p (piv p) c ⬝ᵥ b := by
   obtain ⟨hu, hv⟩ := hb
   unfold Lrow
   generalize role (piv p) c = r
   fin_cases r
-  · exact ⟨b 0, by simp [dot3]⟩
-  · exact ⟨b 1, by simp [dot3]⟩
-  · exact ⟨b 2, by simp [dot3]⟩
+  · exact ⟨b 0, by rw [vec3_dotProduct]; simp⟩
+  · exact ⟨b 1, by rw [vec3_dotProduct]; simp⟩
+  · exact ⟨b 2, by rw [vec3_dotProduct]; simp⟩
   · exact hu
   · exact hv
 
 /-- The lift of a lattice vector to five coordinates. -/
 noncomputable def liftv (p : Fin 10 → ℤ) (b : Fin 3 → ℤ) (c : Fin 5) : ℤ :=
-  dot3 (Lrow p (piv p) c) b / p (piv p)
+  (Lrow p (piv p) c ⬝ᵥ b) / p (piv p)
 
 lemma liftv_spec {p : Fin 10 → ℤ} {b : Fin 3 → ℤ} (hb : b ∈ pivLat p) (c : Fin 5) :
-    p (piv p) * liftv p b c = dot3 (Lrow p (piv p) c) b :=
+    p (piv p) * liftv p b c = Lrow p (piv p) c ⬝ᵥ b :=
   Int.mul_ediv_cancel' (Lrow_dvd hb c)
 
 /-- `det(L B) = det L · det B`. -/
 lemma det3_mul (l1 l2 l3 b1 b2 b3 : Fin 3 → ℤ) :
-    (Matrix.of ![![dot3 l1 b1, dot3 l1 b2, dot3 l1 b3], ![dot3 l2 b1, dot3 l2 b2, dot3 l2 b3],
-      ![dot3 l3 b1, dot3 l3 b2, dot3 l3 b3]]).det = det3 l1 l2 l3 * det3 b1 b2 b3 := by
+    (Matrix.of ![![l1 ⬝ᵥ b1, l1 ⬝ᵥ b2, l1 ⬝ᵥ b3], ![l2 ⬝ᵥ b1, l2 ⬝ᵥ b2, l2 ⬝ᵥ b3],
+      ![l3 ⬝ᵥ b1, l3 ⬝ᵥ b2, l3 ⬝ᵥ b3]]).det = det3 l1 l2 l3 * det3 b1 b2 b3 := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, det_fin_three, Fin.isValue, of_apply, cons_val',
       cons_val_zero, cons_val_fin_one, cons_val_one, Matrix.cons_val]
-  unfold det3 dot3; ring
+  simp only [det3_apply, vec3_dotProduct]; ring
 
 lemma abs_mul_le' {a b A B : ℤ} (ha : |a| ≤ A) (hb : |b| ≤ B) : |a * b| ≤ A * B := by
   rw [abs_mul]; exact mul_le_mul ha hb (abs_nonneg _) ((abs_nonneg _).trans ha)
@@ -194,7 +194,7 @@ lemma disc3_thetaCoef {A A' A'' U V U' V' : ℤ} (hA : 0 < A) (hA' : 0 < A') (hU
 lemma entry_bound {b : Fin 3 → ℤ} {M : ℤ} (hM : 0 ≤ M) (h : 27 * nrm3 b ≤ 64 * (M ^ 3) ^ 2)
     (a : Fin 3) : |b a| ≤ 2 * M ^ 3 := by
   have h1 : b a ^ 2 ≤ nrm3 b := by
-    unfold nrm3 dot3
+    simp only [nrm3, vec3_dotProduct]
     fin_cases a <;> simp <;> nlinarith [mul_self_nonneg (b 0), mul_self_nonneg (b 1),
       mul_self_nonneg (b 2)]
   have h2 : b a ^ 2 ≤ (2 * M ^ 3) ^ 2 := by nlinarith
@@ -210,7 +210,7 @@ lemma liftv_bound {p : Fin 10 → ℤ} {b : Fin 3 → ℤ} (hb : b ∈ pivLat p)
     abs_mul_le' (Lrow_abs_le p c a) (hB a)
   have h : |p (piv p)| * |liftv p b c| ≤ |p (piv p)| * (3 * B) := by
     rw [← abs_mul, e]
-    unfold dot3
+    simp only [vec3_dotProduct]
     have := abs_add_three (Lrow p (piv p) c 0 * b 0) (Lrow p (piv p) c 1 * b 1)
       (Lrow p (piv p) c 2 * b 2)
     linarith [t 0, t 1, t 2]
@@ -235,11 +235,11 @@ lemma ycoord_spec {b1 b2 b3 x : Fin 3 → ℤ} {R H : ℕ} (hD : det3 b1 b2 b3 �
     rw [hy]; simp [mul_comm]
   have hyc : ycoord b1 b2 b3 x = y := by
     have d0 : det3 x b2 b3 = y 0 * det3 b1 b2 b3 := by
-      simp only [det3]; rw [hyj 0, hyj 1, hyj 2]; ring
+      simp only [det3_apply]; rw [hyj 0, hyj 1, hyj 2]; ring
     have d1 : det3 b1 x b3 = y 1 * det3 b1 b2 b3 := by
-      simp only [det3]; rw [hyj 0, hyj 1, hyj 2]; ring
+      simp only [det3_apply]; rw [hyj 0, hyj 1, hyj 2]; ring
     have d2 : det3 b1 b2 x = y 2 * det3 b1 b2 b3 := by
-      simp only [det3]; rw [hyj 0, hyj 1, hyj 2]; ring
+      simp only [det3_apply]; rw [hyj 0, hyj 1, hyj 2]; ring
     funext i
     fin_cases i
     · simp [ycoord, d0, Int.mul_ediv_cancel _ hD]
@@ -281,9 +281,9 @@ lemma pattern_reduced_basis {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
   obtain ⟨b1, b2, b3, h1, h2, h3, hD, hDm, hbas, hred⟩ :=
     reduced_basis (Λ := pivLat p) (Int.natAbs_pos.mpr hm) hΛ
   obtain ⟨hR1, _, hRlow⟩ := shortR_spec hm
-  have hb10 : b1 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
-  have hb20 : b2 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
-  have hb30 : b3 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3]
+  have hb10 : b1 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3_apply]
+  have hb20 : b2 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3_apply]
+  have hb30 : b3 ≠ 0 := by intro h; apply hD; rw [h]; simp [det3_apply]
   exact ⟨b1, b2, b3, h1, h2, h3, hD, hDm, hbas, hred, by exact_mod_cast hR1, hRlow b1 h1 hb10,
     hRlow b2 h2 hb20, hRlow b3 h3 hb30⟩
 
@@ -327,9 +327,9 @@ lemma liftM_det_ne {p : Fin 10 → ℤ} {Mx : Fin 3 → Fin 5 → ℤ} {b1 b2 b3
     (h2 : b2 ∈ pivLat p) (h3 : b3 ∈ pivLat p) (hD : det3 b1 b2 b3 ≠ 0) :
     (liftM p b1 b2 b3).det ≠ 0 := by
   set τ := piv p
-  have hE : p τ • liftM p b1 b2 b3 = Matrix.of ![![dot3 (Lrow p τ 1) b1, dot3 (Lrow p τ 1) b2,
-      dot3 (Lrow p τ 1) b3], ![dot3 (Lrow p τ 2) b1, dot3 (Lrow p τ 2) b2, dot3 (Lrow p τ 2) b3],
-      ![dot3 (Lrow p τ 3) b1, dot3 (Lrow p τ 3) b2, dot3 (Lrow p τ 3) b3]] := by
+  have hE : p τ • liftM p b1 b2 b3 = Matrix.of ![![Lrow p τ 1 ⬝ᵥ b1, Lrow p τ 1 ⬝ᵥ b2,
+      Lrow p τ 1 ⬝ᵥ b3], ![Lrow p τ 2 ⬝ᵥ b1, Lrow p τ 2 ⬝ᵥ b2, Lrow p τ 2 ⬝ᵥ b3],
+      ![Lrow p τ 3 ⬝ᵥ b1, Lrow p τ 3 ⬝ᵥ b2, Lrow p τ 3 ⬝ᵥ b3]] := by
     ext i j
     fin_cases i <;> fin_cases j <;> simp [liftM, liftv_spec h1, liftv_spec h2, liftv_spec h3, τ]
   have e := det3_mul (Lrow p τ 1) (Lrow p τ 2) (Lrow p τ 3) b1 b2 b3
@@ -428,7 +428,7 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
   -- coordinates of a gap vector
   set kp : (Fin 5 → ℤ) → Fin 3 → ℤ := fun k a => k (pcol τ a)
   set yc : (Fin 5 → ℤ) → Fin 3 → ℤ := fun k => ycoord b1 b2 b3 (kp k)
-  have hlift : ∀ k ∈ Vs, ∀ c, m * k c = dot3 (Lrow p τ c) (kp k) := by
+  have hlift : ∀ k ∈ Vs, ∀ c, m * k c = Lrow p τ c ⬝ᵥ kp k := by
     intro k hk c
     obtain ⟨-, ⟨Mk, hMk, hrow⟩, -⟩ := hVs k hk
     have := lift_row Mk τ 1 c
@@ -454,7 +454,7 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
     have e1 := liftv_spec h1 c
     have e2 := liftv_spec h2 c
     have e3 := liftv_spec h3 c
-    simp only [dot3] at e1 e2 e3 ⊢
+    simp only [vec3_dotProduct] at e1 e2 e3 ⊢
     rw [hj 0, hj 1, hj 2]
     linear_combination -(yc k 0 * e1 + yc k 1 * e2 + yc k 2 * e3)
   -- the substitution

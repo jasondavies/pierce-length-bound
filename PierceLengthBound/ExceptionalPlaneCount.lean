@@ -13,6 +13,7 @@ provides the modulus; primitivity removes its gcd factor. -/
 @[expose] public section
 namespace PierceLengthBound
 open Finset
+open Matrix (vec3_dotProduct)
 
 /-- A primitive two-variable congruence has at most `27 n` residue solutions.
 The harmless factor 27 lets us reuse the three-variable congruence count. -/
@@ -45,7 +46,7 @@ theorem primitive_pair_residue_count {n : ℕ} (hn : 0 < n) (u v : ℤ)
     simpa using Prod.ext (Prod.ext h0 h1) h2
   have hmap : ∀ p ∈ S ×ˢ Ico (0 : ℤ) n,
       (![p.1.1, p.1.2, p.2] : Fin 3 → ℤ) ∈
-        (ibox3 n).filter (fun t => (n : ℤ) ∣ dot3 t z) := by
+        (ibox3 n).filter (fun t => (n : ℤ) ∣ t ⬝ᵥ z) := by
     intro p hp
     obtain ⟨hp, hk⟩ := mem_product.mp hp
     obtain ⟨hxy, hd⟩ := mem_filter.mp hp
@@ -58,7 +59,8 @@ theorem primitive_pair_residue_count {n : ℕ} (hn : 0 < n) (u v : ℤ)
       rw [mem_Icc]
       change -(n : ℤ) ≤ ![p.1.1, p.1.2, p.2] j ∧ ![p.1.1, p.1.2, p.2] j ≤ n
       fin_cases j <;> dsimp <;> omega
-    · change (n : ℤ) ∣ p.1.1 * u + p.1.2 * v + p.2 * n
+    · rw [vec3_dotProduct]
+      change (n : ℤ) ∣ p.1.1 * u + p.1.2 * v + p.2 * n
       simpa [mul_comm] using dvd_add hd (dvd_mul_left (n : ℤ) p.2)
   have hc := (card_le_card_of_injOn _ hmap hinj.injOn).trans hcount
   rw [card_product, Int.card_Ico, sub_zero, Int.toNat_natCast] at hc
@@ -130,9 +132,9 @@ theorem primitive_plane_box_count {S : Finset (Fin 3 → ℤ)} {X n : ℕ}
 
 /-- Coordinate-independent version of the primitive plane bound. -/
 theorem primitive_plane_count {S : Finset (Fin 3 → ℤ)} {X : ℕ}
-    (z c : Fin 3 → ℤ) (hc : dot3 c z = 1) (j : Fin 3)
+    (z c : Fin 3 → ℤ) (hc : c ⬝ᵥ z = 1) (j : Fin 3)
     (hj : 0 < (z j).natAbs) (hjX : (z j).natAbs ≤ X)
-    (hS : ∀ t ∈ S, (∀ k, |t k| ≤ X) ∧ dot3 z t = 0) :
+    (hS : ∀ t ∈ S, (∀ k, |t k| ≤ X) ∧ z ⬝ᵥ t = 0) :
     (z j).natAbs * S.card ≤ 243 * X ^ 2 := by
   classical
   let rot := fun t : Fin 3 → ℤ => ![t (j + 1), t (j + 2), t j]
@@ -148,7 +150,7 @@ theorem primitive_plane_count {S : Finset (Fin 3 → ℤ)} {X : ℕ}
       z (j + 2) * b = 1 := by
     refine ⟨Int.sign (z j) * c j, c (j + 1), c (j + 2), ?_⟩
     rw [← mul_assoc, mul_comm ((z j).natAbs : ℤ), Int.sign_mul_natAbs]
-    fin_cases j <;> norm_num [dot3] at hc ⊢ <;> linear_combination hc
+    fin_cases j <;> norm_num [vec3_dotProduct] at hc ⊢ <;> linear_combination hc
   have hb : ∀ t ∈ S.image rot, (∀ k, |t k| ≤ X) ∧
       z (j + 1) * t 0 + z (j + 2) * t 1 + z j * t 2 = 0 := by
     intro t ht
@@ -161,7 +163,7 @@ theorem primitive_plane_count {S : Finset (Fin 3 → ℤ)} {X : ℕ}
       · exact hb (j + 2)
       · exact hb j
     · dsimp [rot]
-      fin_cases j <;> norm_num [dot3] at he ⊢ <;> linear_combination he
+      fin_cases j <;> norm_num [vec3_dotProduct] at he ⊢ <;> linear_combination he
   have h := primitive_plane_box_count hj hjX (z (j + 1)) (z (j + 2)) (z j)
     rfl hprim hb
   rwa [card_image_of_injective S hi] at h

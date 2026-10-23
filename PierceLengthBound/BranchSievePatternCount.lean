@@ -14,6 +14,7 @@ among all ten minors. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
+open scoped Matrix
 noncomputable section
 open Finset
 
@@ -155,7 +156,7 @@ lemma branchPatternChartKey_properties {X : ℕ} {p : Fin 10 → ℤ}
     (hb : ∀ j, |p j| ≤ X) (hp : PluckerRel p) (hnz : branchFirstVertex p ≠ 0) :
     let w := branchPatternChartKey (branchFirstPivot p) p
     0 < w.1 ∧ w.1 ≤ X ∧ w.2.1 ∈ ibox3 w.1 ∧ w.2.2 ∈ ibox3 X ∧
-      ∀ j, (w.1 : ℤ) ∣ cross3 w.2.1 w.2.2 j := by
+      ∀ j, (w.1 : ℤ) ∣ (w.2.1 ⨯₃ w.2.2) j := by
   let t := branchFirstIndex (branchFirstPivot p)
   have ht : p t ≠ 0 := branchFirstPivot_ne_zero hnz
   have hsU j : |puS t j| = 1 := by
@@ -173,7 +174,7 @@ lemma branchPatternChartKey_properties {X : ℕ} {p : Fin 10 → ℤ}
     change |uVec p t j| ≤ (p t).natAbs
     rw [Int.natCast_natAbs]
     obtain ⟨k, hk⟩ := branchFirstIndex_u (branchFirstPivot p) j
-    simp only [uVec, abs_mul, hsU j, one_mul]
+    simp only [uVec, Int.cast_id, abs_mul, hsU j, one_mul]
     change |p (puX (branchFirstIndex (branchFirstPivot p)) j)| ≤
       |p (branchFirstIndex (branchFirstPivot p))|
     rw [hk]
@@ -183,15 +184,15 @@ lemma branchPatternChartKey_properties {X : ℕ} {p : Fin 10 → ℤ}
     apply mem_Icc.mpr
     apply abs_le.mp
     change |vVec p t j| ≤ X
-    simpa only [vVec, abs_mul, hsV j, one_mul] using hb (pvX t j)
+    simpa only [vVec, Int.cast_id, abs_mul, hsV j, one_mul] using hb (pvX t j)
   · intro j
-    change ((p t).natAbs : ℤ) ∣ cross3 (uVec p t) (vVec p t) j
+    change ((p t).natAbs : ℤ) ∣ (uVec p t ⨯₃ vVec p t) j
     rw [Int.natCast_natAbs]
     apply (abs_dvd _ _).mpr
     refine ⟨pwS t j * p (pwX t j), ?_⟩
     have h1 := hp t j
     have h2 := (sign_sq t j).2.2
-    linear_combination (-pwS t j) * h1 - cross3 (uVec p t) (vVec p t) j * h2
+    linear_combination (-pwS t j) * h1 - (uVec p t ⨯₃ vVec p t) j * h2
 
 open Classical in
 /-- A square-root saving for scaled four-label vertices gives the required

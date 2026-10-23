@@ -12,6 +12,8 @@ public import PierceLengthBound.ExceptionalRankOneCount
 @[expose] public section
 namespace PierceLengthBound
 open Finset
+open scoped Matrix
+open Matrix (vec3_dotProduct)
 
 /-- Hodge-dual coordinates when the first maximal minor vanishes. -/
 def zeroMinorCoordinates (p : Fin 10 → ℤ) :
@@ -20,17 +22,17 @@ def zeroMinorCoordinates (p : Fin 10 → ℤ) :
 
 /-- The zero minor gives the rank-one and orthogonality equations exactly. -/
 theorem zero_minor_equations {p : Fin 10 → ℤ} (h : PluckerRel p) (h0 : p 0 = 0) :
-    (∀ j, cross3 (zeroMinorCoordinates p).1 (zeroMinorCoordinates p).2.1 j = 0) ∧
-      dot3 (zeroMinorCoordinates p).1 (zeroMinorCoordinates p).2.2 = 0 ∧
-      dot3 (zeroMinorCoordinates p).2.1 (zeroMinorCoordinates p).2.2 = 0 := by
+    (∀ j, ((zeroMinorCoordinates p).1 ⨯₃ (zeroMinorCoordinates p).2.1) j = 0) ∧
+      (zeroMinorCoordinates p).1 ⬝ᵥ (zeroMinorCoordinates p).2.2 = 0 ∧
+      (zeroMinorCoordinates p).2.1 ⬝ᵥ (zeroMinorCoordinates p).2.2 = 0 := by
   constructor
   · intro j
     have he := h 0 j
-    fin_cases j <;> norm_num [zeroMinorCoordinates, cross3, uVec, vVec, puX, puS,
+    fin_cases j <;> norm_num [zeroMinorCoordinates, cross_apply_cyc, uVec, vVec, puX, puS,
       pvX, pvS, pwX, pwS, h0] at he ⊢ <;> linear_combination -he
   · have ha := h 2 2
     have hb := h 1 2
-    norm_num [zeroMinorCoordinates, dot3, cross3, uVec, vVec, puX, puS,
+    norm_num [zeroMinorCoordinates, vec3_dotProduct, cross_apply_cyc, uVec, vVec, puX, puS,
       pvX, pvS, pwX, pwS] at ha hb ⊢
     constructor
     · linear_combination ha

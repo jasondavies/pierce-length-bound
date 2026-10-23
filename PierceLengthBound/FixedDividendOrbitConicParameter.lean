@@ -19,6 +19,7 @@ complete bounded integer parametrization of actual nonexceptional conic points.
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
+open Matrix (vec3_dotProduct)
 noncomputable section
 open MvPolynomial
 
@@ -108,11 +109,11 @@ theorem component_integer_parameter
       n (σ 2) * z (σ 2) + n (σ 0) * z (σ 0) + n (σ 1) * z (σ 1) + e = 0 := by
     have hh := hz _ hplane
     rw [integerPlanePolynomial_eval] at hh
-    have hdot : dot3 n z + e = 0 := by exact_mod_cast hh
+    have hdot : n ⬝ᵥ z + e = 0 := by exact_mod_cast hh
     have hsum := σ.sum_comp (fun j => n j * z j)
     simp only [Fin.sum_univ_succ,
       Fin.succ_zero_eq_one, Fin.succ_one_eq_two] at hsum
-    dsimp [dot3] at hdot
+    rw [vec3_dotProduct] at hdot
     linear_combination hdot + hsum
   obtain ⟨E, N, hE, hEb, hNd, hNb, hN2, hrepr, hinj⟩ :=
     parabola_integer_parameter_height hK hL hα hn hJ hΔ

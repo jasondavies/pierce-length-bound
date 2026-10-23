@@ -12,16 +12,17 @@ box. The common divisor is retained explicitly. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
+open scoped Matrix
 noncomputable section
 open Finset
 
 /-- A rectangular version of the existing cross-congruence fiber count. -/
 theorem branch_completion_count_nat {m : ℕ} (hm : 0 < m) (X : ℕ) (u : Fin 3 → ℤ) :
-    ((ibox3 X).filter fun v => ∀ j, (m : ℤ) ∣ cross3 u v j).card ≤
+    ((ibox3 X).filter fun v => ∀ j, (m : ℤ) ∣ (u ⨯₃ v) j).card ≤
       (2 * X / m + 1) ^ 3 * (27 * m * gcd4 m u ^ 2) := by
   classical
-  let S := (ibox3 X).filter fun v => ∀ j, (m : ℤ) ∣ cross3 u v j
-  let T := (ibox3 m).filter fun v => ∀ j, (m : ℤ) ∣ cross3 u v j
+  let S := (ibox3 X).filter fun v => ∀ j, (m : ℤ) ∣ (u ⨯₃ v) j
+  let T := (ibox3 m).filter fun v => ∀ j, (m : ℤ) ∣ (u ⨯₃ v) j
   let key (v : Fin 3 → ℤ) : Fin 3 → ℤ := fun j => v j % (m : ℤ)
   have hmZ : (0 : ℤ) < m := by exact_mod_cast hm
   have hmaps : ∀ v ∈ S, key v ∈ T := by
@@ -32,7 +33,7 @@ theorem branch_completion_count_nat {m : ℕ} (hm : 0 < m) (X : ℕ) (u : Fin 3 
     · have h := (mem_filter.mp hv).2 j
       apply Int.dvd_of_emod_eq_zero
       rw [← Int.emod_eq_zero_of_dvd h]
-      simp [cross3, key, Int.sub_emod, Int.mul_emod]
+      simp [cross_apply_cyc, key, Int.sub_emod, Int.mul_emod]
   have hfiber : ∀ w ∈ T, (S.filter fun v => key v = w).card ≤ (2 * X / m + 1) ^ 3 := by
     intro w _
     let V := Fintype.piFinset fun j : Fin 3 =>
@@ -59,7 +60,7 @@ theorem branch_completion_count_nat {m : ℕ} (hm : 0 < m) (X : ℕ) (u : Fin 3 
 /-- In a box of radius `X ≥ m`, the completion count is `O(X³g²/m²)`. -/
 theorem branch_completion_count {m X : ℕ} (hm : 0 < m) (hmX : m ≤ X)
     (u : Fin 3 → ℤ) :
-    (((ibox3 X).filter fun v => ∀ j, (m : ℤ) ∣ cross3 u v j).card : ℝ) ≤
+    (((ibox3 X).filter fun v => ∀ j, (m : ℤ) ∣ (u ⨯₃ v) j).card : ℝ) ≤
       729 * (X : ℝ) ^ 3 * (gcd4 m u : ℝ) ^ 2 / (m : ℝ) ^ 2 := by
   have hmR : (0 : ℝ) < m := by exact_mod_cast hm
   have hq : ((2 * X / m : ℕ) : ℝ) ≤ 2 * (X : ℝ) / m := by

@@ -12,65 +12,15 @@ public import PierceLengthBound.MinorCount
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open MvPolynomial Finset
+open scoped Matrix
 noncomputable section
 
-/-- The same determinant formula as `minor3`, over any commutative ring. -/
-def minor3Ring {R : Type*} [CommRing R] (M : Fin 3 → Fin 5 → R)
-    (c1 c2 c3 : Fin 5) : R :=
-  M 0 c1 * (M 1 c2 * M 2 c3 - M 1 c3 * M 2 c2) -
-    M 0 c2 * (M 1 c1 * M 2 c3 - M 1 c3 * M 2 c1) +
-    M 0 c3 * (M 1 c1 * M 2 c2 - M 1 c2 * M 2 c1)
-
-/-- The ten maximal minors over an arbitrary commutative ring. -/
-def plkRing {R : Type*} [CommRing R] (M : Fin 3 → Fin 5 → R) (t : Fin 10) : R :=
-  minor3Ring M (trip t).1 (trip t).2.1 (trip t).2.2
-
-def chartU {R : Type*} [CommRing R] (p : Fin 10 → R) (t : Fin 10) (i : Fin 3) : R :=
-  (puS t i : R) * p (puX t i)
-
-def chartV {R : Type*} [CommRing R] (p : Fin 10 → R) (t : Fin 10) (i : Fin 3) : R :=
-  (pvS t i : R) * p (pvX t i)
-
-def crossRing {R : Type*} [CommRing R] (u v : Fin 3 → R) (i : Fin 3) : R :=
-  u (i + 1) * v (i + 2) - u (i + 2) * v (i + 1)
-
-def PluckerRelRing {R : Type*} [CommRing R] (p : Fin 10 → R) : Prop :=
-  ∀ t i, p t * p (pwX t i) = (pwS t i : R) * crossRing (chartU p t) (chartV p t) i
-
-/-- Ring homomorphisms commute with the defect of a Plücker relation. -/
-private lemma map_pluckerDefect {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S)
-    (M : Fin 3 → Fin 5 → R) (t : Fin 10) (i : Fin 3) :
-    f (plkRing M t * plkRing M (pwX t i) -
-        (pwS t i : R) * crossRing (chartU (plkRing M) t) (chartV (plkRing M) t) i) =
-      plkRing (fun r c => f (M r c)) t * plkRing (fun r c => f (M r c)) (pwX t i) -
-        (pwS t i : S) * crossRing (chartU (plkRing fun r c => f (M r c)) t)
-          (chartV (plkRing fun r c => f (M r c)) t) i := by
-  simp only [plkRing, minor3Ring, chartU, chartV, crossRing, map_add, map_sub, map_mul,
-    map_intCast]
-
-/-- The integer identity `plucker` holds at every integer point, so it holds for the universal
-integer matrix; specializing that matrix gives it over any commutative ring. -/
-lemma pluckerRing {R : Type*} [CommRing R] (M : Fin 3 → Fin 5 → R) :
-    PluckerRelRing (plkRing M) := by
-  intro t i
-  let U : Fin 3 → Fin 5 → MvPolynomial (Fin 3 × Fin 5) ℤ := fun r c => X (r, c)
-  have hU : plkRing U t * plkRing U (pwX t i) -
-      (pwS t i : MvPolynomial (Fin 3 × Fin 5) ℤ) *
-        crossRing (chartU (plkRing U) t) (chartV (plkRing U) t) i = 0 := by
-    refine MvPolynomial.funext fun x => ?_
-    rw [map_pluckerDefect, map_zero, sub_eq_zero]
-    simp only [U, eval_X, Int.cast_id]
-    exact plucker (fun r c => x (r, c)) t i
-  have h := congrArg (eval₂Hom (Int.castRingHom R) fun rc => M rc.1 rc.2) hU
-  rw [map_pluckerDefect, map_zero, sub_eq_zero] at h
-  simpa only [U, eval₂Hom_X', eq_intCast] using h
-
-lemma pluckerRelRing_intCast {p : Fin 10 → ℤ} (hp : PluckerRel p) :
-    PluckerRelRing (fun i => (p i : ℚ)) := by
+/-- The Plücker relations survive casting an integer vector to `ℚ`. -/
+lemma pluckerRel_intCast {p : Fin 10 → ℤ} (hp : PluckerRel p) :
+    PluckerRel (fun i => (p i : ℚ)) := by
   intro t i
   have h := hp t i
-  dsimp [chartU, chartV, crossRing]
-  dsimp [uVec, vVec, cross3] at h
+  simp only [uVec, vVec, cross_apply_cyc, Int.cast_id] at h ⊢
   exact_mod_cast h
 
 /-- Numerators of a rational minor chart, with common denominator the pivot `m`. -/
@@ -79,7 +29,7 @@ def minorChartNumerator {R : Type*} [CommRing R] (t : Fin 10) (m : R)
   (if j = t then m ^ 2 else 0) +
     (∑ i : Fin 3, if j = puX t i then (puS t i : R) * m * u i else 0) +
     (∑ i : Fin 3, if j = pvX t i then (pvS t i : R) * m * v i else 0) +
-    ∑ i : Fin 3, if j = pwX t i then (pwS t i : R) * crossRing u v i else 0
+    ∑ i : Fin 3, if j = pwX t i then (pwS t i : R) * (u ⨯₃ v) i else 0
 
 /-- No companion index of a chart is its pivot. -/
 private lemma chartPivot_ne (t : Fin 10) (i : Fin 3) :
@@ -117,20 +67,20 @@ lemma minorChartNumerator_v {R : Type*} [CommRing R]
 
 lemma minorChartNumerator_w {R : Type*} [CommRing R]
     (t : Fin 10) (m : R) (u v : Fin 3 → R) (i : Fin 3) :
-    minorChartNumerator t m u v (pwX t i) = (pwS t i : R) * crossRing u v i := by
+    minorChartNumerator t m u v (pwX t i) = (pwS t i : R) * (u ⨯₃ v) i := by
   simp [minorChartNumerator, chartPivot_ne t i, chartCompanion_ne t i,
     (chartIndex_injective t).2.2.eq_iff]
 
-lemma minorChartNumerator_reconstruct {p : Fin 10 → ℚ} (hp : PluckerRelRing p)
+lemma minorChartNumerator_reconstruct {p : Fin 10 → ℚ} (hp : PluckerRel p)
     (t j : Fin 10) :
-    minorChartNumerator t (p t) (chartU p t) (chartV p t) j = p t * p j := by
+    minorChartNumerator t (p t) (uVec p t) (vVec p t) j = p t * p j := by
   rcases cover t j with rfl | ⟨i, rfl⟩ | ⟨i, rfl⟩ | ⟨i, rfl⟩
   · simp [minorChartNumerator_pivot, pow_two]
-  · rw [minorChartNumerator_u, chartU]
+  · rw [minorChartNumerator_u, uVec]
     have h : (puS t i : ℚ) * (puS t i : ℚ) = 1 := by exact_mod_cast (sign_sq t i).1
     calc _ = ((puS t i : ℚ) * (puS t i : ℚ)) * (p t * p (puX t i)) := by ring
          _ = _ := by rw [h, one_mul]
-  · rw [minorChartNumerator_v, chartV]
+  · rw [minorChartNumerator_v, vVec]
     have h : (pvS t i : ℚ) * (pvS t i : ℚ) = 1 := by exact_mod_cast (sign_sq t i).2.1
     calc _ = ((pvS t i : ℚ) * (pvS t i : ℚ)) * (p t * p (pvX t i)) := by ring
          _ = _ := by rw [h, one_mul]
@@ -141,9 +91,9 @@ lemma minorChartNumerator_reconstruct {p : Fin 10 → ℚ} (hp : PluckerRelRing 
 def minorChartPoint (t : Fin 10) (m : ℚ) (u v : Fin 3 → ℚ) (j : Fin 10) : ℚ :=
   minorChartNumerator t m u v j / m
 
-lemma minorChartPoint_reconstruct {p : Fin 10 → ℚ} (hp : PluckerRelRing p)
+lemma minorChartPoint_reconstruct {p : Fin 10 → ℚ} (hp : PluckerRel p)
     (t : Fin 10) (ht : p t ≠ 0) :
-    minorChartPoint t (p t) (chartU p t) (chartV p t) = p := by
+    minorChartPoint t (p t) (uVec p t) (vVec p t) = p := by
   funext j
   rw [minorChartPoint, minorChartNumerator_reconstruct hp]
   exact mul_div_cancel_left₀ _ ht
@@ -171,21 +121,21 @@ theorem exists_cleared_polynomial {σ τ : Type*} (F : MvPolynomial σ ℚ)
 
 /-- The universal minor polynomial in the fifteen matrix entries. -/
 def universalMinor (t : Fin 10) : MvPolynomial (Fin 3 × Fin 5) ℚ :=
-  plkRing (fun r c => X (r, c)) t
+  plk (fun r c => X (r, c)) t
 
 lemma eval_universalMinor (x : Fin 3 × Fin 5 → ℚ) (t : Fin 10) :
-    eval x (universalMinor t) = plkRing (fun r c => x (r, c)) t := by
-  simp [universalMinor, plkRing, minor3Ring]
+    eval x (universalMinor t) = plk (fun r c => x (r, c)) t := by
+  simp [universalMinor, plk, minor3]
 
 /-- Properness on the decomposable cone, expressed by a rational matrix witness. -/
 def ProperOnMinorCone (F : MvPolynomial (Fin 10) ℚ) : Prop :=
-  ∃ M : Fin 3 → Fin 5 → ℚ, eval (plkRing M) F ≠ 0
+  ∃ M : Fin 3 → Fin 5 → ℚ, eval (plk M) F ≠ 0
 
 private def pivotFrame (t : Fin 10) (r : Fin 3) (c : Fin 5) : ℚ :=
   if c = (![ (trip t).1, (trip t).2.1, (trip t).2.2 ] : Fin 3 → Fin 5) r then 1 else 0
 
-private lemma pivotFrame_minor (t : Fin 10) : plkRing (pivotFrame t) t = 1 := by
-  fin_cases t <;> norm_num [plkRing, minor3Ring, pivotFrame, trip]
+private lemma pivotFrame_minor (t : Fin 10) : plk (pivotFrame t) t = 1 := by
+  fin_cases t <;> norm_num [plk, minor3, pivotFrame, trip]
 
 lemma universalMinor_ne_zero (t : Fin 10) : universalMinor t ≠ 0 := by
   intro h
@@ -196,14 +146,14 @@ lemma universalMinor_ne_zero (t : Fin 10) : universalMinor t ≠ 0 := by
 /-- Every maximal-minor chart meets the nonvanishing locus of a proper polynomial. -/
 theorem properOnMinorCone_nonzero_pivot {F : MvPolynomial (Fin 10) ℚ}
     (hF : ProperOnMinorCone F) (t : Fin 10) :
-    ∃ M : Fin 3 → Fin 5 → ℚ, plkRing M t ≠ 0 ∧ eval (plkRing M) F ≠ 0 := by
+    ∃ M : Fin 3 → Fin 5 → ℚ, plk M t ≠ 0 ∧ eval (plk M) F ≠ 0 := by
   let P : MvPolynomial (Fin 3 × Fin 5) ℚ := eval₂ C universalMinor F
   have hP : ∀ x : Fin 3 × Fin 5 → ℚ,
-      eval x P = eval (plkRing (fun r c => x (r, c))) F := by
+      eval x P = eval (plk (fun r c => x (r, c))) F := by
     intro x
     dsimp only [P]
     rw [← eval_assoc]
-    have he : (eval x ∘ universalMinor) = plkRing (fun r c => x (r, c)) := by
+    have he : (eval x ∘ universalMinor) = plk (fun r c => x (r, c)) := by
       funext j
       exact eval_universalMinor x j
     rw [he]
@@ -245,17 +195,17 @@ theorem exists_minorChart_polynomial {F : MvPolynomial (Fin 10) ℚ}
     have hN : ∀ j, eval (Sum.elim v (Fin.cons m u)) (N j) =
         minorChartNumerator t (s * m) u v j := by
       intro j
-      simp [N, minorChartNumerator, crossRing, d, U, V, apply_ite]
+      simp [N, minorChartNumerator, cross_apply_cyc, d, U, V, apply_ite]
     have he := hB (Sum.elim v (Fin.cons m u)) (by rwa [hd])
     change eval (Sum.elim v (Fin.cons m u)) B =
       (s * m) ^ e * eval (fun j => minorChartNumerator t (s * m) u v j / (s * m)) F
     simpa only [hd, hN] using he
   refine ⟨B, ?_, ?_⟩
   · obtain ⟨M, hM, hMF⟩ := properOnMinorCone_nonzero_pivot hF t
-    have hsm : s * (plkRing M t / s) = plkRing M t := by field_simp
-    have he := hB' (plkRing M t / s) (chartU (plkRing M) t) (chartV (plkRing M) t)
+    have hsm : s * (plk M t / s) = plk M t := by field_simp
+    have he := hB' (plk M t / s) (uVec (plk M) t) (vVec (plk M) t)
       (by rwa [hsm])
-    rw [hsm, minorChartPoint_reconstruct (pluckerRing M) t hM] at he
+    rw [hsm, minorChartPoint_reconstruct (plucker M) t hM] at he
     intro hzero
     rw [hzero, map_zero] at he
     exact (mul_ne_zero (pow_ne_zero _ hM) hMF) he.symm
@@ -263,13 +213,13 @@ theorem exists_minorChart_polynomial {F : MvPolynomial (Fin 10) ℚ}
     have hptQ : (p t : ℚ) ≠ 0 := by exact_mod_cast hpt
     have he := hB' m (fun i => (uVec p t i : ℚ)) (fun i => (vVec p t i : ℚ))
       (by rwa [← hpm])
-    have hu : (fun i => (uVec p t i : ℚ)) = chartU (fun i => (p i : ℚ)) t := by
+    have hu : (fun i => (uVec p t i : ℚ)) = uVec (fun i => (p i : ℚ)) t := by
       funext i
-      simp [uVec, chartU]
-    have hv : (fun i => (vVec p t i : ℚ)) = chartV (fun i => (p i : ℚ)) t := by
+      simp [uVec]
+    have hv : (fun i => (vVec p t i : ℚ)) = vVec (fun i => (p i : ℚ)) t := by
       funext i
-      simp [vVec, chartV]
-    rw [← hpm, hu, hv, minorChartPoint_reconstruct (pluckerRelRing_intCast hp) t hptQ,
+      simp [vVec]
+    rw [← hpm, hu, hv, minorChartPoint_reconstruct (pluckerRel_intCast hp) t hptQ,
       hpF, mul_zero] at he
     simpa only [hu, hv] using he
 
