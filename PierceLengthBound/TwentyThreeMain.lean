@@ -8,7 +8,6 @@ module
 public import PierceLengthBound.PatternBound
 public import PierceLengthBound.PatternCount
 public import PierceLengthBound.Main
-public import PierceLengthBound.RisesMain
 
 /-!
 # `P(a, b) ≪_ε a^{23/77 + ε}`
@@ -135,12 +134,10 @@ lemma mult_at {i : ℕ} (h : i + 4 < P a b) :
 /-- `a ≤ 4 A qᵢ` when `A ≤ bᵢ < 2A`. -/
 lemma a_le_four {A i : ℕ} (hba : b < a) (h : i + 1 < P a b) (hi : orb a b i < 2 * A) :
     a ≤ 4 * A * qq a b i := by
-  have e := orb_div (a := a) (b := b) (i := i) (by omega)
-  have hq := qq_pos hba (i := i) (by omega)
   have hlt : orb a b (i + 1) < orb a b i := by
     rw [orb_succ_of_ne (orb_ne_zero_of_lt (by omega : i < P a b))]
     exact Nat.mod_lt _ (orb_pos_of_lt (by omega))
-  nlinarith
+  exact le_four_mul (orb_div (by omega)) hlt hi (qq_pos hba (by omega))
 
 /-- **The label bound in window form.** `L(i) a³ ≤ 256 A⁴ gramP`. -/
 lemma label_at {A i : ℕ} (hba : b < a) (h : i + 6 < P a b) (hi : orb a b i < 2 * A) :
@@ -266,6 +263,112 @@ lemma abs_le_div {z : ℤ} {C n : ℕ} (hn : 0 < n) (h : |z| * n ≤ C) : |z| �
   rw [Int.natCast_div, Int.le_ediv_iff_mul_le (by exact_mod_cast hn)]
   exact h
 
+/-- The good starts of a window run `s, …, s + T - 1` (`good_card`): `i + 9 ≤ s + T` and
+`kᵢ, …, k_{i+6} ≤ H`. -/
+def goodStarts (a b s T H : ℕ) : Finset ℕ :=
+  (Ico s (s + T)).filter fun i => i + 9 ≤ s + T ∧ ∀ m ∈ range 7, kq a b (i + m) ≤ (H : ℤ)
+
+/-- The facts at a good start. -/
+lemma mem_goodStarts {s T A H i : ℕ}
+    (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
+    (hi : i ∈ goodStarts a b s T H) :
+    i + 8 < P a b ∧ (∀ m, m < 7 → 1 ≤ kq a b (i + m) ∧ kq a b (i + m) ≤ H) ∧
+      orb a b i < 2 * A ∧ orb a b (i + 1) < 2 * A ∧ orb a b (i + 2) < 2 * A := by
+  obtain ⟨hiI, h9, hk⟩ := mem_filter.mp hi
+  have := mem_Ico.mp hiI
+  refine ⟨by omega, fun m hm => ⟨kq_pos (by omega), hk m (mem_range.mpr hm)⟩, ?_, ?_, ?_⟩
+  · have := (hmem (i - s) (by omega)).2; rwa [show s + (i - s) = i by omega] at this
+  · have := (hmem (i + 1 - s) (by omega)).2; rwa [show s + (i + 1 - s) = i + 1 by omega] at this
+  · have := (hmem (i + 2 - s) (by omega)).2; rwa [show s + (i + 2 - s) = i + 2 by omega] at this
+
+/-- The hypotheses shared by the pattern counts (`pattern_count`, `pattern_count_slice`,
+`pattern_count_lattice`) for states `G`, patterns `θ`, gaps `κ` and quotients `Q`. -/
+structure PatternHyps (G : Finset ℕ) (θ : ℕ → Fin 7 → ℤ) (κ : ℕ → Fin 5 → ℤ) (Q : ℕ → ℤ)
+    (a : ℤ) (H : ℕ) : Prop where
+  inj : Set.InjOn Q G
+  gaps : ∀ i ∈ G, ∀ t, 1 ≤ κ i t ∧ κ i t ≤ H
+  pos0 : ∀ i ∈ G, 1 ≤ θ i 0
+  pos1 : ∀ i ∈ G, 1 ≤ θ i 1
+  e0 : ∀ i ∈ G, -θ i 1 * κ i 0 + θ i 3 * κ i 1 + θ i 4 * κ i 2 + θ i 0 * κ i 3 = 0
+  e4 : ∀ i ∈ G, -θ i 2 * κ i 1 + θ i 5 * κ i 2 + θ i 6 * κ i 3 + θ i 1 * κ i 4 = 0
+  e3 : ∀ i ∈ G, -θ i 1 * (κ i 0 ^ 2 + κ i 1) + θ i 3 * (κ i 1 * (2 * κ i 0 + κ i 1) + κ i 2) +
+    θ i 4 * (κ i 2 * (2 * κ i 0 + 2 * κ i 1 + κ i 2) + κ i 3) +
+    θ i 0 * (κ i 3 * (2 * κ i 0 + 2 * κ i 1 + 2 * κ i 2 + κ i 3) + κ i 4) = 0
+  mult : ∀ i ∈ G, quart (-θ i 1) (θ i 3) (θ i 4) (θ i 0) (κ i 0) (κ i 1) (κ i 2) (Q i) =
+    a * muH4 (κ i 0) (κ i 1) (κ i 2) (κ i 3) (κ i 4)
+
+/-- **The good starts satisfy the pattern hypotheses.** -/
+theorem goodStarts_patternHyps (hba : b < a) {s T A H : ℕ}
+    (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b) :
+    PatternHyps (goodStarts a b s T H) (theta a b) (kap a b) (fun i => (qq a b i : ℤ)) a H where
+  inj i hi i' hi' h := by
+    have hP := (mem_goodStarts hmem hsT hi).1
+    have hP' := (mem_goodStarts hmem hsT hi').1
+    simp only [Nat.cast_inj] at h
+    by_contra hne
+    rcases lt_or_gt_of_ne hne with hlt | hlt
+    · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h
+    · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h.symm
+  gaps i hi t := by
+    obtain ⟨-, hk, -⟩ := mem_goodStarts hmem hsT hi
+    fin_cases t
+    · simpa [kap] using hk 0 (by norm_num)
+    · simpa [kap] using hk 1 (by norm_num)
+    · simpa [kap] using hk 2 (by norm_num)
+    · simpa [kap] using hk 3 (by norm_num)
+    · simpa [kap] using hk 4 (by norm_num)
+  pos0 i hi := by
+    simpa [theta] using Lz_pos hba (i := i) (by have := (mem_goodStarts hmem hsT hi).1; omega)
+  pos1 i hi := by
+    simpa [theta] using Lz_pos hba (i := i + 1) (by have := (mem_goodStarts hmem hsT hi).1; omega)
+  e0 i _ := by simpa [theta, kap] using e0_at (a := a) (b := b) i
+  e4 i _ := by simpa [theta, kap, add_assoc] using e0_at (a := a) (b := b) (i + 1)
+  e3 i _ := by simpa [theta, kap] using e3_at (a := a) (b := b) i
+  mult i hi := by
+    simpa [theta, kap] using mult_at (a := a) (b := b) (i := i)
+      (by have := (mem_goodStarts hmem hsT hi).1; omega)
+
+/-- **The pattern height.** Under the scale condition `237568 A⁴ H⁵ ≤ a³`, the patterns at the
+good starts have height `≤ ⌊172032 A⁴ H⁶ / a³⌋` (`state_bound`). -/
+theorem goodStarts_theta_le (hba : b < a) {s T A H : ℕ}
+    (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
+    (hc : 237568 * A ^ 4 * H ^ 5 ≤ a ^ 3) :
+    ∀ i ∈ goodStarts a b s T H, ∀ t,
+      |theta a b i t| ≤ ((172032 * A ^ 4 * H ^ 6 / a ^ 3 : ℕ) : ℤ) := by
+  intro i hi t
+  obtain ⟨hP, hk, hb0, hb1, hb2⟩ := mem_goodStarts hmem hsT hi
+  have hcZ : (237568 : ℤ) * (A : ℤ) ^ 4 * (H : ℤ) ^ 5 ≤ (a : ℤ) ^ 3 := by exact_mod_cast hc
+  have hAZ : (1 : ℤ) ≤ A := by exact_mod_cast (show 1 ≤ A by omega)
+  have K := fun m (hm : m < 7) => hk m hm
+  have L0 := label_at (A := A) hba (i := i) (by omega) hb0
+  have L1 := label_at (A := A) hba (i := i + 1) (by omega) hb1
+  have L2 := label_at (A := A) hba (i := i + 2) (by omega) hb2
+  have P0 := Lz_pos hba (i := i) (by omega)
+  have P1 := Lz_pos hba (i := i + 1) (by omega)
+  have P2 := Lz_pos hba (i := i + 2) (by omega)
+  have SB0 := state_bound (K 0 (by norm_num)).1 (K 1 (by norm_num)).1 (K 2 (by norm_num)).1
+    (K 3 (by norm_num)).1 (K 4 (by norm_num)).1 (K 5 (by norm_num)).1 (K 0 (by norm_num)).2
+    (K 1 (by norm_num)).2 (K 2 (by norm_num)).2 (K 3 (by norm_num)).2 (K 4 (by norm_num)).2
+    (K 5 (by norm_num)).2 hAZ P0 P1 L0 L1 hcZ (e0_at i) (e3_at i)
+  have SB1 := state_bound (K 1 (by norm_num)).1 (K 2 (by norm_num)).1 (K 3 (by norm_num)).1
+    (K 4 (by norm_num)).1 (K 5 (by norm_num)).1 (K 6 (by norm_num)).1 (K 1 (by norm_num)).2
+    (K 2 (by norm_num)).2 (K 3 (by norm_num)).2 (K 4 (by norm_num)).2 (K 5 (by norm_num)).2
+    (K 6 (by norm_num)).2 hAZ P1 P2 L1 L2 hcZ (e0_at (i + 1)) (e3_at (i + 1))
+  have cv : ∀ z : ℤ, |z| * (a : ℤ) ^ 3 ≤ 172032 * (A : ℤ) ^ 4 * (H : ℤ) ^ 6 →
+      |z| ≤ ((172032 * A ^ 4 * H ^ 6 / a ^ 3 : ℕ) : ℤ) :=
+    fun z hz => abs_le_div (pow_pos (by omega) 3) (by exact_mod_cast hz)
+  have cvL : ∀ z : ℤ, 1 ≤ z → z * (a : ℤ) ^ 3 ≤ 172032 * (A : ℤ) ^ 4 * (H : ℤ) ^ 6 →
+      |z| ≤ ((172032 * A ^ 4 * H ^ 6 / a ^ 3 : ℕ) : ℤ) :=
+    fun z hz h => cv z (by rwa [abs_of_pos (by omega)])
+  fin_cases t
+  · exact cvL _ P0 SB0.2.2.1
+  · exact cvL _ P1 SB0.2.2.2
+  · exact cvL _ P2 SB1.2.2.2
+  · exact cv _ SB0.1
+  · exact cv _ SB0.2.1
+  · exact cv _ SB1.1
+  · exact cv _ SB1.2.1
+
 /-- **The window theorem.** Under the scale condition `237568 A⁴ H⁵ ≤ a³`,
 `T ≤ 16 (2M + 1)⁷ H²` with `M = ⌊172032 A⁴ H⁶ / a³⌋`. -/
 theorem two_state_window_77 (hba : b < a) {s T A : ℕ}
@@ -274,89 +377,13 @@ theorem two_state_window_77 (hba : b < a) {s T A : ℕ}
     (hc : 237568 * A ^ 4 * (28 * a / (A * T) + 1) ^ 5 ≤ a ^ 3) :
     T ≤ 16 * (2 * (172032 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3) + 1) ^ 7 *
       (28 * a / (A * T) + 1) ^ 2 := by
-  have hA : 1 ≤ A := by have := (hmem 0 (by omega)).2; omega
-  set H : ℕ := 28 * a / (A * T) + 1 with hH
-  set M : ℕ := 172032 * A ^ 4 * H ^ 6 / a ^ 3 with hM
-  set G := (Ico s (s + T)).filter fun i => i + 9 ≤ s + T ∧
-    ∀ m ∈ range 7, kq a b (i + m) ≤ (H : ℤ)
-  have hgood := good_card hba hmem hsT hT
-  have ha : 0 < a := by omega
-  have ha3 : 0 < a ^ 3 := by positivity
-  have hcZ : (237568 : ℤ) * (A : ℤ) ^ 4 * (H : ℤ) ^ 5 ≤ (a : ℤ) ^ 3 := by exact_mod_cast hc
-  have hAZ : (1 : ℤ) ≤ A := by exact_mod_cast hA
-  -- facts at a good start
-  have facts : ∀ i ∈ G, i + 8 < P a b ∧ (∀ m, m < 7 → 1 ≤ kq a b (i + m) ∧ kq a b (i + m) ≤ H) ∧
-      orb a b i < 2 * A ∧ orb a b (i + 1) < 2 * A ∧ orb a b (i + 2) < 2 * A := by
-    intro i hi
-    obtain ⟨hiI, h9, hk⟩ := mem_filter.mp hi
-    have := mem_Ico.mp hiI
-    refine ⟨by omega, fun m hm => ⟨kq_pos (by omega), hk m (mem_range.mpr hm)⟩, ?_, ?_, ?_⟩
-    · have := (hmem (i - s) (by omega)).2; rwa [show s + (i - s) = i by omega] at this
-    · have := (hmem (i + 1 - s) (by omega)).2; rwa [show s + (i + 1 - s) = i + 1 by omega] at this
-    · have := (hmem (i + 2 - s) (by omega)).2; rwa [show s + (i + 2 - s) = i + 2 by omega] at this
-  have hcount := pattern_count (G := G) (θ := theta a b) (κ := kap a b)
-    (Q := fun i => (qq a b i : ℤ)) (a := (a : ℤ)) (M := M) (H := H) ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
-  · have hg2 : T ≤ 2 * G.card := hgood
-    calc T ≤ 2 * G.card := hg2
-      _ ≤ 2 * (8 * (2 * M + 1) ^ 7 * H ^ 2) := Nat.mul_le_mul_left _ hcount
-      _ = 16 * (2 * M + 1) ^ 7 * H ^ 2 := by ring
-  -- injectivity of the quotient
-  · intro i hi i' hi' h
-    have hP := (facts i hi).1
-    have hP' := (facts i' hi').1
-    simp only [Nat.cast_inj] at h
-    by_contra hne
-    rcases lt_or_gt_of_ne hne with hlt | hlt
-    · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h
-    · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h.symm
-  -- the pattern bound
-  · intro i hi t
-    obtain ⟨hP, hk, hb0, hb1, hb2⟩ := facts i hi
-    have K := fun m (hm : m < 7) => hk m hm
-    have L0 := label_at (A := A) hba (i := i) (by omega) hb0
-    have L1 := label_at (A := A) hba (i := i + 1) (by omega) hb1
-    have L2 := label_at (A := A) hba (i := i + 2) (by omega) hb2
-    have P0 := Lz_pos hba (i := i) (by omega)
-    have P1 := Lz_pos hba (i := i + 1) (by omega)
-    have P2 := Lz_pos hba (i := i + 2) (by omega)
-    have SB0 := state_bound (K 0 (by norm_num)).1 (K 1 (by norm_num)).1 (K 2 (by norm_num)).1
-      (K 3 (by norm_num)).1 (K 4 (by norm_num)).1 (K 5 (by norm_num)).1 (K 0 (by norm_num)).2
-      (K 1 (by norm_num)).2 (K 2 (by norm_num)).2 (K 3 (by norm_num)).2 (K 4 (by norm_num)).2
-      (K 5 (by norm_num)).2 hAZ P0 P1 L0 L1 hcZ (e0_at i) (e3_at i)
-    have SB1 := state_bound (K 1 (by norm_num)).1 (K 2 (by norm_num)).1 (K 3 (by norm_num)).1
-      (K 4 (by norm_num)).1 (K 5 (by norm_num)).1 (K 6 (by norm_num)).1 (K 1 (by norm_num)).2
-      (K 2 (by norm_num)).2 (K 3 (by norm_num)).2 (K 4 (by norm_num)).2 (K 5 (by norm_num)).2
-      (K 6 (by norm_num)).2 hAZ P1 P2 L1 L2 hcZ (e0_at (i + 1)) (e3_at (i + 1))
-    have cv : ∀ z : ℤ, |z| * (a : ℤ) ^ 3 ≤ 172032 * (A : ℤ) ^ 4 * (H : ℤ) ^ 6 → |z| ≤ M := by
-      intro z hz
-      refine abs_le_div ha3 ?_
-      exact_mod_cast hz
-    have cvL : ∀ z : ℤ, 1 ≤ z → z * (a : ℤ) ^ 3 ≤ 172032 * (A : ℤ) ^ 4 * (H : ℤ) ^ 6 →
-        |z| ≤ M := fun z hz h => cv z (by rwa [abs_of_pos (by omega)])
-    fin_cases t
-    · exact cvL _ P0 SB0.2.2.1
-    · exact cvL _ P1 SB0.2.2.2
-    · exact cvL _ P2 SB1.2.2.2
-    · exact cv _ SB0.1
-    · exact cv _ SB0.2.1
-    · exact cv _ SB1.1
-    · exact cv _ SB1.2.1
-  -- the gaps
-  · intro i hi t
-    obtain ⟨-, hk, -⟩ := facts i hi
-    fin_cases t
-    · simpa [kap] using hk 0 (by norm_num)
-    · simpa [kap] using hk 1 (by norm_num)
-    · simpa [kap] using hk 2 (by norm_num)
-    · simpa [kap] using hk 3 (by norm_num)
-    · simpa [kap] using hk 4 (by norm_num)
-  · intro i hi; simpa [theta] using Lz_pos hba (i := i) (by have := (facts i hi).1; omega)
-  · intro i hi; simpa [theta] using Lz_pos hba (i := i + 1) (by have := (facts i hi).1; omega)
-  · intro i _; simpa [theta, kap] using e0_at (a := a) (b := b) i
-  · intro i _; simpa [theta, kap, add_assoc] using e0_at (a := a) (b := b) (i + 1)
-  · intro i _; simpa [theta, kap] using e3_at (a := a) (b := b) i
-  · intro i hi; simpa [theta, kap] using mult_at (a := a) (b := b) (i := i)
-      (by have := (facts i hi).1; omega)
+  have hp := goodStarts_patternHyps (H := 28 * a / (A * T) + 1) hba hmem hsT
+  have hcount := pattern_count hp.inj (goodStarts_theta_le hba hmem hsT hc) hp.gaps hp.pos0
+    hp.pos1 hp.e0 hp.e4 hp.e3 hp.mult
+  calc T ≤ 2 * (goodStarts a b s T (28 * a / (A * T) + 1)).card := good_card hba hmem hsT hT
+    _ ≤ 2 * (8 * (2 * (172032 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3) + 1) ^ 7 *
+        (28 * a / (A * T) + 1) ^ 2) := Nat.mul_le_mul_left _ hcount
+    _ = _ := by ring
 
 end Window
 
@@ -373,40 +400,14 @@ theorem window_77 {a A T Δ : ℕ} (hT : 36 ≤ T)
       T ≤ 16 * (2 * (172032 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3) + 1) ^ 7 *
         (28 * a / (A * T) + 1) ^ 2) :
     T ^ 77 ≤ C77 * Δ ^ 22 * a ^ 23 := by
-  have hA : 1 ≤ A := Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega
-  have hΔ : 1 ≤ Δ := Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega
-  have ha : 1 ≤ a := Nat.pos_of_ne_zero fun h => by simp [h] at hsix; omega
+  obtain ⟨hA, hΔ, ha, hT2⟩ := window_facts (by omega) hsix hdrop
   set H := 28 * a / (A * T) + 1 with hH
   set M := 172032 * A ^ 4 * H ^ 6 / a ^ 3 with hM
-  have ha0 : 0 < a := by omega
-  have hT1 : 1 ≤ T := by omega
-  have hT2 : T ^ 2 ≤ 8 * A * Δ := by
-    have : T ^ 2 ≤ 2 * (T * (T - 1)) := by
-      have : T ≤ 2 * (T - 1) := by omega
-      calc T ^ 2 = T * T := sq T
-        _ ≤ T * (2 * (T - 1)) := Nat.mul_le_mul_left _ this
-        _ = 2 * (T * (T - 1)) := by ring
-    calc T ^ 2 ≤ 2 * (T * (T - 1)) := this
-      _ ≤ 2 * (4 * A * Δ) := Nat.mul_le_mul_left _ hdrop
-      _ = 8 * A * Δ := by ring
-  have hΔa : Δ ^ 22 * a ^ 23 ≥ 1 := Nat.one_le_iff_ne_zero.mpr (by positivity)
   have hC : ∀ c : ℕ, c ≤ C77 → ∀ x : ℕ, x ≤ c * Δ ^ 22 * a ^ 23 →
       x ≤ C77 * Δ ^ 22 * a ^ 23 := fun c hc x hx =>
     hx.trans (Nat.mul_le_mul_right _ (Nat.mul_le_mul_right _ hc))
   by_cases hbig : 28 * a < A * T
-  · -- `T⁴ ≤ 122449 a`
-    have h1 : (28 * a) ^ 2 * T ^ 4 ≤ 96000000 * a ^ 3 := by
-      calc (28 * a) ^ 2 * T ^ 4 ≤ (A * T) ^ 2 * T ^ 4 :=
-            Nat.mul_le_mul_right _ (Nat.pow_le_pow_left hbig.le 2)
-        _ = T ^ 6 * A ^ 2 := by ring
-        _ ≤ _ := hsix
-    have h2 : T ^ 4 ≤ 122449 * a := by
-      have : (784 * T ^ 4) * a ^ 2 ≤ (784 * (122449 * a)) * a ^ 2 := by
-        calc (784 * T ^ 4) * a ^ 2 = (28 * a) ^ 2 * T ^ 4 := by ring
-          _ ≤ 96000000 * a ^ 3 := h1
-          _ ≤ (784 * (122449 * a)) * a ^ 2 := by ring_nf; omega
-      have := Nat.le_of_mul_le_mul_right this (by positivity)
-      omega
+  · have h2 := window_large_mean_gap ha hsix hbig
     have h3 : T ≤ 122449 * a :=
       (Nat.le_self_pow (by norm_num) T).trans h2
     refine hC (122449 ^ 20) (by unfold C77; omega) _ ?_
@@ -418,10 +419,7 @@ theorem window_77 {a A T Δ : ℕ} (hT : 36 ≤ T)
           · exact Nat.one_le_pow _ _ hΔ
           · omega
   push Not at hbig
-  have hHAT : H * (A * T) ≤ 56 * a := by
-    have := Nat.div_mul_le_self (28 * a) (A * T)
-    calc H * (A * T) = 28 * a / (A * T) * (A * T) + A * T := by rw [hH]; ring
-      _ ≤ 56 * a := by omega
+  have hHAT : H * (A * T) ≤ 56 * a := gap_height_mul_le hbig
   by_cases hcond : 237568 * A ^ 4 * H ^ 5 ≤ a ^ 3
   · have hw := hwin hcond
     rcases Nat.eq_zero_or_pos M with hM0 | hM1
@@ -499,35 +497,16 @@ theorem window_77 {a A T Δ : ℕ} (hT : 36 ≤ T)
 /-- Every dyadic window satisfies `T ≤ 35` or `T⁷⁷ ≤ C₇₇ Δ²² a²³`. -/
 theorem visits_77 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
     (visits a b k).card ≤ 35 ∨ (visits a b k).card ^ 77 ≤ C77 * Δ ^ 22 * a ^ 23 := by
-  by_cases hT : (visits a b k).card ≤ 35
-  · exact Or.inl hT
-  right
-  set T := (visits a b k).card
-  have hne : (visits a b k).Nonempty := by rw [← card_pos]; omega
-  have W := visits_window hba.le hne
-  set s := (visits a b k).min' hne
-  have hmem : ∀ j < T, 2 ^ k ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * 2 ^ k := W.mem
-  have hsT : s + T ≤ P a b := by
-    have h := (hmem (T - 1) (by omega)).1
-    have := lt_P_of_orb_pos (a := a) (b := b) (i := s + (T - 1))
-      (lt_of_lt_of_le (Nat.two_pow_pos k) h)
-    omega
-  exact window_77 (by omega) (six_step_bound W (by omega))
-    (drop_bound W hΔ (by omega))
-    (fun hc => two_state_window_77 hba hmem hsT (by omega) hc)
+  refine or_iff_not_imp_left.mpr fun hT => ?_
+  obtain ⟨s, W, hsT⟩ := visits_run (k := k) hba.le (by omega)
+  exact window_77 (by omega) (six_step_bound W (by omega)) (drop_bound W hΔ (by omega))
+    (fun hc => two_state_window_77 hba W.mem hsT (by omega) hc)
 
 /-- **Theorem.** `P(a, b) ≪_ε a^{23/77 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le_23_77 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((23 : ℝ) / 77 + ε) := by
-  have h := P_le_of_visits (N := 77) (r := 23) (K := C77) (by norm_num)
-    ((tauMax_slow 32 7).pow 22) fun a b k _ hba =>
-      visits_77 (k := k) hba (tauMax_divBound a)
-  intro ε hε
-  obtain ⟨C, hC, hP⟩ := h ε hε
-  refine ⟨C, hC, fun a b hb hba => ?_⟩
-  have := hP a b hb hba
-  norm_num at this ⊢
-  exact this
+  simpa only [Nat.cast_ofNat] using P_le_of_visits (N := 77) (r := 23) (K := C77) (by norm_num)
+    ((tauMax_slow 32 7).pow 22) fun a b k _ hba => visits_77 (k := k) hba (tauMax_divBound a)
 
 end Exponent
 

@@ -47,19 +47,8 @@ theorem P_le_powered_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
   have hα := poweredJointExponent_ge_base (n := n) hm
   apply P_le_of_real_visits hS (by linarith : 0 ≤ poweredJointExponent m n)
   intro a b k _hb hba
-  by_cases hT : (visits a b k).card ≤ 35
-  · exact Or.inl hT
-  right
-  set T := (visits a b k).card
-  have hne : (visits a b k).Nonempty := by rw [← Finset.card_pos]; omega
-  have W := visits_window hba.le hne
-  set s := (visits a b k).min' hne
-  have hmem : ∀ j < T, 2 ^ k ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * 2 ^ k := W.mem
-  have hsT : s + T ≤ P a b := by
-    have h := (hmem (T - 1) (by omega)).1
-    have := lt_P_of_orb_pos (a := a) (b := b) (i := s + (T - 1))
-      (lt_of_lt_of_le (Nat.two_pow_pos k) h)
-    omega
+  refine or_iff_not_imp_left.mpr fun hT => ?_
+  obtain ⟨s, W, hsT⟩ := visits_run (k := k) hba.le (by omega)
   apply window_real_of_powered_joint_count (K := K a) hm (by omega) hα
     (le_max_left _ _) (le_max_right _ _) (by omega)
     (six_step_bound W (by omega)) (drop_bound W (tauMax_divBound a) (by omega))
@@ -68,7 +57,7 @@ theorem P_le_powered_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
   apply powered_joint_branches_of_three_term_count (L := L) (R := R a) (by dsimp [L]; omega)
   simpa only [PoweredJointThreeTermEstimate, selectedGapHeight, selectedMinorHeight,
     selectedCurvatureHeight, selectedRankFiveHeight, L, Nat.cast_max, Nat.cast_pow] using
-    hcount a b s T (2 ^ k) hba hmem hsT (by omega) hscale
+    hcount a b s _ (2 ^ k) hba W.mem hsT (by omega) hscale
 
 /-- The explicit rational choice m=50, n=51. -/
 theorem P_le_2201_7480 :
@@ -94,12 +83,7 @@ theorem P_le_joint_optimal :
   obtain ⟨m, n, hm, hn, happ⟩ := jointOptimal_integer_powers (by positivity : 0 < ε / 2)
   have he : poweredJointExponent m n < jointOptimalExponent + ε / 2 := by
     simpa only [poweredJointExponent, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat] using happ
-  obtain ⟨C, hC, hbound⟩ := P_le_powered_joint m n hm hn (ε / 2) (by positivity)
-  refine ⟨C, hC, fun a b hb hba => ?_⟩
-  apply (hbound a b hb hba).trans
-  apply mul_le_mul_of_nonneg_left _ hC.le
-  apply Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast (show 1 ≤ a by omega))
-  linarith
+  exact P_le_of_exponent_le (by linarith) (P_le_powered_joint m n hm hn (ε / 2) (by positivity))
 
 end
 end PierceLengthBound.FixedDividend

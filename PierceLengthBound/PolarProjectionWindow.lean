@@ -42,21 +42,7 @@ theorem window_real_of_polar_bad_count {a A T Δ K : ℕ} {α : ℝ}
       let Y := 1259991040 * A ^ 5 * H ^ 10 / a ^ 4
       PolarBadCountBranches K T H X S Y) :
     (T : ℝ) ≤ (polarBadWindowBase * (K + 1) * Δ ^ 491 : ℕ) * (a : ℝ) ^ α := by
-  have hA : 1 ≤ A := by
-    by_contra hc
-    have hz : A = 0 := by omega
-    simp [hz] at hdrop
-    omega
-  have hΔ : 1 ≤ Δ := by
-    by_contra hc
-    have hz : Δ = 0 := by omega
-    simp [hz] at hdrop
-    omega
-  have ha : 1 ≤ a := by
-    by_contra hc
-    have hz : a = 0 := by omega
-    simp [hz] at hsix
-    omega
+  obtain ⟨hA, hΔ, ha, hT2⟩ := window_facts (by omega) hsix hdrop
   let B := polarBadWindowBase * (K + 1) * Δ ^ 491
   have hB : 1 ≤ B :=
     Nat.mul_pos (Nat.mul_pos (by unfold polarBadWindowBase; omega) (by omega)) (pow_pos hΔ _)
@@ -77,26 +63,16 @@ theorem window_real_of_polar_bad_count {a A T Δ K : ℕ} {α : ℝ}
     window_real_bound_of_power ha hB hN
       (hcount.trans (Nat.mul_le_mul_right _ (hcoeff hc hf))) hr
   by_cases hbig : 28 * a < A * T
-  · have h := window_large_mean_gap ha hsix hbig
-    have hpower : T ^ 4 ≤ B * a ^ 1 := by
-      simpa using h.trans (Nat.mul_le_mul_right a
-        ((show 122449 ≤ polarBadWindowBase by unfold polarBadWindowBase; omega).trans hbase))
-    apply window_real_bound_of_power (r := 1) ha hB (by decide : 0 < 4)
-      hpower
-    exact (by norm_num : ((1 : ℕ) : ℝ) / (4 : ℕ) ≤ 5 / 17).trans hα
+  · exact window_real_large_mean_gap ha
+      ((show 122449 ≤ polarBadWindowBase by unfold polarBadWindowBase; omega).trans hbase)
+      hα hsix hbig
   let H := 28 * a / (A * T) + 1
   let X := 3609600 * A ^ 4 * H ^ 6 / a ^ 3
   let S := 9472 * A ^ 3 * H ^ 3 / a ^ 2
   let Y := 1259991040 * A ^ 5 * H ^ 10 / a ^ 4
-  have hH : H * (A * T) ≤ 56 * a := by
-    have := Nat.div_mul_le_self (28 * a) (A * T)
-    dsimp only [H]
-    rw [add_mul, one_mul]
-    omega
+  have hH : H * (A * T) ≤ 56 * a := gap_height_mul_le (not_lt.mp hbig)
   have hX : X * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6 := Nat.div_mul_le_self _ _
-  have hT2 : T ^ 2 ≤ (8 * Δ) * A := by
-    have : T ≤ 2 * (T - 1) := by omega
-    nlinarith
+  replace hT2 : T ^ 2 ≤ (8 * Δ) * A := hT2.trans_eq (by ring)
   have hE : 3609600 * 56 ^ 6 * (8 * Δ) ^ 2 = (3609600 * 56 ^ 6 * 8 ^ 2) * Δ ^ 2 := by ring
   rcases hbad with c | c | c
   · have hbox : H ^ 3 * T ^ 9 ≤ (56 * (8 * Δ)) ^ 3 * a ^ 3 := by

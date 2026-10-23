@@ -235,30 +235,6 @@ theorem six_core (a q u v w z x0 x1 x2 x3 x4 x5 m : ℕ)
   rw [← hEz, ← hFz] at this
   exact_mod_cast this
 
-/-- `a ≤ 4 A q` from `a = x q + y` with `y < x < 2A` and `q ≥ 1`. -/
-private lemma le_four_mul {a x y q A : ℕ} (h0 : x * q + y = a) (hyx : y < x) (hx : x < 2 * A)
-    (hq : 1 ≤ q) : a ≤ 4 * A * q := by
-  nlinarith
-
-/-- The quotient increment at a term of a window run, with its size bound. -/
-private lemma window_increment {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) {i : ℕ}
-    (hi : i + 2 < T) :
-    a / g i < a / g (i + 1) ∧
-    (a / g (i + 1) - a / g i) * (g (i + 1) * g i) ≤ a * (g i - g (i + 2)) := by
-  have e1 : a % g i = g (i + 1) := (W.step i (by omega)).symm
-  have e2 : a % (a % g i) = g (i + 2) := by rw [e1]; exact (W.step (i + 1) (by omega)).symm
-  have m1 := W.mem (i + 1) (by omega)
-  have m2 := W.mem (i + 2) (by omega)
-  have hx := W.pos (j := i) (by omega)
-  have hy : a % g i ≠ 0 := by rw [e1]; have := W.one_le; omega
-  have hz : a % (a % g i) ≠ 0 := by rw [e2]; have := W.one_le; omega
-  have hlt := div_lt_div_mod hx hy
-  have hb := bu_mul_le hx hy hz (W.le_a i (by omega))
-  unfold bu at hb
-  rw [e2, e1] at hb
-  rw [e1] at hlt
-  exact ⟨hlt, hb⟩
-
 /-- **The six-step window bound.** `T⁶ A² ≤ 96·10⁶ a³` for `T ≥ 10`, with no divisor loss. -/
 theorem six_step_bound {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT : 10 ≤ T) :
     T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3 := by
@@ -299,22 +275,19 @@ theorem six_step_bound {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT 
   have l23 : g (j + 3) < g (j + 2) := W.succ_lt (j := j + 2) (by omega)
   have l34 : g (j + 4) < g (j + 3) := W.succ_lt (j := j + 3) (by omega)
   have l45 : g (j + 5) < g (j + 4) := W.succ_lt (j := j + 4) (by omega)
-  obtain ⟨q01, hu⟩ : a / g j < a / g (j + 1) ∧
-      (a / g (j + 1) - a / g j) * (g (j + 1) * g j) ≤ a * (g j - g (j + 2)) :=
-    window_increment W (i := j) (by omega)
-  obtain ⟨q12, hv⟩ : a / g (j + 1) < a / g (j + 2) ∧
-      (a / g (j + 2) - a / g (j + 1)) * (g (j + 2) * g (j + 1)) ≤ a * (g (j + 1) - g (j + 3)) :=
-    window_increment W (i := j + 1) (by omega)
-  obtain ⟨q23, hw⟩ : a / g (j + 2) < a / g (j + 3) ∧
-      (a / g (j + 3) - a / g (j + 2)) * (g (j + 3) * g (j + 2)) ≤ a * (g (j + 2) - g (j + 4)) :=
-    window_increment W (i := j + 2) (by omega)
-  obtain ⟨q34, hz⟩ : a / g (j + 3) < a / g (j + 4) ∧
-      (a / g (j + 4) - a / g (j + 3)) * (g (j + 4) * g (j + 3)) ≤ a * (g (j + 3) - g (j + 5)) :=
-    window_increment W (i := j + 3) (by omega)
-  have q45 : a / g (j + 4) < a / g (j + 5) := by
-    have e : a % g (j + 4) = g (j + 5) := (W.step (j + 4) (by omega)).symm
-    have := div_lt_div_mod (a := a) (W.pos (j := j + 4) (by omega)) (by rw [e]; omega)
-    rwa [e] at this
+  have q01 : a / g j < a / g (j + 1) := W.quot_lt (by omega)
+  have q12 : a / g (j + 1) < a / g (j + 2) := W.quot_lt (j := j + 1) (by omega)
+  have q23 : a / g (j + 2) < a / g (j + 3) := W.quot_lt (j := j + 2) (by omega)
+  have q34 : a / g (j + 3) < a / g (j + 4) := W.quot_lt (j := j + 3) (by omega)
+  have q45 : a / g (j + 4) < a / g (j + 5) := W.quot_lt (j := j + 4) (by omega)
+  have hu : (a / g (j + 1) - a / g j) * (g (j + 1) * g j) ≤ a * (g j - g (j + 2)) :=
+    W.incr_mul_le (by omega)
+  have hv : (a / g (j + 2) - a / g (j + 1)) * (g (j + 2) * g (j + 1)) ≤
+      a * (g (j + 1) - g (j + 3)) := W.incr_mul_le (j := j + 1) (by omega)
+  have hw : (a / g (j + 3) - a / g (j + 2)) * (g (j + 3) * g (j + 2)) ≤
+      a * (g (j + 2) - g (j + 4)) := W.incr_mul_le (j := j + 2) (by omega)
+  have hz : (a / g (j + 4) - a / g (j + 3)) * (g (j + 4) * g (j + 3)) ≤
+      a * (g (j + 3) - g (j + 5)) := W.incr_mul_le (j := j + 3) (by omega)
   have hdiv : ∀ k, k ≤ 4 → g (j + k) * (a / g (j + k)) + g (j + k + 1) = a := by
     intro k hk
     rw [W.step (j + k) (by omega)]
@@ -422,5 +395,25 @@ theorem six_step_bound {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT 
       _ ≤ 4 * (24000000 * a ^ 4) := Nat.mul_le_mul_left _ k2
       _ = 96000000 * a ^ 3 * a := by ring
   exact Nat.le_of_mul_le_mul_right k3 (by omega)
+
+/-- The size facts shared by the exponent arithmetic of the window bounds: the six-step and drop
+bounds force `A, Δ, a ≥ 1`, and give `T² ≤ 8 A Δ`. -/
+lemma window_facts {a A T Δ : ℕ} (hT : 2 ≤ T) (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3)
+    (hdrop : T * (T - 1) ≤ 4 * A * Δ) : 1 ≤ A ∧ 1 ≤ Δ ∧ 1 ≤ a ∧ T ^ 2 ≤ 8 * A * Δ := by
+  obtain ⟨hA, hΔ, hT2⟩ := drop_bound_sq hT hdrop
+  exact ⟨hA, hΔ, Nat.pos_of_ne_zero fun h => by simp [h] at hsix; omega, hT2⟩
+
+/-- **A large mean gap.** If `A T > 28 a`, the six-step bound gives `T⁴ ≤ 122449 a`. -/
+lemma window_large_mean_gap {a A T : ℕ} (ha : 1 ≤ a)
+    (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hbig : 28 * a < A * T) :
+    T ^ 4 ≤ 122449 * a := by
+  have h1 : (784 * T ^ 4) * a ^ 2 ≤ (784 * (122449 * a)) * a ^ 2 := by
+    calc (784 * T ^ 4) * a ^ 2 = (28 * a) ^ 2 * T ^ 4 := by ring
+      _ ≤ (A * T) ^ 2 * T ^ 4 := by gcongr
+      _ = T ^ 6 * A ^ 2 := by ring
+      _ ≤ 96000000 * a ^ 3 := hsix
+      _ ≤ (784 * (122449 * a)) * a ^ 2 := by ring_nf; omega
+  have := Nat.le_of_mul_le_mul_right h1 (by positivity)
+  omega
 
 end PierceLengthBound

@@ -32,19 +32,8 @@ theorem P_le_polar_projection_of_six_term_count (m n : ℕ) (hm : 0 < m)
   have hα : (5 : ℝ) / 17 ≤ polarProjectionExponent m n := (le_max_left _ _).trans (le_max_left _ _)
   apply P_le_of_real_visits hS (by linarith : 0 ≤ polarProjectionExponent m n)
   intro a b k _hb hba
-  by_cases hT : (visits a b k).card ≤ 35
-  · exact Or.inl hT
-  right
-  set T := (visits a b k).card
-  have hne : (visits a b k).Nonempty := by rw [← Finset.card_pos]; omega
-  have W := visits_window hba.le hne
-  set s := (visits a b k).min' hne
-  have hmem : ∀ j < T, 2 ^ k ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * 2 ^ k := W.mem
-  have hsT : s + T ≤ P a b := by
-    have h := (hmem (T - 1) (by omega)).1
-    have := lt_P_of_orb_pos (a := a) (b := b) (i := s + (T - 1))
-      (lt_of_lt_of_le (Nat.two_pow_pos k) h)
-    omega
+  refine or_iff_not_imp_left.mpr fun hT => ?_
+  obtain ⟨s, W, hsT⟩ := visits_run (k := k) hba.le (by omega)
   apply window_real_of_polar_projection_count (K := K a) hm hα
     ((le_max_right _ _).trans (le_max_left _ _))
     ((le_max_left _ _).trans (le_max_right _ _))
@@ -55,7 +44,7 @@ theorem P_le_polar_projection_of_six_term_count (m n : ℕ) (hm : 0 < m)
   apply polar_projection_branches_of_six_term_count (R := R a) hm
   simpa only [PolarProjectionSixTermEstimate, selectedGapHeight, selectedMinorHeight,
     selectedAllMinorHeight, selectedRankFiveHeight] using
-    hcount a b s T (2 ^ k) hba hmem hsT (by omega) hscale
+    hcount a b s _ (2 ^ k) hba W.mem hsT (by omega) hscale
 
 /-- The explicit rational polar exponent, conditional on its local counting estimate. -/
 theorem P_le_4317_14677_of_six_term_count {R : ℕ → ℕ} (hR : SlowGrowth R)
@@ -75,13 +64,8 @@ theorem P_le_polar_optimal_of_six_term_estimates
   obtain ⟨m, n, hm, hn, he⟩ := polarProjectionOptimal_integer_powers
     (by positivity : 0 < ε / 2)
   obtain ⟨R, hR, hc⟩ := hcounts m n hm hn
-  obtain ⟨C, hC, hP⟩ := P_le_polar_projection_of_six_term_count m n hm hR hc
-    (ε / 2) (by positivity)
-  refine ⟨C, hC, fun a b hb hba => ?_⟩
-  apply (hP a b hb hba).trans
-  apply mul_le_mul_of_nonneg_left _ hC.le
-  apply Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast (show 1 ≤ a by omega))
-  linarith
+  exact P_le_of_exponent_le (by linarith)
+    (P_le_polar_projection_of_six_term_count m n hm hR hc (ε / 2) (by positivity))
 
 end
 end PierceLengthBound.FixedDividend

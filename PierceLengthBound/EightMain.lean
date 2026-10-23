@@ -49,54 +49,32 @@ lemma orbit_pattern_first {l : ℕ} (hba : b < a) (hl : l + 5 < P a b) :
 
 section Window
 
+/-- At the good starts, every minor is bounded by `⌊3609600 A⁴ H⁶ / a³⌋` (`minor_height`). -/
+lemma goodStarts_minor_le (hba : b < a) {s T A H : ℕ}
+    (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b) :
+    ∀ i ∈ goodStarts a b s T H, ∀ t,
+      |plk (Mi a b i) t| ≤ ((3609600 * A ^ 4 * H ^ 6 / a ^ 3 : ℕ) : ℤ) := by
+  intro i hi t
+  obtain ⟨hP, hk, hb0, -⟩ := mem_goodStarts hmem hsT hi
+  exact abs_le_div (pow_pos (by omega) 3) (by exact_mod_cast minor_height (A := A) hba hP hb0 hk t)
+
 /-- **The window bound with minor vectors.** -/
 theorem two_state_window_54 (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T) :
     T ≤ 24 * 14581 * (3609600 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3 + 1) ^ 5 *
       (28 * a / (A * T) + 1) * Xi a ^ 2 := by
-  have hA : 1 ≤ A := by have := (hmem 0 (by omega)).2; omega
+  obtain ⟨hH29, hMb⟩ := run_height_le hba hmem (by omega) 3609600
+  obtain ⟨P1, P2, P3⟩ := pbig1_bounds (by omega) hH29
+    (hMb.trans (Nat.mul_le_mul_right _ (by norm_num)))
   set H : ℕ := 28 * a / (A * T) + 1 with hH
   set M : ℕ := 3609600 * A ^ 4 * H ^ 6 / a ^ 3 with hM
-  set G := (Ico s (s + T)).filter fun i => i + 9 ≤ s + T ∧
-    ∀ m ∈ range 7, kq a b (i + m) ≤ (H : ℤ)
-  have hgood := good_card hba hmem hsT hT
-  have ha : 0 < a := by omega
-  have ha3 : 0 < a ^ 3 := by positivity
-  have facts : ∀ i ∈ G, i + 8 < P a b ∧ (∀ m, m < 7 → 1 ≤ kq a b (i + m) ∧ kq a b (i + m) ≤ H) ∧
-      orb a b i < 2 * A ∧ orb a b (i + 1) < 2 * A ∧ orb a b (i + 2) < 2 * A := by
-    intro i hi
-    obtain ⟨hiI, h9, hk⟩ := mem_filter.mp hi
-    have := mem_Ico.mp hiI
-    refine ⟨by omega, fun m hm => ⟨kq_pos (by omega), hk m (mem_range.mpr hm)⟩, ?_, ?_, ?_⟩
-    · have := (hmem (i - s) (by omega)).2; rwa [show s + (i - s) = i by omega] at this
-    · have := (hmem (i + 1 - s) (by omega)).2; rwa [show s + (i + 1 - s) = i + 1 by omega] at this
-    · have := (hmem (i + 2 - s) (by omega)).2; rwa [show s + (i + 2 - s) = i + 2 by omega] at this
-  have hH1 : 1 ≤ H := by rw [hH]; exact Nat.le_add_left 1 _
-  have hH29 : H ≤ 29 * a := by
-    have : 28 * a / (A * T) ≤ 28 * a := Nat.div_le_self _ _
-    omega
-  have hA_a : A ≤ a := by
-    have := (hmem 0 (by omega)).1
-    have := (orb_le a b (s + 0)).trans hba.le
-    omega
-  have hMb : M ≤ 10 ^ 16 * a ^ 7 := by
-    have h1 : M * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6 := Nat.div_mul_le_self _ _
-    have h2 : 3609600 * A ^ 4 * H ^ 6 ≤ 3609600 * a ^ 4 * (29 * a) ^ 6 := by gcongr
-    have h3 : M * a ^ 3 ≤ (10 ^ 16 * a ^ 7) * a ^ 3 := by
-      calc M * a ^ 3 ≤ 3609600 * a ^ 4 * (29 * a) ^ 6 := h1.trans h2
-        _ = 2147074259481600 * a ^ 7 * a ^ 3 := by ring
-        _ ≤ (10 ^ 16 * a ^ 7) * a ^ 3 := by gcongr; norm_num
-    exact Nat.le_of_mul_le_mul_right h3 (by positivity)
-  obtain ⟨P1, P2, P3⟩ := pbig1_bounds (by omega) hH29 hMb
-  -- every minor is bounded by `M`
-  have hminor : ∀ i ∈ G, ∀ t, |plk (Mi a b i) t| ≤ M := by
-    intro i hi t
-    obtain ⟨hP, hk, hb0, -, -⟩ := facts i hi
-    exact abs_le_div ha3 (by exact_mod_cast minor_height (A := A) hba hP hb0 hk t)
+  have hH1 : 1 ≤ H := Nat.le_add_left 1 _
+  set G := goodStarts a b s T H
+  have hp := goodStarts_patternHyps (H := H) hba hmem hsT
+  have hminor : ∀ i ∈ G, ∀ t, |plk (Mi a b i) t| ≤ M := goodStarts_minor_le hba hmem hsT
   set S := G.image fun i => plk (Mi a b i)
   set B := S.image projθ
-  have hXi1 : 1 ≤ Xi a := by unfold Xi; omega
   have hB : B.card ≤ 14581 * (M + 1) ^ 5 * Xi a := by
     have h1 : S.card ≤ 1 + 20 * ∑ m ∈ Icc 1 M, 729 * m ^ 4 * m.divisors.card :=
       minor_vector_count fun p hp => by
@@ -105,11 +83,7 @@ theorem two_state_window_54 (hba : b < a) {s T A : ℕ}
     have h2 : ∑ m ∈ Icc 1 M, 729 * m ^ 4 * m.divisors.card ≤ 729 * M ^ 5 * Xi a := by
       have hτ : ∀ m ∈ Icc 1 M, m.divisors.card ≤ Xi a := fun m hm => by
         have := (mem_Icc.mp hm).2
-        calc m.divisors.card ≤ tauMax (Pbig1 a) := tau_le_tauMax (this.trans P3)
-          _ ≤ Xi a := by
-              unfold Xi
-              have : tauMax (Pbig1 a) ≤ tauMax (Pbig1 a) ^ 3 := Nat.le_self_pow (by norm_num) _
-              nlinarith
+        exact (tau_le_tauMax (this.trans P3)).trans (tauMax_le_xiOf _ _ _)
       calc ∑ m ∈ Icc 1 M, 729 * m ^ 4 * m.divisors.card ≤ ∑ _m ∈ Icc 1 M, 729 * M ^ 4 * Xi a :=
             sum_le_sum fun m hm => by
               have := (mem_Icc.mp hm).2
@@ -121,67 +95,23 @@ theorem two_state_window_54 (hba : b < a) {s T A : ℕ}
     calc B.card ≤ S.card := card_image_le
       _ ≤ 1 + 20 * (729 * M ^ 5 * Xi a) := by omega
       _ ≤ 14581 * (M + 1) ^ 5 * Xi a := by
-          have : 1 ≤ (M + 1) ^ 5 * Xi a := Nat.one_le_iff_ne_zero.mpr (by positivity)
+          have : 1 ≤ (M + 1) ^ 5 * Xi a := Nat.one_le_iff_ne_zero.mpr
+            (Nat.mul_ne_zero (by positivity) (Nat.pos_iff_ne_zero.mp (one_le_xiOf _ _ _)))
           nlinarith
-  have hcount := pattern_count_slice_gen (G := G) (θ := theta a b) (κ := kap a b)
-    (Q := fun i => (qq a b i : ℤ)) (a := (a : ℤ)) (M := M) (H := H) (B := B)
-    (W := 2 * tauMax (Pbig1 a) ^ 3 * (Nat.log 3 (Pbig1 a) + 1)) hH1 ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
-  · have hg2 : T ≤ 2 * G.card := hgood
-    have hXi : 2 * tauMax (Pbig1 a) ^ 3 * (Nat.log 3 (Pbig1 a) + 1) + 4 = Xi a := rfl
-    rw [hXi] at hcount
-    calc T ≤ 2 * G.card := hg2
-      _ ≤ 2 * (4 * B.card * ((2 * H + 1) * Xi a)) := Nat.mul_le_mul_left _ hcount
-      _ ≤ 2 * (4 * (14581 * (M + 1) ^ 5 * Xi a) * ((3 * H) * Xi a)) := by
-          gcongr; omega
-      _ = 24 * 14581 * (M + 1) ^ 5 * H * Xi a ^ 2 := by ring
-  -- the patterns lie in `B`
-  · intro i hi
-    rw [theta_eq]
-    exact mem_image.mpr ⟨_, mem_image.mpr ⟨i, hi, rfl⟩, rfl⟩
-  -- injectivity of the quotient
-  · intro i hi i' hi' h
-    have hP := (facts i hi).1
-    have hP' := (facts i' hi').1
-    simp only [Nat.cast_inj] at h
-    by_contra hne
-    rcases lt_or_gt_of_ne hne with hlt | hlt
-    · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h
-    · exact (qq_strictMono (a := a) (b := b) hlt (by omega)).ne h.symm
-  -- the pattern bound
-  · intro i hi t
+  have hθ : ∀ i ∈ G, ∀ t, |theta a b i t| ≤ M := by
+    intro i hi t
     rw [theta_eq]
     have hm := hminor i hi
     fin_cases t <;> simp only [projθ, Fin.isValue, Fin.mk_one, Matrix.cons_val_one,
         Matrix.cons_val_zero, ge_iff_le, Fin.reduceFinMk, Matrix.cons_val, abs_neg,
         Fin.zero_eta] <;> exact hm _
-  -- the gaps
-  · intro i hi t
-    obtain ⟨-, hk, -⟩ := facts i hi
-    fin_cases t
-    · simpa [kap] using hk 0 (by norm_num)
-    · simpa [kap] using hk 1 (by norm_num)
-    · simpa [kap] using hk 2 (by norm_num)
-    · simpa [kap] using hk 3 (by norm_num)
-    · simpa [kap] using hk 4 (by norm_num)
-  · intro i hi; simpa [theta] using Lz_pos hba (i := i) (by have := (facts i hi).1; omega)
-  · intro i hi; simpa [theta] using Lz_pos hba (i := i + 1) (by have := (facts i hi).1; omega)
-  · intro i _; simpa [theta, kap] using e0_at (a := a) (b := b) i
-  · intro i _; simpa [theta, kap, add_assoc] using e0_at (a := a) (b := b) (i + 1)
-  · intro i _; simpa [theta, kap] using e3_at (a := a) (b := b) i
-  · intro i hi; simpa [theta, kap] using mult_at (a := a) (b := b) (i := i)
-      (by have := (facts i hi).1; omega)
-  -- the divisor and logarithm bounds
-  · intro M' hM' hb
-    have hτ : M'.natAbs.divisors.card ≤ tauMax (Pbig1 a) := by
-      refine tau_le_tauMax ?_
-      have : M'.natAbs ≤ 116 * (4 * M ^ 2) ^ 4 * H ^ 2 := by
-        have h' : (M'.natAbs : ℤ) ≤ ((116 * (4 * M ^ 2) ^ 4 * H ^ 2 : ℕ) : ℤ) := by
-          rw [Int.natCast_natAbs]; push_cast at hb ⊢; linarith
-        exact_mod_cast h'
-      omega
-    have hlog : Nat.log 3 ((11 * (4 * M ^ 2) ^ 2 * H * (3 * (4 * M ^ 2) + 2)) ^ 2) ≤
-        Nat.log 3 (Pbig1 a) := Nat.log_mono_right P2
-    gcongr
+  have hcount := pattern_count_slice_gen (B := B) hH1
+    (fun i hi => by rw [theta_eq]; exact mem_image.mpr ⟨_, mem_image.mpr ⟨i, hi, rfl⟩, rfl⟩)
+    hp.inj hθ hp.gaps hp.pos0 hp.pos1 hp.e0 hp.e4 hp.e3 hp.mult (slack_le_range P1 P2)
+  calc T ≤ 2 * G.card := good_card hba hmem hsT hT
+    _ ≤ 2 * (4 * B.card * ((2 * H + 1) * Xi a)) := Nat.mul_le_mul_left _ hcount
+    _ ≤ 2 * (4 * (14581 * (M + 1) ^ 5 * Xi a) * ((3 * H) * Xi a)) := by gcongr; omega
+    _ = 24 * 14581 * (M + 1) ^ 5 * H * Xi a ^ 2 := by ring
 
 end Window
 
@@ -197,22 +127,10 @@ theorem window_54 {a A T Δ X : ℕ}
     (hwin : T ≤ 24 * 14581 * (3609600 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3 + 1) ^ 5 *
       (28 * a / (A * T) + 1) * X ^ 2) :
     T ^ 54 ≤ C54 * Δ ^ 14 * X ^ 28 * a ^ 16 := by
-  have hA : 1 ≤ A := Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega
-  have hΔ : 1 ≤ Δ := Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega
-  have ha : 1 ≤ a := Nat.pos_of_ne_zero fun h => by simp [h] at hsix; omega
+  obtain ⟨hA, hΔ, ha, hT2⟩ := window_facts (by omega) hsix hdrop
   have hX : 1 ≤ X := Nat.pos_of_ne_zero fun h => by simp [h] at hwin; omega
   set H := 28 * a / (A * T) + 1 with hH
   set Y := 3609600 * A ^ 4 * H ^ 6 / a ^ 3 with hY
-  have ha0 : 0 < a := by omega
-  have hT2 : T ^ 2 ≤ 8 * A * Δ := by
-    have : T ^ 2 ≤ 2 * (T * (T - 1)) := by
-      have : T ≤ 2 * (T - 1) := by omega
-      calc T ^ 2 = T * T := pow_two T
-        _ ≤ T * (2 * (T - 1)) := Nat.mul_le_mul_left _ this
-        _ = 2 * (T * (T - 1)) := by ring
-    calc T ^ 2 ≤ 2 * (T * (T - 1)) := this
-      _ ≤ 2 * (4 * A * Δ) := Nat.mul_le_mul_left _ hdrop
-      _ = 8 * A * Δ := by ring
   have hT56 : T ^ 54 ≤ T ^ 56 := Nat.pow_le_pow_right (by omega) (by norm_num)
   have hmono : ∀ c : ℕ, c ≤ C54 → ∀ e f g : ℕ, e ≤ 14 → f ≤ 28 → g ≤ 16 →
       c * Δ ^ e * X ^ f * a ^ g ≤ C54 * Δ ^ 14 * X ^ 28 * a ^ 16 := by
@@ -222,28 +140,14 @@ theorem window_54 {a A T Δ X : ℕ}
     have e3 : a ^ g ≤ a ^ 16 := Nat.pow_le_pow_right ha hg
     exact Nat.mul_le_mul (Nat.mul_le_mul (Nat.mul_le_mul hc e1) e2) e3
   by_cases hbig : 28 * a < A * T
-  · have h1 : (28 * a) ^ 2 * T ^ 4 ≤ 96000000 * a ^ 3 := by
-      calc (28 * a) ^ 2 * T ^ 4 ≤ (A * T) ^ 2 * T ^ 4 :=
-            Nat.mul_le_mul_right _ (Nat.pow_le_pow_left hbig.le 2)
-        _ = T ^ 6 * A ^ 2 := by ring
-        _ ≤ _ := hsix
-    have h2 : T ^ 4 ≤ 122449 * a := by
-      have : (784 * T ^ 4) * a ^ 2 ≤ (784 * (122449 * a)) * a ^ 2 := by
-        calc (784 * T ^ 4) * a ^ 2 = (28 * a) ^ 2 * T ^ 4 := by ring
-          _ ≤ 96000000 * a ^ 3 := h1
-          _ ≤ (784 * (122449 * a)) * a ^ 2 := by ring_nf; omega
-      have := Nat.le_of_mul_le_mul_right this (by positivity)
-      omega
+  · have h2 := window_large_mean_gap ha hsix hbig
     calc T ^ 54 ≤ T ^ 56 := hT56
       _ = (T ^ 4) ^ 14 := by ring
       _ ≤ (122449 * a) ^ 14 := Nat.pow_le_pow_left h2 14
       _ = 122449 ^ 14 * Δ ^ 0 * X ^ 0 * a ^ 14 := by ring
       _ ≤ _ := hmono _ (by unfold C54; omega) _ _ _ (by norm_num) (by norm_num) (by norm_num)
   push Not at hbig
-  have hHAT : H * (A * T) ≤ 56 * a := by
-    have := Nat.div_mul_le_self (28 * a) (A * T)
-    calc H * (A * T) = 28 * a / (A * T) * (A * T) + A * T := by rw [hH]; ring
-      _ ≤ 56 * a := by omega
+  have hHAT : H * (A * T) ≤ 56 * a := gap_height_mul_le hbig
   set c := 24 * 14581
   rcases Nat.eq_zero_or_pos Y with hY0 | hY1
   · rw [hY0] at hwin
@@ -305,22 +209,10 @@ section Global
 /-- Every dyadic window satisfies `T ≤ 35` or `T⁵⁴ ≤ C₅₄ Δ¹⁴ Ξ(a)²⁸ a¹⁶`. -/
 theorem visits_54 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
     (visits a b k).card ≤ 35 ∨ (visits a b k).card ^ 54 ≤ C54 * Δ ^ 14 * Xi a ^ 28 * a ^ 16 := by
-  by_cases hT : (visits a b k).card ≤ 35
-  · exact Or.inl hT
-  right
-  set T := (visits a b k).card
-  have hne : (visits a b k).Nonempty := by rw [← card_pos]; omega
-  have W := visits_window hba.le hne
-  set s := (visits a b k).min' hne
-  have hmem : ∀ j < T, 2 ^ k ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * 2 ^ k := W.mem
-  have hsT : s + T ≤ P a b := by
-    have h := (hmem (T - 1) (by omega)).1
-    have := lt_P_of_orb_pos (a := a) (b := b) (i := s + (T - 1))
-      (lt_of_lt_of_le (Nat.two_pow_pos k) h)
-    omega
-  exact window_54 (by omega)
-    (six_step_bound W (by omega)) (drop_bound W hΔ (by omega))
-    (two_state_window_54 hba hmem hsT (by omega))
+  refine or_iff_not_imp_left.mpr fun hT => ?_
+  obtain ⟨s, W, hsT⟩ := visits_run (k := k) hba.le (by omega)
+  exact window_54 (by omega) (six_step_bound W (by omega)) (drop_bound W hΔ (by omega))
+    (two_state_window_54 hba W.mem hsT (by omega))
 
 /-- **Theorem.** `P(a, b) ≪_ε a^{8/27 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le_8_27 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
@@ -328,12 +220,8 @@ theorem P_le_8_27 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < 
   have h := P_le_of_visits (N := 54) (r := 16) (K := C54) (by norm_num)
     (((tauMax_slow 32 7).pow 14).mul (slack_le.pow 28)) fun a b k _ hba =>
       (visits_54 (k := k) hba (tauMax_divBound a)).imp id fun h => h.trans_eq (by ring)
-  intro ε hε
-  obtain ⟨C, hC, hP⟩ := h ε hε
-  refine ⟨C, hC, fun a b hb hba => ?_⟩
-  have := hP a b hb hba
-  norm_num at this ⊢
-  exact this
+  norm_num at h ⊢
+  exact h
 
 end Global
 

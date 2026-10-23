@@ -195,13 +195,8 @@ lemma quart_eq (U0 U1 U2 U3 k0 k1 k2 q : ℤ) :
 /-! ### Root counting -/
 
 lemma card_le_natDegree_of_roots {s : Finset ℤ} {p : ℤ[X]} (hp : p ≠ 0)
-    (h : ∀ z ∈ s, p.eval z = 0) : s.card ≤ p.natDegree := by
-  classical
-  have hsub : s ⊆ p.roots.toFinset := fun z hz => by
-    rw [Multiset.mem_toFinset, mem_roots hp]; exact h z hz
-  calc s.card ≤ p.roots.toFinset.card := card_le_card hsub
-    _ ≤ Multiset.card p.roots := Multiset.toFinset_card_le _
-    _ ≤ p.natDegree := card_roots' p
+    (h : ∀ z ∈ s, p.eval z = 0) : s.card ≤ p.natDegree :=
+  card_le_degree_of_subset_roots fun z hz => (mem_roots hp).mpr (h z hz)
 
 /-- A quadratic with nonzero leading coefficient has at most two integer roots. -/
 lemma card_le_two_of_quad {s : Finset ℤ} {α β γ : ℤ} (hα : α ≠ 0)

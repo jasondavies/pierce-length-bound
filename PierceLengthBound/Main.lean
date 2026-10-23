@@ -17,9 +17,9 @@ Split the positive terms of the orbit according to `⌊log₂ bᵢ⌋ = k`. The 
 `Δ = max_{n ≤ 32 a⁷} τ(n)`. The divisor bound `τ(n)^k ≪_k n` gives `Δ ≪_η a^η`
 (`tauMax_slow`), so `T ≪_η a^{3/10 + η}`, and there are `≤ log₂ a + 1` values of `k`.
 
-The last step is shared by all the main theorems: `P_le_of_visits` turns a window bound
-`T ≤ 35` or `T^N ≤ K S(a) a^r`, with `S(a) ≪_η a^η` (`SlowGrowth S`), into
-`P(a, b) ≪_ε a^{r/N + ε}`.
+The last step is shared by all the main theorems: `P_le_of_real_visits` turns a window bound
+`T ≤ 35` or `T ≤ S(a) a^α`, with `S(a) ≪_η a^η` (`SlowGrowth S`), into
+`P(a, b) ≪_ε a^{α + ε}`, and `P_le_of_visits` is its case `T^N ≤ K S(a) a^r`, `α = r/N`.
 -/
 
 @[expose] public section
@@ -76,6 +76,17 @@ theorem visits_window {a b k : ℕ} (hba : b ≤ a) (h : (visits a b k).Nonempty
   · obtain ⟨-, h1, h2⟩ := hwin _ (hrun j hj); exact ⟨h1, h2⟩
   · rw [← add_assoc]
     exact orb_succ_of_ne (hwin _ (hrun j (Nat.lt_of_succ_lt hj))).1
+
+/-- A nonempty dyadic window is a window run of the orbit, ending by `P(a, b)`. -/
+theorem visits_run {a b k : ℕ} (hba : b ≤ a) (hT : 0 < (visits a b k).card) :
+    ∃ s, Window a (2 ^ k) (visits a b k).card (fun j => orb a b (s + j)) ∧
+      s + (visits a b k).card ≤ P a b := by
+  have hne : (visits a b k).Nonempty := card_pos.mp hT
+  have W := visits_window hba hne
+  refine ⟨_, W, ?_⟩
+  have := lt_P_of_orb_pos (a := a) (b := b)
+    (i := (visits a b k).min' hne + ((visits a b k).card - 1)) (W.pos (by omega))
+  omega
 
 /-- The number of visits to a window is `≤ 11` or satisfies `T¹⁰ ≤ 63700992 a³ Δ³`. -/
 theorem visits_bound {a b k Δ : ℕ} (hba : b ≤ a) (hΔ : DivBound a Δ) :
@@ -148,6 +159,17 @@ lemma root_le {x D c e k a : ℕ} (hk : k ≠ 0) (ha : 1 ≤ a) (h : x ^ k ≤ D
   exact h1.trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le ha' hη)
     (by positivity))
 
+/-- A window bound `T^N ≤ B a^r` with `B ≥ 1` gives `T ≤ B a^α` for every `α ≥ r/N`. -/
+lemma window_real_bound_of_power {T a B N r : ℕ} {α : ℝ}
+    (ha : 1 ≤ a) (hB : 1 ≤ B) (hN : 0 < N)
+    (h : T ^ N ≤ B * a ^ r) (hexp : (r : ℝ) / N ≤ α) :
+    (T : ℝ) ≤ (B : ℝ) * (a : ℝ) ^ α := by
+  have h1 := root_le (c := 1) hN.ne' ha (by simpa using h) hexp
+  rw [mul_one] at h1
+  refine h1.trans (mul_le_mul_of_nonneg_right ?_ (by positivity))
+  exact (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hB)
+    (inv_le_one_of_one_le₀ (by exact_mod_cast hN))).trans_eq (Real.rpow_one _)
+
 /-- `f(a) ≪_η a^η` for every `η > 0`. -/
 def SlowGrowth (f : ℕ → ℕ) : Prop :=
   ∀ η > (0 : ℝ), ∃ C > 0, ∀ a : ℕ, 1 ≤ a → (f a : ℝ) ≤ C * (a : ℝ) ^ η
@@ -187,6 +209,12 @@ lemma SlowGrowth.pow {f : ℕ → ℕ} (hf : SlowGrowth f) (n : ℕ) : SlowGrowt
   | zero => simpa using slowGrowth_const 1
   | succ n ih => simpa only [pow_succ] using ih.mul hf
 
+lemma SlowGrowth.of_le {f g : ℕ → ℕ} (hg : SlowGrowth g) (h : ∀ a, 1 ≤ a → f a ≤ g a) :
+    SlowGrowth f := by
+  intro η hη
+  obtain ⟨C, hC, hc⟩ := hg η hη
+  exact ⟨C, hC, fun a ha => (Nat.cast_le.mpr (h a ha)).trans (hc a ha)⟩
+
 /-- **The divisor maximum on a polynomial range grows slowly**: `τ*(c aᵉ) ≪_η a^η`. -/
 lemma tauMax_slow (c e : ℕ) : SlowGrowth fun a => tauMax (c * a ^ e) := by
   intro η hη
@@ -200,71 +228,83 @@ lemma tauMax_slow (c e : ℕ) : SlowGrowth fun a => tauMax (c * a ^ e) := by
   have h := root_le (c := c) hk1 ha (tauMax_pow_le hk1 hdiv (c * a ^ e)) hkη
   nlinarith [Real.rpow_nonneg (Nat.cast_nonneg a) η]
 
+/-- `log₂ n + 1 = τ(2^{⌊log₂ n⌋}) ≤ τ*(n)`. -/
+lemma log_add_one_le_tauMax {n : ℕ} (hn : n ≠ 0) : Nat.log 2 n + 1 ≤ tauMax n := by
+  have h := tau_le_tauMax (Nat.pow_log_le_self 2 hn)
+  rwa [Nat.divisors_prime_pow Nat.prime_two, card_map, card_range] at h
+
+/-- **From real window bounds to `P(a, b)`.** If every dyadic window has `T ≤ 35` or
+`T ≤ S(a) a^α` with `S` slowly growing, then `P(a, b) ≪_ε a^{α + ε}`: the coefficient and the
+`log₂ a + 1` windows cost only an arbitrarily small power. -/
+theorem P_le_of_real_visits {S : ℕ → ℕ} {α : ℝ} (hS : SlowGrowth S) (hα : 0 ≤ α)
+    (hvis : ∀ a b k : ℕ, 0 < b → b < a →
+      (visits a b k).card ≤ 35 ∨ ((visits a b k).card : ℝ) ≤ (S a : ℝ) * (a : ℝ) ^ α) :
+    ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+      (P a b : ℝ) ≤ C * (a : ℝ) ^ (α + ε) := by
+  intro ε hε
+  obtain ⟨Cs, hCs, hs⟩ := hS (ε / 2) (by positivity)
+  obtain ⟨CL, hCL, hlog⟩ := log_add_one_le_rpow (ε / 2) (by positivity)
+  refine ⟨CL * (35 + Cs), by positivity, fun a b hb hba => ?_⟩
+  have ha : 1 ≤ a := by omega
+  have haR : (1 : ℝ) ≤ a := by exact_mod_cast ha
+  have ha0 : (0 : ℝ) < a := by positivity
+  have hwin (k) : ((visits a b k).card : ℝ) ≤ (35 + Cs) * (a : ℝ) ^ (α + ε / 2) := by
+    rcases hvis a b k hb hba with h | h
+    · have ht : ((visits a b k).card : ℝ) ≤ 35 := by exact_mod_cast h
+      have hp := Real.one_le_rpow haR (by positivity : 0 ≤ α + ε / 2)
+      nlinarith
+    · calc _ ≤ (S a : ℝ) * (a : ℝ) ^ α := h
+        _ ≤ (Cs * (a : ℝ) ^ (ε / 2)) * (a : ℝ) ^ α := by gcongr; exact hs a ha
+        _ ≤ (35 + Cs) * (a : ℝ) ^ (α + ε / 2) := by
+          rw [Real.rpow_add ha0]
+          nlinarith [Real.rpow_nonneg (Nat.cast_nonneg a) α,
+            Real.rpow_nonneg (Nat.cast_nonneg a) (ε / 2)]
+  have hP : (P a b : ℝ) ≤ ((Nat.log 2 a + 1 : ℕ) : ℝ) *
+      ((35 + Cs) * (a : ℝ) ^ (α + ε / 2)) := by
+    rw [P_eq_sum_visits hba.le]
+    push_cast
+    calc ∑ k ∈ range (Nat.log 2 a + 1), ((visits a b k).card : ℝ)
+        ≤ ∑ _k ∈ range (Nat.log 2 a + 1), (35 + Cs) * (a : ℝ) ^ (α + ε / 2) :=
+          sum_le_sum fun k _ => hwin k
+      _ = _ := by simp
+  calc _ ≤ ((Nat.log 2 a + 1 : ℕ) : ℝ) * ((35 + Cs) * (a : ℝ) ^ (α + ε / 2)) := hP
+    _ ≤ (CL * (a : ℝ) ^ (ε / 2)) * ((35 + Cs) * (a : ℝ) ^ (α + ε / 2)) :=
+      mul_le_mul_of_nonneg_right (hlog a ha) (by positivity)
+    _ = CL * (35 + Cs) * (a : ℝ) ^ (α + ε) := by
+      rw [mul_mul_mul_comm, ← Real.rpow_add ha0]
+      congr 2
+      ring
+
 /-- **From window bounds to `P(a, b)`.** If every dyadic window has `T ≤ 35` or
 `T^N ≤ K S(a) a^r` with `S` slowly growing, then `P(a, b) ≪_ε a^{r/N + ε}`. -/
 theorem P_le_of_visits {N r K : ℕ} {S : ℕ → ℕ} (hN : N ≠ 0) (hS : SlowGrowth S)
     (hvis : ∀ a b k : ℕ, 0 < b → b < a →
       (visits a b k).card ≤ 35 ∨ (visits a b k).card ^ N ≤ K * S a * a ^ r) :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
-      (P a b : ℝ) ≤ C * (a : ℝ) ^ ((r : ℝ) / N + ε) := by
-  intro ε hε
-  have hN0 : (0 : ℝ) < N := by exact_mod_cast Nat.pos_of_ne_zero hN
-  obtain ⟨Cs, hCs, hSle⟩ := hS (N * (ε / 2)) (by positivity)
-  obtain ⟨CL, hCL, hlog⟩ := log_add_one_le_rpow (ε / 2) (by positivity)
-  set C2 : ℝ := ((K : ℝ) * Cs) ^ ((N : ℝ)⁻¹)
-  have hC2 : 0 ≤ C2 := by positivity
-  set β : ℝ := (r : ℝ) / N + ε / 2
-  refine ⟨CL * (35 + C2), by positivity, fun a b hb hba => ?_⟩
-  have ha1 : 1 ≤ a := by omega
-  have ha : (1 : ℝ) ≤ a := by exact_mod_cast ha1
-  have hβ : 1 ≤ (a : ℝ) ^ β := Real.one_le_rpow ha (by positivity)
-  -- each window is visited `≤ (35 + C2) a^β` times
-  have hwin : ∀ k, ((visits a b k).card : ℝ) ≤ (35 + C2) * (a : ℝ) ^ β := by
-    intro k
-    rcases hvis a b k hb hba with h | h
-    · have : ((visits a b k).card : ℝ) ≤ 35 := by exact_mod_cast h
-      nlinarith
-    · set T := (visits a b k).card
-      have h1 : (T : ℝ) ^ N ≤ ((K : ℝ) * Cs) * (a : ℝ) ^ ((r : ℝ) + N * (ε / 2)) := by
-        have h' : (T : ℝ) ^ N ≤ (K : ℝ) * S a * (a : ℝ) ^ r := by exact_mod_cast h
-        calc (T : ℝ) ^ N ≤ (K : ℝ) * S a * (a : ℝ) ^ r := h'
-          _ ≤ (K : ℝ) * (Cs * (a : ℝ) ^ (N * (ε / 2))) * (a : ℝ) ^ r := by
-              gcongr; exact hSle a ha1
-          _ = ((K : ℝ) * Cs) * (a : ℝ) ^ ((r : ℝ) + N * (ε / 2)) := by
-              rw [Real.rpow_add (by positivity), Real.rpow_natCast]; ring
-      have h2 := Real.rpow_le_rpow (by positivity) h1 (by positivity : (0 : ℝ) ≤ (N : ℝ)⁻¹)
-      rw [Real.pow_rpow_inv_natCast (Nat.cast_nonneg _) hN,
-        Real.mul_rpow (by positivity) (by positivity), ← Real.rpow_mul (by positivity),
-        show ((r : ℝ) + N * (ε / 2)) * (N : ℝ)⁻¹ = β by simp only [β]; field_simp] at h2
-      nlinarith
-  -- sum over the `log₂ a + 1` windows
-  have hP : (P a b : ℝ) ≤ ((Nat.log 2 a + 1 : ℕ) : ℝ) * ((35 + C2) * (a : ℝ) ^ β) := by
-    rw [P_eq_sum_visits hba.le]
-    push_cast
-    calc ∑ k ∈ range (Nat.log 2 a + 1), ((visits a b k).card : ℝ)
-        ≤ ∑ _k ∈ range (Nat.log 2 a + 1), (35 + C2) * (a : ℝ) ^ β := sum_le_sum fun k _ => hwin k
-      _ = _ := by simp
-  calc (P a b : ℝ) ≤ ((Nat.log 2 a + 1 : ℕ) : ℝ) * ((35 + C2) * (a : ℝ) ^ β) := hP
-    _ ≤ (CL * (a : ℝ) ^ (ε / 2)) * ((35 + C2) * (a : ℝ) ^ β) :=
-        mul_le_mul_of_nonneg_right (hlog a ha1) (by positivity)
-    _ = CL * (35 + C2) * ((a : ℝ) ^ (ε / 2) * (a : ℝ) ^ β) := by ring
-    _ = CL * (35 + C2) * (a : ℝ) ^ ((r : ℝ) / N + ε) := by
-        rw [← Real.rpow_add (by positivity)]
-        congr 2
-        simp only [β]; ring
+      (P a b : ℝ) ≤ C * (a : ℝ) ^ ((r : ℝ) / N + ε) :=
+  P_le_of_real_visits (S := fun a => K * S a) ((slowGrowth_const K).mul hS) (by positivity)
+    fun a b k hb hba => (hvis a b k hb hba).imp id fun h => by
+      rcases Nat.eq_zero_or_pos (K * S a) with h0 | h0
+      · rw [h0, zero_mul, Nat.le_zero, pow_eq_zero_iff hN] at h
+        rw [h, Nat.cast_zero]
+        exact mul_nonneg (Nat.cast_nonneg _) (by positivity)
+      · exact window_real_bound_of_power (by omega) h0 (Nat.pos_of_ne_zero hN) h le_rfl
+
+/-- A bound `P(a, b) ≤ C a^β` persists for every larger exponent. -/
+lemma P_le_of_exponent_le {β γ : ℝ} (hβγ : β ≤ γ)
+    (h : ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a → (P a b : ℝ) ≤ C * (a : ℝ) ^ β) :
+    ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a → (P a b : ℝ) ≤ C * (a : ℝ) ^ γ := by
+  obtain ⟨C, hC, hP⟩ := h
+  refine ⟨C, hC, fun a b hb hba => (hP a b hb hba).trans ?_⟩
+  exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le
+    (by exact_mod_cast (show 1 ≤ a by omega)) hβγ) hC.le
 
 /-- **Theorem 1.1 (the `3/10` bound).** `P(a, b) ≪_ε a^{3/10 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((3 : ℝ) / 10 + ε) := by
-  have h := P_le_of_visits (N := 10) (r := 3) (K := 63700992) (by norm_num)
+  simpa only [Nat.cast_ofNat] using P_le_of_visits (N := 10) (r := 3) (K := 63700992) (by norm_num)
     ((tauMax_slow 32 7).pow 3) fun a b k _ hba =>
       (visits_bound (k := k) hba.le (tauMax_divBound a)).imp (fun h => by omega)
         fun h => h.trans_eq (by ring)
-  intro ε hε
-  obtain ⟨C, hC, hP⟩ := h ε hε
-  refine ⟨C, hC, fun a b hb hba => ?_⟩
-  have := hP a b hb hba
-  norm_num at this ⊢
-  exact this
 
 end PierceLengthBound

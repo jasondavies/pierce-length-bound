@@ -75,34 +75,15 @@ lemma polarProjectionExponentSRatio_antitone {r s : ℝ} (hr : 0 < r) (hrs : r �
   apply (div_le_div_iff₀ (by positivity) (by positivity)).mpr
   nlinarith
 
-lemma polarProjectionExponentYRatio_sub {r s : ℝ} (hr : 0 < r) (hs : 0 < s) :
-    polarProjectionExponentYRatio s - polarProjectionExponentYRatio r =
-      336 * (s - r) / ((3080 * s + 2856) * (3080 * r + 2856)) := by
-  unfold polarProjectionExponentYRatio
-  field_simp
-  ring
-
 /-- A positive rational ratio achieves every prescribed positive loss above the optimum. -/
 theorem polarProjectionOptimal_rational_approximation {ε : ℝ} (hε : 0 < ε) :
     ∃ r : ℚ, 0 < r ∧
       max (polarProjectionExponentSRatio r) (polarProjectionExponentYRatio r) <
-        polarProjectionOptimalExponent + ε := by
-  obtain ⟨r, hr, hrε⟩ := exists_rat_btwn
-    (show polarProjectionOptimalRatio < polarProjectionOptimalRatio + ε by linarith)
-  have hr0 : (0 : ℝ) < r := polarProjectionOptimalRatio_pos.trans hr
-  refine ⟨r, by exact_mod_cast hr0, max_lt ?_ ?_⟩
-  · have h := polarProjectionExponentSRatio_antitone polarProjectionOptimalRatio_pos hr.le
-    rw [polarProjectionOptimal_crossing.1] at h
-    linarith
-  · have hsub := polarProjectionExponentYRatio_sub polarProjectionOptimalRatio_pos hr0
-    rw [polarProjectionOptimal_crossing.2] at hsub
-    have hd : 336 < (3080 * (r : ℝ) + 2856) * (3080 * polarProjectionOptimalRatio + 2856) := by
-      nlinarith [polarProjectionOptimalRatio_pos, mul_pos hr0 polarProjectionOptimalRatio_pos]
-    have hb : 336 * ((r : ℝ) - polarProjectionOptimalRatio) /
-        ((3080 * (r : ℝ) + 2856) * (3080 * polarProjectionOptimalRatio + 2856)) < ε := by
-      apply (div_lt_iff₀ (by positivity)).mpr
-      nlinarith
-    linarith
+        polarProjectionOptimalExponent + ε :=
+  exists_rat_max_lt_of_crossing polarProjectionOptimalRatio_pos
+    (fun _ h => polarProjectionExponentSRatio_antitone polarProjectionOptimalRatio_pos h)
+    (continuousAt_ratio (ne_of_gt (by linarith [polarProjectionOptimalRatio_pos])))
+    polarProjectionOptimal_crossing.1 polarProjectionOptimal_crossing.2 hε
 
 /-- The window exponents reduce to the ratio formulas at degree
 `60n + 56m`. -/
@@ -143,21 +124,11 @@ theorem polarProjectionOptimal_integer_powers {ε : ℝ} (hε : 0 < ε) :
     ∃ m n : ℕ, 0 < m ∧ 0 < n ∧
       polarProjectionExponent m n < polarProjectionOptimalExponent + ε := by
   obtain ⟨r, hr, hbound⟩ := polarProjectionOptimal_rational_approximation hε
-  have hnum : 0 < r.num := Rat.num_pos.mpr hr
-  let m := 2 * r.den
-  let n := 2 * r.num.toNat
-  have hm : 0 < m := by have := r.pos; omega
-  have hn : 0 < n := by omega
-  refine ⟨m, n, hm, hn, ?_⟩
-  have hratio : (n : ℝ) / m = (r : ℝ) := by
-    simp only [n, m]
-    push_cast
-    rw [mul_div_mul_left _ _ (by norm_num), Rat.cast_def]
-    congr 1
-    exact_mod_cast Int.toNat_of_nonneg hnum.le
+  obtain ⟨hm, hn, hratio⟩ := rat_eq_div_scaled hr (by norm_num : 0 < 2)
+  refine ⟨_, _, hm, hn, ?_⟩
   obtain ⟨hS, hY⟩ := polarProjection_exponents_ratio hm hn
-  have hH := polarProjection_gap_exponent_lt (h := polarProjectionGraphDegree m n)
-    (by unfold polarProjectionGraphDegree; have := r.pos; omega)
+  have hH := polarProjection_gap_exponent_lt (h := polarProjectionGraphDegree (2 * r.den)
+    (2 * r.num.toNat)) (by unfold polarProjectionGraphDegree; have := r.pos; omega)
   have hbase := polarProjectionOptimal_bounds.1
   unfold polarProjectionExponent
   rw [hS, hY, hratio]

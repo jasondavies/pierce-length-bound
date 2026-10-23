@@ -174,21 +174,7 @@ theorem window_real_of_lattice_count {a A T Δ K h m n : ℕ} {α : ℝ}
     (T : ℝ) ≤ (latticeWindowBase h m n * (K + 1) *
       Δ ^ latticeWindowDeltaExponent h n : ℕ) * (a : ℝ) ^ α := by
   have hh1 : 1 ≤ h := by omega
-  have hA : 1 ≤ A := by
-    by_contra hc
-    have hz : A = 0 := by omega
-    simp [hz] at hdrop
-    omega
-  have hΔ : 1 ≤ Δ := by
-    by_contra hc
-    have hz : Δ = 0 := by omega
-    simp [hz] at hdrop
-    omega
-  have ha : 1 ≤ a := by
-    by_contra hc
-    have hz : a = 0 := by omega
-    simp [hz] at hsix
-    omega
+  obtain ⟨hA, hΔ, ha, hT2⟩ := window_facts (by omega) hsix hdrop
   set e := latticeWindowDeltaExponent h n
   have he : e = 30 * h + 5 * n + 17 := rfl
   let B := latticeWindowBase h m n * (K + 1) * Δ ^ e
@@ -201,9 +187,7 @@ theorem window_real_of_lattice_count {a A T Δ K h m n : ℕ} {α : ℝ}
         gcongr
         · omega
         · exact Nat.one_le_pow e Δ hΔ
-  have hT2 : T ^ 2 ≤ (8 * Δ) * A := by
-    have : T ≤ 2 * (T - 1) := by omega
-    nlinarith
+  replace hT2 : T ^ 2 ≤ (8 * Δ) * A := hT2.trans_eq (by ring)
   have hcoeff {c f : ℕ} (hc : c ≤ latticeWindowBase h m n) (hf : f ≤ e) :
       c * K * Δ ^ f ≤ B := by
     dsimp only [B]
@@ -214,21 +198,12 @@ theorem window_real_of_lattice_count {a A T Δ K h m n : ℕ} {α : ℝ}
       (T : ℝ) ≤ (B : ℝ) * (a : ℝ) ^ α :=
     window_real_bound_of_power ha hB hN (hT.trans (Nat.mul_le_mul_right _ (hcoeff hc hf))) hr
   by_cases hbig : 28 * a < A * T
-  · have h' := window_large_mean_gap ha hsix hbig
-    have h'' : T ^ 4 ≤ B * a ^ 1 := by
-      simpa using h'.trans (Nat.mul_le_mul_right a
-        ((show 122449 ≤ latticeWindowBase h m n by unfold latticeWindowBase; omega).trans
-          hbase))
-    apply window_real_bound_of_power ha hB (by decide : 0 < 4) h''
-    norm_num only [Nat.cast_one, Nat.cast_ofNat]
-    exact (by norm_num : (1 : ℝ) / 4 ≤ 5 / 17).trans hα
+  · exact window_real_large_mean_gap ha
+      ((show 122449 ≤ latticeWindowBase h m n by unfold latticeWindowBase; omega).trans hbase)
+      hα hsix hbig
   let H := 28 * a / (A * T) + 1
   let X := 3609600 * A ^ 4 * H ^ 6 / a ^ 3
-  have hH : H * (A * T) ≤ 56 * a := by
-    have := Nat.div_mul_le_self (28 * a) (A * T)
-    dsimp only [H]
-    rw [add_mul, one_mul]
-    omega
+  have hH : H * (A * T) ≤ 56 * a := gap_height_mul_le (not_lt.mp hbig)
   have hX : X * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6 := Nat.div_mul_le_self _ _
   have hE : 3609600 * 56 ^ 6 * (8 * Δ) ^ 2 = (3609600 * 56 ^ 6 * 8 ^ 2) * Δ ^ 2 := by ring
   by_cases hscale : 124928 * A ^ 4 * H ^ 5 * X < a ^ 3

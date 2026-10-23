@@ -45,19 +45,8 @@ theorem P_le_lattice_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
   have hα : (5 : ℝ) / 17 ≤ latticeJointExponent m n := (le_max_left _ _).trans (le_max_left _ _)
   apply P_le_of_real_visits hS (by linarith : 0 ≤ latticeJointExponent m n)
   intro a b k _hb hba
-  by_cases hT : (visits a b k).card ≤ 35
-  · exact Or.inl hT
-  right
-  set T := (visits a b k).card
-  have hne : (visits a b k).Nonempty := by rw [← Finset.card_pos]; omega
-  have W := visits_window hba.le hne
-  set s := (visits a b k).min' hne
-  have hmem : ∀ j < T, 2 ^ k ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * 2 ^ k := W.mem
-  have hsT : s + T ≤ P a b := by
-    have h := (hmem (T - 1) (by omega)).1
-    have := lt_P_of_orb_pos (a := a) (b := b) (i := s + (T - 1))
-      (lt_of_lt_of_le (Nat.two_pow_pos k) h)
-    omega
+  refine or_iff_not_imp_left.mpr fun hT => ?_
+  obtain ⟨s, W, hsT⟩ := visits_run (k := k) hba.le (by omega)
   apply window_real_of_lattice_joint_count (K := K a) hm hα
     ((le_max_right _ _).trans (le_max_left _ _))
     ((le_max_left _ _).trans (le_max_right _ _))
@@ -68,7 +57,7 @@ theorem P_le_lattice_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
   apply lattice_joint_branches_of_five_term_count (R := R a) hm
   simpa only [LatticeJointFiveTermEstimate, selectedGapHeight, selectedMinorHeight,
     selectedAllMinorHeight, selectedRankFiveHeight] using
-    hcount a b s T (2 ^ k) hba hmem hsT (by omega) hscale
+    hcount a b s _ (2 ^ k) hba W.mem hsT (by omega) hscale
 
 /-- The explicit rational choice `m = 3`, `n = 2`. -/
 theorem P_le_153_520 :

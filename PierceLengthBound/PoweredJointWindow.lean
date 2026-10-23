@@ -41,21 +41,7 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
         PoweredJointCountBranches K T H X (max (max H (S ^ m)) (Y ^ n)) L) :
     (T : ℝ) ≤ (poweredJointWindowBase m n L * (K + 1) * Δ ^ (17 + 10 * L + 5 * n + m) : ℕ) *
       (a : ℝ) ^ α := by
-  have hA : 1 ≤ A := by
-    by_contra h
-    have hz : A = 0 := by omega
-    simp [hz] at hdrop
-    omega
-  have hΔ : 1 ≤ Δ := by
-    by_contra h
-    have hz : Δ = 0 := by omega
-    simp [hz] at hdrop
-    omega
-  have ha : 1 ≤ a := by
-    by_contra h
-    have hz : a = 0 := by omega
-    simp [hz] at hsix
-    omega
+  obtain ⟨hA, hΔ, ha, hT2⟩ := window_facts (by omega) hsix hdrop
   let B := poweredJointWindowBase m n L * (K + 1) * Δ ^ (17 + 10 * L + 5 * n + m)
   have hc : 1 ≤ poweredJointWindowBase m n L := by unfold poweredJointWindowBase; omega
   have hB : 1 ≤ B := Nat.one_le_iff_ne_zero.mpr (by dsimp [B]; positivity)
@@ -66,30 +52,19 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
         gcongr
         · omega
         · exact Nat.one_le_pow (17 + 10 * L + 5 * n + m) Δ hΔ
-  have hT2 : T ^ 2 ≤ (8 * Δ) * A := by
-    have : T ≤ 2 * (T - 1) := by omega
-    nlinarith
+  replace hT2 : T ^ 2 ≤ (8 * Δ) * A := hT2.trans_eq (by ring)
   have hcoeff {c e : ℕ} (hc : c ≤ poweredJointWindowBase m n L) (he : e ≤ 17 + 10 * L + 5 * n + m) :
       c * K * Δ ^ e ≤ B := by
     dsimp only [B]
     gcongr
     omega
   by_cases hbig : 28 * a < A * T
-  · have h := window_large_mean_gap ha hsix hbig
-    have h' : T ^ 4 ≤ B * a ^ 1 := by
-      simpa using h.trans (Nat.mul_le_mul_right a
-        ((show 122449 ≤ poweredJointWindowBase m n L by
-          unfold poweredJointWindowBase; omega).trans hbase))
-    apply window_real_bound_of_power ha hB (by decide : 0 < 4) h'
-    norm_num only [Nat.cast_one, Nat.cast_ofNat]
-    exact (by norm_num : (1 : ℝ) / 4 ≤ 5 / 17).trans hα
+  · exact window_real_large_mean_gap ha
+      ((show 122449 ≤ poweredJointWindowBase m n L by
+        unfold poweredJointWindowBase; omega).trans hbase) hα hsix hbig
   let H := 28 * a / (A * T) + 1
   let X := 3609600 * A ^ 4 * H ^ 6 / a ^ 3
-  have hH : H * (A * T) ≤ 56 * a := by
-    have := Nat.div_mul_le_self (28 * a) (A * T)
-    dsimp only [H]
-    rw [add_mul, one_mul]
-    omega
+  have hH : H * (A * T) ≤ 56 * a := gap_height_mul_le (not_lt.mp hbig)
   have hX : X * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6 := Nat.div_mul_le_self _ _
   by_cases hscale : 124928 * A ^ 4 * H ^ 5 * X < a ^ 3
   · rcases hlocal hscale with h | h | h

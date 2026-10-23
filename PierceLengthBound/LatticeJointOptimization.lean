@@ -81,23 +81,11 @@ theorem latticeOptimal_minimum {r : ℝ} (hr : 0 < r) :
 /-- Positive rational ratios attain every prescribed loss above the optimum. -/
 theorem latticeOptimal_rational_approximation {ε : ℝ} (hε : 0 < ε) :
     ∃ r : ℚ, 0 < r ∧
-      max (latticeExponentSRatio r) (jointExponentY r) < latticeOptimalExponent + ε := by
-  obtain ⟨r, hr, hrε⟩ := exists_rat_btwn
-    (show latticeOptimalRatio < latticeOptimalRatio + ε by linarith)
-  have hr0 : (0 : ℝ) < r := latticeOptimalRatio_pos.trans hr
-  refine ⟨r, by exact_mod_cast hr0, max_lt ?_ ?_⟩
-  · have h := latticeExponentSRatio_antitone latticeOptimalRatio_pos hr.le
-    rw [latticeOptimal_crossing.1] at h
-    linarith
-  · have hsub := jointExponentY_sub latticeOptimalRatio_pos hr0
-    rw [latticeOptimal_crossing.2] at hsub
-    have hd : 42 < (530 * (r : ℝ) + 357) * (530 * latticeOptimalRatio + 357) := by
-      nlinarith [latticeOptimalRatio_pos, mul_pos hr0 latticeOptimalRatio_pos]
-    have hb : 42 * ((r : ℝ) - latticeOptimalRatio) /
-        ((530 * (r : ℝ) + 357) * (530 * latticeOptimalRatio + 357)) < ε := by
-      apply (div_lt_iff₀ (by positivity)).mpr
-      nlinarith
-    linarith
+      max (latticeExponentSRatio r) (jointExponentY r) < latticeOptimalExponent + ε :=
+  exists_rat_max_lt_of_crossing latticeOptimalRatio_pos
+    (fun _ h => latticeExponentSRatio_antitone latticeOptimalRatio_pos h)
+    (continuousAt_ratio (ne_of_gt (by linarith [latticeOptimalRatio_pos])))
+    latticeOptimal_crossing.1 latticeOptimal_crossing.2 hε
 
 /-- The window exponents in terms of the ratio `n/m`. -/
 lemma lattice_exponents_ratio {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
@@ -134,31 +122,18 @@ theorem P_le_lattice_optimal :
       (P a b : ℝ) ≤ C * (a : ℝ) ^ (latticeOptimalExponent + ε) := by
   intro ε hε
   obtain ⟨r, hr, hbound⟩ := latticeOptimal_rational_approximation (by positivity : 0 < ε / 2)
-  have hnum : 0 < r.num := Rat.num_pos.mpr hr
   -- scaling by `6` keeps `n / m = r` and gives `h = 10n + 7m ≥ 102`
-  let m := 6 * r.den
-  let n := 6 * r.num.toNat
-  have hm : 0 < m := by have := r.pos; omega
-  have hn : 0 < n := by omega
-  have hratio : (n : ℝ) / m = (r : ℝ) := by
-    simp only [n, m]
-    push_cast
-    rw [mul_div_mul_left _ _ (by norm_num), Rat.cast_def]
-    congr 1
-    exact_mod_cast Int.toNat_of_nonneg hnum.le
+  obtain ⟨hm, hn, hratio⟩ := rat_eq_div_scaled hr (by norm_num : 0 < 6)
   obtain ⟨hS, hY⟩ := lattice_exponents_ratio hm hn
-  have hH := latticeExponentH_lt (h := 10 * n + 7 * m) (by have := r.pos; omega)
+  have hH := latticeExponentH_lt (h := 10 * (6 * r.num.toNat) + 7 * (6 * r.den))
+    (by have := r.pos; omega)
   have hbase := latticeOptimal_bounds.1
-  have he : latticeJointExponent m n < latticeOptimalExponent + ε / 2 := by
+  have he : latticeJointExponent (6 * r.den) (6 * r.num.toNat) <
+      latticeOptimalExponent + ε / 2 := by
     unfold latticeJointExponent
     rw [hS, hY, hratio]
     refine max_lt (max_lt (by linarith) (by linarith)) hbound
-  obtain ⟨C, hC, hP⟩ := P_le_lattice_joint m n hm hn (ε / 2) (by positivity)
-  refine ⟨C, hC, fun a b hb hba => ?_⟩
-  apply (hP a b hb hba).trans
-  apply mul_le_mul_of_nonneg_left _ hC.le
-  apply Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast (show 1 ≤ a by omega))
-  linarith
+  exact P_le_of_exponent_le (by linarith) (P_le_lattice_joint _ _ hm hn (ε / 2) (by positivity))
 
 end
 end PierceLengthBound.FixedDividend

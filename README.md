@@ -332,15 +332,15 @@ then applies the general estimate uniformly in the dividend and common divisor.
 | `Defs` | `P`, the orbit `orb`; check `P 35 22 = 7` |
 | `Block` | curvature `D = dv − eu`: identity `Dz = df + ude + (u−1)e²`, `D ≥ 1`, fiber equation `x M(q) = a N(q) + D`, size bounds |
 | `Fiber` | a fixed `(u, v, D)` allows at most `max_{n ≤ 32a⁷} τ(n)` starting points |
-| `Window` | for a run of `T` terms in `[A, 2A)`: `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
-| `Main` | dyadic decomposition, `P_le_of_visits` (window bounds `T^N ≤ K S(a) aʳ` with `S(a) ≪ a^η` give `P ≪ a^{r/N+ε}`), and the unconditional theorem `P_le` |
+| `Window` | for a run of `T` terms in `[A, 2A)`: its quotient increments and drops, `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
+| `Main` | dyadic decomposition (`visits_run`), `P_le_of_real_visits` and `P_le_of_visits` (window bounds `T ≤ S(a) a^α`, or `T^N ≤ K S(a) aʳ`, with `S(a) ≪ a^η` give `P ≪ a^{α+ε}`, resp. `a^{r/N+ε}`), and the unconditional theorem `P_le` |
 | `PolarProjectionMain` | unconditional optimized polar bound and `4317/14677`; assembles the proved arithmetic sieve, geometry and six-term window estimate |
 | `PolarProjectionRetainedBase`, `PolarProjectionRetainedDegree` | actual common-base contribution at most four and the retained powered graph degree bound `60n+56m` |
 | `PolarProjectionGeometryGoodPattern` | explicit branch irreducibility and the fixed proper exceptional polynomial imply the good-pattern geometric estimate |
 | `BranchSieveVertexMonic`, `BranchSieveArithmeticVertexCount` | the actual integer degree-12 family, generic irreducibility, specialization compatibility and uniform scaled-vertex sieve |
 | `BranchSievePatternCount`, `BranchSievePatternCountSlow` | completion to full minor patterns with all common divisors and the slow-growth bound on selected orbit windows |
 | `HypersurfacePatternCount`, `HypersurfacePatternCountSlow` | proper algebraic exceptional loci have pattern exponent `14/3` |
-| `SixStep` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `TwentyThreeMain.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10` |
+| `SixStep` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `TwentyThreeMain.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10`, hence `T⁴ ≤ 122449 a` when `AT > 28a` (`window_large_mean_gap`) |
 | `ShortSum` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
 | `Geometric` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}`, and the general form `∑_k min(α 2^{−sk}, β 2^{tk}) ≪ α^{t/(s+t)} β^{s/(s+t)}` (`sum_min_le_gen`) |
 | `Conditional` | any short-interval divisor bound `≪ y G(x)` for `x^{1/4} ≤ y ≤ x`, with `1 ≤ G(x) ≪ x^{1/40}`, gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
@@ -353,11 +353,11 @@ then applies the general estimate uniformly in the dividend and common divisor.
 | `TwoState` | the cofactors, null relations, reduced quadratic, the multiplicity identity, root counting |
 | `PatternBound` | the seven pattern integers are `≤ 172032 A⁴H⁶/a³` under the scale condition |
 | `PatternCount` | the counting lemma `#G ≤ 8 (2M+1)⁷ H²` |
-| `TwentyThreeMain` | good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
+| `TwentyThreeMain` | good starts and their pattern hypotheses (`goodStarts_patternHyps`), the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
 | `NormCount` | the norm-equation lemma: square roots mod `m` (`≤ τ(m)²`), norm-one separation, and `norm_count` |
 | `SliceCount` | the slice lemma: slices of a ternary quadratic via completing squares, for either sign of the binary discriminant (`slice_count_ne`, `slice_count`) |
 | `ElevenCount` | the sign identities, the ternary relation `F_θ(k₁,k₂,k₃) = 0`, and the refined count |
-| `ElevenMain` | the window bound, `T⁷⁴ ≤ C Δ¹⁹ Ξ¹⁹ a²²`, slack factors `≪ a^η`, and `P_le_11_37` |
+| `ElevenMain` | the slack factor `XiOf c e ≪ a^η` of a polynomial range, the window bound, `T⁷⁴ ≤ C Δ¹⁹ Ξ¹⁹ a²²`, and `P_le_11_37` |
 | `MinorCount` | the Plücker relations, the congruence count `27 m g²`, and `minor_vector_count` |
 | `MinorHeight` | the expansion of `b/a` (`nu_expand`) and the uniform bound on all ten minors |
 | `EightMain` | the pattern as signed minors, the window bound, `T⁵⁴ ≤ C Δ¹⁴ Ξ²⁸ a¹⁶`, and `P_le_8_27` |
@@ -431,14 +431,14 @@ below.
 | `OrbitCurveGapCount`, `OrbitPatternCurveCount` | the square-root count after excluding lines at the window scale |
 | `JointLiftComponentCount` | conics, the two bounded cuts and retained graphs, in the unpowered box |
 | `JointLiftExponent` | the selected curvature and rank-five boxes, and their products with powers of the window length |
-| `JointLiftOptimization` | the optimal crossing, the minimum of the two exponent functions, and approximation by fixed integer powers |
+| `JointLiftOptimization` | rational approximation of a crossing (`exists_rat_max_lt_of_crossing`), the optimal crossing, the minimum of the two exponent functions, and approximation by fixed integer powers |
 | `PoweredJointGraph`, `PoweredPoleOrder` | the graph with coordinates `W_jᵐ` and `Jⁿ`, of degree at most `((m+n)·247+1)d`; powers multiply pole orders |
 | `PoweredJointGraphLowerDegree` | `δ ≥ 10n + 7m` for `d ≥ 4`, the case `G = 1` of `LinearJointGraph` |
 | `PoweredJointPointBox`, `PoweredJointPointCount` | integer points in the box `max(3H, Sᵐ, Yⁿ)` and the curve count there |
 | `PoweredJointCountingSlack`, `PoweredJointComponentCount`, `PoweredJointNonexceptionalCount`, `PoweredJointPatternCount`, `PoweredJointLocalEstimate` | the powered logarithmic and counting inputs |
 | `JointPatternCount` | from component counts to nonexceptional and per-pattern estimates, for any box and exponent; shared by the powered and lattice chains |
 | `OrdinaryPatternCount` | the ordinary minor-pattern count `O(τ X⁵)`, the two-class pattern sum and the pattern slack, shared by the local estimates |
-| `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges and dyadic summation; `window_branch_exponent` is the window lemma shared by all chains |
+| `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges; `window_real_large_mean_gap` and `window_branch_exponent` are the window lemmas shared by all chains |
 | `RealPowerBounds` | elementary real-power inequalities: concavity over a finite sum, powers of maxima, one dominant term among five |
 | `PoweredJointBound` | the optimized exponent and its rational versions `m = 50`, `n = 51` (`2201/7480`) and `m = n = 1` (`128/435`) |
 

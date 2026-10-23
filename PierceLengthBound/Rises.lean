@@ -315,29 +315,11 @@ lemma le_of_chain {c : ℕ → ℕ} {j j' : ℕ} (h : ∀ m, j ≤ m → m < j' 
   obtain ⟨t, rfl⟩ := Nat.exists_eq_add_of_le hjm
   exact down t hmj
 
-/-! ### Increments and drops of a window run -/
-
-/-- The quotient increment `kⱼ = ⌊a/g(j+1)⌋ - ⌊a/g(j)⌋`. -/
-def incr (a : ℕ) (g : ℕ → ℕ) (j : ℕ) : ℕ := a / g (j + 1) - a / g j
-
-/-- The drop `dⱼ = g(j) - g(j+1)`. -/
-def drop (g : ℕ → ℕ) (j : ℕ) : ℕ := g j - g (j + 1)
+/-! ### Rises of a window run -/
 
 namespace Window
 
 variable {a A T : ℕ} {g : ℕ → ℕ}
-
-lemma quot_lt (W : Window a A T g) {j : ℕ} (hj : j + 1 < T) : a / g j < a / g (j + 1) := by
-  have e : a % g j = g (j + 1) := (W.step j hj).symm
-  have := div_lt_div_mod (a := a) (W.pos (j := j) (by omega))
-    (by rw [e]; exact (W.pos hj).ne')
-  rwa [e] at this
-
-lemma one_le_incr (W : Window a A T g) {j : ℕ} (hj : j + 1 < T) : 1 ≤ incr a g j := by
-  have := W.quot_lt hj; unfold incr; omega
-
-lemma one_le_drop (W : Window a A T g) {j : ℕ} (hj : j + 1 < T) : 1 ≤ drop g j := by
-  have := W.succ_lt hj; unfold drop; omega
 
 /-- The curvature `D ≥ 1` as `d_{j+1} k_j < d_j k_{j+1}`. -/
 lemma ratio_lt (W : Window a A T g) {j : ℕ} (hj : j + 2 < T) :
@@ -365,30 +347,6 @@ lemma drop_lt_of_not_rise (W : Window a A T g) {j : ℕ} (hj : j + 2 < T)
     Nat.mul_le_mul hcon h
   omega
 
-/-- Telescoping for the quotients. -/
-lemma sum_incr (W : Window a A T g) :
-    ∀ m, m + 1 ≤ T → ∑ j ∈ range m, incr a g j + a / g 0 = a / g m := by
-  intro m
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    intro hm
-    have hih := ih (by omega)
-    have hle := (W.quot_lt (j := m) (by omega)).le
-    calc ∑ j ∈ range (m + 1), incr a g j + a / g 0
-        = (∑ j ∈ range m, incr a g j + a / g 0) + incr a g m := by rw [sum_range_succ]; ring
-      _ = a / g m + (a / g (m + 1) - a / g m) := by rw [hih]; rfl
-      _ = a / g (m + 1) := Nat.add_sub_cancel' hle
-
-lemma sum_incr_le (W : Window a A T g) (hT : 1 ≤ T) :
-    ∑ j ∈ range (T - 1), incr a g j ≤ a / A := by
-  have := W.sum_incr (T - 1) (by omega)
-  have hA : a / g (T - 1) ≤ a / A := Nat.div_le_div_left (W.mem (T - 1) (by omega)).1 W.one_le
-  calc ∑ j ∈ range (T - 1), incr a g j ≤ ∑ j ∈ range (T - 1), incr a g j + a / g 0 :=
-        Nat.le_add_right _ _
-    _ = a / g (T - 1) := this
-    _ ≤ a / A := hA
-
 end Window
 
 /-- The number of rises `k_j < k_{j+1}` inside a window run. -/
@@ -396,10 +354,6 @@ noncomputable def windowRises (a : ℕ) (g : ℕ → ℕ) (T : ℕ) : ℕ :=
   ((range (T - 2)).filter fun j => incr a g j < incr a g (j + 1)).card
 
 /-! ### The three window bounds -/
-
-private lemma lt_three_mul {a A q x y : ℕ} (e : x * q + y = a) (hyx : y < x) (hx : x < 2 * A)
-    (h6 : 6 * A ≤ a) : a < 3 * A * q := by
-  nlinarith
 
 private lemma low_contra {a A q h : ℕ} (hq4 : q ^ 4 ≤ 324 * h ^ 3 * a) (h3 : a < 3 * A * q)
     (hlow : 26244 * h ^ 3 * A ^ 4 < a ^ 3) : False := by

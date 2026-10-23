@@ -17,6 +17,9 @@ A *window run* is a run `g 0, g 1, …, g (T-1)` of consecutive terms of an orbi
 * `drop_bound`: `T (T - 1) ≤ 4 A Δ` (the Erdős–Shallit divisor argument);
 * `curvature_bound`: `T⁶ A² ≤ 995328 a³ Δ` for `T ≥ 12` (the curvature argument);
 * `window_bound`: hence `T¹⁰ ≤ 63700992 a³ Δ³` for `T ≥ 12`.
+
+The quotient increments `incr` and drops `drop` of a run, with their basic bounds, are shared
+by `SixStep.lean` and `Rises.lean`.
 -/
 
 @[expose] public section
@@ -107,6 +110,76 @@ lemma sum_five_drops (W : Window a A T g) :
     have := ih (by omega)
     have := (W.lt_of_lt (i := m) (j := m + 5) (by omega) (by omega)).le
     omega
+
+end Window
+
+/-! ### Quotient increments and drops -/
+
+/-- The quotient increment `kⱼ = ⌊a/g(j+1)⌋ - ⌊a/g(j)⌋`. -/
+def incr (a : ℕ) (g : ℕ → ℕ) (j : ℕ) : ℕ := a / g (j + 1) - a / g j
+
+/-- The drop `dⱼ = g(j) - g(j+1)`. -/
+def drop (g : ℕ → ℕ) (j : ℕ) : ℕ := g j - g (j + 1)
+
+/-- `a ≤ 4 A q` from `a = x q + y` with `y < x < 2A` and `q ≥ 1`. -/
+lemma le_four_mul {a x y q A : ℕ} (h0 : x * q + y = a) (hyx : y < x) (hx : x < 2 * A)
+    (hq : 1 ≤ q) : a ≤ 4 * A * q := by
+  nlinarith
+
+/-- `a < 3 A q` from `a = x q + y` with `y < x < 2A` and `6A ≤ a`. -/
+lemma lt_three_mul {a A q x y : ℕ} (e : x * q + y = a) (hyx : y < x) (hx : x < 2 * A)
+    (h6 : 6 * A ≤ a) : a < 3 * A * q := by
+  nlinarith
+
+namespace Window
+
+variable {a A T : ℕ} {g : ℕ → ℕ}
+
+lemma quot_lt (W : Window a A T g) {j : ℕ} (hj : j + 1 < T) : a / g j < a / g (j + 1) := by
+  have e : a % g j = g (j + 1) := (W.step j hj).symm
+  have := div_lt_div_mod (a := a) (W.pos (j := j) (by omega))
+    (by rw [e]; exact (W.pos hj).ne')
+  rwa [e] at this
+
+lemma one_le_incr (W : Window a A T g) {j : ℕ} (hj : j + 1 < T) : 1 ≤ incr a g j := by
+  have := W.quot_lt hj; unfold incr; omega
+
+lemma one_le_drop (W : Window a A T g) {j : ℕ} (hj : j + 1 < T) : 1 ≤ drop g j := by
+  have := W.succ_lt hj; unfold drop; omega
+
+/-- The size of an increment: `kⱼ g(j+1) g(j) ≤ a (g(j) - g(j+2))`. -/
+lemma incr_mul_le (W : Window a A T g) {j : ℕ} (hj : j + 2 < T) :
+    incr a g j * (g (j + 1) * g j) ≤ a * (g j - g (j + 2)) := by
+  have e1 : a % g j = g (j + 1) := (W.step j (by omega)).symm
+  have e2 : a % (a % g j) = g (j + 2) := by rw [e1]; exact (W.step (j + 1) (by omega)).symm
+  have hb := bu_mul_le (W.pos (j := j) (by omega)) (by rw [e1]; exact (W.pos (by omega)).ne')
+    (by rw [e2]; exact (W.pos hj).ne') (W.le_a j (by omega))
+  unfold bu at hb
+  rwa [e2, e1] at hb
+
+/-- Telescoping for the quotients. -/
+lemma sum_incr (W : Window a A T g) :
+    ∀ m, m + 1 ≤ T → ∑ j ∈ range m, incr a g j + a / g 0 = a / g m := by
+  intro m
+  induction m with
+  | zero => simp
+  | succ m ih =>
+    intro hm
+    have hih := ih (by omega)
+    have hle := (W.quot_lt (j := m) (by omega)).le
+    calc ∑ j ∈ range (m + 1), incr a g j + a / g 0
+        = (∑ j ∈ range m, incr a g j + a / g 0) + incr a g m := by rw [sum_range_succ]; ring
+      _ = a / g m + (a / g (m + 1) - a / g m) := by rw [hih]; rfl
+      _ = a / g (m + 1) := Nat.add_sub_cancel' hle
+
+lemma sum_incr_le (W : Window a A T g) (hT : 1 ≤ T) :
+    ∑ j ∈ range (T - 1), incr a g j ≤ a / A := by
+  have := W.sum_incr (T - 1) (by omega)
+  have hA : a / g (T - 1) ≤ a / A := Nat.div_le_div_left (W.mem (T - 1) (by omega)).1 W.one_le
+  calc ∑ j ∈ range (T - 1), incr a g j ≤ ∑ j ∈ range (T - 1), incr a g j + a / g 0 :=
+        Nat.le_add_right _ _
+    _ = a / g (T - 1) := this
+    _ ≤ a / A := hA
 
 end Window
 
@@ -202,6 +275,21 @@ theorem drop_bound {a A T Δ : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hΔ 
     _ = 2 * Δ * (H * (T - 1)) := by ring
     _ ≤ 2 * Δ * (2 * A) := Nat.mul_le_mul_left _ hH
     _ = 4 * A * Δ := by ring
+
+/-- The drop bound as used by the exponent arithmetic: `A, Δ ≥ 1` and `T² ≤ 8 A Δ`. -/
+lemma drop_bound_sq {A T Δ : ℕ} (hT : 2 ≤ T) (hdrop : T * (T - 1) ≤ 4 * A * Δ) :
+    1 ≤ A ∧ 1 ≤ Δ ∧ T ^ 2 ≤ 8 * A * Δ := by
+  refine ⟨Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega,
+    Nat.pos_of_ne_zero fun h => by simp [h] at hdrop; omega, ?_⟩
+  have : T ≤ 2 * (T - 1) := by omega
+  nlinarith
+
+/-- The gap height `H = ⌊28a/(AT)⌋ + 1` satisfies `H A T ≤ 56 a` once `A T ≤ 28 a`. -/
+lemma gap_height_mul_le {a A T : ℕ} (h : A * T ≤ 28 * a) :
+    (28 * a / (A * T) + 1) * (A * T) ≤ 56 * a := by
+  have := Nat.div_mul_le_self (28 * a) (A * T)
+  rw [add_mul, one_mul]
+  omega
 
 /-- The three successors of a term of a window run with `j + 3 < T`. -/
 private lemma Window.succ3 {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) {j : ℕ} (hj : j + 3 < T) :

@@ -16,6 +16,41 @@ These results optimize the proposed local count; they do not prove that count. -
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
+/-! ### Optimizing the larger of two exponents -/
+
+/-- A ratio `(a r + b)/(c r + d)` is continuous where its denominator is nonzero. -/
+lemma continuousAt_ratio {a b c d r : ℝ} (h : c * r + d ≠ 0) :
+    ContinuousAt (fun r => (a * r + b) / (c * r + d)) r :=
+  ((continuousAt_id.const_mul a).add continuousAt_const).div
+    ((continuousAt_id.const_mul c).add continuousAt_const) h
+
+/-- **Rational approximation of a crossing.** If `f` is antitone to the right of `r₀ > 0`, `g`
+is continuous at `r₀` and `f r₀ = g r₀ = α`, then positive rationals `r` bring
+`max (f r) (g r)` arbitrarily close to `α`. -/
+theorem exists_rat_max_lt_of_crossing {f g : ℝ → ℝ} {r₀ α ε : ℝ} (hr₀ : 0 < r₀)
+    (hf : ∀ s, r₀ ≤ s → f s ≤ f r₀) (hg : ContinuousAt g r₀) (hfα : f r₀ = α)
+    (hgα : g r₀ = α) (hε : 0 < ε) : ∃ r : ℚ, 0 < r ∧ max (f r) (g r) < α + ε := by
+  obtain ⟨δ, hδ, hgδ⟩ := Metric.continuousAt_iff.mp hg ε hε
+  obtain ⟨r, hr, hrδ⟩ := exists_rat_btwn (show r₀ < r₀ + δ by linarith)
+  refine ⟨r, by exact_mod_cast hr₀.trans hr, max_lt (by linarith [hf r hr.le]) ?_⟩
+  have := hgδ (show dist (r : ℝ) r₀ < δ by rw [Real.dist_eq, abs_of_pos (by linarith)]; linarith)
+  rw [Real.dist_eq, hgα] at this
+  linarith [le_abs_self (g r - α)]
+
+/-- A positive rational `r` is `n / m` for the positive integers `m = c · den r` and
+`n = c · num r`, for every `c > 0`. -/
+lemma rat_eq_div_scaled {r : ℚ} (hr : 0 < r) {c : ℕ} (hc : 0 < c) :
+    0 < c * r.den ∧ 0 < c * r.num.toNat ∧
+      ((c * r.num.toNat : ℕ) : ℝ) / ((c * r.den : ℕ) : ℝ) = r := by
+  have hnum : 0 < r.num := Rat.num_pos.mpr hr
+  refine ⟨Nat.mul_pos hc r.pos, Nat.mul_pos hc (by omega), ?_⟩
+  push_cast
+  rw [mul_div_mul_left _ _ (by exact_mod_cast hc.ne'), Rat.cast_def]
+  congr 1
+  exact_mod_cast Int.toNat_of_nonneg hnum.le
+
+/-! ### The powered joint exponents -/
+
 def jointExponentS (r : ℝ) : ℝ := (150 * r + 106) / (510 * r + 360)
 def jointExponentY (r : ℝ) : ℝ := (156 * r + 105) / (530 * r + 357)
 def jointOptimalRatio : ℝ := (5 + Real.sqrt 655) / 30
@@ -61,34 +96,14 @@ theorem jointOptimal_minimum {r : ℝ} (hr : 0 < r) :
   · rw [← jointOptimal_crossing.2]
     exact (jointExponentY_monotone jointOptimalRatio_pos h).trans (le_max_right _ _)
 
-lemma jointExponentY_sub {r s : ℝ} (hr : 0 < r) (hs : 0 < s) :
-    jointExponentY s - jointExponentY r =
-      42 * (s - r) / ((530 * s + 357) * (530 * r + 357)) := by
-  unfold jointExponentY
-  field_simp
-  ring
-
 /-- Positive rational ratios attain every prescribed loss above the optimum. -/
 theorem jointOptimal_rational_approximation {ε : ℝ} (hε : 0 < ε) :
     ∃ r : ℚ, 0 < r ∧
-      max (jointExponentS r) (jointExponentY r) < jointOptimalExponent + ε := by
-  obtain ⟨r, hr, hrε⟩ :=
-    exists_rat_btwn (show jointOptimalRatio < jointOptimalRatio + ε by linarith)
-  have hr0 : (0 : ℝ) < r := jointOptimalRatio_pos.trans hr
-  refine ⟨r, by exact_mod_cast hr0, max_lt ?_ ?_⟩
-  · have h := jointExponentS_antitone jointOptimalRatio_pos hr.le
-    rw [jointOptimal_crossing.1] at h
-    linarith
-  · have hsub := jointExponentY_sub jointOptimalRatio_pos hr0
-    rw [jointOptimal_crossing.2] at hsub
-    have hd : 42 < (530 * (r : ℝ) + 357) * (530 * jointOptimalRatio + 357) := by
-      nlinarith [jointOptimalRatio_pos, mul_pos hr0 jointOptimalRatio_pos]
-    have hb : 42 * ((r : ℝ) - jointOptimalRatio) /
-        ((530 * (r : ℝ) + 357) * (530 * jointOptimalRatio + 357)) < ε := by
-      apply (div_lt_iff₀ (by positivity)).mpr
-      nlinarith
-    linarith
-
+      max (jointExponentS r) (jointExponentY r) < jointOptimalExponent + ε :=
+  exists_rat_max_lt_of_crossing jointOptimalRatio_pos
+    (fun _ h => jointExponentS_antitone jointOptimalRatio_pos h)
+    (continuousAt_ratio (ne_of_gt (by linarith [jointOptimalRatio_pos]))) jointOptimal_crossing.1
+    jointOptimal_crossing.2 hε
 
 /-- The claimed powered degree inequality gives 10n+7m on every component d>=4. -/
 lemma joint_powered_degree_minimum {d m n δ : ℕ} (hd : 4 ≤ d)
@@ -110,15 +125,10 @@ theorem jointOptimal_integer_powers {ε : ℝ} (hε : 0 < ε) :
         ((15 * (10 * (n : ℝ) + 7 * m) + 6 * n) / (51 * (10 * n + 7 * m) + 20 * n)) <
           jointOptimalExponent + ε := by
   obtain ⟨r, hr, hbound⟩ := jointOptimal_rational_approximation hε
-  have hn : 0 < r.num := Rat.num_pos.mpr hr
-  have hnNat : 0 < r.num.toNat := by omega
-  refine ⟨r.den, r.num.toNat, r.pos, hnNat, ?_⟩
-  have he : (r.num.toNat : ℝ) / (r.den : ℝ) = (r : ℝ) := by
-    rw [Rat.cast_def]
-    congr 1
-    exact_mod_cast Int.toNat_of_nonneg hn.le
-  have hmR : (0 : ℝ) < r.den := by exact_mod_cast r.pos
-  have hnR : (0 : ℝ) < r.num.toNat := by exact_mod_cast hnNat
+  obtain ⟨hm, hn, he⟩ := rat_eq_div_scaled hr one_pos
+  refine ⟨1 * r.den, 1 * r.num.toNat, hm, hn, ?_⟩
+  have hmR : (0 : ℝ) < (1 * r.den : ℕ) := by exact_mod_cast hm
+  have hnR : (0 : ℝ) < (1 * r.num.toNat : ℕ) := by exact_mod_cast hn
   rw [(joint_powered_exponents hmR hnR).1, (joint_powered_exponents hmR hnR).2, he]
   exact hbound
 
