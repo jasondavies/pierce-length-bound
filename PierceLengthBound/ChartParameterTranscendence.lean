@@ -78,6 +78,28 @@ theorem projectiveChart_finite_over_parameter {K σ F : Type*}
     exact hmem n ⟨a, ha⟩
   exact ⟨htop ▸ hfg⟩
 
+/-- On an actual nonexceptional component the first node eventually generates the degree
+filtration, and it is nonzero in every injective image of the coordinate ring. -/
+theorem nonexceptional_first_node_generation
+    {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
+    (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)
+    (I : Ideal (MvPolynomial (Fin 3) ℚ))
+    (hf : curveQuadratic ρ u v ρ' u' v' ∈ I)
+    (hg : curveEquation ρ u v ρ' u' v' A a ∈ I)
+    {F : Type*} [Field F] [Algebra ℚ F]
+    (ι : (MvPolynomial (Fin 3) ℚ ⧸ I) →ₐ[ℚ] F) (hι : Function.Injective ι)
+    {d N : ℕ} {b : ℤ} (hd : 0 < d)
+    (hdegree : ∀ n ≥ N,
+      (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = (d : ℤ) * n + b) :
+    ι (Ideal.Quotient.mk I (MvPolynomial.X 0)) ≠ 0 ∧ ∃ M : ℕ, ∀ n ≥ M,
+      filteredCoordinateSpace I (n + 1) ⊔ (filteredCoordinateSpace I (n + 1)).map
+        (LinearMap.mulLeft ℚ (Ideal.Quotient.mk I (MvPolynomial.X 0))) =
+      filteredCoordinateSpace I (n + 2) := by
+  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
+    hρ hu hv hne ρ' u' v' A a ha I hf hg
+  refine ⟨fun hh => first_node_ne_zero_of_generation I hd hdegree hs ?_, M, hs⟩
+  exact hι (by simpa using hh)
+
 /-- Actual nonexceptional components satisfy the required eventual generation;
 the chart parameter algebra therefore has a finite chart module. -/
 theorem nonexceptional_chart_finite_over_parameter
@@ -94,12 +116,8 @@ theorem nonexceptional_chart_finite_over_parameter
     Module.Finite
       (Algebra.adjoin ℚ {chartInfinityCoordinate I ι (Ideal.Quotient.mk I (MvPolynomial.X 0))})
       (projectiveChart I ι (Ideal.Quotient.mk I (MvPolynomial.X 0))) := by
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
-    hρ hu hv hne ρ' u' v' A a ha I hf hg
-  have hl : ι (Ideal.Quotient.mk I (MvPolynomial.X 0)) ≠ 0 := by
-    intro hh
-    apply first_node_ne_zero_of_generation I hd hdegree hs
-    exact hι (by simpa using hh)
+  obtain ⟨hl, M, hs⟩ := nonexceptional_first_node_generation
+    hρ hu hv hne ρ' u' v' A a ha I hf hg ι hι hd hdegree
   exact projectiveChart_finite_over_parameter I ι _
     ⟨MvPolynomial.X 0, by simp [MvPolynomial.mem_restrictTotalDegree], rfl⟩ hl hs
 
@@ -151,12 +169,8 @@ theorem nonexceptional_chart_parameter_transcendental
     (hdegree : ∀ n ≥ N,
       (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = (d : ℤ) * n + b) :
     Transcendental ℚ (chartInfinityCoordinate I ι (Ideal.Quotient.mk I (MvPolynomial.X 0))) := by
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
-    hρ hu hv hne ρ' u' v' A a ha I hf hg
-  have hl : ι (Ideal.Quotient.mk I (MvPolynomial.X 0)) ≠ 0 := by
-    intro hh
-    apply first_node_ne_zero_of_generation I hd hdegree hs
-    exact hι (by simpa using hh)
+  obtain ⟨hl, M, hs⟩ := nonexceptional_first_node_generation
+    hρ hu hv hne ρ' u' v' A a ha I hf hg ι hι hd hdegree
   exact chartInfinityCoordinate_transcendental I ι hι _
     ⟨MvPolynomial.X 0, by simp [MvPolynomial.mem_restrictTotalDegree], rfl⟩ hl hd hdegree hs
 

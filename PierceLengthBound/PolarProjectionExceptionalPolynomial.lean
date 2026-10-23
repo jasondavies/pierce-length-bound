@@ -14,13 +14,19 @@ namespace PierceLengthBound.FixedDividend
 open Polynomial Matrix MvPolynomial
 noncomputable section
 
+/-- The rational pattern parameters `(ρ, u, v, ρ', u', v')` of the certificate, at which the
+initial minor `polarInitialMinor` is nonzero. -/
 def polarParameterCertificate : Fin 6 → ℚ := ![2, 5, -3, 3, 6, -5]
 
+/-- The straight formal path of node gaps through the polar base point, with first-order
+term the tangent direction `(s, t)`. -/
 def polarStraightGapPath (q : Fin 6 → ℚ) (s t : ℚ) (j : Fin 3) : PowerSeries ℚ :=
   PowerSeries.C (polarBaseGaps (q 0) (q 1) (q 2) (q 3) (q 4) (q 5) j) +
     PowerSeries.C (polarTangentDirection (q 0) (q 1) (q 2) (q 3) (q 4) (q 5) s t j) *
       PowerSeries.X
 
+/-- The first-order coefficients of the four remainder monomial coefficients along the straight
+gap path. -/
 def polarInitialRemainder (q : Fin 6 → ℚ) (s t : ℚ) : Fin 4 → ℚ :=
   let x := polarStraightGapPath q s t
   let nodes := completeNodes (PowerSeries.C (q 0)) (PowerSeries.C (q 1)) (PowerSeries.C (q 2))
@@ -29,6 +35,7 @@ def polarInitialRemainder (q : Fin 6 → ℚ) (s t : ℚ) : Fin 4 → ℚ :=
     (PowerSeries.C (q 0)) (PowerSeries.C (q 1)) (PowerSeries.C (q 2))
     (PowerSeries.C (q 3)) (PowerSeries.C (q 4)) (PowerSeries.C (q 5)) nodes j)
 
+/-- The first-order coefficient of the cubic line norm along the straight gap path. -/
 def polarInitialNorm (q : Fin 6 → ℚ) (s t : ℚ) : ℚ :=
   let x := polarStraightGapPath q s t
   PowerSeries.coeff 1 (lineNorm
@@ -36,11 +43,15 @@ def polarInitialNorm (q : Fin 6 → ℚ) (s t : ℚ) : ℚ :=
     (PowerSeries.C (q 3)) (PowerSeries.C (q 4)) (PowerSeries.C (q 5))
     (x 0) (x 0 + x 1) (x 0 + x 1 + x 2))
 
+/-- The resultant of the base Newton quartic and the cubic of the first-order remainder along the
+tangent direction `(s, t)`. -/
 def polarInitialResultant (q : Fin 6 → ℚ) (s t : ℚ) : ℚ :=
   resultant (firstNewtonQuartic (fun j : Fin 4 => coeffs (q 0) (q 1) (q 2) j.castSucc)
     (polarBaseNodes (q 0) (q 1) (q 2) (q 3) (q 4) (q 5)))
     (polarCubic (polarInitialRemainder q s t)) 4 4
 
+/-- The `2 × 2` minor of the initial forms on the two coordinate axes `(1, 0)` and `(0, 1)`. Its
+nonvanishing makes the quartic initial coefficient `A R - b N⁴` nonzero on one of the axes. -/
 def polarInitialMinor (q : Fin 6 → ℚ) : ℚ :=
   polarInitialResultant q 1 0 * polarInitialNorm q 0 1 ^ 4 -
     polarInitialResultant q 0 1 * polarInitialNorm q 1 0 ^ 4
