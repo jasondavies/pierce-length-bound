@@ -84,7 +84,7 @@ sources:
     authors: ["M. Nair", "Gérald Tenenbaum"]
     type: article
     location: "Acta Mathematica 180 (1998), 119–144"
-    id: "https://tenenb.perso.math.cnrs.fr/PPP/ShortSums.pdf"
+    id: "https://doi.org/10.1007/BF02392880"
     relationship: other
     note: >-
       The displayed consequence of Theorem 1 for F = Delta, Q(X) = X,
@@ -102,7 +102,7 @@ sources:
     authors: ["Régis de la Bretèche", "Gérald Tenenbaum"]
     type: article
     location: "Acta Arithmetica 219 (2025), no. 4, 379–394, Theorem 1.1"
-    id: "https://arxiv.org/abs/2309.03958"
+    id: "https://doi.org/10.4064/aa250107-13-2"
     relationship: other
     note: >-
       The mean-value bound is stated as BretecheTenenbaumMean. It is an
