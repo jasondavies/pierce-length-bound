@@ -128,132 +128,6 @@ lemma cross3_zero (u v : Fin 3 → ℤ) : cross3 u v 0 = u 1 * v 2 - u 2 * v 1 :
 lemma cross3_one (u v : Fin 3 → ℤ) : cross3 u v 1 = u 2 * v 0 - u 0 * v 2 := rfl
 lemma cross3_two (u v : Fin 3 → ℤ) : cross3 u v 2 = u 0 * v 1 - u 1 * v 0 := rfl
 
-/-- **For fixed `u`, at most `27 m g²` vectors `v` have `m ∣ u × v`.** -/
-theorem card_cross_fiber {m : ℕ} (hm : 0 < m) (u : Fin 3 → ℤ) :
-    ((ibox3 m).filter fun v => ∀ a, (m : ℤ) ∣ cross3 u v a).card ≤ 27 * m * gcd4 m u ^ 2 := by
-  set g := gcd4 m u with hgdef
-  have hg0 : 0 < g := Int.gcd_pos_of_ne_zero_left _ (by exact_mod_cast hm.ne')
-  have hgm : (g : ℤ) ∣ m := Int.gcd_dvd_left _ _
-  have hg12 : ((Int.gcd (u 1) (u 2) : ℕ) : ℤ) ∣ u 1 ∧ ((Int.gcd (u 1) (u 2) : ℕ) : ℤ) ∣ u 2 :=
-    ⟨Int.gcd_dvd_left _ _, Int.gcd_dvd_right _ _⟩
-  have hg012 : ((Int.gcd (u 0) (Int.gcd (u 1) (u 2)) : ℕ) : ℤ) ∣ u 0 ∧
-      ((Int.gcd (u 0) (Int.gcd (u 1) (u 2)) : ℕ) : ℤ) ∣ (Int.gcd (u 1) (u 2) : ℤ) :=
-    ⟨Int.gcd_dvd_left _ _, Int.gcd_dvd_right _ _⟩
-  have hgu : ∀ a, (g : ℤ) ∣ u a := by
-    have h1 : (g : ℤ) ∣ (Int.gcd (u 0) (Int.gcd (u 1) (u 2)) : ℤ) := Int.gcd_dvd_right _ _
-    intro a
-    fin_cases a
-    · exact h1.trans hg012.1
-    · exact h1.trans (hg012.2.trans hg12.1)
-    · exact h1.trans (hg012.2.trans hg12.2)
-  -- Bézout
-  obtain ⟨x, c0, c1, c2, hb⟩ : ∃ x c0 c1 c2 : ℤ, (m : ℤ) * x + u 0 * c0 + u 1 * c1 + u 2 * c2
-      = g := by
-    have e1 := Int.gcd_eq_gcd_ab (m : ℤ) (Int.gcd (u 0) (Int.gcd (u 1) (u 2)))
-    have e2 := Int.gcd_eq_gcd_ab (u 0) (Int.gcd (u 1) (u 2))
-    have e3 := Int.gcd_eq_gcd_ab (u 1) (u 2)
-    set y := Int.gcdB (m : ℤ) (Int.gcd (u 0) (Int.gcd (u 1) (u 2)))
-    set y0 := Int.gcdB (u 0) (Int.gcd (u 1) (u 2))
-    refine ⟨Int.gcdA (m : ℤ) (Int.gcd (u 0) (Int.gcd (u 1) (u 2))), y * Int.gcdA (u 0)
-      (Int.gcd (u 1) (u 2)), y * y0 * Int.gcdA (u 1) (u 2), y * y0 * Int.gcdB (u 1) (u 2), ?_⟩
-    simp only [hgdef, gcd4]
-    rw [e1]
-    have e2' : ((Int.gcd (u 0) (Int.gcd (u 1) (u 2)) : ℕ) : ℤ) = u 0 * Int.gcdA (u 0)
-        (Int.gcd (u 1) (u 2)) + (Int.gcd (u 1) (u 2) : ℤ) * y0 := e2
-    rw [e2', e3]
-    ring
-  -- scale down by `g`
-  obtain ⟨n, hn⟩ := hgm
-  obtain ⟨w0, hw0⟩ := hgu 0
-  obtain ⟨w1, hw1⟩ := hgu 1
-  obtain ⟨w2, hw2⟩ := hgu 2
-  set u' : Fin 3 → ℤ := ![w0, w1, w2]
-  have hu' : ∀ a, u a = g * u' a := by
-    intro a; fin_cases a <;> simp [u', hw0, hw1, hw2]
-  have hg0' : (g : ℤ) ≠ 0 := by exact_mod_cast hg0.ne'
-  have hn1 : n * x + w0 * c0 + w1 * c1 + w2 * c2 = 1 := by
-    apply mul_left_cancel₀ hg0'
-    rw [hn, hw0, hw1, hw2] at hb
-    linear_combination hb
-  have hnpos : 0 < n := by
-    have : (0 : ℤ) < m := by exact_mod_cast hm
-    rw [hn] at this
-    exact pos_of_mul_pos_right this (by positivity)
-  set nn := n.toNat with hnn
-  have hnn' : (nn : ℤ) = n := Int.toNat_of_nonneg hnpos.le
-  have hnn0 : 0 < nn := by omega
-  have hmg : m = g * nn := by
-    have : (m : ℤ) = g * nn := by rw [hnn']; exact hn
-    exact_mod_cast this
-  -- the congruence `v ≡ λ u' (mod n)`
-  set lam : (Fin 3 → ℤ) → ℤ := fun v => c0 * v 0 + c1 * v 1 + c2 * v 2
-  have hcong : ∀ v ∈ (ibox3 m).filter (fun v => ∀ a, (m : ℤ) ∣ cross3 u v a), ∀ a,
-      n ∣ v a - lam v * u' a := by
-    intro v hv
-    have hd := (mem_filter.mp hv).2
-    have hd' : ∀ a, n ∣ cross3 u' v a := by
-      intro a
-      have h := hd a
-      have e : cross3 u v a = g * cross3 u' v a := by
-        simp only [cross3, hu']; ring
-      rw [e, hn] at h
-      exact (mul_dvd_mul_iff_left hg0').mp h
-    obtain ⟨z0, hz0⟩ := hd' 0
-    obtain ⟨z1, hz1⟩ := hd' 1
-    obtain ⟨z2, hz2⟩ := hd' 2
-    rw [cross3_zero] at hz0
-    rw [cross3_one] at hz1
-    rw [cross3_two] at hz2
-    simp only [u', Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
-      Matrix.head_cons, Matrix.tail_cons] at hz0 hz1 hz2
-    have e0 : n ∣ v 0 - lam v * u' 0 := ⟨v 0 * x - c1 * z2 + c2 * z1, by
-      change v 0 - (c0 * v 0 + c1 * v 1 + c2 * v 2) * w0 = _
-      linear_combination -v 0 * hn1 - c1 * hz2 + c2 * hz1⟩
-    have e1 : n ∣ v 1 - lam v * u' 1 := ⟨v 1 * x + c0 * z2 - c2 * z0, by
-      change v 1 - (c0 * v 0 + c1 * v 1 + c2 * v 2) * w1 = _
-      linear_combination -v 1 * hn1 + c0 * hz2 - c2 * hz0⟩
-    have e2 : n ∣ v 2 - lam v * u' 2 := ⟨v 2 * x - c0 * z1 + c1 * z0, by
-      change v 2 - (c0 * v 0 + c1 * v 1 + c2 * v 2) * w2 = _
-      linear_combination -v 2 * hn1 - c0 * hz1 + c1 * hz0⟩
-    intro a
-    match a with
-    | 0 => exact e0
-    | 1 => exact e1
-    | 2 => exact e2
-  -- count by the residue of `λ`
-  refine (card_le_mul_card_image_of_maps_to (f := fun v => (lam v % n).toNat) (t := range nn)
-    (fun v _ => mem_range.mpr (by
-      have := Int.emod_nonneg (lam v) hnpos.ne'
-      have := Int.emod_lt_of_pos (lam v) hnpos
-      omega)) (27 * g ^ 3) fun l _ => ?_).trans ?_
-  · -- a fixed residue `l`
-    have hsub : ((ibox3 m).filter (fun v => ∀ a, (m : ℤ) ∣ cross3 u v a)).filter
-        (fun v => (lam v % n).toNat = l) ⊆
-        Fintype.piFinset fun a => (Icc (-(m : ℤ)) m).filter fun y => (nn : ℤ) ∣ y - l * u' a := by
-      intro v hv
-      obtain ⟨hv1, hvl⟩ := mem_filter.mp hv
-      have hvb := (mem_filter.mp hv1).1
-      refine Fintype.mem_piFinset.mpr fun a => mem_filter.mpr ⟨Fintype.mem_piFinset.mp hvb a, ?_⟩
-      rw [hnn']
-      have h1 := hcong v hv1 a
-      have h2 : n ∣ lam v - l := by
-        have := Int.emod_nonneg (lam v) hnpos.ne'
-        have e : ((l : ℕ) : ℤ) = lam v % n := by rw [← hvl, Int.toNat_of_nonneg this]
-        rw [e]; exact Int.dvd_self_sub_emod ..
-      have := dvd_add h1 (dvd_mul_of_dvd_left h2 (u' a))
-      rwa [show v a - lam v * u' a + (lam v - l) * u' a = v a - l * u' a by ring] at this
-    refine (card_le_card hsub).trans ?_
-    rw [Fintype.card_piFinset, Fin.prod_univ_three]
-    have hb : ∀ c : ℤ, ((Icc (-(m : ℤ)) m).filter fun y => (nn : ℤ) ∣ y - c).card ≤ 3 * g := by
-      intro c
-      refine (card_Icc_dvd_le hnn0 c).trans ?_
-      rw [hmg, show 2 * (g * nn) / nn = 2 * g by
-        rw [show 2 * (g * nn) = 2 * g * nn by ring, Nat.mul_div_cancel _ hnn0]]
-      omega
-    calc _ ≤ (3 * g) * (3 * g) * (3 * g) := Nat.mul_le_mul (Nat.mul_le_mul (hb _) (hb _)) (hb _)
-      _ = 27 * g ^ 3 := by ring
-  · rw [card_range, hmg]; ring_nf; exact le_rfl
-
 lemma gcd4_dvd (m : ℕ) (u : Fin 3 → ℤ) (a : Fin 3) : (gcd4 m u : ℤ) ∣ u a := by
   have h1 : (gcd4 m u : ℤ) ∣ (Int.gcd (u 0) (Int.gcd (u 1) (u 2)) : ℤ) := Int.gcd_dvd_right _ _
   have h2 : ((Int.gcd (u 0) (Int.gcd (u 1) (u 2)) : ℕ) : ℤ) ∣ u 0 := Int.gcd_dvd_left _ _
@@ -269,6 +143,128 @@ lemma gcd4_dvd (m : ℕ) (u : Fin 3 → ℤ) (a : Fin 3) : (gcd4 m u : ℤ) ∣ 
 lemma gcd4_dvd_m (m : ℕ) (u : Fin 3 → ℤ) : gcd4 m u ∣ m := by
   have : (gcd4 m u : ℤ) ∣ (m : ℤ) := Int.gcd_dvd_left _ _
   exact_mod_cast this
+
+/-- Bézout for `gcd(m, u₀, u₁, u₂)`. -/
+lemma gcd4_bezout (m : ℕ) (u : Fin 3 → ℤ) :
+    ∃ x c0 c1 c2 : ℤ, (m : ℤ) * x + u 0 * c0 + u 1 * c1 + u 2 * c2 = gcd4 m u := by
+  have e1 := Int.gcd_eq_gcd_ab (m : ℤ) (Int.gcd (u 0) (Int.gcd (u 1) (u 2)))
+  have e2 := Int.gcd_eq_gcd_ab (u 0) (Int.gcd (u 1) (u 2))
+  have e3 := Int.gcd_eq_gcd_ab (u 1) (u 2)
+  set y := Int.gcdB (m : ℤ) (Int.gcd (u 0) (Int.gcd (u 1) (u 2)))
+  set y0 := Int.gcdB (u 0) (Int.gcd (u 1) (u 2))
+  refine ⟨Int.gcdA (m : ℤ) (Int.gcd (u 0) (Int.gcd (u 1) (u 2))), y * Int.gcdA (u 0)
+    (Int.gcd (u 1) (u 2)), y * y0 * Int.gcdA (u 1) (u 2), y * y0 * Int.gcdB (u 1) (u 2), ?_⟩
+  simp only [gcd4]
+  rw [e1]
+  have e2' : ((Int.gcd (u 0) (Int.gcd (u 1) (u 2)) : ℕ) : ℤ) = u 0 * Int.gcdA (u 0)
+      (Int.gcd (u 1) (u 2)) + (Int.gcd (u 1) (u 2) : ℤ) * y0 := e2
+  rw [e2', e3]
+  ring
+
+lemma gcd4_pos {m : ℕ} (hm : 0 < m) (u : Fin 3 → ℤ) : 0 < gcd4 m u :=
+  Int.gcd_pos_of_ne_zero_left _ (by exact_mod_cast hm.ne')
+
+/-- **The cross congruence**: `m ∣ u × v` forces `v ≡ λ u' (mod m/g)`. -/
+lemma cross_cong {m : ℕ} (hm : 0 < m) {u v : Fin 3 → ℤ} (hd : ∀ a, (m : ℤ) ∣ cross3 u v a) :
+    ∃ n : ℤ, ∃ u' : Fin 3 → ℤ, ∃ lam : ℤ, 0 < n ∧ (m : ℤ) = gcd4 m u * n ∧
+      (∀ a, u a = gcd4 m u * u' a) ∧ ∀ a, n ∣ v a - lam * u' a := by
+  set g := gcd4 m u
+  have hg0 : 0 < g := gcd4_pos hm u
+  obtain ⟨x, c0, c1, c2, hb⟩ := gcd4_bezout m u
+  obtain ⟨n, hn⟩ : (g : ℤ) ∣ m := Int.gcd_dvd_left _ _
+  obtain ⟨w0, hw0⟩ := gcd4_dvd m u 0
+  obtain ⟨w1, hw1⟩ := gcd4_dvd m u 1
+  obtain ⟨w2, hw2⟩ := gcd4_dvd m u 2
+  set u' : Fin 3 → ℤ := ![w0, w1, w2]
+  have hu' : ∀ a, u a = g * u' a := by
+    intro a; fin_cases a <;> simp [u', hw0, hw1, hw2, g]
+  have hg0' : (g : ℤ) ≠ 0 := by exact_mod_cast hg0.ne'
+  have hn1 : n * x + w0 * c0 + w1 * c1 + w2 * c2 = 1 := by
+    apply mul_left_cancel₀ hg0'
+    rw [hn, hw0, hw1, hw2] at hb
+    linear_combination hb
+  have hnpos : 0 < n := by
+    have : (0 : ℤ) < m := by exact_mod_cast hm
+    rw [hn] at this
+    exact pos_of_mul_pos_right this (by positivity)
+  refine ⟨n, u', c0 * v 0 + c1 * v 1 + c2 * v 2, hnpos, hn, hu', ?_⟩
+  have hd' : ∀ a, n ∣ cross3 u' v a := by
+    intro a
+    have h := hd a
+    have e : cross3 u v a = g * cross3 u' v a := by
+      simp only [cross3, hu']; ring
+    rw [e, hn] at h
+    exact (mul_dvd_mul_iff_left hg0').mp h
+  obtain ⟨z0, hz0⟩ := hd' 0
+  obtain ⟨z1, hz1⟩ := hd' 1
+  obtain ⟨z2, hz2⟩ := hd' 2
+  rw [cross3_zero] at hz0
+  rw [cross3_one] at hz1
+  rw [cross3_two] at hz2
+  simp only [u', Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
+    Matrix.head_cons, Matrix.tail_cons] at hz0 hz1 hz2
+  intro a
+  match a with
+  | 0 => exact ⟨v 0 * x - c1 * z2 + c2 * z1, by
+      simp [u']
+      linear_combination -v 0 * hn1 - c1 * hz2 + c2 * hz1⟩
+  | 1 => exact ⟨v 1 * x + c0 * z2 - c2 * z0, by
+      simp [u']
+      linear_combination -v 1 * hn1 + c0 * hz2 - c2 * hz0⟩
+  | 2 => exact ⟨v 2 * x - c0 * z1 + c1 * z0, by
+      simp [u']
+      linear_combination -v 2 * hn1 - c0 * hz1 + c1 * hz0⟩
+
+/-- **For fixed `u`, at most `27 m g²` vectors `v` have `m ∣ u × v`.** -/
+theorem card_cross_fiber {m : ℕ} (hm : 0 < m) (u : Fin 3 → ℤ) :
+    ((ibox3 m).filter fun v => ∀ a, (m : ℤ) ∣ cross3 u v a).card ≤ 27 * m * gcd4 m u ^ 2 := by
+  obtain ⟨nn, hmg⟩ := gcd4_dvd_m m u
+  set g := gcd4 m u
+  have hg0 : (g : ℤ) ≠ 0 := by exact_mod_cast (gcd4_pos hm u).ne'
+  have hnn0 : 0 < nn := Nat.pos_of_ne_zero (by rintro rfl; omega)
+  have hnn : (0 : ℤ) < nn := by exact_mod_cast hnn0
+  -- the congruence `v ≡ λ_v u' (mod m/g)`, with `u = g u'`
+  have hcong : ∀ v ∈ (ibox3 m).filter (fun v => ∀ a, (m : ℤ) ∣ cross3 u v a),
+      ∃ lam : ℤ, ∀ a, (nn : ℤ) ∣ v a - lam * (u a / g) := by
+    intro v hv
+    obtain ⟨n, u', lam, -, hn, hu, hv⟩ := cross_cong hm (mem_filter.mp hv).2
+    have hn' : n = nn := mul_left_cancel₀ hg0 (hn.symm.trans (by exact_mod_cast hmg))
+    refine ⟨lam, fun a => ?_⟩
+    rw [hu a, Int.mul_ediv_cancel_left _ hg0, ← hn']
+    exact hv a
+  choose! lam hlam using hcong
+  -- count by the residue of `λ`
+  refine (card_le_mul_card_image_of_maps_to (f := fun v => (lam v % nn).toNat) (t := range nn)
+    (fun v _ => mem_range.mpr (by
+      have := Int.emod_nonneg (lam v) hnn.ne'
+      have := Int.emod_lt_of_pos (lam v) hnn
+      omega)) (27 * g ^ 3) fun l _ => ?_).trans ?_
+  · -- a fixed residue `l`
+    have hsub : ((ibox3 m).filter (fun v => ∀ a, (m : ℤ) ∣ cross3 u v a)).filter
+        (fun v => (lam v % nn).toNat = l) ⊆ Fintype.piFinset fun a =>
+          (Icc (-(m : ℤ)) m).filter fun y => (nn : ℤ) ∣ y - l * (u a / g) := by
+      intro v hv
+      obtain ⟨hv1, hvl⟩ := mem_filter.mp hv
+      have hvb := (mem_filter.mp hv1).1
+      refine Fintype.mem_piFinset.mpr fun a => mem_filter.mpr ⟨Fintype.mem_piFinset.mp hvb a, ?_⟩
+      have h2 : (nn : ℤ) ∣ lam v - l := by
+        have e : ((l : ℕ) : ℤ) = lam v % nn := by
+          rw [← hvl, Int.toNat_of_nonneg (Int.emod_nonneg _ hnn.ne')]
+        rw [e]; exact Int.dvd_self_sub_emod ..
+      have := dvd_add (hlam v hv1 a) (dvd_mul_of_dvd_left h2 (u a / g))
+      rwa [show v a - lam v * (u a / g) + (lam v - l) * (u a / g) = v a - l * (u a / g) by ring]
+        at this
+    refine (card_le_card hsub).trans ?_
+    rw [Fintype.card_piFinset, Fin.prod_univ_three]
+    have hb : ∀ c : ℤ, ((Icc (-(m : ℤ)) m).filter fun y => (nn : ℤ) ∣ y - c).card ≤ 3 * g := by
+      intro c
+      refine (card_Icc_dvd_le hnn0 c).trans ?_
+      rw [hmg, show 2 * (g * nn) / nn = 2 * g by
+        rw [show 2 * (g * nn) = 2 * g * nn by ring, Nat.mul_div_cancel _ hnn0]]
+      omega
+    calc _ ≤ (3 * g) * (3 * g) * (3 * g) := Nat.mul_le_mul (Nat.mul_le_mul (hb _) (hb _)) (hb _)
+      _ = 27 * g ^ 3 := by ring
+  · rw [card_range, hmg]; ring_nf; exact le_rfl
 
 /-- `∑_{u ∈ [-m,m]³} gcd(m, u)² ≤ 27 m³ τ(m)`. -/
 lemma sum_gcd4_sq_le {m : ℕ} (hm : 0 < m) :
@@ -353,6 +349,26 @@ lemma piv_ne_zero {p : Fin 10 → ℤ} {t : Fin 10} (h0 : p t ≠ 0) : p (piv p)
   rw [hz, abs_zero] at this
   exact h0 (abs_eq_zero.mp (le_antisymm this (abs_nonneg _)))
 
+/-- The pivot entry of a nonzero vector is nonzero. -/
+lemma piv_ne_zero_of_ne_zero {p : Fin 10 → ℤ} (hp : p ≠ 0) : p (piv p) ≠ 0 :=
+  piv_ne_zero (Function.ne_iff.mp hp).choose_spec
+
+/-- Discarding the zero vector loses at most one element. -/
+lemma card_le_one_add_card_filter_ne_zero (S : Finset (Fin 10 → ℤ)) :
+    S.card ≤ 1 + (S.filter fun p => p ≠ 0).card := by
+  rw [filter_ne']
+  have := pred_card_le_card_erase (s := S) (a := 0)
+  omega
+
+/-- The pivot divides the cross product. -/
+lemma piv_cross {p : Fin 10 → ℤ} (hpl : PluckerRel p) (a : Fin 3) :
+    p (piv p) ∣ cross3 (uVec p (piv p)) (vVec p (piv p)) a := by
+  set τ := piv p
+  refine ⟨pwS τ a * p (pwX τ a), ?_⟩
+  have h1 := hpl τ a
+  have h2 := (sign_sq τ a).2.2
+  linear_combination (-pwS τ a) * h1 - cross3 (uVec p τ) (vVec p τ) a * h2
+
 /-- **The minor-vector count, refined.** Vectors of height `≤ Y` satisfying the Plücker relations,
 with nonzero pivot `m` and `P |m| u` for the first row `u` of the pivot, number at most
 `20 ∑_{m ≤ Y} #{(u, v) ∈ crossSet m : P m u}`. -/
@@ -400,11 +416,7 @@ theorem minor_vector_count_of (P : ℕ → (Fin 3 → ℤ) → Prop) [∀ m u, D
       mem_Icc.mpr (by rw [hcast]; exact abs_le.mp (hu a)), Fintype.mem_piFinset.mpr fun a =>
       mem_Icc.mpr (by rw [hcast]; exact abs_le.mp (hv a))⟩, fun a => ?_⟩, hP⟩
     rw [Int.natCast_natAbs]
-    refine (abs_dvd m _).mpr ⟨pwS τ a * p (pwX τ a), ?_⟩
-    have h1 := hpl τ a
-    have h2 := (sign_sq τ a).2.2
-    simp only
-    linear_combination (-pwS τ a) * h1 - cross3 (uVec p τ) (vVec p τ) a * h2
+    exact (abs_dvd m _).mpr (piv_cross hpl a)
   have hinj : Set.InjOn key S := by
     intro p hp p' hp' h
     simp only [key, Prod.mk.injEq] at h
@@ -448,20 +460,10 @@ at most `1 + 20 ∑_{m ≤ Y} 729 m⁴ τ(m)`. -/
 theorem minor_vector_count {S : Finset (Fin 10 → ℤ)} {Y : ℕ}
     (hS : ∀ p ∈ S, (∀ t, |p t| ≤ Y) ∧ PluckerRel p) :
     S.card ≤ 1 + 20 * ∑ m ∈ Icc 1 Y, 729 * m ^ 4 * m.divisors.card := by
-  classical
-  rw [← card_filter_add_card_filter_not (s := S) (p := fun p => p = 0)]
-  have h0 : (S.filter fun p => p = 0).card ≤ 1 := by
-    refine (card_le_card (s := S.filter fun p => p = 0) (t := {0}) fun p hp => ?_).trans (by simp)
-    rw [(mem_filter.mp hp).2]; exact mem_singleton_self _
-  have hm0 : ∀ p ∈ S.filter (fun p => ¬ p = 0), p (piv p) ≠ 0 := by
-    intro p hp h
-    apply (mem_filter.mp hp).2
-    funext t
-    have := piv_max p t
-    rw [h, abs_zero] at this
-    exact abs_nonpos_iff.mp this
-  refine add_le_add h0 ((minor_vector_count_of (fun _ _ => True) fun p hp =>
-    ⟨(hS p (mem_filter.mp hp).1).1, (hS p (mem_filter.mp hp).1).2, hm0 p hp, trivial⟩).trans ?_)
+  refine (card_le_one_add_card_filter_ne_zero S).trans (Nat.add_le_add_left
+    ((minor_vector_count_of (fun _ _ => True) fun p hp => ⟨(hS p (mem_filter.mp hp).1).1,
+      (hS p (mem_filter.mp hp).1).2, piv_ne_zero_of_ne_zero (mem_filter.mp hp).2, trivial⟩).trans
+    ?_) 1)
   exact Nat.mul_le_mul_left _ (sum_le_sum fun m hm => (card_filter_le _ _).trans
     (card_crossSet (by have := (mem_Icc.mp hm).1; omega)))
 
