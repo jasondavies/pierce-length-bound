@@ -7,12 +7,62 @@ on:
 
 permissions:
   contents: read
+  # The change detector reads earlier runs of this workflow.
+  actions: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # Decide whether the long Lean job is needed. A push is compared with the last commit
+  # on its branch whose run of this workflow succeeded, so a Lean change whose run was
+  # cancelled by a later push is still checked; a pull request is compared with its base.
+  # Changes confined to the paper and Markdown files skip the Lean job; the metadata job,
+  # which also checks the paper's citations, always runs. Any doubt runs the build.
+  changes:
+    name: Detect Lean-relevant changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      lean: ${{ steps.diff.outputs.lean }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - id: diff
+        name: Compare with the last verified commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          BRANCH: ${{ github.ref_name }}
+          WORKFLOW: ${{ github.workflow }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          base=""
+          case "$EVENT" in
+            push)
+              base=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow "$WORKFLOW" \
+                --branch "$BRANCH" --event push --status success --limit 1 \
+                --json headSha --jq '.[0].headSha // ""' || true) ;;
+            pull_request) base="$PR_BASE" ;;
+          esac
+          if [ -z "$base" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null \
+              || ! git merge-base --is-ancestor "$base" HEAD; then
+            echo "No usable base commit; running the Lean job."
+            echo "lean=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          changed=$(git diff --name-only "$base" HEAD)
+          printf 'Changed files:\n%s\n' "$changed"
+          if printf '%s\n' "$changed" | grep -Ev '^paper/|\.md$' | grep -q .; then
+            echo "lean=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Only paper or Markdown files changed; skipping the Lean job."
+            echo "lean=false" >> "$GITHUB_OUTPUT"
+          fi
+
   metadata:
     name: Check Palomar metadata
     runs-on: ubuntu-latest
@@ -50,8 +100,10 @@ jobs:
 
   lean:
     name: Build, audit axioms, and compare statements
-    # The fast metadata and source checks gate the long build.
-    needs: metadata
+    # The fast metadata and source checks gate the long build, which is skipped when
+    # only the paper or Markdown files changed.
+    needs: [changes, metadata]
+    if: needs.changes.outputs.lean == 'true'
     runs-on: ubuntu-latest
     # A cold build takes about 40 minutes, and Comparator replays the whole environment.
     timeout-minutes: 120
@@ -79,7 +131,10 @@ jobs:
         run: python3 scripts/check-curve-counting-dependency.py --checkout
       - name: Check the weighted-count dependencies of the main bounds
         run: python3 scripts/check-weighted-count-dependencies.py
+      # Comparator replays the whole environment through three kernels (about 15
+      # minutes), so it runs on main, on pull requests and on manual runs only.
       - name: Install Comparator's Linux sandbox
+        if: github.ref == 'refs/heads/main' || github.event_name != 'push'
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq bubblewrap
@@ -87,4 +142,5 @@ jobs:
           # which bwrap needs for Comparator's sandbox.
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Compare every theorem in comparator.json with Lean, NanoDa, and con-ron
+        if: github.ref == 'refs/heads/main' || github.event_name != 'push'
         run: bash scripts/verify-comparator.sh
