@@ -341,7 +341,7 @@ theorem retained_linearJointGraph_degree_lower_bound_from_envelope
     (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι (by omega : 0 < d) hdegree
   obtain ⟨B, hB, hsum⟩ := normalized_parameter_branches (L := F) w hw
   have hdim : Module.finrank ℚ (S ⧸ Ideal.span {w}) = d :=
-    (rational_nonexceptional_chart_infinity_dimension hρ hu hv hne'
+    (nonexceptional_chart_infinity_dimension hρ hu hv hne'
       (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
       (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι (by omega : 0 < d) hdegree).2
   let V := fun j : Fin 3 => ψ (orbitJointNumerators a b i j.castSucc) /

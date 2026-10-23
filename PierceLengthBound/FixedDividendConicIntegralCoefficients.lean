@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendPlaneConicModel
+public import PierceLengthBound.FixedDividendConicPlaneModel
 
 /-! Explicit denominator clearing for the two parabolic plane charts. -/
 

@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendRationalChart
+public import PierceLengthBound.FixedDividendChart
 public import Mathlib.RingTheory.Algebraic.Integral
 public import Mathlib.RingTheory.Adjoin.Polynomial.Transcendental
 

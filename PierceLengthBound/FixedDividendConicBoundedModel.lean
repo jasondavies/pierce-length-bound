@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendRationalParabolicModel
+public import PierceLengthBound.FixedDividendConicParabolicModel
 public import PierceLengthBound.FixedDividendRationalOrbit
 public import PierceLengthBound.FixedDividendConicCoefficientHeight
 
@@ -180,7 +180,7 @@ lemma first_node_not_scalar_of_generation {K : Type*} [Field K]
 
 /-- The two plane charts cover every nonzero containing plane of an actual
 nonexceptional component of positive degree. -/
-theorem rational_nonexceptional_plane_pivot
+theorem nonexceptional_plane_pivot
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
     (ha : a ≠ 0) (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
@@ -195,7 +195,7 @@ theorem rational_nonexceptional_plane_pivot
   by_contra hh
   push Not at hh
   have hn0 : n0 ≠ 0 := hn.elim id (fun h => False.elim (h.elim (fun h => h hh.1) (fun h => h hh.2)))
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
+  obtain ⟨M, hs⟩ := nonexceptional_eventual_first_node_generation
     hρ hu hv hne ρ' u' v' A a ha I hf hg
   let q := Ideal.Quotient.mkₐ ℚ I
   have hp' : q (C n0 * X 0 + C n1 * X 1 + C n2 * X 2 + C e) = 0 :=
@@ -251,7 +251,7 @@ theorem nonexceptional_bounded_integer_conic_model
   · have hp2q : (n2 : ℚ) ≠ 0 := by exact_mod_cast hp2
     let V := rationalPlaneConicCoefficients ((r : ℚ) / D) ((u : ℚ) / D) ((v : ℚ) / D)
       ((r' : ℚ) / D) ((u' : ℚ) / D) ((v' : ℚ) / D) n0 n1 n2 e
-    have hgeo := rational_nonexceptional_parabolic_model hρpos hupos hvneg hne
+    have hgeo := nonexceptional_parabolic_model hρpos hupos hvneg hne
       ((r' : ℚ) / D) ((u' : ℚ) / D) ((v' : ℚ) / D) A a hA ha I hf hg
       n0 n1 n2 e hp2q hplane hdegree x hx
     have hp := integralPlaneConicCoefficients_parabolic
@@ -267,7 +267,7 @@ theorem nonexceptional_bounded_integer_conic_model
       exact hp.2.2.2 _ _ (hgeo.2.2.2.2 _ hz)
   · have hnp : (n0 : ℚ) ≠ 0 ∨ (n1 : ℚ) ≠ 0 ∨ (n2 : ℚ) ≠ 0 := by
       exact_mod_cast hn
-    have hp1q := (rational_nonexceptional_plane_pivot hρpos hupos hvneg hne
+    have hp1q := (nonexceptional_plane_pivot hρpos hupos hvneg hne
       ((r' : ℚ) / D) ((u' : ℚ) / D) ((v' : ℚ) / D) A a ha I hf hg
       n0 n1 n2 e hnp hplane (by decide : 0 < 2) hdegree).resolve_right (by
         intro hh
@@ -276,7 +276,7 @@ theorem nonexceptional_bounded_integer_conic_model
     let V := rationalSecondPlaneConicCoefficients
       ((r : ℚ) / D) ((u : ℚ) / D) ((v : ℚ) / D)
       ((r' : ℚ) / D) ((u' : ℚ) / D) ((v' : ℚ) / D) n0 n1 n2 e
-    have hgeo := rational_nonexceptional_second_parabolic_model hρpos hupos hvneg hne
+    have hgeo := nonexceptional_second_parabolic_model hρpos hupos hvneg hne
       ((r' : ℚ) / D) ((u' : ℚ) / D) ((v' : ℚ) / D) A a hA ha I hf hg
       n0 n1 n2 e hp1q hplane hdegree x hx
     have hp := integralPlaneConicCoefficients_parabolic

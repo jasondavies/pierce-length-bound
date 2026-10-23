@@ -55,7 +55,7 @@ theorem nonexceptional_node_difference_discrete_order
   let R := projectiveChart I ι l
   let z := completeDirection (algebraMap ℚ R ρ) (algebraMap ℚ R u)
     (algebraMap ℚ R v) (chartNode I ι l)
-  have hunit := rational_nonexceptional_chart_node_difference_unit hρ hu hv hne
+  have hunit := nonexceptional_chart_node_difference_unit hρ hu hv hne
     ρ' u' v' A a ha I hf hg ι hι hd hdegree j k hjk
   have hz := discrete_order_unit_mod_infinity ν R.subtype hregular
     (w := chartInfinityCoordinate I ι l) (r := z j - z k)

@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendPlaneConicModel
+public import PierceLengthBound.FixedDividendConicPlaneModel
 public import PierceLengthBound.FixedDividendRationalConicDiscriminant
 
 /-!
@@ -40,7 +40,7 @@ lemma eval_planeConicPolynomial {K : Type*} [CommRing K] (c : Fin 6 → K)
 
 /-- An actual rational degree-two component has a nondegenerate parabolic plane
 model; its rational points satisfy the exact binary equation. -/
-theorem rational_nonexceptional_parabolic_model
+theorem nonexceptional_parabolic_model
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
     (hA : A ≠ 0) (ha : a ≠ 0)
@@ -60,7 +60,7 @@ theorem rational_nonexceptional_parabolic_model
       ∀ y ∈ coordinateZeroLocus I,
         conicValue (c 0) (c 1) (c 2) (c 3) (c 4) (c 5) (y 1) (y 0) = 0 := by
   let c := rationalPlaneConicCoefficients ρ u v ρ' u' v' n0 n1 n2 e
-  have hgeom := rational_nonexceptional_conic_plane_geometry hρ hu hv hne
+  have hgeom := nonexceptional_conic_plane_geometry hρ hu hv hne
     ρ' u' v' A a hA ha I hf hg n0 n1 n2 e hn2 hplane hdegree
   have hα : c 0 ≠ 0 := hgeom.1
   have hΔ : (c 1) ^ 2 - 4 * c 0 * c 2 = 0 := hgeom.2.1
@@ -98,7 +98,7 @@ lemma rename_swap_ternaryQuadratic {K : Type*} [CommRing K] (a b c l0 l1 l2 : K)
 
 /-- The complementary parabolic plane model, eliminating the second node. It is
 the first model for the ideal with its last two coordinates exchanged. -/
-theorem rational_nonexceptional_second_parabolic_model
+theorem nonexceptional_second_parabolic_model
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
     (hA : A ≠ 0) (ha : a ≠ 0)
@@ -119,7 +119,7 @@ theorem rational_nonexceptional_second_parabolic_model
         conicValue (c 0) (c 1) (c 2) (c 3) (c 4) (c 5) (y 2) (y 0) = 0 := by
   let c := rationalSecondPlaneConicCoefficients ρ u v ρ' u' v' n0 n1 n2 e
   let J := I.comap (rename (Equiv.swap (1 : Fin 3) 2))
-  have hgeom := rational_nonexceptional_conic_plane_geometry_second hρ hu hv hne
+  have hgeom := nonexceptional_second_conic_plane_geometry hρ hu hv hne
     ρ' u' v' A a hA ha I hf hg n0 n1 n2 e hn1 hplane hdegree
   have hswap (y : Fin 3 → ℚ) : y ∘ Equiv.swap 1 2 = ![y 0, y 2, y 1] := by
     funext j

@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendRationalChart
+public import PierceLengthBound.FixedDividendChart
 public import PierceLengthBound.FixedDividendCoefficientHomogenization
 public import PierceLengthBound.FixedDividendRationalCurves
 
@@ -24,7 +24,7 @@ open MvPolynomial
 
 /-- The homogenized resultant is a unit modulo the infinity equation in the
 actual first-node chart of every positive-degree nonexceptional component. -/
-theorem rational_nonexceptional_chart_resultant_unit
+theorem nonexceptional_chart_resultant_unit
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
@@ -41,7 +41,7 @@ theorem rational_nonexceptional_chart_resultant_unit
   let l := Ideal.Quotient.mk I (X 0)
   obtain ⟨hl, M, hs⟩ := nonexceptional_first_node_generation
     hρ hu hv hne ρ' u' v' A a ha I hf hg ι hι hd hdegree
-  have hfin := (rational_nonexceptional_chart_infinity_dimension hρ hu hv hne
+  have hfin := (nonexceptional_chart_infinity_dimension hρ hu hv hne
     ρ' u' v' A a ha I hf hg ι hι hd hdegree).1
   let q := Ideal.Quotient.mkₐ ℚ (chartInfinityIdeal I ι l)
   apply finite_algebra_isUnit_of_closed_points (K := ℚ) (L := ℂ)

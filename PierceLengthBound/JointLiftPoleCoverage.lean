@@ -112,7 +112,7 @@ theorem retained_curvature_pole_affine_center
       hd hdegree ν hQ c (lt_of_not_ge hn)
     exact (not_lt_of_ge hh) hpole
   obtain ⟨hρ, hu, hv, hne', ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation hρ hu hv hne'
+  obtain ⟨M, hs⟩ := nonexceptional_eventual_first_node_generation hρ hu hv hne'
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i : ℚ) (a : ℚ) ha I hf hg
   let : Module.Finite (Algebra.adjoin ℚ {l}) R := coordinateRing_finite_over_parameter I l hs

@@ -71,7 +71,7 @@ theorem retained_curvature_function_degree_le_envelope
   let : IsFractionRing C F := IsIntegralClosure.isFractionRing_of_finite_extension R F F C
   let l := Ideal.Quotient.mk I (X 0)
   obtain ⟨hρ, hu, hv, hne', ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation hρ hu hv hne'
+  obtain ⟨M, hs⟩ := nonexceptional_eventual_first_node_generation hρ hu hv hne'
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i : ℚ) (a : ℚ) ha I hf hg
   let : Module.Finite (Algebra.adjoin ℚ {l}) R := coordinateRing_finite_over_parameter I l hs

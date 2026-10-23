@@ -110,7 +110,7 @@ lemma sum_Icc_shift (f : ℕ → ℕ) (a Y : ℕ) :
   · intro h _; rfl
 
 /-- The drop bound with the range padded to any `Y ≥ 2A/(T-1)`. -/
-theorem drop_count_bound' {a A T Y : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT : 2 ≤ T)
+theorem drop_count_bound_short_interval {a A T Y : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT : 2 ≤ T)
     (hY : 2 * A / (T - 1) ≤ Y) :
     T ≤ 2 * ∑ n ∈ Ioc a (a + Y), dcount A n := by
   have := drop_count_bound W hT

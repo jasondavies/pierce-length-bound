@@ -85,7 +85,7 @@ theorem retained_polar_base_degree_le_four
     let : IsDedekindDomain (integralClosure A F) := hnormal.1
     let : Module.Finite A (integralClosure A F) := hnormal.2
     obtain ⟨hρ, hu, hv, hne', ha, hA⟩ := orbit_rational_nonexceptional_data hba hi hne
-    obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
+    obtain ⟨M, hs⟩ := nonexceptional_eventual_first_node_generation
       hρ hu hv hne' _ _ _ _ _ ha I hf hg
     let w := Ideal.Quotient.mk I (X 0)
     let : Module.Finite (Algebra.adjoin ℚ {w}) A := coordinateRing_finite_over_parameter I w hs

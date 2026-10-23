@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendRationalParityCover
+public import PierceLengthBound.FixedDividendParityCover
 public import PierceLengthBound.OrbitPatternCurveCount
 
 /-!
@@ -78,7 +78,7 @@ theorem jointNonexceptionalCount_of_components {B e} {R : ℕ → ℕ} (hR : Slo
   intro a b s T A i hba hmem hsT hT hi hne G hG hpat
   have hθ := theta_eq_of_plk_eq hpat
   obtain ⟨hρ, hu, hv, hneQ, ha, hL⟩ := orbit_rational_nonexceptional_data hba hi hne
-  obtain ⟨S, hS, hcomp, hcover⟩ := rational_nonexceptional_curve_decomposition hρ hu hv hneQ
+  obtain ⟨S, hS, hcomp, hcover⟩ := nonexceptional_curve_decomposition hρ hu hv hneQ
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i) a hL ha
   have hpoints (l) (hl : l ∈ G) : ∃ I ∈ S, orbitFreeNodesQ a b l ∈ coordinateZeroLocus I := by

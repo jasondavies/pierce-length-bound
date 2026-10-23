@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendRationalChartResultant
+public import PierceLengthBound.FixedDividendChartResultant
 public import PierceLengthBound.FixedDividendLocalizationParity
 public import Mathlib.RingTheory.Localization.FractionRing
 
@@ -27,7 +27,7 @@ open MvPolynomial
 
 /-- Every positive-degree rational component of the actual nonexceptional
 fixed-dividend equations has even affine Hilbert degree. -/
-theorem rational_nonexceptional_component_degree_even
+theorem nonexceptional_component_degree_even
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
     (hA : A ≠ 0) (ha : a ≠ 0)
@@ -49,7 +49,7 @@ theorem rational_nonexceptional_component_degree_even
   let r : R := φ (curveHomogenize 10 (curveResultant (ρ : ℚ) u v ρ' u' v'))
   obtain ⟨hl, M, hs⟩ := nonexceptional_first_node_generation
     hρ hu hv hne ρ' u' v' A a ha I hf hg ι hι hd hdegree
-  obtain ⟨hfin, hdim⟩ := rational_nonexceptional_chart_infinity_dimension hρ hu hv hne
+  obtain ⟨hfin, hdim⟩ := nonexceptional_chart_infinity_dimension hρ hu hv hne
     ρ' u' v' A a ha I hf hg ι hι hd hdegree
   have hfin' : Module.Finite ℚ (R ⧸ Ideal.span {w}) := hfin
   have hdim' : Module.finrank ℚ (R ⧸ Ideal.span {w}) = d := hdim
@@ -57,7 +57,7 @@ theorem rational_nonexceptional_component_degree_even
     apply Module.nontrivial_of_finrank_pos (R := ℚ)
     simpa only [hdim'] using hd
   have hr : IsUnit (Ideal.Quotient.mk (Ideal.span {w}) r) :=
-    rational_nonexceptional_chart_resultant_unit hρ hu hv hne ρ' u' v' A a ha
+    nonexceptional_chart_resultant_unit hρ hu hv hne ρ' u' v' A a ha
       I hf hg ι hι hd hdegree
   have hr0 : r ≠ 0 := by
     intro hh

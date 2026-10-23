@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendRationalChart
+public import PierceLengthBound.FixedDividendChart
 public import PierceLengthBound.CurveNormalization
 
 /-! Finite normalization of the original affine component. The same eventual
@@ -87,7 +87,7 @@ theorem nonexceptional_affine_normalization
     IsDedekindDomain (integralClosure (MvPolynomial (Fin 3) ℚ ⧸ I) F) ∧
       Module.Finite (MvPolynomial (Fin 3) ℚ ⧸ I)
         (integralClosure (MvPolynomial (Fin 3) ℚ ⧸ I) F) := by
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
+  obtain ⟨M, hs⟩ := nonexceptional_eventual_first_node_generation
     hρ hu hv hne ρ' u' v' A a ha I hf hg
   let l := Ideal.Quotient.mk I (MvPolynomial.X 0)
   let : Module.Finite (Algebra.adjoin ℚ {l}) (MvPolynomial (Fin 3) ℚ ⧸ I) :=

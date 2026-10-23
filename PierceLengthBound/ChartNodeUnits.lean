@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendChartGeneration
-public import PierceLengthBound.FixedDividendRationalChartResultant
+public import PierceLengthBound.FixedDividendChartResultant
 
 /-! The resultant unit on the actual infinity section forces every normalized
 node difference to be a unit. This works in the possibly nonreduced section. -/
@@ -49,7 +49,7 @@ lemma completeDirection_difference_unit {R : Type*} [CommRing R]
 
 /-- Every normalized node difference is invertible modulo the infinity
 equation of an actual nonexceptional component. -/
-theorem rational_nonexceptional_chart_node_difference_unit
+theorem nonexceptional_chart_node_difference_unit
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
@@ -71,7 +71,7 @@ theorem rational_nonexceptional_chart_node_difference_unit
   let R := projectiveChart I ι l
   let q := Ideal.Quotient.mkₐ ℚ (chartInfinityIdeal I ι l)
   let z := fun j => q (chartNode I ι l j)
-  have hres := rational_nonexceptional_chart_resultant_unit hρ hu hv hne
+  have hres := nonexceptional_chart_resultant_unit hρ hu hv hne
     ρ' u' v' A a ha I hf hg ι hι hd hdegree
   rw [chart_infinity_evaluation, curveResultant_at_infinity] at hres
   simp only [map_mul, aeval_C] at hres

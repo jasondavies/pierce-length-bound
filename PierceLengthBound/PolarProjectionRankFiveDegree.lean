@@ -87,7 +87,7 @@ theorem retained_rank_five_zero_normalization_regular
       ι (IsFractionRing.injective R F) hd hdegree ν hQ (lt_of_not_ge h)
     exact (not_lt_of_ge hJ.le) hh
   obtain ⟨hρ, hu, hv, hne', ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
+  obtain ⟨M, hs⟩ := nonexceptional_eventual_first_node_generation
     hρ hu hv hne' _ _ _ _ _ ha I hf hg
   let : Module.Finite (Algebra.adjoin ℚ {l}) R := coordinateRing_finite_over_parameter I l hs
   exact branch_order_nonnegative_on_normalization ν
@@ -133,7 +133,7 @@ theorem retained_rank_five_degree_lower_bound
     hρ hu hv hne' _ _ _ _ _ ha I hf hg ι hι hd hdegree
   obtain ⟨B, hB, hsum⟩ := normalized_parameter_branches (L := F) w hw
   have hdim : Module.finrank ℚ (S ⧸ Ideal.span {w}) = d :=
-    (rational_nonexceptional_chart_infinity_dimension hρ hu hv hne' _ _ _ _ _
+    (nonexceptional_chart_infinity_dimension hρ hu hv hne' _ _ _ _ _
       ha I hf hg ι hι hd hdegree).2
   have hwC0 : algebraMap S C w ≠ 0 := by
     intro hz

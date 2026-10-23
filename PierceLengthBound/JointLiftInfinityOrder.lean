@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.ChartDiscreteOrders
-public import PierceLengthBound.FixedDividendRationalChartResultant
+public import PierceLengthBound.FixedDividendChartResultant
 
 /-! Exact rank-five pole order on the actual nonexceptional infinity chart.
 The valuation may lie over a singular point; only its center on this chart is used. -/
@@ -41,7 +41,7 @@ theorem nonexceptional_resultant_discrete_order
     exact WithTop.top_ne_coe hw
   exact chart_polynomial_discrete_order I ι _ hl ν hregular he hw _ 10
     (curveResultant_degree_le_ten _ _ _ _ _ _)
-    (rational_nonexceptional_chart_resultant_unit hρ hu hv hne ρ' u' v' A a ha
+    (nonexceptional_chart_resultant_unit hρ hu hv hne ρ' u' v' A a ha
       I hf hg ι hι hd hdegree)
 
 /-- On the actual chart the original infinity multiplicity is even, and the

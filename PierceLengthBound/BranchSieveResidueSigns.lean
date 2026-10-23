@@ -111,7 +111,7 @@ theorem orbit_infinity_residue_sign
   let c : S := algebraMap ℚ S ((a : ℚ) / (Lz a b i : ℚ))
   intro r p hp
   have hrunit : IsUnit (Ideal.Quotient.mk (Ideal.span {w}) r) :=
-    rational_nonexceptional_chart_resultant_unit hρ hu hv hne'
+    nonexceptional_chart_resultant_unit hρ hu hv hne'
       (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
       (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
   have hrbar := normalization_residue_ne_zero_of_unit_mod_parameter

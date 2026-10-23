@@ -54,7 +54,7 @@ lemma rational_infinity_boundary_zero {ρ u v : ℚ}
   simpa [aeval_eq_eval] using hz
 
 /-- Rational coordinate powers lie in the rational boundary ideal. -/
-theorem rational_nonexceptional_infinity_coordinate_powers {ρ u v : ℚ}
+theorem nonexceptional_infinity_coordinate_powers {ρ u v : ℚ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) :
     ∃ N : ℕ, 0 < N ∧ ∀ j : Fin 3, (X j : MvPolynomial (Fin 3) ℚ) ^ N ∈

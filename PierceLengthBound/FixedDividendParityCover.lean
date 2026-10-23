@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendRationalDegreeParity
+public import PierceLengthBound.FixedDividendDegreeParity
 
 /-!
 # Rational curve covers with the nonexceptional parity split
@@ -21,7 +21,7 @@ noncomputable section
 
 /-- The rational cover directly supplies the conic versus degree-at-least-four
 split. Positive even degree also excludes lines without a large-scale premise. -/
-theorem rational_nonexceptional_curve_decomposition {ρ u v : ℚ}
+theorem nonexceptional_curve_decomposition {ρ u v : ℚ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ))
     (ρ' u' v' A a : ℚ) (hA : A ≠ 0) (ha : a ≠ 0) :
@@ -40,7 +40,7 @@ theorem rational_nonexceptional_curve_decomposition {ρ u v : ℚ}
   intro p hmem
   obtain ⟨hprime, hheight, hf, hg, d, hd, hd24, N, c, hdegree⟩ := hp p hmem
   let : p.IsPrime := hprime
-  have heven := rational_nonexceptional_component_degree_even
+  have heven := nonexceptional_component_degree_even
     hρ hu hv hne ρ' u' v' A a hA ha p hf hg hd hdegree
   obtain ⟨m, hm⟩ := heven
   refine ⟨hprime, hheight, hf, hg, d, by omega, hd24, ⟨m, hm⟩,

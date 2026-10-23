@@ -124,7 +124,7 @@ theorem component_degree_lower_of_irreducible_infinity_labels
     orbit_infinity_chart_setup hba hi hne I hf hg hd hdegree F
   obtain ⟨B, hB, hsum⟩ := normalized_parameter_branches (L := F) w hw
   have hdim : Module.finrank ℚ (S ⧸ Ideal.span {w}) = d :=
-    (rational_nonexceptional_chart_infinity_dimension hρ hu hv hne'
+    (nonexceptional_chart_infinity_dimension hρ hu hv hne'
       (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
       (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree).2
   have hwC0 : algebraMap S C w ≠ 0 := by

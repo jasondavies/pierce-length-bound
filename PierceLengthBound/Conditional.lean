@@ -17,9 +17,9 @@ public import PierceLengthBound.SixStep
 `∑_{x < n ≤ x + y} #{d ∣ n : A ≤ d < 2A} ≤ C y G(x)`.
 
 From it, each window run satisfies both `T ≪ a^{1/2} A^{-1/3}` (`six_step_bound`, no
-hypothesis) and `T ≪ (G(a) A)^{1/2} + G(a) a^{1/4}` (`drop_count_bound'`). Summing the minimum
-over the dyadic ranges (`sum_min_le`) gives `P(a, b) ≪ a^{3/10} G(a)^{1/5}`
-(`P_le_of_shortDivisorBound`).
+hypothesis) and `T ≪ (G(a) A)^{1/2} + G(a) a^{1/4}` (`drop_count_bound_short_interval`).
+Summing the minimum over the dyadic ranges (`sum_min_le`) gives
+`P(a, b) ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`).
 -/
 
 @[expose] public section
@@ -117,7 +117,7 @@ theorem visits_real_bound {G : ℕ → ℝ} {C x₀ : ℝ} (hC : 0 < C)
   have hYa : Y ≤ a := max_le hHa hceil
   have hYlo : (a : ℝ) ^ (1 / 4 : ℝ) ≤ Y :=
     (Nat.le_ceil _).trans (by exact_mod_cast le_max_right H _)
-  have hdrop := drop_count_bound' (Y := Y) W (by omega) (le_max_left _ _)
+  have hdrop := drop_count_bound_short_interval (Y := Y) W (by omega) (le_max_left _ _)
   have hsum := hshort a Y A hx₀ hYlo (by exact_mod_cast hYa) hA1
   have hT2 : (T : ℝ) ≤ 2 * C * G a * ((H : ℝ) + ((a : ℝ) ^ (1 / 4 : ℝ) + 1)) := by
     have e1 : (T : ℝ) ≤ 2 * ∑ n ∈ Ioc a (a + Y), (dcount A n : ℝ) := by exact_mod_cast hdrop
