@@ -2751,7 +2751,7 @@ in every such residue field, including when $d(t)=0$.
 
 \begin{lemma}[The degree-twelve label]\label{lem:branchlabel}
 Fix $a\in\mathbb Q^\times$, and regard $N_0,\gamma_1,\gamma_2,\gamma_3$
-as independent parameters. For some integer $c$ with $0\le c\le66$,
+as independent parameters. For some integer $c$ with $0\le c\le144$,
 $L_{a,N_0,c,\gamma}$ is irreducible of degree twelve over
 $\mathbb Q(N_0,\gamma_1,\gamma_2,\gamma_3)$.
 For a specialized nonexceptional pattern, if one such label polynomial is
@@ -2778,8 +2778,10 @@ Adjoin the independent parameter $N_0$. The element $aV_4/N_0$ has
 odd valuation at $N_0=0$, so it is not a square in $K(t)(N_0)$.
 Thus $(t,\beta)$ generates an extension of degree twelve over $K(N_0)$.
 Among its twelve embeddings, equality of two values $t+c\beta$ excludes
-at most one slope per pair, and there are $\binom{12}2=66$ pairs. Consequently one of $0,\dots,66$ gives a
-primitive element. Its minimal polynomial divides~\eqref{eq:branchlabel},
+at most one slope per pair, so at most $12^2=144$ slopes are excluded and one of
+$0,\dots,144$ gives a primitive element. (Counting only unordered pairs of distinct
+embeddings shows that one of $0,\dots,66$ already suffices; we state the cruder
+range because it is the one formalized.) Its minimal polynomial divides~\eqref{eq:branchlabel},
 whose degree is at most twelve; hence that label polynomial is irreducible
 of degree twelve. This argument holds for each fixed nonzero $a$; the
 chosen slope may depend on $a$.
@@ -2935,7 +2937,7 @@ with uniformly bounded degree and coefficient height at most $C(a+1)^D$,
 for absolute constants $C,D$. The same is true after dilation
 $\mathbf v=g\mathbf z$, with height at most $C(a+1)^Dg^D$.
 The slope may depend on $a$, but the bounds are uniform because there are
-only $67$ choices. Theorem~\ref{thm:monichilbert}, together with the
+only $145$ choices. Theorem~\ref{thm:monichilbert}, together with the
 $O(B^3)$ zero-scale slice $v_0=0$, gives
 \begin{equation}\label{eq:badvertices}
  \#\{\mathbf z\in[-B,B]^4\cap\mathbb Z^4:
