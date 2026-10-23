@@ -35,9 +35,6 @@ section Moments
 
 variable (a b : ℕ)
 
-/-- The quotient `qᵢ = ⌊a / bᵢ⌋`. -/
-def qq (i : ℕ) : ℕ := a / orb a b i
-
 /-- The support points `pᵢ(j) = q_{i+j} - qᵢ`. -/
 noncomputable def pt (i j : ℕ) : ℝ := (qq a b (i + j) : ℝ) - qq a b i
 
@@ -67,31 +64,6 @@ end Moments
 section Orbit
 
 variable {a b : ℕ}
-
-lemma orb_pos_of_lt {i : ℕ} (hi : i < P a b) : 0 < orb a b i :=
-  Nat.pos_of_ne_zero (orb_ne_zero_of_lt hi)
-
-lemma orb_div {i : ℕ} (hi : i < P a b) : orb a b i * qq a b i + orb a b (i + 1) = a := by
-  rw [orb_succ_of_ne (orb_ne_zero_of_lt hi)]; exact Nat.div_add_mod a _
-
-lemma orb_last (hN : 1 ≤ P a b) : orb a b (P a b - 1) * qq a b (P a b - 1) = a := by
-  have := orb_div (a := a) (b := b) (i := P a b - 1) (by omega)
-  rw [show P a b - 1 + 1 = P a b by omega, orb_P] at this
-  omega
-
-lemma qq_lt {i : ℕ} (hi : i + 1 < P a b) : qq a b i < qq a b (i + 1) := by
-  have e : a % orb a b i = orb a b (i + 1) := (orb_succ_of_ne (orb_ne_zero_of_lt (by omega))).symm
-  have := div_lt_div_mod (a := a) (orb_pos_of_lt (by omega : i < P a b))
-    (by rw [e]; exact orb_ne_zero_of_lt hi)
-  rw [e] at this; exact this
-
-lemma qq_pos (hba : b < a) {i : ℕ} (hi : i < P a b) : 1 ≤ qq a b i :=
-  (Nat.le_div_iff_mul_le (orb_pos_of_lt hi)).mpr (by simpa using (orb_le a b i).trans hba.le)
-
-lemma qq_le_of_le {i i' : ℕ} (hii : i ≤ i') (hi' : i' < P a b) : qq a b i ≤ qq a b i' := by
-  induction i', hii using Nat.le_induction with
-  | base => exact le_rfl
-  | succ i' hii ih => exact (ih (by omega)).trans (qq_lt hi').le
 
 /-- `pᵢ(j) ≥ j`. -/
 lemma pt_ge {i j : ℕ} (h : i + j < P a b) : (j : ℝ) ≤ pt a b i j := by
@@ -737,8 +709,11 @@ variable (a b : ℕ)
 /-- The normalised remainder `βⱼ = b_{i+j} / a`. -/
 noncomputable def βv (i j : ℕ) : ℝ := (orb a b (i + j) : ℝ) / a
 
-/-- The quotient increment `k_{i+j} = q_{i+j+1} - q_{i+j}`, as a real number. -/
-noncomputable def kv (i j : ℕ) : ℝ := (qq a b (i + j + 1) : ℝ) - qq a b (i + j)
+/-- The increment `kᵢ = q_{i+1} - qᵢ`, as a real number. -/
+noncomputable def kk (i : ℕ) : ℝ := (qq a b (i + 1) : ℝ) - qq a b i
+
+/-- The increments `k_{i+j}` seen from state `i`: `kv a b i j` is `kk a b (i + j)`. -/
+noncomputable abbrev kv (i j : ℕ) : ℝ := kk a b (i + j)
 
 variable {a b}
 
@@ -757,7 +732,7 @@ lemma hm_eq_momSeq (hba : b < a) {i : ℕ} (s : ℕ) : ∀ j, i + j < P a b → 
     have := mem_range.mp ht
     have h := ih t (by omega) (j + 1) (by omega) (by omega)
     rw [← add_assoc] at h
-    rw [h, kv]
+    rw [h, kv, kk]
   · obtain rfl : s = 0 := by omega
     simp [hm_one hba hj, momSeq_zero, βv, add_assoc]
 
@@ -777,7 +752,7 @@ lemma rel_sum (hba : b < a) {i j : ℕ} (hij : i + j < P a b) :
     intro j
     induction j with
     | zero => simp
-    | succ j ih => rw [sum_range_succ, ← add_assoc, ih, kv, ← add_assoc]; ring
+    | succ j ih => rw [sum_range_succ, ← add_assoc, ih, kv, kk, ← add_assoc]; ring
   have e := orb_div (a := a) (b := b) (i := i + j) hij
   have e' : (orb a b (i + j) : ℝ) * qq a b (i + j) + orb a b (i + j + 1) = a := by exact_mod_cast e
   rw [hQ, βv, βv, ← add_assoc]
@@ -825,7 +800,7 @@ theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
   unfold hankelInv
   rw [hankel_eq_momSeq hba (by omega) (by omega),
     hankel4_alg _ _ _ fun j hj => rel_sum hba (by omega)]
-  unfold βv kv sixL
+  unfold βv kv kk sixL
   simp only [add_zero]
   push_cast
   field_simp

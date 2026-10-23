@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividend
+public import PierceLengthBound.Gram
 
 /-!
 # The orthogonal quartic attached to an actual orbit window

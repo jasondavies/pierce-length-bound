@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.Conditional
+public import PierceLengthBound.Main
 
 /-!
 # Trajectories with few rises in the quotient increments

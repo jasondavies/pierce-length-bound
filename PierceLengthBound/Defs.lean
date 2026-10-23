@@ -15,7 +15,8 @@ If `bₙ` is the first zero term, then `P(a, b) = n` (Shallit, Open Problem Gard
 Thus `P(a, b)` is the number of positive terms of the sequence.
 
 The sequence is indexed from `0`: `orb a b i = bᵢ`. Lean's `a % 0 = a`, so the iteration
-is frozen at `0` explicitly (`step`).
+is frozen at `0` explicitly (`step`). The quotients `qᵢ = ⌊a / bᵢ⌋` (`qq`) increase strictly
+along the orbit (`qq_lt`, `qq_strictMono`), and `bᵢ qᵢ + b_{i+1} = a` (`orb_div`).
 -/
 
 @[expose] public section
@@ -92,6 +93,69 @@ lemma lt_P_of_orb_pos {a b i : ℕ} (h : 0 < orb a b i) : i < P a b := by
   have := orb_antitone a b hle
   rw [orb_P] at this
   omega
+
+/-- `P(a, b) ≤ b`. -/
+lemma P_le_self (a b : ℕ) : P a b ≤ b := by
+  induction b using Nat.strong_induction_on with
+  | _ b ih =>
+    by_cases hb : b = 0
+    · subst hb; simp
+    · rw [P_of_ne hb]
+      have hlt := Nat.mod_lt a (Nat.pos_of_ne_zero hb)
+      have := ih _ hlt
+      omega
+
+/-! ### The quotients `qᵢ = ⌊a / bᵢ⌋` -/
+
+/-- `⌊a/x⌋ < ⌊a/(a mod x)⌋` whenever `a mod x ≠ 0`. -/
+lemma div_lt_div_mod {a x : ℕ} (hx : 0 < x) (hy : a % x ≠ 0) : a / x < a / (a % x) := by
+  have hlt : a % x < x := Nat.mod_lt _ hx
+  have hd := Nat.div_add_mod a x
+  have hle : (a / x + 1) * (a % x) ≤ a := by
+    have := Nat.mul_le_mul_left (a / x) hlt.le
+    nlinarith
+  exact Nat.lt_of_succ_le ((Nat.le_div_iff_mul_le (Nat.pos_of_ne_zero hy)).mpr hle)
+
+section Quotients
+
+variable (a b : ℕ)
+
+/-- The quotient `qᵢ = ⌊a / bᵢ⌋`. -/
+def qq (i : ℕ) : ℕ := a / orb a b i
+
+variable {a b}
+
+lemma orb_pos_of_lt {i : ℕ} (hi : i < P a b) : 0 < orb a b i :=
+  Nat.pos_of_ne_zero (orb_ne_zero_of_lt hi)
+
+lemma orb_div {i : ℕ} (hi : i < P a b) : orb a b i * qq a b i + orb a b (i + 1) = a := by
+  rw [orb_succ_of_ne (orb_ne_zero_of_lt hi)]; exact Nat.div_add_mod a _
+
+lemma orb_last (hN : 1 ≤ P a b) : orb a b (P a b - 1) * qq a b (P a b - 1) = a := by
+  have := orb_div (a := a) (b := b) (i := P a b - 1) (by omega)
+  rw [show P a b - 1 + 1 = P a b by omega, orb_P] at this
+  omega
+
+lemma qq_lt {i : ℕ} (hi : i + 1 < P a b) : qq a b i < qq a b (i + 1) := by
+  have e : a % orb a b i = orb a b (i + 1) := (orb_succ_of_ne (orb_ne_zero_of_lt (by omega))).symm
+  have := div_lt_div_mod (a := a) (orb_pos_of_lt (by omega : i < P a b))
+    (by rw [e]; exact orb_ne_zero_of_lt hi)
+  rw [e] at this; exact this
+
+lemma qq_pos (hba : b < a) {i : ℕ} (hi : i < P a b) : 1 ≤ qq a b i :=
+  (Nat.le_div_iff_mul_le (orb_pos_of_lt hi)).mpr (by simpa using (orb_le a b i).trans hba.le)
+
+lemma qq_le_of_le {i i' : ℕ} (hii : i ≤ i') (hi' : i' < P a b) : qq a b i ≤ qq a b i' := by
+  induction i', hii using Nat.le_induction with
+  | base => exact le_rfl
+  | succ i' hii ih => exact (ih (by omega)).trans (qq_lt hi').le
+
+lemma qq_strictMono {i i' : ℕ} (hii : i < i') (hi' : i' < P a b) : qq a b i < qq a b i' := by
+  induction i', hii using Nat.le_induction with
+  | base => exact qq_lt hi'
+  | succ i' hii ih => exact (ih (by omega)).trans (qq_lt hi')
+
+end Quotients
 
 /-- The example on the Open Problem Garden page: `22, 13, 9, 8, 3, 2, 1, 0`. -/
 example : P 35 22 = 7 := by simp [P_of_ne]

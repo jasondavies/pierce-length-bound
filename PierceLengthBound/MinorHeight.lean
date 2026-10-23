@@ -6,7 +6,8 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.MinorCount
-public import PierceLengthBound.TwentyThreeMain
+public import PierceLengthBound.Functional
+public import PierceLengthBound.OrbitPattern
 
 /-!
 # All ten minors are small
@@ -112,23 +113,7 @@ theorem nu_expand (hba : b < a) {m : ℕ} (hm : m + 3 < P a b) {q : ℝ} (hq : 0
     simp only [hs]
     ring
 
-/-! ### The matrix and its minors -/
-
-section Matrix
-
-variable (a b : ℕ)
-
-/-- `sⱼ = q_{i+j} - qᵢ`. -/
-def sq (i j : ℕ) : ℤ := (qq a b (i + j) : ℤ) - qq a b i
-
-/-- `rⱼ = kⱼ (sⱼ + sⱼ₊₁) + kⱼ₊₁`. -/
-def rq (i j : ℕ) : ℤ := kq a b (i + j) * (sq a b i j + sq a b i (j + 1)) + kq a b (i + j + 1)
-
-/-- The `3 × 5` matrix `𝓜ᵢ`. -/
-def Mi (i : ℕ) : Fin 3 → Fin 5 → ℤ :=
-  ![fun j => dq a b (i + j), fun j => kq a b (i + j), fun j => rq a b i j]
-
-end Matrix
+/-! ### The minors of `𝓜ᵢ` (`Mi`, in `OrbitPattern`) -/
 
 /-- The real `3 × 3` minor of three rows. -/
 def rminor3 (x y z : Fin 5 → ℝ) (c1 c2 c3 : Fin 5) : ℝ :=

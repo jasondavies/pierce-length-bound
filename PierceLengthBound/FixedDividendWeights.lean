@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FortyFiveMain
+public import PierceLengthBound.CubeRoot
 
 /-!
 # Reciprocal weights

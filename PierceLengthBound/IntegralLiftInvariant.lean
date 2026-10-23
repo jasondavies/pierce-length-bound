@@ -23,7 +23,7 @@ def integralLiftCoordinate (a b i : ℕ) : ℤ :=
 lemma integralLiftCoordinate_eq {a b i : ℕ} (hba : b < a) (hi : i + 3 < P a b) :
     (integralLiftCoordinate a b i : ℝ) = hankelInv a b i 3 := by
   rw [hankelInv_three hba hi]
-  simp [integralLiftCoordinate, dq, kq, kv]
+  simp [integralLiftCoordinate, dq, kq, kv, kk]
 
 lemma integralLiftCoordinate_pos {a b i : ℕ} (hba : b < a) (hi : i + 3 < P a b) :
     1 ≤ integralLiftCoordinate a b i := by

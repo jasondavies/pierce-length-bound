@@ -7,7 +7,7 @@ module
 public import PierceLengthBound.PolarProjectionCoordinateIdeal
 public import PierceLengthBound.PolarProjectionGoodSection
 public import PierceLengthBound.PolarProjectionRankFiveDegree
-public import PierceLengthBound.EightMain
+public import PierceLengthBound.OrbitPattern
 
 /-! Specialization of the base-point and local-normalization comparisons
 to the actual orbit component and its scalar-cleared polar coordinates. -/

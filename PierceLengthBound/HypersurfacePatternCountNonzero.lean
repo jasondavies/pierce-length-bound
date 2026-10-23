@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.HypersurfacePatternCountPolynomial
 public import PierceLengthBound.HypersurfacePatternCountScaling
+public import PierceLengthBound.Main
 
 /-! # Counting nonzero polynomial fibers, with all common factors included -/
 

@@ -6,6 +6,8 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendWeights
+public import PierceLengthBound.MinorCount
+public import PierceLengthBound.ShortVec
 
 /-!
 # Short vectors in the normal congruence lattices

@@ -12,9 +12,10 @@ public import PierceLengthBound.ElevenMain
 # `P(a, b) ≪_ε a^{8/27 + ε}`
 
 The seven pattern integers are signed coordinates of the vector of ten minors of `𝓜ᵢ`
-(`theta_eq`). Counting minor vectors (`minor_vector_count`) instead of seven independent
-integers replaces `X⁷` by `X⁵ τ`, and the uniform minor bound (`minor_height`) removes the scale
-condition. This gives `T⁵⁴ ≤ C Δ¹⁴ Ξ(a)²⁸ a¹⁶` per window, hence `P ≪ a^{8/27 + ε}`.
+(`theta_eq`, in `OrbitPattern`). Counting minor vectors (`minor_vector_count`) instead of seven
+independent integers replaces `X⁷` by `X⁵ τ`, and the uniform minor bound (`minor_height`)
+removes the scale condition. This gives `T⁵⁴ ≤ C Δ¹⁴ Ξ(a)²⁸ a¹⁶` per window, hence
+`P ≪ a^{8/27 + ε}`.
 -/
 
 @[expose] public section
@@ -24,28 +25,6 @@ namespace PierceLengthBound
 open Finset
 
 variable {a b : ℕ}
-
-/-- The pattern as signed minors. -/
-def projθ (p : Fin 10 → ℤ) : Fin 7 → ℤ := ![p 0, p 6, p 9, p 3, -p 1, p 8, -p 7]
-
-theorem theta_eq (i : ℕ) : theta a b i = projθ (plk (Mi a b i)) := by
-  funext t
-  fin_cases t <;>
-  simp [theta, projθ, plk, Mi, trip, minor3, Lz, U1z, U2z, sixL, pU1, pU2, rq, sq, kq, dq,
-    Nat.add_assoc] <;> ring
-
-/-- Starts with the same pattern have the same projected invariants. -/
-lemma theta_eq_of_plk_eq {i : ℕ} {G : Finset ℕ} (hpat : ∀ l ∈ G, plk (Mi a b l) = plk (Mi a b i))
-    (l : ℕ) (hl : l ∈ G) : theta a b i = theta a b l := by
-  rw [theta_eq, theta_eq, hpat l hl]
-
-/-- An orbit's pattern has a nonzero first minor `Lz`. -/
-lemma orbit_pattern_first {l : ℕ} (hba : b < a) (hl : l + 5 < P a b) :
-    plk (Mi a b l) 0 ≠ 0 := by
-  have h := congrFun (theta_eq (a := a) (b := b) l) 0
-  simp only [theta, projθ, Matrix.cons_val_zero] at h
-  have := Lz_pos hba (i := l) hl
-  omega
 
 section Window
 

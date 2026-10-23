@@ -24,6 +24,7 @@ public import PierceLengthBound.Gram
 public import PierceLengthBound.TwoState
 public import PierceLengthBound.PatternBound
 public import PierceLengthBound.PatternCount
+public import PierceLengthBound.OrbitPattern
 public import PierceLengthBound.TwentyThreeMain
 public import PierceLengthBound.NormCount
 public import PierceLengthBound.SliceCount
@@ -37,6 +38,7 @@ public import PierceLengthBound.Reduce3
 public import PierceLengthBound.TernComp
 public import PierceLengthBound.ShortVec
 public import PierceLengthBound.LatticeCount
+public import PierceLengthBound.CubeRoot
 public import PierceLengthBound.FortyFiveMain
 public import PierceLengthBound.FixedDividend
 public import PierceLengthBound.FixedDividendLines

@@ -39,9 +39,6 @@ noncomputable def muF (i : ℕ) (f : ℝ[X]) : ℝ :=
 noncomputable def nuF (i : ℕ) (f : ℝ[X]) : ℝ :=
   ∑ j ∈ range (P a b - i), wt a b i j * f.eval (pt a b i j) / qq a b (i + j)
 
-/-- The increment `kᵢ = q_{i+1} - qᵢ`. -/
-noncomputable def kk (i : ℕ) : ℝ := (qq a b (i + 1) : ℝ) - qq a b i
-
 /-- The Newton basis `Fᵢ,ⱼ = ∏_{l<j} (X - pᵢ(l))`. -/
 noncomputable def nb (i j : ℕ) : ℝ[X] := ∏ l ∈ range j, (X - C (pt a b i l))
 

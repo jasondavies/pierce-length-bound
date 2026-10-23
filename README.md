@@ -329,7 +329,7 @@ then applies the general estimate uniformly in the dividend and common divisor.
 
 | Module | Contents |
 |---|---|
-| `Defs` | `P`, the orbit `orb`; check `P 35 22 = 7` |
+| `Defs` | `P`, the orbit `orb`, `P ≤ b` (`P_le_self`), the quotients `qq` with `bᵢqᵢ + bᵢ₊₁ = a` and strict monotonicity (`qq_lt`, `qq_strictMono`); check `P 35 22 = 7` |
 | `Block` | curvature `D = dv − eu`: identity `Dz = df + ude + (u−1)e²`, `D ≥ 1`, fiber equation `x M(q) = a N(q) + D`, size bounds |
 | `Fiber` | a fixed `(u, v, D)` allows at most `max_{n ≤ 32a⁷} τ(n)` starting points |
 | `Window` | for a run of `T` terms in `[A, 2A)`: its quotient increments and drops, `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
@@ -340,32 +340,34 @@ then applies the general estimate uniformly in the dividend and common divisor.
 | `BranchSieveVertexMonic`, `BranchSieveArithmeticVertexCount` | the actual integer degree-12 family, generic irreducibility, specialization compatibility and uniform scaled-vertex sieve |
 | `BranchSievePatternCount`, `BranchSievePatternCountSlow` | completion to full minor patterns with all common divisors and the slow-growth bound on selected orbit windows |
 | `HypersurfacePatternCount`, `HypersurfacePatternCountSlow` | proper algebraic exceptional loci have pattern exponent `14/3` |
-| `SixStep` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `TwentyThreeMain.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10`, hence `T⁴ ≤ 122449 a` when `AT > 28a` (`window_large_mean_gap`) |
+| `SixStep` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `OrbitPattern.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10`, hence `T⁴ ≤ 122449 a` when `AT > 28a` (`window_large_mean_gap`) |
 | `ShortSum` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
 | `Geometric` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}`, and the general form `∑_k min(α 2^{−sk}, β 2^{tk}) ≪ α^{t/(s+t)} β^{s/(s+t)}` (`sum_min_le_gen`) |
 | `Conditional` | any short-interval divisor bound `≪ y G(x)` for `x^{1/4} ≤ y ≤ x`, with `1 ≤ G(x) ≪ x^{1/40}`, gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
 | `Rises` | the arithmetic-progression bound `q⁴ ≤ 324 h³ a`, runs, the multiplicity lemma, and the three window bounds |
 | `RisesMain` | `P_le_rises`: `P ≪ a^{1/4} √R` |
-| `Hankel` | the moment model, `I_r(i) ∈ ℤ_{>0}` (`hankelInv_pos_int`), and `I₁ = b`, `I₂ = d`, `I₃ = D`, `I₄ = L` |
+| `Hankel` | the moment model, `I_r(i) ∈ ℤ_{>0}` (`hankelInv_pos_int`), the real increments `kk` (with `kv a b i j = kk a b (i + j)`), and `I₁ = b`, `I₂ = d`, `I₃ = D`, `I₄ = L` |
 | `Hadamard` | Hadamard's inequality `det G ≤ ∏ Gᵢᵢ` for positive definite real matrices |
 | `Functional` | the moment functionals `μᵢ`, `νᵢ` on polynomials, the Newton basis, shift rules, `νᵢ(f²) ≤ μᵢ(f²)/qᵢ` |
 | `Gram` | `Iᵣ(i) ≤ a ∏ⱼ μᵢ(Fⱼ²)/qᵢʳ`, and the label bound `L(i) qᵢ⁴ ≤ a · gramP` |
 | `TwoState` | the cofactors, null relations, reduced quadratic, the multiplicity identity, root counting |
 | `PatternBound` | the seven pattern integers are `≤ 172032 A⁴H⁶/a³` under the scale condition |
 | `PatternCount` | the counting lemma `#G ≤ 8 (2M+1)⁷ H²` |
-| `TwentyThreeMain` | good starts and their pattern hypotheses (`goodStarts_patternHyps`), the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
+| `OrbitPattern` | the orbit-state vocabulary: the integer increments and drops `kq`, `dq`, the six-step integer `Lz` (`Lz_pos`), the cofactors `U1z`, `U2z`, the pattern `theta` and gaps `kap` with their identities (`e0_at`, `e3_at`, `mult_at`), the good starts (`good_card`, `goodStarts`) and their pattern hypotheses (`PatternHyps`, `goodStarts_patternHyps`), and the matrix `𝓜ᵢ` (`Mi`) with the pattern as signed minors (`projθ`, `theta_eq`, `orbit_pattern_first`) |
+| `TwentyThreeMain` | the label bound in window form, the pattern height at good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
 | `NormCount` | the norm-equation lemma: square roots mod `m` (`≤ τ(m)²`), norm-one separation, and `norm_count` |
 | `SliceCount` | the slice lemma: slices of a ternary quadratic via completing squares, for either sign of the binary discriminant (`slice_count_ne`, `slice_count`) |
 | `ElevenCount` | the sign identities, the ternary relation `F_θ(k₁,k₂,k₃) = 0`, and the refined count |
 | `ElevenMain` | the slack factor `XiOf c e ≪ a^η` of a polynomial range, the window bound, `T⁷⁴ ≤ C Δ¹⁹ Ξ¹⁹ a²²`, and `P_le_11_37` |
 | `MinorCount` | the Plücker relations (over any commutative ring, with Mathlib's `⨯₃`), the cross congruence (`cross_cong`), the congruence count `27 m g²`, and `minor_vector_count` |
 | `MinorHeight` | the expansion of `b/a` (`nu_expand`) and the uniform bound on all ten minors |
-| `EightMain` | the pattern as signed minors, the window bound, `T⁵⁴ ≤ C Δ¹⁴ Ξ²⁸ a¹⁶`, and `P_le_8_27` |
+| `EightMain` | the window bound with minor vectors, `T⁵⁴ ≤ C Δ¹⁴ Ξ²⁸ a¹⁶`, and `P_le_8_27` |
 | `DefiniteNorm` | the definite norm count: `x² + δy² = m` has `≤ 4τ(\|m\|)³` solutions |
 | `Reduce3` | reduced bases of lattices in `ℤ³`: `27 \|b₁\|²\|b₂\|²\|b₃\|² ≤ 64 det²`, and coordinate bounds |
 | `TernComp` | ternary quadratics under substitution, the plane choice, and the slice count for a coefficient vector |
 | `ShortVec` | the lifting identities, the lattice `Λ_p`, the pigeonhole bound, and `short_count` |
 | `LatticeCount` | coordinates in a reduced basis, the gap vectors of one minor vector (`lattice_fiber_count`), and `pattern_count_lattice` |
+| `CubeRoot` | a cube root `X ≤ L³ ≤ 8X` (`exists_cube_root`) and the telescope `1/r = 1/L + ∑_{r≤j<L} 1/(j(j+1))` (`inv_telescope`) |
 | `FortyFiveMain` | partial summation, the window bound `T³ ≤ C Ξ⁹ (H³X¹⁴ + X¹⁵)`, `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`, and `P_le_45_152` |
 | `Hooley` | Erdős–Hooley `Δ`, the hypotheses `NairTenenbaumDelta` and `BretecheTenenbaumMean`, partial summation, and `P_le_loglog` |
 

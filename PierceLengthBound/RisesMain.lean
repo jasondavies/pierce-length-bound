@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.Rises
+public import PierceLengthBound.Geometric
 
 /-!
 # `P(a, b) ≪ a^{1/4} √R`
@@ -21,8 +22,11 @@ namespace PierceLengthBound
 
 open Finset
 
-/-- The quotient increment `kᵢ` of the orbit. -/
+/-- The quotient increment `kᵢ` of the orbit. Its body is fixed by `Challenge.lean`; it is the
+window increment `incr` of the orbit (`incrO_eq_incr`). -/
 def incrO (a b i : ℕ) : ℕ := a / orb a b (i + 1) - a / orb a b i
+
+lemma incrO_eq_incr (a b i : ℕ) : incrO a b i = incr a (orb a b) i := rfl
 
 /-- The number of rises `kᵢ < k_{i+1}` in the quotient increments of the orbit of `b`. -/
 def rises (a b : ℕ) : ℕ := ((range (P a b - 2)).filter
@@ -44,9 +48,7 @@ lemma windowRises_le {a b k : ℕ} (hba : b ≤ a) (h : (visits a b k).Nonempty)
     have hpos := W.pos (j := j + 2) (by omega)
     have hlt : s + (j + 2) < P a b := lt_P_of_orb_pos hpos
     refine Finset.mem_coe.mpr (mem_filter.mpr ⟨mem_range.mpr (show s + j < P a b - 2 by omega), ?_⟩)
-    simp only [incr] at hrise
-    unfold incrO
-    rw [show s + j + 1 = s + (j + 1) by ring, show s + (j + 1) + 1 = s + (j + 1 + 1) by ring]
+    rw [incrO_eq_incr, incrO_eq_incr]
     exact hrise
   · intro i _ j _ hij
     simpa using hij

@@ -8,7 +8,7 @@ module
 public import PierceLengthBound.ShortVec
 public import PierceLengthBound.TernComp
 public import PierceLengthBound.ElevenCount
-public import PierceLengthBound.EightMain
+public import PierceLengthBound.OrbitPattern
 
 /-!
 # Counting gap vectors of one minor vector through its lattice

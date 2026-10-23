@@ -158,17 +158,6 @@ theorem visits_real_bound {G : ℕ → ℝ} {C x₀ : ℝ} (hC : 0 < C)
     · rw [min_eq_right hm]; linarith
   linarith
 
-/-- `P(a, b) ≤ b`. -/
-lemma P_le_self (a b : ℕ) : P a b ≤ b := by
-  induction b using Nat.strong_induction_on with
-  | _ b ih =>
-    by_cases hb : b = 0
-    · subst hb; simp
-    · rw [P_of_ne hb]
-      have hlt := Nat.mod_lt a (Nat.pos_of_ne_zero hb)
-      have := ih _ hlt
-      omega
-
 /-- **The conditional theorem.** A short-interval divisor bound with growth `G` gives
 `P(a, b) ≪ a^{3/10} G(a)^{1/5}`. -/
 theorem P_le_of_shortDivisorBound {G : ℕ → ℝ} (hG : ShortDivisorBound G) (hG1 : ∀ x, 1 ≤ G x)

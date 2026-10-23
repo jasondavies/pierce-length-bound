@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.FixedDividendIdentity
 public import PierceLengthBound.FixedDividendLines
+public import PierceLengthBound.PatternBound
 
 /-!
 # Large gaps exclude the four line obstructions

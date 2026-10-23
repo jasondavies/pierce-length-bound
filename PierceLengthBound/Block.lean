@@ -33,15 +33,6 @@ def bv (a x : ℕ) : ℕ := bu a (a % x)
 /-- The curvature `D = dv - eu` of the block starting at `x`. -/
 def bD (a x : ℕ) : ℕ := (x - a % x) * bv a x - (a % x - a % (a % x)) * bu a x
 
-/-- `⌊a/x⌋ < ⌊a/(a mod x)⌋` whenever `a mod x ≠ 0`. -/
-lemma div_lt_div_mod {a x : ℕ} (hx : 0 < x) (hy : a % x ≠ 0) : a / x < a / (a % x) := by
-  have hlt : a % x < x := Nat.mod_lt _ hx
-  have hd := Nat.div_add_mod a x
-  have hle : (a / x + 1) * (a % x) ≤ a := by
-    have := Nat.mul_le_mul_left (a / x) hlt.le
-    nlinarith
-  exact Nat.lt_of_succ_le ((Nat.le_div_iff_mul_le (Nat.pos_of_ne_zero hy)).mpr hle)
-
 /-! ### The algebra, in terms of the drops `d, e, f` and the increments `u, v` -/
 
 /-- **The curvature identity.** With `z = w + f`, `y = z + e`, `x = y + d`. -/
