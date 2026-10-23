@@ -173,18 +173,6 @@ lemma orbitJoint_totalDegree_le (a b i : ℕ) :
   | last => exact hp.2.2
   | cast j => exact (hp.2.1 j).trans (by norm_num)
 
-/-- In particular, the unpowered joint graph has filtration growth at most
-that of its original curve with the degree parameter multiplied by 247. -/
-theorem orbitJointGraph_filtered_finrank_le {a b i : ℕ} (hba : b < a)
-    (hi : i + 7 < P a b) (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
-    (hz : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I) (N : ℕ) :
-    Module.finrank ℚ (filteredCoordinateSpace (orbitJointGraphIdeal a b i I) N) ≤
-      Module.finrank ℚ (filteredCoordinateSpace I (247 * N)) := by
-  obtain ⟨hP, hD⟩ := orbitJoint_totalDegree_le a b i
-  apply jointGraph_filtered_finrank_le I _ _ (orbitJoint_denominator_not_mem hba hi I hz)
-  · exact le_trans (Nat.add_le_add_right hD 1) (by norm_num)
-  · exact hP
-
 /-- Projection onto the original variables supplies the reverse filtered inequality. -/
 theorem jointGraph_filtered_finrank_ge {K σ ι : Type*} [Field K] [Finite σ] [Finite ι]
     (I : Ideal (MvPolynomial σ K)) [I.IsPrime] (P : ι → MvPolynomial σ K)

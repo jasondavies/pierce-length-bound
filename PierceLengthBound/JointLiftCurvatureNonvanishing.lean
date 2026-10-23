@@ -29,67 +29,6 @@ theorem jointLiftNumerators_dot_row (P Q A J : MvPolynomial (Fin 3) ℚ)
     curvatureRow, rawHankelThree]
   ring
 
-/-- The affine graph carries the curvature identity in its coordinate ring. -/
-theorem jointGraph_curvature_dot_row
-    (I : Ideal (MvPolynomial (Fin 3) ℚ)) (P Q J : MvPolynomial (Fin 3) ℚ)
-    (A : ℚ) (k : Fin 5 → MvPolynomial (Fin 3) ℚ) :
-    let Ns := jointLiftNumerators P Q (C A) J k
-    let D := jointLiftDenominator Q k
-    let φ := jointGraphMap I Ns D
-    ∑ j : Fin 3, φ (X (Sum.inr j.castSucc)) * φ (rename Sum.inl (curvatureRow k j)) =
-      algebraMap ℚ _ A := by
-  dsimp only
-  let D := jointLiftDenominator Q k
-  let Ns := jointLiftNumerators P Q (C A) J k
-  let ψ : MvPolynomial (Fin 3) ℚ →ₐ[ℚ] graphLocalization I D :=
-    (IsScalarTower.toAlgHom ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) (graphLocalization I D)).comp
-      (Ideal.Quotient.mkₐ ℚ I)
-  have he := congrArg ψ (jointLiftNumerators_dot_row P Q (C A) J k)
-  simp only [map_sum, map_mul] at he
-  have hC : ψ (C A) = algebraMap ℚ (graphLocalization I D) A := ψ.commutes A
-  have hu : ψ D * IsLocalization.Away.invSelf (Ideal.Quotient.mk I D) = 1 := by
-    change algebraMap (MvPolynomial (Fin 3) ℚ ⧸ I) (graphLocalization I D)
-      (Ideal.Quotient.mk I D) * _ = 1
-    exact IsLocalization.Away.mul_invSelf (S := graphLocalization I D) _
-  change (∑ j : Fin 3, jointGraphMap I Ns D (X (Sum.inr j.castSucc)) *
-    jointGraphMap I Ns D (rename Sum.inl (curvatureRow k j))) = _
-  simp only [jointGraphMap_rename]
-  simp only [jointGraphMap, aeval_X, Sum.elim_inr]
-  change (∑ j : Fin 3, (ψ (Ns j.castSucc) *
-    IsLocalization.Away.invSelf (Ideal.Quotient.mk I D)) * ψ (curvatureRow k j)) = _
-  calc _ = (∑ j : Fin 3, ψ (Ns j.castSucc) * ψ (curvatureRow k j)) *
-        IsLocalization.Away.invSelf (Ideal.Quotient.mk I D) := by
-          rw [Finset.sum_mul]
-          apply Finset.sum_congr rfl
-          intro j _
-          ring
-    _ = algebraMap ℚ _ A := by rw [he, hC, mul_assoc, hu, mul_one]
-
-/-- Every point of the affine graph has a nonzero curvature coordinate whenever
-A is nonzero. This includes points outside the original denominator chart. -/
-theorem jointGraph_curvature_ne_zero
-    (I : Ideal (MvPolynomial (Fin 3) ℚ)) (P Q J : MvPolynomial (Fin 3) ℚ)
-    (A : ℚ) (hA : A ≠ 0) (k : Fin 5 → MvPolynomial (Fin 3) ℚ)
-    (z : Fin 3 ⊕ Fin 4 → ℚ)
-    (hz : z ∈ coordinateZeroLocus
-      (jointGraphIdeal I (jointLiftNumerators P Q (C A) J k) (jointLiftDenominator Q k))) :
-    ∃ j : Fin 3, z (Sum.inr j.castSucc) ≠ 0 := by
-  classical
-  let f : MvPolynomial (Fin 3 ⊕ Fin 4) ℚ :=
-    (∑ j : Fin 3, X (Sum.inr j.castSucc) * rename Sum.inl (curvatureRow k j)) - C A
-  have hf : f ∈ jointGraphIdeal I (jointLiftNumerators P Q (C A) J k)
-      (jointLiftDenominator Q k) := by
-    change jointGraphMap I _ _ f = 0
-    simp only [f, map_sub, map_sum, map_mul]
-    rw [jointGraph_curvature_dot_row]
-    simp [jointGraphMap]
-  have he := hz f hf
-  by_contra hall
-  push Not at hall
-  simp only [f, map_sub, map_sum, map_mul, eval_X, eval_C, hall, zero_mul,
-    Finset.sum_const_zero, zero_sub, neg_eq_zero] at he
-  exact hA he
-
 /-- A nonconstant projective vector admits a nonzero linear combination that
 vanishes at any point where the vector itself is nonzero. -/
 theorem exists_curvature_combination_vanishing {K R ι : Type*} [Field K]

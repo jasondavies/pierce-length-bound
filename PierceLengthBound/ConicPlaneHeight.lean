@@ -118,26 +118,6 @@ lemma integerPlanePolynomial_degree_le (n : Fin 3 → ℤ) (c : ℤ) :
   exact (MvPolynomial.totalDegree_mul _ _).trans (by
     simp only [MvPolynomial.totalDegree_C, MvPolynomial.totalDegree_X, zero_add]; omega)
 
-lemma integerPlanePolynomial_coeff (n : Fin 3 → ℤ) (c : ℤ) (j : Fin 3) :
-    (integerPlanePolynomial n c).coeff (Finsupp.single j 1) = (n j : ℚ) := by
-  have hz : (0 : Fin 3 →₀ ℕ) ≠ Finsupp.single j 1 := by
-    intro he
-    have := congrArg (fun f : Fin 3 →₀ ℕ => f j) he
-    simp at this
-  simp only [integerPlanePolynomial, AddMonoidAlgebra.coeff_add, Finsupp.coe_add, Pi.add_apply,
-    MvPolynomial.coeff_sum, MvPolynomial.coeff_C_mul, MvPolynomial.coeff_C, MvPolynomial.coeff_X]
-  simp [Finsupp.single_eq_single_iff, hz]
-
-lemma integerPlanePolynomial_ne_zero {n : Fin 3 → ℤ} (hn : n ≠ 0) (c : ℤ) :
-    integerPlanePolynomial n c ≠ 0 := by
-  intro he
-  apply hn
-  funext j
-  have h := integerPlanePolynomial_coeff n c j
-  rw [he] at h
-  have h' : (n j : ℚ) = 0 := by simpa using h.symm
-  exact_mod_cast h'
-
 lemma integerPlanePolynomial_eval (n z : Fin 3 → ℤ) (c : ℤ) :
     MvPolynomial.eval (fun j => (z j : ℚ)) (integerPlanePolynomial n c) =
       (dot3 n z + c : ℤ) := by

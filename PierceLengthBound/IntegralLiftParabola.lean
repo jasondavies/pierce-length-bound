@@ -56,18 +56,4 @@ theorem integralLift_parabola_numerator_degree {K : Type*} [Field K]
       (ne_zero_of_natDegree_gt (show 0 < H3.natDegree by omega)), hqp, hH]
   rw [natDegree_sub_eq_left_of_natDegree_lt (by omega), hprod]
 
-/-- After arbitrary common-factor cancellation the new invariant still has
-denominator degree three larger than numerator degree. This is the properness
-needed by the integer-value divisor bound. -/
-theorem integralLift_parabola_proper {K : Type*} [Field K]
-    (q p3 H3 J V : K[X]) {a : K} (ha : a ≠ 0)
-    (hq : q.natDegree = 3) (hp : p3.natDegree ≤ 2)
-    (hH : H3.natDegree = 6) (hJ : J.natDegree ≤ 8) (hV : V.natDegree = 12) :
-    let I := algebraMap K[X] (RatFunc K) (C a * ((q - p3) * H3 - J)) /
-      algebraMap K[X] (RatFunc K) V
-    I.num.natDegree + 3 = I.denom.natDegree ∧ 0 < I.denom.natDegree := by
-  apply proper_remainder_denominator _ hV
-  rw [natDegree_C_mul ha]
-  exact integralLift_parabola_numerator_degree q p3 H3 J hq hp hH hJ
-
 end PierceLengthBound.FixedDividend

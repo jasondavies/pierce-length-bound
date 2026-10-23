@@ -29,24 +29,6 @@ theorem shifted_quartics_independent {K : Type*} [Field K] {P Z U V : K[X]}
   rw [hv, zero_mul, add_zero] at hrel
   exact ⟨(mul_eq_zero.mp hrel).resolve_right hP, hv⟩
 
-/-- Positive variance rules out the pole in the quotient reconstruction formula. -/
-lemma normalized_first_ne_one {n₀ n₁ n₂ q : ℝ} (h₀ : 0 < n₀)
-    (hv : n₁ ^ 2 < n₀ * n₂) (h1 : q * n₀ + n₁ = 1) (h2 : q * n₁ + n₂ = 1) :
-    n₁ / n₀ ≠ 1 := by
-  intro he
-  have hn : n₁ = n₀ := (div_eq_one_iff_eq h₀.ne').mp he
-  rw [hn] at h1 h2 hv
-  have : n₂ = n₀ := by linarith
-  nlinarith
-
-/-- Algebraic reconstruction of the quotient from normalized moments. -/
-theorem quotient_from_normalized_moments {n₀ n₁ n₂ q : ℝ} (h₀ : 0 < n₀)
-    (hv : n₁ ^ 2 < n₀ * n₂) (h1 : q * n₀ + n₁ = 1) (h2 : q * n₁ + n₂ = 1) :
-    q = (n₁ / n₀ - n₂ / n₀) / (n₁ / n₀ - 1) := by
-  apply (eq_div_iff (sub_ne_zero.mpr (normalized_first_ne_one h₀ hv h1 h2))).mpr
-  field_simp
-  linear_combination h2 - h1
-
 /-- Strict variance of the actual positive moment model. -/
 lemma orbit_moment_variance {a b i : ℕ} (hba : b < a) (hi : i + 1 < P a b) :
     hm a b i 1 ^ 2 < hm a b i 0 * hm a b i 2 := by
@@ -69,27 +51,5 @@ lemma orbit_moment_normalizations {a b i : ℕ} (hba : b < a) (hi : i + 1 < P a 
   rw [hz, ho] at h1
   rw [ho, nuF_X_pow] at h2
   constructor <;> linarith
-
-/-- The candidate's reconstruction formulas, now for actual orbit moments. -/
-theorem orbit_rational_reconstruction {a b i : ℕ} (hba : b < a) (hi : i + 1 < P a b) :
-    let m₁ := hm a b i 1 / hm a b i 0
-    let m₂ := hm a b i 2 / hm a b i 0
-    m₁ ≠ 1 ∧ (qq a b i : ℝ) = (m₁ - m₂) / (m₁ - 1) ∧
-      (orb a b i : ℝ) = a / ((qq a b i : ℝ) + m₁) := by
-  have ha : (0 : ℝ) < a := by exact_mod_cast (show 0 < a by omega)
-  have hb : (0 : ℝ) < orb a b i := by exact_mod_cast orb_pos_of_lt (by omega : i < P a b)
-  have hz : hm a b i 0 = orb a b i / a := hm_zero hba (P a b - 1 - i) i (by omega)
-  have h₀ : 0 < hm a b i 0 := by rw [hz]; positivity
-  obtain ⟨h1, h2⟩ := orbit_moment_normalizations hba hi
-  have hv := orbit_moment_variance hba hi
-  dsimp only
-  refine ⟨normalized_first_ne_one h₀ hv h1 h2,
-    quotient_from_normalized_moments h₀ hv h1 h2, ?_⟩
-  have he : (qq a b i : ℝ) + hm a b i 1 / hm a b i 0 = 1 / hm a b i 0 := by
-    apply (eq_div_iff h₀.ne').mpr
-    field_simp
-    exact h1
-  rw [he, one_div, div_inv_eq_mul, hz]
-  field_simp
 
 end PierceLengthBound.FixedDividend

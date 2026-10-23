@@ -33,21 +33,5 @@ lemma discretePoleOrder_pow {F : Type*} [Field F]
       rw [Int.toNat_eq_zero.mpr (mul_nonpos_of_nonneg_of_nonpos (Int.natCast_nonneg n) hz'),
         Int.toNat_eq_zero.mpr hz', mul_zero]
 
-lemma branchPoleEnvelope_pow {F ι : Type*} [Field F] [Fintype ι]
-    (ν : AddValuation F (WithTop ℤ)) (W : ι → F) (n : ℕ) :
-    branchPoleEnvelope ν (fun j => W j ^ n) = n * branchPoleEnvelope ν W := by
-  classical
-  apply le_antisymm
-  · apply Finset.sup_le
-    intro j _
-    rw [discretePoleOrder_pow]
-    exact Nat.mul_le_mul_left n (pole_order_le_envelope ν W j)
-  · by_cases h : branchPoleEnvelope ν W = 0
-    · simp [h]
-    · obtain ⟨j, hj⟩ := branchPoleEnvelope_attained ν W (Nat.pos_of_ne_zero h)
-      have he := (discretePoleOrder_eq_iff_of_pos ν (W j) (Nat.pos_of_ne_zero h)).mpr hj
-      rw [← he, ← discretePoleOrder_pow]
-      exact pole_order_le_envelope ν (fun j => W j ^ n) j
-
 end
 end PierceLengthBound.FixedDividend

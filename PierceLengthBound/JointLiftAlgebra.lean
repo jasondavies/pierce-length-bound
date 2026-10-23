@@ -39,33 +39,6 @@ lemma curvature_reconstruction_identity {R : Type*} [CommRing R] (d k r : Fin 3 
   simp [Matrix.det_fin_three]
   ring
 
-/-- Both rational reconstruction formulas follow from the actual minors. -/
-theorem curvature_reconstruction {K : Type*} [Field K] (d k r : Fin 3 → K)
-    (hB : k 0 * r 1 - k 1 * r 0 ≠ 0) (hk : k 1 ≠ 0) :
-    let E0 := d 0 * k 1 - d 1 * k 0
-    let E12 := ((k 1 * r 2 - k 2 * r 1) * E0 - (Matrix.of ![d, k, r]).det * k 1) /
-      (k 0 * r 1 - k 1 * r 0)
-    E12 = d 1 * k 2 - d 2 * k 1 ∧
-      (k 0 * E12 + k 2 * E0) / k 1 = d 0 * k 2 - d 2 * k 0 := by
-  dsimp only
-  have he : ((k 1 * r 2 - k 2 * r 1) * (d 0 * k 1 - d 1 * k 0) -
-      (Matrix.of ![d, k, r]).det * k 1) / (k 0 * r 1 - k 1 * r 0) =
-      d 1 * k 2 - d 2 * k 1 := by
-    apply (div_eq_iff hB).mpr
-    linear_combination curvature_reconstruction_identity d k r
-  refine ⟨he, ?_⟩
-  rw [he]
-  apply (div_eq_iff hk).mpr
-  ring
-
-/-- The two raw minors are the cubic Hankel polynomials. -/
-lemma curvature_raw_minors {R : Type*} [CommRing R] (k0 k1 k2 k3 : R) :
-    k0 * (k1 * (2 * k0 + k1) + k2) - k1 * (k0 ^ 2 + k1) =
-        rawHankelThree k0 k1 k2 ∧
-      k1 * (k2 * (2 * k0 + 2 * k1 + k2) + k3) -
-        k2 * (k1 * (2 * k0 + k1) + k2) = rawHankelThree k1 k2 k3 := by
-  constructor <;> unfold rawHankelThree <;> ring
-
 lemma rawHankelThree_pos_of_gaps {k0 k1 k2 : ℤ}
     (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 ≤ k2) : 0 < rawHankelThree k0 k1 k2 := by
   have hp : 0 < k0 ^ 2 * k1 := by positivity

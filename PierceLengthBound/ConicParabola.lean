@@ -28,11 +28,6 @@ noncomputable def parabolaV {K : Type*} [Field K] (c : Fin 4 → K) (v : Fin 4 �
   C (c 0) - C (c 1) * v 0 + C (c 2) * (v 0 * v 1) -
     C (c 3) * (v 0 * v 1 * v 2) + v 0 * v 1 * v 2 * v 3
 
-/-- Coefficient of the fixed dividend after four recurrence steps. -/
-noncomputable def parabolaW {K : Type*} [Field K] (c : Fin 4 → K) (v : Fin 4 → K[X]) : K[X] :=
-  C (c 1) + C (c 2) * (1 - v 1) + C (c 3) * (1 - v 2 + v 2 * v 1) +
-    (1 - v 3 + v 3 * v 2 - v 3 * v 2 * v 1)
-
 /-- The quartic has degree four times the common positive quotient degree. -/
 theorem parabolaV_degree {K : Type*} [Field K] (c : Fin 4 → K) (v : Fin 4 → K[X])
     {m : ℕ} (hm : 0 < m) (hv : ∀ j, (v j).natDegree = m) :
@@ -52,27 +47,6 @@ theorem parabolaV_degree {K : Type*} [Field K] (c : Fin 4 → K) (v : Fin 4 → 
     omega
   unfold parabolaV
   rw [natDegree_add_eq_right_of_natDegree_lt (by rw [hh]; omega), hh]
-
-/-- The dividend coefficient has degree three times the positive quotient degree. -/
-theorem parabolaW_degree {K : Type*} [Field K] (c : Fin 4 → K) (v : Fin 4 → K[X])
-    {m : ℕ} (hm : 0 < m) (hv : ∀ j, (v j).natDegree = m) :
-    (parabolaW c v).natDegree = 3 * m := by
-  have hne : ∀ j, v j ≠ 0 := fun j => ne_zero_of_natDegree_gt (by rw [hv j]; exact hm)
-  have h0 := hv 0
-  have h1 := hv 1
-  have h2 := hv 2
-  have h3 := hv 3
-  have hl : (C (c 1) + C (c 2) * (1 - v 1) + C (c 3) * (1 - v 2 + v 2 * v 1) +
-      (1 - v 3 + v 3 * v 2)).natDegree ≤ 2 * m := by
-    compute_degree
-    omega
-  have hh : (v 3 * v 2 * v 1).natDegree = 3 * m := by
-    rw [natDegree_mul (mul_ne_zero (hne 3) (hne 2)) (hne 1), natDegree_mul (hne 3) (hne 2)]
-    omega
-  have he : parabolaW c v =
-      (C (c 1) + C (c 2) * (1 - v 1) + C (c 3) * (1 - v 2 + v 2 * v 1) +
-        (1 - v 3 + v 3 * v 2)) - v 3 * v 2 * v 1 := by unfold parabolaW; ring
-  rw [he, natDegree_sub_eq_right_of_natDegree_lt (by rw [hh]; omega), hh]
 
 /-- If all quotient shifts have degree at most two, the quartic has degree at most eight. -/
 theorem parabolaV_degree_le_eight {K : Type*} [Field K] (c : Fin 4 → K)
@@ -100,20 +74,6 @@ theorem parabola_quotient_degree_three {K : Type*} [Field K] (c : Fin 4 → K)
   have hd := parabolaV_degree c (fun j => q + s j) (by omega : 0 < q.natDegree) hv
   omega
 
-/-- The resulting remainder numerator has degree nine and denominator degree twelve. -/
-theorem parabola_remainder_degrees {K : Type*} [Field K] (c : Fin 4 → K)
-    (s : Fin 4 → K[X]) (hs : ∀ j, (s j).natDegree ≤ 2) (q : K[X])
-    (hdegree : (parabolaV c (fun j => q + s j)).natDegree = 12) :
-    (parabolaW c (fun j => q + s j)).natDegree = 9 ∧
-      (parabolaW c (fun j => q + s j)).natDegree <
-        (parabolaV c (fun j => q + s j)).natDegree := by
-  have hq := parabola_quotient_degree_three c s hs q hdegree
-  have hv : ∀ j, (q + s j).natDegree = 3 := fun j => by
-    rw [natDegree_add_eq_left_of_natDegree_lt
-      (by rw [hq]; exact lt_of_le_of_lt (hs j) (by norm_num)), hq]
-  have hw := parabolaW_degree c (fun j => q + s j) (by norm_num : 0 < 3) hv
-  constructor <;> omega
-
 /-- The actual normalization identity transfers degree twelve from the raw
 multiplicity polynomial to the quartic. -/
 theorem parabola_normalization_degree {K : Type*} [Field K] (c : Fin 4 → K)
@@ -123,17 +83,6 @@ theorem parabola_normalization_degree {K : Type*} [Field K] (c : Fin 4 → K)
     (parabolaV c v).natDegree = 12 := by
   have hd := congrArg Polynomial.natDegree hid
   rwa [natDegree_C_mul hA, natDegree_C_mul ha, hdegree] at hd
-
-/-- Explicit four-step recurrence expansion, valid in any commutative ring. -/
-theorem quartic_remainder_expansion {R : Type*} [CommRing R]
-    (a b c0 c1 c2 c3 v0 v1 v2 v3 : R) :
-    c0 * b + c1 * (a - v0 * b) + c2 * (a - v1 * (a - v0 * b)) +
-      c3 * (a - v2 * (a - v1 * (a - v0 * b))) +
-      (a - v3 * (a - v2 * (a - v1 * (a - v0 * b)))) =
-    (c0 - c1 * v0 + c2 * (v0 * v1) - c3 * (v0 * v1 * v2) +
-      v0 * v1 * v2 * v3) * b +
-    a * (c1 + c2 * (1 - v1) + c3 * (1 - v2 + v2 * v1) +
-      (1 - v3 + v3 * v2 - v3 * v2 * v1)) := by ring
 
 /-- Cancellation preserves the degree difference, so the reduced denominator
 of a degree-nine over degree-twelve rational function is nonconstant. -/

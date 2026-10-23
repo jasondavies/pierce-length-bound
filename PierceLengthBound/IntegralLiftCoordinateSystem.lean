@@ -374,19 +374,5 @@ theorem orbitLift_denominator_not_mem {a b i : ℕ} (hba : b < a) (hi : i + 7 < 
   intro hd
   exact (orbitLift_evaluation hba hi).1 (hx _ hd)
 
-
-/-- The lift is nonzero as a rational function on every retained component,
-by its strictly positive value at the supporting orbit point. -/
-theorem orbitLift_numerator_not_mem {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
-    (I : Ideal (MvPolynomial (Fin 3) ℚ))
-    (hx : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I) :
-    orbitLiftNumeratorQ a b i ∉ I := by
-  intro hn
-  have hval := (orbitLift_evaluation hba hi).2
-  rw [hx _ hn, zero_div] at hval
-  have hp : (1 : ℚ) ≤ (integralLiftCoordinate a b i : ℚ) := by
-    exact_mod_cast integralLiftCoordinate_pos hba (by omega : i + 3 < P a b)
-  linarith
-
 end
 end PierceLengthBound.FixedDividend

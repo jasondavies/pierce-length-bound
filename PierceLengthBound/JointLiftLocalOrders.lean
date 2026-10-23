@@ -85,26 +85,6 @@ theorem resolvent_discrete_order (v : AddValuation K (WithTop ℤ))
   norm_cast
   omega
 
-/-- The fixed-dividend resultant relation gives the exact pole order of I5.
-No fourth root is selected: the order is that of the existing function A*D. -/
-theorem rank_five_discrete_order (v : AddValuation K (WithTop ℤ))
-    {A a R D : K} {t : ℤ} (hA : v A = 0) (ha : v a = 0)
-    (hR : v R = ((-20 * t : ℤ) : WithTop ℤ)) (hrel : A * R = a * D ^ 4) :
-    v (A * D) = ((-5 * t : ℤ) : WithTop ℤ) := by
-  have hD : D ≠ 0 := by
-    intro hz
-    have hv := congrArg v hrel
-    simp only [hz, zero_pow (by decide : 4 ≠ 0), mul_zero, v.map_zero,
-      v.map_mul, hA, zero_add, hR] at hv
-    exact WithTop.coe_ne_top hv
-  obtain ⟨r, hr⟩ := WithTop.ne_top_iff_exists.mp ((v.ne_top_iff).mpr hD)
-  have hv := congrArg v hrel
-  simp only [v.map_mul, hA, ha, zero_add, v.map_pow, ← hr, hR] at hv
-  have hval : -20 * t = 4 * r := by
-    exact_mod_cast hv
-  have hrt : r = -5 * t := by omega
-  rw [v.map_mul, hA, zero_add, ← hr, hrt]
-
 /-- Both leading curvature coordinates have zero order `3t`; cancellation in
 the middle coordinate can only increase its order. -/
 theorem curvature_discrete_orders (v : AddValuation K (WithTop ℤ))
@@ -142,22 +122,6 @@ theorem curvature_discrete_orders (v : AddValuation K (WithTop ℤ))
     · convert discrete_order_mul_ge v hk0 hE12.ge using 1; norm_cast; omega
     · convert discrete_order_mul_ge v hk2 hE0.ge using 1; norm_cast; omega
   convert discrete_order_div_ge v hsum hk1 using 1; norm_cast; omega
-
-/-- At a finite point where the r-coordinates are regular, W dot r = A
-prevents all curvature coordinates from vanishing. Poles are allowed. -/
-theorem curvature_some_order_nonpositive (v : AddValuation K (WithTop ℤ))
-    {W r : Fin 3 → K} {A : K} (hA : v A = 0)
-    (hr : ∀ j, 0 ≤ v (r j)) (hdot : ∑ j, W j * r j = A) :
-    ∃ j, v (W j) ≤ 0 := by
-  by_contra hn
-  push Not at hn
-  have hpos : 0 < v (∑ j, W j * r j) := by
-    apply v.map_lt_sum (by simp)
-    intro j _
-    rw [v.map_mul]
-    exact lt_of_lt_of_le (hn j) (le_add_of_nonneg_right (hr j))
-  rw [hdot, hA] at hpos
-  exact lt_irrefl _ hpos
 
 end
 end PierceLengthBound.FixedDividend

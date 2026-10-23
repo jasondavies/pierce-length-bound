@@ -4,9 +4,8 @@
 Two audits run in one Lean file:
 
 1. Joint-lift audit. The joint-invariant bounds `P_le_joint_optimal`, `P_le_2201_7480`
-   and `P_le_128_435`, the main intermediate joint-lift and fixed-dividend results, and
-   the conditional `151/513` reduction `P_le_151_513_of_pattern_estimate` use none of
-   the weighted-lattice machinery of the `45/152` bound (short-vector counts, lattice
+   and `P_le_128_435`, and the main intermediate joint-lift and fixed-dividend results use
+   none of the weighted-lattice machinery of the `45/152` bound (short-vector counts, lattice
    fiber counts and reciprocal or fractional weights) and none of the short-interval
    divisor sums (`ShortSum`).
 2. Exterior-lattice audit. The lattice and polar bounds `P_le_lattice_optimal`, `P_le_153_520`,
@@ -104,9 +103,7 @@ run_cmd do
   let jointIntermediateRoots : Array Name := #[
     ``PierceLengthBound.FixedDividend.orbitPoweredJointGraph_retained_degree_range,
     ``PierceLengthBound.FixedDividend.selected_poweredJointGraph_gap_count,
-    ``PierceLengthBound.FixedDividend.jointLiftPatternEstimate_exists,
-    ``PierceLengthBound.FixedDividend.P_le_128_435_of_pattern_estimate,
-    ``PierceLengthBound.FixedDividend.selected_jointGraph_cover_gap_count_slow,
+    ``PierceLengthBound.FixedDividend.selected_joint_component_gap_count_slow,
     ``PierceLengthBound.FixedDividend.orbit_conic_gap_count_slow,
     ``PierceLengthBound.FixedDividend.nonexceptional_rank_five_discrete_order,
     ``PierceLengthBound.FixedDividend.monic_quartic_quotient_discrete_order,
@@ -114,17 +111,14 @@ run_cmd do
     ``PierceLengthBound.FixedDividend.nonexceptional_raw_determinant_discrete_orders,
     ``PierceLengthBound.FixedDividend.retained_quotient_and_rank_three_discrete_orders,
     ``PierceLengthBound.FixedDividend.retained_joint_coordinates_discrete_orders,
-    ``PierceLengthBound.FixedDividend.orbit_curvature_finite_discrete_order,
     ``PierceLengthBound.FixedDividend.nonexceptional_chart_infinity_branch,
     ``PierceLengthBound.FixedDividend.retained_normalized_branch_joint_orders,
-    ``PierceLengthBound.FixedDividend.normalized_affine_curvature_order,
     ``PierceLengthBound.FixedDividend.nonexceptional_normalized_infinity_dimension,
     ``PierceLengthBound.FixedDividend.nonexceptional_normalized_infinity_degree,
     ``PierceLengthBound.FixedDividend.polynomial_parameter_branch_orders,
     ``PierceLengthBound.FixedDividend.function_zero_pole_fiber_degrees,
     ``PierceLengthBound.FixedDividend.functionParameterBranchOrder_inverse,
     ``PierceLengthBound.FixedDividend.nonexceptional_function_finite,
-    ``PierceLengthBound.FixedDividend.orbitJoint_exists_transcendental_curvature_combination,
     ``PierceLengthBound.FixedDividend.branch_order_nonnegative_of_finite_parameter,
     ``PierceLengthBound.FixedDividend.function_parameter_branch_transport_with_degree,
     ``PierceLengthBound.FixedDividend.branch_zero_degree_with_extra,
@@ -135,18 +129,11 @@ run_cmd do
     ``PierceLengthBound.FixedDividend.retained_curvature_pole_degree_lower_bound,
     ``PierceLengthBound.FixedDividend.jointGraph_pole_envelope_degree_le_hilbert,
     ``PierceLengthBound.FixedDividend.orbitJointGraph_retained_degree_range]
-  -- Conditional roots: the conditional `151/513` reduction from a pattern estimate
-  -- (the `IntegralLift*` modules). It is not part of the joint lift, but is held to the
-  -- same bans.
-  let conditionalRoots : Array Name := #[
-    ``PierceLengthBound.FixedDividend.P_le_151_513_of_pattern_estimate]
-  let jointRoots := jointPublicRoots ++ jointIntermediateRoots ++ conditionalRoots
+  let jointRoots := jointPublicRoots ++ jointIntermediateRoots
   -- Banned modules: the reciprocal and half-power minor-lattice weights
-  -- (`FixedDividendWeights`), the cube-root and quarter-power weights of the proposed
-  -- `135/458` and `180/611` refinements (`ConicWeights`, `ParityWeights`), and the
-  -- short-interval divisor sums of the conditional refinement (`ShortSum`).
+  -- (`FixedDividendWeights`) and the short-interval divisor sums of the conditional
+  -- refinement (`ShortSum`).
   let jointBannedModules : Array Name := #[`PierceLengthBound.FixedDividendWeights,
-    `PierceLengthBound.ConicWeights, `PierceLengthBound.ParityWeights,
     `PierceLengthBound.ShortSum]
   -- Banned declarations: the `45/152` short-vector count, lattice fiber and pattern
   -- counts, and window bound. Their modules also hold results the joint lift may use.
@@ -163,9 +150,8 @@ run_cmd do
   let latticeRoots : Array Name := #[``PierceLengthBound.P_le_lattice_optimal,
     ``PierceLengthBound.P_le_153_520, ``PierceLengthBound.P_le_polar_optimal,
     ``PierceLengthBound.P_le_4317_14677]
-  -- Banned modules: the other lattice weights and the short-interval divisor sums.
-  let latticeBannedModules : Array Name := #[`PierceLengthBound.ConicWeights,
-    `PierceLengthBound.ParityWeights, `PierceLengthBound.ShortSum]
+  -- Banned modules: the short-interval divisor sums.
+  let latticeBannedModules : Array Name := #[`PierceLengthBound.ShortSum]
   -- Banned declarations: the `45/152` lattice fiber and pattern counts and window bound,
   -- and every half-weight estimate in the otherwise permitted `FixedDividendWeights`.
   let latticeBannedDeclarations : Array Name := #[``PierceLengthBound.lattice_fiber_count,

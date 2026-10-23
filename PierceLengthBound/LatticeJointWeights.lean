@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendWeights
-public import PierceLengthBound.IntegralLiftPatternCount
+public import PierceLengthBound.OrdinaryPatternCount
 public import PierceLengthBound.RealPowerBounds
 
 /-!

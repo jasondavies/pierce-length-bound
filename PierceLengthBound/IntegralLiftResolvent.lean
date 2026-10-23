@@ -41,19 +41,6 @@ theorem hankel_three_resolvent {R : Type*} [CommRing R]
   rw [h6, h5, h4]
   ring
 
-/-- Division form of the resolvent identity on the open set relevant to actual states. -/
-theorem hankel_three_resolvent_div {K : Type*} [Field K]
-    (p0 p1 p2 p3 q a : K) (v : ℕ → K)
-    (hrec : ∀ j < 3, p0 * v j + p1 * v (j + 1) + p2 * v (j + 2) +
-      p3 * v (j + 3) + v (j + 4) = 0)
-    (hP : q ^ 4 - p3 * q ^ 3 + p2 * q ^ 2 - p1 * q + p0 ≠ 0) :
-    a * hankelThree v = a *
-      ((q - p3) * hankelThree (fun j => q * v j + v (j + 1)) -
-        hankelMixed (fun j => q * v j + v (j + 1))) /
-          (q ^ 4 - p3 * q ^ 3 + p2 * q ^ 2 - p1 * q + p0) := by
-  apply (eq_div_iff hP).mpr
-  rw [mul_assoc, hankel_three_resolvent p0 p1 p2 p3 q v hrec]
-
 /-- The raw rank-three determinant in the three consecutive gaps. -/
 def rawHankelThree {R : Type*} [CommRing R] (k0 k1 k2 : R) : R :=
   k0 ^ 2 * k1 + (k0 - 1) * k1 ^ 2 + k0 * k2
@@ -92,25 +79,5 @@ theorem hankelThree_raw_identity {R : Type*} [CommRing R] (k0 k1 k2 : R) :
       rawHankelThree k0 k1 k2 := by
   norm_num [Matrix.det_fin_three, rawHankelThree]
   ring
-
-/-- The sharp elementary cubic height estimate in a positive gap box. -/
-lemma rawHankelThree_le {k0 k1 k2 H : ℤ} (hH : 1 ≤ H)
-    (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 ≤ k2)
-    (hb0 : k0 ≤ H) (hb1 : k1 ≤ H) (hb2 : k2 ≤ H) :
-    rawHankelThree k0 k1 k2 ≤ 3 * H ^ 3 := by
-  have hh0 : 0 ≤ k0 := by omega
-  have hh1 : 0 ≤ k1 := by omega
-  have hh2 : 0 ≤ k2 := by omega
-  have ha : k0 ^ 2 * k1 ≤ H ^ 3 := by
-    calc _ ≤ H ^ 2 * H := by gcongr
-      _ = _ := by ring
-  have hb : (k0 - 1) * k1 ^ 2 ≤ H ^ 3 := by
-    calc _ ≤ H * H ^ 2 := by gcongr; omega
-      _ = _ := by ring
-  have hc : k0 * k2 ≤ H ^ 3 := by
-    calc _ ≤ H * H := by gcongr
-      _ ≤ H ^ 3 := by nlinarith [sq_nonneg (H - 1)]
-  unfold rawHankelThree
-  linarith
 
 end PierceLengthBound.FixedDividend

@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PoweredJointBound
-public import PierceLengthBound.JointLiftBound
 
 /-! Public submission statements for the joint-invariant length bounds. -/
 
