@@ -37,14 +37,33 @@ def crossRing {R : Type*} [CommRing R] (u v : Fin 3 → R) (i : Fin 3) : R :=
 def PluckerRelRing {R : Type*} [CommRing R] (p : Fin 10 → R) : Prop :=
   ∀ t i, p t * p (pwX t i) = (pwS t i : R) * crossRing (chartU p t) (chartV p t) i
 
-set_option maxHeartbeats 1000000 in
--- Enumerate the ten pivot charts and normalize their determinant identities.
+/-- Ring homomorphisms commute with the defect of a Plücker relation. -/
+private lemma map_pluckerDefect {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S)
+    (M : Fin 3 → Fin 5 → R) (t : Fin 10) (i : Fin 3) :
+    f (plkRing M t * plkRing M (pwX t i) -
+        (pwS t i : R) * crossRing (chartU (plkRing M) t) (chartV (plkRing M) t) i) =
+      plkRing (fun r c => f (M r c)) t * plkRing (fun r c => f (M r c)) (pwX t i) -
+        (pwS t i : S) * crossRing (chartU (plkRing fun r c => f (M r c)) t)
+          (chartV (plkRing fun r c => f (M r c)) t) i := by
+  simp only [plkRing, minor3Ring, chartU, chartV, crossRing, map_add, map_sub, map_mul,
+    map_intCast]
+
+/-- The integer identity `plucker` holds at every integer point, so it holds for the universal
+integer matrix; specializing that matrix gives it over any commutative ring. -/
 lemma pluckerRing {R : Type*} [CommRing R] (M : Fin 3 → Fin 5 → R) :
     PluckerRelRing (plkRing M) := by
   intro t i
-  fin_cases t <;> fin_cases i <;>
-    simp [plkRing, minor3Ring, trip, chartU, chartV, crossRing,
-      puX, puS, pvX, pvS, pwX, pwS] <;> ring
+  let U : Fin 3 → Fin 5 → MvPolynomial (Fin 3 × Fin 5) ℤ := fun r c => X (r, c)
+  have hU : plkRing U t * plkRing U (pwX t i) -
+      (pwS t i : MvPolynomial (Fin 3 × Fin 5) ℤ) *
+        crossRing (chartU (plkRing U) t) (chartV (plkRing U) t) i = 0 := by
+    refine MvPolynomial.funext fun x => ?_
+    rw [map_pluckerDefect, map_zero, sub_eq_zero]
+    simp only [U, eval_X, Int.cast_id]
+    exact plucker (fun r c => x (r, c)) t i
+  have h := congrArg (eval₂Hom (Int.castRingHom R) fun rc => M rc.1 rc.2) hU
+  rw [map_pluckerDefect, map_zero, sub_eq_zero] at h
+  simpa only [U, eval₂Hom_X', eq_intCast] using h
 
 lemma pluckerRelRing_intCast {p : Fin 10 → ℤ} (hp : PluckerRel p) :
     PluckerRelRing (fun i => (p i : ℚ)) := by
@@ -62,36 +81,45 @@ def minorChartNumerator {R : Type*} [CommRing R] (t : Fin 10) (m : R)
     (∑ i : Fin 3, if j = pvX t i then (pvS t i : R) * m * v i else 0) +
     ∑ i : Fin 3, if j = pwX t i then (pwS t i : R) * crossRing u v i else 0
 
-set_option maxHeartbeats 1000000 in
--- Enumerate the ten pivot charts and normalize their determinant identities.
+/-- No companion index of a chart is its pivot. -/
+private lemma chartPivot_ne (t : Fin 10) (i : Fin 3) :
+    t ≠ puX t i ∧ t ≠ pvX t i ∧ t ≠ pwX t i ∧
+    puX t i ≠ t ∧ pvX t i ≠ t ∧ pwX t i ≠ t := by
+  revert t i; decide
+
+/-- The three families of companion indices of a chart are disjoint. -/
+private lemma chartCompanion_ne (t : Fin 10) (i k : Fin 3) :
+    puX t i ≠ pvX t k ∧ puX t i ≠ pwX t k ∧ pvX t i ≠ puX t k ∧
+    pvX t i ≠ pwX t k ∧ pwX t i ≠ puX t k ∧ pwX t i ≠ pvX t k := by
+  revert t i k; decide
+
+/-- Each family of companion indices of a chart is injective. -/
+private lemma chartIndex_injective (t : Fin 10) :
+    Function.Injective (puX t) ∧ Function.Injective (pvX t) ∧ Function.Injective (pwX t) := by
+  revert t; decide
+
 lemma minorChartNumerator_pivot {R : Type*} [CommRing R]
     (t : Fin 10) (m : R) (u v : Fin 3 → R) :
     minorChartNumerator t m u v t = m ^ 2 := by
-  fin_cases t <;> simp [minorChartNumerator, puX, pvX, pwX, Fin.sum_univ_succ]
+  simp [minorChartNumerator, chartPivot_ne t]
 
-set_option maxHeartbeats 1000000 in
--- Enumerate the ten pivot charts and normalize their determinant identities.
 lemma minorChartNumerator_u {R : Type*} [CommRing R]
     (t : Fin 10) (m : R) (u v : Fin 3 → R) (i : Fin 3) :
     minorChartNumerator t m u v (puX t i) = (puS t i : R) * m * u i := by
-  fin_cases t <;> fin_cases i <;>
-    simp [minorChartNumerator, puX, puS, pvX, pvS, pwX, pwS, Fin.sum_univ_succ]
+  simp [minorChartNumerator, chartPivot_ne t i, chartCompanion_ne t i,
+    (chartIndex_injective t).1.eq_iff]
 
-set_option maxHeartbeats 1000000 in
--- Enumerate the ten pivot charts and normalize their determinant identities.
 lemma minorChartNumerator_v {R : Type*} [CommRing R]
     (t : Fin 10) (m : R) (u v : Fin 3 → R) (i : Fin 3) :
     minorChartNumerator t m u v (pvX t i) = (pvS t i : R) * m * v i := by
-  fin_cases t <;> fin_cases i <;>
-    simp [minorChartNumerator, puX, puS, pvX, pvS, pwX, pwS, Fin.sum_univ_succ]
+  simp [minorChartNumerator, chartPivot_ne t i, chartCompanion_ne t i,
+    (chartIndex_injective t).2.1.eq_iff]
 
-set_option maxHeartbeats 1000000 in
--- Enumerate the ten pivot charts and normalize their determinant identities.
 lemma minorChartNumerator_w {R : Type*} [CommRing R]
     (t : Fin 10) (m : R) (u v : Fin 3 → R) (i : Fin 3) :
     minorChartNumerator t m u v (pwX t i) = (pwS t i : R) * crossRing u v i := by
-  fin_cases t <;> fin_cases i <;>
-    simp [minorChartNumerator, puX, puS, pvX, pvS, pwX, pwS, Fin.sum_univ_succ]
+  simp [minorChartNumerator, chartPivot_ne t i, chartCompanion_ne t i,
+    (chartIndex_injective t).2.2.eq_iff]
 
 lemma minorChartNumerator_reconstruct {p : Fin 10 → ℚ} (hp : PluckerRelRing p)
     (t j : Fin 10) :

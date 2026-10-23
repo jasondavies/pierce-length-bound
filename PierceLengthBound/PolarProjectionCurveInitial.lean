@@ -66,8 +66,6 @@ theorem polar_formal_norm_linear_eq_of_jets {K : Type*} [CommRing K]
   change (formalFirstJet _).snd = (formalFirstJet _).snd
   simp only [map_lineNorm, map_add, hj]
 
-set_option maxHeartbeats 800000 in
--- Mapping the nested resultant and Newton coefficient expressions is elaboration intensive.
 /-- The explicit resultant formula is the quartic initial form of the
 original curve equation, on every formal path through the base point. -/
 theorem polar_curve_formal_initial {K : Type*} [Field K]

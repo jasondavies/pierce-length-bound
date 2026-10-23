@@ -17,8 +17,8 @@ noncomputable section
 
 set_option synthInstance.maxHeartbeats 400000 in
 -- The affine component, its local ring and both normalizations share a fraction field.
-set_option maxHeartbeats 1200000 in
--- Constructing these scalar towers dominates the final numerical comparison.
+set_option maxHeartbeats 400000 in
+-- Constructing these scalar towers takes about 160000 heartbeats; keep a margin.
 theorem retained_polar_base_degree_le_four
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -118,10 +118,12 @@ theorem retained_polar_base_degree_le_four
       rw [hVp]
       change ε (gapA j) = 0
       fin_cases j <;> simp [gapA, polarCenteredNodeGaps, ε, coordinatePoint_mk,
-        znode, polarCumulativeBasePoint, z] <;> ring
+        znode, polarCumulativeBasePoint, z]
     have hmap : algebraMap A R (gapA j) = f := by
-      fin_cases j <;> simp [gapA, f, polarCenteredNodeGaps, ψR, AlgHom.comp_apply,
-        Ideal.Quotient.mkₐ_eq_mk]
+      fin_cases j <;> simp only [gapA, f, ψR, polarCenteredNodeGaps, Ideal.Quotient.mkₐ_eq_mk,
+        Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, Fin.isValue, Matrix.cons_val_zero,
+        Matrix.cons_val_one, Matrix.cons_val, map_sub, AlgHom.comp_apply,
+        IsScalarTower.coe_toAlgHom']
       all_goals rw [← IsScalarTower.algebraMap_apply ℚ A R]
       all_goals rfl
     have hfV : f ∈ Ideal.span (Set.range (fun j => algebraMap A R (V j))) := by

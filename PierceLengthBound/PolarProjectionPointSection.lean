@@ -77,8 +77,6 @@ theorem functionCommonBaseDegree_eq_zero_of_unit_ideal {A L ι : Type*}
   change branchCommonZeroOrder ν (fun j => D * W j) * _ = 0
   rw [hz, zero_mul]
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The affine and local normalizations use distinct coherent scalar towers.
 /-- At a rational point, an actual nonzero local section bounds the common
 base contribution. All normalization and center properties follow from the
 finite affine normalization and the coordinate ideal. -/

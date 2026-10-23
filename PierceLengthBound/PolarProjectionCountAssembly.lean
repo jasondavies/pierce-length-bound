@@ -17,10 +17,10 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
 
+open scoped Classical in
 /-- Cardinality of the bad full patterns in an actual selected orbit window. -/
-def PolarBadPatternCount (good : ℕ → (Fin 10 → ℤ) → Prop) (Rbad : ℕ → ℕ) : Prop := by
-  classical
-  exact ∀ {a b s T A : ℕ}, b < a →
+def PolarBadPatternCount (good : ℕ → (Fin 10 → ℤ) → Prop) (Rbad : ℕ → ℕ) : Prop :=
+  ∀ {a b s T A : ℕ}, b < a →
     (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
     s + T ≤ P a b → 36 ≤ T →
     ((((selectedStarts a b s T A).image (fun i => plk (Mi a b i))).filter

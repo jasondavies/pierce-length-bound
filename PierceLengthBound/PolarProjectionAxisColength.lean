@@ -34,10 +34,6 @@ theorem polarSectionMap_formal_eval_of_gap_form {K : Type*} [CommRing K]
     fin_cases j <;> simp [hx1, hx2]
   rw [hgaps]
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The source local ring is a localization of a polynomial quotient with nested scalar towers.
-set_option maxHeartbeats 800000 in
--- Polynomial maps of the original resultant equation contain large nested terms.
 /-- The formal coefficient calculation gives colength four in every model
 of the actual local quadratic section. -/
 theorem polar_formal_section_local_colength_four {S : Type*}

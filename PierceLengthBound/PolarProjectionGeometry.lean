@@ -30,8 +30,7 @@ lemma map_polarVector {R S : Type*} [CommRing R] [CommRing S] (φ : R →+* S)
     (fun j => φ (polarVector ρ u v ρ' u' v' x j)) =
       polarVector (φ ρ) (φ u) (φ v) (φ ρ') (φ u') (φ v') (fun j => φ (x j)) := by
   funext j
-  fin_cases j <;> simp [polarVector, polarMatrix, polarLinear, Matrix.mulVec, dotProduct,
-    Fin.sum_univ_succ]
+  fin_cases j <;> simp [polarVector, polarMatrix, polarLinear, dotProduct, Fin.sum_univ_succ]
 
 /-- Centering at a zero of the polar forms gives the same quadric identity
 over arbitrary commutative rings, including rings of formal power series. -/

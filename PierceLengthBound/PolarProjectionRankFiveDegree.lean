@@ -107,7 +107,8 @@ theorem retained_rank_five_zero_normalization_regular
 
 set_option synthInstance.maxHeartbeats 200000 in
 -- The normalized infinity chart and the function-parameter field have nested scalar towers.
-set_option maxHeartbeats 1200000 in
+set_option maxHeartbeats 400000 in
+-- This proof uses about 190000 heartbeats, just under the default limit.
 /-- The rank-five function has degree at least `5d/2`. Transcendence and finiteness over
 the rank-five parameter are constructed from its actual infinity branches. -/
 theorem retained_rank_five_degree_lower_bound

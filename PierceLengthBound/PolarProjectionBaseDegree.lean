@@ -127,8 +127,6 @@ lemma sum_poleEnvelope_le_degree {R L ι : Type*}
 
 set_option synthInstance.maxHeartbeats 200000 in
 -- The scalar normalization and the target model introduce nested algebra and residue-field towers.
-set_option maxHeartbeats 800000 in
--- The scalar normalization and the target model introduce nested algebra and residue-field towers.
 /-- The scalar's function-field degree is bounded by the coordinate pole
 degree plus the actual common-zero contribution above its zero fiber. Every
 zero branch is transported to the given Dedekind model, with residue degrees preserved. -/

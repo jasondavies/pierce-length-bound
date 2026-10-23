@@ -39,8 +39,10 @@ theorem ideal_span_independentNodeGaps {R : Type*} [CommRing R] (x : Fin 3 → R
     rintro _ ⟨j, rfl⟩
     fin_cases j
     · exact Ideal.mem_span_range_self
-    · exact Ideal.sub_mem _ (Ideal.mem_span_range_self (x := 1)) (Ideal.mem_span_range_self (x := 0))
-    · exact Ideal.sub_mem _ (Ideal.mem_span_range_self (x := 2)) (Ideal.mem_span_range_self (x := 1))
+    · exact Ideal.sub_mem _ (Ideal.mem_span_range_self (x := 1))
+        (Ideal.mem_span_range_self (x := 0))
+    · exact Ideal.sub_mem _ (Ideal.mem_span_range_self (x := 2))
+        (Ideal.mem_span_range_self (x := 1))
   · apply Ideal.span_le.mpr
     rintro _ ⟨j, rfl⟩
     have h0 := Ideal.mem_span_range_self (f := independentNodeGaps x) (x := 0)
@@ -110,7 +112,8 @@ theorem orbit_polar_coordinate_ideal (a b i : ℕ)
         (independentNodeGaps (fun j => Ideal.Quotient.mk I (X j))) := by
     ext j
     fin_cases j <;> simp [orbitPolarPolynomial, polarVector, dotProduct,
-      Fin.sum_univ_succ, jointGapPolynomials, lineGaps, independentNodeGaps, polarMatrix, polarLinear, hC] <;> ring
+      Fin.sum_univ_succ, jointGapPolynomials, lineGaps, independentNodeGaps, polarMatrix,
+      polarLinear, hC] <;> ring
   simp only [map_mul, hC]
   rw [ideal_span_unit_mul _ ((isUnit_iff_ne_zero.mpr (pow_ne_zero 2 hA)).map
     (algebraMap ℚ R)), hv]
