@@ -63,5 +63,16 @@ theorem branchMonicization_irreducible_scalar_consequences
   exact ⟨(irreducible_isUnit_mul (isUnit_C.mpr (IsUnit.mk0 _ hs))).mp hi,
     (natDegree_C_mul (p := q) hs).symm.trans hdegree⟩
 
+/-- Canonical rational-ring interface for the scalar consequence. Keeping both
+polynomials symbolic isolates the field-instance conversion before evaluation;
+Comparator's independent kernels need this indirection (see
+`branchVertexGood_of_monic_irreducible`), so do not inline it. -/
+theorem branchMonicization_rat_scalar_consequences
+    (n : ℕ) (p : Polynomial ℚ) (hd : p.natDegree ≤ n) (hn : 2 ≤ n)
+    (hir : Irreducible (branchMonicization n p))
+    (s : ℚ) (q : Polynomial ℚ) (he : p = Polynomial.C s * q) (hs : s ≠ 0) :
+    Irreducible q ∧ q.natDegree = n :=
+  branchMonicization_irreducible_scalar_consequences n p hd hn hir s q he hs
+
 end
 end PierceLengthBound.FixedDividend

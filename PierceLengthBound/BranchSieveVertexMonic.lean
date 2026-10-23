@@ -229,7 +229,7 @@ theorem branchVertexGood_of_monic_irreducible (a : ℕ) (c : ℕ) (x : Fin 4 →
         (branchVertexLabelPolynomial_sub a c x))
   have hscalar : (x 0 : ℚ) ^ branchVertexClearingExponent c ≠ 0 :=
     pow_ne_zero _ (by exact_mod_cast hx)
-  exact ⟨c, branchMonicization_irreducible_scalar_consequences 12
+  exact ⟨c, branchMonicization_rat_scalar_consequences 12
     (branchFamilyEval x (branchVertexFamilyAt (a : ℤ) c)) hd (by norm_num) hi
     ((x 0 : ℚ) ^ branchVertexClearingExponent c) (branchVertexLabelPolynomial a x c)
     he hscalar⟩
