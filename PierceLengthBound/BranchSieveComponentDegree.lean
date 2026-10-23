@@ -26,9 +26,80 @@ lemma irreducible_root_natDegree_le_finrank {K E : Type*} [Field K] [Ring E]
     Polynomial.natDegree_mul_C (inv_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hp.ne_zero))] at h
   exact h
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The branch residue and the two normalization towers use several compatible scalar structures.
-set_option maxHeartbeats 1200000 in
+section InfinityChart
+
+variable (I : Ideal (MvPolynomial (Fin 3) ℚ)) (F : Type*) [Field F] [Algebra ℚ F]
+  [Algebra (MvPolynomial (Fin 3) ℚ ⧸ I) F] [IsScalarTower ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) F]
+
+/-- The coordinate ring of an orbit component inside its function field. -/
+abbrev orbitChartEmbedding : (MvPolynomial (Fin 3) ℚ ⧸ I) →ₐ[ℚ] F :=
+  IsScalarTower.toAlgHom ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) F
+
+/-- The affine chart at infinity of the first coordinate. -/
+abbrev orbitChart : Subalgebra ℚ F :=
+  projectiveChart I (orbitChartEmbedding I F) (Ideal.Quotient.mk I (X 0))
+
+/-- The normalization of the infinity chart in the function field. -/
+abbrev orbitChartClosure : Subalgebra (orbitChart I F) F :=
+  integralClosure (orbitChart I F) F
+
+/-- The chart parameter whose zeros are the branches at infinity. -/
+abbrev orbitChartParameter : orbitChart I F :=
+  chartInfinityCoordinate I (orbitChartEmbedding I F) (Ideal.Quotient.mk I (X 0))
+
+/-- The normalized branches lying over infinity. -/
+def orbitInfinityBranches : Set (IsDedekindDomain.HeightOneSpectrum (orbitChartClosure I F)) :=
+  {p | algebraMap (orbitChart I F) (orbitChartClosure I F) (orbitChartParameter I F) ∈ p.asIdeal}
+
+/-- Every normalized branch at infinity has a residue root of `f`. -/
+def orbitInfinityLabels (f : Polynomial ℚ) : Prop :=
+  ∀ p ∈ orbitInfinityBranches I F,
+    ∃ z : orbitChartClosure I F ⧸ p.asIdeal, Polynomial.aeval z f = 0
+
+end InfinityChart
+
+/-- The common setup on a nonexceptional component: the infinity chart has a
+Dedekind normalization in the function field, finite over the transcendental
+chart parameter, and the rational pattern signs hold. -/
+theorem orbit_infinity_chart_setup
+    {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
+    (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
+    (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
+    (hf : orbitCurveQuadraticQ a b i ∈ I) (hg : orbitCurveEquationQ a b i ∈ I)
+    {d N : ℕ} {c₀ : ℤ} (hd : 0 < d)
+    (hdegree : ∀ n ≥ N,
+      (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = (d : ℤ) * n + c₀)
+    (F : Type*) [Field F] [Algebra ℚ F] [Algebra (MvPolynomial (Fin 3) ℚ ⧸ I) F]
+    [IsScalarTower ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) F]
+    [IsFractionRing (MvPolynomial (Fin 3) ℚ ⧸ I) F] :
+    IsFractionRing (orbitChart I F) F ∧ IsDedekindDomain (orbitChartClosure I F) ∧
+      IsFractionRing (orbitChartClosure I F) F ∧
+      Function.Injective (orbitChartEmbedding I F) ∧ (a : ℚ) ≠ 0 ∧ (Lz a b i : ℚ) ≠ 0 ∧
+      0 < patternRhoQ a b i ∧ 0 < patternUQ a b i ∧ patternVQ a b i < 0 ∧
+      NonexceptionalPattern (patternRhoQ a b i : ℝ) (patternUQ a b i : ℝ)
+        (patternVQ a b i : ℝ) ∧
+      Module.Finite (Algebra.adjoin ℚ {orbitChartParameter I F}) (orbitChart I F) ∧
+      Transcendental ℚ (orbitChartParameter I F) := by
+  obtain ⟨h₁, h₂, -⟩ := orbit_chart_normalization_in_field hba hi hne I hf hg hd hdegree F
+  have hι : Function.Injective (orbitChartEmbedding I F) :=
+    IsFractionRing.injective (MvPolynomial (Fin 3) ℚ ⧸ I) F
+  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
+  have hA : (Lz a b i : ℚ) ≠ 0 := by
+    exact_mod_cast (show Lz a b i ≠ 0 by
+      have := Lz_pos hba (by omega : i + 5 < P a b)
+      omega)
+  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
+  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
+      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  exact ⟨h₁, h₂, IsIntegralClosure.isFractionRing_of_finite_extension (orbitChart I F) F F
+      (orbitChartClosure I F), hι, ha, hA, hρ, hu, hv, hne',
+    nonexceptional_chart_finite_over_parameter hρ hu hv hne'
+      (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
+      (Lz a b i : ℚ) (a : ℚ) ha I hf hg _ hι hd hdegree,
+    nonexceptional_chart_parameter_transcendental hρ hu hv hne'
+      (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
+      (Lz a b i : ℚ) (a : ℚ) ha I hf hg _ hι hd hdegree⟩
+
 /-- On an actual nonexceptional component, an irreducible polynomial whose
 roots label the normalized infinity residues forces twice its degree into the
 original curve degree. The infinity multiplicities and their weighted sum are
@@ -45,40 +116,18 @@ theorem component_degree_lower_of_irreducible_infinity_labels
     [IsScalarTower ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     [IsFractionRing (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     (f : Polynomial ℚ) (hirr : Irreducible f) :
-    let R := MvPolynomial (Fin 3) ℚ ⧸ I
-    let ι := IsScalarTower.toAlgHom ℚ R F
-    let S := projectiveChart I ι (Ideal.Quotient.mk I (X 0))
-    let C := integralClosure S F
-    let w := chartInfinityCoordinate I ι (Ideal.Quotient.mk I (X 0))
-    (∀ p : IsDedekindDomain.HeightOneSpectrum C, algebraMap S C w ∈ p.asIdeal →
-      ∃ z : C ⧸ p.asIdeal, Polynomial.aeval z f = 0) →
+    orbitInfinityLabels I F f →
       2 * f.natDegree ≤ d := by
   classical
-  let R := MvPolynomial (Fin 3) ℚ ⧸ I
-  let ι := IsScalarTower.toAlgHom ℚ R F
-  let S := projectiveChart I ι (Ideal.Quotient.mk I (X 0))
-  let C := integralClosure S F
-  let w := chartInfinityCoordinate I ι (Ideal.Quotient.mk I (X 0))
-  let hnormal := orbit_chart_normalization_in_field hba hi hne I hf hg hd hdegree F
-  let : IsFractionRing S F := hnormal.1
-  let : IsDedekindDomain C := hnormal.2.1
-  let : IsFractionRing C F := IsIntegralClosure.isFractionRing_of_finite_extension S F F C
-  have hι : Function.Injective ι := IsFractionRing.injective R F
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  have hA : (Lz a b i : ℚ) ≠ 0 := by
-    exact_mod_cast (show Lz a b i ≠ 0 by
-      have := Lz_pos hba (by omega : i + 5 < P a b)
-      omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
-  let : Module.Finite (Algebra.adjoin ℚ {w}) S :=
-    nonexceptional_chart_finite_over_parameter hρ hu hv hne'
-      (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-      (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
-  have hw : Transcendental ℚ w := nonexceptional_chart_parameter_transcendental hρ hu hv hne'
-    (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-    (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
+  let ι := orbitChartEmbedding I F
+  let S := orbitChart I F
+  let C := orbitChartClosure I F
+  let w := orbitChartParameter I F
+  -- Fixing the tower instances keeps typeclass search out of the normalization tower.
+  let : Algebra S C := C.algebra
+  let : IsScalarTower S C F := IsScalarTower.subalgebra' S F F C
+  obtain ⟨_, _, _, hι, ha, hA, hρ, hu, hv, hne', _, hw⟩ :=
+    orbit_infinity_chart_setup hba hi hne I hf hg hd hdegree F
   obtain ⟨B, hB, hsum⟩ := normalized_parameter_branches (L := F) w hw
   have hdim : Module.finrank ℚ (S ⧸ Ideal.span {w}) = d :=
     (rational_nonexceptional_chart_infinity_dimension hρ hu hv hne'
@@ -89,14 +138,11 @@ theorem component_degree_lower_of_irreducible_infinity_labels
     have hh := congrArg (algebraMap C F) hz
     rw [← IsScalarTower.algebraMap_apply S C F, map_zero] at hh
     exact hw.ne_zero ((IsFractionRing.injective S F) (hh.trans (map_zero _).symm))
-  change (∀ p : IsDedekindDomain.HeightOneSpectrum C,
-    algebraMap S C w ∈ p.asIdeal → ∃ z : C ⧸ p.asIdeal, Polynomial.aeval z f = 0) →
-      2 * f.natDegree ≤ d
   intro hlabels
   have hsumd := hsum.trans hdim
-  obtain ⟨p, hp, hpterm⟩ := Finset.sum_pos_iff.mp
-    (show 0 < ∑ p ∈ B, multiplicity p.asIdeal (Ideal.span {algebraMap S C w}) *
-      Module.finrank ℚ (C ⧸ p.asIdeal) by rw [hsumd]; exact hd)
+  obtain ⟨p, hp, hpterm⟩ := Finset.sum_pos_iff.mp (hd.trans_eq hsumd.symm)
+  let : Module ℚ (C ⧸ p.asIdeal) := Submodule.Quotient.module' p.asIdeal
+  let : Module.Free ℚ (C ⧸ p.asIdeal) := Module.Free.of_divisionRing ℚ _
   let : Module.Finite ℚ (C ⧸ p.asIdeal) :=
     Module.finite_of_finrank_pos (Nat.pos_of_mul_pos_left hpterm)
   obtain ⟨z, hz⟩ := hlabels p ((hB p).mp hp)
@@ -120,11 +166,8 @@ theorem component_degree_lower_of_irreducible_infinity_labels
     have he' : e = (multiplicity p.asIdeal (Ideal.span {algebraMap S C w}) : ℤ) := by
       exact_mod_cast hmult
     omega
-  have hterm := Finset.single_le_sum
-    (fun p (_hp : p ∈ B) => Nat.zero_le (multiplicity p.asIdeal
-      (Ideal.span {algebraMap S C w}) * Module.finrank ℚ (C ⧸ p.asIdeal))) hp
-  rw [hsumd] at hterm
-  exact (Nat.mul_le_mul hmult' hfdeg).trans hterm
+  exact (Nat.mul_le_mul hmult' hfdeg).trans
+    ((Finset.single_le_sum (fun _ _ => Nat.zero_le _) hp).trans_eq hsumd)
 
 /-- A degree-twelve irreducible branch label forces every such component to
 have degree exactly twenty-four, using the already proved total degree bound. -/
@@ -140,19 +183,11 @@ theorem component_degree_twenty_four_of_irreducible_infinity_labels
     [IsScalarTower ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     [IsFractionRing (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     (f : Polynomial ℚ) (hirr : Irreducible f) (hdeg : f.natDegree = 12) :
-    let R := MvPolynomial (Fin 3) ℚ ⧸ I
-    let ι := IsScalarTower.toAlgHom ℚ R F
-    let S := projectiveChart I ι (Ideal.Quotient.mk I (X 0))
-    let C := integralClosure S F
-    let w := chartInfinityCoordinate I ι (Ideal.Quotient.mk I (X 0))
-    (∀ p : IsDedekindDomain.HeightOneSpectrum C, algebraMap S C w ∈ p.asIdeal →
-      ∃ z : C ⧸ p.asIdeal, Polynomial.aeval z f = 0) →
+    orbitInfinityLabels I F f →
       d = 24 := by
-  have h := component_degree_lower_of_irreducible_infinity_labels
-    hba hi hne I hf hg hd hdegree F f hirr
-  dsimp only at h ⊢
   intro hlabels
-  have hlower := h hlabels
+  have := component_degree_lower_of_irreducible_infinity_labels
+    hba hi hne I hf hg hd hdegree F f hirr hlabels
   omega
 
 end

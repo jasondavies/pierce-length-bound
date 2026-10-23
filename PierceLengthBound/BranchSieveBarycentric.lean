@@ -172,44 +172,21 @@ theorem orbit_infinity_residue_scaled_sign
     (F : Type*) [Field F] [Algebra ℚ F] [Algebra (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     [IsScalarTower ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     [IsFractionRing (MvPolynomial (Fin 3) ℚ ⧸ I) F] :
-    let R := MvPolynomial (Fin 3) ℚ ⧸ I
-    let ι := IsScalarTower.toAlgHom ℚ R F
-    let S := projectiveChart I ι (Ideal.Quotient.mk I (MvPolynomial.X 0))
-    let C := integralClosure S F
-    let w := chartInfinityCoordinate I ι (Ideal.Quotient.mk I (MvPolynomial.X 0))
-    ∀ p : IsDedekindDomain.HeightOneSpectrum C, algebraMap S C w ∈ p.asIdeal →
-      let ψ := (Ideal.Quotient.mkₐ ℚ p.asIdeal).comp (IsScalarTower.toAlgHom ℚ S C)
-      let z := fun j => ψ (chartNode I ι (Ideal.Quotient.mk I (MvPolynomial.X 0)) j)
-      z 0 = 1 ∧ ∃ β : C ⧸ p.asIdeal,
-        β ^ 2 = algebraMap ℚ (C ⧸ p.asIdeal) ((a : ℚ) / (Lz a b i : ℚ)) *
+    ∀ p ∈ orbitInfinityBranches I F,
+      let ψ := (Ideal.Quotient.mkₐ ℚ p.asIdeal).comp
+        (IsScalarTower.toAlgHom ℚ (orbitChart I F) (orbitChartClosure I F))
+      let z := fun j =>
+        ψ (chartNode I (orbitChartEmbedding I F) (Ideal.Quotient.mk I (MvPolynomial.X 0)) j)
+      z 0 = 1 ∧ ∃ β : orbitChartClosure I F ⧸ p.asIdeal,
+        β ^ 2 = algebraMap ℚ _ ((a : ℚ) / (Lz a b i : ℚ)) *
           branchLocationDelta (z 0) (z 1) (z 2) := by
   classical
-  let R := MvPolynomial (Fin 3) ℚ ⧸ I
-  let ι := IsScalarTower.toAlgHom ℚ R F
-  let S := projectiveChart I ι (Ideal.Quotient.mk I (X 0))
-  let C := integralClosure S F
-  let w := chartInfinityCoordinate I ι (Ideal.Quotient.mk I (X 0))
-  let hnormal := orbit_chart_normalization_in_field hba hi hne I hf hg hd hdegree F
-  let : IsFractionRing S F := hnormal.1
-  let : IsDedekindDomain C := hnormal.2.1
-  let : IsFractionRing C F := IsIntegralClosure.isFractionRing_of_finite_extension S F F C
-  have hι : Function.Injective ι := IsFractionRing.injective R F
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  have hA : (Lz a b i : ℚ) ≠ 0 := by
-    exact_mod_cast (show Lz a b i ≠ 0 by
-      have := Lz_pos hba (by omega : i + 5 < P a b)
-      omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
-  let : Module.Finite (Algebra.adjoin ℚ {w}) S :=
-    nonexceptional_chart_finite_over_parameter hρ hu hv hne'
-      (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-      (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
-  have hw : Transcendental ℚ w := nonexceptional_chart_parameter_transcendental hρ hu hv hne'
-    (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-    (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
-  change ∀ p : IsDedekindDomain.HeightOneSpectrum C, algebraMap S C w ∈ p.asIdeal → _
+  let ι := orbitChartEmbedding I F
+  let S := orbitChart I F
+  let C := orbitChartClosure I F
+  let w := orbitChartParameter I F
+  obtain ⟨_, _, _, -, ha, -, -, -, -, -, -, hw⟩ :=
+    orbit_infinity_chart_setup hba hi hne I hf hg hd hdegree F
   intro p hp
   let : Field (C ⧸ p.asIdeal) := Ideal.Quotient.field p.asIdeal
   let ψ := (Ideal.Quotient.mkₐ ℚ p.asIdeal).comp (IsScalarTower.toAlgHom ℚ S C)

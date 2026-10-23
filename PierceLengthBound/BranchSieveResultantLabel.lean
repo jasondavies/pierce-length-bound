@@ -185,8 +185,6 @@ def orbitBranchLabelPolynomial (a b i : ℕ) (c : ℚ) : ℚ[X] :=
   branchResultantLabel a (Lz a b i : ℚ) c (-patternRhoQ a b i - patternUQ a b i)
     (patternUQ a b i - patternVQ a b i) (patternVQ a b i - 1)
 
-set_option maxHeartbeats 1200000 in
--- The `simp only` steps on the transported moment identities need more than the default.
 /-- Every actual normalized branch at infinity contains a root of the explicit
 rational label polynomial. This is the geometric input for the degree-24
 component theorem once the specialized polynomial is irreducible of degree 12. -/
@@ -201,24 +199,17 @@ theorem orbit_infinity_residue_label_root
     (F : Type*) [Field F] [Algebra ℚ F] [Algebra (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     [IsScalarTower ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     [IsFractionRing (MvPolynomial (Fin 3) ℚ ⧸ I) F] (c : ℚ) :
-    let R := MvPolynomial (Fin 3) ℚ ⧸ I
-    let ι := IsScalarTower.toAlgHom ℚ R F
-    let S := projectiveChart I ι (Ideal.Quotient.mk I (MvPolynomial.X 0))
-    let C := integralClosure S F
-    let w := chartInfinityCoordinate I ι (Ideal.Quotient.mk I (MvPolynomial.X 0))
-    ∀ p : IsDedekindDomain.HeightOneSpectrum C, algebraMap S C w ∈ p.asIdeal →
-      ∃ z : C ⧸ p.asIdeal, Polynomial.aeval z (orbitBranchLabelPolynomial a b i c) = 0 := by
+    orbitInfinityLabels I F (orbitBranchLabelPolynomial a b i c) := by
   classical
   let R := MvPolynomial (Fin 3) ℚ ⧸ I
   let ι := IsScalarTower.toAlgHom ℚ R F
   let S := projectiveChart I ι (Ideal.Quotient.mk I (MvPolynomial.X 0))
   let C := integralClosure S F
   let w := chartInfinityCoordinate I ι (Ideal.Quotient.mk I (MvPolynomial.X 0))
-  let hnormal := orbit_chart_normalization_in_field hba hi hne I hf hg hd hdegree F
-  let : IsFractionRing S F := hnormal.1
-  let : IsDedekindDomain C := hnormal.2.1
-  let : IsFractionRing C F := IsIntegralClosure.isFractionRing_of_finite_extension S F F C
-  change ∀ p : IsDedekindDomain.HeightOneSpectrum C, algebraMap S C w ∈ p.asIdeal → _
+  obtain ⟨_, _, _, -, ha, hA, -, -, hv, -, -, -⟩ :=
+    orbit_infinity_chart_setup hba hi hne I hf hg hd hdegree F
+  change ∀ p : IsDedekindDomain.HeightOneSpectrum C, algebraMap S C w ∈ p.asIdeal →
+    ∃ z : C ⧸ p.asIdeal, Polynomial.aeval z (orbitBranchLabelPolynomial a b i c) = 0
   intro p hp
   let : Field (C ⧸ p.asIdeal) := Ideal.Quotient.field p.asIdeal
   let ψ := (Ideal.Quotient.mkₐ ℚ p.asIdeal).comp (IsScalarTower.toAlgHom ℚ S C)
@@ -237,12 +228,6 @@ theorem orbit_infinity_residue_label_root
     rw [hn, map_zero] at hfirst
     exact zero_ne_one hfirst
   have hψw : ψ w = 0 := Ideal.Quotient.eq_zero_iff_mem.mpr hp
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  have hA : (Lz a b i : ℚ) ≠ 0 := by
-    exact_mod_cast (show Lz a b i ≠ 0 by
-      have := Lz_pos hba (by omega : i + 5 < P a b)
-      omega)
-  obtain ⟨_, _, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
   let κ := algebraMap ℚ (C ⧸ p.asIdeal)
   have hc3 : κ (patternVQ a b i - 1) ≠ 0 := by
     simpa only [map_zero] using κ.injective.ne (show patternVQ a b i - 1 ≠ 0 by linarith)
