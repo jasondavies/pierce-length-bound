@@ -12,22 +12,18 @@ public import PierceLengthBound.LatticeExterior
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
+open scoped Matrix
 noncomputable section
 
 lemma det3_cyclic (x y z : Fin 3 → ℤ) : det3 y z x = det3 x y z := by
-  unfold det3
-  ring
+  rw [det3_eq_dotProduct_cross, det3_eq_dotProduct_cross]
+  exact (triple_product_permutation x y z).symm
 
-lemma det3_eq_dot_cross3 (x y z : Fin 3 → ℤ) : det3 x y z = dot3 x (cross3 y z) := by
-  simp only [det3, dot3, cross3_zero, cross3_one, cross3_two]
-  ring
-
-lemma cross3_ne_zero_of_det3 {x y z : Fin 3 → ℤ} (hd : det3 x y z ≠ 0) :
-    cross3 y z ≠ 0 := by
+lemma cross_ne_zero_of_det3 {x y z : Fin 3 → ℤ} (hd : det3 x y z ≠ 0) :
+    y ⨯₃ z ≠ 0 := by
   intro h
-  apply hd
-  rw [det3_eq_dot_cross3, h]
-  simp [dot3]
+  rw [det3_eq_dotProduct_cross, h, dotProduct_zero] at hd
+  exact hd rfl
 
 /-- A reduced basis of a lattice containing `nℤ³` has each vector of length at most
 `8n/√27`. This first-coordinate version is applied cyclically below. -/
@@ -39,16 +35,16 @@ lemma reduced_basis_first_norm_le {Λ : AddSubgroup (Fin 3 → ℤ)} {n : ℕ} (
     (hred : 27 * (nrm3 b1 * nrm3 b2 * nrm3 b3) ≤ 64 * det3 b1 b2 b3 ^ 2) :
     27 * nrm3 b1 ≤ 64 * (n : ℤ) ^ 2 := by
   classical
-  obtain ⟨j, hj⟩ : ∃ j, cross3 b2 b3 j ≠ 0 := by
+  obtain ⟨j, hj⟩ : ∃ j, (b2 ⨯₃ b3) j ≠ 0 := by
     by_contra h
     push Not at h
-    exact cross3_ne_zero_of_det3 hD (funext h)
+    exact cross_ne_zero_of_det3 hD (funext h)
   let w : Fin 3 → ℤ := Pi.single j n
   have hwΛ : w ∈ Λ := hΛ w (fun k => by simp [w, Pi.single_apply]; split_ifs <;> simp)
   have hnorm : nrm3 w = (n : ℤ) ^ 2 := by
-    fin_cases j <;> simp [w, nrm3, dot3] <;> ring
-  have hdet : det3 w b2 b3 = n * cross3 b2 b3 j := by
-    fin_cases j <;> simp [w, det3, cross3]
+    fin_cases j <;> simp [w, nrm3] <;> ring
+  have hdet : det3 w b2 b3 = n * (b2 ⨯₃ b3) j := by
+    fin_cases j <;> simp [w, det3_apply, cross_apply_cyc]
     ring
   have hdw : det3 w b2 b3 ≠ 0 := by
     rw [hdet]
@@ -56,7 +52,7 @@ lemma reduced_basis_first_norm_le {Λ : AddSubgroup (Fin 3 → ℤ)} {n : ℕ} (
   obtain ⟨y, hy, hy1, _, _⟩ := reduced_coords hD (hdvd w hwΛ) hred
   have he : det3 w b2 b3 = y 0 * det3 b1 b2 b3 := by
     rw [hy]
-    simp only [det3, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+    simp only [det3_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
     ring
   have hy0 : y 0 ≠ 0 := by intro hz; apply hdw; rw [he, hz, zero_mul]
   have hy01 : 1 ≤ y 0 ^ 2 := by nlinarith [sq_pos_of_ne_zero hy0]
@@ -117,11 +113,11 @@ theorem reduced_ycoord_norm_bound {b1 b2 b3 w : Fin 3 → ℤ}
     simp [mul_comm]
   have hyc : ycoord b1 b2 b3 w = y := by
     have d0 : det3 w b2 b3 = y 0 * det3 b1 b2 b3 := by
-      simp only [det3]; rw [hyj 0, hyj 1, hyj 2]; ring
+      simp only [det3_apply]; rw [hyj 0, hyj 1, hyj 2]; ring
     have d1 : det3 b1 w b3 = y 1 * det3 b1 b2 b3 := by
-      simp only [det3]; rw [hyj 0, hyj 1, hyj 2]; ring
+      simp only [det3_apply]; rw [hyj 0, hyj 1, hyj 2]; ring
     have d2 : det3 b1 b2 w = y 2 * det3 b1 b2 b3 := by
-      simp only [det3]; rw [hyj 0, hyj 1, hyj 2]; ring
+      simp only [det3_apply]; rw [hyj 0, hyj 1, hyj 2]; ring
     funext j
     fin_cases j <;> simp [ycoord, d0, d1, d2, Int.mul_ediv_cancel _ hD]
   rw [hyc]

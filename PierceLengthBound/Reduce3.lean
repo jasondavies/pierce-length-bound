@@ -24,42 +24,48 @@ Everything is integer arithmetic. No real numbers or geometry of numbers are nee
 @[expose] public section
 
 namespace PierceLengthBound
+open Matrix (vec3_dotProduct)
 
 open Finset
-
-/-- The dot product on `ℤ³`. -/
-def dot3 (x y : Fin 3 → ℤ) : ℤ := x 0 * y 0 + x 1 * y 1 + x 2 * y 2
+open scoped Matrix
 
 /-- The squared length. -/
-def nrm3 (x : Fin 3 → ℤ) : ℤ := dot3 x x
+def nrm3 (x : Fin 3 → ℤ) : ℤ := x ⬝ᵥ x
 
-/-- The determinant of three vectors. -/
-def det3 (x y z : Fin 3 → ℤ) : ℤ :=
-  x 0 * (y 1 * z 2 - y 2 * z 1) - x 1 * (y 0 * z 2 - y 2 * z 0) + x 2 * (y 0 * z 1 - y 1 * z 0)
+/-- The determinant of the matrix with rows `x, y, z`. -/
+def det3 (x y z : Fin 3 → ℤ) : ℤ := (Matrix.of ![x, y, z]).det
+
+/-- `det3` in coordinates (cofactor expansion along the first row). -/
+lemma det3_apply (x y z : Fin 3 → ℤ) :
+    det3 x y z = x 0 * (y 1 * z 2 - y 2 * z 1) - x 1 * (y 0 * z 2 - y 2 * z 0) +
+      x 2 * (y 0 * z 1 - y 1 * z 0) := by
+  rw [det3, Matrix.det_fin_three]
+  simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
+    Matrix.head_cons, Matrix.tail_cons]
+  ring
+
+/-- `det3` is the scalar triple product. -/
+lemma det3_eq_dotProduct_cross (x y z : Fin 3 → ℤ) : det3 x y z = x ⬝ᵥ y ⨯₃ z :=
+  (triple_product_eq_det x y z).symm
 
 /-- The Gram determinant of two vectors. -/
-def gram2 (x y : Fin 3 → ℤ) : ℤ := nrm3 x * nrm3 y - dot3 x y ^ 2
+def gram2 (x y : Fin 3 → ℤ) : ℤ := nrm3 x * nrm3 y - (x ⬝ᵥ y) ^ 2
 
-lemma nrm3_nonneg (x : Fin 3 → ℤ) : 0 ≤ nrm3 x := by
-  unfold nrm3 dot3; nlinarith [mul_self_nonneg (x 0), mul_self_nonneg (x 1), mul_self_nonneg (x 2)]
+lemma nrm3_nonneg (x : Fin 3 → ℤ) : 0 ≤ nrm3 x :=
+  Fintype.sum_nonneg fun i => mul_self_nonneg (x i)
 
-lemma nrm3_eq_zero {x : Fin 3 → ℤ} (h : nrm3 x = 0) : x = 0 := by
-  unfold nrm3 dot3 at h
-  have h0 : x 0 = 0 := by nlinarith [sq_nonneg (x 0), sq_nonneg (x 1), sq_nonneg (x 2)]
-  have h1 : x 1 = 0 := by nlinarith [sq_nonneg (x 0), sq_nonneg (x 1), sq_nonneg (x 2)]
-  have h2 : x 2 = 0 := by nlinarith [sq_nonneg (x 0), sq_nonneg (x 1), sq_nonneg (x 2)]
-  funext j; fin_cases j <;> simp [h0, h1, h2]
+lemma nrm3_eq_zero {x : Fin 3 → ℤ} (h : nrm3 x = 0) : x = 0 := dotProduct_self_eq_zero.mp h
 
-lemma det3_zero_left (y z : Fin 3 → ℤ) : det3 0 y z = 0 := by simp [det3]
+lemma det3_zero_left (y z : Fin 3 → ℤ) : det3 0 y z = 0 := by simp [det3_apply]
 
 /-- Lagrange: `|x|²|y|² - ⟨x,y⟩² = |x × y|² ≥ 0`. -/
 lemma gram2_nonneg (x y : Fin 3 → ℤ) : 0 ≤ gram2 x y := by
   have : gram2 x y = (x 1 * y 2 - x 2 * y 1) ^ 2 + (x 2 * y 0 - x 0 * y 2) ^ 2 +
-      (x 0 * y 1 - x 1 * y 0) ^ 2 := by unfold gram2 nrm3 dot3; ring
+      (x 0 * y 1 - x 1 * y 0) ^ 2 := by simp only [gram2, nrm3, vec3_dotProduct]; ring
   rw [this]; positivity
 
 /-- Cauchy–Schwarz in `ℤ³`. -/
-lemma dot3_sq_le (x y : Fin 3 → ℤ) : dot3 x y ^ 2 ≤ nrm3 x * nrm3 y := by
+lemma dotProduct_sq_le (x y : Fin 3 → ℤ) : (x ⬝ᵥ y) ^ 2 ≤ nrm3 x * nrm3 y := by
   have := gram2_nonneg x y
   unfold gram2 at this
   linarith
@@ -70,7 +76,7 @@ lemma nrm3_le_of_abs_le {x : Fin 3 → ℤ} {H : ℕ} (hx : ∀ a, |x a| ≤ H) 
   have e : ∀ a, x a ^ 2 ≤ (H : ℤ) ^ 2 := fun a => by
     rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (hx a) 2
   have := e 0; have := e 1; have := e 2
-  simp only [nrm3, dot3] at *
+  simp only [nrm3, vec3_dotProduct] at *
   nlinarith
 
 /-- Hadamard's inequality in `ℤ³`. -/
@@ -78,16 +84,17 @@ lemma det3_sq_le (x y z : Fin 3 → ℤ) : det3 x y z ^ 2 ≤ nrm3 x * nrm3 y * 
   set c0 := y 1 * z 2 - y 2 * z 1
   set c1 := y 2 * z 0 - y 0 * z 2
   set c2 := y 0 * z 1 - y 1 * z 0
-  have hd : det3 x y z = x 0 * c0 + x 1 * c1 + x 2 * c2 := by simp only [det3, c0, c1, c2]; ring
+  have hd : det3 x y z = x 0 * c0 + x 1 * c1 + x 2 * c2 := by
+    simp only [det3_apply, c0, c1, c2]; ring
   have hc : c0 ^ 2 + c1 ^ 2 + c2 ^ 2 = gram2 y z := by
-    simp only [c0, c1, c2, gram2, nrm3, dot3]; ring
+    simp only [c0, c1, c2, gram2, nrm3, vec3_dotProduct]; ring
   have hcs : (x 0 * c0 + x 1 * c1 + x 2 * c2) ^ 2 ≤ nrm3 x * (c0 ^ 2 + c1 ^ 2 + c2 ^ 2) := by
     have : nrm3 x * (c0 ^ 2 + c1 ^ 2 + c2 ^ 2) - (x 0 * c0 + x 1 * c1 + x 2 * c2) ^ 2 =
         (x 1 * c2 - x 2 * c1) ^ 2 + (x 2 * c0 - x 0 * c2) ^ 2 + (x 0 * c1 - x 1 * c0) ^ 2 := by
-      unfold nrm3 dot3; ring
+      simp only [nrm3, vec3_dotProduct]; ring
     nlinarith [sq_nonneg (x 1 * c2 - x 2 * c1), sq_nonneg (x 2 * c0 - x 0 * c2),
       sq_nonneg (x 0 * c1 - x 1 * c0)]
-  have hg : gram2 y z ≤ nrm3 y * nrm3 z := by unfold gram2; nlinarith [sq_nonneg (dot3 y z)]
+  have hg : gram2 y z ≤ nrm3 y * nrm3 z := by unfold gram2; nlinarith [sq_nonneg (y ⬝ᵥ z)]
   rw [hd]
   calc _ ≤ nrm3 x * (c0 ^ 2 + c1 ^ 2 + c2 ^ 2) := hcs
     _ = nrm3 x * gram2 y z := by rw [hc]
@@ -98,13 +105,13 @@ lemma det3_sq_le (x y z : Fin 3 → ℤ) : det3 x y z ^ 2 ≤ nrm3 x * nrm3 y * 
 lemma cramer (b1 b2 b3 w : Fin 3 → ℤ) :
     det3 b1 b2 b3 • w = det3 w b2 b3 • b1 + det3 b1 w b3 • b2 + det3 b1 b2 w • b3 := by
   funext j
-  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, det3]
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, det3_apply]
   fin_cases j <;> simp <;> ring
 
 /-- A determinant vanishes if the Gram determinant of two of its vectors does. -/
 lemma det3_eq_zero_of_gram {x y z : Fin 3 → ℤ} (h : gram2 x y = 0) : det3 x y z = 0 := by
   have e : gram2 x y = (x 1 * y 2 - x 2 * y 1) ^ 2 + (x 2 * y 0 - x 0 * y 2) ^ 2 +
-      (x 0 * y 1 - x 1 * y 0) ^ 2 := by unfold gram2 nrm3 dot3; ring
+      (x 0 * y 1 - x 1 * y 0) ^ 2 := by simp only [gram2, nrm3, vec3_dotProduct]; ring
   rw [e] at h
   have h0 : x 1 * y 2 - x 2 * y 1 = 0 := by
     nlinarith [sq_nonneg (x 1 * y 2 - x 2 * y 1), sq_nonneg (x 2 * y 0 - x 0 * y 2),
@@ -116,7 +123,7 @@ lemma det3_eq_zero_of_gram {x y z : Fin 3 → ℤ} (h : gram2 x y = 0) : det3 x 
     nlinarith [sq_nonneg (x 1 * y 2 - x 2 * y 1), sq_nonneg (x 2 * y 0 - x 0 * y 2),
       sq_nonneg (x 0 * y 1 - x 1 * y 0)]
   have : det3 x y z = z 0 * (x 1 * y 2 - x 2 * y 1) + z 1 * (x 2 * y 0 - x 0 * y 2) +
-      z 2 * (x 0 * y 1 - x 1 * y 0) := by unfold det3; ring
+      z 2 * (x 0 * y 1 - x 1 * y 0) := by simp only [det3_apply]; ring
   rw [this, h0, h1, h2]; ring
 
 /-- Rounding: some `n` has `|2(s + n d)| ≤ d`. -/
@@ -172,7 +179,7 @@ lemma hasTri_of {m : ℕ} (hm : 0 < m) (hΛ : ∀ x : Fin 3 → ℤ, (∀ j, (m 
   · fin_cases j <;> simp
   · fin_cases j <;> simp
   · fin_cases j <;> simp
-  · simp [det3]; ring_nf; simp [Int.natAbs_pow]
+  · simp [det3_apply]; ring_nf; simp [Int.natAbs_pow]
 
 /-- The minimal determinant triples with a given value of `|b₁|²`. -/
 def MinTri (I : ℕ) (b1 b2 b3 : Fin 3 → ℤ) : Prop :=
@@ -196,7 +203,7 @@ lemma dvd_det_of_min {I : ℕ} (hI : ∀ n, n < I → ¬ HasTri Λ n) {b1 b2 b3 
   have hdr : det3 (w - q • b1) b2 b3 = r := by
     have e := Int.emod_add_mul_ediv c D
     have : det3 (w - q • b1) b2 b3 = c - q * D := by
-      simp only [c, D, det3, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]; ring
+      simp only [c, D, det3_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]; ring
     rw [this]; linarith [mul_comm D q]
   by_contra hndvd
   have hr : r ≠ 0 := fun h => hndvd (Int.dvd_of_emod_eq_zero h)
@@ -213,13 +220,13 @@ lemma basis_of_min {I : ℕ} (hI : ∀ n, n < I → ¬ HasTri Λ n) {b1 b2 b3 : 
     det3 b1 b2 b3 ∣ det3 w b2 b3 ∧ det3 b1 b2 b3 ∣ det3 b1 w b3 ∧
       det3 b1 b2 b3 ∣ det3 b1 b2 w := by
   refine ⟨dvd_det_of_min hI h1 h2 h3 hdet hI0 hw, ?_, ?_⟩
-  · have e1 : det3 b2 b1 b3 = -det3 b1 b2 b3 := by unfold det3; ring
-    have e2 : det3 w b1 b3 = -det3 b1 w b3 := by unfold det3; ring
+  · have e1 : det3 b2 b1 b3 = -det3 b1 b2 b3 := by simp only [det3_apply]; ring
+    have e2 : det3 w b1 b3 = -det3 b1 w b3 := by simp only [det3_apply]; ring
     have := dvd_det_of_min hI h2 h1 h3 (by rw [e1, Int.natAbs_neg]; exact hdet) hI0 hw
     rw [e1, e2] at this
     exact dvd_neg.mp (neg_dvd.mp this)
-  · have e1 : det3 b3 b2 b1 = -det3 b1 b2 b3 := by unfold det3; ring
-    have e2 : det3 w b2 b1 = -det3 b1 b2 w := by unfold det3; ring
+  · have e1 : det3 b3 b2 b1 = -det3 b1 b2 b3 := by simp only [det3_apply]; ring
+    have e2 : det3 w b2 b1 = -det3 b1 b2 w := by simp only [det3_apply]; ring
     have := dvd_det_of_min hI h3 h2 h1 (by rw [e1, Int.natAbs_neg]; exact hdet) hI0 hw
     rw [e1, e2] at this
     exact dvd_neg.mp (neg_dvd.mp this)
@@ -278,45 +285,47 @@ theorem reduced_basis {m : ℕ} (hm : 0 < m)
     · exfalso; exact hD (det3_eq_zero_of_gram h.symm)
   have hD2 : 0 < D ^ 2 := by positivity
   -- inequality A: swap after shearing
-  set s := dot3 b1 b2
+  set s := b1 ⬝ᵥ b2
   obtain ⟨n, hn⟩ := exists_round s d1 hd1pos
   set b2' := b2 + n • b1
   have hb2' : b2' ∈ Λ := add_mem h2 (zsmul_mem h1 n)
   have iA : d1 * nrm3 b2' = d2 + (s + n * d1) ^ 2 := by
-    simp only [b2', d1, d2, s, gram2, nrm3, dot3, Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring
+    simp only [b2', d1, d2, s, gram2, nrm3, vec3_dotProduct, Pi.add_apply, Pi.smul_apply,
+      smul_eq_mul]; ring
   have hA0 : d1 ≤ nrm3 b2' := by
     have := hd1min b2' b1 b3 ⟨hb2', h1, h3, by
       rw [show det3 b2' b1 b3 = -D by
-        simp only [b2', D, det3, Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring,
+        simp only [b2', D, det3_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring,
         Int.natAbs_neg]; exact hdet⟩
     rw [e1] at this; exact this
   have hA : 3 * d1 ^ 2 ≤ 4 * d2 := by nlinarith
   -- inequality B: shear the third vector, then swap
-  set B23 := d1 * dot3 b2 b3 - s * dot3 b1 b3
+  set B23 := d1 * b2 ⬝ᵥ b3 - s * b1 ⬝ᵥ b3
   obtain ⟨n2, hn2⟩ := exists_round B23 d2 hd2pos
   set c := b3 + n2 • b2
   have hc : c ∈ Λ := add_mem h3 (zsmul_mem h2 n2)
   have iB : d2 * gram2 b1 c = (B23 + n2 * d2) ^ 2 + d1 * D ^ 2 := by
-    simp only [c, B23, d1, d2, s, D, gram2, nrm3, dot3, det3, Pi.add_apply, Pi.smul_apply,
-      smul_eq_mul]; ring
+    simp only [c, B23, d1, d2, s, D, gram2, nrm3, vec3_dotProduct, det3_apply, Pi.add_apply,
+      Pi.smul_apply, smul_eq_mul]; ring
   have hB0 : d2 ≤ gram2 b1 c := by
     have := hd2min c b2 ⟨h1, hc, h2, by
       rw [show det3 b1 c b2 = -D by
-        simp only [c, D, det3, Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring,
+        simp only [c, D, det3_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring,
         Int.natAbs_neg]; exact hdet⟩
     rw [e2] at this; exact this
   have hB : 3 * d2 ^ 2 ≤ 4 * d1 * D ^ 2 := by
     have : d2 * d2 ≤ d2 * gram2 b1 c := mul_le_mul_of_nonneg_left hB0 hd2pos.le
     nlinarith
   -- size reduction of the third vector against `b₁`
-  set s' := dot3 b1 c
+  set s' := b1 ⬝ᵥ c
   obtain ⟨n1, hn1⟩ := exists_round s' d1 hd1pos
   set b3' := c + n1 • b1
   have hb3' : b3' ∈ Λ := add_mem hc (zsmul_mem h1 n1)
   have iC : d1 * nrm3 b3' = gram2 b1 c + (s' + n1 * d1) ^ 2 := by
-    simp only [b3', s', d1, gram2, nrm3, dot3, Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring
+    simp only [b3', s', d1, gram2, nrm3, vec3_dotProduct, Pi.add_apply, Pi.smul_apply,
+      smul_eq_mul]; ring
   have hdet' : det3 b1 b2' b3' = D := by
-    simp only [b2', b3', c, D, det3, Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring
+    simp only [b2', b3', c, D, det3_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring
   -- the length bounds
   have L2 := red_arith2 hA iA (by linarith [hn,
       show (2 * (s + n * d1)) ^ 2 = 4 * (s + n * d1) ^ 2 by ring])
@@ -365,7 +374,7 @@ theorem reduced_coords {b1 b2 b3 w : Fin 3 → ℤ} (hD : det3 b1 b2 b3 ≠ 0)
       nlinarith
     exact le_of_mul_le_mul_left this hD2
   · have h := det3_sq_le w b1 b3
-    have e : det3 w b1 b3 = -(D * y1) := by rw [← hy1]; unfold det3; ring
+    have e : det3 w b1 b3 = -(D * y1) := by rw [← hy1]; simp only [det3_apply]; ring
     rw [e, neg_sq] at h
     have : D ^ 2 * (27 * (nrm3 b2 * y1 ^ 2)) ≤ D ^ 2 * (64 * nrm3 w) := by
       have := mul_le_mul_of_nonneg_left h (show 0 ≤ 27 * nrm3 b2 by positivity)
@@ -373,7 +382,7 @@ theorem reduced_coords {b1 b2 b3 w : Fin 3 → ℤ} (hD : det3 b1 b2 b3 ≠ 0)
       nlinarith
     exact le_of_mul_le_mul_left this hD2
   · have h := det3_sq_le w b1 b2
-    have e : det3 w b1 b2 = D * y2 := by rw [← hy2]; unfold det3; ring
+    have e : det3 w b1 b2 = D * y2 := by rw [← hy2]; simp only [det3_apply]; ring
     rw [e] at h
     have : D ^ 2 * (27 * (nrm3 b3 * y2 ^ 2)) ≤ D ^ 2 * (64 * nrm3 w) := by
       have := mul_le_mul_of_nonneg_left h (show 0 ≤ 27 * nrm3 b3 by positivity)

@@ -103,7 +103,7 @@ theorem lattice_curvature_coordinates {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
     exact pow_ne_zero _ (mul_ne_zero (pow_ne_zero _ hm) h0)
   have hN : N.det = Δ * κ ^ 2 := by
     change (Matrix.of ![b1, b2, b3] * Cm.adjugate).det = _
-    rw [det_mul, det_of_rows3, det_adjugate, Fintype.card_fin]
+    rw [det_mul, det_adjugate, Fintype.card_fin]; rfl
   have hNq : (N.map (Int.cast : ℤ → ℚ)).det = (N.det : ℚ) :=
     ((Int.castRingHom ℚ).map_det N).symm
   let r : ℚ := (m : ℚ) ^ 2 / ((Δ : ℚ) * κ)
@@ -116,36 +116,34 @@ theorem lattice_curvature_coordinates {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
   · rw [det_smul, hNq, hN]
     push_cast
     positivity
-  have hlift (row : Fin 3) (j : Fin 5) : m * M row j = dot3 (Lrow p τ j) (piv3 (M row)) := by
+  have hlift (row : Fin 3) (j : Fin 5) : m * M row j = Lrow p τ j ⬝ᵥ piv3 (M row) := by
     have h := lift_row M τ row j
     rw [hM] at h
     exact h
   have hmem (row : Fin 3) : piv3 (M row) ∈ pivLat p := pivotPart_mem_pivLat hM row
   have spec := wcoord_spec hD (hbas _ (hmem 0)) (hbas _ (hmem 1)) hred hRpos n1 n2 n3
   refine ⟨?_, fun S hS t => ?_⟩
-  · set w := cross3 (piv3 (M 0)) (piv3 (M 1))
+  · set w := piv3 (M 0) ⨯₃ piv3 (M 1)
     set W := curvatureVector (firstThree (M 0)) (firstThree (M 1))
     have hW : W = ![M 0 1 * M 1 2 - M 0 2 * M 1 1, -(M 0 0 * M 1 2 - M 0 2 * M 1 0),
         M 0 0 * M 1 1 - M 0 1 * M 1 0] := by
       funext t; fin_cases t <;> rfl
-    have hdot (x y : Fin 3 → ℤ) : x ⬝ᵥ y = dot3 x y := by
-      simp [dotProduct, Fin.sum_univ_three, dot3]
     -- `Cof · w = m² W`, by Binet–Cauchy
     have hCw : Cm *ᵥ w = m ^ 2 • W := by
       have l0 := hlift 0 0; have l1 := hlift 0 1; have l2 := hlift 0 2
       have k0 := hlift 1 0; have k1 := hlift 1 1; have k2 := hlift 1 2
       funext t
-      simp only [Cm, cofRows, mulVec, of_apply, hdot, hW, Pi.smul_apply, smul_eq_mul]
+      simp only [Cm, cofRows, mulVec, of_apply, hW, Pi.smul_apply, smul_eq_mul]
       fin_cases t <;>
         simp only [Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, cons_val_zero, cons_val_one,
-          cons_val_two, head_cons, tail_cons, w, ← binet_cauchy3, ← l0, ← l1, ← l2, ← k0, ← k1,
+          cons_val_two, head_cons, tail_cons, w, cross_dot_cross, ← l0, ← l1, ← l2, ← k0, ← k1,
           ← k2] <;>
         ring
     -- `Bᵀ w = Δ c`
     have hBw : Bt *ᵥ w = Δ • c (M 0) (M 1) := by
       obtain ⟨_, ⟨e0, e1, e2⟩, _⟩ := spec
       funext t
-      simp only [Bt, mulVec, of_apply, hdot, Pi.smul_apply, smul_eq_mul]
+      simp only [Bt, mulVec, of_apply, Pi.smul_apply, smul_eq_mul]
       fin_cases t
       · exact e0
       · exact e1
@@ -168,7 +166,7 @@ theorem lattice_curvature_coordinates {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
     simp only [r, eq_intCast]
     field_simp
     linear_combination htq
-  · exact wcoord_bound spec.2.2 (fun a => hS (pcol τ (a + 1)) (pcol τ (a + 2))) t
+  · exact wcoord_bound spec.2.2 (fun a => by rw [cross_apply_cyc]; exact hS _ _) t
 
 end
 end PierceLengthBound.FixedDividend

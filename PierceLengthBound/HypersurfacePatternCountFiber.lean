@@ -42,19 +42,19 @@ theorem crossSpanLattice_polynomial_fiber_count {n X : ℕ} (hn : 0 < n) (hX : n
     by_contra hnot
     have : b1 = 0 := nrm3_eq_zero (by omega)
     apply hD
-    simp [this, det3]
+    simp [this, det3_apply]
   have nb2 : 0 < nrm3 b2 := by
     have h := nrm3_nonneg b2
     by_contra hnot
     have : b2 = 0 := nrm3_eq_zero (by omega)
     apply hD
-    simp [this, det3]
+    simp [this, det3_apply]
   have nb3 : 0 < nrm3 b3 := by
     have h := nrm3_nonneg b3
     by_contra hnot
     have : b3 = 0 := nrm3_eq_zero (by omega)
     apply hD
-    simp [this, det3]
+    simp [this, det3_apply]
   let ℓ : Fin 3 → ℝ := fun i => Real.sqrt (nrm3 (![b1, b2, b3] i) : ℝ)
   have hℓ : ∀ i, 0 < ℓ i := by
     intro i
@@ -83,7 +83,7 @@ theorem crossSpanLattice_polynomial_fiber_count {n X : ℕ} (hn : 0 < n) (hX : n
     · exact small b2 hn2
     · exact small b3 hn3
   have pair (x y : Fin 3 → ℤ) (hx : x ∈ crossSpanLattice n u)
-      (hy : y ∈ crossSpanLattice n u) (hxy : cross3 x y ≠ 0) :
+      (hy : y ∈ crossSpanLattice n u) (hxy : x ⨯₃ y ≠ 0) :
       (n : ℝ) * normalShortR n u ≤ Real.sqrt (nrm3 x : ℝ) * Real.sqrt (nrm3 y : ℝ) := by
     have hp := crossSpanLattice_pair_norm_bound hn hx hy hxy
     have hx0 : (0 : ℝ) ≤ nrm3 x := by exact_mod_cast nrm3_nonneg x
@@ -92,11 +92,11 @@ theorem crossSpanLattice_polynomial_fiber_count {n X : ℕ} (hn : 0 < n) (hX : n
     simp only [mul_pow, Real.sq_sqrt hx0, Real.sq_sqrt hy0]
     exact_mod_cast hp
   have hp01 : (n : ℝ) * normalShortR n u ≤ ℓ 0 * ℓ 1 :=
-    pair b1 b2 h1 h2 (cross3_ne_zero_of_det3 hD3)
+    pair b1 b2 h1 h2 (cross_ne_zero_of_det3 hD3)
   have hp12 : (n : ℝ) * normalShortR n u ≤ ℓ 1 * ℓ 2 :=
-    pair b2 b3 h2 h3 (cross3_ne_zero_of_det3 hD)
+    pair b2 b3 h2 h3 (cross_ne_zero_of_det3 hD)
   have hp20 : (n : ℝ) * normalShortR n u ≤ ℓ 2 * ℓ 0 :=
-    pair b3 b1 h3 h1 (cross3_ne_zero_of_det3 hD2)
+    pair b3 b1 h3 h1 (cross_ne_zero_of_det3 hD2)
   have hpair : ∀ i j, i ≠ j → (n : ℝ) * normalShortR n u ≤ ℓ i * ℓ j := by
     intro i j hij
     fin_cases i <;> fin_cases j <;>
@@ -116,7 +116,7 @@ theorem crossSpanLattice_polynomial_fiber_count {n X : ℕ} (hn : 0 < n) (hX : n
   let C : Matrix (Fin 3) (Fin 3) ℚ := fun j i => ((![b1, b2, b3] i) j : ℚ)
   have hdet : C.det = (det3 b1 b2 b3 : ℚ) := by
     rw [Matrix.det_fin_three]
-    simp [C, det3]
+    simp [C, det3_apply]
     ring
   have hC : C.det ≠ 0 := by rw [hdet]; exact_mod_cast hD
   let T := (ibox3 X).filter fun v => v ∈ crossSpanLattice n u
@@ -150,7 +150,7 @@ solutions, as required by the chart fibers. -/
 theorem primitive_cross_congruence_polynomial_fiber_count {n X : ℕ}
     (hn : 0 < n) (hX : n ≤ X) (u : Fin 3 → ℤ) (hu : gcd4 n u = 1)
     {f : MvPolynomial (Fin 3) ℚ} (hf : f ≠ 0) :
-    (((ibox3 X).filter fun v => (∀ j, (n : ℤ) ∣ cross3 u v j) ∧
+    (((ibox3 X).filter fun v => (∀ j, (n : ℤ) ∣ (u ⨯₃ v) j) ∧
       eval (fun i => (v i : ℚ)) f = 0).card : ℝ) ≤
       243 * f.totalDegree * (X : ℝ) ^ 2 / (n * (normalShortR n u : ℝ)) := by
   classical

@@ -13,6 +13,7 @@ public import PierceLengthBound.HypersurfacePatternCountPolynomial
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open MvPolynomial Finset
+open scoped Matrix
 noncomputable section
 
 /-- The two possible signs of a nonzero pivot. -/
@@ -83,20 +84,20 @@ lemma pivot_chart_crossSet {p : Fin 10 → ℤ} (hp : PluckerRel p) :
     refine ⟨pwS t i * p (pwX t i), ?_⟩
     have h1 := hp t i
     have h2 := (sign_sq t i).2.2
-    linear_combination (-pwS t i) * h1 - cross3 (uVec p t) (vVec p t) i * h2
+    linear_combination (-pwS t i) * h1 - (uVec p t ⨯₃ vVec p t) i * h2
 
 lemma minorChartDecode_pivot {p : Fin 10 → ℤ} (hp : PluckerRel p)
     (ht : p (piv p) ≠ 0) :
     minorChartDecode (piv p) (decide (0 < p (piv p))) (p (piv p)).natAbs
       (uVec p (piv p), vVec p (piv p)) = p := by
-  have he := minorChartPoint_reconstruct (pluckerRelRing_intCast hp) (piv p)
+  have he := minorChartPoint_reconstruct (pluckerRel_intCast hp) (piv p)
     (by exact_mod_cast ht)
-  have hu : (fun i => (uVec p (piv p) i : ℚ)) = chartU (fun j => (p j : ℚ)) (piv p) := by
+  have hu : (fun i => (uVec p (piv p) i : ℚ)) = uVec (fun j => (p j : ℚ)) (piv p) := by
     funext i
-    simp [uVec, chartU]
-  have hv : (fun i => (vVec p (piv p) i : ℚ)) = chartV (fun j => (p j : ℚ)) (piv p) := by
+    simp [uVec]
+  have hv : (fun i => (vVec p (piv p) i : ℚ)) = vVec (fun j => (p j : ℚ)) (piv p) := by
     funext i
-    simp [vVec, chartV]
+    simp [vVec]
   funext j
   dsimp only [minorChartDecode, Prod.fst, Prod.snd]
   rw [← pivot_signed_natAbs, hu, hv, he]

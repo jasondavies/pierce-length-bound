@@ -22,7 +22,7 @@ lemma lift_first_det (M : Fin 3 → Fin 5 → ℤ) (τ : Fin 10) :
     det3 (Lrow (plk M) τ 0) (Lrow (plk M) τ 1) (Lrow (plk M) τ 2) =
       plk M τ ^ 2 * plk M 0 := by
   fin_cases τ <;>
-    simp [Lrow, role, det3, plk, trip, minor3, uVec, vVec, puX, puS, pvX, pvS] <;> ring
+    simp [Lrow, role, det3_apply, plk, trip, minor3, uVec, vVec, puX, puS, pvX, pvS] <;> ring
 
 /-- Lift the first three gaps; cumulative summation gives the node coordinates. -/
 def liftFirstM (p : Fin 10 → ℤ) (b1 b2 b3 : Fin 3 → ℤ) : Matrix (Fin 3) (Fin 3) ℤ :=
@@ -36,9 +36,9 @@ lemma liftFirstM_det_ne {p : Fin 10 → ℤ} {M : Fin 3 → Fin 5 → ℤ} {b1 b
     (hD : det3 b1 b2 b3 ≠ 0) : (liftFirstM p b1 b2 b3).det ≠ 0 := by
   let τ := piv p
   have hE : p τ • liftFirstM p b1 b2 b3 = Matrix.of
-      ![![dot3 (Lrow p τ 0) b1, dot3 (Lrow p τ 0) b2, dot3 (Lrow p τ 0) b3],
-        ![dot3 (Lrow p τ 1) b1, dot3 (Lrow p τ 1) b2, dot3 (Lrow p τ 1) b3],
-        ![dot3 (Lrow p τ 2) b1, dot3 (Lrow p τ 2) b2, dot3 (Lrow p τ 2) b3]] := by
+      ![![Lrow p τ 0 ⬝ᵥ b1, Lrow p τ 0 ⬝ᵥ b2, Lrow p τ 0 ⬝ᵥ b3],
+        ![Lrow p τ 1 ⬝ᵥ b1, Lrow p τ 1 ⬝ᵥ b2, Lrow p τ 1 ⬝ᵥ b3],
+        ![Lrow p τ 2 ⬝ᵥ b1, Lrow p τ 2 ⬝ᵥ b2, Lrow p τ 2 ⬝ᵥ b3]] := by
     ext i j
     fin_cases i <;> fin_cases j <;>
       simp [liftFirstM, liftv_spec h1, liftv_spec h2, liftv_spec h3, τ]
@@ -70,7 +70,7 @@ theorem lattice_node_coordinates {p : Fin 10 → ℤ} {H : ℕ} {V : Finset (Fin
   obtain ⟨b1, b2, b3, h1, h2, h3, hD, -, hbas, hred, hRpos, n1, n2, n3⟩ := pattern_reduced_basis hm
   let kp := fun k : Fin 5 → ℤ => fun j => k (pcol τ j)
   let yc := fun k : Fin 5 → ℤ => ycoord b1 b2 b3 (kp k)
-  have hlift : ∀ k ∈ V, ∀ j, m * k j = dot3 (Lrow p τ j) (kp k) := by
+  have hlift : ∀ k ∈ V, ∀ j, m * k j = Lrow p τ j ⬝ᵥ kp k := by
     intro k hk j
     obtain ⟨_, Mk, hMk, hrow⟩ := hVs k hk
     have h := lift_row Mk τ 1 j
@@ -94,7 +94,7 @@ theorem lattice_node_coordinates {p : Fin 10 → ℤ} {H : ℕ} {V : Finset (Fin
     have e1 := liftv_spec h1 j
     have e2 := liftv_spec h2 j
     have e3 := liftv_spec h3 j
-    simp only [dot3] at e1 e2 e3 ⊢
+    simp only [vec3_dotProduct] at e1 e2 e3 ⊢
     rw [hj 0, hj 1, hj 2]
     linear_combination -(yc k 0 * e1 + yc k 1 * e2 + yc k 2 * e3)
   let U : Matrix (Fin 3) (Fin 3) ℤ := !![1, 0, 0; 1, 1, 0; 1, 1, 1]

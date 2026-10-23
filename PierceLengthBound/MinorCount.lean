@@ -25,6 +25,7 @@ form two vectors `u, v ∈ ℤ³` (Cramer's rule), and the remaining three minor
 namespace PierceLengthBound
 
 open Finset
+open scoped Matrix
 
 def trip : Fin 10 → Fin 5 × Fin 5 × Fin 5 := ![(0, 1, 2), (0, 1, 3), (0, 1, 4), (0, 2, 3),
     (0, 2, 4), (0, 3, 4), (1, 2, 3), (1, 2, 4), (1, 3, 4), (2, 3, 4)]
@@ -47,31 +48,47 @@ def pwX : Fin 10 → Fin 3 → Fin 10 := ![![5, 8, 9], ![4, 7, 9], ![3, 6, 9], !
 def pwS : Fin 10 → Fin 3 → ℤ := ![![1, 1, 1], ![1, 1, -1], ![1, 1, 1], ![1, -1, -1], ![1, -1, 1],
     ![1, 1, 1], ![-1, -1, -1], ![-1, -1, 1], ![-1, 1, 1], ![1, 1, 1]]
 
+/-! The minors, the pivot vectors and the Plücker relations make sense over any commutative ring.
+They are elaborated without the expected type, so `(plk M t : ℚ)` for an integer matrix `M`
+still means the cast of the integer minor. -/
+
+variable {R : Type*} [CommRing R]
+
 /-- The `3 × 3` minor on columns `c₁, c₂, c₃`. -/
-def minor3 (M : Fin 3 → Fin 5 → ℤ) (c1 c2 c3 : Fin 5) : ℤ :=
+@[elab_without_expected_type]
+def minor3 (M : Fin 3 → Fin 5 → R) (c1 c2 c3 : Fin 5) : R :=
   M 0 c1 * (M 1 c2 * M 2 c3 - M 1 c3 * M 2 c2) - M 0 c2 * (M 1 c1 * M 2 c3 - M 1 c3 * M 2 c1) +
     M 0 c3 * (M 1 c1 * M 2 c2 - M 1 c2 * M 2 c1)
 
 /-- The vector of the ten minors. -/
-def plk (M : Fin 3 → Fin 5 → ℤ) (t : Fin 10) : ℤ := minor3 M (trip t).1 (trip t).2.1 (trip t).2.2
+@[elab_without_expected_type]
+def plk (M : Fin 3 → Fin 5 → R) (t : Fin 10) : R := minor3 M (trip t).1 (trip t).2.1 (trip t).2.2
 
 /-- The `u`-coordinates attached to a pivot. -/
-def uVec (p : Fin 10 → ℤ) (t : Fin 10) (a : Fin 3) : ℤ := puS t a * p (puX t a)
+@[elab_without_expected_type]
+def uVec (p : Fin 10 → R) (t : Fin 10) (a : Fin 3) : R := puS t a * p (puX t a)
 
 /-- The `v`-coordinates attached to a pivot. -/
-def vVec (p : Fin 10 → ℤ) (t : Fin 10) (a : Fin 3) : ℤ := pvS t a * p (pvX t a)
-
-/-- The cross product. -/
-def cross3 (u v : Fin 3 → ℤ) (a : Fin 3) : ℤ := u (a + 1) * v (a + 2) - u (a + 2) * v (a + 1)
+@[elab_without_expected_type]
+def vVec (p : Fin 10 → R) (t : Fin 10) (a : Fin 3) : R := pvS t a * p (pvX t a)
 
 /-- The Plücker relations: `p_τ · p_{w_a} = ± (u × v)_a`. -/
-def PluckerRel (p : Fin 10 → ℤ) : Prop :=
-  ∀ t a, p t * p (pwX t a) = pwS t a * cross3 (uVec p t) (vVec p t) a
+def PluckerRel (p : Fin 10 → R) : Prop :=
+  ∀ t a, p t * p (pwX t a) = pwS t a * (uVec p t ⨯₃ vVec p t) a
 
-theorem plucker (M : Fin 3 → Fin 5 → ℤ) : PluckerRel (plk M) := by
+theorem plucker (M : Fin 3 → Fin 5 → R) : PluckerRel (plk M) := by
   intro t a
   fin_cases t <;> fin_cases a <;>
-    simp [plk, trip, minor3, uVec, vVec, cross3, puX, puS, pvX, pvS, pwX, pwS] <;> ring
+    simp [plk, trip, minor3, uVec, vVec, cross_apply, puX, puS, pvX, pvS, pwX, pwS] <;> ring
+
+/-- The cross product in coordinates, with the index arithmetic of `Fin 3`. -/
+lemma cross_apply_cyc (u v : Fin 3 → R) (a : Fin 3) :
+    (u ⨯₃ v) a = u (a + 1) * v (a + 2) - u (a + 2) * v (a + 1) := by
+  fin_cases a <;> rfl
+
+lemma cross_apply_zero (u v : Fin 3 → R) : (u ⨯₃ v) 0 = u 1 * v 2 - u 2 * v 1 := rfl
+lemma cross_apply_one (u v : Fin 3 → R) : (u ⨯₃ v) 1 = u 2 * v 0 - u 0 * v 2 := rfl
+lemma cross_apply_two (u v : Fin 3 → R) : (u ⨯₃ v) 2 = u 0 * v 1 - u 1 * v 0 := rfl
 
 /-- Every index is the pivot or one of its nine companions. -/
 lemma cover (t s : Fin 10) : s = t ∨ (∃ a, s = puX t a) ∨ (∃ a, s = pvX t a) ∨
@@ -124,10 +141,6 @@ def ibox3 (m : ℕ) : Finset (Fin 3 → ℤ) := Fintype.piFinset fun _ => Icc (-
 /-- `gcd(m, u₀, u₁, u₂)`. -/
 def gcd4 (m : ℕ) (u : Fin 3 → ℤ) : ℕ := Int.gcd m (Int.gcd (u 0) (Int.gcd (u 1) (u 2)))
 
-lemma cross3_zero (u v : Fin 3 → ℤ) : cross3 u v 0 = u 1 * v 2 - u 2 * v 1 := rfl
-lemma cross3_one (u v : Fin 3 → ℤ) : cross3 u v 1 = u 2 * v 0 - u 0 * v 2 := rfl
-lemma cross3_two (u v : Fin 3 → ℤ) : cross3 u v 2 = u 0 * v 1 - u 1 * v 0 := rfl
-
 lemma gcd4_dvd (m : ℕ) (u : Fin 3 → ℤ) (a : Fin 3) : (gcd4 m u : ℤ) ∣ u a := by
   have h1 : (gcd4 m u : ℤ) ∣ (Int.gcd (u 0) (Int.gcd (u 1) (u 2)) : ℤ) := Int.gcd_dvd_right _ _
   have h2 : ((Int.gcd (u 0) (Int.gcd (u 1) (u 2)) : ℕ) : ℤ) ∣ u 0 := Int.gcd_dvd_left _ _
@@ -165,7 +178,7 @@ lemma gcd4_pos {m : ℕ} (hm : 0 < m) (u : Fin 3 → ℤ) : 0 < gcd4 m u :=
   Int.gcd_pos_of_ne_zero_left _ (by exact_mod_cast hm.ne')
 
 /-- **The cross congruence**: `m ∣ u × v` forces `v ≡ λ u' (mod m/g)`. -/
-lemma cross_cong {m : ℕ} (hm : 0 < m) {u v : Fin 3 → ℤ} (hd : ∀ a, (m : ℤ) ∣ cross3 u v a) :
+lemma cross_cong {m : ℕ} (hm : 0 < m) {u v : Fin 3 → ℤ} (hd : ∀ a, (m : ℤ) ∣ (u ⨯₃ v) a) :
     ∃ n : ℤ, ∃ u' : Fin 3 → ℤ, ∃ lam : ℤ, 0 < n ∧ (m : ℤ) = gcd4 m u * n ∧
       (∀ a, u a = gcd4 m u * u' a) ∧ ∀ a, n ∣ v a - lam * u' a := by
   set g := gcd4 m u
@@ -188,19 +201,19 @@ lemma cross_cong {m : ℕ} (hm : 0 < m) {u v : Fin 3 → ℤ} (hd : ∀ a, (m : 
     rw [hn] at this
     exact pos_of_mul_pos_right this (by positivity)
   refine ⟨n, u', c0 * v 0 + c1 * v 1 + c2 * v 2, hnpos, hn, hu', ?_⟩
-  have hd' : ∀ a, n ∣ cross3 u' v a := by
+  have hd' : ∀ a, n ∣ (u' ⨯₃ v) a := by
     intro a
     have h := hd a
-    have e : cross3 u v a = g * cross3 u' v a := by
-      simp only [cross3, hu']; ring
+    have e : (u ⨯₃ v) a = g * (u' ⨯₃ v) a := by
+      simp only [cross_apply_cyc, hu']; ring
     rw [e, hn] at h
     exact (mul_dvd_mul_iff_left hg0').mp h
   obtain ⟨z0, hz0⟩ := hd' 0
   obtain ⟨z1, hz1⟩ := hd' 1
   obtain ⟨z2, hz2⟩ := hd' 2
-  rw [cross3_zero] at hz0
-  rw [cross3_one] at hz1
-  rw [cross3_two] at hz2
+  rw [cross_apply_zero] at hz0
+  rw [cross_apply_one] at hz1
+  rw [cross_apply_two] at hz2
   simp only [u', Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
     Matrix.head_cons, Matrix.tail_cons] at hz0 hz1 hz2
   intro a
@@ -217,14 +230,14 @@ lemma cross_cong {m : ℕ} (hm : 0 < m) {u v : Fin 3 → ℤ} (hd : ∀ a, (m : 
 
 /-- **For fixed `u`, at most `27 m g²` vectors `v` have `m ∣ u × v`.** -/
 theorem card_cross_fiber {m : ℕ} (hm : 0 < m) (u : Fin 3 → ℤ) :
-    ((ibox3 m).filter fun v => ∀ a, (m : ℤ) ∣ cross3 u v a).card ≤ 27 * m * gcd4 m u ^ 2 := by
+    ((ibox3 m).filter fun v => ∀ a, (m : ℤ) ∣ (u ⨯₃ v) a).card ≤ 27 * m * gcd4 m u ^ 2 := by
   obtain ⟨nn, hmg⟩ := gcd4_dvd_m m u
   set g := gcd4 m u
   have hg0 : (g : ℤ) ≠ 0 := by exact_mod_cast (gcd4_pos hm u).ne'
   have hnn0 : 0 < nn := Nat.pos_of_ne_zero (by rintro rfl; omega)
   have hnn : (0 : ℤ) < nn := by exact_mod_cast hnn0
   -- the congruence `v ≡ λ_v u' (mod m/g)`, with `u = g u'`
-  have hcong : ∀ v ∈ (ibox3 m).filter (fun v => ∀ a, (m : ℤ) ∣ cross3 u v a),
+  have hcong : ∀ v ∈ (ibox3 m).filter (fun v => ∀ a, (m : ℤ) ∣ (u ⨯₃ v) a),
       ∃ lam : ℤ, ∀ a, (nn : ℤ) ∣ v a - lam * (u a / g) := by
     intro v hv
     obtain ⟨n, u', lam, -, hn, hu, hv⟩ := cross_cong hm (mem_filter.mp hv).2
@@ -240,7 +253,7 @@ theorem card_cross_fiber {m : ℕ} (hm : 0 < m) (u : Fin 3 → ℤ) :
       have := Int.emod_lt_of_pos (lam v) hnn
       omega)) (27 * g ^ 3) fun l _ => ?_).trans ?_
   · -- a fixed residue `l`
-    have hsub : ((ibox3 m).filter (fun v => ∀ a, (m : ℤ) ∣ cross3 u v a)).filter
+    have hsub : ((ibox3 m).filter (fun v => ∀ a, (m : ℤ) ∣ (u ⨯₃ v) a)).filter
         (fun v => (lam v % nn).toNat = l) ⊆ Fintype.piFinset fun a =>
           (Icc (-(m : ℤ)) m).filter fun y => (nn : ℤ) ∣ y - l * (u a / g) := by
       intro v hv
@@ -312,7 +325,7 @@ lemma sum_gcd4_sq_le {m : ℕ} (hm : 0 < m) :
 
 /-- The admissible `(u, v)` for a pivot of size `m`. -/
 def crossSet (m : ℕ) : Finset ((Fin 3 → ℤ) × (Fin 3 → ℤ)) :=
-  (ibox3 m ×ˢ ibox3 m).filter fun uv => ∀ a, (m : ℤ) ∣ cross3 uv.1 uv.2 a
+  (ibox3 m ×ˢ ibox3 m).filter fun uv => ∀ a, (m : ℤ) ∣ (uv.1 ⨯₃ uv.2) a
 
 /-- **`#{(u, v)} ≤ 729 m⁴ τ(m)`.** -/
 theorem card_crossSet {m : ℕ} (hm : 0 < m) :
@@ -322,7 +335,7 @@ theorem card_crossSet {m : ℕ} (hm : 0 < m) :
   calc ∑ u ∈ ibox3 m, ((crossSet m).filter fun uv => uv.1 = u).card
       ≤ ∑ u ∈ ibox3 m, 27 * m * gcd4 m u ^ 2 := by
         refine sum_le_sum fun u _ => le_trans (card_le_card_of_injOn Prod.snd
-          (t := (ibox3 m).filter fun v => ∀ a, (m : ℤ) ∣ cross3 u v a) (fun uv huv => ?_)
+          (t := (ibox3 m).filter fun v => ∀ a, (m : ℤ) ∣ (u ⨯₃ v) a) (fun uv huv => ?_)
           (fun uv huv uv' huv' h => ?_)) (card_cross_fiber hm u)
         · obtain ⟨h1, h2⟩ := mem_filter.mp (mem_coe.mp huv)
           obtain ⟨h3, h4⟩ := mem_filter.mp h1
@@ -362,12 +375,12 @@ lemma card_le_one_add_card_filter_ne_zero (S : Finset (Fin 10 → ℤ)) :
 
 /-- The pivot divides the cross product. -/
 lemma piv_cross {p : Fin 10 → ℤ} (hpl : PluckerRel p) (a : Fin 3) :
-    p (piv p) ∣ cross3 (uVec p (piv p)) (vVec p (piv p)) a := by
+    p (piv p) ∣ (uVec p (piv p) ⨯₃ vVec p (piv p)) a := by
   set τ := piv p
   refine ⟨pwS τ a * p (pwX τ a), ?_⟩
   have h1 := hpl τ a
   have h2 := (sign_sq τ a).2.2
-  linear_combination (-pwS τ a) * h1 - cross3 (uVec p τ) (vVec p τ) a * h2
+  linear_combination (-pwS τ a) * h1 - (uVec p τ ⨯₃ vVec p τ) a * h2
 
 /-- **The minor-vector count, refined.** Vectors of height `≤ Y` satisfying the Plücker relations,
 with nonzero pivot `m` and `P |m| u` for the first row `u` of the pivot, number at most
@@ -406,12 +419,12 @@ theorem minor_vector_count_of (P : ℕ → (Fin 3 → ℤ) → Prop) [∀ m u, D
       have hs := (sign_sq τ a).1
       have : |puS τ a| = 1 := by
         rcases Int.eq_one_or_neg_one_of_mul_eq_one hs with h | h <;> simp [h]
-      simp only [uVec, abs_mul, this, one_mul]; exact piv_max p _
+      simp only [uVec, Int.cast_id, abs_mul, this, one_mul]; exact piv_max p _
     have hv : ∀ a, |vVec p τ a| ≤ |m| := fun a => by
       have hs := (sign_sq τ a).2.1
       have : |pvS τ a| = 1 := by
         rcases Int.eq_one_or_neg_one_of_mul_eq_one hs with h | h <;> simp [h]
-      simp only [vVec, abs_mul, this, one_mul]; exact piv_max p _
+      simp only [vVec, Int.cast_id, abs_mul, this, one_mul]; exact piv_max p _
     refine mem_filter.mpr ⟨mem_filter.mpr ⟨mem_product.mpr ⟨Fintype.mem_piFinset.mpr fun a =>
       mem_Icc.mpr (by rw [hcast]; exact abs_le.mp (hu a)), Fintype.mem_piFinset.mpr fun a =>
       mem_Icc.mpr (by rw [hcast]; exact abs_le.mp (hv a))⟩, fun a => ?_⟩, hP⟩

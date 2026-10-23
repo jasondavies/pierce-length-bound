@@ -11,6 +11,7 @@ public import PierceLengthBound.HypersurfacePatternCountFiber
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
+open scoped Matrix
 noncomputable section
 
 /-- Divide the first vertex by its full common divisor. -/
@@ -64,12 +65,12 @@ lemma primitiveFirstVertex_mem_ibox {m : ℕ} (hm : 0 < m) {u : Fin 3 → ℤ}
 
 /-- Dividing by the common factor preserves exactly the cross-congruence. -/
 theorem primitiveFirstVertex_cross_iff {m : ℕ} (hm : 0 < m) (u v : Fin 3 → ℤ) :
-    (∀ j, (m : ℤ) ∣ cross3 u v j) ↔
-      ∀ j, ((m / gcd4 m u : ℕ) : ℤ) ∣ cross3 (primitiveFirstVertex m u) v j := by
+    (∀ j, (m : ℤ) ∣ (u ⨯₃ v) j) ↔
+      ∀ j, ((m / gcd4 m u : ℕ) : ℤ) ∣ (primitiveFirstVertex m u ⨯₃ v) j := by
   obtain ⟨hg, _, hmgn, he, _⟩ := primitiveFirstVertex_spec hm u
   have hmZ : (m : ℤ) = gcd4 m u * (m / gcd4 m u : ℕ) := by exact_mod_cast hmgn
-  have hc j : cross3 u v j = (gcd4 m u : ℤ) * cross3 (primitiveFirstVertex m u) v j := by
-    simp only [cross3, he]
+  have hc j : (u ⨯₃ v) j = (gcd4 m u : ℤ) * (primitiveFirstVertex m u ⨯₃ v) j := by
+    simp only [cross_apply_cyc, he]
     ring
   simp only [hmZ, hc, mul_dvd_mul_iff_left (show (gcd4 m u : ℤ) ≠ 0 by
     exact_mod_cast hg.ne')]
@@ -77,7 +78,7 @@ theorem primitiveFirstVertex_cross_iff {m : ℕ} (hm : 0 < m) (u v : Fin 3 → �
 /-- Every nonzero polynomial fiber, including first vertices with a nontrivial gcd. -/
 theorem cross_congruence_polynomial_fiber_count {m X : ℕ} (hm : 0 < m) (hX : m ≤ X)
     (u : Fin 3 → ℤ) {f : MvPolynomial (Fin 3) ℚ} (hf : f ≠ 0) :
-    (((ibox3 X).filter fun v => (∀ j, (m : ℤ) ∣ cross3 u v j) ∧
+    (((ibox3 X).filter fun v => (∀ j, (m : ℤ) ∣ (u ⨯₃ v) j) ∧
       MvPolynomial.eval (fun i => (v i : ℚ)) f = 0).card : ℝ) ≤
       243 * f.totalDegree * (X : ℝ) ^ 2 /
         ((m / gcd4 m u : ℕ) * (normalShortR (m / gcd4 m u) (primitiveFirstVertex m u) : ℝ)) := by

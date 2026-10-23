@@ -358,7 +358,7 @@ then applies the general estimate uniformly in the dividend and common divisor.
 | `SliceCount` | the slice lemma: slices of a ternary quadratic via completing squares, for either sign of the binary discriminant (`slice_count_ne`, `slice_count`) |
 | `ElevenCount` | the sign identities, the ternary relation `F_θ(k₁,k₂,k₃) = 0`, and the refined count |
 | `ElevenMain` | the slack factor `XiOf c e ≪ a^η` of a polynomial range, the window bound, `T⁷⁴ ≤ C Δ¹⁹ Ξ¹⁹ a²²`, and `P_le_11_37` |
-| `MinorCount` | the Plücker relations, the cross congruence (`cross_cong`), the congruence count `27 m g²`, and `minor_vector_count` |
+| `MinorCount` | the Plücker relations (over any commutative ring, with Mathlib's `⨯₃`), the cross congruence (`cross_cong`), the congruence count `27 m g²`, and `minor_vector_count` |
 | `MinorHeight` | the expansion of `b/a` (`nu_expand`) and the uniform bound on all ten minors |
 | `EightMain` | the pattern as signed minors, the window bound, `T⁵⁴ ≤ C Δ¹⁴ Ξ²⁸ a¹⁶`, and `P_le_8_27` |
 | `DefiniteNorm` | the definite norm count: `x² + δy² = m` has `≤ 4τ(\|m\|)³` solutions |

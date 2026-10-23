@@ -12,6 +12,7 @@ public import PierceLengthBound.HypersurfacePatternCountScaling
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
+open scoped Matrix
 noncomputable section
 open MvPolynomial Finset
 
@@ -89,7 +90,7 @@ theorem nonzeroChartFibers_gcd_count (B : HypersurfaceChartPolynomial) {m g : �
       positivity
     · have hc := cross_congruence_polynomial_fiber_count hm (le_refl m) u hf
       have hi : (T.filter (fun uv => uv.1 = u)).card ≤
-          ((ibox3 m).filter fun v => (∀ j, (m : ℤ) ∣ cross3 u v j) ∧
+          ((ibox3 m).filter fun v => (∀ j, (m : ℤ) ∣ (u ⨯₃ v) j) ∧
             eval (fun i => (v i : ℚ)) f = 0).card := by
         apply card_le_card_of_injOn Prod.snd
         · intro uv huv

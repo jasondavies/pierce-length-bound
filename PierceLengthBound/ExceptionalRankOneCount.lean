@@ -13,6 +13,8 @@ common divisor. This is the zero-Plücker-coordinate counting problem. -/
 @[expose] public section
 namespace PierceLengthBound
 open Finset
+open scoped Matrix
+open Matrix (vec3_dotProduct)
 noncomputable section
 
 /-- Decode a primitive direction, its two scalar multiples and an orthogonal vector. -/
@@ -22,9 +24,9 @@ def exceptionalDecode (p : (Fin 3 → ℤ) × (ℤ × ℤ) × (Fin 3 → ℤ)) :
 
 /-- Every nonzero rank-one pair occurs in a bounded dyadic parameter set. -/
 theorem rank_one_parameter_cover {a b t : Fin 3 → ℤ} {X : ℕ}
-    (hne : a ≠ 0 ∨ b ≠ 0) (hcross : ∀ j, cross3 a b j = 0)
+    (hne : a ≠ 0 ∨ b ≠ 0) (hcross : ∀ j, (a ⨯₃ b) j = 0)
     (haX : ∀ j, |a j| ≤ X) (hbX : ∀ j, |b j| ≤ X) (htX : ∀ j, |t j| ≤ X)
-    (hat : dot3 a t = 0) (hbt : dot3 b t = 0) :
+    (hat : a ⬝ᵥ t = 0) (hbt : b ⬝ᵥ t = 0) :
     ∃ k ≤ Nat.log 2 X, (a, b, t) ∈
       (exceptionalParameters X (2 ^ k)).image exceptionalDecode := by
   classical
@@ -38,7 +40,7 @@ theorem rank_one_parameter_cover {a b t : Fin 3 → ℤ} {X : ℕ}
       have := hj k (mem_univ k)
       have : (z k).natAbs = 0 := by dsimp [N] at hn; omega
       exact Int.natAbs_eq_zero.mp this
-    simp [dot3, hzero] at hc
+    simp [vec3_dotProduct, hzero] at hc
   have hr : r.natAbs * N ≤ X := by
     have h := haX j
     rw [ha j, abs_mul, ← Int.natCast_natAbs, ← Int.natCast_natAbs] at h
@@ -101,7 +103,7 @@ theorem rank_one_orthogonal_count
     {S : Finset ((Fin 3 → ℤ) × (Fin 3 → ℤ) × (Fin 3 → ℤ))} {X : ℕ} (hX : 1 ≤ X)
     (hS : ∀ p ∈ S,
       (∀ j, |p.1 j| ≤ X) ∧ (∀ j, |p.2.1 j| ≤ X) ∧ (∀ j, |p.2.2 j| ≤ X) ∧
-      (∀ j, cross3 p.1 p.2.1 j = 0) ∧ dot3 p.1 p.2.2 = 0 ∧ dot3 p.2.1 p.2.2 = 0) :
+      (∀ j, (p.1 ⨯₃ p.2.1) j = 0) ∧ p.1 ⬝ᵥ p.2.2 = 0 ∧ p.2.1 ⬝ᵥ p.2.2 = 0) :
     S.card ≤ (2 * X + 1) ^ 3 + (Nat.log 2 X + 1) * (273375 * X ^ 4) := by
   classical
   let zeroSet := (ibox3 X).image fun t => ((0 : Fin 3 → ℤ), (0 : Fin 3 → ℤ), t)

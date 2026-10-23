@@ -222,18 +222,18 @@ def polarMinorCertificateMatrix : Fin 3 → Fin 5 → ℚ :=
   ![![1, 0, 0, 2, 10], ![0, 1, 0, -5, -22], ![0, 0, 1, 3, 9]]
 
 lemma polarMinorCertificate_values :
-    plkRing polarMinorCertificateMatrix = ![1, 3, 9, 5, 22, 21, 2, 10, 12, 6] := by
+    plk polarMinorCertificateMatrix = ![1, 3, 9, 5, 22, 21, 2, 10, 12, 6] := by
   ext j
-  fin_cases j <;> norm_num [plkRing, minor3Ring, trip, polarMinorCertificateMatrix]
+  fin_cases j <;> norm_num [plk, minor3, trip, polarMinorCertificateMatrix]
 
 lemma polarMinorParameters_certificate :
-    polarMinorParameters (plkRing polarMinorCertificateMatrix) = polarParameterCertificate := by
+    polarMinorParameters (plk polarMinorCertificateMatrix) = polarParameterCertificate := by
   rw [polarMinorCertificate_values]
   ext j
   fin_cases j <;> norm_num [polarMinorParameters, polarParameterCertificate]
 
 private lemma rational_minor_parameters (j : Fin 6) :
-    RationalNear (plkRing polarMinorCertificateMatrix) (fun p => polarMinorParameters p j) := by
+    RationalNear (plk polarMinorCertificateMatrix) (fun p => polarMinorParameters p j) := by
   fin_cases j <;> simp only [polarMinorParameters] <;>
     rational_near [] [polarMinorCertificate_values]
 
@@ -247,9 +247,9 @@ theorem exists_polar_full_minor_exceptional_polynomial :
         polarInitialMinor (polarMinorParameters p) ≠ 0 := by
   have hr := (rational_guard.mul polar_initial_minor_rational).comp
     polarMinorParameters rational_minor_parameters polarMinorParameters_certificate
-  have hc : (plkRing polarMinorCertificateMatrix 0 * plkRing polarMinorCertificateMatrix 6) *
-      (polarChartGuard (polarMinorParameters (plkRing polarMinorCertificateMatrix)) *
-        polarInitialMinor (polarMinorParameters (plkRing polarMinorCertificateMatrix))) ≠ 0 := by
+  have hc : (plk polarMinorCertificateMatrix 0 * plk polarMinorCertificateMatrix 6) *
+      (polarChartGuard (polarMinorParameters (plk polarMinorCertificateMatrix)) *
+        polarInitialMinor (polarMinorParameters (plk polarMinorCertificateMatrix))) ≠ 0 := by
     rw [polarMinorParameters_certificate]
     exact mul_ne_zero (by norm_num [polarMinorCertificate_values])
       (mul_ne_zero polarChartGuard_certificate (by rw [polarInitialMinor_certificate]; norm_num))

@@ -14,6 +14,7 @@ complete minor-chart patterns. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
+open scoped Matrix
 noncomputable section
 open Finset
 
@@ -55,7 +56,7 @@ theorem branch_vertex_band_gcd_count (bad : (Fin 4 → ℤ) → Prop)
     (S : Finset BranchChartState)
     (hS : ∀ w ∈ S, M ≤ w.1 ∧ w.1 ≤ 2 * M ∧ w.1 ≤ X ∧
       w.2.1 ∈ ibox3 w.1 ∧ w.2.2 ∈ ibox3 X ∧
-      (∀ j, (w.1 : ℤ) ∣ cross3 w.2.1 w.2.2 j) ∧
+      (∀ j, (w.1 : ℤ) ∣ (w.2.1 ⨯₃ w.2.2) j) ∧
       bad (integerFirstVertex w.1 w.2.1) ∧ gcd4 w.1 w.2.1 = g)
     (hbad : (((ibox4 (2 * M)).filter fun x =>
       (∀ i, (g : ℤ) ∣ x i) ∧ bad x).card : ℝ) ≤
@@ -97,7 +98,7 @@ theorem branch_vertex_band_gcd_count (bad : (Fin 4 → ℤ) → Prop)
           w.1 = w0.1 ∧ w.2.1 = w0.2.1 :=
         integerFirstVertex_injective ((mem_filter.mp hw).2.trans hw0x.symm)
       have hi : (S.filter fun w => key w = x).card ≤
-          ((ibox3 X).filter fun v => ∀ j, (w0.1 : ℤ) ∣ cross3 w0.2.1 v j).card := by
+          ((ibox3 X).filter fun v => ∀ j, (w0.1 : ℤ) ∣ (w0.2.1 ⨯₃ v) j).card := by
         apply card_le_card_of_injOn (fun w => w.2.2)
         · intro w hw
           obtain ⟨hwm, hwu⟩ := hcoords w hw
@@ -109,7 +110,7 @@ theorem branch_vertex_band_gcd_count (bad : (Fin 4 → ℤ) → Prop)
           have hc' := hcoords w' hw'
           exact Prod.ext (hc.1.trans hc'.1.symm) (Prod.ext (hc.2.trans hc'.2.symm) he)
       calc
-        _ ≤ (((ibox3 X).filter fun v => ∀ j, (w0.1 : ℤ) ∣ cross3 w0.2.1 v j).card : ℝ) := by
+        _ ≤ (((ibox3 X).filter fun v => ∀ j, (w0.1 : ℤ) ∣ (w0.2.1 ⨯₃ v) j).card : ℝ) := by
           exact_mod_cast hi
         _ ≤ 729 * (X : ℝ) ^ 3 * (g : ℝ) ^ 2 / (w0.1 : ℝ) ^ 2 := by
           simpa only [hgw] using branch_completion_count hmpos hX w0.2.1
@@ -146,7 +147,7 @@ theorem branch_vertex_band_count :
       ∀ X M : ℕ, 0 < M → M ≤ X → ∀ S : Finset BranchChartState,
       (∀ w ∈ S, M ≤ w.1 ∧ w.1 ≤ 2 * M ∧ w.1 ≤ X ∧
         w.2.1 ∈ ibox3 w.1 ∧ w.2.2 ∈ ibox3 X ∧
-        (∀ j, (w.1 : ℤ) ∣ cross3 w.2.1 w.2.2 j) ∧
+        (∀ j, (w.1 : ℤ) ∣ (w.2.1 ⨯₃ w.2.2) j) ∧
         bad (integerFirstVertex w.1 w.2.1)) →
       (∀ g ∈ Icc 1 (2 * M),
         (((ibox4 (2 * M / g)).filter fun x => bad (fun i => (g : ℤ) * x i)).card : ℝ) ≤
@@ -214,7 +215,7 @@ theorem branch_chart_bad_count :
       ∀ X : ℕ, 0 < X → ∀ S : Finset BranchChartState,
       (∀ w ∈ S, 0 < w.1 ∧ w.1 ≤ X ∧
         w.2.1 ∈ ibox3 w.1 ∧ w.2.2 ∈ ibox3 X ∧
-        (∀ j, (w.1 : ℤ) ∣ cross3 w.2.1 w.2.2 j) ∧
+        (∀ j, (w.1 : ℤ) ∣ (w.2.1 ⨯₃ w.2.2) j) ∧
         bad (integerFirstVertex w.1 w.2.1)) →
       (∀ g R : ℕ, 0 < g → g ≤ 2 * X → 0 < R → R ≤ 2 * X →
         (((ibox4 R).filter fun x => bad (fun i => (g : ℤ) * x i)).card : ℝ) ≤
