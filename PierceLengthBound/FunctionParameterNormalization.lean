@@ -9,8 +9,8 @@ public import PierceLengthBound.NormalizedFiberOrders
 public import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
 
 /-! Normalizing the affine line in a finite function-field extension. The zero
-fiber degree is the field-extension degree; replacing the parameter by its
-reciprocal will give the corresponding pole fiber degree. -/
+fiber degree is the field-extension degree; since the reciprocal parameter
+generates the same field, the pole fiber has the same degree. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -121,28 +121,6 @@ theorem intermediateField_adjoin_inv {K L : Type*} [Field K] [Field L] [Algebra 
   · rw [IntermediateField.adjoin_simple_le_iff]
     simpa only [inv_inv] using
       IntermediateField.inv_mem K⟮x⁻¹⟯ (IntermediateField.mem_adjoin_simple_self K x⁻¹)
-
-/-- Zero and pole fibers have the same degree: they are the zero fibers of x
-and x⁻¹, whose parameter fields coincide. -/
-theorem function_zero_pole_fiber_degrees {L : Type*} [Field L] [Algebra ℚ L]
-    (x : L) (hx : Transcendental ℚ x) [FiniteDimensional ℚ⟮x⟯ L] :
-    let C₀ := functionParameterNormalization x
-    let Cpole := functionParameterNormalization x⁻¹
-    ∃ (B₀ : Finset (IsDedekindDomain.HeightOneSpectrum C₀))
-      (Bpole : Finset (IsDedekindDomain.HeightOneSpectrum Cpole)),
-      (∀ q, q ∈ B₀ ↔ functionParameterElement x ∈ q.asIdeal) ∧
-      (∀ q, q ∈ Bpole ↔ functionParameterElement x⁻¹ ∈ q.asIdeal) ∧
-      (∑ q ∈ B₀, multiplicity q.asIdeal (Ideal.span {functionParameterElement x}) *
-        Module.finrank ℚ (C₀ ⧸ q.asIdeal)) =
-      ∑ q ∈ Bpole, multiplicity q.asIdeal (Ideal.span {functionParameterElement x⁻¹}) *
-        Module.finrank ℚ (Cpole ⧸ q.asIdeal) := by
-  have hxinv : Transcendental ℚ x⁻¹ := fun h => hx (IsAlgebraic.inv_iff.mp h)
-  have hfield := intermediateField_adjoin_inv (K := ℚ) x
-  let : FiniteDimensional ℚ⟮x⁻¹⟯ L := by rw [hfield]; infer_instance
-  obtain ⟨B₀, hB₀, hs₀⟩ := function_parameter_fiber_degree x hx
-  obtain ⟨Bpole, hBpole, hspole⟩ := function_parameter_fiber_degree x⁻¹ hxinv
-  refine ⟨B₀, Bpole, hB₀, hBpole, hs₀.trans ?_⟩
-  rw [hspole, hfield]
 
 end
 end PierceLengthBound.FixedDividend

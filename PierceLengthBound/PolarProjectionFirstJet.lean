@@ -42,27 +42,5 @@ def formalFirstJet {R : Type*} [CommRing R] : PowerSeries R →+* DualNumber R w
 @[simp] lemma formalFirstJet_snd {R : Type*} [CommRing R] (f : PowerSeries R) :
     (formalFirstJet f).snd = PowerSeries.coeff 1 f := rfl
 
-/-- Polynomial substitution depends only on the first jets of the substituted series. -/
-theorem formal_polynomial_first_jet {R σ : Type*} [CommRing R]
-    (p : MvPolynomial σ R) (x y : σ → PowerSeries R)
-    (hzero : ∀ j, PowerSeries.constantCoeff (x j) = PowerSeries.constantCoeff (y j))
-    (hone : ∀ j, PowerSeries.coeff 1 (x j) = PowerSeries.coeff 1 (y j)) :
-    formalFirstJet (MvPolynomial.eval₂Hom PowerSeries.C x p) =
-      formalFirstJet (MvPolynomial.eval₂Hom PowerSeries.C y p) := by
-  rw [MvPolynomial.map_eval₂Hom, MvPolynomial.map_eval₂Hom]
-  have he : (fun j => formalFirstJet (x j)) = fun j => formalFirstJet (y j) := by
-    funext j
-    exact TrivSqZeroExt.ext (hzero j) (hone j)
-  rw [he]
-
-/-- The linear coefficient is unchanged by arbitrary corrections of order at least two. -/
-theorem formal_polynomial_linear_coefficient {R σ : Type*} [CommRing R]
-    (p : MvPolynomial σ R) (x y : σ → PowerSeries R)
-    (hzero : ∀ j, PowerSeries.constantCoeff (x j) = PowerSeries.constantCoeff (y j))
-    (hone : ∀ j, PowerSeries.coeff 1 (x j) = PowerSeries.coeff 1 (y j)) :
-    PowerSeries.coeff 1 (MvPolynomial.eval₂Hom PowerSeries.C x p) =
-      PowerSeries.coeff 1 (MvPolynomial.eval₂Hom PowerSeries.C y p) :=
-  congrArg TrivSqZeroExt.snd (formal_polynomial_first_jet p x y hzero hone)
-
 end
 end PierceLengthBound.FixedDividend

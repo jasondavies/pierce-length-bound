@@ -16,21 +16,6 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open scoped IntermediateField IntermediateField.algebraAdjoinAdjoin
 
-theorem function_field_transcendence_degree {K L : Type*} [Field K] [Field L] [Algebra K L]
-    (t : L) (ht : Transcendental K t) [FiniteDimensional K⟮t⟯ L] :
-    Algebra.trdeg K L = 1 := by
-  have hind : AlgebraicIndependent K (fun _ : Unit => t) :=
-    algebraicIndependent_unique_type_iff.mpr ht
-  have halg : Algebra.IsAlgebraic (Algebra.adjoin K {t}) L :=
-    IsFractionRing.comap_isAlgebraic_iff.mpr
-      (inferInstance : Algebra.IsAlgebraic K⟮t⟯ L)
-  have hb : IsTranscendenceBasis K (fun _ : Unit => t) :=
-    hind.isTranscendenceBasis_iff_isAlgebraic.mpr (by
-      change Algebra.IsAlgebraic (Algebra.adjoin K (Set.range (fun _ : Unit => t))) L
-      rw [Set.range_const]
-      exact halg)
-  simpa using hb.lift_cardinalMk_eq_trdeg.symm
-
 /-- Finiteness over any transcendental parameter follows from one known finite
 parameter; it need not be supplied separately for each rational function. -/
 theorem finite_over_parameter_of_trdeg_le_one {K L : Type*} [Field K] [Field L] [Algebra K L]
@@ -48,13 +33,6 @@ theorem finite_over_parameter_of_trdeg_le_one {K L : Type*} [Field K] [Field L] 
     rw [Set.range_const] at hh
     exact hh
   exact Algebra.finite_of_essFiniteType_of_isAlgebraic
-
-theorem function_field_finite_over_parameter {K L : Type*} [Field K] [Field L] [Algebra K L]
-    (t : L) (ht : Transcendental K t) [FiniteDimensional K⟮t⟯ L]
-    (x : L) (hx : Transcendental K x) : FiniteDimensional K⟮x⟯ L := by
-  let : Algebra.EssFiniteType K L := Algebra.EssFiniteType.comp K K⟮t⟯ L
-  exact finite_over_parameter_of_trdeg_le_one
-    (le_of_eq (function_field_transcendence_degree t ht)) x hx
 
 /-- The fraction field of an affine domain finite over K[t] is finite over
 K(x) for every transcendental rational function x. -/

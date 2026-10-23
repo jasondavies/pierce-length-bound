@@ -5,7 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.ChartNormalization
+public import PierceLengthBound.ChartParameterTranscendence
+public import PierceLengthBound.CurveNormalization
 public import PierceLengthBound.ChartFunctionField
 public import PierceLengthBound.NormalizedBranchValuation
 public import PierceLengthBound.JointLiftChartOrders

@@ -413,10 +413,10 @@ below.
 | `ChartRawDeterminantOrders` | orders `−3e` for both consecutive cubic determinants and `−6e` for the fourth |
 | `JointLiftRetainedOrders` | quotient and rank-three orders from the retained normalization and resolvent equations |
 | `JointLiftChartOrders` | orders `3t`, `≥ 3t`, `3t` and `−5t` of the four graph coordinates (`e = 2t`); the curvature coordinates cannot all have positive order over the affine part |
-| `ChartNormalization`, `AffineNormalization` | finite Dedekind normalization of both chart rings |
+| `AffineNormalization` | finite Dedekind normalization of the affine chart ring |
 | `JointLiftNormalizedOrders`, `JointLiftNormalizedFiniteOrders` | normalized integer-valued branch orders, with the coordinate order calculations applied to them |
-| `NormalizationFiberDegree`, `NormalizationInfinityDegree`, `NormalizedFiberOrders` | normalization preserves the infinity fiber; multiplicities times residue degrees sum to `d` and equal the canonical branch orders |
-| `FunctionParameterNormalization`, `FunctionParameterChange`, `ChartFunctionParameters` | equal weighted zero and pole fiber degrees for a transcendental function; every transcendental function on the curve is a finite parameter |
+| `NormalizationInfinityDegree`, `NormalizedFiberOrders` | in a normalized parameter fiber, multiplicities times residue degrees sum to the fiber dimension and equal the canonical branch orders |
+| `FunctionParameterNormalization`, `FunctionParameterChange` | the weighted zero fiber degree of a transcendental function is its field degree, and its reciprocal generates the same field; finite curve fraction fields are finite over every transcendental function |
 | `JointLiftCurvatureTranscendence` | the curvature combination with the extra finite zero is transcendental |
 | `IntegralBranchOrders`, `BranchValuationComparison`, `BranchResidueComparison` | centers on parameter normalizations; branch transport preserves normalized orders and residue degrees |
 | `BranchZeroDegree` | the weighted zero-count inequality, including the extra degree from one additional zero |
@@ -425,7 +425,7 @@ below.
 | `JointLiftCurvatureDegree` | `3d + 2 ≤ 2 deg(F)` for the curvature pole envelope on a retained component |
 | `GraphFunctionField`, `ValuationLinearCombination`, `GraphPoleDegree` | the coordinate pole envelope is bounded by the graph Hilbert degree |
 | `JointLiftGraphLowerDegree` | `4d + 1 ≤ δ` on retained graphs (the case `G = 1`, `m = n = 1` of `LinearJointGraph`), and `17 ≤ δ ≤ 247d` when `d ≥ 4` |
-| `CurveCounting`, `CurveCountingDegreeRange`, `CurveCountingCoordinates`, `CurveCountingCover` | the CCDN theorem on Pierce coordinate rings: bounded-degree factors, arbitrary finite index types (including `Fin 3 ⊕ Fin 4`), and finite prime-component covers |
+| `CurveCounting`, `CurveCountingDegreeRange`, `CurveCountingCoordinates` | the CCDN theorem on Pierce coordinate rings: bounded-degree factors and arbitrary finite index types (including `Fin 3 ⊕ Fin 4`) |
 | `OrbitGapCoordinates` | the three node coordinates distinguish complete gap vectors within a pattern |
 | `JointLiftPointCount`, `JointLiftCountingSlack` | the curve count on seven-coordinate integer points; the logarithm absorbed via the polynomial box bound |
 | `JointLiftCoverCount` | gap vectors over at most 24 components, with a `SlowGrowth` coefficient |
