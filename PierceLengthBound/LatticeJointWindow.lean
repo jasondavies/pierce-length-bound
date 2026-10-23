@@ -177,30 +177,14 @@ theorem window_real_of_lattice_count {a A T Δ K h m n : ℕ} {α : ℝ}
   obtain ⟨hA, hΔ, ha, hT2⟩ := window_facts (by omega) hsix hdrop
   set e := latticeWindowDeltaExponent h n
   have he : e = 30 * h + 5 * n + 17 := rfl
-  let B := latticeWindowBase h m n * (K + 1) * Δ ^ e
-  have hB : 1 ≤ B :=
-    Nat.mul_pos (Nat.mul_pos (by unfold latticeWindowBase; omega) (by omega)) (pow_pos hΔ e)
-  have hbase : latticeWindowBase h m n ≤ B := by
-    calc latticeWindowBase h m n = latticeWindowBase h m n * 1 * 1 := by ring
-      _ ≤ B := by
-        dsimp [B]
-        gcongr
-        · omega
-        · exact Nat.one_le_pow e Δ hΔ
+  have hc₀ : 122449 + 124928 * 3609600 * 56 ^ 11 * 8 ^ 3 ≤ latticeWindowBase h m n := by
+    unfold latticeWindowBase; omega
   replace hT2 : T ^ 2 ≤ (8 * Δ) * A := hT2.trans_eq (by ring)
-  have hcoeff {c f : ℕ} (hc : c ≤ latticeWindowBase h m n) (hf : f ≤ e) :
-      c * K * Δ ^ f ≤ B := by
-    dsimp only [B]
-    gcongr
-    all_goals omega
   have hfin {N r c f : ℕ} (hN : 0 < N) (hc : c ≤ latticeWindowBase h m n) (hf : f ≤ e)
-      (hT : T ^ N ≤ c * K * Δ ^ f * a ^ r) (hr : (r : ℝ) / N ≤ α) :
-      (T : ℝ) ≤ (B : ℝ) * (a : ℝ) ^ α :=
-    window_real_bound_of_power ha hB hN (hT.trans (Nat.mul_le_mul_right _ (hcoeff hc hf))) hr
+      (hT : T ^ N ≤ c * K * Δ ^ f * a ^ r) (hr : (r : ℝ) / N ≤ α) :=
+    window_real_of_branch_power ha hΔ (by omega) hN hc K.le_succ hf hT hr
   by_cases hbig : 28 * a < A * T
-  · exact window_real_large_mean_gap ha
-      ((show 122449 ≤ latticeWindowBase h m n by unfold latticeWindowBase; omega).trans hbase)
-      hα hsix hbig
+  · exact window_real_large_mean_gap_of_base ha hΔ (by omega) hα hsix hbig
   let H := 28 * a / (A * T) + 1
   let X := 3609600 * A ^ 4 * H ^ 6 / a ^ 3
   have hH : H * (A * T) ≤ 56 * a := gap_height_mul_le (not_lt.mp hbig)
@@ -287,19 +271,8 @@ theorem window_real_of_lattice_count {a A T Δ K h m n : ℕ} {α : ℝ}
         congr 1 <;> push_cast <;> ring
   · have hw := remainder_window_small_exponent (by omega : 0 < a) (by omega : 0 < A)
       (by omega : a ^ 3 ≤ 124928 * A ^ 4 * H ^ 5 * X) hH hX hT2
-    have h' : T ^ 17 ≤ B * a ^ 5 := by
-      calc T ^ 17 ≤ 124928 * 3609600 * 56 ^ 11 * (8 * Δ) ^ 3 * a ^ 5 := hw
-        _ = (124928 * 3609600 * 56 ^ 11 * 8 ^ 3 * Δ ^ 3) * a ^ 5 := by ring
-        _ ≤ B * a ^ 5 := by
-          apply Nat.mul_le_mul_right
-          dsimp [B]
-          have hc' : 124928 * 3609600 * 56 ^ 11 * 8 ^ 3 ≤ latticeWindowBase h m n := by
-            unfold latticeWindowBase; omega
-          calc _ ≤ latticeWindowBase h m n * Δ ^ e :=
-              Nat.mul_le_mul hc' (Nat.pow_le_pow_right hΔ (by omega))
-            _ = latticeWindowBase h m n * 1 * Δ ^ e := by ring
-            _ ≤ _ := by gcongr; omega
-    exact window_real_bound_of_power ha hB (by decide : 0 < 17) h' hα
+    exact window_real_of_branch_power (c := 124928 * 3609600 * 56 ^ 11 * 8 ^ 3) (k := 1) (f := 3)
+      ha hΔ (by omega) (by decide) (by omega) (by omega) (by omega) (hw.trans_eq (by ring)) hα
 
 /-- The original lattice reduction is the specialization `h = 10n + 7m`. -/
 theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}

@@ -43,29 +43,12 @@ theorem window_real_of_polar_bad_count {a A T Δ K : ℕ} {α : ℝ}
       PolarBadCountBranches K T H X S Y) :
     (T : ℝ) ≤ (polarBadWindowBase * (K + 1) * Δ ^ 491 : ℕ) * (a : ℝ) ^ α := by
   obtain ⟨hA, hΔ, ha, hT2⟩ := window_facts (by omega) hsix hdrop
-  let B := polarBadWindowBase * (K + 1) * Δ ^ 491
-  have hB : 1 ≤ B :=
-    Nat.mul_pos (Nat.mul_pos (by unfold polarBadWindowBase; omega) (by omega)) (pow_pos hΔ _)
-  have hbase : polarBadWindowBase ≤ B := by
-    calc polarBadWindowBase = polarBadWindowBase * 1 * 1 := by ring
-         _ ≤ B := by
-           dsimp [B]
-           gcongr
-           · omega
-           · exact Nat.one_le_pow _ _ hΔ
-  have hcoeff {c f : ℕ} (hc : c ≤ polarBadWindowBase) (hf : f ≤ 491) :
-      c * K * Δ ^ f ≤ B := by
-    dsimp [B]
-    gcongr; omega
+  have hc₀ : 122449 ≤ polarBadWindowBase := by unfold polarBadWindowBase; omega
   have hfin {N r c f : ℕ} (hN : 0 < N) (hc : c ≤ polarBadWindowBase) (hf : f ≤ 491)
-      (hcount : T ^ N ≤ c * K * Δ ^ f * a ^ r) (hr : (r : ℝ) / N ≤ α) :
-      (T : ℝ) ≤ (B : ℝ) * (a : ℝ) ^ α :=
-    window_real_bound_of_power ha hB hN
-      (hcount.trans (Nat.mul_le_mul_right _ (hcoeff hc hf))) hr
+      (hcount : T ^ N ≤ c * K * Δ ^ f * a ^ r) (hr : (r : ℝ) / N ≤ α) :=
+    window_real_of_branch_power ha hΔ (by omega) hN hc K.le_succ hf hcount hr
   by_cases hbig : 28 * a < A * T
-  · exact window_real_large_mean_gap ha
-      ((show 122449 ≤ polarBadWindowBase by unfold polarBadWindowBase; omega).trans hbase)
-      hα hsix hbig
+  · exact window_real_large_mean_gap_of_base ha hΔ hc₀ hα hsix hbig
   let H := 28 * a / (A * T) + 1
   let X := 3609600 * A ^ 4 * H ^ 6 / a ^ 3
   let S := 9472 * A ^ 3 * H ^ 3 / a ^ 2
