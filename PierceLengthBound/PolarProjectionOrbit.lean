@@ -8,19 +8,22 @@ module
 public import PierceLengthBound.PolarProjectionAlgebra
 public import PierceLengthBound.FixedDividendCoordinates
 
-/-! The affine polar identity at supported Pierce orbit states. -/
+/-! The polar identity (Proposition 10.1) at Pierce orbit states. The polar
+vector `V = G k + ℓ` is orthogonal to the gap and drop rows and pairs with the
+quadratic-moment row to give the norm `Ψ`, so `Ψ W = N₀ V` and `J W = N₀² V`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open Matrix Finset
 noncomputable section
 
-/-- The polar direction evaluated at the actual first three gaps. -/
+/-- The polar vector evaluated at the orbit gaps `k_i, k_{i+1}, k_{i+2}`. -/
 def orbitPolarVector (a b i : ℕ) : Fin 3 → ℝ :=
   polarVector (patternRho a b i) (patternU a b i) (patternV a b i)
     (patternRho a b (i + 1)) (patternU a b (i + 1)) (patternV a b (i + 1))
     (fun j => kk a b (i + j))
 
+/-- The cofactor relation for the orbit drops, divided by `L(i)`. -/
 lemma orbit_kernel_drops {a b i : ℕ} (hba : b < a) (hi : i + 5 < P a b) :
     -patternRho a b i * (dq a b i : ℝ) + patternU a b i * (dq a b (i + 1) : ℝ) +
       patternV a b i * (dq a b (i + 2) : ℝ) + (dq a b (i + 3) : ℝ) = 0 := by
@@ -77,7 +80,7 @@ lemma orbit_gap_nodes (a b i : ℕ) :
       kk a b i + kk a b (i + 1) + kk a b (i + 2) = pt a b i 3 := by
   simp [kk, pt, Nat.add_assoc]
 
-/-- The polar direction is orthogonal to the actual gap row. -/
+/-- The polar vector is orthogonal to the orbit gap row. -/
 theorem orbitPolarVector_dot_gaps {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) :
     ∑ j : Fin 3, kk a b (i + j) * orbitPolarVector a b i j = 0 := by
   rw [orbitPolarVector, polarVector_dot_gaps]
@@ -86,7 +89,7 @@ theorem orbitPolarVector_dot_gaps {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a 
     (orbit_gap_nodes a b i).1]
   exact orbit_lineQuadratic_zero hba hi
 
-/-- The cofactor relation for the actual orbit values, with denominators removed. -/
+/-- The cofactor relation for the orbit values, with denominators removed. -/
 lemma orbitCoeffs_values_sum {a b i : ℕ} (hba : b < a) (hi : i + 5 < P a b) :
     ∑ j : Fin 5, orbitCoeffs a b i j * (orb a b (i + j) : ℝ) = 0 := by
   have ha : (a : ℝ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
@@ -128,7 +131,7 @@ lemma orbit_mixed_drop_moment {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) :
       ring
     _ = 0 := by rw [hs, hB, hrec]; ring
 
-/-- The polar direction annihilates the actual drop row. -/
+/-- The polar vector is orthogonal to the orbit drop row. -/
 theorem orbitPolarVector_dot_drops {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) :
     ∑ j : Fin 3, (dq a b (i + j) : ℝ) * orbitPolarVector a b i j = 0 := by
   unfold orbitPolarVector
@@ -139,7 +142,7 @@ theorem orbitPolarVector_dot_drops {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a
     orbit_lineDropNodes hba hi, orbit_lineDropGaps hba hi]
   exact orbit_mixed_drop_moment hba hi
 
-/-- The polar direction pairs with the actual quadratic-moment row to give the norm. -/
+/-- The polar vector pairs with the orbit quadratic-moment row to give the norm. -/
 theorem orbitPolarVector_dot_moment {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) :
     ∑ j : Fin 3, orbitPolarVector a b i j * (rq a b i j : ℝ) = orbitNorm a b i := by
   have he := polarVector_dot_moment_sub_norm
@@ -154,7 +157,8 @@ theorem orbitPolarVector_dot_moment {a b i : ℕ} (hba : b < a) (hi : i + 6 < P 
   simpa only [orbitPolarVector, rq, sq, kq, Int.cast_add, Int.cast_mul,
     Int.cast_sub, Int.cast_natCast, Fin.val_castSucc, Fin.val_succ, kk, pt, Nat.add_assoc] using he
 
-/-- The exact polar identity `D W = A (G x + ℓ)` at every supported actual state. -/
+/-- The polar identity `Ψ W = N₀ V` (Proposition 10.1), with `Ψ = orbitNorm`,
+`N₀ = Lz` and `V` the polar vector. -/
 theorem orbit_polar_identity {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) (j : Fin 3) :
     orbitNorm a b i * (orbitCurvatureVector a b i j : ℝ) =
       (Lz a b i : ℝ) * orbitPolarVector a b i j := by
@@ -175,7 +179,7 @@ theorem orbit_polar_identity {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) (j
   congr 1
   fin_cases j <;> simp [orbitCurvatureVector, curvatureVector, kk, kq]
 
-/-- Clearing the positive norm gives `J W = A² (G x + ℓ)`. -/
+/-- The rank-five form `J W = N₀² V` of the polar identity, using `J = N₀ Ψ`. -/
 theorem orbit_rankFive_polar_identity {a b i : ℕ} (hba : b < a)
     (hi : i + 7 < P a b) (j : Fin 3) :
     hankelInv a b i 5 * (orbitCurvatureVector a b i j : ℝ) =

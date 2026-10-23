@@ -16,10 +16,12 @@ open scoped Matrix
 noncomputable section
 open MvPolynomial Finset
 
+/-- Chart points `(u, v)` at pivot `m` whose fiber polynomial vanishes identically. -/
 def zeroChartFibers (B : HypersurfaceChartPolynomial) (m : ℕ) :
     Finset ((Fin 3 → ℤ) × (Fin 3 → ℤ)) :=
   (crossSet m).filter fun uv => chartPolynomialFiber B (chartFirstVertex m uv.1) = 0
 
+/-- The first vertex `(m, u)` as an integer vector in `ℤ⁴`. -/
 def integerFirstVertex (m : ℕ) (u : Fin 3 → ℤ) : Fin 4 → ℤ := Fin.cons (m : ℤ) u
 
 lemma integerFirstVertex_injective {m n : ℕ} {u v : Fin 3 → ℤ}
@@ -36,8 +38,9 @@ lemma integerFirstVertex_cast (m : ℕ) (u : Fin 3 → ℤ) :
   · rfl
   · fin_cases j <;> rfl
 
-/-- Each common-factor class of identically-zero fibers is controlled by the zero set of
-one fixed nonzero coefficient of the chart polynomial. -/
+/-- Over the pivots `1 ≤ m ≤ X`, the identically-zero fibers whose first vertex has
+`gcd(m, u) = g` number at most `729 deg(q) X⁴ / g`, where `q` is a fixed nonzero
+polynomial vanishing at every first vertex with an identically-zero fiber. -/
 theorem zeroChartFibers_gcd_count (B : HypersurfaceChartPolynomial)
     {q : MvPolynomial (Fin 4) ℚ} (hq : q ≠ 0)
     (hqzero : ∀ x, chartPolynomialFiber B x = 0 → eval x q = 0)
@@ -124,8 +127,9 @@ theorem zeroChartFibers_gcd_count (B : HypersurfaceChartPolynomial)
     _ ≤ (27 * q.totalDegree * ((X : ℝ) / g) ^ 3) * (27 * (X : ℝ) * g ^ 2) := by gcongr
     _ = _ := by field_simp; ring
 
-/-- A coarse harmonic estimate is enough: the identically-zero fibers are already below
-the target exponent, without using the small epsilon loss. -/
+/-- Over the pivots `1 ≤ m ≤ X`, the identically-zero fibers number at most
+`2187 deg(q) X^(14/3)`; the sum over `g` uses the coarse harmonic bound
+`∑_{g ≤ X} 1/g ≤ 3 X^(2/3)`. -/
 theorem zeroChartFibers_sum (B : HypersurfaceChartPolynomial)
     {q : MvPolynomial (Fin 4) ℚ} (hq : q ≠ 0)
     (hqzero : ∀ x, chartPolynomialFiber B x = 0 → eval x q = 0)

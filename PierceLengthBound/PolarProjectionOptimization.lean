@@ -19,17 +19,22 @@ The two powered-coordinate exponents cross at
 loss above `α`; doubling a positive rational numerator and denominator also makes the gap
 exponent smaller than `α`.
 
-This file isolates the exponent optimization. `PolarProjectionMain` supplies the counting
-and geometric inputs and proves the resulting length bounds for Pierce orbits.
+The length bounds themselves are assembled in `PolarProjectionBound` and
+`PolarProjectionMain`.
 -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
+/-- The window exponent of the `S` term at degree `60n + 56m`, as a function of `r = n/m`. -/
 def polarProjectionExponentSRatio (r : ℝ) : ℝ := (2700 * r + 2517) / (9180 * r + 8557)
+/-- The window exponent of the rank-five `Y` term at degree `60n + 56m`, as a function
+of `r = n/m`. -/
 def polarProjectionExponentYRatio (r : ℝ) : ℝ := (906 * r + 840) / (3080 * r + 2856)
+/-- The crossing ratio `r_* = (√82849 - 47)/360`. -/
 def polarProjectionOptimalRatio : ℝ := (Real.sqrt 82849 - 47) / 360
+/-- The optimized exponent `β_* = (41301 - 3√82849)/137480`. -/
 def polarProjectionOptimalExponent : ℝ := (41301 - 3 * Real.sqrt 82849) / 137480
 
 lemma sqrt82849_facts :
@@ -59,8 +64,8 @@ lemma polarProjectionOptimal_crossing :
     unfold polarProjectionOptimalRatio polarProjectionOptimalExponent
     linear_combination (11 / 58920 : ℝ) * hs
 
-/-- The optimized exponent is above the method's threshold, below the explicit rational
-choice, and above the gap exponent at degree 232. -/
+/-- The optimized exponent lies above `5/17` and above `10440/35495` (the gap exponent
+at degree 232), and below `4317/14677`. -/
 lemma polarProjectionOptimal_bounds :
     (5 : ℝ) / 17 < polarProjectionOptimalExponent ∧
       (10440 : ℝ) / 35495 < polarProjectionOptimalExponent ∧
@@ -108,7 +113,7 @@ lemma polarProjection_exponents_ratio {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     field_simp
     ring
 
-/-- Scaling both coordinate powers makes the gap exponent harmless. -/
+/-- At graph degree at least 232 the gap exponent is below the optimized exponent. -/
 lemma polarProjection_gap_exponent_lt {h : ℕ} (hh : 232 ≤ h) :
     latticeExponentH h < polarProjectionOptimalExponent := by
   have hb := polarProjectionOptimal_bounds.2.1

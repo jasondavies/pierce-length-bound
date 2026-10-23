@@ -15,17 +15,18 @@ import Mathlib.Tactic
 
 /-! The uniform integral-root estimate in nested-polynomial notation.
 
-Conversion between nested parameter/label polynomials and the coordinate
-convention used by the integral-root estimates: parameter first, label second.
-
-Passing the generic irreducibility of an integral parameter polynomial
-to its rational bivariate equation. -/
+`branchNestedCoordinates` converts a nested polynomial in `ℤ[T][Y]` to the
+coordinate convention of the integral-root estimates (parameter first, label
+second), and `branch_rational_nested_irreducible` passes irreducibility over
+the fraction field of `ℤ[T]` to the rational bivariate equation. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- Nested polynomials `R[T][Y]` as bivariate polynomials, with the parameter
+`T` as variable `0` and the label `Y` as variable `1`. -/
 def branchNestedCoordinates (R : Type*) [CommRing R] :
     R[X][X] ≃ₐ[R] MvPolynomial (Fin 2) R :=
   (CCDN.bivariatePolynomialEquiv R).symm.trans
@@ -140,6 +141,10 @@ theorem branch_rational_nested_irreducible {F : Type*} [Field F]
 
 end Rationalization
 
+/-- For a monic `p ∈ ℤ[T][Y]` of total degree at most `d` and `Y`-degree at
+least two, irreducible over the fraction field of `ℤ[T]`, the integers
+`|t| ≤ B` for which `p(t, Y)` has an integer root number
+`O((1 + log (H+1))^4 √B (1 + log B))`, with constant depending only on `d`. -/
 theorem branch_uniform_nested_root_bound (d : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ (F : Type*) [Field F] [Algebra ℤ[X] F]
       [IsFractionRing ℤ[X] F], ∀ (p : ℤ[X][X]), p.Monic →

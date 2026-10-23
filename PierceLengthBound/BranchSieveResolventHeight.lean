@@ -17,6 +17,9 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset
 
+/-- Substituting a family of integer polynomials of degree at most `D` and height
+at most `H` into a fixed polynomial `Q` over `MvPolynomial σ ℤ` gives a bivariate
+polynomial of bounded total degree and height `O((H + 1)^E)`. -/
 theorem branch_fixed_resolvent_substitution_bound {σ : Type*}
     (Q : Polynomial (MvPolynomial σ ℤ)) (D : ℕ) :
     ∃ M E C : ℕ, 0 < C ∧ ∀ (H : ℕ) (v : σ → Polynomial ℤ),

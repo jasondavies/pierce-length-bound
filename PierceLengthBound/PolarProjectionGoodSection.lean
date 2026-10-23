@@ -6,12 +6,13 @@ Authors: Jason Davies
 module
 public import PierceLengthBound.PolarProjectionExceptionalPolynomial
 
-/-! Every pattern outside the fixed exceptional hypersurface has an actual
-smooth coordinate-axis section with a nonzero quartic initial coefficient. -/
+/-! Every pattern outside the fixed exceptional hypersurface has a smooth formal
+coordinate-axis section with a nonzero quartic initial coefficient. -/
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
+/-- The six nonvanishing conditions packaged in `polarChartGuard`. -/
 theorem polarChartGuard_conditions {q : Fin 6 → ℚ} (h : polarChartGuard q ≠ 0) :
     -q 0 - q 1 ≠ 0 ∧ q 1 - q 2 ≠ 0 ∧ q 2 - 1 ≠ 0 ∧
       (polarMatrix (q 0) (q 1) (q 2)).det ≠ 0 ∧
@@ -19,8 +20,10 @@ theorem polarChartGuard_conditions {q : Fin 6 → ℚ} (h : polarChartGuard q �
       polarLinear (q 0) (q 1) (q 2) (q 3) (q 4) (q 5) 0 ≠ 0 := by
   simpa only [polarChartGuard, mul_ne_zero_iff, and_assoc] using h
 
-/-- The fixed rational initial expressions apply to every formal section
-with the prescribed tangent direction, including its higher-order corrections. -/
+/-- Along every formal section through the base point with tangent direction
+`(s, t)`, the curve equation vanishes to order four, with fourth coefficient
+`A · polarInitialResultant q s t - b · (polarInitialNorm q s t)⁴`; the higher-order
+terms of the section do not enter. -/
 theorem polar_curve_initial_of_jets (q : Fin 6 → ℚ)
     (hguard : polarChartGuard q ≠ 0) (A b s t : ℚ)
     (x : Fin 3 → PowerSeries ℚ)
@@ -56,8 +59,9 @@ theorem polar_curve_initial_of_jets (q : Fin 6 → ℚ)
       (polarBaseNodes (q 0) (q 1) (q 2) (q 3) (q 4) (q 5))) (polarCubic r) 4 4 -
         b * D ^ 4) (funext hr) hD
 
-/-- One of the two coordinate-axis sections has order exactly four, uniformly
-for every dividend and every nonzero leading minor. The section is constructed. -/
+/-- If the chart guard and the initial minor are nonzero, then for every `A ≠ 0`
+and every `b` one of the two coordinate-axis formal sections meets the curve
+equation with order exactly four. -/
 theorem polar_good_axis_formal_section (q : Fin 6 → ℚ)
     (hguard : polarChartGuard q ≠ 0) (hminor : polarInitialMinor q ≠ 0)
     (A b : ℚ) (hA : A ≠ 0) :

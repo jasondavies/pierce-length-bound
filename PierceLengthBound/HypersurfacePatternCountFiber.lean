@@ -13,10 +13,10 @@ public import PierceLengthBound.LatticeExterior
 /-!
 # Polynomial zeros in cross-congruence fibers
 
-The finite-set estimate here is the geometric fiber ingredient in the hypersurface-pattern
-count. It is unconditional: a nonzero ternary rational polynomial contributes at most
-`243 D X² / (n μ)` zeros in `ℤu + nℤ³`, provided `X ≥ n`. The shortest-normal reciprocal
-sum is proved separately in `HypersurfacePatternCountWeights`.
+The fiber estimate of the hypersurface-pattern count: for `X ≥ n`, a nonzero ternary
+rational polynomial of degree `D` has at most `243 D X² / (n μ)` zeros in the box
+`[-X, X]³` of the lattice `ℤu + nℤ³`, where `μ = normalShortR n u`. The sum of
+`1 / μ` over the chart fibers is bounded in `HypersurfacePatternCountWeights`.
 -/
 
 @[expose] public section
@@ -25,8 +25,8 @@ noncomputable section
 open MvPolynomial Matrix
 
 open Classical in
-/-- A nonzero polynomial cuts a cross-span lattice box in at most `O(D X²/(n μ))` points.
-There is no primitivity hypothesis on `u`. -/
+/-- For every `u` and `X ≥ n`, a nonzero polynomial of degree `D` vanishes at most
+`243 D X² / (n μ)` times on the box `[-X, X]³` of `ℤu + nℤ³`. -/
 theorem crossSpanLattice_polynomial_fiber_count {n X : ℕ} (hn : 0 < n) (hX : n ≤ X)
     (u : Fin 3 → ℤ) {f : MvPolynomial (Fin 3) ℚ} (hf : f ≠ 0) :
     (((ibox3 X).filter fun v => v ∈ crossSpanLattice n u ∧
@@ -147,8 +147,8 @@ theorem crossSpanLattice_polynomial_fiber_count {n X : ℕ} (hn : 0 < n) (hX : n
     (mul_pos hnR hμR) ℓ hℓ hsmall hpair hcoord
   simpa only [T, Finset.filter_filter] using hc
 
-/-- For a triple primitive modulo `n`, the same estimate counts exactly the cross-congruence
-solutions, as required by the chart fibers. -/
+/-- For `u` primitive modulo `n`, `ℤu + nℤ³` is the solution set of `u × v ≡ 0 (mod n)`,
+so the same bound counts the zeros of `f` among these solutions. -/
 theorem primitive_cross_congruence_polynomial_fiber_count {n X : ℕ}
     (hn : 0 < n) (hX : n ≤ X) (u : Fin 3 → ℤ) (hu : gcd4 n u = 1)
     {f : MvPolynomial (Fin 3) ℚ} (hf : f ≠ 0) :

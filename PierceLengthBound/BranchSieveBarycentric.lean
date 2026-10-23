@@ -7,8 +7,12 @@ module
 
 public import PierceLengthBound.BranchSieveResidueSigns
 
-/-! The barycentric identity converts the actual normalized branch sign to the
-quadratic extension used by the specialization sieve. -/
+/-! The barycentric identity at infinity. In every infinity residue of a
+component, the second and third moment equations give a polynomial identity
+between the homogenized resultant, the location factor `Δ` and the
+fifth-location product. Scaling the residue sign of `BranchSieveResidueSigns`
+by the square of that product gives a square root of `(a/A)·Δ`, the quadratic
+extension in the degree-twelve label of Lemma 10.3. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -23,8 +27,9 @@ def branchLocationDelta {K : Type*} [CommRing K] (z₁ z₂ z₃ : K) : K :=
 def branchFifthLocationProduct {K : Type*} [CommRing K] (z₁ z₂ z₃ z₄ : K) : K :=
   z₄ * (z₄ - z₁) * (z₄ - z₂) * (z₄ - z₃)
 
-/-- Four moment relations give the exact resultant/Vandermonde identity. This
-is polynomial and does not divide by any node difference. -/
+/-- Four moment relations give the resultant/Vandermonde identity
+`c₀c₁c₂c₃ · V(z) · Δ = W⁴`, where `W` is the fifth-location product. It holds
+in every commutative ring. -/
 theorem branch_barycentric_resultant_identity {K : Type*} [CommRing K]
     (c₀ c₁ c₂ c₃ z₁ z₂ z₃ z₄ : K)
     (h0 : c₀ + c₁ + c₂ + c₃ + 1 = 0)
@@ -55,8 +60,8 @@ theorem branch_barycentric_resultant_identity {K : Type*} [CommRing K]
         ring
     _ = V ^ 4 := by rw [hc0, hc1, hc2, hc3]; ring
 
-/-- Scaling the actual sign by the square of the fifth-node product gives
-exactly the quadratic relation used by the degree-twelve branch algebra. -/
+/-- Scaling a sign `β` with `β² r = c` by the square of the fifth-node product
+gives the quadratic relation `(V²β)² = cΔ` of the degree-twelve branch algebra. -/
 theorem branch_scaled_sign_square {K : Type*} [CommRing K] (β r c Δ V : K)
     (hβ : β ^ 2 * r = c) (hres : r * Δ = V ^ 4) :
     (V ^ 2 * β) ^ 2 = c * Δ := by
@@ -64,8 +69,8 @@ theorem branch_scaled_sign_square {K : Type*} [CommRing K] (β r c Δ V : K)
     _ = (β ^ 2 * r) * Δ := by ring
     _ = c * Δ := by rw [hβ]
 
-/-- The second and third location moments vanish in every actual infinity
-residue. Together with the linear elimination they give the two specialized
+/-- The second and third location moments vanish in every infinity residue.
+Together with the linear elimination of the fourth node they give the two
 location equations used by the branch sieve. -/
 theorem chart_infinity_moment_equations
     {F K : Type*} [Field F] [Algebra ℚ F] [Field K] [Algebra ℚ K]
@@ -124,8 +129,8 @@ theorem chart_infinity_moment_equations
       z, rρ, ru, rv, z₄] using hu0
   exact ⟨h2, h3⟩
 
-/-- The barycentric identity holds in every actual infinity residue of a
-component, without assumptions on smoothness or geometric irreducibility. -/
+/-- The barycentric identity holds in every infinity residue of any component
+containing the quadratic and the curve equation. -/
 theorem chart_infinity_barycentric_identity
     {F K : Type*} [Field F] [Algebra ℚ F] [Field K] [Algebra ℚ K]
     (ρ u v ρ' u' v' A a : ℚ) (ha : a ≠ 0)
@@ -158,8 +163,9 @@ theorem chart_infinity_barycentric_identity
     MvPolynomial.eval_X, map_sub, map_add, Matrix.cons_val] at hb ⊢
   simpa only [map_one, z₄, fourthNode, z, rρ, ru, rv] using hb
 
-/-- The actual normalized infinity residue contains the branch sign used by
-the specialization polynomial, with first location normalized to one. -/
+/-- Every normalized infinity residue of a nonexceptional orbit component
+contains a square root of `(a/A)·Δ(z₁,z₂,z₃)`, with the first location
+normalized to one. -/
 theorem orbit_infinity_residue_scaled_sign
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

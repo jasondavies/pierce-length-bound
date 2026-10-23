@@ -7,9 +7,10 @@ module
 
 public import PierceLengthBound.BranchSieveComponentDegree
 
-/-! The two branch signs exist in the actual normalized infinity residues.
-The fraction `wr/u²` is integral because its square is `cr`; reducing it and
-dividing by the resultant unit avoids choosing a local square-root series. -/
+/-! The two branch signs exist in the residue fields of the normalized orbit
+infinity branches. The fraction `wr/u²` is integral because its square is `cr`;
+reducing it and dividing by the resultant unit gives the square root of `c/r`
+in each residue field. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -77,8 +78,9 @@ theorem normalization_residue_ne_zero_of_unit_mod_parameter
   have hunit := hr.map ψ
   exact hunit.ne_zero
 
-/-- Every actual infinity branch residue contains a square root of `(a/A)/r`,
-where `r` is the homogenized resultant. This is the unscaled branch sign. -/
+/-- Every orbit infinity branch residue contains a square root of `(a/A)/r`,
+where `A = Lz a b i` and `r` is the homogenized resultant. This is the unscaled
+branch sign. -/
 theorem orbit_infinity_residue_sign
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

@@ -9,14 +9,18 @@ public import PierceLengthBound.BranchSieveOneParameterHilbert
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 import Mathlib.Tactic
 
-/-! The monic one-parameter Hilbert estimate, stated using actual reducible
-rational specializations and a uniform total-degree bound. -/
+/-! The monic one-parameter Hilbert estimate (Step 2 in the proof of
+Theorem 10.4): for monic `p ∈ ℤ[T][Y]`, irreducible over `ℚ(T)`, of total
+degree at most `d` and height at most `H`, the integers `t ∈ [-B,B]` with `p(t, Y)` reducible
+over `ℚ` number at most `C (1 + log(H+1))^4 B^(1/2) (1 + log B)`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset
 
+/-- A reducible monic polynomial other than `1` has a monic factor of degree
+strictly between zero and its degree. -/
 theorem branch_monic_proper_factor_of_not_irreducible
     {R : Type*} [CommRing R] [IsDomain R] (p : R[X]) (hp : p.Monic)
     (hp1 : p ≠ 1) (hred : ¬Irreducible p) :
@@ -31,6 +35,8 @@ theorem branch_monic_proper_factor_of_not_irreducible
   rw [← hprod, hq.natDegree_mul hr]
   omega
 
+/-- The estimate for a fixed degree `n`, from the proper-factor count with an
+algebraic closure as splitting field. -/
 theorem branch_one_parameter_monic_irreducibility_bound (n D : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ (F : Type*) [Field F]
       [Algebra ℤ[X] F] [IsFractionRing ℤ[X] F],
@@ -69,6 +75,7 @@ theorem branch_one_parameter_monic_irreducibility_bound (n D : ℕ) :
     branch_monic_proper_factor_of_not_irreducible _ hpm hp1' hred
   exact ⟨htB, q, hq, hdiv, hqpos, by simpa only [hdeg] using hqlt⟩
 
+/-- The estimate uniform over all degrees up to `d`. -/
 theorem branch_uniform_monic_hilbert_bound (d : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ (F : Type*) [Field F]
       [Algebra ℤ[X] F] [IsFractionRing ℤ[X] F],

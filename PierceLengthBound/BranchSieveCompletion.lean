@@ -7,8 +7,9 @@ module
 
 public import PierceLengthBound.MinorCount
 
-/-! Completion of a first-four-column minor vertex in an independently sized
-box. The common divisor is retained explicitly. -/
+/-! Completions of a minor vertex `u` in a box whose radius `X` is independent
+of the modulus `m`: the vectors `v ∈ [-X,X]³` with `m ∣ u × v` number
+`O(X³ g² / m²)`, where `g = gcd(m, u)` is kept in the bound. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -16,7 +17,8 @@ open scoped Matrix
 noncomputable section
 open Finset
 
-/-- A rectangular version of the existing cross-congruence fiber count. -/
+/-- Cross-congruence count in a box of arbitrary radius `X`: reduce modulo `m`
+and apply the residue count `card_cross_fiber`. -/
 theorem branch_completion_count_nat {m : ℕ} (hm : 0 < m) (X : ℕ) (u : Fin 3 → ℤ) :
     ((ibox3 X).filter fun v => ∀ j, (m : ℤ) ∣ (u ⨯₃ v) j).card ≤
       (2 * X / m + 1) ^ 3 * (27 * m * gcd4 m u ^ 2) := by

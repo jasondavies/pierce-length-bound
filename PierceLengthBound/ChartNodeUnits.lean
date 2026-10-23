@@ -8,8 +8,8 @@ module
 public import PierceLengthBound.FixedDividendChartGeneration
 public import PierceLengthBound.FixedDividendChartResultant
 
-/-! The resultant unit on the actual infinity section forces every normalized
-node difference to be a unit. This works in the possibly nonreduced section. -/
+/-! The resultant unit on the infinity section of the projective chart makes every
+difference of normalized nodes a unit there. The infinity section may be nonreduced. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -47,8 +47,8 @@ lemma completeDirection_difference_unit {R : Type*} [CommRing R]
       not_true_eq_false, zero_sub, sub_zero, IsUnit.neg_iff]
   all_goals first | tauto | apply IsUnit.sub_iff.mp; tauto
 
-/-- Every normalized node difference is invertible modulo the infinity
-equation of an actual nonexceptional component. -/
+/-- On a component of a nonexceptional pattern curve, every difference of
+normalized nodes is invertible modulo the infinity equation of the chart. -/
 theorem nonexceptional_chart_node_difference_unit
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)

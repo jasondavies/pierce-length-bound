@@ -8,16 +8,17 @@ module
 public import PierceLengthBound.HypersurfacePatternCount
 public import PierceLengthBound.FixedDividendCountAssembly
 
-/-! The hypersurface count with its explicit divisor-maximum coefficient gives a
-fixed polynomial condition a slowly growing coefficient on orbit windows. -/
+/-! On orbit windows, `hypersurface_pattern_count_tau` gives a proper polynomial
+condition the exponent `14/3` with a slowly growing coefficient. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
-/-- At selected orbit states, a fixed proper algebraic condition has the exact
-14/3 count with a proved subpolynomial coefficient in the dividend. -/
+/-- On the selected starts of an orbit window, the minor patterns satisfying a proper
+polynomial condition number at most `R(a) H^(14/3)`, where `H` is the selected minor
+height and `R` grows slowly in the dividend `a`. -/
 theorem selected_hypersurface_pattern_count_slow {F : MvPolynomial (Fin 10) ℚ}
     (hF : ProperOnMinorCone F) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧

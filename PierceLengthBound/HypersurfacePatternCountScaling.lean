@@ -18,6 +18,8 @@ noncomputable section
 def primitiveFirstVertex (m : ℕ) (u : Fin 3 → ℤ) : Fin 3 → ℤ :=
   fun j => u j / (gcd4 m u : ℤ)
 
+/-- With `g = gcd(m, u)` and `n = m / g`: `m = g n`, `u = g u'` for the primitive first
+vertex `u'`, and `u'` is primitive modulo `n`. -/
 lemma primitiveFirstVertex_spec {m : ℕ} (hm : 0 < m) (u : Fin 3 → ℤ) :
     let g := gcd4 m u
     let n := m / g
@@ -75,7 +77,9 @@ theorem primitiveFirstVertex_cross_iff {m : ℕ} (hm : 0 < m) (u v : Fin 3 → �
   simp only [hmZ, hc, mul_dvd_mul_iff_left (show (gcd4 m u : ℤ) ≠ 0 by
     exact_mod_cast hg.ne')]
 
-/-- Every nonzero polynomial fiber, including first vertices with a nontrivial gcd. -/
+/-- The fiber bound for an arbitrary first vertex `u`: with `g = gcd(m, u)`, a nonzero
+`f` vanishes on at most `243 D X² / ((m/g) μ)` solutions of `u × v ≡ 0 (mod m)` in
+`[-X, X]³`, where `μ = normalShortR (m/g) (u/g)`. -/
 theorem cross_congruence_polynomial_fiber_count {m X : ℕ} (hm : 0 < m) (hX : m ≤ X)
     (u : Fin 3 → ℤ) {f : MvPolynomial (Fin 3) ℚ} (hf : f ≠ 0) :
     (((ibox3 X).filter fun v => (∀ j, (m : ℤ) ∣ (u ⨯₃ v) j) ∧

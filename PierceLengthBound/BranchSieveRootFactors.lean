@@ -10,7 +10,7 @@ import Mathlib.Tactic
 public import PierceLengthBound.BranchSieveMultivariateKronecker
 
 /-! A proper bounded multivariate factorization can be normalized so that its
-Kronecker image is monic. This is the actual specialized factor witness in the
+Kronecker image is monic. This gives the specialized factor witness in the
 effective Hilbert argument. -/
 
 @[expose] public section
@@ -18,6 +18,9 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- A reducible polynomial with partial degrees below `a` and monic Kronecker
+image different from `1` factors into two nonunits with partial degrees below
+`a`, the first having monic Kronecker image. -/
 theorem branch_kronecker_proper_factor_witness {a n : ℕ}
     (f : MvPolynomial (Fin n) ℚ) (hdeg : ∀ i, f.degreeOf i < a)
     (hred : ¬Irreducible f) (hmonic : (branchMultiKronecker a n f).Monic)

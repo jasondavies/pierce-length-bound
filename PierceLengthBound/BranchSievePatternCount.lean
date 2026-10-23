@@ -7,9 +7,12 @@ module
 
 public import PierceLengthBound.BranchSieveVertexCount
 
-/-! The four charts whose pivots lie in the first four columns preserve the
-branch-sieve vertex. They give a finite cover without imposing a maximal pivot
-among all ten minors. -/
+/-! Branch-bad full minor patterns (Lemma 10.5). The branch-sieve vertex of a
+pattern consists of its minors `0, 1, 3, 6`. On each of the four Plücker charts
+pivoted at one of these minors, the vertex is a signed permutation of the
+chart coordinates `(m, u)`. Choosing the pivot of largest absolute value among these
+four minors covers the patterns by eight charts, and the dyadic scaled-vertex
+count bounds each chart. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -17,10 +20,13 @@ open scoped Matrix
 noncomputable section
 open Finset
 
+/-- The four minors forming the branch-sieve vertex of a pattern. -/
 def branchFirstIndex : Fin 4 → Fin 10 := ![0, 1, 3, 6]
 def branchFirstVertex (p : Fin 10 → ℤ) : Fin 4 → ℤ := fun i => p (branchFirstIndex i)
 def branchPivotSign (b : Bool) : ℤ := if b then 1 else -1
 
+/-- The branch-sieve vertex in terms of the coordinates `(m, u)` of the chart
+pivoted at minor `branchFirstIndex t`, with pivot sign `b`. -/
 def branchVertexFromChart (t : Fin 4) (b : Bool) (x : Fin 4 → ℤ) : Fin 4 → ℤ :=
   ![![branchPivotSign b * x 0, x 3, -x 2, x 1],
     ![x 3, branchPivotSign b * x 0, x 2, -x 1],
@@ -87,6 +93,7 @@ theorem branch_chart_scaled_vertex_count (bad : (Fin 4 → ℤ) → Prop)
       by simpa only [branchVertexFromChart_scale] using (mem_filter.mp hx).2⟩)
     (branchVertexFromChart_injective t b).injOn
 
+/-- A vertex minor of largest absolute value, used as the chart pivot. -/
 def branchFirstPivot (p : Fin 10 → ℤ) : Fin 4 :=
   (exists_max_image univ (fun t => |branchFirstVertex p t|) univ_nonempty).choose
 

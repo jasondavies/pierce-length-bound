@@ -9,8 +9,8 @@ public import PierceLengthBound.PolarProjectionWindow
 public import PierceLengthBound.LatticeCurvature
 
 /-! From the six-term polar estimate to integer-power counting branches.
-The estimate is defined here and supplied by the arithmetic and geometric proofs
-assembled in `PolarProjectionMain`. -/
+The estimate `PolarProjectionSixTermEstimate` is defined here and proved in
+`PolarProjectionMain` from the arithmetic and geometric inputs. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -23,7 +23,7 @@ def polarGoodTerms (H X S Y h m n : ℕ) : ℝ :=
     (X : ℝ) ^ (5 - (2 * m / (h : ℝ)) / 3) * (S : ℝ) ^ (m / (h : ℝ)) +
     (X : ℝ) ^ 5 * (Y : ℝ) ^ (n / (h : ℝ))
 
-/-- The contribution of the enlarged bad-pattern class. -/
+/-- The bad-pattern term `X^{14/3} · max(H, S, Y)^{1/17}`. -/
 def polarBadTerm (H X S Y : ℕ) : ℝ :=
   (X : ℝ) ^ (14 / 3 : ℝ) * ((max H (max S Y) : ℕ) : ℝ) ^ (1 / 17 : ℝ)
 
@@ -41,7 +41,8 @@ lemma latticeCountBranches_mono {K K' T H X S Y h m n : ℕ} (hK : K ≤ K')
 def polarProjectionCountSlack (R m n : ℕ) : ℕ :=
   (10 * (R + 1)) ^ (3 * polarProjectionGraphDegree m n + 51)
 
-/-- The displayed six-term estimate entails precisely the required counting branches. -/
+/-- A six-term bound on `T` gives one of the counting branches
+`PolarProjectionCountBranches`. -/
 theorem polar_projection_branches_of_six_term_count {T H X S Y R m n : ℕ} (hm : 0 < m)
     (hcount : (T : ℝ) ≤ R *
       (polarGoodTerms H X S Y (polarProjectionGraphDegree m n) m n + polarBadTerm H X S Y)) :
@@ -89,8 +90,9 @@ theorem polar_projection_branches_of_six_term_count {T H X S Y R m n : ℕ} (hm 
       · exact Or.inr (Or.inl (by simpa only [max_eq_left hS] using hc'))
     · exact Or.inl (by simpa only [max_eq_left hH] using hc')
 
-/-- The local six-term estimate required by the polar-projection proposal, on actual windows.
-This is a named proposition, not a claim that the estimate has been established. -/
+/-- The local six-term estimate on selected orbit windows: in every window with
+`124928 A⁴ H⁵ X < a³`, the length `T` is at most `R a` times the five good-pattern
+terms plus the bad-pattern term. -/
 def PolarProjectionSixTermEstimate (m n : ℕ) (R : ℕ → ℕ) : Prop :=
   ∀ a b s T A : ℕ, b < a →
     (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →

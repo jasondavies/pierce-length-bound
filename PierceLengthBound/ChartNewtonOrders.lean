@@ -8,14 +8,17 @@ module
 public import PierceLengthBound.ChartDiscreteOrders
 public import PierceLengthBound.NewtonCoefficientDegrees
 
-/-! The chart supplies every coefficient-order bound used by the monic
-quartic argument; only its normalized value remains to be identified. -/
+/-! The first Newton quartic on the projective chart: the chart gives the
+coefficient-order bounds needed by `monic_quartic_quotient_discrete_order`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- If the first Newton quartic in the affine coordinates has order `-6e` at `-q`
+for a valuation nonnegative on the chart with `ord((ι l)⁻¹) = e > 0`, then
+`e = 2t` with `t > 0` and `ord(q) = -3t`. -/
 theorem chart_newton_quotient_discrete_order {K F : Type*}
     [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial (Fin 3) K))

@@ -10,7 +10,10 @@ public import PierceLengthBound.HypersurfacePatternCountZero
 public import Mathlib.Analysis.PSeries
 
 /-! Transferring a square-root saving for four vertex labels to a count of
-complete minor-chart patterns. -/
+complete minor-chart patterns. A bound `C R^(7/2)` for bad first vertices in
+every scaled box gives the bound `K C X^(9/2) (log₂ X + 1)` for chart states:
+the completion count is summed over the common divisor `g`, with weight
+`g^(-3/2)`, and then over dyadic bands of `m`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -19,6 +22,9 @@ noncomputable section
 open Finset
 
 open Classical in
+/-- A bound for bad vertices in the box of side `X / g`, after scaling by `g`,
+bounds the bad vertices of the box of side `X` all of whose coordinates are
+divisible by `g`. -/
 theorem branch_divisible_vertex_count (bad : (Fin 4 → ℤ) → Prop)
     {C : ℝ} (hC : 0 ≤ C) {g X : ℕ} (hg : 0 < g)
     (hbad : (((ibox4 (X / g)).filter fun x => bad (fun i => (g : ℤ) * x i)).card : ℝ) ≤
@@ -47,6 +53,8 @@ theorem branch_divisible_vertex_count (bad : (Fin 4 → ℤ) → Prop)
   gcongr
   exact Nat.cast_div_le
 
+/-- A minor-chart state `(m, u, v)`: the pivot, the first-vertex coordinates and
+the second vector. -/
 def BranchChartState := ℕ × (Fin 3 → ℤ) × (Fin 3 → ℤ)
 
 open Classical in

@@ -9,18 +9,18 @@ public import PierceLengthBound.PolarProjectionSectionComparison
 public import PierceLengthBound.PolarProjectionSectionCoordinates
 public import PierceLengthBound.PolarProjectionAxisColength
 
-/-! The actual local component has a coordinate-axis section of colength at
-most four. Every local ring, quotient, residue map, and comparison map used
-in the proof is constructed. -/
+/-! Outside the fixed exceptional locus, every component through the polar base
+point has, in its local ring there, a coordinate-axis section of colength at most
+four. The local component section is a quotient of the explicit smooth
+quadratic section, whose colength is four by `PolarProjectionAxisColength`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open MvPolynomial Matrix
 noncomputable section
 
-/-! The actual component section is a quotient of the explicit smooth
-quadratic section. Only the coordinate reconstruction and its origin need
-to be supplied when choosing either coordinate-axis hyperplane. -/
+/-! The component section as a quotient of the explicit smooth quadratic
+section, given a coordinate reconstruction `η` that vanishes at the origin. -/
 
 /-- The local section of any component through the base point is a
 surjective image of the explicit smooth section, and its fixed-dividend

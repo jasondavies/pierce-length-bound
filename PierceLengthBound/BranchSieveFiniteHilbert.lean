@@ -17,6 +17,8 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset
 
+/-- Integers that are roots of some polynomial in a finite set `G` of nonzero
+polynomials of degree at most `d` number at most `|G| d`. -/
 theorem branch_rational_polynomial_cut_card_le (G : Finset ℚ[X]) (d : ℕ)
     (hG : ∀ q ∈ G, q ≠ 0 ∧ q.natDegree ≤ d)
     (S : Finset ℤ) (hS : ∀ t ∈ S, ∃ q ∈ G, q.eval (t : ℚ) = 0) :
@@ -41,6 +43,9 @@ theorem branch_rational_polynomial_cut_card_le (G : Finset ℚ[X]) (d : ℕ)
       exact (Polynomial.mem_roots (hG q hq).1).mpr (mem_filter.mp hz).2
     _ = _ := by simp
 
+/-- The one-parameter monic estimate for the union of the exceptional sets of
+at most `N` monic irreducible families of total degree at most `d` and height
+at most `K (H + 1)^E`. -/
 theorem branch_finite_monic_hilbert_bound (d K E N : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ (F : Type*) [Field F]
       [Algebra ℤ[X] F] [IsFractionRing ℤ[X] F],
@@ -93,6 +98,8 @@ theorem branch_finite_monic_hilbert_bound (d K E N : ℕ) :
         (B : ℝ) ^ (1 / 2 : ℝ) * (1 + Real.log B)) := by gcongr
     _ = _ := by ring
 
+/-- The same estimate after also adding the integer roots of at most `J` nonzero
+cut polynomials of degree at most `D`. -/
 theorem branch_finite_hilbert_with_cuts_bound (d K E N J D : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ (F : Type*) [Field F]
       [Algebra ℤ[X] F] [IsFractionRing ℤ[X] F],

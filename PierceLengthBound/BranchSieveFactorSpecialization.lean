@@ -9,15 +9,16 @@ public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Data.Multiset.MapFold
 import Mathlib.Tactic
 
-/-! Monic factors in a specialized splitting algebra lift to monic factors
-before specialization. Multiplicities are tracked by multisets, so this
-does not require excluding the discriminant-zero parameters. -/
+/-! Monic factors of a specialized split monic polynomial lift to monic factors
+before specialization. Roots are tracked as multisets, so repeated roots, and
+hence parameters with vanishing discriminant, are covered. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- A submultiset of `s.map f` is the image of a submultiset of `s`. -/
 theorem branch_submultiset_lifts {α β : Type*} (f : α → β)
     {s : Multiset α} {t : Multiset β} (ht : t ≤ s.map f) :
     ∃ u : Multiset α, u ≤ s ∧ u.map f = t := by

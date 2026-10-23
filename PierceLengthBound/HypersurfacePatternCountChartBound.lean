@@ -15,6 +15,8 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
+/-- The chart zeros at pivot `m` number at most the zero-fiber plus the nonzero-fiber
+counts. -/
 lemma chart_zero_count_le_fiber_counts (B : HypersurfaceChartPolynomial) (m : ℕ) :
     (((crossSet m).filter fun uv => eval
       (Sum.elim (fun i => (uv.2 i : ℚ)) (chartFirstVertex m uv.1)) B = 0).card : ℝ) ≤

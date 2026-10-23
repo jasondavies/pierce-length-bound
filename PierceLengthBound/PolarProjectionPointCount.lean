@@ -10,19 +10,20 @@ public import PierceLengthBound.PolarProjectionExponent
 public import PierceLengthBound.LatticeJointPatternCount
 public import PierceLengthBound.JointLiftComponentCount
 
-/-! Counts on actual components with polar cuts. The geometric input is stated
-on prime curve components and their powered graph degree; it is proved in
-`PolarProjectionGeometryGoodPattern`. This module handles the counting, bounded
-cuts, and finite component cover. -/
+/-! Point counts on components of the pattern curve. `PolarRetainedDegree`
+is the powered graph degree bound on retained components of good patterns
+(proved in `PolarProjectionGeometryGoodPattern`). From it, conics, the bounded
+cuts and the finite component cover give the component count and the
+per-pattern estimate with the mixed box `polarPatternBox`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
-/-- The geometric input on good full patterns. The predicate may depend on the
-dividend. Only components retaining every actual-state cut need the improved
-powered graph degree. -/
+/-- On good full patterns, every prime component of degree `4 ≤ d ≤ 24` that
+satisfies the normalization, resolvent and polar cuts has powered graph degree
+at least `60n + 56m`. The predicate `good` may depend on the dividend. -/
 def PolarRetainedDegree (m n : ℕ) (good : ℕ → (Fin 10 → ℤ) → Prop) : Prop :=
   ∀ {a b i d δ : ℕ}, b < a → i + 7 < P a b →
     NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i) →
@@ -41,8 +42,10 @@ def PolarRetainedDegree (m n : ℕ) (good : ℕ → (Fin 10 → ℤ) → Prop) :
             a b i m n I) k) : ℤ) = (δ : ℤ) * k + c) →
       polarProjectionGraphDegree m n ≤ δ
 
-/-- Conics and all three kinds of proper cuts are already included in the
-count on a good pattern component. -/
+/-- On a good pattern, the selected starts on one prime component of the
+pattern curve give at most `R(a) (1 + B^{1/(60n+56m)})` values of `κ`, with `B`
+the lattice-joint box. Conics and components on which a normalization,
+resolvent or polar cut is proper contribute `O(R(a))`. -/
 theorem selected_polar_good_component_gap_count_slow (m n : ℕ) (hm : 0 < m)
     (hn : 0 < n) (good : ℕ → (Fin 10 → ℤ) → Prop)
     (hdegreeGood : PolarRetainedDegree m n good) :
@@ -152,8 +155,8 @@ theorem selected_polar_good_component_gap_count_slow (m n : ℕ) (hm : 0 < m)
   · apply hsmall
     simp [not_nonempty_iff_eq_empty.mp hnonempty]
 
-/-- Use the improved lattice box on good patterns and the unconditional older
-box on every remaining pattern. -/
+/-- The lattice-joint box to the power `1/(60n+56m)` on good patterns, and the
+joint-lift box to the power `1/17` on the others. -/
 def polarPatternBox (good : ℕ → (Fin 10 → ℤ) → Prop) (m n : ℕ)
     (p : Fin 10 → ℤ) (a A T : ℕ) : ℝ := by
   classical
@@ -167,8 +170,8 @@ lemma polarPatternBox_nonneg (good : ℕ → (Fin 10 → ℤ) → Prop) (m n : �
   unfold polarPatternBox
   split_ifs <;> positivity
 
-/-- The mixed component count includes the unconditional treatment of bad
-patterns; the sole hypothesis is the geometric degree statement above. -/
+/-- The component count with the mixed box `polarPatternBox`, given
+`PolarRetainedDegree`. -/
 theorem polar_component_count_of_retained_degree (m n : ℕ) (hm : 0 < m) (hn : 0 < n)
     (good : ℕ → (Fin 10 → ℤ) → Prop) (hdegree : PolarRetainedDegree m n good) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ JointComponentCount (polarPatternBox good m n) 1 R := by
@@ -190,9 +193,9 @@ theorem polar_component_count_of_retained_degree (m n : ℕ) (hm : 0 < m) (hn : 
       (by simp only [Nat.cast_add]; exact le_add_of_nonneg_left (Nat.cast_nonneg _))
       (by positivity))
 
-/-- A complete pattern estimate: original exceptional patterns retain their
-square-root bound, good patterns use the polar degree, and all other patterns
-retain the proved seventeenth-root bound. -/
+/-- The per-pattern estimate with the mixed box, given `PolarRetainedDegree`:
+exceptional patterns have the square-root bound, good patterns the polar
+graph-degree bound and the remaining patterns the seventeenth-root bound. -/
 theorem polar_pattern_count_of_retained_degree (m n : ℕ) (hm : 0 < m) (hn : 0 < n)
     (good : ℕ → (Fin 10 → ℤ) → Prop) (hdegree : PolarRetainedDegree m n good) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ JointPatternEstimate (polarPatternBox good m n) 1 R := by

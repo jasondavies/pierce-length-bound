@@ -7,8 +7,9 @@ module
 
 public import PierceLengthBound.PolarProjectionAlgebra
 
-/-! The polar base ideal and its order on every normalized branch. These
-identities do not assume or compute a total base-divisor degree. -/
+/-! The polar base ideal: when `G` is invertible, the three polar forms
+generate the ideal of their common zero, in every commutative ring. Also the
+common coordinate order of a finite family at a branch. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

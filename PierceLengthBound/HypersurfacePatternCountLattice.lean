@@ -42,8 +42,7 @@ lemma mem_crossSpanLattice_of_dvd {n : ℕ} (u : Fin 3 → ℤ) {v : Fin 3 → �
   choose z hz using hv
   exact ⟨0, z, by simpa using hz⟩
 
-/-- The primitive cross-congruence has the exact integer-lattice description used in the
-pattern-counting argument. -/
+/-- For `u` primitive modulo `n`, `u × v ≡ 0 (mod n)` if and only if `v ∈ ℤu + nℤ³`. -/
 theorem primitive_cross_congruence_iff {n : ℕ} (hn : 0 < n) {u v : Fin 3 → ℤ}
     (hu : gcd4 n u = 1) :
     (∀ j, (n : ℤ) ∣ (u ⨯₃ v) j) ↔ v ∈ crossSpanLattice n u := by
@@ -61,7 +60,8 @@ theorem primitive_cross_congruence_iff {n : ℕ} (hn : 0 < n) {u v : Fin 3 → �
     refine ⟨(u ⨯₃ z) j, ?_⟩
     fin_cases j <;> simp [cross_apply_cyc, hv] <;> ring
 
-/-- The least sup norm is bounded by the Euclidean norm of every nonzero normal vector. -/
+/-- `μ² ≤ |z|²` for every nonzero `z` with `n ∣ u · z`, where `μ = normalShortR n u`
+is the least sup norm of such a vector. -/
 lemma normalShortR_sq_le_nrm3 {n : ℕ} (hn : 0 < n) {u z : Fin 3 → ℤ}
     (hd : (n : ℤ) ∣ u ⬝ᵥ z) (hz : z ≠ 0) :
     (normalShortR n u : ℤ) ^ 2 ≤ nrm3 z := by
@@ -97,8 +97,7 @@ theorem crossSpanLattice_cross_normal {n : ℕ} {u x y : Fin 3 → ℤ}
   · simp only [z, vec3_dotProduct, cross_apply_zero, cross_apply_one, cross_apply_two]
     ring
 
-/-- Every independent pair in `ℤu + nℤ³` has product of lengths at least `n μ`.
-This replaces the Gram--Schmidt argument in the polynomial-fiber estimate. -/
+/-- Every independent pair in `ℤu + nℤ³` has product of lengths at least `n μ`. -/
 theorem crossSpanLattice_pair_norm_bound {n : ℕ} (hn : 0 < n) {u x y : Fin 3 → ℤ}
     (hx : x ∈ crossSpanLattice n u) (hy : y ∈ crossSpanLattice n u)
     (hxy : x ⨯₃ y ≠ 0) :

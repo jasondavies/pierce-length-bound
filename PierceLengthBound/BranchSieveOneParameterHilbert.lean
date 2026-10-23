@@ -11,7 +11,7 @@ import Mathlib.Tactic
 
 /-! A coefficient-uniform one-parameter Hilbert irreducibility estimate.
 The proof constructs integral coefficient resolvents and counts their
-integer roots using the proved affine plane-curve estimate. -/
+integer roots with the affine plane-curve estimate. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -36,6 +36,12 @@ theorem branch_log_polynomial_height_le (C E H : ℕ) :
   have he : (0 : ℝ) ≤ E := by positivity
   nlinarith
 
+/-- Let `p ∈ ℤ[T][Y]` be monic of degree `n`, irreducible over the fraction
+field of `ℤ[T]` and split over `L`, with coefficients of degree at most `D` and
+height at most `H`. The integers `|t| ≤ B` for which `p(t, Y)` has a monic
+factor of degree strictly between `0` and `n` number
+`O((1 + log (H+1))^4 √B (1 + log B))`, with constant depending only on
+`n` and `D`. -/
 theorem branch_one_parameter_proper_factor_bound (n D : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ (F L : Type*) [Field F]
       [Algebra ℤ[X] F] [IsFractionRing ℤ[X] F] [Field L]

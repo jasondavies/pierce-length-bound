@@ -11,9 +11,8 @@ public import Mathlib.RingTheory.UniqueFactorizationDomain.GCDMonoid
 import Mathlib.Tactic
 
 /-! The explicit sextic for the six locations at infinity is generically irreducible.
-The proof specializes at `(-7,8,-4)`, uses the exact characteristic-zero certificate,
-and preserves the full degree under specialization. This is an algebraic statement,
-not a quantitative specialization theorem. -/
+The proof specializes at `(-7,8,-4)`, where the sextic keeps degree six and is
+irreducible over `ℚ` by the certificate in `BranchSieveCertificate`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -84,7 +83,7 @@ lemma branchGenericLocationSextic_specialization_irreducible :
   change IsUnit (C (24 : ℚ))
   exact isUnit_C.mpr (IsUnit.mk0 _ (by norm_num))
 
-/-- The actual six-location polynomial is irreducible over `ℚ(c₁,c₂,c₃)`. -/
+/-- The generic six-location polynomial is irreducible over `ℚ(c₁,c₂,c₃)`. -/
 theorem branchGenericLocationSextic_irreducible :
     Irreducible (branchGenericLocationSextic.map
       (algebraMap BranchLocationParameters BranchLocationField)) := by

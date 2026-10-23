@@ -9,14 +9,16 @@ public import PierceLengthBound.BranchSieveParameterSpecialization
 public import CCDN.Noether.GenericPlaneStretch
 import Mathlib.Tactic
 
-/-! Simultaneous integer dilation of the Hilbert parameters. It preserves
-generic irreducibility and has polynomial coefficient-height cost. -/
+/-! Simultaneous integer dilation `T_i ↦ g T_i` of the Hilbert parameters. It
+preserves generic irreducibility and multiplies the coefficient height by at
+most `g ^ d`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
+/-- The substitution `T_i ↦ g T_i`. -/
 def branchDilation {σ R : Type*} [CommSemiring R] (g : R) :
     MvPolynomial σ R →+* MvPolynomial σ R :=
   eval₂Hom C (fun i => C g * X i)
@@ -64,6 +66,7 @@ theorem branchDilation_height {σ : Type*} (g : ℕ) (hg : 1 ≤ g)
     apply mul_le_mul (hH s) ?_ (by positivity) (by positivity)
     exact pow_le_pow_right₀ (by exact_mod_cast hg) hdegree
 
+/-- Dilation applied to every coefficient of a polynomial family. -/
 def branchFamilyDilation {r : ℕ} (g : ℕ)
     (p : Polynomial (MvPolynomial (Fin r) ℤ)) : Polynomial (MvPolynomial (Fin r) ℤ) :=
   p.map (branchDilation (g : ℤ))

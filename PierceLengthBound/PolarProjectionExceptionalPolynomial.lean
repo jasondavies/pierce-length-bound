@@ -10,8 +10,11 @@ public import PierceLengthBound.PolarProjectionCurveInitial
 public import PierceLengthBound.PolarProjectionFormalSection
 public import PierceLengthBound.HypersurfacePatternChart
 
-/-! A fixed exceptional polynomial for the polar base point. The rational
-certificate proves properness; clearing denominators retains every pattern. -/
+/-! A fixed exceptional polynomial for the polar base point: one proper
+polynomial in the ten full minor coordinates whose nonvanishing gives the chart
+guard and a nonzero initial minor. Properness comes from the rational
+certificate `(2, 5, -3, 3, 6, -5)`, realized on the minor cone by an explicit
+matrix, and the `RationalNear` calculus that clears denominators. -/
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open Polynomial Matrix MvPolynomial
@@ -164,6 +167,7 @@ private lemma rational_resultant (s t : ℚ) :
   fin_cases i <;> fin_cases j <;> simp only [quarticBezout, Pi.add_apply]
   all_goals rational_near [rational_quartic _, rational_remainder s t _] []
 
+/-- The initial minor is a rational function regular at the certificate parameters. -/
 theorem polar_initial_minor_rational : RationalNear polarParameterCertificate polarInitialMinor :=
   ((rational_resultant 1 0).mul ((rational_norm 0 1).pow 4)).sub
     ((rational_resultant 0 1).mul ((rational_norm 1 0).pow 4))
@@ -197,12 +201,14 @@ lemma polarInitialResultant_certificate (s t : ℚ) :
   rw [← polarCertificateQuartic_eq_newton, hr]
   rfl
 
+/-- The initial minor at the certificate parameters. -/
 theorem polarInitialMinor_certificate :
     polarInitialMinor polarParameterCertificate = 26291112152499 / 60236288 := by
   simpa only [polarInitialMinor, polarInitialResultant_certificate,
     polarInitialNorm_certificate] using polarCertificate_initial_minor
 
-/-- Conditions used to construct the smooth formal section and its explicit base nodes. -/
+/-- The product of the nonvanishing conditions used to construct the smooth
+formal section and its explicit base nodes. -/
 def polarChartGuard (q : Fin 6 → ℚ) : ℚ :=
   (-q 0 - q 1) * (q 1 - q 2) * (q 2 - 1) * (polarMatrix (q 0) (q 1) (q 2)).det *
     polarMatrix (q 0) (q 1) (q 2) 0 0 * polarLinear (q 0) (q 1) (q 2) (q 3) (q 4) (q 5) 0
@@ -241,8 +247,8 @@ private lemma rational_minor_parameters (j : Fin 6) :
     rational_near [] [polarMinorCertificate_values]
 
 /-- The exceptional condition is one fixed proper polynomial in the full
-minor vector. Its nonzero locus certifies the geometric hypotheses uniformly
-in the dividend. No genericity assumption about orbit patterns is made. -/
+minor vector. Outside its zero locus, `p 0` and `p 6` are nonzero and the
+normalized parameters satisfy the chart guard and have a nonzero initial minor. -/
 theorem exists_polar_full_minor_exceptional_polynomial :
     ∃ Θ : MvPolynomial (Fin 10) ℚ, ProperOnMinorCone Θ ∧
       ∀ p, eval p Θ ≠ 0 → p 0 ≠ 0 ∧ p 6 ≠ 0 ∧

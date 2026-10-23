@@ -8,8 +8,8 @@ module
 public import PierceLengthBound.PolarProjectionAlgebra
 
 /-! The polar quadric centered at a zero of the polar forms, over arbitrary
-commutative rings. No curve-degree or normalization-multiplicity conclusion
-is assumed. -/
+commutative rings: it is the centered quadratic part minus the centered linear
+part. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

@@ -10,8 +10,8 @@ public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.AdicCompletion.Completeness
 public import PierceLengthBound.PolarProjectionBasePoint
 
-/-! Smooth formal sections of the quadric through its polar base point.
-The section is constructed by Hensel lifting; it is not assumed as input. -/
+/-! Smooth formal sections of the quadric through its polar base point,
+constructed by Hensel lifting in `K⟦X⟧`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -69,7 +69,8 @@ def polarTangentDirection {K : Type*} [Field K]
   ![-(ℓ 1 * s + ℓ 2 * t) / ℓ 0, s, t]
 
 /-- A formal section of the smooth quadric exists in every tangent direction
-in the first-coordinate chart. Its higher terms are constructed by Hensel lifting. -/
+in the first-coordinate chart, with its last two gaps linear in `X`. Its first
+gap is the Hensel-lifted root of a quadratic. -/
 theorem exists_polar_formal_section {K : Type*} [Field K]
     (ρ u v ρ' u' v' : K) (hG : (polarMatrix ρ u v).det ≠ 0)
     (h00 : polarMatrix ρ u v 0 0 ≠ 0)

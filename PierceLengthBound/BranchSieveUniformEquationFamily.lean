@@ -12,13 +12,11 @@ public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Data.Multiset.Powerset
 import Mathlib.Tactic
 
-/-! A bounded family of irreducible integral equations covers every proper
-monic factor at every integer parameter. All degree and height constants
-are independent of the coefficients of the original polynomial.
-
-A single finite family of integral coefficient equations covers all
-proper factors at all integer specializations. Its cardinality depends only
-on the original polynomial degree. -/
+/-! A single finite family of monic irreducible integral coefficient equations
+covers every proper monic factor at every integer specialization. Its
+cardinality is at most `2^n (n + 1)`, and its degree and height bounds depend
+only on the degree `n` and the coefficient degree bound `D`, with height
+polynomial in the coefficient height `H`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -126,6 +124,12 @@ end IntegralEquations
 
 open Polynomial
 
+/-- For a monic `p ∈ ℤ[X][X]` of degree `n`, irreducible over the fraction field,
+with coefficients of degree at most `D` and height at most `H`, there is a family
+of at most `2^n (n + 1)` monic irreducible equations of total degree at most `M`
+and height at most `C (H + 1)^E` such that every proper monic factor of every
+integer specialization yields an integer root of one specialized equation. The
+constants depend only on `n` and `D`. -/
 theorem branch_uniform_integer_equation_family (n D : ℕ) :
     ∃ M E C : ℕ, 0 < C ∧ ∀ (F L : Type*) [Field F]
       [Algebra ℤ[X] F] [IsFractionRing ℤ[X] F] [Field L]

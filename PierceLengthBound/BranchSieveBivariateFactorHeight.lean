@@ -18,14 +18,17 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
+/-- The two-variable Kronecker substitution with radix `e ≥ 1` has degree at
+most `e` times the total degree. -/
 theorem branchMultiKronecker_two_natDegree_le (p : MvPolynomial (Fin 2) ℤ)
     {e : ℕ} (he : 1 ≤ e) :
     (branchMultiKronecker e 2 p).natDegree ≤ e * p.totalDegree := by
   rw [← branchAxisHom_shear]
   exact (branchAxisHom_natDegree_le _).trans (branchPowerShear_totalDegree_upper p he 1)
 
-/-- For fixed total degree, the height of any integer bivariate factor is
-bounded by a constant times the original coefficient height. -/
+/-- Every coefficient of an integer factor of a bivariate `p` of total degree
+at most `d` and height at most `H` is bounded by
+`2^((d+1)d) ((d+1)d+1) (d+1)² H`. -/
 theorem branch_bivariate_factor_coeff_height (p : MvPolynomial (Fin 2) ℤ)
     (hp : p ≠ 0) {d H : ℕ} (hd : p.totalDegree ≤ d)
     (hH : ∀ s, |p.coeff s| ≤ (H : ℤ))

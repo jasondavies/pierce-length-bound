@@ -10,15 +10,21 @@ public import PierceLengthBound.BranchSieveParameterRearrangement
 public import PierceLengthBound.BranchSieveParameterInduction
 public import PierceLengthBound.BranchSieveRootKronecker
 
-/-! The complete fixed-degree monic Hilbert estimate in any number of
-integer parameters. Kronecker encoding proves the one-coordinate input;
-the finite-fiber induction then counts actual rational reducible fibers. -/
+/-! The fixed-degree monic Hilbert estimate in any number of integer
+parameters (Theorem 10.4). Kronecker encoding of the remaining parameters
+proves the one-parameter head estimate; the finite-fiber induction of
+`BranchSieveParameterInduction` then counts the integer parameter points
+whose rational fiber is reducible. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- The one-parameter head estimate in every dimension. After moving the
+first parameter into the scalar ring, Kronecker substitution encodes the other
+`r` parameters and the root variable in one variable, and the bounded-degree
+Kronecker Hilbert estimate counts the reducible specializations. -/
 theorem branch_head_irreducibility_estimate (r d : ℕ) :
     ∃ C : ℝ, 0 < C ∧ BranchHeadIrreducibilityEstimate r d C := by
   let D := (d + 1) ^ (r + 1) * (2 * d) + d

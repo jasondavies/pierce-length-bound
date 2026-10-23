@@ -9,10 +9,10 @@ public import PierceLengthBound.BranchSieveZeroFibers
 public import PierceLengthBound.BranchSieveShearAnalysis
 import Mathlib.Tactic
 
-/-! An unconditional arithmetic one-parameter integral-root bound.
-The coefficient-height dependence is logarithmic, and the parameter-box
-exponent is the reciprocal root-variable degree. This is the counting input
-for a subsequent factor-resolvent reduction to Hilbert irreducibility. -/
+/-! An arithmetic one-parameter integral-root bound. The coefficient-height
+dependence is logarithmic, and the parameter-box exponent is the reciprocal
+root-variable degree. It is the counting input for the factor-resolvent
+reduction to Hilbert irreducibility. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

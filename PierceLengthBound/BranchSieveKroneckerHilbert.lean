@@ -10,8 +10,10 @@ public import PierceLengthBound.BranchSieveFiniteHilbert
 public import PierceLengthBound.BranchSieveRootFactors
 public import PierceLengthBound.BranchSieveMonicFactorization
 
-/-! A one-parameter Hilbert estimate for multivariate polynomial families,
-obtained by actual Kronecker factorization and nonzero coefficient cuts. -/
+/-! A one-parameter Hilbert estimate for multivariate polynomial families
+(Step 3 in the proof of Theorem 10.4): factor the Kronecker substitution into
+monic irreducible factors and add the nonzero coefficient cuts of
+`branch_kronecker_coefficient_obstructions`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -24,6 +26,11 @@ theorem branch_mv_degreeOf_map_le {σ R S : Type*} [CommSemiring R] [CommSemirin
   classical
   exact Multiset.count_le_of_le i (MvPolynomial.degrees_map_le (p := f))
 
+/-- Let `f` have partial degrees below the radix `a` and coefficient degrees at
+most `D`, and let its Kronecker image be monic of positive degree, with total
+degree at most `D` and height at most `H`. Then the integers `t ∈ [-B,B]` with
+`f(t)` reducible over `ℚ` number at most
+`C (1 + log(H+1))^4 B^(1/2) (1 + log B)`. -/
 theorem branch_bounded_kronecker_hilbert_bound (a n D : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ f : MvPolynomial (Fin n) ℤ[X],
       Irreducible (MvPolynomial.map (Polynomial.mapRingHom (Int.castRingHom ℚ)) f) →

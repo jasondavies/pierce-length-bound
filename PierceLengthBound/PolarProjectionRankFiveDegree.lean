@@ -12,8 +12,10 @@ public import PierceLengthBound.NormalizationInfinityDegree
 /-!
 # Degree and zero coverage of the rank-five function
 
-The old infinity orders give `2 deg(J) ≥ 5d` on every retained degree-`d` component.
-Every zero branch of `J` is regular on the original affine normalization.
+On a nonexceptional component of degree `d`, the rank-five function `J` has
+order `-5t` at each infinity branch where `1/x₀` has order `2t`, so
+`2 [F : ℚ(J)] ≥ 5d`. Every branch at which `J` vanishes is regular on the
+normalization of the affine coordinate ring.
 -/
 
 @[expose] public section
@@ -23,8 +25,8 @@ open MvPolynomial
 open scoped IntermediateField
 attribute [local instance] FractionRing.liftAlgebra
 
-/-- At any branch where the old first coordinate has a pole, the rank-five function has
-a strictly negative order. The precise order is supplied by the existing infinity theorem. -/
+/-- At any branch where the first coordinate `x₀` has a pole, the rank-five function has
+negative order. -/
 theorem retained_rank_five_negative_at_infinity
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -61,8 +63,9 @@ theorem retained_rank_five_negative_at_infinity
   rw [hJ]
   exact_mod_cast (show -5 * t < 0 by omega)
 
-/-- Every zero branch of the actual rank-five function is regular on the affine normalization.
-No branch-cover assumption is used: a pole of the old parameter would force `J` to have a pole. -/
+/-- Every branch at which the rank-five function vanishes is regular on the
+normalization of the affine coordinate ring, since a pole of `x₀` would force a
+pole of `J`. -/
 theorem retained_rank_five_zero_normalization_regular
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -96,9 +99,11 @@ theorem retained_rank_five_zero_normalization_regular
 set_option synthInstance.maxHeartbeats 200000 in
 -- The normalized infinity chart and the function-parameter field have nested scalar towers.
 set_option maxHeartbeats 400000 in
--- This proof uses about 190000 heartbeats, just under the default limit.
-/-- The rank-five function has degree at least `5d/2`. Transcendence and finiteness over
-the rank-five parameter are constructed from its actual infinity branches. -/
+-- This proof uses about 190000 heartbeats, just under the default 200000; the limit is doubled
+-- for margin.
+/-- The rank-five function `J` is transcendental, the function field is finite
+over `ℚ(J)`, and `J` has degree at least `5d/2`. The proof sums the pole orders
+`5t` of `J` against the multiplicities `2t` of `1/x₀` at the infinity branches. -/
 theorem retained_rank_five_degree_lower_bound
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

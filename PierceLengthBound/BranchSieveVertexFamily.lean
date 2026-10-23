@@ -9,7 +9,7 @@ public import PierceLengthBound.BranchSieveParameterSpecialization
 public import PierceLengthBound.BranchSieveResultantDegree
 
 /-! A fixed integer polynomial family for the four first-frame minors.
-The vertex order is `(p₀,p₁,p₃,p₆)`. All denominators are cleared before
+The vertex is `(p₀,p₁,p₃,p₆)`, written `(A,D,C,B)` below. All denominators are cleared before
 specializing the dividend, so degree and coefficient bounds are uniform. -/
 
 @[expose] public section
@@ -75,8 +75,8 @@ theorem branch_exists_cleared_polynomial {σ τ : Type}
     simp only [Polynomial.map_monomial, MvPolynomial.coe_eval₂Hom, hB K x hx,
       Polynomial.C_mul_monomial]
 
-/-- Universal normalized coefficients: dividend, scale, and three independent
-location coefficients. The slope is a fixed integer from a finite set. -/
+/-- The branch label polynomial with universal coefficients: dividend, scale,
+and three independent location coefficients, for a fixed integer slope `c`. -/
 def branchUniversalResultantFamily (c : ℕ) : Polynomial (MvPolynomial (Fin 5) ℤ) :=
   branchResultantLabel (MvPolynomial.X 0) (MvPolynomial.X 1) c
     (MvPolynomial.X 2) (MvPolynomial.X 3) (MvPolynomial.X 4)
@@ -94,8 +94,10 @@ def branchVertexClearing (c : ℕ) : ℕ × Polynomial (MvPolynomial (Fin 5) ℤ
     (MvPolynomial.X 1) branchVertexSubstitution
   ⟨h.choose, h.choose_spec.choose⟩
 
+/-- The power of the scale used to clear the vertex denominators. -/
 def branchVertexClearingExponent (c : ℕ) : ℕ := (branchVertexClearing c).1
 
+/-- The integer five-variable vertex family obtained by clearing denominators. -/
 def branchVertexFamily (c : ℕ) : Polynomial (MvPolynomial (Fin 5) ℤ) :=
   (branchVertexClearing c).2
 
@@ -138,7 +140,8 @@ lemma branchUniversalResultantFamily_eval (c : ℕ) (K : Type) [Field K]
 
 /-- The integral family agrees with the rational branch equation away from
 zero scale, up to a nonzero scalar power. This identity is valid over every
-field, including the generic function field and actual branch residues. -/
+field, including the generic function field and the residue fields of orbit
+branches. -/
 theorem branchVertexFamily_eval (c : ℕ) (K : Type) [Field K]
     (a A D C B : K) (hA : A ≠ 0) :
     (branchVertexFamily c).map (MvPolynomial.eval₂Hom (Int.castRingHom K) ![a, A, D, C, B]) =
@@ -181,7 +184,7 @@ lemma branchVertexFamily_natDegree_le_of_injective_eval (c : ℕ) (K : Type) [Fi
     _ ≤ 12 := (Polynomial.natDegree_C_mul_le _ _).trans
       (branchResultantLabel_natDegree_le _ _ _ _ _ _)
 
-/-- Clearing vertex denominators does not increase the label degree. -/
+/-- The cleared vertex family has label degree at most twelve. -/
 theorem branchVertexFamily_natDegree_le (c : ℕ) : (branchVertexFamily c).natDegree ≤ 12 := by
   let R := MvPolynomial (Fin 5) ℤ
   let K := FractionRing R
@@ -202,13 +205,13 @@ theorem branchVertexFamily_natDegree_le (c : ℕ) : (branchVertexFamily c).natDe
     exact IsFractionRing.injective R K
   exact branchVertexFamily_natDegree_le_of_injective_eval c K x hA hinj
 
-/-- Fixing the dividend also preserves the degree-twelve label bound. -/
+/-- The fixed-dividend vertex family has label degree at most twelve. -/
 lemma branchVertexFamilyAt_natDegree_le (a : ℤ) (c : ℕ) :
     (branchVertexFamilyAt a c).natDegree ≤ 12 :=
   Polynomial.natDegree_map_le.trans (branchVertexFamily_natDegree_le c)
 
-/-- The four-vertex family specializes over arbitrary fields, with the dividend
-already fixed as an integer. -/
+/-- Over every field, the four-vertex family with integer dividend `a`
+evaluates to a power of `x 0` times the branch label polynomial. -/
 theorem branchVertexFamilyAt_eval_field (a : ℤ) (c : ℕ) (K : Type) [Field K]
     (x : Fin 4 → K) (hx : x 0 ≠ 0) :
     (branchVertexFamilyAt a c).map (MvPolynomial.eval₂Hom (Int.castRingHom K) x) =
@@ -297,7 +300,8 @@ lemma branchFieldScale_rat_cast (e : ℕ) (a : ℤ) (c : ℕ) (x : Fin 4 → ℤ
     (congrArg (fun q : Polynomial ℚ => Polynomial.C ((x 0 : ℚ) ^ e) * q)
       (branchResultantLabel_rat_cast a c x))
 
-/-- Specialization at an integer dividend retains the same exact branch equation. -/
+/-- At an integer vertex with `x 0 ≠ 0`, the fixed-dividend family evaluates to
+a power of `x 0` times the rational branch label polynomial. -/
 theorem branchVertexFamilyAt_eval (a : ℤ) (c : ℕ) (x : Fin 4 → ℤ) (hx : x 0 ≠ 0) :
     branchFamilyEval x (branchVertexFamilyAt a c) =
       Polynomial.C ((x 0 : ℚ) ^ branchVertexClearingExponent c) *
@@ -342,7 +346,7 @@ theorem branch_fixed_family_degree_height {r : ℕ}
     · have hz : p.coeff j = 0 := by simpa using hj
       simp [hz]
 
-/-- Any fixed finite choice of integral families has common degree and height bounds. -/
+/-- The families `P c` with slope `c ≤ 144` have common degree and height bounds. -/
 theorem branch_bounded_slope_family_bounds {r : ℕ}
     (P : ℕ → Polynomial (MvPolynomial (Fin r) ℤ)) :
     ∃ d H : ℕ, 0 < H ∧ ∀ c : ℕ, c ≤ 144 →

@@ -9,8 +9,8 @@ public import Mathlib.RingTheory.Polynomial.GaussLemma
 import Mathlib.Tactic
 
 /-! Degree-preserving irreducible specialization proves generic irreducibility.
-This algebraic criterion is used for the sextic location polynomial. It is separate from,
-and does not imply, the arithmetic theorem counting reducible specializations. -/
+This algebraic criterion is used for the sextic location polynomial and in the
+specialization certificate of `BranchSieveCertificate`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -19,8 +19,8 @@ open Polynomial
 
 variable {R F : Type*} [CommRing R] [IsDomain R] [Field F]
 
-/-- A primitive polynomial is irreducible if one specialization preserves its degree and
-is irreducible. The specialization homomorphism need not be injective. -/
+/-- A primitive polynomial is irreducible if its image under some ring
+homomorphism into a field has the same degree and is irreducible. -/
 theorem primitive_irreducible_of_degree_preserving_specialization
     (φ : R →+* F) {p : R[X]} (hp : p.IsPrimitive)
     (hdegree : (p.map φ).natDegree = p.natDegree)
@@ -50,8 +50,8 @@ theorem primitive_irreducible_of_degree_preserving_specialization
     have := natDegree_eq_zero_of_isUnit hmb
     omega
 
-/-- Even without primitivity, an irreducible specialization of full degree proves
-irreducibility over the fraction field of the coefficient ring. -/
+/-- Over a normalized GCD domain, an irreducible specialization of full degree
+proves irreducibility over the fraction field of the coefficient ring. -/
 theorem fraction_irreducible_of_degree_preserving_specialization
     [NormalizedGCDMonoid R] (φ : R →+* F) {p : R[X]}
     (hdegree : (p.map φ).natDegree = p.natDegree)

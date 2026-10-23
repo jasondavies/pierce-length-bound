@@ -9,8 +9,8 @@ public import PierceLengthBound.PolarProjectionPointCount
 public import PierceLengthBound.PolarProjectionLocalEstimate
 public import PierceLengthBound.LatticeJointLocalEstimate
 
-/-! Sum the actual polar pattern estimates, including every exceptional and
-bad pattern, into the six-term local inequality. -/
+/-! Summing the polar pattern estimates, including every exceptional and bad
+pattern, into the six-term local inequality. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -18,7 +18,8 @@ noncomputable section
 open Finset
 
 open scoped Classical in
-/-- Cardinality of the bad full patterns in an actual selected orbit window. -/
+/-- In every selected orbit window, the number of full patterns that are not
+`good` is at most `Rbad a · X^{14/3}`, where `X` is the selected minor height. -/
 def PolarBadPatternCount (good : ℕ → (Fin 10 → ℤ) → Prop) (Rbad : ℕ → ℕ) : Prop :=
   ∀ {a b s T A : ℕ}, b < a →
     (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
@@ -39,8 +40,8 @@ lemma polarPatternSlack_slow {R Rbad : ℕ → ℕ} (hR : SlowGrowth R)
       (slowGrowth_add ((slowGrowth_const 2).mul ordinaryPatternSlack_slow)
         exceptionalPatternSlack_slow) ((slowGrowth_const 8).mul latticeWeightSlack_slow)) hbad)
 
-/-- The six-term inequality follows by summing actual point counts with the
-proved fractional lattice weights and the cardinality of the bad patterns. -/
+/-- The six-term inequality, by summing the per-pattern point counts with the
+fractional lattice weights; each bad pattern contributes the box `B^{1/17}`. -/
 theorem polar_six_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m)
     {good : ℕ → (Fin 10 → ℤ) → Prop} {R Rbad : ℕ → ℕ}
     (hcurve : JointPatternEstimate (polarPatternBox good m n) 1 R)
@@ -105,8 +106,8 @@ theorem polar_six_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m)
   push_cast
   ring
 
-/-- The arithmetic counting assembly needs only a degree theorem on retained
-prime components and a count of the patterns where it is unavailable. -/
+/-- The six-term estimate from the retained-component degree bound
+`PolarRetainedDegree` on good patterns and a count of the bad patterns. -/
 theorem polar_six_term_of_retained_degree (m n : ℕ) (hm : 0 < m) (hn : 0 < n)
     (good : ℕ → (Fin 10 → ℤ) → Prop) (hdegree : PolarRetainedDegree m n good)
     {Rbad : ℕ → ℕ} (hRbad : SlowGrowth Rbad) (hbad : PolarBadPatternCount good Rbad) :

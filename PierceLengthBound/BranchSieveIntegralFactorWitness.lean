@@ -10,10 +10,10 @@ public import PierceLengthBound.BranchSieveFactorWitness
 public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
 import Mathlib.Tactic
 
-/-! Passing from a proper factor after reduction to an irreducible integral
-coefficient equation before reduction. The splitting algebra and its
-reduction map are explicit; this is the exact algebraic specialization step
-used before any parameter counting. -/
+/-! A proper factor after reduction yields an irreducible integral coefficient
+equation before reduction. The splitting algebra `S` and the reduction map
+`φ : S →+* K` are arbitrary; this is the algebraic step of the specialization
+argument, before any parameters are counted. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -30,8 +30,8 @@ variable {R S F L K : Type*}
 
 include L in
 /-- A proper specialized factor supplies a monic integral equation whose
-generic root degree is at least two. The chosen equation is the minimal
-polynomial of a coefficient of an actual lifted factor. -/
+generic root degree is at least two. The equation is the minimal polynomial
+of a coefficient of the lifted factor `q₀`. -/
 theorem branch_integral_factor_witness (φ : S →+* K) {p : R[X]}
     (hp : p.Monic) (hir : Irreducible (p.map (algebraMap R F)))
     (hsplit : (p.map (algebraMap R S)).Splits)

@@ -18,6 +18,8 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial UniqueFactorizationMonoid
 
+/-- Over an integrally closed domain, a monic `p` is a product of at most
+`deg p` monic factors, each irreducible over the fraction field. -/
 theorem branch_exists_integral_monic_factorization
     {R F : Type*} [CommRing R] [IsDomain R] [IsIntegrallyClosed R]
     [Field F] [Algebra R F] [IsFractionRing R F]
@@ -75,6 +77,8 @@ theorem branch_exists_integral_monic_factorization
     have hT := ih (fun r hr => hpositive r (Multiset.mem_cons_of_mem hr))
     omega
 
+/-- The monic factorization of a bivariate integer polynomial, with total
+degree and coefficient height bounds for every factor. -/
 theorem branch_bivariate_monic_factorization {F : Type*} [Field F]
     [Algebra ℤ[X] F] [IsFractionRing ℤ[X] F]
     (p : ℤ[X][X]) (hp : p.Monic) {d H : ℕ}

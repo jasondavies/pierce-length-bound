@@ -15,13 +15,14 @@ import Mathlib.Tactic
 annihilated by a monic degree-`d!` polynomial whose coefficients are integer
 polynomials in the elementary symmetric functions of those roots.
 For fixed `d` and a fixed expression this is one fixed polynomial, so its
-coefficient height and degree are independent of all later specializations. -/
+coefficient height and degree are independent of the specialization. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
+/-- The product of `X - σ(P)` over all permutations `σ` of the `d` roots. -/
 def branchOrbitResolvent {d : ℕ} (P : MvPolynomial (Fin d) ℤ) :
     Polynomial (MvPolynomial (Fin d) ℤ) :=
   ∏ e : Equiv.Perm (Fin d), (Polynomial.X - Polynomial.C (rename e P))
@@ -53,8 +54,8 @@ lemma branchOrbitResolvent_coeff_symmetric {d : ℕ} (P : MvPolynomial (Fin d) �
     (branchOrbitResolvent_rename P τ)
   simpa only [Polynomial.coeff_map, AlgHom.toRingHom_eq_coe, RingHom.coe_coe] using h
 
-/-- The universal coefficient expression exists over the integers, rather
-than only over the fraction field of the parameters. -/
+/-- The orbit resolvent of `P` is the image of a monic integer polynomial of
+degree `d!` in the elementary symmetric polynomials. -/
 theorem branch_exists_universal_resolvent {d : ℕ} (P : MvPolynomial (Fin d) ℤ) :
     ∃ Q : Polynomial (MvPolynomial (Fin d) ℤ), Q.Monic ∧ Q.natDegree = d.factorial ∧
       Q.map (aeval (fun i : Fin d => esymm (Fin d) ℤ (i.val + 1))).toRingHom =
@@ -74,6 +75,8 @@ theorem branch_exists_universal_resolvent {d : ℕ} (P : MvPolynomial (Fin d) �
     (branchOrbitResolvent_monic P)
   exact ⟨Q, hmonic, hdeg.trans (branchOrbitResolvent_natDegree P), hQ⟩
 
+/-- A chosen monic integer polynomial in the elementary symmetric functions
+whose image is the orbit resolvent of `P`. -/
 def branchUniversalResolvent {d : ℕ} (P : MvPolynomial (Fin d) ℤ) :
     Polynomial (MvPolynomial (Fin d) ℤ) :=
   (branch_exists_universal_resolvent P).choose
@@ -96,8 +99,8 @@ theorem branchOrbitResolvent_eval_self {d : ℕ} (P : MvPolynomial (Fin d) ℤ)
   apply Finset.prod_eq_zero (Finset.mem_univ (1 : Equiv.Perm (Fin d)))
   simp
 
-/-- The universal resolvent equation holds in every commutative target ring.
-This is an exact specialization identity, including repeated roots. -/
+/-- The universal resolvent equation holds for every family of `d` elements of a
+commutative ring, not necessarily distinct. -/
 theorem branch_universal_resolvent_equation {d : ℕ} (P : MvPolynomial (Fin d) ℤ)
     {Q : Polynomial (MvPolynomial (Fin d) ℤ)}
     (hQ : Q.map (aeval (fun i : Fin d => esymm (Fin d) ℤ (i.val + 1))).toRingHom =

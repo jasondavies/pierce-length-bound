@@ -11,8 +11,10 @@ public import PierceLengthBound.NormalizationBranchCover
 public import PierceLengthBound.BranchResidueComparison
 
 /-! The common-zero contribution in the normalized zero fiber of a scalar
-function. The fiber is constructed from the function parameter normalization;
-its degree is the function-field degree, not an assumed divisor formula. -/
+function. The fiber is constructed from the function parameter normalization,
+and its residue-weighted multiplicities sum to the function-field degree. The
+main result bounds that degree by the coordinate pole degree plus the common-zero
+contribution of the multiplied coordinates. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -20,6 +22,8 @@ open Finset
 open scoped IntermediateField
 noncomputable section
 
+/-- The common zero order of a coordinate vector at a valuation, as a natural
+number (zero when the minimum order is negative or infinite). -/
 def branchCommonZeroOrder {L ι : Type*} [Field L] [Fintype ι]
     (ν : AddValuation L (WithTop ℤ)) (V : ι → L) : ℕ :=
   ((branchCoordinateOrder ν V).untopD 0).toNat
@@ -88,6 +92,8 @@ def functionZeroBranches {L : Type*} [Field L] [Algebra ℚ L]
     Finset (IsDedekindDomain.HeightOneSpectrum (functionParameterNormalization D)) :=
   (function_parameter_fiber_degree D hD).choose
 
+/-- The zero fiber consists of the branches containing the parameter, and its
+multiplicities weighted by residue degrees sum to `[L : ℚ(D)]`. -/
 theorem functionZeroBranches_spec {L : Type*} [Field L] [Algebra ℚ L]
     (D : L) (hD : Transcendental ℚ D) [FiniteDimensional ℚ⟮D⟯ L] :
     (∀ q, q ∈ functionZeroBranches D hD ↔ functionParameterElement D ∈ q.asIdeal) ∧
@@ -130,7 +136,7 @@ lemma sum_poleEnvelope_le_degree {R L ι : Type*}
 set_option synthInstance.maxHeartbeats 200000 in
 -- The scalar normalization and the target model introduce nested algebra and residue-field towers.
 /-- The scalar's function-field degree is bounded by the coordinate pole
-degree plus the actual common-zero contribution above its zero fiber. Every
+degree plus the common-zero contribution above its zero fiber. Every
 zero branch is transported to the given Dedekind model, with residue degrees preserved. -/
 theorem function_degree_le_poleEnvelope_add_baseDegree {R L ι : Type*}
     [CommRing R] [IsDedekindDomain R] [Algebra ℚ R]

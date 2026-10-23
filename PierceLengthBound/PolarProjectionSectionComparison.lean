@@ -7,9 +7,10 @@ module
 
 public import PierceLengthBound.PolarProjectionSmoothSectionLocal
 
-/-! Comparing a local curve section to a smooth coordinate section.
-Surjectivity is proved through actual localization fractions, so no
-unproved invariance of local intersection lengths is required. -/
+/-! Comparing a local curve section with a smooth coordinate section. A
+polynomial coordinate change compatible with the rational points extends, via
+localization fractions, to a surjection of local rings; a surjection killing `f`
+bounds the target dimension by the colength of `f`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -19,6 +20,7 @@ instance algebraPoint_kernel_isPrime {K A : Type*} [Field K]
     [CommRing A] [Algebra K A] (ε : A →ₐ[K] K) :
     (RingHom.ker ε.toRingHom).IsPrime := RingHom.ker_isPrime ε.toRingHom
 
+/-- In a local algebra with a `K`-point, an element with nonzero value is a unit. -/
 lemma local_point_isUnit_of_image_ne_zero {K D : Type*} [Field K]
     [CommRing D] [IsLocalRing D] [Algebra K D] (δ : D →ₐ[K] K)
     {d : D} (hd : δ d ≠ 0) : IsUnit d := by
@@ -110,8 +112,8 @@ theorem local_coordinate_section_surjection
     _ = γ (IsLocalization.mk' R (Ideal.Quotient.mk I f) b) * γ (algebraMap B R b) := by
       rw [← map_mul, IsLocalization.mk'_spec]
 
-/-- A surjective local comparison bounds the target's colength by the
-source equation's checked colength. -/
+/-- If a surjection `φ : S → D` kills `f`, then `D` is finite-dimensional with
+dimension at most the colength of `f`. -/
 theorem local_section_finrank_le_of_surjection {K S D : Type*} [Field K]
     [CommRing S] [CommRing D] [Algebra K S] [Algebra K D]
     (φ : S →ₐ[K] D) (hφ : Function.Surjective φ) (f : S) (hf : φ f = 0)

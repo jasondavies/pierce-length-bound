@@ -11,9 +11,11 @@ public import PierceLengthBound.PolarProjectionRetainedDegree
 public import PierceLengthBound.BranchSievePatternCount
 
 /-! Good patterns are defined by irreducibility of an explicit polynomial
-and nonvanishing of one fixed proper exceptional polynomial. Their geometric
-contribution is proved here; only the arithmetic count of reducible label
-specializations remains an input to the global counting estimate. -/
+and nonvanishing of one fixed proper exceptional polynomial. This module proves
+the retained-degree bound for good patterns and derives the six-term estimate
+from a count of the patterns that are not branch-good
+(`polar_six_term_of_branch_bad_pattern_count`); `PolarProjectionMain` supplies
+that count. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -23,8 +25,8 @@ noncomputable section
 section
 open MvPolynomial Finset
 
-/-! The proper algebraic degeneracy locus is included in the actual bad-pattern
-count, together with any previously counted specialization exceptions. -/
+/-! Bad-pattern counts for an intersection of good conditions and for the
+complement of a proper hypersurface. -/
 
 /-- Combining two good-pattern conditions adds their bad-pattern coefficients. -/
 theorem PolarBadPatternCount.inter
@@ -49,8 +51,8 @@ theorem PolarBadPatternCount.inter
   have hsum := hcard.trans (add_le_add hcount₁ hcount₂)
   simpa only [S, Nat.cast_add, add_mul] using hsum
 
-/-- The complement of any proper fixed hypersurface has the required actual
-bad-pattern bound with a slowly growing coefficient. -/
+/-- The patterns on a proper fixed hypersurface satisfy the bad-pattern bound
+with a slowly growing coefficient. -/
 theorem polarBadPatternCount_hypersurface {F : MvPolynomial (Fin 10) ℚ}
     (hF : ProperOnMinorCone F) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧
@@ -60,8 +62,8 @@ theorem polarBadPatternCount_hypersurface {F : MvPolynomial (Fin 10) ℚ}
   intro a b s T A hba hmem hsT hT
   simpa only [not_not] using hcount hba hmem hsT hT
 
-/-- Adding the new proper algebraic degeneracy locus to a counted branch-sieve
-exception class preserves the exact 14/3 pattern exponent. -/
+/-- Adding a proper hypersurface to a counted bad-pattern class keeps the
+pattern exponent 14/3 with a slowly growing coefficient. -/
 theorem polarBadPatternCount_add_hypersurface
     {good : ℕ → (Fin 10 → ℤ) → Prop} {R : ℕ → ℕ}
     (hR : SlowGrowth R) (hbad : PolarBadPatternCount good R)
@@ -80,6 +82,7 @@ def patternBranchLabelPolynomial (a : ℕ) (p : Fin 10 → ℤ) (c : ℚ) : Poly
   let q := polarMinorParameters (fun j => (p j : ℚ))
   branchResultantLabel (a : ℚ) (p 0 : ℚ) c (-q 0 - q 1) (q 1 - q 2) (q 2 - 1)
 
+/-- On an orbit pattern, the pattern label is the orbit branch label. -/
 theorem patternBranchLabelPolynomial_orbit (a b i : ℕ) (c : ℚ) :
     patternBranchLabelPolynomial a (plk (Mi a b i)) c = orbitBranchLabelPolynomial a b i c := by
   have hA : Lz a b i = plk (Mi a b i) 0 := by
@@ -88,8 +91,7 @@ theorem patternBranchLabelPolynomial_orbit (a b i : ℕ) (c : ℚ) :
   simp [orbitPolarParameters, orbitBranchLabelPolynomial, hA]
 
 /-- A full pattern is branch-good when some explicit label polynomial is
-irreducible of degree twelve. No component-degree conclusion is part of this
-definition. -/
+irreducible of degree twelve. -/
 def PolarBranchGood (a : ℕ) (p : Fin 10 → ℤ) : Prop :=
   ∃ c : ℚ, Irreducible (patternBranchLabelPolynomial a p c) ∧
     (patternBranchLabelPolynomial a p c).natDegree = 12
@@ -100,10 +102,13 @@ def branchVertexLabelPolynomial (a : ℕ) (x : Fin 4 → ℤ) (c : ℚ) : Polyno
     (-((x 3 : ℚ) + x 2) / x 0) (((x 2 : ℚ) + x 1) / x 0)
     (-((x 1 : ℚ) + x 0) / x 0)
 
+/-- A vertex is branch-good when some vertex label polynomial is irreducible of
+degree twelve. -/
 def branchVertexGood (a : ℕ) (x : Fin 4 → ℤ) : Prop :=
   ∃ c : ℚ, Irreducible (branchVertexLabelPolynomial a x c) ∧
     (branchVertexLabelPolynomial a x c).natDegree = 12
 
+/-- When `p 0 ≠ 0`, the pattern label is the vertex label of the first vertex. -/
 theorem patternBranchLabelPolynomial_eq_vertex {a : ℕ} {p : Fin 10 → ℤ}
     (hp : p 0 ≠ 0) (c : ℚ) :
     patternBranchLabelPolynomial a p c =
@@ -115,12 +120,13 @@ theorem patternBranchLabelPolynomial_eq_vertex {a : ℕ} {p : Fin 10 → ℤ}
     Matrix.head_cons, Matrix.tail_cons]
   congr 1 <;> field_simp <;> ring
 
+/-- When `p 0 ≠ 0`, a pattern is branch-good iff its first vertex is. -/
 theorem polarBranchGood_iff_vertex {a : ℕ} {p : Fin 10 → ℤ} (hp : p 0 ≠ 0) :
     PolarBranchGood a p ↔ branchVertexGood a (branchFirstVertex p) := by
   simp only [PolarBranchGood, branchVertexGood, patternBranchLabelPolynomial_eq_vertex hp]
 
-/-- Explicit branch irreducibility and the two local polynomial conditions
-already imply the geometric input used in the point count. -/
+/-- Branch irreducibility and the two local polynomial conditions (chart guard
+and initial minor) imply the retained-degree bound used in the point count. -/
 theorem polarRetainedDegree_of_branch_good (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     PolarRetainedDegree m n (fun a p => PolarBranchGood a p ∧
       polarChartGuard (polarMinorParameters (fun j => (p j : ℚ))) ≠ 0 ∧
@@ -153,8 +159,8 @@ theorem exists_polar_geometric_good_polynomial :
   exact polarRetainedDegree_of_branch_good m n hm hn hba hi hne
     ⟨hp.1, hg.2.2.1, hg.2.2.2⟩
 
-/-- The entire geometric and pattern-count assembly reduces to the arithmetic
-bound for reducible degree-twelve branch-label specializations. -/
+/-- The six-term estimate for positive powers `m`, `n`, from a count of the
+patterns that are not branch-good. -/
 theorem polar_six_term_of_branch_bad_pattern_count (m n : ℕ) (hm : 0 < m) (hn : 0 < n)
     {Rbad : ℕ → ℕ} (hRbad : SlowGrowth Rbad)
     (hbad : PolarBadPatternCount PolarBranchGood Rbad) :

@@ -9,14 +9,18 @@ public import PierceLengthBound.PolarProjectionCertificate
 public import PierceLengthBound.PolarProjectionInitialForm
 
 /-! First-order coefficients of the cubic norm and of the polar remainder along
-formal sections through the rational certificate's base point, including their
-higher-order terms. -/
+formal sections through the rational certificate's base point. The formulas hold
+for every formal section with the given constant and linear coefficients,
+whatever its higher-order terms. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open Polynomial Matrix
 noncomputable section
 
+/-- Along a formal section through the certificate base point with tangent
+`((9s-5t)/4, s, t)`, the first-order coefficient of the cubic norm is
+`polarCertificateNormLinear s t`. -/
 theorem polar_certificate_formal_norm_linear (x : Fin 3 → PowerSeries ℚ) (s t : ℚ)
     (hx0 : ∀ j, PowerSeries.constantCoeff (x j) = ![-1 / 7, -3 / 28, -1 / 2] j)
     (hx1 : ∀ j, PowerSeries.coeff 1 (x j) = ![(9 * s - 5 * t) / 4, s, t] j) :
@@ -29,6 +33,8 @@ theorem polar_certificate_formal_norm_linear (x : Fin 3 → PowerSeries ℚ) (s 
     hx0, hx1, polarCertificateNormLinear, map_ofNat]
   ring
 
+/-- Along the same formal sections, the first-order coefficients of the polar
+remainder form the cubic `polarCertificateRemainder s t`. -/
 theorem polar_certificate_formal_remainder_linear (x : Fin 3 → PowerSeries ℚ) (s t : ℚ)
     (hx0 : ∀ j, PowerSeries.constantCoeff (x j) = ![-1 / 7, -3 / 28, -1 / 2] j)
     (hx1 : ∀ j, PowerSeries.coeff 1 (x j) = ![(9 * s - 5 * t) / 4, s, t] j) :

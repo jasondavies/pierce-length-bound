@@ -23,6 +23,10 @@ open Polynomial
 variable {R L : Type*} [CommRing R] [IsDomain R] [IsIntegrallyClosed R]
   [Field L] [Algebra R L] [FaithfulSMul R L]
 
+/-- For a monic factor `q` of `p` over the integral closure, there is one subset
+`s` of root positions such that the minimal polynomial of every coefficient of
+`q` divides the universal resolvent for `s`, specialized at the signed
+coefficients of `p`. -/
 theorem branch_integral_factor_universal_divisor (p : R[X]) (hp : p.Monic)
     (hsplit : (p.map (algebraMap R L)).Splits)
     (q : Polynomial (integralClosure R L)) (hq : q.Monic)

@@ -10,26 +10,32 @@ public import PierceLengthBound.PolarProjectionCenteredQuadric
 public import PierceLengthBound.PolarProjectionBasePoint
 public import PierceLengthBound.FixedDividendCurveEquations
 
-/-! Explicit coordinates on sections through the polar base point. -/
+/-! Plane sections through the polar base point. The substitution
+`(x₀, x₁, x₂) = z + (y, s x, t x)` in gap coordinates turns the pattern quadric
+into the conic `smoothSectionQuadric` with coefficients `polarSectionCoefficients`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open MvPolynomial Matrix
 noncomputable section
 
+/-- The gap coordinates `z + (y, s x, t x)` on the plane section, with `x = X 0`, `y = X 1`. -/
 def polarSectionGapPolynomials {K : Type*} [CommRing K]
     (z : Fin 3 → K) (s t : K) : Fin 3 → MvPolynomial (Fin 2) K :=
   ![C (z 0) + X 1, C (z 1) + C s * X 0, C (z 2) + C t * X 0]
 
+/-- The cumulative node coordinates of the plane section. -/
 def polarSectionNodePolynomials {K : Type*} [CommRing K]
     (z : Fin 3 → K) (s t : K) : Fin 3 → MvPolynomial (Fin 2) K :=
   let x := polarSectionGapPolynomials z s t
   ![x 0, x 0 + x 1, x 0 + x 1 + x 2]
 
+/-- Substitution of the plane-section nodes into a polynomial in the three nodes. -/
 def polarSectionMap {K : Type*} [CommRing K] (z : Fin 3 → K) (s t : K) :
     MvPolynomial (Fin 3) K →ₐ[K] MvPolynomial (Fin 2) K :=
   aeval (polarSectionNodePolynomials z s t)
 
+/-- Coefficients of the conic cut out by the pattern quadric on the plane section. -/
 def polarSectionCoefficients {K : Type*} [CommRing K]
     (ρ u v ρ' u' v' s t : K) : Fin 5 → K :=
   let G := polarMatrix ρ u v
@@ -59,8 +65,8 @@ def polarSectionLocalEquation {K : Type*} [Field K] (ρ u v ρ' u' v' A b s t : 
     (polarSectionMap (polarBasePoint ρ u v ρ' u' v') s t
       (curveEquation ρ u v ρ' u' v' A b)))
 
-/-- The original quadric becomes the explicit smooth quadratic section
-under the centered coordinate substitution. -/
+/-- The pattern quadric restricts to the conic `smoothSectionQuadric` on the
+plane section through the polar base point. -/
 theorem polarSectionMap_quadric {K : Type*} [Field K]
     (ρ u v ρ' u' v' s t : K) (hG : (polarMatrix ρ u v).det ≠ 0) :
     let z := polarBasePoint ρ u v ρ' u' v'
@@ -92,8 +98,8 @@ theorem polarSectionMap_quadric {K : Type*} [Field K]
     Fin.sum_univ_succ, map_ofNat]
   ring
 
-/-- Evaluating the section polynomial is the same as evaluating the
-original polynomial along the full formal section. -/
+/-- Substituting `(X, y)` for a power series `y` into the section polynomial
+equals substituting the corresponding power-series nodes into the original one. -/
 theorem polarSectionMap_formal_eval {K : Type*} [CommRing K]
     (z : Fin 3 → K) (s t : K) (y : PowerSeries K) (p : MvPolynomial (Fin 3) K) :
     eval₂Hom PowerSeries.C ![PowerSeries.X, y] (polarSectionMap z s t p) =
@@ -114,8 +120,8 @@ theorem polarSectionMap_formal_eval {K : Type*} [CommRing K]
         polarSectionGapPolynomials]
   exact congrArg (fun h : MvPolynomial (Fin 3) K →+* PowerSeries K => h p) he
 
-/-- The origin of the section is exactly the chosen base point in the
-original cumulative-node coordinates. -/
+/-- The origin of the section is the base point `z`, in cumulative-node
+coordinates. -/
 theorem polarSectionMap_eval_origin {K : Type*} [CommRing K]
     (z : Fin 3 → K) (s t : K) (p : MvPolynomial (Fin 3) K) :
     eval (0 : Fin 2 → K) (polarSectionMap z s t p) =

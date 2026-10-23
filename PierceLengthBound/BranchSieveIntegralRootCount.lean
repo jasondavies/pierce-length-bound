@@ -11,15 +11,17 @@ public import CCDN.Height.PolynomialBoxHeight
 import Mathlib.Tactic
 public import PierceLengthBound.BranchSieveShear
 
-/-! A coefficient-uniform integral-root count obtained from the proved CCDN
-plane-curve theorem. The power shear trades coefficient height for degree;
-no Hilbert irreducibility or unproved counting estimate is assumed here. -/
+/-! A coefficient-uniform integral-root count from the CCDN plane-curve bound
+(Step 1 in the proof of Theorem 10.4). After the power shear, the parameters
+whose fiber has an integral root inject into the integral points of an
+irreducible plane curve; the shear trades coefficient height for degree. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
+/-- An integer polynomial in two variables, viewed over `ℚ`. -/
 abbrev branchRationalPolynomial (p : MvPolynomial (Fin 2) ℤ) :
     MvPolynomial (Fin 2) ℚ := map (Int.castRingHom ℚ) p
 
@@ -88,9 +90,10 @@ theorem branch_integral_root_card_le_sheared_count
   · intro t _ u _ h
     exact congrFun h 0
 
-/-- A uniform, unconditional one-parameter root estimate with the shear
-degree and box radius still displayed. Later analytic bounds may choose the
-shear exponent as a function of coefficient height. -/
+/-- The parameters `t ∈ [-B,B]` with nonzero fiber and an integral root number
+at most `C` times the plane-curve bound for the sheared curve, with its degree
+and box radius displayed. The shear exponent `e` is free;
+`BranchSieveOneParameterRoots` chooses it in terms of the coefficient height. -/
 theorem branch_integral_root_count :
     ∃ C : ℝ, 0 < C ∧ ∀ (p : MvPolynomial (Fin 2) ℤ),
       Irreducible (branchRationalPolynomial p) → ∀ H B e : ℕ,

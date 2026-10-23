@@ -12,18 +12,18 @@ public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
 public import Mathlib.FieldTheory.SplittingField.Construction
 import Mathlib.Tactic
 
-/-! An actual integer specialization supplies an integral coefficient root.
-The reduction map is constructed by lying-over; it is not an assumption of
-the theorem.
-
-The integral closure contains every root of a monic polynomial. This
-supplies the splitting algebra used in the specialization argument. -/
+/-! A reducible integer specialization supplies an integral coefficient root.
+The integral closure of `ℤ[X]` in a splitting field serves as the splitting
+algebra, and the reduction map over `X = t` comes from lying-over
+(`branch_exists_integer_reduction`). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- A monic polynomial that splits over `L` splits over the integral
+closure of `R` in `L`. -/
 theorem branch_monic_splits_integralClosure {R L : Type*}
     [CommRing R] [IsDomain R] [Field L] [Algebra R L]
     (p : R[X]) (hp : p.Monic) (hsplit : (p.map (algebraMap R L)).Splits) :
@@ -47,6 +47,10 @@ variable {F L : Type*} [Field F] [Algebra ℤ[X] F] [IsFractionRing ℤ[X] F]
   [Field L] [Algebra ℤ[X] L] [Algebra F L] [IsScalarTower ℤ[X] F L]
   [FaithfulSMul ℤ[X] L]
 
+/-- If `p(t, Y)` has a monic factor `q` of degree strictly between zero and
+`deg p`, then some coefficient of a monic factor `q₀` of `p` over the integral
+closure has a monic minimal polynomial over `ℤ[X]`, irreducible over the
+fraction field and of degree at least two, which vanishes at `(t, q.coeff j)`. -/
 theorem branch_integer_specialization_witness (p : ℤ[X][Y])
     (hp : p.Monic) (hir : Irreducible (p.map (algebraMap ℤ[X] F)))
     (hsplit : (p.map (algebraMap ℤ[X] L)).Splits)

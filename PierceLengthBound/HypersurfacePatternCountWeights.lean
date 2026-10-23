@@ -12,13 +12,11 @@ public import PierceLengthBound.ShortVec
 /-!
 # Short vectors in the normal congruence lattices
 
-For an integer triple `u`, the normal lattice is `{z : n ∣ u · z}`. Its shortest nonzero
-sup norm is positive and at most a cube root of `n`. Incidence counting and partial summation
-give `∑_u 1/μ(u) ≤ 5859 τ(n) n^(8/3)` over `u ∈ [-n,n]³`. This includes nonprimitive triples;
-the extra divisor factor is harmless for an epsilon-loss application.
-
-This is an independently proved ingredient of the proposed hypersurface-pattern count,
-not a proof of its polynomial-fiber or chart-counting steps.
+For an integer triple `u`, the normal lattice is `{z : n ∣ u · z}`, and `μ(u) = normalShortR n u`
+is its least nonzero sup norm, which lies between `1` and about `n^(1/3)`. Incidence counting
+and partial summation give `∑_u 1/μ(u) ≤ 5859 τ(n) n^(8/3)` over all `u ∈ [-n,n]³`, primitive
+or not. This bounds the reciprocal weights in the nonzero-fiber count of the
+hypersurface-pattern estimate.
 -/
 
 @[expose] public section
@@ -44,6 +42,7 @@ lemma normalHasShort_nonempty {n : ℕ} (hn : 0 < n) (u : Fin 3 → ℤ) :
   · intro j
     fin_cases j <;> simp
 
+/-- `μ(u) ≥ 1`, and the normal lattice has a nonzero vector of sup norm at most `μ(u)`. -/
 lemma normalShortR_spec {n : ℕ} (hn : 0 < n) (u : Fin 3 → ℤ) :
     1 ≤ normalShortR n u ∧ NormalHasShort n u (normalShortR n u) := by
   have hne : ({R : ℕ | NormalHasShort n u R} : Set ℕ).Nonempty :=
@@ -62,7 +61,8 @@ lemma normalShortR_spec {n : ℕ} (hn : 0 < n) (u : Fin 3 → ℤ) :
 lemma normalShortR_le {n R : ℕ} {u : Fin 3 → ℤ} (h : NormalHasShort n u R) :
     normalShortR n u ≤ R := Nat.sInf_le h
 
-/-- Pigeonhole produces a short nonzero vector without any primitivity assumption on `u`. -/
+/-- Pigeonhole: if `n < (L + 1)³`, the normal lattice of every `u` has a nonzero vector
+of sup norm at most `L`. -/
 theorem normal_lattice_short {n L : ℕ} (hn : 0 < n) (u : Fin 3 → ℤ)
     (hL : n < (L + 1) ^ 3) : NormalHasShort n u L := by
   classical
@@ -87,8 +87,8 @@ theorem normal_lattice_short {n L : ℕ} (hn : 0 < n) (u : Fin 3 → ℤ)
     rw [abs_le]
     constructor <;> linarith
 
-/-- Few normal lattices have a short vector. The bound counts every coefficient triple in
-the box, including triples that are not primitive modulo `n`. -/
+/-- Few normal lattices have a short vector: at most `729 n² τ(n) R³` triples
+`u ∈ [-n,n]³` have `μ(u) ≤ R`. -/
 theorem normal_short_count {n : ℕ} (hn : 0 < n) (R : ℕ) :
     ((ibox3 n).filter fun u => normalShortR n u ≤ R).card ≤
       729 * n ^ 2 * n.divisors.card * R ^ 3 := by
@@ -111,8 +111,8 @@ theorem normal_short_count {n : ℕ} (hn : 0 < n) (R : ℕ) :
       Nat.mul_le_mul_left _ (sum_gcd4_box_le hn R)
     _ = _ := by ring
 
-/-- The reciprocal normal-lattice minimum has average of size at most
-`τ(n) n^(-1/3)` over the coefficient box. -/
+/-- `∑_{u ∈ [-n,n]³} 1/μ(u) ≤ 5859 τ(n) n^(8/3)`: the reciprocal normal-lattice minimum
+has average `O(τ(n) n^(-1/3))` over the coefficient box. -/
 theorem normal_short_weight_sum {n : ℕ} (hn : 0 < n) :
     ∑ u ∈ ibox3 n, (normalShortR n u : ℝ)⁻¹ ≤
       5859 * (n.divisors.card : ℝ) * (n : ℝ) ^ (8 / 3 : ℝ) := by
