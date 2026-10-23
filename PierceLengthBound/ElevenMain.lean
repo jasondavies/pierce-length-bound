@@ -32,6 +32,7 @@ def Pbig1 (a : ℕ) : ℕ := 10 ^ 300 * a ^ 100
 def Xi (a : ℕ) : ℕ := 2 * tauMax (Pbig1 a) ^ 3 * (Nat.log 3 (Pbig1 a) + 1) + 4
 
 set_option exponentiation.threshold 400 in
+-- `norm_num` must evaluate the constant `10 ^ 300` of `Pbig1`.
 /-- The quantities controlled by `Ξ(a)` lie in `[1, P(a)]`, for patterns of height `≤ 10¹⁶ a⁷`. -/
 lemma pbig1_bounds {a M H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hM : M ≤ 10 ^ 16 * a ^ 7) :
     116 * (4 * M ^ 2) ^ 4 * H ^ 2 ≤ Pbig1 a ∧

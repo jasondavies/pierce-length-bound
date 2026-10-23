@@ -50,9 +50,8 @@ theorem normalized_parameter_branches {S L : Type*}
   · rw [parameter_fiber_finrank w hw, ← normalization_parameter_rank (L := L) w]
     exact hsum
 
-set_option maxHeartbeats 800000 in
--- The chart, parameter algebra and normalization form nested subalgebra towers.
 set_option synthInstance.maxHeartbeats 200000 in
+-- The chart, parameter algebra and normalization form nested subalgebra towers.
 /-- Every normalized infinity branch is counted, and its residue degree times
 its order of the old infinity parameter contributes to a sum exactly equal
 to the original Hilbert degree d. -/

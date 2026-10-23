@@ -22,7 +22,6 @@ lemma map_rawDetLower {R S : Type*} [CommRing R] [CommRing S]
     f (rawDetLower k0 k1 k2 k3 k4) = rawDetLower (f k0) (f k1) (f k2) (f k3) (f k4) := by
   simp only [rawDetLower, map_add, map_sub, map_mul, map_pow, map_ofNat]
 
-set_option maxHeartbeats 2000000 in
 /-- The entire remainder after the degree-six Vandermonde term has degree at
 most five in any linear polynomial gap coordinates. -/
 theorem rawDetLower_totalDegree {K σ : Type*} [Field K]
@@ -34,11 +33,9 @@ theorem rawDetLower_totalDegree {K σ : Type*} [Field K]
   have h3 := hk 3
   have h4 := hk 4
   simp only [rawDetLower, ← map_ofNat (C : K →+* MvPolynomial σ K)]
-  run_tac do
-    let g ← Lean.Elab.Tactic.getMainGoal
-    let t ← Lean.Elab.Tactic.getMainTarget
-    let g' ← g.replaceTargetDefEq t.consumeMData
-    Lean.Elab.Tactic.replaceMainGoal [g']
+  -- `fixed_dividend_mv_degree` reads the goal syntactically; restating it drops
+  -- the metadata that `simp` leaves around the target.
+  change (_ : MvPolynomial σ K).totalDegree ≤ 5
   fixed_dividend_mv_degree
 
 /-- All five recovered gaps are linear in the three node coordinates. -/
@@ -51,8 +48,10 @@ lemma lineGaps_totalDegree {K : Type*} [Field K] (ρ u v ρ' u' v' : K) (j : Fin
   generalize hx0 : (X 0 : MvPolynomial (Fin 3) K) = x0 at *
   generalize hx1 : (X 1 : MvPolynomial (Fin 3) K) = x1 at *
   generalize hx2 : (X 2 : MvPolynomial (Fin 3) K) = x2 at *
-  fin_cases j <;> simp [lineGaps, fourthNode, hx0, hx1, hx2]
-  all_goals fixed_dividend_mv_degree
+  fin_cases j <;>
+    simp only [lineGaps, fourthNode, Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, Fin.isValue,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val, ge_iff_le] <;>
+    fixed_dividend_mv_degree
 
 end
 end PierceLengthBound.FixedDividend
