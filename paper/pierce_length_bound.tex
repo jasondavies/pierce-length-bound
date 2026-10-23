@@ -121,9 +121,10 @@ Erd\H{o}s and Shallit's divisor argument shows that a drop value can repeat
 only $a^{o(1)}$ times; hence $A\ge T^{2-o(1)}$. Similarly the quotients
 increase by at most $a/A$ across the window, so a fixed proportion of starts
 have their next few increments bounded by $H\asymp a/(AT)\le a^{1+o(1)}/T^3$.
-For such a start the ten maximal minors of a $3\times5$ matrix whose rows
-are drops, increments and a quadratic expression in the increments, among them $I_4(i),I_4(i+1),I_4(i+2)$, are integers of absolute
-value at most
+For such a start, form the $3\times5$ matrix whose rows are the next five
+drops, the increments, and a quadratic expression in the increments. Its ten
+maximal minors, among them $I_4(i)$, $I_4(i+1)$ and $I_4(i+2)$, are integers
+of absolute value at most
 \[
  X\asymp\frac{A^4H^6}{a^3}\asymp\frac{a^3}{A^2T^6}\le\frac{a^{3+o(1)}}{T^{10}}.
 \]
@@ -155,9 +156,9 @@ Hankel invariant $J=I_5(i)$, whose sizes satisfy
  |W_j|\ll S:=A^3H^3/a^2,\qquad |J|\ll Y:=A^5H^{10}/a^4.
 \]
 On a component of degree $d$, $J$ has a pole of total order $5d/2$ at
-infinity, while the $W_j$ vanish there to total order $3d/2$; since some
-combination of them has a further affine zero, they have at least $3d/2+1$
-affine poles. For fixed positive integers $m,n$, the graph
+infinity, while the $W_j$ vanish there to total order $3d/2$. Some
+combination of them has a further affine zero, so it has at least $3d/2+1$
+zeros, hence as many poles, all affine. For fixed positive integers $m,n$, the graph
 obtained by adjoining $W_0^m,W_1^m,W_2^m,J^n$ to the nodes therefore has
 degree at least $\frac{5n}2d+m\bigl(\frac{3d}2+1\bigr)$, and the box grows
 only to $\max(H,S^m,Y^n)$. Conics and components on which the reconstruction
@@ -283,7 +284,8 @@ curves, Section~\ref{sec:lattice} reduces their lattice coordinates, and
 Section~\ref{sec:polar} completes the main theorem. The independent rise
 bound is proved in Section~\ref{sec:rises}. The conic count, graph-degree
 upper bound, and three-dimensional lattice reduction are proved in
-Appendices~\ref{app:conic}, \ref{app:degree} and~\ref{app:reduction}.
+Appendices~\ref{app:conic}, \ref{app:degree} and~\ref{app:reduction}, and
+Appendix~\ref{app:polarcertificates} gives the certificates for the polar bound.
 
 All the unconditional results above, including their curve-counting and
 specialization inputs, are formalized in Lean~4~\cite{Lean} with
@@ -768,8 +770,8 @@ Using $y_{j+1}=1-q_{i+j}y_j$ for $0\le j\le3$ to express every entry in
 terms of $y_0$, $q_i$ and the gaps, and expanding, gives $a$ times its
 determinant as
 $(b_i-b_{i+1})k_{i+1}-(b_{i+1}-b_{i+2})k_i=D_i$. The case $r=4$ is the same
-computation with $F_0,\dots,F_3$; its entries involve $\beta_0,\dots,\beta_6$,
-and the same reduction to $\beta_0$, $q_i$ and the gaps gives $L_i$. At the end of the orbit these
+computation with $F_0,\dots,F_3$; its entries involve $y_0,\dots,y_6$,
+and the same reduction to $y_0$, $q_i$ and the gaps gives $L_i$. At the end of the orbit these
 computations use $h_{N-1}(s)=0$ for $s\ge1$, that is, $b_N=0$.
 \end{proof}
 
@@ -1014,13 +1016,10 @@ The seven pattern integers are not independent: they are coordinates of a single
 $3\times3$ minors. If all ten minors are at most $X$ in absolute value, there are only
 $X^{5+o(1)}$ such vectors (Proposition~\ref{prop:minorvec}), rather than the $X^7$ choices of seven
 independent integers.
-We therefore define the \emph{pattern} of a state $i$ to be the vector $p(i)$ of the ten
-$3\times3$ minors of the matrix $\widehat{\mathcal M}_i$ below; it determines the pattern
-integers $\theta(i)$.
-
 Let $\widehat{\mathcal M}_i$ be the $3\times5$ matrix with rows $(d_0,\dots,d_4)$, $(k_0,\dots,k_4)$
-and $(r_0,\dots,r_4)$, and let $p_{c_1c_2c_3}$ be its minor on columns $c_1<c_2<c_3$. Expanding
-the cofactors above gives
+and $(r_0,\dots,r_4)$, and let $p_{c_1c_2c_3}$ be its minor on columns $c_1<c_2<c_3$. We define
+the \emph{pattern} of a state $i$ to be the vector $p(i)$ of these ten minors. Expanding
+the cofactors above shows that it determines the pattern integers:
 \[
 \theta(i)=(p_{012},\,p_{123},\,p_{234},\,p_{023},\,-p_{013},\,p_{134},\,-p_{124}).
 \]
@@ -1130,7 +1129,8 @@ $D_{01}=I_3(i)$ is the curvature of Section~\ref{sec:curv};
 \item $Q$ and $E_0$ are the reconstructed quotient and curvature,
 $W=(W_0,W_1,W_2)$ and $J$ the joint coordinates, and $S$, $Y$ their height
 bounds;
-\item $e$ is a multiplicity at infinity, $d$ the degree of a component,
+\item $\operatorname{ord}_P$ is the order at a point $P$, positive at zeros and
+negative at poles, $e$ is a multiplicity at infinity, $d$ the degree of a component,
 $\delta$ the degree of a graph and $\delta_{\min}=10n+7m$ its lower bound
 (Lemma~\ref{lem:jointpowereddegree}).
 \end{itemize}
@@ -1313,8 +1313,12 @@ $p_3=\bar u_2-1-s_1-s_2-s_3$, the coefficient of $x^3$ in $P_4$, consider the
  N_0P_4(-Q)=aH_4,\qquad
  E_0P_4(-Q)=a\bigl((Q-p_3)H_3-H_{013}\bigr).
 \end{equation}
-Both hold at good starts, where $Q=q_i$, $E_0=I_3(i)$ and $P_4=\pi_i$. The first is
-Lemma~\ref{lem:multid}. The second follows from the same bordering argument.
+Both hold at good starts, where $Q=q_i$, $E_0=I_3(i)$ and $P_4=\pi_i$. Among
+components containing a good start, we call a component \emph{retained} if both
+identities, after clearing denominators, hold identically on it.
+
+The first identity is Lemma~\ref{lem:multid}. The second follows from the same
+bordering argument.
 Write $v_j=h_i(j)$, $M_j=\mu_i(x^j)=q_iv_j+v_{j+1}$ and
 $P_4(x)=x^4+p_3x^3+p_2x^2+p_1x+p_0$. Since $P_4$ is orthogonal to $1,x,x^2$,
 expanding along the last row gives
@@ -1336,9 +1340,6 @@ $(M_{j+3}+(p_3-q_i)M_{j+2};0)$. Expanding along the last row gives
  \det(v_{r+s})_{r,s<3}\,P_4(-q_i)=(q_i-p_3)H_3-H_{013},
 \]
 and $a\det(v_{r+s})_{r,s<3}=I_3(i)$.
-Among components containing a good start, we call a component
-\emph{retained} if both equations, after clearing denominators, hold
-identically on it.
 
 \begin{lemma}[Removing components by polynomial equations]\label{lem:jointcuts}
 After clearing denominators, the two identities in \eqref{eq:jointcuts} are
@@ -1393,17 +1394,16 @@ For a local parameter $\varpi$ at $P$, let $z_j\in\mathbb Q(P)$ be the value
 at $P$ of the regular function $\varpi^es_j$, $0\le j\le4$; we call $z_j$ the
 \emph{leading node}.
 Then the $z_j$ are not all equal and satisfy
-\[
+\begin{equation}\label{eq:joint-leading-moments}
  \sum_{j=0}^4\gamma_jz_j^r=0\qquad(0\le r\le3).
-\]
+\end{equation}
 If two of these five leading nodes coincide, the pattern is exceptional.
 For a nonexceptional pattern, therefore,
-\begin{align*}
- \operatorname{ord}(s_l-s_j)&=-e\quad(0\le j<l\le4),\\
- \operatorname{ord}\operatorname{Res}(P_4,Z)&=-10e,\\
- \operatorname{ord}H_3&=-3e,\qquad \operatorname{ord}H_4=-6e.
-\end{align*}
-Positive order denotes a zero and negative order a pole.
+\begin{align}
+ \operatorname{ord}(s_l-s_j)&=-e\quad(0\le j<l\le4),\label{eq:joint-node-orders}\\
+ \operatorname{ord}\operatorname{Res}(P_4,Z)&=-10e,\qquad
+ \operatorname{ord}H_3=-3e,\qquad \operatorname{ord}H_4=-6e.\label{eq:joint-determinant-orders}
+\end{align}
 \end{lemma}
 
 \begin{proof}
@@ -1423,10 +1423,7 @@ and one. The highest-degree part of $f=0$ gives the equation of order two.
 Finally, the highest-degree part of
 $N_0\operatorname{Res}(P_4,Z)=a\Psi^4$ gives the equation of order three:
 the resultant has total degree at most ten, whereas the cubic part of
-$\Psi$ is $\sum_j\gamma_js_j^3$. Consequently
-\begin{equation}\label{eq:joint-leading-moments}
- \sum_{j=0}^4\gamma_jz_j^r=0\qquad(0\le r\le3).
-\end{equation}
+$\Psi$ is $\sum_j\gamma_js_j^3$. This gives~\eqref{eq:joint-leading-moments}.
 For the last of these, multiply the fixed-dividend equation by
 $\varpi^{12e}$ and evaluate at $P$; its left side vanishes and its right side
 is $a(\sum_j\gamma_jz_j^3)^4$.
@@ -1439,10 +1436,7 @@ Since there are five indices and at least two groups, some group has at
 most two elements. It cannot have one, because every $\gamma_j$ is nonzero;
 it must therefore give a vanishing pair sum. This proves the collision
 assertion. For a nonexceptional pattern it is impossible, so all five
-nodes are distinct, and
-\begin{equation}\label{eq:joint-node-orders}
- \operatorname{ord}(s_l-s_j)=-e\qquad(0\le j<l\le4).
-\end{equation}
+leading nodes are distinct, which is~\eqref{eq:joint-node-orders}.
 
 \emph{The determinant orders.}
 Write $\mathcal R=\operatorname{Res}(P_4,Z)$.
@@ -1480,12 +1474,8 @@ degree at most five. These are finite polynomial identities.
 
 Every factor in these leading products has order $-e$ by
 \eqref{eq:joint-node-orders}. The lower-degree terms have strictly larger
-order, so they cannot cancel the leading terms. Thus
-\begin{equation}\label{eq:joint-determinant-orders}
- \operatorname{ord}\mathcal R=-10e,\qquad
- \operatorname{ord}H_3=-3e,\qquad
- \operatorname{ord}H_4=-6e.
-\end{equation}
+order, so they cannot cancel the leading terms, which
+proves~\eqref{eq:joint-determinant-orders}.
 \end{proof}
 
 \begin{corollary}[Even component degrees]\label{cor:jointparity}
@@ -1766,7 +1756,7 @@ good starts, with an implied constant independent of the pattern and the compone
 Consequently all nonexceptional conics together contribute $O_\eta(a^\eta X^5)$ good starts.
 \end{proposition}
 
-The idea is short. A component that is not retained contributes $O(1)$ good starts
+In outline: a component that is not retained contributes $O(1)$ good starts
 (Lemma~\ref{lem:jointcuts}). A retained conic through three free-node triples of good starts
 lies in a plane, and Corollary~\ref{cor:jointparity} leaves it a single rational branch at
 infinity, of multiplicity two. So it is a parabola, the image of a quadratic polynomial map
@@ -1904,7 +1894,7 @@ coordinates is therefore
  \mathcal F_{m,n}=\frac{5n}{2}E_\infty+m\mathcal F.
 \]
 
-There is a single rational linear combination $\lambda$ of the seven
+There is a single rational linear combination $\psi$ of the seven
 coordinates whose pole divisor is $\mathcal F_{m,n}$.  To see this, fix a point $P$
 in the finite support of $\mathcal F_{m,n}$ and multiply all seven coordinates by a
 local uniformizer to the power $\mathcal F_{m,n}(P)$.  Their values in $\mathbb Q(P)$
@@ -1914,13 +1904,13 @@ The finitely many such proper subspaces do not cover $\mathbb Q^7$.
 Choosing coefficients outside their union gives the asserted
 simultaneous absence of cancellation, also when $\mathbb Q(P)\ne\mathbb Q$.
 
-As a linear function on $\Gamma_{m,n}$, $\lambda$ has degree at most
-$\delta$.  For example, homogenize it on the projective closure of the
+As a linear function on $\Gamma_{m,n}$, $\psi$ has degree at most
+$\delta$.  Indeed, homogenize it on the projective closure of the
 graph: its pencil with the homogenizing coordinate consists of
 hyperplane sections of degree $\delta$.  Removing common zeros can
 only decrease the degree of the resulting map to $\mathbb P^1$.
 Birational projection identifies its function field with $\mathbb Q(C)$,
-so this degree is $\deg(\lambda)_\infty=\deg \mathcal F_{m,n}$.  It follows that
+so this degree is $\deg(\psi)_\infty=\deg \mathcal F_{m,n}$.  It follows that
 \[
  \delta\ \ge\ \frac{5n}{2}d+m\deg \mathcal F
  \ \ge\ \frac{5n+3m}{2}d+m.
