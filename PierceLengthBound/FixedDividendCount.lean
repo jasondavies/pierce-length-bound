@@ -8,12 +8,10 @@ module
 public import PierceLengthBound.FixedDividendWeights
 
 /-!
-# Multiplicity and weighted curve-count assembly
+# Multiplicity of patterns and gap vectors
 
 Fixed minors and five gaps determine a nonzero quartic in the quotient. Thus at
-most four orbit starts have these data. A per-pattern bound for distinct gap
-vectors then supplies the precise half-weight sum needed by the window estimate.
-The per-pattern curve count remains an explicit hypothesis here.
+most four orbit starts have these data.
 -/
 
 @[expose] public section
@@ -74,24 +72,5 @@ lemma pair_image_card_le_sum {ι α β : Type*} [DecidableEq α] [DecidableEq β
     exact mem_image.mpr ⟨i, mem_filter.mpr ⟨hi, hwv⟩, rfl⟩
   · intro w hw w' hw' hh
     exact Prod.ext ((mem_filter.mp hw).2.trans (mem_filter.mp hw').2.symm) hh
-
-/-- Transfer per-pattern bounds for distinct gap vectors to the half-weighted start count. -/
-theorem pattern_curve_count_sum {G : Finset ℕ} {pm : ℕ → Fin 10 → ℤ}
-    {κ : ℕ → Fin 5 → ℤ} {H K : ℝ}
-    (hm : G.card ≤ 4 * (G.image fun i => (pm i, κ i)).card)
-    (hc : ∀ p ∈ G.image pm,
-      (((G.filter fun i => pm i = p).image κ).card : ℝ) ≤
-        K * Real.sqrt H * Real.sqrt ((1 : ℝ) / shortR p)) :
-    (G.card : ℝ) ≤ 4 * K * Real.sqrt H *
-      ∑ p ∈ G.image pm, Real.sqrt ((1 : ℝ) / shortR p) := by
-  have hsum := pair_image_card_le_sum G pm κ
-  have hsum' : ((G.image fun i => (pm i, κ i)).card : ℝ) ≤
-      ∑ p ∈ G.image pm, (((G.filter fun i => pm i = p).image κ).card : ℝ) := by
-    exact_mod_cast hsum
-  calc (G.card : ℝ) ≤ 4 * ((G.image fun i => (pm i, κ i)).card : ℝ) := by exact_mod_cast hm
-    _ ≤ 4 * ∑ p ∈ G.image pm, (((G.filter fun i => pm i = p).image κ).card : ℝ) := by gcongr
-    _ ≤ 4 * ∑ p ∈ G.image pm, K * Real.sqrt H * Real.sqrt ((1 : ℝ) / shortR p) := by
-      exact mul_le_mul_of_nonneg_left (sum_le_sum hc) (by norm_num)
-    _ = _ := by rw [← mul_sum]; ring
 
 end PierceLengthBound.FixedDividend

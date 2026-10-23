@@ -59,20 +59,4 @@ theorem resultant_four {p : ℕ → ℝ[X]} {α β : ℕ → ℝ}
   convert h4 using 1
   ring
 
-/-- The Hankel determinant ratios telescope in the recurrence product. -/
-lemma hankel_ratio_product {t1 t2 t3 t4 t5 : ℝ}
-    (h1 : t1 ≠ 0) (h2 : t2 ≠ 0) (h3 : t3 ≠ 0) (h4 : t4 ≠ 0) :
-    (t2 / t1 ^ 2) * (t3 * t1 / t2 ^ 2) ^ 2 *
-      (t4 * t2 / t3 ^ 2) ^ 3 * (t5 * t3 / t4 ^ 2) ^ 4 = t5 ^ 4 / t4 ^ 5 := by
-  field_simp
-
-/-- The final normalization, once the resultant and norm formulas are established. -/
-lemma fixed_dividend_normalization {A a D t4 t5 R : ℝ}
-    (ha : a ≠ 0) (ht4 : t4 ≠ 0)
-    (hA : t4 = A / a) (hD : t5 = D * t4) (hR : R = t5 ^ 4 / t4 ^ 5) :
-    A * R = a * D ^ 4 := by
-  have hAa : A = a * t4 := by rw [hA]; field_simp
-  rw [hAa, hR, hD]
-  field_simp
-
 end PierceLengthBound.FixedDividend

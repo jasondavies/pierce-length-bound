@@ -449,7 +449,7 @@ below.
 
 | Modules | Contents |
 |---|---|
-| `FixedDividend*` | the fixed-dividend resultant identity, quadratic irreducibility, relative primality, a rational component cover of total degree at most 24, even degree of nonexceptional components, line exclusion, conic plane models, and filtered Hilbert-degree infinity charts; also proved components of the unfinished `13/44` and `18/61` refinements (checked in `Axioms.lean`) |
+| `FixedDividend*` | the fixed-dividend resultant identity, quadratic irreducibility, relative primality, a rational component cover of total degree at most 24, even degree of nonexceptional components, line exclusion, conic plane models, and filtered Hilbert-degree infinity charts |
 | `Exceptional*` | the exceptional-pattern count `O(X⁴ log 2X)` |
 | `IntegralLift*` | bounded integer conic parameters, monic quotient normalization, cubic quotient degree, and properness of the `I₃` lift after at most 492 exceptional points; the conditional `151/513` reduction |
 | `Conic*` | conic arithmetic, integer values of rational functions, and coefficient heights; the conditional `135/458` reduction |

@@ -12,8 +12,8 @@ public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
 # Critical growth of a finite-dimensional coordinate space
 
 If multiplication by the coordinates enlarges a finite-dimensional space by
-only one dimension, commutativity forces all coordinates to be affine in one
-transcendental coordinate over an algebraically closed field.
+only one dimension, commutativity makes every multiplier an affine combination
+of one transcendental multiplier and an algebraic element.
 -/
 
 @[expose] public section
@@ -113,22 +113,6 @@ theorem algebraic_difference_of_critical_growth {K A : Type*} [Field K]
     rw [he, Submodule.mem_bot] at hUone
     exact one_ne_zero hUone
   exact ⟨c, algebraic_of_stabilizes_submodule U hUne hstable⟩
-
-/-- Over an algebraically closed field, critical one-step growth forces every
-multiplier to be affine in a chosen transcendental multiplier. -/
-theorem affine_of_critical_growth {K A : Type*} [Field K] [IsAlgClosed K]
-    [CommRing A] [IsDomain A] [Algebra K A]
-    (U V : Submodule K A) [Module.Finite K U] [Module.Finite K V]
-    (hUV : U ≤ V) (hUone : (1 : A) ∈ U)
-    (hd : Module.finrank K V = Module.finrank K U + 1)
-    {x y : A} (hx : Transcendental K x)
-    (hxU : ∀ u ∈ U, x * u ∈ V) (hyU : ∀ u ∈ U, y * u ∈ V) :
-    ∃ c d : K, y = c • x + algebraMap K A d := by
-  obtain ⟨c, hc⟩ := algebraic_difference_of_critical_growth U V hUV hUone hd hx hxU hyU
-  obtain ⟨d, hd⟩ := algebraic_eq_scalar hc
-  refine ⟨c, d, ?_⟩
-  rw [hd]
-  abel
 
 end
 end PierceLengthBound.FixedDividend

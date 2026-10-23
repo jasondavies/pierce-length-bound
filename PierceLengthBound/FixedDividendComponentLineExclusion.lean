@@ -8,10 +8,10 @@ module
 public import PierceLengthBound.FixedDividendDegreeOne
 
 /-!
-# Excluding degree-one components at actual orbit points
+# Restricting the fixed-dividend equations to affine lines
 
-The abstract Hilbert-degree-one line theorem is connected to the explicit
-quadratic and resultant restrictions used by the orbit line-exclusion theorem.
+The explicit quadratic, norm and resultant restrictions to an affine line used by
+the orbit line-exclusion theorem.
 -/
 
 @[expose] public section
@@ -60,52 +60,6 @@ lemma affineRestriction_resultant {K : Type*} [CommRing K]
   unfold curveResultant affineResultant
   rw [← resultant_map_map, Polynomial.map_mul, Polynomial.map_X,
     map_firstNewtonQuartic, map_nextNewtonQuartic, hn, hc, hc]
-
-/-- A Hilbert-degree-one prime containing both equations supplies precisely the
-polynomial line identities ruled out by the orbit estimates. -/
-theorem degree_one_component_gives_contained_line {K : Type*} [Field K] [IsAlgClosed K]
-    (ρ u v ρ' u' v' A a : K) (p : Ideal (MvPolynomial (Fin 3) K)) [p.IsPrime]
-    (hp : p.height = 2)
-    (hdegree : ∃ N : ℕ, ∃ b : ℤ, ∀ n ≥ N,
-      (Module.finrank K (filteredCoordinateSpace p n) : ℤ) = n + b)
-    (hf : curveQuadratic ρ u v ρ' u' v' ∈ p)
-    (hg : curveEquation ρ u v ρ' u' v' A a ∈ p)
-    (x : Fin 3 → K) (hx : x ∈ coordinateZeroLocus p) :
-    ∃ z : Fin 3 → K, (∃ j, z j ≠ 0) ∧
-      affineQuadratic ρ u v ρ' u' v' x z = 0 ∧
-      C A * affineResultant ρ u v ρ' u' v' x z =
-        C a * affineNorm ρ u v ρ' u' v' x z ^ 4 := by
-  obtain ⟨z, hz, hline⟩ := degree_one_line_through_point p hp hdegree x hx
-  have hq : affineRestriction x z (curveQuadratic ρ u v ρ' u' v') = 0 := hline _ hf
-  have he : affineRestriction x z (curveEquation ρ u v ρ' u' v' A a) = 0 := hline _ hg
-  rw [affineRestriction_quadratic] at hq
-  simp only [curveEquation, map_sub, map_mul, map_pow,
-    affineRestriction_resultant, affineRestriction_norm] at he
-  simp only [affineRestriction, MvPolynomial.aeval_C, Polynomial.algebraMap_eq] at he
-  exact ⟨z, hz, hq, sub_eq_zero.mp he⟩
-
-/-- A prime component through a large-scale actual orbit point cannot have
-Hilbert degree one. -/
-theorem orbit_component_not_degree_one {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
-    {H X₀ : ℤ} (hX : 1 ≤ X₀) (hgaps : ∀ m < 5, kq a b (i + m) ≤ H)
-    (hU : |U1z a b i| ≤ X₀) (hV : |U2z a b i| ≤ X₀)
-    (hscale : (a : ℤ) * H ^ 5 * (24 * X₀ + 464) < (qq a b i : ℤ) ^ 4)
-    (p : Ideal (MvPolynomial (Fin 3) ℂ)) [p.IsPrime] (hp : p.height = 2)
-    (hf : curveQuadratic (patternRho a b i : ℂ) (patternU a b i : ℂ) (patternV a b i : ℂ)
-      (patternRho a b (i + 1) : ℂ) (patternU a b (i + 1) : ℂ)
-      (patternV a b (i + 1) : ℂ) ∈ p)
-    (he : curveEquation (patternRho a b i : ℂ) (patternU a b i : ℂ) (patternV a b i : ℂ)
-      (patternRho a b (i + 1) : ℂ) (patternU a b (i + 1) : ℂ)
-      (patternV a b (i + 1) : ℂ) (Lz a b i : ℂ) (a : ℂ) ∈ p)
-    (hx : (fun j => (orbitFreeNodes a b i j : ℂ)) ∈ coordinateZeroLocus p) :
-    ¬ ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
-      (Module.finrank ℂ (filteredCoordinateSpace p n) : ℤ) = n + c := by
-  intro hdegree
-  obtain ⟨z, hz, hq, hresultant⟩ := degree_one_component_gives_contained_line
-    (patternRho a b i : ℂ) (patternU a b i : ℂ) (patternV a b i : ℂ)
-    (patternRho a b (i + 1) : ℂ) (patternU a b (i + 1) : ℂ)
-    (patternV a b (i + 1) : ℂ) (Lz a b i : ℂ) (a : ℂ) p hp hdegree hf he _ hx
-  exact orbit_no_complex_line hba hi hX hgaps hU hV hscale z hz hq hresultant
 
 end
 end PierceLengthBound.FixedDividend

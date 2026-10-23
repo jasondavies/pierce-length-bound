@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendInfinitySection
+public import PierceLengthBound.FixedDividendProjectiveFiltration
 
 /-!
 # An affine chart of the filtered projective closure
