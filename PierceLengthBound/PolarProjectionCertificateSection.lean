@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PolarProjectionCurveInitial
-public import PierceLengthBound.PolarProjectionBaseMultiplicity
+public import PierceLengthBound.PolarProjectionCertificate
 
 /-! First-order coefficients of the cubic norm and of the polar remainder along
 formal sections through the rational certificate's base point, including their

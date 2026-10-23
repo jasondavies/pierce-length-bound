@@ -384,7 +384,7 @@ below.
 | `LatticeJointPointCount` | the points `(y, cᵐ, Jⁿ)` in the pattern box `max(3H/λ, (8S'/3λ²)ᵐ, Yⁿ)`, and the curve count there |
 | `LatticeJointPatternCount` | the component count in the lattice box; pattern counts from `JointPatternCount` |
 | `LatticeJointWeights` | `∑_p λ(p)^{-t} ≤ 3163861 τ² X^{5-t/3}` for `0 ≤ t ≤ 1` |
-| `LatticeJointLocalEstimate` | the five-term local estimate |
+| `LatticeJointLocalEstimate` | the five-term local estimate; its lattice-weight summation is shared with the polar six-term estimate |
 | `LatticeJointWindow` | integer-power branches and the window exponents |
 | `LatticeJointBound` | `P_le_lattice_joint` for all powers, and `P_le_153_520` |
 | `LatticeJointOptimization` | the crossing `15r² = 7` and `P_le_lattice_optimal` |
@@ -409,8 +409,7 @@ below.
 | `JointLiftNormalizationCut`, `JointLiftResolventCut`, `JointLiftRetainedIdentities` | the normalization and raw-resolvent cuts, of degrees at most 166 and 404, and the identities they impose on retained components |
 | `JointLiftInfinityOrder` | rank-five pole order `5e/2` and even infinity multiplicity at every valuation centered on the nonexceptional chart |
 | `JointLiftQuotientOrder`, `JointLiftLocalOrders` | quotient, resolvent and curvature orders from their local inputs |
-| `ChartNodeUnits`, `ChartNodeOrders` | exact node-difference orders from the resultant unit |
-| `ChartRawDeterminantOrders` | orders `−3e` for both consecutive cubic determinants and `−6e` for the fourth |
+| `ChartNodeUnits`, `ChartRawDeterminantOrders` | exact node-difference orders from the resultant unit; orders `−3e` for both consecutive cubic determinants and `−6e` for the fourth |
 | `JointLiftRetainedOrders` | quotient and rank-three orders from the retained normalization and resolvent equations |
 | `JointLiftChartOrders` | orders `3t`, `≥ 3t`, `3t` and `−5t` of the four graph coordinates (`e = 2t`) |
 | `AffineNormalization` | finite Dedekind normalization of the affine chart ring |
@@ -435,8 +434,9 @@ below.
 | `PoweredJointGraph`, `PoweredPoleOrder` | the graph with coordinates `W_jᵐ` and `Jⁿ`, of degree at most `((m+n)·247+1)d`; powers multiply pole orders |
 | `PoweredJointGraphLowerDegree` | `δ ≥ 10n + 7m` for `d ≥ 4`, the case `G = 1` of `LinearJointGraph` |
 | `PoweredJointPointBox`, `PoweredJointPointCount` | integer points in the box `max(3H, Sᵐ, Yⁿ)` and the curve count there |
-| `PoweredJointCountingSlack`, `PoweredJointComponentCount`, `PoweredJointNonexceptionalCount`, `PoweredJointPatternCount`, `PoweredJointLocalEstimate` | the powered logarithmic and counting inputs |
-| `JointPatternCount` | from component counts to nonexceptional and per-pattern estimates, for any box and exponent; shared by the powered and lattice chains |
+| `PoweredJointCountingSlack`, `PoweredJointComponentCount`, `PoweredJointLocalEstimate` | the powered logarithmic and counting inputs |
+| `JointPatternCount` | from component counts to nonexceptional and per-pattern estimates, for any box and exponent; shared by the powered, lattice and polar chains |
+| `JointPatternAssembly` | the window length bounded by the per-pattern estimate summed over the selected patterns, shared by the local estimates |
 | `OrdinaryPatternCount` | the ordinary minor-pattern count `O(τ X⁵)`, the two-class pattern sum and the pattern slack, shared by the local estimates |
 | `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges and dyadic summation; `window_branch_exponent` is the window lemma shared by all chains |
 | `RealPowerBounds` | elementary real-power inequalities: concavity over a finite sum, powers of maxima, one dominant term among five |

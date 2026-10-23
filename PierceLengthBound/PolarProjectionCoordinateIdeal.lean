@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 public import PierceLengthBound.PolarProjectionPointSection
-public import PierceLengthBound.PolarProjectionGeometry
+public import PierceLengthBound.PolarProjectionCenteredQuadric
 public import PierceLengthBound.PolarProjectionCuts
 
 /-! The exact polar coordinate ideal in the original cumulative-node

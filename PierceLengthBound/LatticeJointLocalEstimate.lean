@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.LatticeJointPatternCount
+public import PierceLengthBound.JointPatternAssembly
 public import PierceLengthBound.LatticeJointWeights
 public import PierceLengthBound.RealPowerBounds
 
@@ -92,6 +93,132 @@ theorem lattice_box_rpow_le {H S Y lam m n : ℕ} (hlam : 1 ≤ lam) {h : ℝ} (
   have hY : (((Y ^ n : ℕ)) : ℝ) ^ (1 / h) = (Y : ℝ) ^ ((n : ℝ) / h) := natCast_pow_rpow Y n
   linarith
 
+/-- The lattice box of a selected pattern, split by `lattice_box_rpow_le` at its shortest
+lattice vector. -/
+theorem selected_lattice_box_rpow_le {m n hN : ℕ} (hh1 : (1 : ℝ) ≤ hN) (hm2 : (2 * m : ℝ) ≤ hN)
+    {a b s T A : ℕ} (hba : b < a)
+    (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
+    {p : Fin 10 → ℤ} (hp : p ∈ (selectedStarts a b s T A).image (fun i => plk (Mi a b i))) :
+    latticeJointBox m n p a A T ^ (1 / (hN : ℝ)) ≤
+      1 + 3 * (selectedGapHeight a A T : ℝ) ^ (1 / (hN : ℝ)) *
+          ((shortR p : ℝ)⁻¹) ^ (1 / (hN : ℝ)) +
+        8 * (selectedAllMinorHeight a A T : ℝ) ^ ((m : ℝ) / hN) *
+          ((shortR p : ℝ)⁻¹) ^ (2 * (m : ℝ) / hN) +
+        (selectedRankFiveHeight a A T : ℝ) ^ ((n : ℝ) / hN) := by
+  obtain ⟨i, hi, rfl⟩ := mem_image.mp hp
+  have hP := (selectedStart_spec hmem hsT hi).1
+  exact lattice_box_rpow_le (shortR_pos (orbit_pattern_first hba (l := i) (by omega))) hh1 hm2
+
+/-- Summing the lattice boxes with the fractional lattice weights, shared by the five- and
+six-term estimates. The window bound `hT8` is `selected_count_le_pattern_sum`, and each box
+`Box p` is at most the split lattice box plus an extra term, whose sum is at most `Rb Q`. Each
+term is then at most `8 R (2 O + Ex + 8 W + Rb)` times the matching displayed term. -/
+theorem lattice_terms_of_pattern_sum {m n hN : ℕ} (hh1 : (1 : ℝ) ≤ hN)
+    (hm2 : (2 * m : ℝ) ≤ hN) {R : ℕ → ℕ} {a b s T A : ℕ} (hba : b < a)
+    (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
+    (hsT : s + T ≤ P a b) (hT : 36 ≤ T) {Box extra : (Fin 10 → ℤ) → ℝ} {Rb Q : ℝ}
+    (hRb : 0 ≤ Rb) (hQ : 0 ≤ Q)
+    (hT8 : (T : ℝ) ≤ 8 * ((R a : ℝ) *
+      ∑ p ∈ (selectedStarts a b s T A).image (fun i => plk (Mi a b i)), (1 + Box p) +
+      (R a : ℝ) * (selectedGapHeight a A T : ℝ) ^ (1 / 2 : ℝ) *
+        (exceptionalPatternSlack a * (selectedMinorHeight a A T : ℝ) ^ 4)))
+    (hbox : ∀ p ∈ (selectedStarts a b s T A).image (fun i => plk (Mi a b i)),
+      Box p ≤ 1 + 3 * (selectedGapHeight a A T : ℝ) ^ (1 / (hN : ℝ)) *
+          ((shortR p : ℝ)⁻¹) ^ (1 / (hN : ℝ)) +
+        8 * (selectedAllMinorHeight a A T : ℝ) ^ ((m : ℝ) / hN) *
+          ((shortR p : ℝ)⁻¹) ^ (2 * (m : ℝ) / hN) +
+        (selectedRankFiveHeight a A T : ℝ) ^ ((n : ℝ) / hN) + extra p)
+    (hextra : ∑ p ∈ (selectedStarts a b s T A).image (fun i => plk (Mi a b i)), extra p ≤
+      Rb * Q) :
+    let h : ℝ := hN
+    let H : ℝ := selectedGapHeight a A T
+    let X : ℝ := selectedMinorHeight a A T
+    let S : ℝ := selectedAllMinorHeight a A T
+    let Y : ℝ := selectedRankFiveHeight a A T
+    (T : ℝ) ≤ 8 * R a * (2 * ordinaryPatternSlack a + exceptionalPatternSlack a +
+        8 * latticeWeightSlack a + Rb) *
+      (X ^ 5 + X ^ 4 * H ^ (1 / 2 : ℝ) +
+        X ^ (5 - (1 / h) / 3) * H ^ (1 / h) + X ^ (5 - (2 * m / h) / 3) * S ^ (m / h) +
+        X ^ 5 * Y ^ (n / h) + Q) := by
+  classical
+  set Pset := (selectedStarts a b s T A).image fun i => plk (Mi a b i)
+  set h : ℝ := (hN : ℝ)
+  set H := selectedGapHeight a A T
+  set X := selectedMinorHeight a A T
+  set S := selectedAllMinorHeight a A T
+  set Y := selectedRankFiveHeight a A T
+  have hh : 0 < h := by linarith
+  let f := fun p : Fin 10 → ℤ => 2 + 3 * (H : ℝ) ^ (1 / h) *
+    ((shortR p : ℝ)⁻¹) ^ (1 / h) + 8 * (S : ℝ) ^ ((m : ℝ) / h) *
+      ((shortR p : ℝ)⁻¹) ^ (2 * (m : ℝ) / h) + (Y : ℝ) ^ ((n : ℝ) / h)
+  have hsum : ∑ p ∈ Pset, (1 + Box p) ≤ ∑ p ∈ Pset, f p + Rb * Q := by
+    calc _ ≤ ∑ p ∈ Pset, (f p + extra p) := sum_le_sum fun p hp => by
+          have := hbox p hp
+          simp only [f]
+          linarith
+      _ ≤ _ := by rw [sum_add_distrib]; linarith
+  -- the weights and counts
+  have hW1 := selected_pattern_weight_sum hba hmem hsT hT (t := 1 / h) (by positivity)
+    (by rw [div_le_one hh]; exact hh1)
+  have hW2 := selected_pattern_weight_sum hba hmem hsT hT (t := 2 * (m : ℝ) / h) (by positivity)
+    (by rw [div_le_one hh]; exact hm2)
+  have hP : (Pset.card : ℝ) ≤ ordinaryPatternSlack a * (X : ℝ) ^ 5 := by
+    exact_mod_cast selected_ordinary_pattern_count hba hmem hsT hT
+  have hfsum : ∑ p ∈ Pset, f p = (Pset.card : ℝ) * (2 + (Y : ℝ) ^ ((n : ℝ) / h)) +
+      3 * (H : ℝ) ^ (1 / h) * ∑ p ∈ Pset, ((shortR p : ℝ)⁻¹) ^ (1 / h) +
+      8 * (S : ℝ) ^ ((m : ℝ) / h) * ∑ p ∈ Pset, ((shortR p : ℝ)⁻¹) ^ (2 * (m : ℝ) / h) := by
+    simp only [f, ← mul_sum, sum_add_distrib, sum_const, nsmul_eq_mul]
+    ring
+  have hX1 : (1 : ℝ) ≤ X := by exact_mod_cast selectedMinorHeight_pos hba hmem hsT hT
+  set W := (latticeWeightSlack a : ℝ)
+  set O := (ordinaryPatternSlack a : ℝ)
+  set Ex := (exceptionalPatternSlack a : ℝ)
+  set Ra := (R a : ℝ)
+  have hO : 0 ≤ O := Nat.cast_nonneg _
+  have hEx : 0 ≤ Ex := Nat.cast_nonneg _
+  have hW : 0 ≤ W := Nat.cast_nonneg _
+  have hRa : 0 ≤ Ra := Nat.cast_nonneg _
+  have t1 : 0 ≤ (H : ℝ) ^ (1 / h) := by positivity
+  have t2 : 0 ≤ (S : ℝ) ^ ((m : ℝ) / h) := by positivity
+  have t3 : 0 ≤ (Y : ℝ) ^ ((n : ℝ) / h) := by positivity
+  have t4 : 0 ≤ (H : ℝ) ^ (1 / 2 : ℝ) := by positivity
+  have hx5 : 0 ≤ (X : ℝ) ^ 5 := by positivity
+  have hx4 : 0 ≤ (X : ℝ) ^ 4 := by positivity
+  have hxa : 0 ≤ (X : ℝ) ^ (5 - (1 / h) / 3) := by positivity
+  have hxb : 0 ≤ (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3) := by positivity
+  have hW1' : ∑ p ∈ Pset, ((shortR p : ℝ)⁻¹) ^ (1 / h) ≤ W * (X : ℝ) ^ (5 - (1 / h) / 3) := hW1
+  have hW2' : ∑ p ∈ Pset, ((shortR p : ℝ)⁻¹) ^ (2 * (m : ℝ) / h) ≤
+      W * (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3) := hW2
+  have hbound : (T : ℝ) ≤ 8 * (Ra * ((O * (X : ℝ) ^ 5) * (2 + (Y : ℝ) ^ ((n : ℝ) / h)) +
+      3 * (H : ℝ) ^ (1 / h) * (W * (X : ℝ) ^ (5 - (1 / h) / 3)) +
+      8 * (S : ℝ) ^ ((m : ℝ) / h) * (W * (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3)) + Rb * Q) +
+      Ra * (H : ℝ) ^ (1 / 2 : ℝ) * (Ex * (X : ℝ) ^ 4)) := by
+    refine hT8.trans ?_
+    gcongr
+    refine hsum.trans ?_
+    rw [hfsum]
+    gcongr
+  dsimp only
+  -- each term of `hbound` is at most `8 Ra Σ` times the matching term of the goal
+  set Csum := 2 * O + Ex + 8 * W + Rb
+  have e1 := mul_le_mul_of_nonneg_right (show 2 * O ≤ Csum by linarith) hx5
+  have e2 := mul_le_mul_of_nonneg_right (show O ≤ Csum by linarith) (mul_nonneg hx5 t3)
+  have e3 := mul_le_mul_of_nonneg_right (show 3 * W ≤ Csum by linarith) (mul_nonneg hxa t1)
+  have e4 := mul_le_mul_of_nonneg_right (show 8 * W ≤ Csum by linarith) (mul_nonneg hxb t2)
+  have e5 := mul_le_mul_of_nonneg_right (show Ex ≤ Csum by linarith) (mul_nonneg hx4 t4)
+  have e6 := mul_le_mul_of_nonneg_right (show Rb ≤ Csum by linarith) hQ
+  have hterms : (O * (X : ℝ) ^ 5) * (2 + (Y : ℝ) ^ ((n : ℝ) / h)) +
+      3 * (H : ℝ) ^ (1 / h) * (W * (X : ℝ) ^ (5 - (1 / h) / 3)) +
+      8 * (S : ℝ) ^ ((m : ℝ) / h) * (W * (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3)) + Rb * Q +
+      (H : ℝ) ^ (1 / 2 : ℝ) * (Ex * (X : ℝ) ^ 4) ≤
+      Csum * ((X : ℝ) ^ 5 + (X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ) +
+        (X : ℝ) ^ (5 - (1 / h) / 3) * (H : ℝ) ^ (1 / h) +
+        (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3) * (S : ℝ) ^ ((m : ℝ) / h) +
+        (X : ℝ) ^ 5 * (Y : ℝ) ^ ((n : ℝ) / h) + Q) := by
+    linarith
+  have := mul_le_mul_of_nonneg_left hterms (by positivity : (0 : ℝ) ≤ 8 * Ra)
+  refine hbound.trans ((le_of_eq ?_).trans (this.trans (le_of_eq ?_))) <;> ring
+
 /-- The five-term local estimate on actual remainder windows. -/
 def LatticeJointFiveTermEstimate (m n : ℕ) (R : ℕ → ℕ) : Prop :=
   ∀ a b s T A : ℕ, b < a →
@@ -126,127 +253,18 @@ theorem lattice_joint_five_term_of_pattern_estimate {m n : ℕ} (hm : 0 < m) {R 
     (hcurve : LatticeJointPatternEstimate m n R) :
     LatticeJointFiveTermEstimate m n (latticeJointSlack R) := by
   intro a b s T A hba hmem hsT hT hscale
-  classical
-  let G := selectedStarts a b s T A
-  let pm := fun i => plk (Mi a b i)
-  let Pset := G.image pm
-  set hN : ℕ := 10 * n + 7 * m
-  set h : ℝ := (hN : ℝ)
-  set H := selectedGapHeight a A T
-  set X := selectedMinorHeight a A T
-  set S := selectedAllMinorHeight a A T
-  set Y := selectedRankFiveHeight a A T
-  have facts := fun i hi => selectedStart_spec hmem hsT (i := i) hi
-  have hh1 : (1 : ℝ) ≤ h := by
-    simp only [h, hN]; push_cast
+  have hh1 : (1 : ℝ) ≤ ((10 * n + 7 * m : ℕ) : ℝ) := by
+    push_cast
     nlinarith [show (1 : ℝ) ≤ m by exact_mod_cast hm, show (0 : ℝ) ≤ n from Nat.cast_nonneg n]
-  have hh : 0 < h := by linarith
-  have hm2 : (2 * m : ℝ) ≤ h := by
-    simp only [h, hN]; push_cast; nlinarith [show (0 : ℝ) ≤ n from Nat.cast_nonneg n,
+  have hm2 : (2 * m : ℝ) ≤ ((10 * n + 7 * m : ℕ) : ℝ) := by
+    push_cast; nlinarith [show (0 : ℝ) ≤ n from Nat.cast_nonneg n,
       show (0 : ℝ) ≤ m from Nat.cast_nonneg m]
-  have hs : ((G.image fun i => (pm i, kap a b i)).card : ℝ) ≤
-      ∑ p ∈ Pset, (((G.filter fun i => pm i = p).image (kap a b)).card : ℝ) := by
-    exact_mod_cast pair_image_card_le_sum G pm (kap a b)
-  -- the per-pattern bound
-  let E := fun p : Fin 10 → ℤ => ∃ d, ExceptionalMinorRelation p d
-  let f := fun p : Fin 10 → ℤ => (R a : ℝ) * (2 + 3 * (H : ℝ) ^ (1 / h) *
-    ((shortR p : ℝ)⁻¹) ^ (1 / h) + 8 * (S : ℝ) ^ ((m : ℝ) / h) *
-      ((shortR p : ℝ)⁻¹) ^ (2 * (m : ℝ) / h) + (Y : ℝ) ^ ((n : ℝ) / h))
-  have hper (p) (hp : p ∈ Pset) :
-      (((G.filter fun i => pm i = p).image (kap a b)).card : ℝ) ≤
-        f p + if E p then (R a : ℝ) * (H : ℝ) ^ (1 / 2 : ℝ) else 0 := by
-    have hc := hcurve a b s T A hba hmem hsT hT hscale p hp
-    have hf0 : 0 ≤ f p := by positivity
-    split_ifs at hc ⊢ with hE
-    · linarith
-    · obtain ⟨i, hi, rfl⟩ := mem_image.mp hp
-      have hP := (facts i hi).1
-      have hl := shortR_pos (orbit_pattern_first hba (l := i) (by omega))
-      have hbox := lattice_box_rpow_le (H := H) (S := S) (Y := Y) (m := m) (n := n) hl hh1 hm2
-      refine hc.trans ?_
-      rw [add_zero]
-      calc (R a : ℝ) * (1 + (latticeJointBoxHeight (plk (Mi a b i)) a A T m n : ℝ) ^
-            (1 / ((10 * n + 7 * m : ℕ) : ℝ))) ≤ (R a : ℝ) * (1 + (1 + 3 * (H : ℝ) ^ (1 / h) *
-            ((shortR (plk (Mi a b i)) : ℝ)⁻¹) ^ (1 / h) + 8 * (S : ℝ) ^ ((m : ℝ) / h) *
-            ((shortR (plk (Mi a b i)) : ℝ)⁻¹) ^ (2 * (m : ℝ) / h) +
-            (Y : ℝ) ^ ((n : ℝ) / h))) := by
-            gcongr
-            exact hbox
-        _ = f (plk (Mi a b i)) := by simp only [f]; ring
-  have hsum : ∑ p ∈ Pset, (((G.filter fun i => pm i = p).image (kap a b)).card : ℝ) ≤
-      ∑ p ∈ Pset, f p + (R a : ℝ) * (H : ℝ) ^ (1 / 2 : ℝ) * ((Pset.filter E).card : ℝ) := by
-    calc _ ≤ ∑ p ∈ Pset, (f p + if E p then (R a : ℝ) * (H : ℝ) ^ (1 / 2 : ℝ) else 0) :=
-          sum_le_sum hper
-      _ = _ := by
-          rw [sum_add_distrib, sum_ite, sum_const_zero, add_zero, sum_const, nsmul_eq_mul]
-          ring
-  -- the weights and counts
-  have hW1 := selected_pattern_weight_sum hba hmem hsT hT (t := 1 / h) (by positivity)
-    (by rw [div_le_one hh]; exact hh1)
-  have hW2 := selected_pattern_weight_sum hba hmem hsT hT (t := 2 * (m : ℝ) / h) (by positivity)
-    (by rw [div_le_one hh]; exact hm2)
-  have hP : (Pset.card : ℝ) ≤ ordinaryPatternSlack a * (X : ℝ) ^ 5 := by
-    exact_mod_cast selected_ordinary_pattern_count hba hmem hsT hT
-  have hPE : ((Pset.filter E).card : ℝ) ≤ exceptionalPatternSlack a * (X : ℝ) ^ 4 := by
-    exact_mod_cast selected_exceptional_pattern_count_slack hba hmem hsT hT
-  have hfsum : ∑ p ∈ Pset, f p = (R a : ℝ) * ((Pset.card : ℝ) * (2 + (Y : ℝ) ^ ((n : ℝ) / h)) +
-      3 * (H : ℝ) ^ (1 / h) * ∑ p ∈ Pset, ((shortR p : ℝ)⁻¹) ^ (1 / h) +
-      8 * (S : ℝ) ^ ((m : ℝ) / h) * ∑ p ∈ Pset, ((shortR p : ℝ)⁻¹) ^ (2 * (m : ℝ) / h)) := by
-    simp only [f, ← mul_sum, sum_add_distrib, sum_const, nsmul_eq_mul]
-    ring
-  have hTc : (T : ℝ) ≤ 8 * ((G.image fun i => (pm i, kap a b i)).card : ℝ) := by
-    exact_mod_cast le_eight_mul_pair_image hba hmem hsT hT
-  have hX1 : (1 : ℝ) ≤ X := by exact_mod_cast selectedMinorHeight_pos hba hmem hsT hT
-  set W := (latticeWeightSlack a : ℝ)
-  set O := (ordinaryPatternSlack a : ℝ)
-  set Ex := (exceptionalPatternSlack a : ℝ)
-  set Ra := (R a : ℝ)
-  have hO : 0 ≤ O := Nat.cast_nonneg _
-  have hEx : 0 ≤ Ex := Nat.cast_nonneg _
-  have hW : 0 ≤ W := Nat.cast_nonneg _
-  have hRa : 0 ≤ Ra := Nat.cast_nonneg _
-  have t1 : 0 ≤ (H : ℝ) ^ (1 / h) := by positivity
-  have t2 : 0 ≤ (S : ℝ) ^ ((m : ℝ) / h) := by positivity
-  have t3 : 0 ≤ (Y : ℝ) ^ ((n : ℝ) / h) := by positivity
-  have t4 : 0 ≤ (H : ℝ) ^ (1 / 2 : ℝ) := by positivity
-  have hx5 : 0 ≤ (X : ℝ) ^ 5 := by positivity
-  have hx4 : 0 ≤ (X : ℝ) ^ 4 := by positivity
-  have hxa : 0 ≤ (X : ℝ) ^ (5 - (1 / h) / 3) := by positivity
-  have hxb : 0 ≤ (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3) := by positivity
-  have hW1' : ∑ p ∈ Pset, ((shortR p : ℝ)⁻¹) ^ (1 / h) ≤ W * (X : ℝ) ^ (5 - (1 / h) / 3) := hW1
-  have hW2' : ∑ p ∈ Pset, ((shortR p : ℝ)⁻¹) ^ (2 * (m : ℝ) / h) ≤
-      W * (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3) := hW2
-  have hbound : (T : ℝ) ≤ 8 * (Ra * ((O * (X : ℝ) ^ 5) * (2 + (Y : ℝ) ^ ((n : ℝ) / h)) +
-      3 * (H : ℝ) ^ (1 / h) * (W * (X : ℝ) ^ (5 - (1 / h) / 3)) +
-      8 * (S : ℝ) ^ ((m : ℝ) / h) * (W * (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3))) +
-      Ra * (H : ℝ) ^ (1 / 2 : ℝ) * (Ex * (X : ℝ) ^ 4)) := by
-    refine hTc.trans ?_
-    gcongr
-    refine hs.trans (hsum.trans ?_)
-    rw [hfsum]
-    gcongr
-  dsimp only
-  have hgoal : (latticeJointSlack R a : ℝ) = 8 * Ra * (2 * O + Ex + 8 * W) := by
-    simp only [latticeJointSlack, Ra, O, Ex, W]; push_cast; ring
-  rw [hgoal]
-  -- each term of `hbound` is at most `8 Ra Σ` times the matching term of the goal
-  set Csum := 2 * O + Ex + 8 * W
-  have e1 := mul_le_mul_of_nonneg_right (show 2 * O ≤ Csum by linarith) hx5
-  have e2 := mul_le_mul_of_nonneg_right (show O ≤ Csum by linarith) (mul_nonneg hx5 t3)
-  have e3 := mul_le_mul_of_nonneg_right (show 3 * W ≤ Csum by linarith) (mul_nonneg hxa t1)
-  have e4 := mul_le_mul_of_nonneg_right (show 8 * W ≤ Csum by linarith) (mul_nonneg hxb t2)
-  have e5 := mul_le_mul_of_nonneg_right (show Ex ≤ Csum by linarith) (mul_nonneg hx4 t4)
-  have hterms : (O * (X : ℝ) ^ 5) * (2 + (Y : ℝ) ^ ((n : ℝ) / h)) +
-      3 * (H : ℝ) ^ (1 / h) * (W * (X : ℝ) ^ (5 - (1 / h) / 3)) +
-      8 * (S : ℝ) ^ ((m : ℝ) / h) * (W * (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3)) +
-      (H : ℝ) ^ (1 / 2 : ℝ) * (Ex * (X : ℝ) ^ 4) ≤
-      Csum * ((X : ℝ) ^ 5 + (X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ) +
-        (X : ℝ) ^ (5 - (1 / h) / 3) * (H : ℝ) ^ (1 / h) +
-        (X : ℝ) ^ (5 - (2 * (m : ℝ) / h) / 3) * (S : ℝ) ^ ((m : ℝ) / h) +
-        (X : ℝ) ^ 5 * (Y : ℝ) ^ ((n : ℝ) / h)) := by
-    linarith
-  have := mul_le_mul_of_nonneg_left hterms (by positivity : (0 : ℝ) ≤ 8 * Ra)
-  refine hbound.trans ((le_of_eq ?_).trans (this.trans (le_of_eq ?_))) <;> ring
+  have h := lattice_terms_of_pattern_sum hh1 hm2 hba hmem hsT hT le_rfl le_rfl
+    (selected_count_le_pattern_sum hcurve hba hmem hsT hT hscale)
+    (fun p hp => (selected_lattice_box_rpow_le hh1 hm2 hba hmem hsT hp).trans_eq
+      (add_zero _).symm) (sum_const_zero.trans_le (mul_zero 0).ge)
+  refine h.trans (le_of_eq ?_)
+  simp only [latticeJointSlack, add_zero, Nat.cast_mul, Nat.cast_add, Nat.cast_ofNat]
 
 /-- Every fixed pair of positive powers has the five-term local bound. -/
 theorem latticeJointFiveTermEstimate_exists (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :

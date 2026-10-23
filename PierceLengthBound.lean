@@ -118,7 +118,7 @@ public import PierceLengthBound.PolarProjectionAlgebra
 public import PierceLengthBound.PolarProjectionOrbit
 public import PierceLengthBound.PolarProjectionBasePoint
 public import PierceLengthBound.PolarProjectionNewton
-public import PierceLengthBound.PolarProjectionBaseMultiplicity
+public import PierceLengthBound.PolarProjectionCertificate
 public import PierceLengthBound.BranchSieveCertificate
 public import PierceLengthBound.HypersurfacePatternCountWeights
 public import PierceLengthBound.HypersurfacePatternCountLattice
@@ -132,7 +132,7 @@ public import PierceLengthBound.PolarProjectionLocalEstimate
 public import PierceLengthBound.PolarProjectionBound
 public import PierceLengthBound.HypersurfacePatternCount
 public import PierceLengthBound.PolarProjectionLinearSystem
-public import PierceLengthBound.PolarProjectionGeometry
+public import PierceLengthBound.PolarProjectionCenteredQuadric
 public import PierceLengthBound.BranchSieveSpecialization
 public import PierceLengthBound.BranchSieveElimination
 public import PierceLengthBound.BranchSieveSextic
@@ -142,7 +142,6 @@ public import PierceLengthBound.PolarProjectionBaseDegree
 public import PierceLengthBound.PolarProjectionRankFiveDegree
 public import PierceLengthBound.PolarProjectionDegreeReduction
 public import PierceLengthBound.PolarProjectionRetainedBase
-public import PierceLengthBound.PolarProjectionBadPatterns
 public import PierceLengthBound.BranchSieveBarycentric
 public import PierceLengthBound.BranchSieveUniformRootBound
 public import PierceLengthBound.BranchSieveBivariateFactorHeight
