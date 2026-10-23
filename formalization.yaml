@@ -225,10 +225,22 @@ review:
     scripts/check-math.py checks 26,554 exact-rational Hankel determinants through
     order six on 2,274 orbits, plus curvature, six-step, pattern, quartic and minor
     identities.
+    The subsequent full repository and manuscript review clarified the integer
+    specialization domain and degree/height conventions, supplied the branch-label
+    and common-base arguments, explained the hypersurface-pattern estimate, and
+    reorganized the exposition around the strongest bound. It also corrected the
+    orbit indexing in documentation and distinguished CI from manual release checks.
+    The weighted-count audit now explicitly excludes all three half-weight estimates;
+    direct and transitive negative checks confirmed that those dependencies are
+    rejected. A fresh Lean build, axiom audit, source and dependency checks, and exact
+    arithmetic checks passed. The displayed quartic and finite-field certificates
+    were independently recomputed with exact arithmetic. The revised PDF builds
+    without LaTeX warnings, and its theorem numbers match the alignment below.
+    The Lean theorem statements and proof bodies are unchanged by this revision.
     This is an automated review, not independent human peer review. The existing
     provenance record reports no additional human review; the maintainer has
     identified GPT-6-Astra but has not further specified personal review coverage.
-    Full Palomar mechanical preflight and editorial review remain outstanding. No
+    Full Palomar mechanical preflight remains outstanding. No
     external endorsement is claimed.
 
 alignment:
@@ -248,7 +260,7 @@ alignment:
       module: "PierceLengthBound.LatticeJointMain"
       status: proved
       note: "Uniform in a and b, including the proved external curve theorem."
-    - source: "Rational exterior-lattice bound, Corollary 10.12 with (m, n) = (3, 2)"
+    - source: "Rational exterior-lattice bound, Corollary 9.12 with (m, n) = (3, 2)"
       lean: "PierceLengthBound.P_le_153_520"
       module: "PierceLengthBound.LatticeJointMain"
       status: proved
@@ -257,11 +269,11 @@ alignment:
       module: "PierceLengthBound.JointLiftMain"
       status: proved
       note: "Uniform in a and b, including the proved external curve theorem."
-    - source: "Rational powered joint-invariant bound, Corollary 9.14 with (m, n) = (50, 51)"
+    - source: "Rational powered joint-invariant bound, Corollary 8.14 with (m, n) = (50, 51)"
       lean: "PierceLengthBound.P_le_2201_7480"
       module: "PierceLengthBound.JointLiftMain"
       status: proved
-    - source: "Unpowered joint-invariant bound, Corollary 9.14 with (m, n) = (1, 1)"
+    - source: "Unpowered joint-invariant bound, Corollary 8.14 with (m, n) = (1, 1)"
       lean: "PierceLengthBound.P_le_128_435"
       module: "PierceLengthBound.JointLiftMain"
       status: proved
@@ -295,7 +307,7 @@ alignment:
       lean: "PierceLengthBound.P_le_rises"
       module: "PierceLengthBound.RisesMain"
       status: proved
-    - source: "Positive integer Hankel hierarchy, Theorem 7.2"
+    - source: "Positive integer Hankel hierarchy, Theorem 6.2"
       lean: "PierceLengthBound.hankelInv_pos_int"
       module: "PierceLengthBound.Hankel"
       status: proved

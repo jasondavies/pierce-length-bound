@@ -1,7 +1,8 @@
 # Bounds for the iteration `x ↦ a mod x`
 
-For integers `a > b > 0` let `b₁ = b`, `b_{i+1} = a mod bᵢ`, and let `P(a, b)` be the number of
-positive terms ([Open Problem Garden](https://www.openproblemgarden.org/op/a_discrete_iteration_related_to_pierce_expansions)).
+For integers `a > b > 0` let `b₀ = b` and `b_{i+1} = a mod bᵢ` until zero.
+Let `P(a, b)` be the number of positive terms
+([Open Problem Garden](https://www.openproblemgarden.org/op/a_discrete_iteration_related_to_pierce_expansions)).
 Shallit asked whether `P(a, b) = O((log a)²)`. That question is **still open**. This repository
 proves, uniformly in `0 < b < a`:
 
@@ -46,6 +47,8 @@ using CCDN, integer factor-height bounds, universal resolvents, integral special
 Kronecker substitution and induction over the parameters. It bounds the bad four-label
 vertices uniformly in the dividend and their common divisor. The completion count
 transfers this saving to full patterns, retaining all common factors and pivot charts.
+The [reusable Hilbert irreducibility entry points](#reusable-hilbert-irreducibility)
+are listed separately below.
 
 A fixed proper exceptional polynomial handles the local geometric exclusions. Its
 pattern count has power `X^(14/3)` with a slowly growing coefficient. Summing the actual
@@ -62,8 +65,9 @@ The paper's section “Exact polar projection and the branch sieve” presents t
 * `formalization.yaml`: Palomar metadata (scope, provenance, automation, and review status).
 * `paper/pierce_length_bound.tex` (and `.pdf`): the paper.
 * `scripts/`: source, metadata, dependency, and exact-arithmetic checks.
-* `.github/workflows/`: `ci.yml` runs the checks below on pushes and pull requests;
-  `palomar-preflight.yml` runs the manual Full Palomar mechanical preflight (see
+* `.github/workflows/`: `ci.yml` checks metadata, builds and audits the proofs, and runs
+  Comparator on pushes and pull requests; `palomar-preflight.yml` runs the manual
+  Full Palomar mechanical preflight (see
   [Palomar submission](#palomar-submission)).
 * `vendor/openai-math/`: one vendored file, described under [Dependencies](#dependencies).
 
@@ -138,7 +142,11 @@ uses the same Lean toolchain and Mathlib revision as this project. Lake fetches 
 `.lake/packages`.
 
 The check scripts require Python 3.11+ (standard library only, except the three SymPy scripts
-marked below). Build and check, in order:
+marked below). CI runs the source and metadata checks, Lean build and axiom audit,
+dependency checks, and the fifteen-statement Comparator check. The supplementary polar
+replay, exact-arithmetic checks, and paper build are manual release checks.
+
+Build and check, in order:
 
 ```sh
 python3 scripts/check-lean-sources.py                       # source layout
@@ -149,7 +157,7 @@ lake build
 python3 scripts/check-curve-counting-dependency.py --checkout
 python3 scripts/check-weighted-count-dependencies.py
 bash scripts/verify-comparator.sh                           # Linux with bubblewrap only
-python3 scripts/verify-polar-kernels.py                     # additional polar proof replays
+python3 scripts/verify-polar-kernels.py                     # manual: additional polar proof replays
 ```
 
 * `lake build` runs Mathlib's standard linters (`weak.linter.mathlibStandardSet`) and builds the
@@ -189,6 +197,16 @@ python3 scripts/check-fixed-dividend.py                     # requires SymPy
 python3 scripts/check-fixed-dividend-lines.py               # requires SymPy
 python3 scripts/check-polar-projection.py                    # requires SymPy
 ```
+
+Rebuild the paper with a TeX installation that provides `latexmk` and `pdflatex`,
+keeping intermediate files outside `paper/`:
+
+```sh
+latexmk -pdf -outdir=/tmp/pierce-paper -interaction=nonstopmode -halt-on-error paper/pierce_length_bound.tex
+```
+
+Inspect `/tmp/pierce-paper/pierce_length_bound.pdf`, then copy it to
+`paper/pierce_length_bound.pdf` for the release.
 
 The latest verification run is recorded in `review.notes` of
 [formalization.yaml](formalization.yaml). It is an agent review, not an independent human
@@ -287,6 +305,23 @@ There is no external counting hypothesis.
 
 All modules are in `PierceLengthBound/`; the `.lean` extension is omitted.
 
+### Reusable Hilbert irreducibility
+
+These theorems apply to general monic integer polynomial families, without orbit or
+branch assumptions. Their constants depend only on the degree bounds and number of
+parameters. They currently retain the namespace `PierceLengthBound.FixedDividend`.
+
+| Entry point | Module |
+|---|---|
+| `branch_uniform_monic_hilbert_bound`: one integer parameter, uniform total-degree bound | [`BranchSieveMonicHilbert`](PierceLengthBound/BranchSieveMonicHilbert.lean) |
+| `branch_multivariate_monic_hilbert_bound`: any fixed number of integer parameters, bounded root degree and coefficient total degrees | [`BranchSieveMultivariateHilbert`](PierceLengthBound/BranchSieveMultivariateHilbert.lean) |
+
+The application to Pierce patterns starts in
+[`BranchSieveVertexMonic`](PierceLengthBound/BranchSieveVertexMonic.lean), which constructs
+the monic family and proves its generic irreducibility.
+[`BranchSieveArithmeticVertexCount`](PierceLengthBound/BranchSieveArithmeticVertexCount.lean)
+then applies the general estimate uniformly in the dividend and common divisor.
+
 ### Core and earlier bounds
 
 | Module | Contents |
@@ -299,7 +334,6 @@ All modules are in `PierceLengthBound/`; the `.lean` extension is omitted.
 | `PolarProjectionMain` | unconditional optimized polar bound and `4317/14677`; assembles the proved arithmetic sieve, geometry and six-term window estimate |
 | `PolarProjectionRetainedBase`, `PolarProjectionRetainedDegree` | actual common-base contribution at most four and the retained powered graph degree bound `60n+56m` |
 | `PolarProjectionGeometryGoodPattern` | explicit branch irreducibility and the fixed proper exceptional polynomial imply the good-pattern geometric estimate |
-| `BranchSieveMonicHilbert`, `BranchSieveMultivariateHilbert` | coefficient-uniform effective Hilbert irreducibility, from the CCDN root count through resolvents, specialization and Kronecker substitution |
 | `BranchSieveVertexMonic`, `BranchSieveArithmeticVertexCount` | the actual integer degree-12 family, generic irreducibility, specialization compatibility and uniform scaled-vertex sieve |
 | `BranchSievePatternCount`, `BranchSievePatternCountSlow` | completion to full minor patterns with all common divisors and the slow-growth bound on selected orbit windows |
 | `HypersurfacePatternCount`, `HypersurfacePatternCountSlow` | proper algebraic exceptional loci have pattern exponent `14/3` |

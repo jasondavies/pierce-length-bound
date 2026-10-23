@@ -10,12 +10,12 @@ public import Mathlib
 /-!
 # The iteration `x ↦ a mod x`
 
-For integers `a > b > 0` put `b₁ = b` and `b_{i+1} = a mod bᵢ`. The sequence reaches `0`;
-if `b_{n+1} = 0` then `P(a, b) = n` (Shallit, Open Problem Garden). Thus `P(a, b)` is the
-number of positive terms of the sequence.
+For integers `a > b > 0` put `b₀ = b` and `b_{i+1} = a mod bᵢ` while `bᵢ > 0`.
+If `bₙ` is the first zero term, then `P(a, b) = n` (Shallit, Open Problem Garden).
+Thus `P(a, b)` is the number of positive terms of the sequence.
 
-Here the sequence is indexed from `0`: `orb a b i = b_{i+1}`. Lean's `a % 0 = a`, so the
-iteration is frozen at `0` explicitly (`step`).
+The sequence is indexed from `0`: `orb a b i = bᵢ`. Lean's `a % 0 = a`, so the iteration
+is frozen at `0` explicitly (`step`).
 -/
 
 @[expose] public section
@@ -25,7 +25,7 @@ namespace PierceLengthBound
 /-- One step of the iteration, frozen at `0`. -/
 def step (a x : ℕ) : ℕ := if x = 0 then 0 else a % x
 
-/-- The orbit: `orb a b i = b_{i+1}`. -/
+/-- The orbit: `orb a b i = bᵢ`, with `b₀ = b`. -/
 def orb (a b : ℕ) (i : ℕ) : ℕ := (step a)^[i] b
 
 /-- `P(a, b)`: the number of positive terms of the orbit of `b` under `x ↦ a mod x`. -/

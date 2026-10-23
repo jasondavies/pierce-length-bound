@@ -13,7 +13,8 @@ Two audits run in one Lean file:
    `P_le_polar_optimal` and `P_le_4317_14677`
    reach exactly two weighted counts, `short_count` and
    `FixedDividend.reciprocal_sum_bound`, and none of the others; `ShortSum` is banned
-   here too.
+   here too. The half-weight estimates in `FixedDividendWeights` are explicitly
+   banned even though that module also contains the permitted reciprocal estimate.
 
 The traversal follows the types and values of every reachable `PierceLengthBound`
 declaration. Declarations are written as ``Foo.bar`` literals, so a renamed declaration
@@ -165,9 +166,13 @@ run_cmd do
   -- Banned modules: the other lattice weights and the short-interval divisor sums.
   let latticeBannedModules : Array Name := #[`PierceLengthBound.ConicWeights,
     `PierceLengthBound.ParityWeights, `PierceLengthBound.ShortSum]
-  -- Banned declarations: the `45/152` lattice fiber and pattern counts and window bound.
+  -- Banned declarations: the `45/152` lattice fiber and pattern counts and window bound,
+  -- and every half-weight estimate in the otherwise permitted `FixedDividendWeights`.
   let latticeBannedDeclarations : Array Name := #[``PierceLengthBound.lattice_fiber_count,
-    ``PierceLengthBound.pattern_count_lattice, ``PierceLengthBound.two_state_window_152]
+    ``PierceLengthBound.pattern_count_lattice, ``PierceLengthBound.two_state_window_152,
+    ``PierceLengthBound.FixedDividend.half_weight_sq,
+    ``PierceLengthBound.FixedDividend.half_weight_minor_bound,
+    ``PierceLengthBound.FixedDividend.weighted_count_sixth]
   -- Required declarations: the two weighted counts the lattice bounds must use.
   let latticeRequired : Array Name := #[``PierceLengthBound.short_count,
     ``PierceLengthBound.FixedDividend.reciprocal_sum_bound]
