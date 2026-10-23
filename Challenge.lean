@@ -12,8 +12,8 @@ public import Mathlib
 
 For natural numbers `0 < b < a`, repeatedly replace the positive remainder `x` by
 `a % x`, stopping at zero. `P a b` counts the positive terms, including `b`.
-The strongest result is `P(a,b) ≪_ε a^(471/1559 - 6 sqrt 105/7795 + ε)`, from exterior
-lattice coordinates; its rational instance is `153/520`. The joint-invariant bounds,
+The strongest result is `P(a,b) ≪_ε a^((41301 - 3 sqrt 82849)/137480 + ε)`, from the polar
+projection and arithmetic sieve; its rational instance is `4317/14677`. The earlier bounds,
 including `(1310 - sqrt 655)/4365`, and earlier exponents are also included.
 The conjectured `O((log a)^2)` bound remains open.
 
@@ -44,6 +44,16 @@ def P (a : ℕ) : ℕ → ℕ
   | 0 => 0
   | b + 1 => P a (a % (b + 1)) + 1
 decreasing_by exact Nat.mod_lt _ (Nat.succ_pos _)
+
+/-- The optimized unconditional polar-projection bound. -/
+theorem P_le_polar_optimal : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ (((41301 : ℝ) - 3 * Real.sqrt 82849) / 137480 + ε) := by
+  sorry
+
+/-- The rational polar-projection bound with powers three and two. -/
+theorem P_le_4317_14677 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((4317 : ℝ) / 14677 + ε) := by
+  sorry
 
 /-- The optimized unconditional bound from exterior lattice coordinates. -/
 theorem P_le_lattice_optimal : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →

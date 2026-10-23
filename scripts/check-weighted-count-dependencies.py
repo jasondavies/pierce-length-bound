@@ -9,7 +9,8 @@ Two audits run in one Lean file:
    the weighted-lattice machinery of the `45/152` bound (short-vector counts, lattice
    fiber counts and reciprocal or fractional weights) and none of the short-interval
    divisor sums (`ShortSum`).
-2. Exterior-lattice audit. The lattice bounds `P_le_lattice_optimal` and `P_le_153_520`
+2. Exterior-lattice audit. The lattice and polar bounds `P_le_lattice_optimal`, `P_le_153_520`,
+   `P_le_polar_optimal` and `P_le_4317_14677`
    reach exactly two weighted counts, `short_count` and
    `FixedDividend.reciprocal_sum_bound`, and none of the others; `ShortSum` is banned
    here too.
@@ -159,7 +160,8 @@ run_cmd do
   -- `FixedDividend.reciprocal_sum_bound`. Unlike audit 1, `FixedDividendWeights` is
   -- allowed here because it holds `reciprocal_sum_bound`, and `short_count` is required.
   let latticeRoots : Array Name := #[``PierceLengthBound.P_le_lattice_optimal,
-    ``PierceLengthBound.P_le_153_520]
+    ``PierceLengthBound.P_le_153_520, ``PierceLengthBound.P_le_polar_optimal,
+    ``PierceLengthBound.P_le_4317_14677]
   -- Banned modules: the other lattice weights and the short-interval divisor sums.
   let latticeBannedModules : Array Name := #[`PierceLengthBound.ConicWeights,
     `PierceLengthBound.ParityWeights, `PierceLengthBound.ShortSum]

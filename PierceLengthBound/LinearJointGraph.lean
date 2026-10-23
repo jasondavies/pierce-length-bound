@@ -157,9 +157,10 @@ theorem orbitLinearJointGraph_degree_bounds {a b i d : ℕ} (G : Matrix (Fin 3) 
 set_option synthInstance.maxHeartbeats 200000 in
 -- The two normalized chart models and their residue fields have nested scalar towers.
 set_option maxHeartbeats 1200000 in
-/-- **Lower bound for the linearly changed powered graph.** The curvature coordinates `W` are
-replaced by `G W` with `G` invertible; the degree bound is the same as for `W`. -/
-theorem retained_linearJointGraph_degree_lower_bound {a b i d δ N m k : ℕ} {c₀ : ℤ}
+/-- The powered graph accounts for all old-infinity rank-five poles and the
+entire affine curvature pole envelope, independently of a lower bound on that envelope. -/
+theorem retained_linearJointGraph_degree_lower_bound_from_envelope
+    {a b i d δ N m k : ℕ} {c₀ : ℤ}
     (G : Matrix (Fin 3) (Fin 3) ℚ) (hG : IsUnit G.det) (hm : 0 < m) (hk : 0 < k)
     (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -168,8 +169,7 @@ theorem retained_linearJointGraph_degree_lower_bound {a b i d δ N m k : ℕ} {c
     (hz : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I)
     (hnorm : jointNormalizationPolynomial a b i ∈ I)
     (hres : jointResolventPolynomial a b i ∈ I)
-    (Q : MvPolynomial (Fin 3) ℚ) (hQ : Prime Q) (hQdeg : Q.totalDegree = 2) (hQI : Q ∈ I)
-    (hd3 : 3 ≤ d)
+    (hd : 0 < d)
     (hdegree : ∀ n ≥ N,
       (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = (d : ℤ) * n + c₀)
     (hgraph : ∃ M : ℕ, ∃ c : ℤ, ∀ n ≥ M,
@@ -178,7 +178,14 @@ theorem retained_linearJointGraph_degree_lower_bound {a b i d δ N m k : ℕ} {c
           (δ : ℤ) * n + c)
     (F : Type*) [Field F] [Algebra ℚ F] [Algebra (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     [IsScalarTower ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) F]
-    [IsFractionRing (MvPolynomial (Fin 3) ℚ ⧸ I) F] : (5 * k + 3 * m) * d + 2 * m ≤ 2 * δ := by
+    [IsFractionRing (MvPolynomial (Fin 3) ℚ ⧸ I) F] :
+    let R := MvPolynomial (Fin 3) ℚ ⧸ I
+    let A := integralClosure R F
+    let : IsDedekindDomain A := (orbit_affine_normalization hba hi hne I hf hg hd hdegree F).1
+    let : IsFractionRing A F := IsIntegralClosure.isFractionRing_of_finite_extension R F F A
+    let ψ := (IsScalarTower.toAlgHom ℚ R F).comp (Ideal.Quotient.mkₐ ℚ I)
+    5 * k * d + 2 * m * poleEnvelopeDegree A (fun j : Fin 3 =>
+      ψ (orbitJointNumerators a b i j.castSucc) / ψ (orbitJointDenominator a b i)) ≤ 2 * δ := by
   classical
   let R := MvPolynomial (Fin 3) ℚ ⧸ I
   let ι := IsScalarTower.toAlgHom ℚ R F
@@ -322,9 +329,6 @@ theorem retained_linearJointGraph_degree_lower_bound {a b i d δ N m k : ℕ} {c
     (fun p => (5 * k) * t p) (fun q => m * n q)
     (fun p hp => Nat.mul_pos (Nat.mul_pos (by decide) hk) (ht p hp).1)
     (fun q hq => Nat.mul_pos hm (hnpos q hq)) hdisjoint hinfinityPole hfinitePole
-  have hcurv := retained_curvature_pole_degree_lower_bound hba hi hne I hf hg hz hnorm hres
-    Q hQ hQdeg hQI hd3 hdegree F
-  change 3 * d + 2 ≤ 2 * ∑ q ∈ E, n q * Module.finrank ℚ (A ⧸ q.asIdeal) at hcurv
   simp_rw [mul_assoc] at htwice hbound
   rw [← Finset.mul_sum] at htwice
   simp_rw [← Finset.mul_sum] at hbound
@@ -332,7 +336,37 @@ theorem retained_linearJointGraph_degree_lower_bound {a b i d δ N m k : ℕ} {c
   let f := ∑ q ∈ E, n q * Module.finrank ℚ (A ⧸ q.asIdeal)
   change 2 * e = d at htwice
   change 5 * (k * e) + m * f ≤ δ at hbound
-  change 3 * d + 2 ≤ 2 * f at hcurv
+  change 5 * k * d + 2 * m * f ≤ 2 * δ
+  rw [← htwice]
+  nlinarith
+
+/-- **Lower bound for the linearly changed powered graph.** The curvature coordinates `W` are
+replaced by `G W` with `G` invertible; the degree bound is the same as for `W`. -/
+theorem retained_linearJointGraph_degree_lower_bound {a b i d δ N m k : ℕ} {c₀ : ℤ}
+    (G : Matrix (Fin 3) (Fin 3) ℚ) (hG : IsUnit G.det) (hm : 0 < m) (hk : 0 < k)
+    (hba : b < a) (hi : i + 7 < P a b)
+    (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
+    (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
+    (hf : orbitCurveQuadraticQ a b i ∈ I) (hg : orbitCurveEquationQ a b i ∈ I)
+    (hz : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I)
+    (hnorm : jointNormalizationPolynomial a b i ∈ I)
+    (hres : jointResolventPolynomial a b i ∈ I)
+    (Q : MvPolynomial (Fin 3) ℚ) (hQ : Prime Q) (hQdeg : Q.totalDegree = 2) (hQI : Q ∈ I)
+    (hd3 : 3 ≤ d)
+    (hdegree : ∀ n ≥ N,
+      (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = (d : ℤ) * n + c₀)
+    (hgraph : ∃ M : ℕ, ∃ c : ℤ, ∀ n ≥ M,
+      (Module.finrank ℚ
+        (filteredCoordinateSpace (orbitLinearJointGraphIdeal G a b i m k I) n) : ℤ) =
+          (δ : ℤ) * n + c)
+    (F : Type*) [Field F] [Algebra ℚ F] [Algebra (MvPolynomial (Fin 3) ℚ ⧸ I) F]
+    [IsScalarTower ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) F]
+    [IsFractionRing (MvPolynomial (Fin 3) ℚ ⧸ I) F] : (5 * k + 3 * m) * d + 2 * m ≤ 2 * δ := by
+  have hgraphbound := retained_linearJointGraph_degree_lower_bound_from_envelope G hG hm hk
+    hba hi hne I hf hg hz hnorm hres (by omega : 0 < d) hdegree hgraph F
+  have hcurv := retained_curvature_pole_degree_lower_bound hba hi hne I hf hg hz hnorm hres
+    Q hQ hQdeg hQI hd3 hdegree F
+  dsimp only at hgraphbound hcurv
   nlinarith [Nat.mul_le_mul_left m hcurv]
 
 /-- The linearly changed powered graph has the degree range required by the curve theorem,

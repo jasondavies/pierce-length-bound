@@ -34,8 +34,8 @@
 For integers $a>b>0$, let $P(a,b)$ count the positive terms of the iteration
 $x\mapsto a\bmod x$, starting at $b$. We prove
 \[
- P(a,b)\ll_\varepsilon a^{\gamma_*+\varepsilon},\qquad
- \gamma_*=\frac{471}{1559}-\frac{6\sqrt{105}}{7795}=0.2942294157\ldots.
+ P(a,b)\ll_\varepsilon a^{\beta_*+\varepsilon},\qquad
+ \beta_*=\frac{41301-3\sqrt{82849}}{137480}=0.2941336553\ldots.
 \]
 Each tail of the orbit carries a finite positive measure whose Hankel
 determinants are positive integers. We group short segments of the orbit by
@@ -45,17 +45,18 @@ increments to a union of boundedly many affine curves. Adjoining two further
 integer determinants as coordinates raises the degree of these curves while
 keeping the coordinates small. A curve-counting theorem whose constants do not
 depend on the coefficients of the curve then bounds the number of segments
-in each group. Raising the added coordinates to suitable powers and balancing
-their sizes gives the exponent $\alpha_*=(1310-\sqrt{655})/4365$. Finally, restricted to
-three pivot columns, the rows of drops and of gaps (quotient increments) of a segment lie in
-a rank-three lattice determined by its group.
-Writing them in a reduced basis of the lattice divides the curvature coordinates by
-the square of its minimum, and few groups have a short vector; this gives $\gamma_*$.
+in each group. An effective Hilbert irreducibility sieve forces all but a sparse
+set of groups to have curve degree $24$. An exact polar identity identifies the
+projective curvature coordinates with three linear forms; their common-base
+contribution on the normalized curve is at most four. Combining the resulting
+degree gain with reduced lattice coordinates and suitable fixed powers gives
+$\beta_*$. The powers $(3,2)$ give the rational exponent $4317/14677$.
 We also prove the elementary bound $P(a,b)\ll_\varepsilon a^{3/10+\varepsilon}$, a bound for
 orbits with few rises in their quotient increments, and positivity and integrality of
 the Hankel determinants.
-All results, including the curve-counting input, are formalized in Lean~4 with
-Mathlib without proof holes or additional axioms. Shallit's conjectured
+These bounds, including the curve-counting input and the required effective
+Hilbert irreducibility theorem, are formalized in Lean~4 with Mathlib without
+proof holes or additional axioms. Shallit's conjectured
 $O((\log a)^2)$ bound remains open.
 \end{abstract}
 
@@ -88,9 +89,23 @@ Shallit's talk pages~\cite{ShallitTalks} report a bound $n^{3/10}$, described as
 ``LLM, unpublished so far''. We have not seen that argument. The preliminary $3/10$ theorem below has the same
 exponent up to $\varepsilon$, and we make no claim about how the two arguments are related.
 
-Our strongest bound comes from the joint-invariant curve embedding of
-Section~\ref{sec:joint}, refined by the exterior lattice coordinates of
-Section~\ref{sec:lattice}.
+Our strongest bound combines the joint-invariant curve embedding of
+Section~\ref{sec:joint}, the exterior lattice coordinates of
+Section~\ref{sec:lattice}, and the polar projection and arithmetic sieve of
+Section~\ref{sec:polar}.
+\begin{theorem}\label{thm:polar}
+For every $\varepsilon>0$ there is $C_\varepsilon>0$, independent of $a,b$, such that
+\[
+ P(a,b)\le C_\varepsilon a^{\beta_*+\varepsilon}\qquad(0<b<a),\qquad
+ \beta_*=\frac{41301-3\sqrt{82849}}{137480}.
+\]
+The fixed powers $(m,n)=(3,2)$ also give
+$P(a,b)\ll_\varepsilon a^{4317/14677+\varepsilon}$.
+\end{theorem}
+
+Here $\beta_*=0.2941336553\ldots$, while $4317/14677=0.2941336785\ldots$.
+The preceding exterior-lattice argument gives a slightly weaker bound that
+does not require the specialization sieve.
 \begin{theorem}\label{thm:lattice}
 For every $\varepsilon>0$ there is $C_\varepsilon>0$, independent of $a,b$, such that
 \[
@@ -284,11 +299,13 @@ Section~\ref{sec:hankel} constructs the moment model and proves Theorem~\ref{thm
 Section~\ref{sec:patterns} develops the patterns and minor vectors. Section~\ref{sec:joint}
 proves Theorem~\ref{thm:joint}, with routine estimates for conics and graph degrees deferred to
 Appendices~\ref{app:conic} and~\ref{app:degree}, and Section~\ref{sec:lattice} refines it to
-Theorem~\ref{thm:lattice}. Section~\ref{sec:lean} describes the formal
+Theorem~\ref{thm:lattice}. Section~\ref{sec:polar} proves the polar identity and
+arithmetic sieve and combines them to prove Theorem~\ref{thm:polar}.
+Section~\ref{sec:lean} describes the formal
 verification and Section~\ref{sec:limits} the limits of the method.
 
 \subsection*{Formal verification}
-Every step of the proofs of Theorems~\ref{thm:lattice}, \ref{thm:joint}, \ref{thm:main}, \ref{thm:rises}
+Every step of the proofs of Theorems~\ref{thm:polar}, \ref{thm:lattice}, \ref{thm:joint}, \ref{thm:main}, \ref{thm:rises}
 and~\ref{thm:hankel} has been formalized in Lean~4~\cite{Lean} using Mathlib~\cite{Mathlib},
 without additional hypotheses.
 Section~\ref{sec:lean} describes the formalization. The constants in this paper are the
@@ -2477,21 +2494,371 @@ $E'(m,n)<\gamma_*+\varepsilon/2$, and Corollary~\ref{cor:latticeexponent} with l
 $\varepsilon/2$ gives the theorem.
 \end{proof}
 
+\section{Exact polar projection and the branch sieve}\label{sec:polar}
+
+The curvature vector admits a simpler description than the rational reconstruction
+alone suggests: its projective direction is affine-linear in the three independent
+gaps. We prove this identity first. A local intersection calculation and
+an arithmetic sieve then improve the exponent to
+\[
+ \beta_*=\frac{41301-3\sqrt{82849}}{137480}=0.2941336553\ldots.
+\]
+The complete argument, including the effective specialization theorem used by
+the sieve, is formalized. This proves Theorem~\ref{thm:polar}.
+
+\subsection{An exact identity at orbit states}
+Use the normalized parameters $\rho,u,v,\rho',u',v'$ of
+Section~\ref{sec:joint}, with $\rho>0$, $u>0$, $v<0$. Put
+$x=(k_0,k_1,k_2)^T$ and
+\[
+ G=\begin{pmatrix}
+ \rho(\rho+1)&-\rho(u-1)&-\rho(v-1)\\
+ -\rho(u-1)&u(u-1)&u(v-1)\\
+ -\rho(v-1)&u(v-1)&v(v-1)
+ \end{pmatrix},\qquad
+ \ell=\begin{pmatrix}
+ \rho(v-v')\\ \rho'-\rho-u(v-v')\\ u-u'-v(v-v')
+ \end{pmatrix}.
+\]
+The first quadratic equation is $f=x^TGx+\ell^Tx=0$, and
+$\det G=\rho(\rho+u)(u-v)(v-1)\ne0$. Write $D$ for the cubic norm
+polynomial, $A=p_{012}$, and
+$W=(e_{12},-e_{02},e_{01})$, where $e_{jl}=d_jk_l-d_lk_j$.
+
+\begin{proposition}\label{prop:polaridentity}
+At every orbit state with initial index $i$ satisfying $i+7<P(a,b)$,
+\[
+ DW=A(Gx+\ell),\qquad JW=A^2(Gx+\ell).
+\]
+In particular, $[W]=[Gx+\ell]$ at these states.
+\end{proposition}
+\begin{proof}
+Put $V=Gx+\ell$ and $d=(d_0,d_1,d_2)^T$. The quadratic equation gives
+$x\cdot V=0$. To obtain $d\cdot V=0$, multiply the five division equations
+by the consecutive Newton coefficients $c_j$ and sum. The relations
+$\sum c_j=\sum c_js_j=\sum c_jb_j=0$ leave
+\[
+ \sum_{j=0}^4c_js_jt_j+\sum_{j=0}^4c_jd_j=0,
+ \qquad t_j=b_0-b_j.
+\]
+The cumulative relations for the drops and gaps identify the left side with
+$d\cdot V$. With $r_j=k_j(s_j+s_{j+1})+k_{j+1}$, polynomial expansion gives
+\[
+ V\cdot(r_0,r_1,r_2)-D=-(s_4+1+v-v')f.
+\]
+Thus $V\cdot r=D$. Since $W=d\times x$ and $W\cdot r=A$, the three
+scalar identities imply $DW=AV$. At actual states $D>0$ and $A>0$;
+using $J=AD$ proves the second identity and the projective assertion.
+The Lean proofs are \lean{orbit\_polar\_identity} and
+\lean{orbit\_rankFive\_polar\_identity} in \lean{PolarProjectionOrbit}.
+\end{proof}
+
+The three homogeneous linear forms $Gx+\ell w$ have exactly one common
+projective zero, the finite point $x_*=-G^{-1}\ell$. It lies on $f=D=0$.
+To see what happens to the quartics there, use the node coordinates
+\[
+ s_0^*=0,\qquad s_j^*=\frac{c'_{j-1}-c_{j-1}}{c_j}\quad(1\le j\le3),
+ \qquad s_4^*=v'-v.
+\]
+Their first three consecutive differences are $x_*$. If $Z(\xi)=\xi R(\xi)$
+is the translated next quartic multiplied by $\xi$, division by the current
+monic quartic $P$ gives quotient $\xi+h$, where $h=v'-v-s_4$.
+The Newton coefficients of the remainder are
+\[
+ t_0=-hc_0,\qquad
+ t_j=c'_{j-1}-c_{j-1}-c_j(s_j+h)\quad(1\le j\le3).
+\]
+All four vanish at $x_*$. Consequently $Z_*=\xi P_*$ and the point lies on
+$A\operatorname{Res}(P,Z)-aD^4=0$ for every dividend $a$.
+These are the identities in \lean{PolarProjectionBasePoint} and
+\lean{PolarProjectionNewton}.
+
+\subsection{The common-base contribution and the graph degree}
+To apply the orbit identity on a curve, impose its three denominator-cleared
+coordinates as polynomial cuts. Each has degree at most $250$.
+A component on which a cut does not vanish identically contributes at most
+$250d$ points, where $d$ is its degree. On every retained component,
+$JW=A^2(Gx+\ell)$ holds in the function field. These cuts and their point
+bounds are proved in \lean{PolarProjectionCuts}.
+
+We next bound the common-base contribution of these coordinates on the
+normalization. At a smooth point $x_*$ of the quadric, let
+$R_1(\xi;s,t)$ be the linear part of the Newton remainder in tangent
+coordinates and let $D_1(s,t)$ be the linear part of $D$.
+The curve equation vanishes to order at least four, with quartic initial term
+\[
+ A N_4(s,t)-aD_1(s,t)^4,\qquad
+ N_4=\operatorname{Res}_{\xi}(P_*,R_1).
+\]
+This identity is proved for arbitrary formal paths with the prescribed first
+jet: higher-order corrections to a tangent line do not change the displayed
+coefficient. The proof factors one parameter from each row of the
+$4\times4$ B\'ezout matrix. The formal paths on the smooth quadric are
+constructed by Hensel lifting in \lean{PolarProjectionFormalSection}.
+
+It suffices that the values of $N_4$ and $D_1^4$ on the two coordinate axes
+have nonzero determinant. For every $A\ne0$ and every $a$, one of these two
+axis sections then has nonzero quartic coefficient. At the synthetic tuple
+\[
+ (\rho,u,v,\rho',u',v')=(2,5,-3,3,6,-5),\qquad
+ x_*=(-1/7,-3/28,-1/2),
+\]
+this determinant is
+\[
+ \frac{26291112152499}{60236288}\ne0.
+\]
+The tuple is represented by the maximal minors of the integer matrix
+\[
+ \begin{pmatrix}1&0&0&2&10\\0&1&0&-5&-22\\0&0&1&3&9\end{pmatrix}.
+\]
+It is a coefficient certificate, not an asserted orbit state.
+Clearing denominators in the determinant and the coordinate-chart conditions
+gives a fixed polynomial $\Theta$ in the ten full minor coordinates.
+The displayed matrix witnesses that $\Theta$ is nonzero on the decomposable
+cone. The construction and properness are proved in
+\lean{PolarProjectionExceptionalPolynomial}.
+
+Here is the local comparison needed for the bound. In one of the two axis
+sections, the localized quadric is a smooth plane curve with parameter $t$.
+Its local ring maps injectively to $\mathbb Q[[t]]$; the equation with first
+nonzero coefficient in degree four generates the fourth power of its maximal
+ideal. Its quotient therefore has $\mathbb Q$-dimension four.
+The actual component section is a quotient of this local section, so its
+colength is at most four. This construction, including the local rings,
+quotient maps and surjectivity, is proved in
+\lean{PolarProjectionLocalAxisBound}.
+
+To pass to normalized branches, use the finite normalization of the local
+component ring. Its quotient by the original ring has finite dimension.
+Comparing multiplication by the section equation on these two rings shows
+that normalization preserves the section colength. Factoring the section
+ideal in the semilocal Dedekind normalization then bounds the sum of branch
+orders, weighted by residue degrees, by that colength.
+The polar coordinates generate the centered point ideal, so their minimum
+order on each branch is at most the section order. A component missing
+$x_*$ has no such contribution. Thus, outside $\Theta=0$, the common-base
+contribution of $JW$ is at most four. This is the theorem
+\lean{retained\_polar\_base\_degree\_le\_four} in
+\lean{PolarProjectionRetainedBase}; no local multiplicity is assumed.
+
+On a retained degree-$24$ component, the rank-five function $J$ has
+function-field degree at least $60$, and every normalized zero branch of
+$J$ lies over the affine chart. Subtracting the common-base contribution
+shows that the curvature pole envelope has degree at least $56$.
+The normalized pole formula for the powered joint graph consequently gives
+the degree lower bound
+\begin{equation}\label{eq:polargraphdegree}
+ h=60n+56m.
+\end{equation}
+The degree comparison also permits the invertible constant changes of
+curvature coordinates used in the lattice count.
+
+The restriction to degree-$24$ components uses a separate sieve at
+infinity. Its degree-six specialization is
+\[
+ E(t)=2400t^6-20160t^5+69776t^4-126448t^3+125636t^2-64680t+13475.
+\]
+The module \lean{BranchSieveCertificate} proves this polynomial irreducible
+over $\mathbb Q$ by reduction modulo $71$, with explicit modular-power and
+B\'ezout certificates. The generic resultant elimination and the degree-six
+location field are proved in \lean{BranchSieveElimination} and
+\lean{BranchSieveSextic}; the quadratic branch extension is handled in
+\lean{BranchSieveQuadratic} and \lean{BranchSieveReconstruction}.
+For the arithmetic sieve, we formalize the needed monic case of effective
+Hilbert irreducibility, following the approach of~\cite[Theorem~1.10]{CDHNV}.
+For fixed degree bounds and $r$ parameters, a generically irreducible monic
+integer family of coefficient height at most $H$ has at most
+\[
+ C_{r,d}(1+\log(H+1))^4 B^{r-1/2}(1+\log B)^{4r+1}
+\]
+reducible rational specializations in $[-B,B]^r$, for $B\ge1$.
+The constant is independent of the coefficients. To prove the one-parameter
+case, a proper specialized factor supplies an integer root of one of finitely
+many generically irreducible coefficient equations. Universal symmetric
+resolvents bound their degrees, and integer factor-height estimates bound their
+heights by a fixed power of $H$. The coefficient-uniform CCDN curve theorem,
+after a polynomial shear of logarithmically growing exponent, gives the
+required square-root root count. Kronecker substitution extends this to one
+parameter with several remaining variables: possible factorizations either
+come from specialized irreducible factors or force a nonzero coefficient
+polynomial to vanish. Induction over the parameters proves the displayed bound.
+These steps are proved in \lean{BranchSieveMonicHilbert},
+\lean{BranchSieveKroneckerHilbert} and \lean{BranchSieveMultivariateHilbert}.
+
+The branch label is represented by an explicit resultant. Its generic
+degree is $12$, and a primitive-element argument gives an irreducible label
+with an integer slope at most $144$. Clearing denominators in the four integer
+vertex variables and applying fixed-degree monic normalization gives an
+integer family of uniformly bounded degree and height polynomial in $a$.
+This normalization commutes with specialization. Away from the zero scale,
+irreducibility of its specialization implies the required branch condition;
+the zero-scale slice has only $O(B^3)$ points.
+The development also constructs the quadratic branch label in every actual
+residue field at infinity.
+An irreducible degree-$12$ label equation in that residue field forces residue
+degree at least $12$; the existing ramification bound of two then forces
+component degree at least $24$.
+
+It remains to transfer the four-label sieve to full minor vectors. This step
+must retain common divisors. In a band where the first-four-column minors
+have maximum absolute value $m\asymp M$, choose one of these four minors as
+pivot and write $g=\gcd(m,u_0,u_1,u_2)$. The completion coordinates $v$ remain
+in the full box $[-X,X]^3$, and the congruence $m\mid u\times v$ gives
+$O(X^3g^2/M^2)$ completions. Apply the four-parameter sieve separately after
+each dilation by $g$. Its height is still polynomial in $a$ because
+$g\le2X\ll a^7$. There are
+$O_\eta(a^\eta(M/g)^{7/2})$ bad vertices in this common-factor class.
+Multiplication and summation over $g$ use the convergent series
+$\sum g^{-3/2}$, giving $O_\eta(a^\eta X^3M^{3/2})$ in the band.
+The formal proof sums the dyadic bands with a harmless additional $\log(2X)$,
+absorbed into $a^\eta$, and obtains
+\[
+ \#\{\text{bad full patterns}\}\ll_\eta a^\eta X^{9/2}.
+\]
+The modules \lean{BranchSievePatternCount} and
+\lean{BranchSievePatternCountSlow} prove this transfer on actual selected
+orbit windows. In the final estimate we enlarge $X^{9/2}$ to $X^{14/3}$ to
+combine it with the geometric exceptional locus below.
+
+The new exceptional locus can be counted without a primitivity restriction.
+The following result is fully formalized.
+
+\begin{proposition}[Hypersurface pattern count]\label{prop:polarpatterns}
+Let $\Theta$ be a rational polynomial in the ten minor coordinates. Suppose
+$\Theta(\operatorname{plk}M)\ne0$ for some rational $3\times5$ matrix $M$.
+For every $\eta>0$, the number of integral Pl\"ucker vectors of coordinate
+height at most $X\ge1$ satisfying $\Theta=0$ is
+\[
+ O_{\Theta,\eta}(X^{14/3+\eta}).
+\]
+The count includes nonprimitive vectors and the zero vector.
+\end{proposition}
+\begin{proof}
+Choose a minor of maximal absolute value $m>0$ and record its sign. The
+six one-column replacements give vectors $u,v\in[-m,m]^3$, and the
+remaining coordinates are signed entries of $(u\times v)/m$. There are
+ten pivots and two signs. In each chart, clearing denominators in $\Theta$
+gives a nonzero polynomial $B(m,u,v)$. Nonvanishing follows from the
+hypothesis: in the fifteen matrix entries the product of the pivot minor
+and $\Theta(\operatorname{plk}M)$ is a nonzero polynomial, so it is nonzero
+at some rational matrix. Thus every pivot chart meets the nonvanishing locus.
+
+Put $g=\gcd(m,u_1,u_2,u_3)$, $n=m/g$ and $u_0=u/g$.
+For a nonzero polynomial fiber in $v$, the congruence is
+$u_0\times v\equiv0\pmod n$, whose solution lattice is
+$\mathbb Zu_0+n\mathbb Z^3$. Let $\mu(u_0)$ be the shortest nonzero sup norm
+in the normal lattice $\{z:z\cdot u_0\equiv0\pmod n\}$.
+A reduced-basis coordinate change and the polynomial grid-zero bound give
+at most
+\[
+ \frac{243\deg_v(B)m^2}{n\mu(u_0)}
+\]
+zeros in this fiber. The formalized reciprocal estimate is
+\[
+ \sum_{u_0\in[-n,n]^3}\mu(u_0)^{-1}
+ \le5859\tau(n)n^{8/3}.
+\]
+Summing over $g\mid m$ and $m\le X$ costs at most
+$O_B(\tau_{\max}(X)^2X^{14/3})$, where
+$\tau_{\max}(X)=\max_{1\le j\le X}\tau(j)$.
+
+If the fiber in $v$ is identically zero, one fixed nonzero coefficient
+polynomial in $(m,u)$ vanishes. Scaling by $g$ preserves its being a nonzero polynomial.
+The four-variable grid-zero bound, together with the congruence completion
+count $O(mg^2)$, bounds the sum of these fibers by
+$O_B(X^4\sum_{1\le g\le X}1/g)$, which is at most $O_B(X^{14/3})$.
+The divisor estimate absorbs $\tau_{\max}(X)^2$ into $X^\eta$.
+Summing the twenty charts and adding the zero vector proves the claim.
+The arbitrarily small loss is harmless here because $X$ is bounded by a fixed
+power of the dividend $a$.
+The Lean theorem is \lean{hypersurface\_pattern\_count} in
+\lean{HypersurfacePatternCount}.
+\end{proof}
+
+\subsection{The polar exponent bound}
+We state precisely the local estimate established by the preceding arguments. In a remainder
+window $[B,2B)$ with $T\ge36$ consecutive positive terms, set
+\[
+ H=\left\lfloor\frac{28a}{BT}\right\rfloor+1,\quad
+ X=\left\lfloor\frac{3609600B^4H^6}{a^3}\right\rfloor,\quad
+ S=\left\lfloor\frac{9472B^3H^3}{a^2}\right\rfloor,\quad
+ Y=\left\lfloor\frac{1259991040B^5H^{10}}{a^4}\right\rfloor.
+\]
+The use of $B$ distinguishes the window scale from the minor $A$ above.
+Only windows satisfying $124928B^4H^5X<a^3$ need the new estimate.
+Call a function $R:\mathbb N\to\mathbb N$ slowly growing if
+$R(a)\ll_\eta a^\eta$ for every $\eta>0$. For fixed positive integers $m,n$,
+with $h=60n+56m$, there is a slowly growing $R$ such that
+\begin{equation}\label{eq:polarsix}
+\begin{split}
+ T\le R(a)\bigl(&X^5+X^4H^{1/2}
+ +X^{14/3}\max(H,S,Y)^{1/17}\\
+ &+X^{5-1/(3h)}H^{1/h}
+ +X^{5-2m/(3h)}S^{m/h}+X^5Y^{n/h}\bigr).
+\end{split}
+\end{equation}
+The named Lean proposition \lean{PolarProjectionSixTermEstimate} states this
+inequality for actual orbit windows, with all constants and integer rounding
+shown above. The theorem \lean{polar\_projection\_six\_term\_estimates} proves
+it for every fixed pair of positive integers $m,n$.
+
+\begin{theorem}[Polar bound]\label{thm:polarconditional}
+For every fixed pair of positive integers $m,n$,
+$P(a,b)\ll_\varepsilon a^{E_{\rm pol}(m,n)+\varepsilon}$, uniformly for
+$0<b<a$, where
+\[
+ E_{\rm pol}(m,n)=\max\left\{\frac5{17},\frac{45h}{153h-1},
+ \frac{45h-3m}{153h-11m},\frac{15h+6n}{51h+20n}\right\}.
+\]
+For $(m,n)=(3,2)$ this exponent is $4317/14677$.
+Optimizing over the fixed powers gives
+$P(a,b)\ll_\varepsilon a^{\beta_*+\varepsilon}$.
+\end{theorem}
+\begin{proof}
+For branch-good patterns outside the fixed proper hypersurface, the retained
+graph degree is at least $h=60n+56m$. Apply the coefficient-uniform curve bound
+and sum the fractional lattice weights as in Section~\ref{sec:lattice}.
+For the remaining nonexceptional patterns, use the old degree-$17$ graph and
+the proved bad-pattern count. The earlier exceptional-pattern and bounded-cut
+estimates supply the other terms of~\eqref{eq:polarsix}.
+The window argument of Section~\ref{sec:lattice} now applies with the new $h$.
+The three terms from the maximum in the bad-pattern contribution give
+exponents $717/2440$, $717/2440$ and $732/2491$, all below $5/17$.
+The remaining five terms give the displayed maximum. The six-step and drop
+bounds handle windows outside the scale condition; dyadic summation and
+slow growth absorb the remaining losses.
+
+For $(m,n)=(3,2)$, $h=288$ and the last three fractions are
+$12960/44063$, $4317/14677$ and $1083/3682$, respectively.
+For optimization put $r=n/m$. The curvature and rank-five fractions become
+\[
+ E_S(r)=\frac{2700r+2517}{9180r+8557},\qquad
+ E_Y(r)=\frac{906r+840}{3080r+2856}.
+\]
+The first decreases and the second increases. They cross at
+$r_*=(\sqrt{82849}-47)/360$, with common value $\beta_*$.
+Approximate $r_*$ by positive rationals and scale their numerator and
+denominator so that $45h/(153h-1)<\beta_*$. The arbitrarily small loss
+absorbs the approximation. These reductions are proved in
+\lean{PolarProjectionWindow}, \lean{PolarProjectionOptimization} and
+\lean{PolarProjectionBound}; \lean{PolarProjectionMain} assembles their
+proved inputs and exports both unconditional exponent theorems.
+\end{proof}
+
 \section{The Lean formalization}\label{sec:lean}
 
 The accompanying Lean~4 project uses toolchain \lean{v4.35.0} and Mathlib
-\lean{v4.35.0}. It proves every result of this paper, including the
-curve-counting input to Theorems~\ref{thm:lattice} and~\ref{thm:joint}, without additional
-hypotheses.
-It also proves the intermediate bounds listed in Section~\ref{sec:intro}; of these, only
-the log-log refinement takes hypotheses, namely two published analytic estimates.
+\lean{v4.35.0}. It proves the unconditional bounds of this paper, including the
+curve-counting input and effective Hilbert specialization theorem used by
+Theorem~\ref{thm:polar}, without additional hypotheses. The log-log refinement
+takes two published analytic estimates as hypotheses.
 
-The strongest bound has the following statement:
+The strongest unconditional bound has the following statement:
 \begin{quote}\ttfamily\small
-theorem P\_le\_lattice\_optimal :\\
+theorem P\_le\_polar\_optimal :\\
 \hspace*{2em}$\forall$ $\varepsilon$ > (0 : $\mathbb R$), $\exists$ C > 0, $\forall$ a b : $\mathbb N$,\\
 \hspace*{2em}0 < b $\to$ b < a $\to$ (P a b : $\mathbb R$) $\le$\\
-\hspace*{2em}C * (a : $\mathbb R$) \^{} ((471 : $\mathbb R$) / 1559 - 6 * Real.sqrt 105 / 7795 + $\varepsilon$)
+\hspace*{2em}C * (a : $\mathbb R$) \^{} (((41301 : $\mathbb R$) - 3 * Real.sqrt 82849) / 137480 + $\varepsilon$)
 \end{quote}
 The order of the quantifiers makes the uniformity explicit: $C$ may depend
 on $\varepsilon$, but not on $a$ or $b$. Here \lean{P a b} is defined by
@@ -2510,6 +2877,8 @@ map from proof steps to modules.
 \toprule
 Result & Declaration & Module \\
 \midrule
+Theorem~\ref{thm:polar}, $\beta_*$ & \lean{P\_le\_polar\_optimal} & \lean{PolarProjectionMain}\\
+Theorem~\ref{thm:polar}, $4317/14677$ & \lean{P\_le\_4317\_14677} & \lean{PolarProjectionMain}\\
 Theorem~\ref{thm:lattice}, $\gamma_*$ & \lean{P\_le\_lattice\_optimal} & \lean{LatticeJointMain}\\
 Theorem~\ref{thm:lattice}, $153/520$ & \lean{P\_le\_153\_520} & \lean{LatticeJointMain}\\
 Theorem~\ref{thm:joint}, $\alpha_*$ & \lean{P\_le\_joint\_optimal} & \lean{JointLiftMain}\\
@@ -2526,6 +2895,12 @@ Theorem~\ref{thm:hankel} & \lean{hankelInv\_pos\_int} & \lean{Hankel}\\
 \bottomrule
 \end{tabular}
 \end{center}
+
+The two additional conditional statements are
+\lean{P\_le\_4317\_14677\_of\_six\_term\_count} and
+\lean{P\_le\_polar\_optimal\_of\_six\_term\_estimates}, in
+\lean{PolarProjectionBound}. They are proved implications with the local
+estimate as an explicit premise and are not in the selected Comparator list.
 
 The identifications of the first four invariants in
 Theorem~\ref{thm:hankel} are proved in the same module as
@@ -2568,12 +2943,12 @@ short-sum bound of~\cite{NT} for the Erd\H{o}s--Hooley function over intervals $
 $y\ge x^{1/4}$, and the mean-value bound of~\cite{BT}, including their existential constants and
 thresholds.
 
-The file \lean{Axioms.lean} audits the thirteen public statements and their
+The file \lean{Axioms.lean} audits the fifteen public statements and their
 proof dependencies. The only logical axioms reported are \lean{propext},
 \lean{Classical.choice} and \lean{Quot.sound}, the standard axioms used by
 Mathlib. The proof library contains no \lean{sorry} and uses no
 \lean{native\_decide}. The separate Mathlib-only \lean{Challenge.lean}
-states the thirteen results with deliberate theorem holes for comparison
+states the fifteen results with deliberate theorem holes for comparison
 with the proved \lean{Solution.lean}; neither module imports the other.
 Build instructions and the scope of the verification checks are recorded
 in the README.
@@ -2924,8 +3299,9 @@ work developed and formalized the joint-invariant graphs, their normalization
 and valuation arguments, the powered-coordinate optimization, and the external
 affine-curve counting theorem. OpenAI Codex assisted with this formalization
 and with automated statement, dependency and submission checks. These checks
-are not independent human peer review. The new results of this paper and
-their stated deductions were verified in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \lean{openai/math}
+are not independent human peer review. The unconditional results, including
+the polar refinement and its arithmetic sieve, and the stated conditional
+implications were verified in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \lean{openai/math}
 for the formalized divisor bound.
 
 \begin{thebibliography}{99}

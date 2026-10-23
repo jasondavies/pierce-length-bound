@@ -6,15 +6,21 @@ project:
   description: >-
     For integers 0 < b < a, let P(a,b) count the positive terms obtained by
     repeatedly replacing x by a mod x, starting at b. This development proves
-    the uniform bound P(a,b) ≤ C_ε a^(471/1559 - 6 sqrt(105)/7795 + ε) for every
-    ε > 0, including the external coefficient-uniform affine-curve theorem, and its
-    rational instance 153/520. It also proves the joint-invariant exponents
+    the uniform bound P(a,b) ≤ C_ε a^((41301 - 3 sqrt(82849))/137480 + ε) for every
+    ε > 0, including the external coefficient-uniform affine-curve theorem and
+    the effective Hilbert specialization sieve, and its rational instance
+    4317/14677. It also proves the exterior-lattice exponents
+    471/1559 - 6 sqrt(105)/7795 and 153/520, the joint-invariant exponents
     (1310-sqrt(655))/4365, 2201/7480 and 128/435 and the earlier exponents
     45/152, 8/27, 11/37, 23/77, and 3/10. It also proves
     a bound O(a^(1/4) sqrt R), where R minus one counts rises in the quotient
     increments, and positivity and integrality of the orbit's Hankel invariants.
     A separate conditional theorem gives O(a^(3/10) sqrt(log log(3a))) assuming
     two explicitly stated analytic estimates whose proofs are not formalized.
+    The polar bound uses the proved orbit identity, actual common-base bound
+    of four, degree-twelve residue labels, uniform arithmetic specialization
+    count, and full-pattern completion count with arbitrary common divisors.
+    These establish the six-term local estimate without additional hypotheses.
     The conjectured O((log a)^2) bound remains open.
   authors: ["Jason Davies"]
   license: "Apache-2.0"
@@ -60,6 +66,20 @@ sources:
       ccdn-linear-growth project and imported as the Lake package
       ccdn_dimension_growth, a Git dependency pinned to commit
       9ade6200d053ceef5f6ccc4154ae30c6056be150. It is not an unproved hypothesis or axiom.
+  - title: "Improvements on dimension growth results and effective Hilbert's irreducibility theorem"
+    authors: ["Raf Cluckers", "Pierre Dèbes", "Yotam I. Hendel", "Kien Huu Nguyen", "Floris Vermeulen"]
+    type: article
+    location: "Forum of Mathematics, Sigma 13 (2025), e153, Theorem 1.10"
+    id: "https://doi.org/10.1017/fms.2025.10096"
+    relationship: background
+    note: >-
+      The required monic specialization theorem is proved in this repository,
+      following the effective Hilbert irreducibility argument: coefficient
+      resolvents and integral specialization, the CCDN curve bound, Kronecker
+      substitution, and induction over the parameters. Fixed-degree monic
+      normalization makes it applicable to the explicit branch-label family.
+      It is a proved input, not an additional hypothesis or axiom. This does
+      not claim a formalization of every result in the cited paper.
   - title: "Short sums of certain arithmetic functions"
     authors: ["M. Nair", "Gérald Tenenbaum"]
     type: article
@@ -121,7 +141,10 @@ status:
     Challenge module. The proof development has no sorry holes or custom
     axioms. The deliberate theorem holes in Challenge.lean are excluded
     from these counts. NairTenenbaumDelta and BretecheTenenbaumMean are
-    unproved propositions passed as hypotheses, not axioms. The paper's
+    unproved propositions passed as hypotheses, not axioms. The selected
+    polar-projection bounds are unconditional: PolarProjectionMain supplies
+    the proved six-term counting estimates to the general exponent reductions.
+    The paper's
     background literature and its remark about Shiu's theorem are not
     claimed as formalized results. The O((log a)^2) conjecture is not proved.
   sorry_count: 0
@@ -145,7 +168,11 @@ automation:
         metadata, and CI preparation. Subsequent work formalized the rational curve
         geometry, normalization and valuation arguments, joint-invariant graphs,
         powered counting and the optimized joint-invariant exponent, the
-        exterior-lattice bounds, and the external curve-counting theorem.
+        exterior-lattice bounds, and the external curve-counting theorem. The
+        polar-projection work formalized the orbit identities, branch algebra,
+        hypersurface-pattern count, actual local intersection bound, effective
+        Hilbert irreducibility, specialization-compatible branch labels,
+        full-pattern completion count, and both unconditional polar exponents.
   notes: >-
     The paper credits AI language models with contributions to the orthogonal
     polynomial and adjacent-label approach, the resultant bound, bounded
@@ -157,25 +184,39 @@ automation:
 fidelity:
   divergences: >-
     No known mismatch between the compared Lean statements and their
-    descriptions in the accompanying paper. The conditional result explicitly
+    descriptions in the accompanying paper. The log-log result explicitly
     assumes two published analytic statements instead of formalizing their
-    proofs. The natural-number orbit is frozen at zero, and P counts positive
-    terms; the paper's indexing starts at one while orb starts at zero.
+    proofs. The polar-projection refinement proves its six-term local counting
+    estimate, including all arithmetic and geometric inputs.
+    The natural-number orbit is frozen at zero, and P counts positive terms;
+    both the paper and orb use zero-based indexing.
 
 review:
   status: "agent-reviewed"
   reviewers: ["OpenAI Codex"]
   notes: >-
-    Latest run, October 21, 2026, with the CCDN dependency pinned to
+    Latest run, October 23, 2026, with the CCDN dependency pinned to
     9ade6200d053ceef5f6ccc4154ae30c6056be150: the Lean build, both weighted-count
     dependency audits and the axiom audit passed. The axiom audit covers every
     exported PierceLengthBound, CCDN and vendored ArithmeticHeights declaration and
     allows only propext, Classical.choice and Quot.sound. In an isolated copy with
     matching Lean sources and dependency configuration, the standard sandboxed
-    Comparator accepted every selected statement with Lean, NanoDa and con-ron;
-    con-ron verified 88,645 declarations.
-    Earlier checker resource failures were repaired by making algebra and
-    coefficient conversions explicit, without changing hypotheses or checker limits.
+    Comparator accepted all fifteen selected statements with Lean, NanoDa and con-ron;
+    con-ron verified 91,574 declarations. The axiom audit covered 3,953
+    PierceLengthBound, 1,196 CCDN and 555 ArithmeticHeights declarations.
+    The new scripts/check-polar-projection.py independently recomputed the
+    polar and base-point identities, quartic certificate, irreducible sextic
+    specialization and polar exponent arithmetic using SymPy.
+    The additional scripts/verify-polar-kernels.py replay accepted thirty-two
+    principal polar endpoints with Lean, NanoDa and con-ron at their standard
+    limits; con-ron verified 90,565 declarations and NanoDa checked 93,163.
+    This includes the proved six-term estimate, its arithmetic sieve, the actual
+    common-base bound, and the general exponent reductions. These supplementary
+    statements are not independently compared with Challenge; the fifteen public
+    statements are checked separately by Comparator.
+    Earlier checker resource failures were repaired by making coefficient
+    conversions explicit and separating monic irreducibility transfer into
+    smaller lemmas, without changing hypotheses or checker limits.
     An October 19, 2026 Codex review, which predates the joint-invariant and
     exterior-lattice bounds, read the full paper, checked the definitions and
     theorem statements against it, and inspected the main proof dependencies. It
@@ -193,7 +234,16 @@ review:
 alignment:
   namespace: "PierceLengthBound"
   statements:
-    - source: "Optimized exterior-lattice bound, Theorem 1.1"
+    - source: "Optimized polar-projection bound, Theorem 1.1"
+      lean: "PierceLengthBound.P_le_polar_optimal"
+      module: "PierceLengthBound.PolarProjectionMain"
+      status: proved
+      note: "Uniform in a and b, including proved curve counting and effective Hilbert irreducibility."
+    - source: "Rational polar-projection bound, Theorem 1.1 with (m, n) = (3, 2)"
+      lean: "PierceLengthBound.P_le_4317_14677"
+      module: "PierceLengthBound.PolarProjectionMain"
+      status: proved
+    - source: "Optimized exterior-lattice bound, Theorem 1.2"
       lean: "PierceLengthBound.P_le_lattice_optimal"
       module: "PierceLengthBound.LatticeJointMain"
       status: proved
@@ -202,7 +252,7 @@ alignment:
       lean: "PierceLengthBound.P_le_153_520"
       module: "PierceLengthBound.LatticeJointMain"
       status: proved
-    - source: "Optimized joint-invariant bound, Theorem 1.2"
+    - source: "Optimized joint-invariant bound, Theorem 1.3"
       lean: "PierceLengthBound.P_le_joint_optimal"
       module: "PierceLengthBound.JointLiftMain"
       status: proved
@@ -232,7 +282,7 @@ alignment:
       lean: "PierceLengthBound.P_le_23_77"
       module: "PierceLengthBound.TwentyThreeMain"
       status: proved
-    - source: "Unconditional 3/10 bound, Theorem 1.3"
+    - source: "Unconditional 3/10 bound, Theorem 1.4"
       lean: "PierceLengthBound.P_le"
       module: "PierceLengthBound.Main"
       status: proved
@@ -241,7 +291,7 @@ alignment:
       module: "PierceLengthBound.Hooley"
       status: proved
       note: "Conditional on NairTenenbaumDelta and BretecheTenenbaumMean."
-    - source: "Trajectories with few rises, Theorem 1.4"
+    - source: "Trajectories with few rises, Theorem 1.5"
       lean: "PierceLengthBound.P_le_rises"
       module: "PierceLengthBound.RisesMain"
       status: proved

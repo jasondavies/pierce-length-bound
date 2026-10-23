@@ -20,6 +20,14 @@ CCDN library, and of CCDN's vendored Bombieri–Vaaler development (`ArithmeticH
 
 open PierceLengthBound
 
+/-- info: 'PierceLengthBound.P_le_polar_optimal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms P_le_polar_optimal
+
+/-- info: 'PierceLengthBound.P_le_4317_14677' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms P_le_4317_14677
+
 /-- info: 'PierceLengthBound.P_le_lattice_optimal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms P_le_lattice_optimal
@@ -187,6 +195,50 @@ open PierceLengthBound
 /-- info: 'PierceLengthBound.FixedDividend.orbit_no_exceptional_line' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms FixedDividend.orbit_no_exceptional_line
+
+/-! The polar identities, certificates and explicitly conditional exponent reductions. -/
+
+/-- info: 'PierceLengthBound.FixedDividend.orbit_polar_identity' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.orbit_polar_identity
+
+/-- info: 'PierceLengthBound.FixedDividend.orbit_rankFive_polar_identity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.orbit_rankFive_polar_identity
+
+/-- info: 'PierceLengthBound.FixedDividend.polarCertificate_initial_nonzero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.polarCertificate_initial_nonzero
+
+/-- info: 'PierceLengthBound.FixedDividend.branchSexticSpecialization_irreducible_rat' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.branchSexticSpecialization_irreducible_rat
+
+/-- info: 'PierceLengthBound.FixedDividend.normal_short_weight_sum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.normal_short_weight_sum
+
+/-- info: 'PierceLengthBound.FixedDividend.P_le_4317_14677_of_six_term_count' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.P_le_4317_14677_of_six_term_count
+
+/-- info: 'PierceLengthBound.FixedDividend.P_le_polar_optimal_of_six_term_estimates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.P_le_polar_optimal_of_six_term_estimates
+
+/-- info: 'PierceLengthBound.FixedDividend.hypersurface_pattern_count' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FixedDividend.hypersurface_pattern_count
 
 /-! Audit all exported mathematical declarations, including intermediate results, from
 `PierceLengthBound`, CCDN and CCDN's vendored `ArithmeticHeights`.

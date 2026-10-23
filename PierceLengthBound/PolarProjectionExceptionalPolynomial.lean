@@ -1,0 +1,305 @@
+/-
+Copyright (c) 2026 Jason Davies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jason Davies
+-/
+module
+public import PierceLengthBound.RationalNeighborhoodJet
+public import PierceLengthBound.PolarProjectionCertificateSection
+
+/-! A fixed exceptional polynomial for the polar base point. The rational
+certificate proves properness; clearing denominators retains every pattern. -/
+@[expose] public section
+namespace PierceLengthBound.FixedDividend
+open Polynomial Matrix MvPolynomial
+noncomputable section
+
+def polarParameterCertificate : Fin 6 → ℚ := ![2, 5, -3, 3, 6, -5]
+
+def polarStraightGapPath (q : Fin 6 → ℚ) (s t : ℚ) (j : Fin 3) : PowerSeries ℚ :=
+  PowerSeries.C (polarBaseGaps (q 0) (q 1) (q 2) (q 3) (q 4) (q 5) j) +
+    PowerSeries.C (polarTangentDirection (q 0) (q 1) (q 2) (q 3) (q 4) (q 5) s t j) *
+      PowerSeries.X
+
+def polarInitialRemainder (q : Fin 6 → ℚ) (s t : ℚ) : Fin 4 → ℚ :=
+  let x := polarStraightGapPath q s t
+  let nodes := completeNodes (PowerSeries.C (q 0)) (PowerSeries.C (q 1)) (PowerSeries.C (q 2))
+    ![x 0, x 0 + x 1, x 0 + x 1 + x 2]
+  fun j => PowerSeries.coeff 1 (polarRemainderMonomialCoeffs
+    (PowerSeries.C (q 0)) (PowerSeries.C (q 1)) (PowerSeries.C (q 2))
+    (PowerSeries.C (q 3)) (PowerSeries.C (q 4)) (PowerSeries.C (q 5)) nodes j)
+
+def polarInitialNorm (q : Fin 6 → ℚ) (s t : ℚ) : ℚ :=
+  let x := polarStraightGapPath q s t
+  PowerSeries.coeff 1 (lineNorm
+    (PowerSeries.C (q 0)) (PowerSeries.C (q 1)) (PowerSeries.C (q 2))
+    (PowerSeries.C (q 3)) (PowerSeries.C (q 4)) (PowerSeries.C (q 5))
+    (x 0) (x 0 + x 1) (x 0 + x 1 + x 2))
+
+def polarInitialResultant (q : Fin 6 → ℚ) (s t : ℚ) : ℚ :=
+  resultant (firstNewtonQuartic (fun j : Fin 4 => coeffs (q 0) (q 1) (q 2) j.castSucc)
+    (polarBaseNodes (q 0) (q 1) (q 2) (q 3) (q 4) (q 5)))
+    (polarCubic (polarInitialRemainder q s t)) 4 4
+
+def polarInitialMinor (q : Fin 6 → ℚ) : ℚ :=
+  polarInitialResultant q 1 0 * polarInitialNorm q 0 1 ^ 4 -
+    polarInitialResultant q 0 1 * polarInitialNorm q 1 0 ^ 4
+
+private lemma rational_base_nodes (j : Fin 4) :
+    RationalNear polarParameterCertificate
+      (fun q => polarBaseNodes (q 0) (q 1) (q 2) (q 3) (q 4) (q 5) j) := by
+  fin_cases j <;> simp only [polarBaseNodes, Matrix.cons_val_zero, Matrix.cons_val_one,
+    Matrix.cons_val_two, Matrix.cons_val_three, Matrix.head_cons, Matrix.tail_cons]
+  all_goals
+    repeat' first
+      | exact RationalNear.coordinate _
+      | exact RationalNear.constant _
+      | apply RationalNear.div
+      | apply RationalNear.sub
+      | apply RationalNear.neg
+      | norm_num [polarParameterCertificate]
+
+private lemma rational_base_gaps (j : Fin 3) :
+    RationalNear polarParameterCertificate
+      (fun q => polarBaseGaps (q 0) (q 1) (q 2) (q 3) (q 4) (q 5) j) := by
+  fin_cases j <;> simp only [polarBaseGaps, Matrix.cons_val_zero, Matrix.cons_val_one,
+    Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons]
+  · exact rational_base_nodes 0
+  · exact (rational_base_nodes 1).sub (rational_base_nodes 0)
+  · exact (rational_base_nodes 2).sub (rational_base_nodes 1)
+
+private lemma rational_tangent (s t : ℚ) (j : Fin 3) :
+    RationalNear polarParameterCertificate
+      (fun q => polarTangentDirection (q 0) (q 1) (q 2) (q 3) (q 4) (q 5) s t j) := by
+  fin_cases j <;> simp only [polarTangentDirection, polarLinear,
+    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.head_cons,
+    Matrix.tail_cons]
+  all_goals
+    repeat' first
+      | exact RationalNear.coordinate _
+      | exact RationalNear.constant _
+      | apply RationalNear.div
+      | apply RationalNear.add
+      | apply RationalNear.sub
+      | apply RationalNear.neg
+      | apply RationalNear.mul
+      | norm_num [polarParameterCertificate]
+
+private lemma rational_path (s t : ℚ) (j : Fin 3) :
+    RationalFirstJet polarParameterCertificate (fun q => polarStraightGapPath q s t j) :=
+  (RationalFirstJet.C (rational_base_gaps j)).add
+    ((RationalFirstJet.C (rational_tangent s t j)).mul (RationalFirstJet.constant _))
+
+set_option maxHeartbeats 800000 in
+-- The first-jet calculation expands the finite Newton remainder.
+private lemma rational_remainder (s t : ℚ) (j : Fin 4) :
+    RationalNear polarParameterCertificate (fun q => polarInitialRemainder q s t j) := by
+  apply And.right (a := RationalNear polarParameterCertificate (fun q =>
+    PowerSeries.constantCoeff (polarRemainderMonomialCoeffs
+      (PowerSeries.C (q 0)) (PowerSeries.C (q 1)) (PowerSeries.C (q 2))
+      (PowerSeries.C (q 3)) (PowerSeries.C (q 4)) (PowerSeries.C (q 5))
+      (completeNodes (PowerSeries.C (q 0)) (PowerSeries.C (q 1)) (PowerSeries.C (q 2))
+        ![polarStraightGapPath q s t 0, polarStraightGapPath q s t 0 + polarStraightGapPath q s t 1,
+          polarStraightGapPath q s t 0 + polarStraightGapPath q s t 1 +
+            polarStraightGapPath q s t 2]) j)))
+  change RationalFirstJet polarParameterCertificate _
+  fin_cases j <;> simp only [polarRemainderMonomialCoeffs, polarRemainderCoefficients,
+    polarQuotientConstant, completeNodes, fourthNode, Matrix.cons_val_zero,
+    Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three, Matrix.head_cons,
+    Matrix.tail_cons]
+  all_goals
+    repeat' first
+      | exact rational_path s t _
+      | exact RationalFirstJet.C (RationalNear.coordinate _)
+      | exact RationalFirstJet.constant _
+      | apply RationalFirstJet.add
+      | apply RationalFirstJet.sub
+      | apply RationalFirstJet.neg
+      | apply RationalFirstJet.mul
+
+private lemma rational_norm (s t : ℚ) :
+    RationalNear polarParameterCertificate (fun q => polarInitialNorm q s t) := by
+  let g : (Fin 6 → ℚ) → Fin 9 → PowerSeries ℚ := fun q =>
+    ![PowerSeries.C (q 0), PowerSeries.C (q 1), PowerSeries.C (q 2),
+      PowerSeries.C (q 3), PowerSeries.C (q 4), PowerSeries.C (q 5),
+      polarStraightGapPath q s t 0,
+      polarStraightGapPath q s t 0 + polarStraightGapPath q s t 1,
+      polarStraightGapPath q s t 0 + polarStraightGapPath q s t 1 + polarStraightGapPath q s t 2]
+  have hg (j : Fin 9) : RationalFirstJet polarParameterCertificate (fun q => g q j) := by
+    fin_cases j
+    all_goals first
+      | exact RationalFirstJet.C (RationalNear.coordinate _)
+      | exact rational_path s t _
+      | exact (rational_path s t 0).add (rational_path s t 1)
+      | exact ((rational_path s t 0).add (rational_path s t 1)).add (rational_path s t 2)
+  have h := RationalFirstJet.polynomial
+    (lineNorm (X (0 : Fin 9)) (X 1) (X 2) (X 3) (X 4) (X 5) (X 6) (X 7) (X 8)) g hg
+  simp only [map_lineNorm, MvPolynomial.eval₂Hom_X'] at h
+  exact h.2
+
+private lemma rational_quartic (j : Fin 4) :
+    RationalNear polarParameterCertificate (fun q => firstNewtonCoeffs
+      (fun j : Fin 4 => coeffs (q 0) (q 1) (q 2) j.castSucc)
+      (polarBaseNodes (q 0) (q 1) (q 2) (q 3) (q 4) (q 5)) j) := by
+  fin_cases j <;> simp only [firstNewtonCoeffs, coeffs, Matrix.cons_val_zero,
+    Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three, Matrix.head_cons,
+    Matrix.tail_cons, Fin.reduceFinMk]
+  all_goals
+    repeat' first
+      | exact rational_base_nodes _
+      | exact RationalNear.coordinate _
+      | exact RationalNear.constant _
+      | apply RationalNear.add
+      | apply RationalNear.sub
+      | apply RationalNear.neg
+      | apply RationalNear.mul
+
+private lemma rational_resultant (s t : ℚ) :
+    RationalNear polarParameterCertificate (fun q => polarInitialResultant q s t) := by
+  have he (q : Fin 6 → ℚ) : polarInitialResultant q s t =
+      (quarticBezout
+        (firstNewtonCoeffs (fun j : Fin 4 => coeffs (q 0) (q 1) (q 2) j.castSucc)
+          (polarBaseNodes (q 0) (q 1) (q 2) (q 3) (q 4) (q 5)))
+        (firstNewtonCoeffs (fun j : Fin 4 => coeffs (q 0) (q 1) (q 2) j.castSucc)
+          (polarBaseNodes (q 0) (q 1) (q 2) (q 3) (q 4) (q 5)) +
+            polarInitialRemainder q s t)).det := by
+    unfold polarInitialResultant
+    rw [firstNewtonQuartic_eq, polarCubic_resultant]
+  simp_rw [he]
+  apply RationalNear.det
+  intro i j
+  fin_cases i <;> fin_cases j <;> simp only [quarticBezout, Pi.add_apply,
+    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three,
+    Matrix.head_cons, Matrix.tail_cons]
+  all_goals
+    repeat' first
+      | exact rational_quartic _
+      | exact rational_remainder s t _
+      | exact RationalNear.constant _
+      | apply RationalNear.add
+      | apply RationalNear.sub
+      | apply RationalNear.mul
+      | apply RationalNear.neg
+
+theorem polar_initial_minor_rational : RationalNear polarParameterCertificate polarInitialMinor :=
+  ((rational_resultant 1 0).mul ((rational_norm 0 1).pow 4)).sub
+    ((rational_resultant 0 1).mul ((rational_norm 1 0).pow 4))
+
+private lemma straight_certificate_zero (s t : ℚ) (j : Fin 3) :
+    PowerSeries.constantCoeff (polarStraightGapPath polarParameterCertificate s t j) =
+      ![-1 / 7, -3 / 28, -1 / 2] j := by
+  fin_cases j <;> norm_num [polarStraightGapPath, polarParameterCertificate,
+    polarBaseGaps, polarBaseNodes]
+
+private lemma straight_certificate_one (s t : ℚ) (j : Fin 3) :
+    PowerSeries.coeff 1 (polarStraightGapPath polarParameterCertificate s t j) =
+      ![(9 * s - 5 * t) / 4, s, t] j := by
+  fin_cases j <;> norm_num [polarStraightGapPath, polarParameterCertificate,
+    polarTangentDirection, polarLinear] <;> ring
+
+lemma polarInitialNorm_certificate (s t : ℚ) :
+    polarInitialNorm polarParameterCertificate s t = polarCertificateNormLinear s t := by
+  exact polar_certificate_formal_norm_linear _ s t
+    (straight_certificate_zero s t) (straight_certificate_one s t)
+
+lemma polarInitialResultant_certificate (s t : ℚ) :
+    polarInitialResultant polarParameterCertificate s t = polarCertificateInitialResultant s t := by
+  have hr := polar_certificate_formal_remainder_linear
+    (polarStraightGapPath polarParameterCertificate s t) s t
+    (straight_certificate_zero s t) (straight_certificate_one s t)
+  change polarCubic (polarInitialRemainder polarParameterCertificate s t) = _ at hr
+  change resultant (firstNewtonQuartic (fun j : Fin 4 => coeffs (2 : ℚ) 5 (-3) j.castSucc)
+    (polarBaseNodes (2 : ℚ) 5 (-3) 3 6 (-5))) _ 4 4 = _
+  rw [← polarCertificateQuartic_eq_newton, hr]
+  rfl
+
+theorem polarInitialMinor_certificate :
+    polarInitialMinor polarParameterCertificate = 26291112152499 / 60236288 := by
+  simpa only [polarInitialMinor, polarInitialResultant_certificate,
+    polarInitialNorm_certificate] using polarCertificate_initial_minor
+
+/-- Conditions used to construct the smooth formal section and its explicit base nodes. -/
+def polarChartGuard (q : Fin 6 → ℚ) : ℚ :=
+  (-q 0 - q 1) * (q 1 - q 2) * (q 2 - 1) * (polarMatrix (q 0) (q 1) (q 2)).det *
+    polarMatrix (q 0) (q 1) (q 2) 0 0 * polarLinear (q 0) (q 1) (q 2) (q 3) (q 4) (q 5) 0
+
+private lemma rational_guard : RationalNear polarParameterCertificate polarChartGuard := by
+  change RationalNear polarParameterCertificate (fun q => polarChartGuard q)
+  simp only [polarChartGuard, polarMatrix_det, polarMatrix, polarLinear,
+    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.head_cons,
+    Matrix.tail_cons]
+  repeat' first
+    | exact RationalNear.coordinate _
+    | exact RationalNear.constant _
+    | apply RationalNear.add
+    | apply RationalNear.sub
+    | apply RationalNear.neg
+    | apply RationalNear.mul
+
+lemma polarChartGuard_certificate : polarChartGuard polarParameterCertificate ≠ 0 := by
+  norm_num [polarChartGuard, polarParameterCertificate, polarMatrix, polarLinear, Matrix.det_fin_three]
+
+theorem exists_polar_parameter_exceptional_polynomial :
+    ∃ F : MvPolynomial (Fin 6) ℚ, eval polarParameterCertificate F ≠ 0 ∧
+      ∀ q, eval q F ≠ 0 → polarChartGuard q ≠ 0 ∧ polarInitialMinor q ≠ 0 := by
+  obtain ⟨F, hF, hf⟩ := (rational_guard.mul polar_initial_minor_rational).exists_nonvanishing_polynomial (mul_ne_zero polarChartGuard_certificate
+      (by rw [polarInitialMinor_certificate]; norm_num))
+  exact ⟨F, hF, fun q hq => mul_ne_zero_iff.mp (hf q hq)⟩
+
+/-- Six normalized coefficients read from the ten full minor coordinates. -/
+def polarMinorParameters (p : Fin 10 → ℚ) : Fin 6 → ℚ :=
+  ![p 6 / p 0, p 3 / p 0, -p 1 / p 0, p 9 / p 6, p 8 / p 6, -p 7 / p 6]
+
+/-- An explicit matrix realizing the rational certificate on the decomposable cone. -/
+def polarMinorCertificateMatrix : Fin 3 → Fin 5 → ℚ :=
+  ![![1, 0, 0, 2, 10], ![0, 1, 0, -5, -22], ![0, 0, 1, 3, 9]]
+
+lemma polarMinorCertificate_values :
+    plkRing polarMinorCertificateMatrix = ![1, 3, 9, 5, 22, 21, 2, 10, 12, 6] := by
+  ext j
+  fin_cases j <;> norm_num [plkRing, minor3Ring, trip, polarMinorCertificateMatrix]
+
+lemma polarMinorParameters_certificate :
+    polarMinorParameters (plkRing polarMinorCertificateMatrix) = polarParameterCertificate := by
+  rw [polarMinorCertificate_values]
+  ext j
+  fin_cases j <;> norm_num [polarMinorParameters, polarParameterCertificate]
+
+private lemma rational_minor_parameters (j : Fin 6) :
+    RationalNear (plkRing polarMinorCertificateMatrix) (fun p => polarMinorParameters p j) := by
+  fin_cases j <;> simp only [polarMinorParameters, Matrix.cons_val_zero,
+    Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three, Matrix.cons_val_succ,
+    Matrix.head_cons, Matrix.tail_cons]
+  all_goals
+    repeat' first
+      | exact RationalNear.coordinate _
+      | apply RationalNear.div
+      | apply RationalNear.neg
+      | norm_num [polarMinorCertificate_values]
+
+/-- The exceptional condition is one fixed proper polynomial in the full
+minor vector. Its nonzero locus certifies the geometric hypotheses uniformly
+in the dividend. No genericity assumption about orbit patterns is made. -/
+theorem exists_polar_full_minor_exceptional_polynomial :
+    ∃ Θ : MvPolynomial (Fin 10) ℚ, ProperOnMinorCone Θ ∧
+      ∀ p, eval p Θ ≠ 0 → p 0 ≠ 0 ∧ p 6 ≠ 0 ∧
+        polarChartGuard (polarMinorParameters p) ≠ 0 ∧
+        polarInitialMinor (polarMinorParameters p) ≠ 0 := by
+  have hr := (rational_guard.mul polar_initial_minor_rational).comp
+    polarMinorParameters rational_minor_parameters polarMinorParameters_certificate
+  have hc : (plkRing polarMinorCertificateMatrix 0 * plkRing polarMinorCertificateMatrix 6) *
+      (polarChartGuard (polarMinorParameters (plkRing polarMinorCertificateMatrix)) *
+        polarInitialMinor (polarMinorParameters (plkRing polarMinorCertificateMatrix))) ≠ 0 := by
+    rw [polarMinorParameters_certificate]
+    exact mul_ne_zero (by norm_num [polarMinorCertificate_values])
+      (mul_ne_zero polarChartGuard_certificate (by rw [polarInitialMinor_certificate]; norm_num))
+  obtain ⟨Θ, hΘ, hgood⟩ := ((RationalNear.coordinate 0).mul (RationalNear.coordinate 6)).mul hr
+    |>.exists_nonvanishing_polynomial hc
+  refine ⟨Θ, ⟨polarMinorCertificateMatrix, hΘ⟩, ?_⟩
+  intro p hp
+  obtain ⟨hcoords, hg⟩ := mul_ne_zero_iff.mp (hgood p hp)
+  exact ⟨(mul_ne_zero_iff.mp hcoords).1, (mul_ne_zero_iff.mp hcoords).2,
+    (mul_ne_zero_iff.mp hg).1, (mul_ne_zero_iff.mp hg).2⟩
+
+end
+end PierceLengthBound.FixedDividend

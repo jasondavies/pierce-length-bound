@@ -28,16 +28,16 @@ def LatticeJointCountBranches (K T H X S Y h m n : ℕ) : Prop :=
     T ^ (3 * h) ≤ K * X ^ (15 * h - 2 * m) * S ^ (3 * m) ∨ T ^ h ≤ K * X ^ (5 * h) * Y ^ n
 
 /-- The five-term estimate implies the five integer-power branches. -/
-theorem lattice_joint_branches_of_five_term_count {T H X S Y R m n : ℕ} (hm : 0 < m)
-    (hcount : let h : ℝ := ((10 * n + 7 * m : ℕ) : ℝ)
+theorem lattice_branches_of_five_term_count {T H X S Y R hN m n : ℕ}
+    (hm : 0 < m) (hmh : m ≤ hN)
+    (hcount : let h : ℝ := (hN : ℝ)
       (T : ℝ) ≤ R * ((X : ℝ) ^ 5 + (X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ) +
         (X : ℝ) ^ (5 - (1 / h) / 3) * (H : ℝ) ^ (1 / h) +
         (X : ℝ) ^ (5 - (2 * m / h) / 3) * (S : ℝ) ^ (m / h) +
         (X : ℝ) ^ 5 * (Y : ℝ) ^ (n / h))) :
-    LatticeJointCountBranches ((5 * (R + 1)) ^ (3 * (10 * n + 7 * m)))
-      T H X S Y (10 * n + 7 * m) m n := by
+    LatticeJointCountBranches ((5 * (R + 1)) ^ (3 * hN))
+      T H X S Y hN m n := by
   dsimp only at hcount
-  set hN := 10 * n + 7 * m
   have hN1 : 1 ≤ hN := by omega
   set h : ℝ := (hN : ℝ)
   have hh : (0 : ℝ) < h := by simp only [h]; exact_mod_cast (show 0 < hN by omega)
@@ -111,20 +111,38 @@ theorem lattice_joint_branches_of_five_term_count {T H X S Y R m n : ℕ} (hm : 
     have hn : T ^ hN ≤ D ^ hN * X ^ (5 * hN) * Y ^ n := by exact_mod_cast he
     exact hn.trans (Nat.mul_le_mul_right _ (Nat.mul_le_mul_right _ (hDle hN (by omega))))
 
+/-- The original five-term split uses degree `10n + 7m`. -/
+theorem lattice_joint_branches_of_five_term_count {T H X S Y R m n : ℕ} (hm : 0 < m)
+    (hcount : let h : ℝ := ((10 * n + 7 * m : ℕ) : ℝ)
+      (T : ℝ) ≤ R * ((X : ℝ) ^ 5 + (X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ) +
+        (X : ℝ) ^ (5 - (1 / h) / 3) * (H : ℝ) ^ (1 / h) +
+        (X : ℝ) ^ (5 - (2 * m / h) / 3) * (S : ℝ) ^ (m / h) +
+        (X : ℝ) ^ 5 * (Y : ℝ) ^ (n / h))) :
+    LatticeJointCountBranches ((5 * (R + 1)) ^ (3 * (10 * n + 7 * m)))
+      T H X S Y (10 * n + 7 * m) m n := by
+  exact lattice_branches_of_five_term_count hm (by omega) hcount
+
 /-- A constant covering all window ranges for fixed coordinate powers. After `1`, the summands
 are the constants of the large-mean-gap window (`122449`), of the five branches of
 `LatticeJointCountBranches` in order, and of the small-scale window. -/
-def latticeJointWindowBase (m n : ℕ) : ℕ :=
+def latticeWindowBase (h m n : ℕ) : ℕ :=
   1 + 122449 + 3609600 ^ 5 * 56 ^ 30 * 8 ^ 10 + 3609600 ^ 8 * 56 ^ 49 * 8 ^ 17 +
-    (3609600 * 56 ^ 6 * 8 ^ 2) ^ (15 * (10 * n + 7 * m) - 1) * (56 * 8) ^ 3 +
-    (3609600 * 56 ^ 6 * 8 ^ 2) ^ (15 * (10 * n + 7 * m) - 2 * m) * (9472 * 56 ^ 3) ^ (3 * m) +
-    (3609600 * 56 ^ 6 * 8 ^ 2) ^ (5 * (10 * n + 7 * m)) *
+    (3609600 * 56 ^ 6 * 8 ^ 2) ^ (15 * h - 1) * (56 * 8) ^ 3 +
+    (3609600 * 56 ^ 6 * 8 ^ 2) ^ (15 * h - 2 * m) * (9472 * 56 ^ 3) ^ (3 * m) +
+    (3609600 * 56 ^ 6 * 8 ^ 2) ^ (5 * h) *
       (1259991040 * 56 ^ 10 * 8 ^ 5) ^ n +
     124928 * 3609600 * 56 ^ 11 * 8 ^ 3
 
 /-- The power of `Δ` in the window bound: it covers the powers `10`, `17`, `30h + 1`,
-`30h - 4m` and `10h + 5n` of the five branches, with `h = 10n + 7m`. -/
-def latticeJointWindowDeltaExponent (m n : ℕ) : ℕ := 30 * (10 * n + 7 * m) + 5 * n + 17
+`30h - 4m` and `10h + 5n` of the five branches for arbitrary graph degree `h`. -/
+def latticeWindowDeltaExponent (h n : ℕ) : ℕ := 30 * h + 5 * n + 17
+
+/-- The degree bound used by the original lattice embedding. -/
+abbrev latticeJointWindowBase (m n : ℕ) : ℕ := latticeWindowBase (10 * n + 7 * m) m n
+
+/-- The corresponding power of the divisor bound. -/
+abbrev latticeJointWindowDeltaExponent (m n : ℕ) : ℕ :=
+  latticeWindowDeltaExponent (10 * n + 7 * m) n
 
 /-- The window exponent of the gap branch `T^{3h} ≤ K X^{15h-1} H³`. -/
 noncomputable def latticeExponentH (h : ℕ) : ℝ := ((45 * h : ℕ) : ℝ) / (153 * h - 1 : ℕ)
@@ -140,11 +158,11 @@ noncomputable def latticeExponentY (h n : ℕ) : ℝ :=
 set_option exponentiation.threshold 1000 in
 /-- Every window is bounded at any exponent dominating the three lattice ratios and the
 complementary exponent `5/17`. -/
-theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
-    (hm : 0 < m)
-    (hα : (5 : ℝ) / 17 ≤ α) (hHexp : latticeExponentH (10 * n + 7 * m) ≤ α)
-    (hSexp : latticeExponentS (10 * n + 7 * m) m ≤ α)
-    (hYexp : latticeExponentY (10 * n + 7 * m) n ≤ α)
+theorem window_real_of_lattice_count {a A T Δ K h m n : ℕ} {α : ℝ}
+    (hm : 0 < m) (hmh : m ≤ h)
+    (hα : (5 : ℝ) / 17 ≤ α) (hHexp : latticeExponentH h ≤ α)
+    (hSexp : latticeExponentS h m ≤ α)
+    (hYexp : latticeExponentY h n ≤ α)
     (hT : 36 ≤ T) (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3)
     (hdrop : T * (T - 1) ≤ 4 * A * Δ)
     (hlocal : let H := 28 * a / (A * T) + 1
@@ -152,10 +170,9 @@ theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
       let S := 9472 * A ^ 3 * H ^ 3 / a ^ 2
       let Y := 1259991040 * A ^ 5 * H ^ 10 / a ^ 4
       124928 * A ^ 4 * H ^ 5 * X < a ^ 3 →
-        LatticeJointCountBranches K T H X S Y (10 * n + 7 * m) m n) :
-    (T : ℝ) ≤ (latticeJointWindowBase m n * (K + 1) *
-      Δ ^ latticeJointWindowDeltaExponent m n : ℕ) * (a : ℝ) ^ α := by
-  set h := 10 * n + 7 * m with hdef
+        LatticeJointCountBranches K T H X S Y h m n) :
+    (T : ℝ) ≤ (latticeWindowBase h m n * (K + 1) *
+      Δ ^ latticeWindowDeltaExponent h n : ℕ) * (a : ℝ) ^ α := by
   have hh1 : 1 ≤ h := by omega
   have hA : 1 ≤ A := by
     by_contra hc
@@ -172,13 +189,13 @@ theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
     have hz : a = 0 := by omega
     simp [hz] at hsix
     omega
-  set e := latticeJointWindowDeltaExponent m n
+  set e := latticeWindowDeltaExponent h n
   have he : e = 30 * h + 5 * n + 17 := rfl
-  let B := latticeJointWindowBase m n * (K + 1) * Δ ^ e
+  let B := latticeWindowBase h m n * (K + 1) * Δ ^ e
   have hB : 1 ≤ B :=
-    Nat.mul_pos (Nat.mul_pos (by unfold latticeJointWindowBase; omega) (by omega)) (pow_pos hΔ e)
-  have hbase : latticeJointWindowBase m n ≤ B := by
-    calc latticeJointWindowBase m n = latticeJointWindowBase m n * 1 * 1 := by ring
+    Nat.mul_pos (Nat.mul_pos (by unfold latticeWindowBase; omega) (by omega)) (pow_pos hΔ e)
+  have hbase : latticeWindowBase h m n ≤ B := by
+    calc latticeWindowBase h m n = latticeWindowBase h m n * 1 * 1 := by ring
       _ ≤ B := by
         dsimp [B]
         gcongr
@@ -187,12 +204,12 @@ theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
   have hT2 : T ^ 2 ≤ (8 * Δ) * A := by
     have : T ≤ 2 * (T - 1) := by omega
     nlinarith
-  have hcoeff {c f : ℕ} (hc : c ≤ latticeJointWindowBase m n) (hf : f ≤ e) :
+  have hcoeff {c f : ℕ} (hc : c ≤ latticeWindowBase h m n) (hf : f ≤ e) :
       c * K * Δ ^ f ≤ B := by
     dsimp only [B]
     gcongr
     all_goals omega
-  have hfin {N r c f : ℕ} (hN : 0 < N) (hc : c ≤ latticeJointWindowBase m n) (hf : f ≤ e)
+  have hfin {N r c f : ℕ} (hN : 0 < N) (hc : c ≤ latticeWindowBase h m n) (hf : f ≤ e)
       (hT : T ^ N ≤ c * K * Δ ^ f * a ^ r) (hr : (r : ℝ) / N ≤ α) :
       (T : ℝ) ≤ (B : ℝ) * (a : ℝ) ^ α :=
     window_real_bound_of_power ha hB hN (hT.trans (Nat.mul_le_mul_right _ (hcoeff hc hf))) hr
@@ -200,7 +217,7 @@ theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
   · have h' := window_large_mean_gap ha hsix hbig
     have h'' : T ^ 4 ≤ B * a ^ 1 := by
       simpa using h'.trans (Nat.mul_le_mul_right a
-        ((show 122449 ≤ latticeJointWindowBase m n by unfold latticeJointWindowBase; omega).trans
+        ((show 122449 ≤ latticeWindowBase h m n by unfold latticeWindowBase; omega).trans
           hbase))
     apply window_real_bound_of_power ha hB (by decide : 0 < 4) h''
     norm_num only [Nat.cast_one, Nat.cast_ofNat]
@@ -220,7 +237,7 @@ theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
       have hw := window_branch_exponent (L := 1) (q := 5) (u := 0) (v := 0) (B := 1) (F := 1)
         (by omega) (by simpa using c) hH hX (by simp) hT2
       apply hfin (N := 51) (r := 15) (c := 3609600 ^ 5 * 56 ^ 30 * 8 ^ 10) (f := 10)
-        (by decide) (by unfold latticeJointWindowBase; omega) (by omega)
+        (by decide) (by unfold latticeWindowBase; omega) (by omega)
       · calc T ^ 51 ≤ K * (3609600 * 56 ^ 6 * (8 * Δ) ^ 2) ^ 5 * 1 * a ^ (3 * 5 + 0) := hw
           _ = _ := by ring
       · exact (by norm_num : ((15 : ℕ) : ℝ) / (51 : ℕ) ≤ 5 / 17).trans hα
@@ -229,7 +246,7 @@ theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
         (F := 56 * (8 * Δ)) (by omega) (c.trans (le_of_eq (by ring)))
         hH hX (by simpa using gap_cube_box hH hT2) hT2
       apply hfin (N := 85) (r := 25) (c := 3609600 ^ 8 * 56 ^ 49 * 8 ^ 17) (f := 17)
-        (by decide) (by unfold latticeJointWindowBase; omega) (by omega)
+        (by decide) (by unfold latticeWindowBase; omega) (by omega)
       · calc T ^ 85 ≤ K * (3609600 * 56 ^ 6 * (8 * Δ) ^ 2) ^ 8 * (56 * (8 * Δ)) *
             a ^ (3 * 8 + 1) := hw
           _ = _ := by ring
@@ -245,7 +262,7 @@ theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
       apply hfin (N := 3 * h + 10 * (15 * h - 1) + 9) (r := 3 * (15 * h - 1) + 3)
         (c := (3609600 * 56 ^ 6 * 8 ^ 2) ^ (15 * h - 1) * (56 * 8) ^ 3)
         (f := 2 * (15 * h - 1) + 3) (by omega)
-        (by unfold latticeJointWindowBase; rw [← hdef]; omega)
+        (by unfold latticeWindowBase; omega)
         (by omega)
       · calc _ ≤ _ := hw
           _ = _ := by rw [hE, mul_pow, ← pow_mul]; ring
@@ -269,7 +286,7 @@ theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
         (r := 3 * (15 * h - 2 * m) + 3 * m)
         (c := (3609600 * 56 ^ 6 * 8 ^ 2) ^ (15 * h - 2 * m) * (9472 * 56 ^ 3) ^ (3 * m))
         (f := 2 * (15 * h - 2 * m)) (by omega)
-        (by unfold latticeJointWindowBase; rw [← hdef]; omega)
+        (by unfold latticeWindowBase; omega)
         (by omega)
       · calc _ ≤ _ := hw
           _ = _ := by rw [hE, mul_pow, ← pow_mul]; ring
@@ -286,7 +303,7 @@ theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
         (by omega) c hH hX hY hT2
       apply hfin (N := h + 10 * (5 * h) + 20 * n) (r := 3 * (5 * h) + 6 * n)
         (c := (3609600 * 56 ^ 6 * 8 ^ 2) ^ (5 * h) * (1259991040 * 56 ^ 10 * 8 ^ 5) ^ n)
-        (f := 10 * h + 5 * n) (by omega) (by unfold latticeJointWindowBase; rw [← hdef]; omega)
+        (f := 10 * h + 5 * n) (by omega) (by unfold latticeWindowBase; omega)
         (by omega)
       · calc _ ≤ _ := hw
           _ = _ := by rw [hE, mul_pow, mul_pow, mul_pow, ← pow_mul, ← pow_mul, pow_add]; ring
@@ -301,12 +318,30 @@ theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
         _ ≤ B * a ^ 5 := by
           apply Nat.mul_le_mul_right
           dsimp [B]
-          have hc' : 124928 * 3609600 * 56 ^ 11 * 8 ^ 3 ≤ latticeJointWindowBase m n := by
-            unfold latticeJointWindowBase; omega
-          calc _ ≤ latticeJointWindowBase m n * Δ ^ e :=
+          have hc' : 124928 * 3609600 * 56 ^ 11 * 8 ^ 3 ≤ latticeWindowBase h m n := by
+            unfold latticeWindowBase; omega
+          calc _ ≤ latticeWindowBase h m n * Δ ^ e :=
               Nat.mul_le_mul hc' (Nat.pow_le_pow_right hΔ (by omega))
-            _ = latticeJointWindowBase m n * 1 * Δ ^ e := by ring
+            _ = latticeWindowBase h m n * 1 * Δ ^ e := by ring
             _ ≤ _ := by gcongr; omega
     exact window_real_bound_of_power ha hB (by decide : 0 < 17) h' hα
+
+/-- The original lattice reduction is the specialization `h = 10n + 7m`. -/
+theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
+    (hm : 0 < m)
+    (hα : (5 : ℝ) / 17 ≤ α) (hHexp : latticeExponentH (10 * n + 7 * m) ≤ α)
+    (hSexp : latticeExponentS (10 * n + 7 * m) m ≤ α)
+    (hYexp : latticeExponentY (10 * n + 7 * m) n ≤ α)
+    (hT : 36 ≤ T) (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3)
+    (hdrop : T * (T - 1) ≤ 4 * A * Δ)
+    (hlocal : let H := 28 * a / (A * T) + 1
+      let X := 3609600 * A ^ 4 * H ^ 6 / a ^ 3
+      let S := 9472 * A ^ 3 * H ^ 3 / a ^ 2
+      let Y := 1259991040 * A ^ 5 * H ^ 10 / a ^ 4
+      124928 * A ^ 4 * H ^ 5 * X < a ^ 3 →
+        LatticeJointCountBranches K T H X S Y (10 * n + 7 * m) m n) :
+    (T : ℝ) ≤ (latticeJointWindowBase m n * (K + 1) *
+      Δ ^ latticeJointWindowDeltaExponent m n : ℕ) * (a : ℝ) ^ α := by
+  exact window_real_of_lattice_count hm (by omega) hα hHexp hSexp hYexp hT hsix hdrop hlocal
 
 end PierceLengthBound.FixedDividend

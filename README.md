@@ -5,10 +5,12 @@ positive terms ([Open Problem Garden](https://www.openproblemgarden.org/op/a_dis
 Shallit asked whether `P(a, b) = O((log a)²)`. That question is **still open**. This repository
 proves, uniformly in `0 < b < a`:
 
-* **Strongest bound:** `P(a, b) ≤ C_ε · a^{γ* + ε}`, where
-  `γ* = 471/1559 − 6√105/7795 = 0.2942294157…`, and its rational instance `153/520 + ε`.
-  This is proved unconditionally, including the external coefficient-uniform affine-curve
-  counting theorem.
+* **Strongest unconditional bound:** `P(a, b) ≤ C_ε · a^{β* + ε}`, where
+  `β* = (41301 − 3√82849)/137480 = 0.2941336553…`, and its rational instance `4317/14677 + ε`.
+  The coefficient-uniform affine-curve theorem and the effective Hilbert specialization
+  sieve are both proved inputs.
+* **Exterior-lattice bounds:** `γ* = 471/1559 − 6√105/7795 = 0.2942294157…`,
+  and its rational instance `153/520 + ε`.
 * **Joint-invariant bounds:** `α* = (1310 − √655)/4365 = 0.2942513246…`, and the rational
   versions `2201/7480 + ε` and `128/435 + ε`.
 * **Earlier lattice bound:** `45/152 + ε`.
@@ -28,10 +30,32 @@ proves, uniformly in `0 < b < a`:
   and `I₄ = L` in the nonterminal ranges specified in the paper. In particular the last two
   identities require `i + 3 < P(a,b)` and `i + 5 < P(a,b)`, respectively, with zero-based indexing.
 
+## Polar projection and the arithmetic sieve
+
+[`PolarProjectionMain.lean`](PierceLengthBound/PolarProjectionMain.lean) proves both new
+exponents unconditionally. The exact orbit identity `D W = A (Gk + ℓ)` identifies the
+projective curvature coordinates with linear forms. Their actual residue-weighted
+common-base contribution is at most four. On the good degree-24 components this gives
+the powered graph degree bound `60n+56m`.
+
+The branch condition comes from an explicit degree-12 polynomial whose roots specialize
+to labels in the actual residue fields at infinity. A coefficient-uniform effective
+Hilbert irreducibility theorem is proved in
+[`BranchSieveMultivariateHilbert.lean`](PierceLengthBound/BranchSieveMultivariateHilbert.lean),
+using CCDN, integer factor-height bounds, universal resolvents, integral specialization,
+Kronecker substitution and induction over the parameters. It bounds the bad four-label
+vertices uniformly in the dividend and their common divisor. The completion count
+transfers this saving to full patterns, retaining all common factors and pivot charts.
+
+A fixed proper exceptional polynomial handles the local geometric exclusions. Its
+pattern count has power `X^(14/3)` with a slowly growing coefficient. Summing the actual
+curve estimates proves the six-term window bound and hence the new global exponents.
+The paper's section “Exact polar projection and the branch sieve” presents the argument.
+
 ## Repository layout
 
-* `PierceLengthBound/` and `PierceLengthBound.lean`: the Lean 4 / Mathlib formalization of all of
-  the above, with no `sorry`. The [module maps](#module-maps) below locate each step.
+* `PierceLengthBound/` and `PierceLengthBound.lean`: the Lean 4 / Mathlib proofs of the results
+  and explicitly conditional reductions above, with no `sorry`. The [module maps](#module-maps) below locate each step.
 * `Challenge.lean`, `Solution.lean`, `comparator.json`: the independent statements, the proved
   declarations, and the Comparator configuration for [Palomar](#palomar-submission).
 * `Axioms.lean`: the axiom audit, built by `lake build`.
@@ -46,6 +70,14 @@ proves, uniformly in `0 < b < a`:
 ## Main theorem statements
 
 ```lean
+theorem PierceLengthBound.P_le_polar_optimal : ∀ ε > (0 : ℝ), ∃ C > 0,
+    ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ (((41301 : ℝ) - 3 * Real.sqrt 82849) / 137480 + ε)
+
+theorem PierceLengthBound.P_le_4317_14677 : ∀ ε > (0 : ℝ), ∃ C > 0,
+    ∀ a b : ℕ, 0 < b → b < a →
+    (P a b : ℝ) ≤ C * (a : ℝ) ^ ((4317 : ℝ) / 14677 + ε)
+
 theorem PierceLengthBound.P_le_lattice_optimal : ∀ ε > (0 : ℝ), ∃ C > 0,
     ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((471 : ℝ) / 1559 - 6 * Real.sqrt 105 / 7795 + ε)
@@ -105,7 +137,7 @@ which the requirement must match. `lakefile.toml` is the source of truth for the
 uses the same Lean toolchain and Mathlib revision as this project. Lake fetches the dependency into
 `.lake/packages`.
 
-The check scripts require Python 3.11+ (standard library only, except the two SymPy scripts
+The check scripts require Python 3.11+ (standard library only, except the three SymPy scripts
 marked below). Build and check, in order:
 
 ```sh
@@ -117,6 +149,7 @@ lake build
 python3 scripts/check-curve-counting-dependency.py --checkout
 python3 scripts/check-weighted-count-dependencies.py
 bash scripts/verify-comparator.sh                           # Linux with bubblewrap only
+python3 scripts/verify-polar-kernels.py                     # additional polar proof replays
 ```
 
 * `lake build` runs Mathlib's standard linters (`weak.linter.mathlibStandardSet`) and builds the
@@ -138,15 +171,23 @@ bash scripts/verify-comparator.sh                           # Linux with bubblew
   and con-ron, as Palomar does. The sandboxed Comparator needs Linux; a successful macOS Lean
   build alone does not establish a Palomar verification pass.
 
+`scripts/verify-polar-kernels.py` exports thirty-two additional principal polar results,
+including the actual common-base bound, pattern count, effective Hilbert theorem,
+arithmetic sieve, graph-degree reduction and global reductions, and replays their proofs with Lean,
+NanoDa and con-ron at their standard settings.
+This is an additional proof check; these statements are not compared with an independent
+Challenge and remain outside the fifteen selected Comparator statements.
+
 Exact-arithmetic checks supplement the formal proof; finite numerical checks do not establish
 the asymptotic bounds. `scripts/check-math.py` (standard library only) checks the moment
 construction and local identities with exact rational arithmetic on 2,274 deterministic sample
-orbits. Two further scripts require SymPy:
+orbits. Three further scripts require SymPy:
 
 ```sh
 python3 scripts/check-math.py
 python3 scripts/check-fixed-dividend.py                     # requires SymPy
 python3 scripts/check-fixed-dividend-lines.py               # requires SymPy
+python3 scripts/check-polar-projection.py                    # requires SymPy
 ```
 
 The latest verification run is recorded in `review.notes` of
@@ -255,6 +296,13 @@ All modules are in `PierceLengthBound/`; the `.lean` extension is omitted.
 | `Fiber` | a fixed `(u, v, D)` allows at most `max_{n ≤ 32a⁷} τ(n)` starting points |
 | `Window` | for a run of `T` terms in `[A, 2A)`: `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
 | `Main` | dyadic decomposition, `P_le_of_visits` (window bounds `T^N ≤ K S(a) aʳ` with `S(a) ≪ a^η` give `P ≪ a^{r/N+ε}`), and the unconditional theorem `P_le` |
+| `PolarProjectionMain` | unconditional optimized polar bound and `4317/14677`; assembles the proved arithmetic sieve, geometry and six-term window estimate |
+| `PolarProjectionRetainedBase`, `PolarProjectionRetainedDegree` | actual common-base contribution at most four and the retained powered graph degree bound `60n+56m` |
+| `PolarProjectionGeometryGoodPattern` | explicit branch irreducibility and the fixed proper exceptional polynomial imply the good-pattern geometric estimate |
+| `BranchSieveMonicHilbert`, `BranchSieveMultivariateHilbert` | coefficient-uniform effective Hilbert irreducibility, from the CCDN root count through resolvents, specialization and Kronecker substitution |
+| `BranchSieveVertexMonic`, `BranchSieveArithmeticVertexCount` | the actual integer degree-12 family, generic irreducibility, specialization compatibility and uniform scaled-vertex sieve |
+| `BranchSievePatternCount`, `BranchSievePatternCountSlow` | completion to full minor patterns with all common divisors and the slow-growth bound on selected orbit windows |
+| `HypersurfacePatternCount`, `HypersurfacePatternCountSlow` | proper algebraic exceptional loci have pattern exponent `14/3` |
 | `SixStep` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `TwentyThreeMain.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10` |
 | `ShortSum` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
 | `Geometric` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}`, and the general form `∑_k min(α 2^{−sk}, β 2^{tk}) ≪ α^{t/(s+t)} β^{s/(s+t)}` (`sum_min_le_gen`) |
