@@ -31,21 +31,33 @@ lemma branchMultiWeight_succ (a : ℕ) {n : ℕ} (s : Fin (n + 1) → ℕ) :
   intro i _
   ring
 
+lemma branchMultiWeight_two (a : ℕ) (s : Fin 2 → ℕ) :
+    branchMultiWeight a s = s 0 + a * s 1 := by
+  simp [branchMultiWeight, Fin.sum_univ_two]
+
+/-- Digit expansions are unique; the top digit need not be bounded. -/
 theorem branchMultiWeight_injective {a n : ℕ} {s t : Fin n → ℕ}
-    (hs : ∀ i, s i < a) (ht : ∀ i, t i < a)
+    (hs : ∀ i : Fin n, i.val + 1 < n → s i < a) (ht : ∀ i : Fin n, i.val + 1 < n → t i < a)
     (h : branchMultiWeight a s = branchMultiWeight a t) : s = t := by
   induction n with
   | zero => exact Subsingleton.elim _ _
   | succ n ih =>
     rw [branchMultiWeight_succ, branchMultiWeight_succ] at h
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · funext i
+      fin_cases i
+      simpa [branchMultiWeight] using h
+    have hs0 := hs 0 (by simp; omega)
+    have ht0 := ht 0 (by simp; omega)
     have h0 := congrArg (fun j => j % a) h
     simp only [Nat.add_mod, Nat.mul_mod_right, add_zero,
-      Nat.mod_eq_of_lt (hs 0), Nat.mod_eq_of_lt (ht 0)] at h0
+      Nat.mod_eq_of_lt hs0, Nat.mod_eq_of_lt ht0] at h0
     have htail : branchMultiWeight a (fun i => s i.succ) =
         branchMultiWeight a (fun i => t i.succ) := by
       rw [h0] at h
-      exact Nat.eq_of_mul_eq_mul_left (by have := hs 0; omega) (Nat.add_left_cancel h)
-    have hi := ih (fun i => hs i.succ) (fun i => ht i.succ) htail
+      exact Nat.eq_of_mul_eq_mul_left (by omega) (Nat.add_left_cancel h)
+    have hi := ih (fun i hi => hs i.succ (by simp; omega))
+      (fun i hi => ht i.succ (by simp; omega)) htail
     funext i
     exact Fin.cases h0 (fun j => congrFun hi j) i
 
@@ -63,8 +75,10 @@ lemma branchMultiKronecker_monomial (a n : ℕ) (s : Fin n →₀ ℕ) (c : R) :
       Polynomial.C_mul_X_pow_eq_monomial]
   · intro i; simp
 
+/-- Only the digits below the top one need to fit the radix. -/
 theorem branchMultiKronecker_coeff {a n : ℕ} {p : MvPolynomial (Fin n) R}
-    (ha : ∀ i, p.degreeOf i < a) {s : Fin n →₀ ℕ} (hs : s ∈ p.support) :
+    (ha : ∀ i : Fin n, i.val + 1 < n → p.degreeOf i < a) {s : Fin n →₀ ℕ}
+    (hs : s ∈ p.support) :
     (branchMultiKronecker a n p).coeff (branchMultiWeight a s) = p.coeff s := by
   classical
   conv_lhs => rw [p.as_sum]
@@ -77,9 +91,33 @@ theorem branchMultiKronecker_coeff {a n : ℕ} {p : MvPolynomial (Fin n) R}
     apply hts
     apply DFunLike.coe_injective
     exact branchMultiWeight_injective
-      (fun i => (le_degreeOf_of_mem_support i ht).trans_lt (ha i))
-      (fun i => (le_degreeOf_of_mem_support i hs).trans_lt (ha i)) heq.symm
+      (fun i hi => (le_degreeOf_of_mem_support i ht).trans_lt (ha i hi))
+      (fun i hi => (le_degreeOf_of_mem_support i hs).trans_lt (ha i hi)) heq.symm
   · exact fun h => (h hs).elim
+
+theorem branchMultiKronecker_two_coeff {a : ℕ} {p : MvPolynomial (Fin 2) R}
+    (ha : p.degreeOf 0 < a) {s : Fin 2 →₀ ℕ} (hs : s ∈ p.support) :
+    (branchMultiKronecker a 2 p).coeff (s 0 + a * s 1) = p.coeff s := by
+  rw [← branchMultiWeight_two]
+  exact branchMultiKronecker_coeff (fun i hi => by fin_cases i <;> simp_all) hs
+
+/-- Bounded-digit encoding never merges coefficients. Every encoded
+coefficient is either zero or exactly one original coefficient. -/
+theorem branchMultiKronecker_coefficient_cases {a n : ℕ} (p : MvPolynomial (Fin n) R)
+    (ha : ∀ i, p.degreeOf i < a) (k : ℕ) :
+    (branchMultiKronecker a n p).coeff k = 0 ∨
+      ∃ s ∈ p.support, (branchMultiKronecker a n p).coeff k = p.coeff s := by
+  classical
+  by_cases hs : ∃ s ∈ p.support, branchMultiWeight a s = k
+  · obtain ⟨s, hs, he⟩ := hs
+    right
+    exact ⟨s, hs, he ▸ branchMultiKronecker_coeff (fun i _ => ha i) hs⟩
+  · left
+    conv_lhs => rw [p.as_sum, map_sum, Polynomial.finsetSum_coeff]
+    apply Finset.sum_eq_zero
+    intro s hs'
+    rw [branchMultiKronecker_monomial, Polynomial.coeff_monomial_of_ne]
+    exact fun he => hs ⟨s, hs', he.symm⟩
 
 def branchMultiExponent {a n : ℕ} (s : Fin n → Fin a) : Fin n →₀ ℕ :=
   Finsupp.equivFunOnFinite.symm (fun i => (s i).val)
@@ -112,8 +150,8 @@ theorem branchMultiDecode_monomial {a n : ℕ} (s : Fin n →₀ ℕ)
     · simp
     · intro heq
       have hu := branchMultiWeight_injective (s := (s : Fin n → ℕ))
-        (t := branchMultiExponent u) hs
-        (fun i => (u i).isLt) heq.symm
+        (t := branchMultiExponent u) (fun i _ => hs i)
+        (fun i _ => (u i).isLt) heq.symm
       apply hut
       funext i
       apply Fin.ext

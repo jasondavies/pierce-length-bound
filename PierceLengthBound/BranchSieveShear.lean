@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import Mathlib.Algebra.MvPolynomial.Degrees
+public import PierceLengthBound.BranchSieveMultivariateKronecker
 public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import Mathlib.Data.Fin.VecNotation
 import Mathlib.Tactic
@@ -65,55 +65,16 @@ theorem branchPowerShear_eval (e : ℕ) (c : R) (p : MvPolynomial (Fin 2) R) (t 
     · fin_cases i <;> simp [branchPowerShearHom]
   exact DFunLike.congr_fun hh p
 
-def branchKroneckerHom (e : ℕ) : MvPolynomial (Fin 2) R →+* Polynomial R :=
-  eval₂Hom Polynomial.C ![Polynomial.X, Polynomial.X ^ e]
-
-lemma branchKroneckerHom_monomial (e : ℕ) (s : Fin 2 →₀ ℕ) (c : R) :
-    branchKroneckerHom e (monomial s c) = Polynomial.monomial (s 0 + e * s 1) c := by
-  simp only [branchKroneckerHom, coe_eval₂Hom, eval₂_monomial]
-  rw [Finsupp.prod_fintype]
-  · simp [Fin.prod_univ_two, ← pow_mul, ← pow_add, Polynomial.C_mul_X_pow_eq_monomial]
-  · intro i; simp
-
-lemma branch_weight_injective {e : ℕ} {s t : Fin 2 →₀ ℕ}
-    (hs : s 0 < e) (ht : t 0 < e)
-    (heq : s 0 + e * s 1 = t 0 + e * t 1) : s = t := by
-  have h0 := congrArg (fun n => n % e) heq
-  simp only [Nat.add_mod, Nat.mul_mod_right, add_zero, Nat.mod_eq_of_lt hs,
-    Nat.mod_eq_of_lt ht] at h0
-  have h1 : s 1 = t 1 := by
-    rw [h0] at heq
-    exact Nat.eq_of_mul_eq_mul_left (by omega : 0 < e) (Nat.add_left_cancel heq)
-  ext i
-  fin_cases i <;> assumption
-
-/-- Taking a large enough power prevents cancellation between distinct monomials. -/
-theorem branchKroneckerHom_coeff {p : MvPolynomial (Fin 2) R} {e : ℕ}
-    (he : p.degreeOf 0 < e) {s : Fin 2 →₀ ℕ} (hs : s ∈ p.support) :
-    (branchKroneckerHom e p).coeff (s 0 + e * s 1) = p.coeff s := by
-  classical
-  conv_lhs => rw [p.as_sum]
-  simp only [map_sum, branchKroneckerHom_monomial, Polynomial.finsetSum_coeff]
-  rw [Finset.sum_eq_single s]
-  · simp
-  · intro t ht hts
-    apply Polynomial.coeff_monomial_of_ne
-    intro htweight
-    exact hts (branch_weight_injective
-      ((le_degreeOf_of_mem_support 0 ht).trans_lt he)
-      ((le_degreeOf_of_mem_support 0 hs).trans_lt he) htweight.symm)
-  · exact fun h => (h hs).elim
-
 /-- The Kronecker substitution has degree at least the shear power times the
 original degree in the root variable. -/
 theorem branchKroneckerHom_natDegree_lower {p : MvPolynomial (Fin 2) R}
     (hp : p ≠ 0) {e : ℕ} (he : p.degreeOf 0 < e) :
-    e * p.degreeOf 1 ≤ (branchKroneckerHom e p).natDegree := by
+    e * p.degreeOf 1 ≤ (branchMultiKronecker e 2 p).natDegree := by
   obtain ⟨s, hs, hdeg⟩ := Finset.exists_mem_eq_sup p.support
     (MvPolynomial.support_nonempty.mpr hp) (fun s => s 1)
   rw [← degreeOf_eq_sup] at hdeg
-  have hnz : (branchKroneckerHom e p).coeff (s 0 + e * s 1) ≠ 0 := by
-    rw [branchKroneckerHom_coeff he hs]
+  have hnz : (branchMultiKronecker e 2 p).coeff (s 0 + e * s 1) ≠ 0 := by
+    rw [branchMultiKronecker_two_coeff he hs]
     exact mem_support_iff.mp hs
   exact (by rw [hdeg]; omega : e * p.degreeOf 1 ≤ s 0 + e * s 1).trans
     (Polynomial.le_natDegree_of_ne_zero hnz)
@@ -137,12 +98,12 @@ lemma branchAxisHom_natDegree_le (p : MvPolynomial (Fin 2) R) :
   · simp [zero_pow hy]
 
 lemma branchAxisHom_shear (p : MvPolynomial (Fin 2) R) (e : ℕ) :
-    branchAxisHom (branchPowerShearHom e 1 p) = branchKroneckerHom e p := by
+    branchAxisHom (branchPowerShearHom e 1 p) = branchMultiKronecker e 2 p := by
   have hh : branchAxisHom.comp (branchPowerShearHom e (1 : R)).toRingHom =
-      branchKroneckerHom e := by
+      branchMultiKronecker e 2 := by
     ext i
-    · simp [branchAxisHom, branchKroneckerHom]
-    · fin_cases i <;> simp [branchAxisHom, branchKroneckerHom, branchPowerShearHom]
+    · simp [branchAxisHom, branchMultiKronecker]
+    · fin_cases i <;> simp [branchAxisHom, branchMultiKronecker, branchPowerShearHom]
   exact DFunLike.congr_fun hh p
 
 /-- Raising the shear exponent raises total degree proportionally to the

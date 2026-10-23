@@ -34,24 +34,6 @@ theorem branchMultiKronecker_map {R S : Type*} [CommSemiring R] [CommSemiring S]
       simp [branchMultiKronecker]
   exact DFunLike.congr_fun he p
 
-/-- Bounded-digit encoding never merges coefficients. Every encoded
-coefficient is either zero or exactly one original coefficient. -/
-theorem branchMultiKronecker_coefficient_cases {R : Type*} [CommSemiring R]
-    {a n : ℕ} (p : MvPolynomial (Fin n) R) (ha : ∀ i, p.degreeOf i < a) (k : ℕ) :
-    (branchMultiKronecker a n p).coeff k = 0 ∨
-      ∃ s ∈ p.support, (branchMultiKronecker a n p).coeff k = p.coeff s := by
-  classical
-  by_cases hs : ∃ s ∈ p.support, branchMultiWeight a s = k
-  · obtain ⟨s, hs, he⟩ := hs
-    right
-    exact ⟨s, hs, he ▸ branchMultiKronecker_coeff ha hs⟩
-  · left
-    conv_lhs => rw [p.as_sum, map_sum, Polynomial.finsetSum_coeff]
-    apply Finset.sum_eq_zero
-    intro s hs'
-    rw [branchMultiKronecker_monomial, Polynomial.coeff_monomial_of_ne]
-    exact fun he => hs ⟨s, hs', he.symm⟩
-
 theorem branchMultiKronecker_nested_height {a n H : ℕ}
     (p : MvPolynomial (Fin n) ℤ[X]) (ha : ∀ i, p.degreeOf i < a)
     (hH : ∀ s j, |(p.coeff s).coeff j| ≤ (H : ℤ)) (k j : ℕ) :
