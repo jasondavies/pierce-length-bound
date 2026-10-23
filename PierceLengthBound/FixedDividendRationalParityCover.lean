@@ -63,13 +63,10 @@ theorem orbit_rational_component_parity_range {a b i : ℕ}
         (Module.finrank ℚ (filteredCoordinateSpace p n) : ℤ) = (d : ℤ) * n + c := by
   obtain ⟨d, hd, hd24, N, c, hdegree⟩ :=
     orbit_rational_component_degree_range hba hi hX hgaps hU hV hscale p hp hf he hx
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hL : (Lz a b i : ℚ) ≠ 0 := by
-    exact_mod_cast (ne_of_gt (Lz_pos hba (by omega : i + 5 < P a b)))
-  have heven := rational_nonexceptional_component_degree_even hρ hu hv
-    (nonexceptionalPattern_ratCast hne)
+  obtain ⟨hρ, hu, hv, hne', ha, hL⟩ := orbit_rational_nonexceptional_data hba hi hne
+  have heven := rational_nonexceptional_component_degree_even hρ hu hv hne'
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-    (Lz a b i) a hL (by exact_mod_cast (show a ≠ 0 by omega)) p hf he
+    (Lz a b i) a hL ha p hf he
     (by omega : 0 < d) hdegree
   obtain ⟨m, hm⟩ := heven
   exact ⟨d, hd, hd24, ⟨m, hm⟩, by omega, N, c, hdegree⟩

@@ -57,17 +57,10 @@ theorem retained_normalized_branch_joint_orders
   let l := Ideal.Quotient.mk I (X 0)
   let S := projectiveChart I ι l
   let C := integralClosure S F
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation hρ hu hv hne'
+  obtain ⟨hρ, hu, hv, hne', ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
+  obtain ⟨hl, M, hs⟩ := nonexceptional_first_node_generation hρ hu hv hne'
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-    (Lz a b i : ℚ) (a : ℚ) ha I hf hg
-  have hl : ι l ≠ 0 := by
-    intro hz
-    apply first_node_ne_zero_of_generation I hd hdegree hs
-    exact hι (by simpa using hz)
+    (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
   have hlmem : l ∈ filteredCoordinateSpace I 1 :=
     ⟨X 0, by simp [mem_restrictTotalDegree], rfl⟩
   let : IsFractionRing S F := projectiveChart_isFractionRing I ι l hl hfrac

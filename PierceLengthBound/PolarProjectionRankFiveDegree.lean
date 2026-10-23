@@ -21,17 +21,6 @@ open MvPolynomial
 open scoped IntermediateField
 attribute [local instance] FractionRing.liftAlgebra
 
-/-- The rational data of an actual nonexceptional orbit state used by the chart theorems:
-the pattern signs, the rational nonexceptional condition, and nonvanishing of `a` and `L`. -/
-theorem orbit_rational_nonexceptional_data {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
-    (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i)) :
-    0 < patternRhoQ a b i ∧ 0 < patternUQ a b i ∧ patternVQ a b i < 0 ∧
-      NonexceptionalPattern (patternRhoQ a b i : ℝ) (patternUQ a b i : ℝ)
-        (patternVQ a b i : ℝ) ∧ (a : ℚ) ≠ 0 ∧ (Lz a b i : ℚ) ≠ 0 := by
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  refine ⟨hρ, hu, hv, by simpa using hne, by exact_mod_cast (show a ≠ 0 by omega), ?_⟩
-  exact_mod_cast (ne_of_gt (Lz_pos hba (by omega : i + 5 < P a b)))
-
 /-- At any branch where the old first coordinate has a pole, the rank-five function has
 a strictly negative order. The precise order is supplied by the existing infinity theorem. -/
 theorem retained_rank_five_negative_at_infinity

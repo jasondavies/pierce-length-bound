@@ -53,6 +53,18 @@ lemma nonexceptionalPattern_ratCast {a b i : ℕ}
       (patternVQ a b i : ℝ) := by
   simpa using hne
 
+/-- The rational data of an actual nonexceptional orbit state used by the chart theorems:
+the pattern signs, the rational nonexceptional condition, and nonvanishing of `a` and `L`. -/
+theorem orbit_rational_nonexceptional_data {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
+    (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i)) :
+    0 < patternRhoQ a b i ∧ 0 < patternUQ a b i ∧ patternVQ a b i < 0 ∧
+      NonexceptionalPattern (patternRhoQ a b i : ℝ) (patternUQ a b i : ℝ)
+        (patternVQ a b i : ℝ) ∧ (a : ℚ) ≠ 0 ∧ (Lz a b i : ℚ) ≠ 0 := by
+  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
+  refine ⟨hρ, hu, hv, nonexceptionalPattern_ratCast hne,
+    by exact_mod_cast (show a ≠ 0 by omega), ?_⟩
+  exact_mod_cast (ne_of_gt (Lz_pos hba (by omega : i + 5 < P a b)))
+
 /-- The actual rational first equation. -/
 def orbitCurveQuadraticQ (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   curveQuadratic (patternRhoQ a b i) (patternUQ a b i) (patternVQ a b i)

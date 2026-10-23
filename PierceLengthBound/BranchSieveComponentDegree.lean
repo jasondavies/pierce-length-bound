@@ -83,14 +83,7 @@ theorem orbit_infinity_chart_setup
   obtain ⟨h₁, h₂, -⟩ := orbit_chart_normalization_in_field hba hi hne I hf hg hd hdegree F
   have hι : Function.Injective (orbitChartEmbedding I F) :=
     IsFractionRing.injective (MvPolynomial (Fin 3) ℚ ⧸ I) F
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  have hA : (Lz a b i : ℚ) ≠ 0 := by
-    exact_mod_cast (show Lz a b i ≠ 0 by
-      have := Lz_pos hba (by omega : i + 5 < P a b)
-      omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  obtain ⟨hρ, hu, hv, hne', ha, hA⟩ := orbit_rational_nonexceptional_data hba hi hne
   exact ⟨h₁, h₂, IsIntegralClosure.isFractionRing_of_finite_extension (orbitChart I F) F F
       (orbitChartClosure I F), hι, ha, hA, hρ, hu, hv, hne',
     nonexceptional_chart_finite_over_parameter hρ hu hv hne'

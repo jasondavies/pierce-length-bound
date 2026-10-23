@@ -64,6 +64,28 @@ theorem rational_nonexceptional_eventual_first_node_generation
     simpa only [curveQuadratic_top_component, hgt, rationalInfinityBoundaryIdeal] using hm
   exact ⟨3 * M, eventual_generation_of_coordinate_power_reductions I 0 (by omega) hpow⟩
 
+/-- On an actual nonexceptional component the first node eventually generates the degree
+filtration, and it is nonzero in every injective image of the coordinate ring. -/
+theorem nonexceptional_first_node_generation
+    {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
+    (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)
+    (I : Ideal (MvPolynomial (Fin 3) ℚ))
+    (hf : curveQuadratic ρ u v ρ' u' v' ∈ I)
+    (hg : curveEquation ρ u v ρ' u' v' A a ∈ I)
+    {F : Type*} [Field F] [Algebra ℚ F]
+    (ι : (MvPolynomial (Fin 3) ℚ ⧸ I) →ₐ[ℚ] F) (hι : Function.Injective ι)
+    {d N : ℕ} {b : ℤ} (hd : 0 < d)
+    (hdegree : ∀ n ≥ N,
+      (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = (d : ℤ) * n + b) :
+    ι (Ideal.Quotient.mk I (MvPolynomial.X 0)) ≠ 0 ∧ ∃ M : ℕ, ∀ n ≥ M,
+      filteredCoordinateSpace I (n + 1) ⊔ (filteredCoordinateSpace I (n + 1)).map
+        (LinearMap.mulLeft ℚ (Ideal.Quotient.mk I (MvPolynomial.X 0))) =
+      filteredCoordinateSpace I (n + 2) := by
+  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
+    hρ hu hv hne ρ' u' v' A a ha I hf hg
+  refine ⟨fun hh => first_node_ne_zero_of_generation I hd hdegree hs ?_, M, hs⟩
+  exact hι (by simpa using hh)
+
 /-- The genuine infinity section of a nonexceptional component is finite and
 has its certified Hilbert degree as vector-space dimension. -/
 theorem rational_nonexceptional_chart_infinity_dimension
@@ -81,13 +103,12 @@ theorem rational_nonexceptional_chart_infinity_dimension
       chartInfinityIdeal I ι (Ideal.Quotient.mk I (X 0))) ∧
     Module.finrank ℚ (projectiveChart I ι (Ideal.Quotient.mk I (X 0)) ⧸
       chartInfinityIdeal I ι (Ideal.Quotient.mk I (X 0))) = d := by
-  obtain ⟨M, hspan⟩ := rational_nonexceptional_eventual_first_node_generation
-    hρ hu hv hne ρ' u' v' A a ha I hf hg
-  have hl0 := first_node_ne_zero_of_generation I hd hdegree hspan
+  obtain ⟨hl0, M, hspan⟩ := nonexceptional_first_node_generation
+    hρ hu hv hne ρ' u' v' A a ha I hf hg ι hι hd hdegree
   have hl : Ideal.Quotient.mk I (X 0) ∈ filteredCoordinateSpace I 1 :=
     ⟨X 0, by simp [mem_restrictTotalDegree], rfl⟩
   apply chart_infinity_dimension_eq_degree I ι hι _ hl
-    (fun hh => hl0 (hι (by simpa using hh))) (N := max N M)
+    hl0 (N := max N M)
   · intro n hn
     exact hdegree n ((le_max_left _ _).trans hn)
   · intro n hn
