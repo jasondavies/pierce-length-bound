@@ -174,18 +174,5 @@ theorem parabola_integer_parameter_height
     apply mul_left_cancel₀ hD0
     rw [heval z hz.1 hz.2 j, heval w hw.1 hw.2 j, he]
 
-/-- The actual integer parameter stays in a polynomially bounded interval. -/
-theorem parabola_parameter_abs_le {α β d x y : ℤ} {K H : ℕ} (hH : 1 ≤ H)
-    (hα : |α| ≤ K) (hβ : |β| ≤ K) (hd : |d| ≤ K) (hx : |x| ≤ H) (hy : |y| ≤ H) :
-    |2 * α * x + β * y + d| ≤ 4 * (K : ℤ) * H := by
-  have ht := abs_add_le (2 * α * x + β * y) d
-  have ht' := abs_add_le (2 * α * x) (β * y)
-  have hx' := mul_le_mul hα hx (abs_nonneg _) (show (0 : ℤ) ≤ K from Nat.cast_nonneg K)
-  have hy' := mul_le_mul hβ hy (abs_nonneg _) (show (0 : ℤ) ≤ K from Nat.cast_nonneg K)
-  have hHz : (1 : ℤ) ≤ H := by exact_mod_cast hH
-  simp only [abs_mul] at ht'
-  norm_num at ht'
-  nlinarith only [ht, ht', hx', hy', hd, hHz, show (0 : ℤ) ≤ K from Nat.cast_nonneg K]
-
 end
 end PierceLengthBound.FixedDividend

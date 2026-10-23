@@ -400,11 +400,11 @@ below.
 | `JointLiftCurvatureHeight` | first-order reciprocal expansion; `\|W_j\| q³ ≤ 68 a H³` for all three curvature coordinates |
 | `JointLiftRankFiveHeight` | the Newton Gram product bound `1230460 H¹⁰`, the rank-five height, and its floored selected box |
 | `JointLiftCoordinates`, `JointLiftFieldCoordinates` | polynomial graph coordinates with a common denominator, agreeing with the rational curvature formulas |
-| `IntegralLiftGraph`, `JointLiftGraph` | the prime ideal of a rational graph; its contraction to the old coordinates is the original prime |
+| `JointLiftGraph` | the prime ideal of a rational graph; its contraction to the old coordinates is the original prime |
 | `JointLiftGraphDegree` | upper Hilbert-degree bounds (at most `247d`) from common-denominator formulas |
 | `JointLiftPointBox` | selected states with one minor pattern as integer points of the graph in a uniform box |
 | `JointLiftDirection` | nonconstancy of the projective curvature direction on components of degree at least three of an irreducible quadric |
-| `JointLiftCurvatureNonvanishing` | no common zero of the curvature coordinates on the affine graph; the extra finite zero of a curvature combination |
+| `JointLiftCurvatureNonvanishing` | the extra finite zero of a curvature combination |
 | `FixedDividendPolynomialSection` | at most `m·d` points on a proper degree-`m` polynomial cut |
 | `JointLiftNormalizationCut`, `JointLiftResolventCut`, `JointLiftRetainedIdentities` | the normalization and raw-resolvent cuts, of degrees at most 166 and 404, and the identities they impose on retained components |
 | `JointLiftInfinityOrder` | rank-five pole order `5e/2` and even infinity multiplicity at every valuation centered on the nonexceptional chart |
@@ -412,12 +412,11 @@ below.
 | `ChartNodeUnits`, `ChartNodeOrders` | exact node-difference orders from the resultant unit |
 | `ChartRawDeterminantOrders` | orders `−3e` for both consecutive cubic determinants and `−6e` for the fourth |
 | `JointLiftRetainedOrders` | quotient and rank-three orders from the retained normalization and resolvent equations |
-| `JointLiftChartOrders` | orders `3t`, `≥ 3t`, `3t` and `−5t` of the four graph coordinates (`e = 2t`); the curvature coordinates cannot all have positive order over the affine part |
+| `JointLiftChartOrders` | orders `3t`, `≥ 3t`, `3t` and `−5t` of the four graph coordinates (`e = 2t`) |
 | `AffineNormalization` | finite Dedekind normalization of the affine chart ring |
-| `JointLiftNormalizedOrders`, `JointLiftNormalizedFiniteOrders` | normalized integer-valued branch orders, with the coordinate order calculations applied to them |
+| `JointLiftNormalizedOrders` | normalized integer-valued branch orders, with the coordinate order calculations applied to them |
 | `NormalizationInfinityDegree`, `NormalizedFiberOrders` | in a normalized parameter fiber, multiplicities times residue degrees sum to the fiber dimension and equal the canonical branch orders |
 | `FunctionParameterNormalization`, `FunctionParameterChange` | the weighted zero fiber degree of a transcendental function is its field degree, and its reciprocal generates the same field; finite curve fraction fields are finite over every transcendental function |
-| `JointLiftCurvatureTranscendence` | the curvature combination with the extra finite zero is transcendental |
 | `IntegralBranchOrders`, `BranchValuationComparison`, `BranchResidueComparison` | centers on parameter normalizations; branch transport preserves normalized orders and residue degrees |
 | `BranchZeroDegree` | the weighted zero-count inequality, including the extra degree from one additional zero |
 | `JointLiftPoleCoverage`, `JointLiftPoleDegree` | every pole of a curvature combination lies on the affine normalization; its degree is bounded by the curvature pole envelope |
@@ -428,22 +427,20 @@ below.
 | `CurveCounting`, `CurveCountingDegreeRange`, `CurveCountingCoordinates` | the CCDN theorem on Pierce coordinate rings: bounded-degree factors and arbitrary finite index types (including `Fin 3 ⊕ Fin 4`) |
 | `OrbitGapCoordinates` | the three node coordinates distinguish complete gap vectors within a pattern |
 | `JointLiftPointCount`, `JointLiftCountingSlack` | the curve count on seven-coordinate integer points; the logarithm absorbed via the polynomial box bound |
-| `JointLiftCoverCount` | gap vectors over at most 24 components, with a `SlowGrowth` coefficient |
 | `OrbitConicGapCount` | the conic divisor estimate applied directly to distinct gap vectors |
 | `OrbitCurveGapCount`, `OrbitPatternCurveCount` | the square-root count after excluding lines at the window scale |
-| `JointLiftComponentCount`, `JointLiftNonexceptionalCount` | conics, the two bounded cuts and retained graphs; the sum over the prime-component cover comes from `JointPatternCount` |
-| `JointLiftExponent`, `JointLiftWindow`, `JointLiftLocalEstimate`, `JointLiftGlobalReduction` | exponent arithmetic, window branches and the global reduction for `128/435` |
-| `JointLiftPatternCount` | `P_le_128_435_of_pattern_estimate`: pattern sums, multiplicity, window ranges, rounding, divisor slack and dyadic summation |
-| `JointLiftBound` | both per-pattern estimates and `P_le_128_435` |
+| `JointLiftComponentCount` | conics, the two bounded cuts and retained graphs, in the unpowered box |
+| `JointLiftExponent` | the selected curvature and rank-five boxes, and their products with powers of the window length |
 | `JointLiftOptimization` | the optimal crossing, the minimum of the two exponent functions, and approximation by fixed integer powers |
 | `PoweredJointGraph`, `PoweredPoleOrder` | the graph with coordinates `W_jᵐ` and `Jⁿ`, of degree at most `((m+n)·247+1)d`; powers multiply pole orders |
 | `PoweredJointGraphLowerDegree` | `δ ≥ 10n + 7m` for `d ≥ 4`, the case `G = 1` of `LinearJointGraph` |
 | `PoweredJointPointBox`, `PoweredJointPointCount` | integer points in the box `max(3H, Sᵐ, Yⁿ)` and the curve count there |
 | `PoweredJointCountingSlack`, `PoweredJointComponentCount`, `PoweredJointNonexceptionalCount`, `PoweredJointPatternCount`, `PoweredJointLocalEstimate` | the powered logarithmic and counting inputs |
-| `JointPatternCount` | from component counts to nonexceptional and per-pattern estimates, for any box and exponent; shared by the joint-lift, powered and lattice chains |
+| `JointPatternCount` | from component counts to nonexceptional and per-pattern estimates, for any box and exponent; shared by the powered and lattice chains |
+| `OrdinaryPatternCount` | the ordinary minor-pattern count `O(τ X⁵)`, the two-class pattern sum and the pattern slack, shared by the local estimates |
 | `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges and dyadic summation; `window_branch_exponent` is the window lemma shared by all chains |
 | `RealPowerBounds` | elementary real-power inequalities: concavity over a finite sum, powers of maxima, one dominant term among five |
-| `PoweredJointBound` | the optimized exponent and its rational version `m = 50`, `n = 51` |
+| `PoweredJointBound` | the optimized exponent and its rational versions `m = 50`, `n = 51` (`2201/7480`) and `m = n = 1` (`128/435`) |
 
 ### Shared and supporting modules
 
@@ -451,9 +448,8 @@ below.
 |---|---|
 | `FixedDividend*` | the fixed-dividend resultant identity, quadratic irreducibility, relative primality, a rational component cover of total degree at most 24, even degree of nonexceptional components, line exclusion, conic plane models, and filtered Hilbert-degree infinity charts |
 | `Exceptional*` | the exceptional-pattern count `O(X⁴ log 2X)` |
-| `IntegralLift*` | bounded integer conic parameters, monic quotient normalization, cubic quotient degree, and properness of the `I₃` lift after at most 492 exceptional points; the conditional `151/513` reduction |
-| `Conic*` | conic arithmetic, integer values of rational functions, and coefficient heights; the conditional `135/458` reduction |
-| `Parity*` | the conditional `180/611` reduction |
+| `IntegralLift*` | bounded integer conic parameters, monic quotient normalization, cubic quotient degree, and properness of the `I₃` lift after at most 492 exceptional points |
+| `Conic*` | conic arithmetic, integer values of rational functions, and coefficient heights |
 | `Chart*`, `Branch*`, `Normalization*`, `NormalizedBranchValuation`, `CurveNormalization`, `ParameterFiberDegree`, `LinearFunctionDegree` | chart and normalization infrastructure for branch orders and function-field degrees |
 | `NewtonCoefficientDegrees`, `RawDeterminantTotalDegree`, `OrbitPatternGeometry` | coefficient degrees of the Newton quartic and raw determinants; transport of component data within a pattern |
 

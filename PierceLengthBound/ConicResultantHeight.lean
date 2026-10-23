@@ -79,19 +79,4 @@ theorem integerValueSlack_slow (d C e : ℕ) : SlowGrowth (integerValueSlack d C
   have hc : SlowGrowth (fun _ : ℕ => 2 * d) := slowGrowth_const _
   exact hc.mul (tauMax_slow ((2 * d).factorial * C ^ (2 * d)) (e * (2 * d)))
 
-/-- Polynomial coefficient height yields the required subpolynomial count. -/
-theorem integer_values_card_polynomial_height {F G : ℤ[X]} {d C e a : ℕ}
-    (hC : 1 ≤ C) (ha : 1 ≤ a) (hFd : F.natDegree ≤ d) (hGd : G.natDegree ≤ d)
-    (hGpos : 0 < G.natDegree)
-    (hF : ∀ i, |F.coeff i| ≤ (C * a ^ e : ℕ))
-    (hG : ∀ i, |G.coeff i| ≤ (C * a ^ e : ℕ))
-    (hcop : IsCoprime (F.map (Int.castRingHom ℚ)) (G.map (Int.castRingHom ℚ)))
-    (S : Finset ℤ) (hdiv : ∀ t ∈ S, G.eval t ∣ F.eval t) :
-    S.card ≤ integerValueSlack d C e a := by
-  have hH : 1 ≤ C * a ^ e := by
-    have hp : 1 ≤ a ^ e := Nat.one_le_pow _ _ ha
-    nlinarith
-  have h := integer_values_card_of_height hH hFd hGd hGpos hF hG hcop S hdiv
-  simpa only [integerValueSlack, mul_pow, ← pow_mul, mul_assoc] using h
-
 end PierceLengthBound.FixedDividend

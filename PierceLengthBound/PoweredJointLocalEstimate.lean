@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PoweredJointPatternCount
-public import PierceLengthBound.IntegralLiftPatternCount
+public import PierceLengthBound.OrdinaryPatternCount
 
 /-! Assemble the proved powered pattern counts into the three local terms
 and extract integer-power count branches without changing their exponents. -/
@@ -83,7 +83,7 @@ def PoweredJointThreeTermEstimate (m n : ℕ) (R : ℕ → ℕ) : Prop :=
 quartic multiplicity into the displayed local estimate. -/
 theorem powered_joint_three_term_of_pattern_estimate {m n : ℕ} {R : ℕ → ℕ}
     (hcurve : PoweredJointPatternEstimate m n R) :
-    PoweredJointThreeTermEstimate m n (integralLiftPatternSlack R) := by
+    PoweredJointThreeTermEstimate m n (patternSlack R) := by
   intro a b s T A hba hmem hsT hT hscale
   classical
   let G := selectedStarts a b s T A
@@ -116,14 +116,14 @@ theorem powered_joint_three_term_of_pattern_estimate {m n : ℕ} {R : ℕ → �
         ((R a : ℝ) * (1 + (B : ℝ) ^ (1 / ((10 * n + 7 * m : ℕ) : ℝ)))) +
         ((ordinaryPatternSlack a : ℝ) + exceptionalPatternSlack a) * (X : ℝ) ^ 4 *
           ((R a : ℝ) * (H : ℝ) ^ (1 / 2 : ℝ))) := by gcongr
-    _ = _ := by simp only [integralLiftPatternSlack, Nat.cast_mul, Nat.cast_add,
+    _ = _ := by simp only [patternSlack, Nat.cast_mul, Nat.cast_add,
         Nat.cast_ofNat, Nat.cast_max, Nat.cast_pow, B, H, X]; ring
 
 /-- Every fixed pair of positive powers has the full local three-term bound. -/
 theorem poweredJointThreeTermEstimate_exists (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ PoweredJointThreeTermEstimate m n R := by
   obtain ⟨R, hR, hcount⟩ := poweredJointPatternEstimate_exists m n hm hn
-  exact ⟨integralLiftPatternSlack R, integralLiftPatternSlack_slow hR,
+  exact ⟨patternSlack R, patternSlack_slow hR,
     powered_joint_three_term_of_pattern_estimate hcount⟩
 
 end PierceLengthBound.FixedDividend

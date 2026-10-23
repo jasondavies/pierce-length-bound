@@ -6,13 +6,50 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.JointLiftCoordinates
+public import Mathlib.RingTheory.Localization.Away.Basic
 
-/-! Graph ideals for several rational functions with a common denominator. -/
+/-! Graph ideals for several rational functions with a common denominator, constructed in
+the localization at the denominator. This construction does not assert a graph degree bound. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
+
+abbrev graphLocalization {K σ : Type*} [Field K]
+    (I : Ideal (MvPolynomial σ K)) (Q : MvPolynomial σ K) :=
+  Localization.Away (Ideal.Quotient.mk I Q)
+
+/-- Evaluation on the base curve extends to the denominator-open localization. -/
+def graphPointMap {K σ : Type*} [Field K]
+    (I : Ideal (MvPolynomial σ K)) (Q : MvPolynomial σ K)
+    (z : σ → K) (hz : z ∈ coordinateZeroLocus I) (hQ : MvPolynomial.eval z Q ≠ 0) :
+    graphLocalization I Q →ₐ[K] K :=
+  IsLocalization.Away.liftAlgHom (Ideal.Quotient.mk I Q)
+    (f := Ideal.Quotient.liftₐ I (MvPolynomial.aeval z)
+      (by intro f hf; exact hz f hf))
+    (by
+      change IsUnit (MvPolynomial.eval z Q)
+      exact isUnit_iff_ne_zero.mpr hQ)
+
+lemma graphPointMap_mk {K σ : Type*} [Field K]
+    (I : Ideal (MvPolynomial σ K)) (Q : MvPolynomial σ K)
+    (z : σ → K) (hz : z ∈ coordinateZeroLocus I) (hQ : MvPolynomial.eval z Q ≠ 0)
+    (f : MvPolynomial σ K) :
+    graphPointMap I Q z hz hQ
+      (algebraMap (MvPolynomial σ K ⧸ I) (graphLocalization I Q) (Ideal.Quotient.mk I f)) =
+      MvPolynomial.eval z f := by
+  simp [graphPointMap, IsLocalization.Away.liftAlgHom_apply, Ideal.Quotient.liftₐ_apply]
+
+lemma graphPointMap_invSelf {K σ : Type*} [Field K]
+    (I : Ideal (MvPolynomial σ K)) (Q : MvPolynomial σ K)
+    (z : σ → K) (hz : z ∈ coordinateZeroLocus I) (hQ : MvPolynomial.eval z Q ≠ 0) :
+    graphPointMap I Q z hz hQ (IsLocalization.Away.invSelf (Ideal.Quotient.mk I Q)) =
+      (MvPolynomial.eval z Q)⁻¹ := by
+  have h := congrArg (graphPointMap I Q z hz hQ)
+    (IsLocalization.Away.mul_invSelf (S := graphLocalization I Q) (Ideal.Quotient.mk I Q))
+  rw [map_mul, map_one, graphPointMap_mk] at h
+  exact eq_inv_of_mul_eq_one_right h
 
 /-- Old coordinates and any family of rational coordinates in one localization. -/
 def jointGraphMap {K σ ι : Type*} [Field K]
@@ -70,20 +107,6 @@ theorem jointGraph_rename_mem_iff {K σ ι : Type*} [Field K]
     exact mem_nonZeroDivisors_iff_ne_zero.mpr (pow_ne_zero n hQ0)
   change jointGraphMap I P Q (MvPolynomial.rename Sum.inl f) = 0 ↔ _
   rw [jointGraphMap_rename, map_eq_zero_iff _ hinj, Ideal.Quotient.eq_zero_iff_mem]
-
-/-- Each cleared rational-coordinate equation belongs to the graph ideal. -/
-theorem jointGraph_equation_mem {K σ ι : Type*} [Field K]
-    (I : Ideal (MvPolynomial σ K)) (P : ι → MvPolynomial σ K)
-    (Q : MvPolynomial σ K) (j : ι) :
-    MvPolynomial.rename Sum.inl Q * X (Sum.inr j) - MvPolynomial.rename Sum.inl (P j) ∈
-      jointGraphIdeal I P Q := by
-  change jointGraphMap I P Q _ = 0
-  rw [map_sub, map_mul, jointGraphMap_rename, jointGraphMap_rename]
-  have hX : jointGraphMap I P Q (X (Sum.inr j)) =
-      algebraMap (MvPolynomial σ K ⧸ I) (graphLocalization I Q) (Ideal.Quotient.mk I (P j)) *
-        IsLocalization.Away.invSelf (S := graphLocalization I Q) (Ideal.Quotient.mk I Q) := by
-    simp [jointGraphMap]
-  rw [hX, mul_left_comm, IsLocalization.Away.mul_invSelf, mul_one, sub_self]
 
 /-- Every base point with nonzero denominator lifts to the joint graph. -/
 theorem jointGraph_point {K σ ι : Type*} [Field K]
@@ -148,25 +171,6 @@ theorem orbitJointGraph_point {a b i J : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     · exact (orbitJoint_rankFive_evaluation hba hi).trans hj
   rw [he] at h
   exact h
-
-/-- Positivity and both selected coordinate boxes hold on the actual prime graph. -/
-theorem selected_jointGraph_point {a b s T A i : ℕ} (hba : b < a)
-    (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
-    (hsT : s + T ≤ P a b) (hi : i ∈ selectedStarts a b s T A)
-    (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
-    (hz : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I) :
-    (orbitJointGraphIdeal a b i I).IsPrime ∧
-      ∃ J : ℕ, 0 < J ∧ J ≤ selectedRankFiveHeight a A T ∧
-        (∀ j, |orbitCurvatureVector a b i j| ≤ (selectedCurvatureHeight a A T : ℤ)) ∧
-        Sum.elim (orbitFreeNodesQ a b i)
-          ![(orbitCurvatureVector a b i 0 : ℚ), (orbitCurvatureVector a b i 1 : ℚ),
-            (orbitCurvatureVector a b i 2 : ℚ), (J : ℚ)] ∈
-          coordinateZeroLocus (orbitJointGraphIdeal a b i I) := by
-  have hP := (selectedStart_spec hmem hsT hi).1
-  obtain ⟨J, hpos, hJ, hheight⟩ := selected_rankFive_positive_integer hba hmem hsT hi
-  exact ⟨orbitJointGraphIdeal_isPrime hba (by omega) I hz, J, hpos, hheight,
-    fun j => selected_orbitCurvature_bound hba hmem hsT hi j,
-    orbitJointGraph_point hba (by omega) I hz hJ⟩
 
 end
 end PierceLengthBound.FixedDividend

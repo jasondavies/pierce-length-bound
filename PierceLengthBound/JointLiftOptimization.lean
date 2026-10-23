@@ -25,12 +25,6 @@ lemma jointOptimalRatio_pos : 0 < jointOptimalRatio := by
   unfold jointOptimalRatio
   positivity
 
-lemma jointOptimalRatio_equation :
-    30 * jointOptimalRatio ^ 2 - 10 * jointOptimalRatio - 21 = 0 := by
-  have hs := Real.sq_sqrt (show (0 : ℝ) ≤ 655 by norm_num)
-  unfold jointOptimalRatio
-  nlinarith
-
 lemma jointOptimal_crossing :
     jointExponentS jointOptimalRatio = jointOptimalExponent ∧
       jointExponentY jointOptimalRatio = jointOptimalExponent := by
@@ -94,20 +88,6 @@ theorem jointOptimal_rational_approximation {ε : ℝ} (hε : 0 < ε) :
       apply (div_lt_iff₀ (by positivity)).mpr
       nlinarith
     linarith
-
-lemma joint_powered_rational_example :
-    10 * (51 : ℕ) + 7 * 50 = 860 ∧
-      jointExponentS ((51 : ℝ) / 50) = 1295 / 4401 ∧
-      jointExponentY ((51 : ℝ) / 50) = 2201 / 7480 ∧
-      max (jointExponentS ((51 : ℝ) / 50)) (jointExponentY ((51 : ℝ) / 50)) = 2201 / 7480 := by
-  norm_num [jointExponentS, jointExponentY]
-
-lemma jointOptimal_comparison :
-    (5 : ℝ) / 17 < jointOptimalExponent ∧ jointOptimalExponent < 2201 / 7480 := by
-  have hs := Real.sq_sqrt (show (0 : ℝ) ≤ 655 by norm_num)
-  have hp := Real.sqrt_nonneg (655 : ℝ)
-  unfold jointOptimalExponent
-  constructor <;> nlinarith
 
 
 /-- The claimed powered degree inequality gives 10n+7m on every component d>=4. -/

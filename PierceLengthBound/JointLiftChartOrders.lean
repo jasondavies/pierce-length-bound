@@ -103,33 +103,5 @@ theorem retained_joint_coordinates_discrete_orders
   rw [hcoordinates]
   exact ⟨hcurv.1, hcurv.2.1, hcurv.2.2, hJ⟩
 
-/-- At a valuation centered on the original affine component, the actual
-curvature coordinates cannot all have positive order. They may have poles. -/
-theorem orbit_curvature_finite_discrete_order
-    {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
-    (I : Ideal (MvPolynomial (Fin 3) ℚ))
-    (hx : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I)
-    {F : Type*} [Field F] [Algebra ℚ F]
-    (ι : (MvPolynomial (Fin 3) ℚ ⧸ I) →ₐ[ℚ] F) (hι : Function.Injective ι)
-    (ν : AddValuation F (WithTop ℤ))
-    (hregular : ∀ r : MvPolynomial (Fin 3) ℚ ⧸ I, 0 ≤ ν (ι r)) :
-    let ψ := ι.comp (Ideal.Quotient.mkₐ ℚ I)
-    ∃ j : Fin 3, ν (ψ (orbitJointNumerators a b i j.castSucc) /
-      ψ (orbitJointDenominator a b i)) ≤ 0 := by
-  let ψ := ι.comp (Ideal.Quotient.mkₐ ℚ I)
-  have hψ (f : MvPolynomial (Fin 3) ℚ) : ψ f = ι (Ideal.Quotient.mk I f) := rfl
-  have hD : ψ (orbitJointDenominator a b i) ≠ 0 := by
-    intro hz
-    exact orbitJoint_denominator_not_mem hba hi I hx
-      (Ideal.Quotient.eq_zero_iff_mem.mp (hι (by simpa only [map_zero, hψ] using hz)))
-  have hA : (Lz a b i : ℚ) ≠ 0 := by
-    exact_mod_cast (show Lz a b i ≠ 0 by have := Lz_pos hba (by omega : i + 5 < P a b); omega)
-  have hAv : ν (ψ (C (Lz a b i : ℚ))) = 0 :=
-    discrete_order_unit ν ψ.toRingHom (fun f => hregular (Ideal.Quotient.mk I f))
-      ((isUnit_iff_ne_zero.mpr hA).map (C : ℚ →+* MvPolynomial (Fin 3) ℚ))
-  exact curvature_some_order_nonpositive ν hAv
-    (fun j => hregular (Ideal.Quotient.mk I (curvatureRow (jointGapPolynomials a b i) j)))
-    (jointLift_field_dot_row ψ.toRingHom _ _ _ _ _ hD)
-
 end
 end PierceLengthBound.FixedDividend

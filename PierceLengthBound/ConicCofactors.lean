@@ -107,20 +107,5 @@ theorem momentCofactors_proportional {K : Type*} [Field K] {n : ℕ}
   | zero => exact mul_comm _ _
   | succ j => exact sub_eq_zero.mp (congrFun hz j)
 
-/-- Every cofactor has the same factorial height bound as an ordinary square
-minor. In the application this is `8! H^8`. -/
-theorem momentCofactors_height {n H : ℕ} (M : Matrix (Fin n) (Fin (n + 1)) ℤ)
-    (hM : ∀ i j, |M i j| ≤ H) :
-    ∀ j, |momentCofactors M j| ≤ (n.factorial : ℤ) * H ^ n := by
-  intro j
-  induction j using Fin.cases with
-  | zero => exact integer_det_height (momentTail M) (fun i j => hM i j.succ)
-  | succ j =>
-    simp only [momentCofactors, Fin.cons_succ, Pi.neg_apply, abs_neg, Matrix.cramer_apply]
-    apply integer_det_height
-    intro i k
-    simp only [Matrix.updateCol_apply]
-    split_ifs <;> first | exact hM i 0 | exact hM i k.succ
-
 end
 end PierceLengthBound.FixedDividend

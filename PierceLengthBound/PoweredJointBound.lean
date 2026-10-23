@@ -78,6 +78,14 @@ theorem P_le_2201_7480 :
     show max ((12950 : ℝ) / 44010) ((13206 : ℝ) / 44880) = 2201 / 7480 by norm_num] using
     P_le_powered_joint 50 51 (by decide) (by decide)
 
+/-- The unpowered joint lift, the choice m=n=1. -/
+theorem P_le_128_435 :
+    ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
+      (P a b : ℝ) ≤ C * (a : ℝ) ^ ((128 : ℝ) / 435 + ε) := by
+  simpa only [poweredJointExponent, Nat.reduceMul, Nat.reduceAdd, Nat.cast_ofNat,
+    show max ((256 : ℝ) / 870) ((261 : ℝ) / 887) = 128 / 435 by norm_num] using
+    P_le_powered_joint 1 1 (by decide) (by decide)
+
 /-- Optimizing fixed integer powers gives the algebraic exponent of the candidate. -/
 theorem P_le_joint_optimal :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →

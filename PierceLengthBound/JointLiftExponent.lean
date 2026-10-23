@@ -5,24 +5,14 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.IntegralLiftExponent
+public import PierceLengthBound.FixedDividendSelection
+public import PierceLengthBound.WindowRealReduction
 
 /-! Exact exponent arithmetic for the joint curvature/rank-five lift.
 The graph count and the invariant height bounds remain explicit premises. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
-
-/-- A degree-seventeen graph bound with a box of controlled scaled height. -/
-theorem remainder_window_joint_box_exponent {T H X B A a C E D F K u v : ℕ}
-    (ha : 0 < a) (hcount : T ^ 17 ≤ K * X ^ 85 * B)
-    (hgap : H * (A * T) ≤ C * a) (hheight : X * a ^ 3 ≤ E * A ^ 4 * H ^ 6)
-    (hbox : B * T ^ u ≤ F * a ^ v) (hdrop : T ^ 2 ≤ D * A) :
-    T ^ (867 + u) ≤ K * E ^ 85 * C ^ 510 * F * D ^ 170 * a ^ (255 + v) := by
-  have h := window_branch_exponent (L := 17) (q := 85) ha hcount hgap hheight hbox hdrop
-  calc T ^ (867 + u) = T ^ (17 + 10 * 85 + u) := by norm_num
-    _ ≤ _ := h
-    _ = _ := by ring
 
 /-- The curvature box uses the uniform 68/q^3 bound and q >= a/(4A). -/
 def selectedCurvatureHeight (a A T : ℕ) : ℕ :=
@@ -80,20 +70,5 @@ lemma rank_five_height_times_twenty {a A T C Y H D J : ℕ} (ha : 0 < a) (hA : 0
     _ = (Y * A ^ 5 * T ^ 10) * D ^ 5 := by ring
     _ ≤ (J * C ^ 10 * a ^ 6) * D ^ 5 := by gcongr
     _ = _ := by ring
-
-lemma joint_lift_exponent_comparisons :
-    (151 : ℚ) / 513 - 128 / 435 = 7 / 74385 ∧
-    (128 : ℚ) / 435 - 5 / 17 = 1 / 7395 ∧
-    (128 : ℚ) / 435 - 261 / 887 = 1 / 385845 ∧
-    (128 : ℚ) / 435 - 2201 / 7480 = 1 / 650760 ∧
-    (1295 : ℚ) / 4401 < 2201 / 7480 := by norm_num
-
-lemma joint_lift_critical_balance :
-    (179 : ℚ) / 435 - 128 / 435 = 51 / 435 ∧
-    1 - 3 * ((128 : ℚ) / 435) = 51 / 435 ∧
-    1 + 5 * ((179 : ℚ) / 435) - 10 * (128 / 435) = 50 / 435 ∧
-    1 + 2 * ((179 : ℚ) / 435) - 6 * (128 / 435) = 25 / 435 ∧
-    4 * ((179 : ℚ) / 435) - 1 - 5 * (51 / 435) = 26 / 435 ∧
-    5 * ((25 : ℚ) / 435) + (51 / 435) / 17 = 128 / 435 := by norm_num
 
 end PierceLengthBound.FixedDividend

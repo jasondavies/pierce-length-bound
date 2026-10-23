@@ -55,18 +55,5 @@ theorem finite_fraction_field_over_function {K S L : Type*} [Field K]
   let : Algebra.EssFiniteType K L := Algebra.EssFiniteType.comp K S L
   exact finite_over_parameter_of_trdeg_le_one hL.le x hx
 
-/-- A nonzero function that vanishes under a ground-field point evaluation is
-transcendental. This applies to the curvature combination chosen at an actual
-orbit point. -/
-theorem transcendental_of_nonzero_point_zero {K R : Type*} [Field K]
-    [CommRing R] [IsDomain R] [Algebra K R]
-    (φ : R →ₐ[K] K) {x : R} (hx : x ≠ 0) (hzero : φ x = 0) :
-    Transcendental K x := by
-  intro h
-  have hu := (h.isIntegral.isUnit hx).map φ.toRingHom
-  change IsUnit (φ x) at hu
-  rw [hzero] at hu
-  exact not_isUnit_zero hu
-
 end
 end PierceLengthBound.FixedDividend

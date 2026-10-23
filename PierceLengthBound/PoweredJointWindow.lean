@@ -93,19 +93,21 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
   have hX : X * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6 := Nat.div_mul_le_self _ _
   by_cases hscale : 124928 * A ^ 4 * H ^ 5 * X < a ^ 3
   · rcases hlocal hscale with h | h | h
-    · have hm := remainder_window_arithmetic_conic_exponent
-        (by omega : 0 < a) (by omega : 0 < A) h hH hX hT2
+    · have hm := window_branch_exponent (L := 1) (q := 5) (u := 0) (v := 0) (B := 1) (F := 1)
+        (by omega : 0 < a) (by simpa using h) hH hX (by simp) hT2
       have h' : T ^ 51 ≤ B * a ^ 15 := by
-        calc T ^ 51 ≤ K * 3609600 ^ 5 * 56 ^ 30 * (8 * Δ) ^ 10 * a ^ 15 := hm
+        calc T ^ 51 ≤ K * (3609600 * 56 ^ 6 * (8 * Δ) ^ 2) ^ 5 * 1 * a ^ (3 * 5 + 0) := hm
           _ = (3609600 ^ 5 * 56 ^ 30 * 8 ^ 10 * K * Δ ^ 10) * a ^ 15 := by ring
           _ ≤ _ := Nat.mul_le_mul_right _
             (hcoeff (by unfold poweredJointWindowBase; omega) (by omega))
       apply window_real_bound_of_power ha hB (by decide : 0 < 51) h'
       exact (by norm_num : (15 : ℝ) / 51 ≤ 5 / 17).trans hα
-    · have hm := remainder_window_exceptional_conic_exponent
-        (by omega : 0 < a) (by omega : 0 < A) h hH hX hT2
+    · have hm := window_branch_exponent (L := 2) (q := 8) (u := 3) (v := 1) (B := H) (K := K)
+        (F := 56 * (8 * Δ)) (by omega : 0 < a) (h.trans (le_of_eq (by ring)))
+        hH hX (by simpa using gap_cube_box hH hT2) hT2
       have h' : T ^ 85 ≤ B * a ^ 25 := by
-        calc T ^ 85 ≤ K * 3609600 ^ 8 * 56 ^ 49 * (8 * Δ) ^ 17 * a ^ 25 := hm
+        calc T ^ 85 ≤ K * (3609600 * 56 ^ 6 * (8 * Δ) ^ 2) ^ 8 * (56 * (8 * Δ)) *
+            a ^ (3 * 8 + 1) := hm
           _ = (3609600 ^ 8 * 56 ^ 49 * 8 ^ 17 * K * Δ ^ 17) * a ^ 25 := by ring
           _ ≤ _ := Nat.mul_le_mul_right _
             (hcoeff (by unfold poweredJointWindowBase; omega) (by omega))

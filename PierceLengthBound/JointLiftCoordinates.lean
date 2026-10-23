@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.JointLiftRankFiveHeight
-public import PierceLengthBound.IntegralLiftGraph
+public import PierceLengthBound.IntegralLiftCoordinateSystem
 import all PierceLengthBound.FixedDividendTotalDegree
 
 /-! Polynomial coordinates of the joint lift, with a common denominator.
