@@ -12,8 +12,8 @@ import Mathlib.Tactic
 /-! A bounded primitive-element choice for the degree-twelve label
 (Lemma 10.3). In the degree-twelve generic branch algebra, the location plus
 `c` times the branch sign is primitive for some integer slope `0 ≤ c ≤ 144`;
-the bound is the square of the number of embeddings. The paper counts pairs of
-embeddings instead and obtains `0 ≤ c ≤ 66`. A bounded slope keeps the
+the bound is the square of the number of embeddings. The paper states the same
+range and remarks that counting unordered pairs gives `0 ≤ c ≤ 66`. A bounded slope keeps the
 resulting family of branch polynomials uniform in the dividend. -/
 
 @[expose] public section
