@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveCoefficientResolvent
-public import PierceLengthBound.BranchSieveIntegralClosure
+public import PierceLengthBound.BranchSieveIntegerSpecialization
 import Mathlib.Tactic
 
 /-! Integral coefficient minimal polynomials divide fixed universal

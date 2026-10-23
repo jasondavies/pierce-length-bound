@@ -139,11 +139,7 @@ theorem branchGeneric_exists_degree_twelve_polynomial (a : ℚ) (ha : a ≠ 0) :
       (minpoly (RatFunc BranchLocationField)
         (branchGenericLocationInSignAlgebra a + (c : BranchGenericSignAlgebra a) *
           branchGenericSignRoot a)).natDegree = 12 := by
-  let : Fact (Irreducible (branchSignPolynomial
-      (algebraMap ℚ BranchLocationExtension a) branchGenericDelta)) :=
-    ⟨branchSignPolynomial_irreducible
-      (by simpa only [map_zero] using (algebraMap ℚ BranchLocationExtension).injective.ne ha)
-      branchGenericDelta_ne_zero⟩
+  have := Fact.mk (branchGenericSignPolynomial_irreducible ha)
   let F := RatFunc BranchLocationField
   let E := BranchGenericSignAlgebra a
   let K := AlgebraicClosure F
@@ -159,6 +155,17 @@ theorem branchGeneric_exists_degree_twelve_polynomial (a : ℚ) (ha : a ≠ 0) :
     simpa only [map_add, map_mul, map_natCast] using hinj
   refine ⟨c, hc', minpoly.irreducible (IsIntegral.of_finite F _), ?_⟩
   exact ((Field.primitive_element_iff_minpoly_natDegree_eq F _).mp hp).trans hd
+
+/-! Direct field instances for the generic location fields, opened where repeated
+field-instance search through `FractionRing` and `RatFunc` is too slow. -/
+namespace BranchLocationFields
+
+scoped instance locationField : Field BranchLocationField := inferInstance
+scoped instance locationExtension : Field BranchLocationExtension := inferInstance
+scoped instance ratField : Field (RatFunc BranchLocationField) := inferInstance
+scoped instance ratExtension : Field (RatFunc BranchLocationExtension) := inferInstance
+
+end BranchLocationFields
 
 end
 end PierceLengthBound.FixedDividend

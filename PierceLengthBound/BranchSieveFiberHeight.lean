@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.BranchSieveRootHeight
 public import PierceLengthBound.BranchSieveShear
+public import PierceLengthBound.BranchSievePolynomialSubstitution
 import Mathlib.Tactic
 
 /-! Coefficient and integer-root height control for a fiber of an actual
@@ -46,21 +47,15 @@ theorem branchFiberPolynomial_coeff_abs_le (p : MvPolynomial (Fin 2) ℤ)
       (p.support.card * H * B ^ p.degreeOf 0 : ℕ) := by
   classical
   conv_lhs => rw [p.as_sum, map_sum, Polynomial.finsetSum_coeff]
-  calc
-    |∑ s ∈ p.support, (branchFiberPolynomial t (monomial s (p.coeff s))).coeff j|
-        ≤ ∑ s ∈ p.support, |(branchFiberPolynomial t (monomial s (p.coeff s))).coeff j| :=
-      abs_sum_le_sum_abs _ _
-    _ ≤ ∑ _s ∈ p.support, (H : ℤ) * (B : ℤ) ^ p.degreeOf 0 := by
-      apply sum_le_sum
-      intro s hs
-      rw [branchFiberPolynomial_monomial, Polynomial.coeff_monomial]
-      split_ifs
-      · rw [abs_mul, abs_pow]
-        apply mul_le_mul (hH s) ?_ (by positivity) (by positivity)
-        exact (pow_le_pow_left₀ (abs_nonneg t) ht _).trans
-          (pow_le_pow_right₀ (by exact_mod_cast hB) (le_degreeOf_of_mem_support 0 hs))
-      · simp only [abs_zero]; positivity
-    _ = _ := by simp; ring
+  refine (branch_abs_sum_le_card_mul _ _ (M := (H : ℤ) * (B : ℤ) ^ p.degreeOf 0)
+    fun s hs => ?_).trans_eq (by push_cast; ring)
+  rw [branchFiberPolynomial_monomial, Polynomial.coeff_monomial]
+  split_ifs
+  · rw [abs_mul, abs_pow]
+    apply mul_le_mul (hH s) ?_ (by positivity) (by positivity)
+    exact (pow_le_pow_left₀ (abs_nonneg t) ht _).trans
+      (pow_le_pow_right₀ (by exact_mod_cast hB) (le_degreeOf_of_mem_support 0 hs))
+  · simp only [abs_zero]; positivity
 
 /-- Integral roots of nonzero fibers have height controlled by the original
 coefficient height and parameter interval. -/

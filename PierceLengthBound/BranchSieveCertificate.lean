@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
+public import PierceLengthBound.BranchSieveSpecialization
 public import Mathlib.FieldTheory.Finite.Extension
-public import Mathlib.RingTheory.Polynomial.GaussLemma
 import Mathlib.Tactic
 
 /-! An explicit finite-field irreducibility certificate for the sextic specialization
@@ -62,339 +62,120 @@ private lemma remainder_mul {p a b c d : (ZMod 71)[X]}
   convert dvd_add (hab.mul_right c) (hcd.mul_left b) using 1
   ring
 
+/-- Square-and-multiply for `b ^ 71 = b ^ (64 + 4 + 2 + 1)` modulo `p`, from
+one checked division per step. -/
+private lemma remainder_pow_71 {p b r₂ r₄ r₈ r₁₆ r₃₂ r₆₄ r₆₈ r₇₀ r₇₁ : (ZMod 71)[X]}
+    (c₂ : p ∣ b * b - r₂) (c₄ : p ∣ r₂ * r₂ - r₄) (c₈ : p ∣ r₄ * r₄ - r₈)
+    (c₁₆ : p ∣ r₈ * r₈ - r₁₆) (c₃₂ : p ∣ r₁₆ * r₁₆ - r₃₂) (c₆₄ : p ∣ r₃₂ * r₃₂ - r₆₄)
+    (c₆₈ : p ∣ r₆₄ * r₄ - r₆₈) (c₇₀ : p ∣ r₆₈ * r₂ - r₇₀) (c₇₁ : p ∣ r₇₀ * b - r₇₁) :
+    p ∣ b ^ 71 - r₇₁ := by
+  have sq {k : ℕ} {r s : (ZMod 71)[X]} (h : p ∣ b ^ k - r) (c : p ∣ r * r - s) :
+      p ∣ b ^ (k * 2) - s := by
+    simpa only [pow_mul, pow_two] using
+      remainder_trans (remainder_pow h 2) (by simpa only [pow_two] using c)
+  have mul {k l : ℕ} {r r' s : (ZMod 71)[X]} (h : p ∣ b ^ k - r) (h' : p ∣ b ^ l - r')
+      (c : p ∣ r * r' - s) : p ∣ b ^ (k + l) - s := by
+    simpa only [pow_add] using remainder_trans (remainder_mul h h') c
+  have h₂ : p ∣ b ^ 2 - r₂ := by simpa only [pow_two] using c₂
+  have h₁ : p ∣ b ^ 1 - b := by simp
+  have h₄ := sq h₂ c₄
+  exact mul (mul (mul (sq (sq (sq (sq h₄ c₈) c₁₆) c₃₂) c₆₄) h₄ c₆₈) h₂ c₇₀) h₁ c₇₁
+
 private def branchFrobeniusRemainder1 : (ZMod 71)[X] :=
   14 * X ^ 5 + 33 * X ^ 4 + 31 * X ^ 3 + 34 * X ^ 2 + 48 * X
-
-private lemma branchFrobeniusStep1 :
-    branchSexticMod71 ∣ X ^ 71 - branchFrobeniusRemainder1 := by
-  let r2 : (ZMod 71)[X] := X ^ 2
-  have c2 : branchSexticMod71 ∣ (X * X) - r2 := by
-    refine ⟨0, ?_⟩
-    dsimp [r2, branchSexticMod71]
-    ring
-  have h2 : branchSexticMod71 ∣ X ^ 2 - r2 := by
-    simpa only [pow_two] using c2
-  let r4 : (ZMod 71)[X] := X ^ 4
-  have c4 : branchSexticMod71 ∣ (r2 * r2) - r4 := by
-    refine ⟨0, ?_⟩
-    dsimp [r2, r4, branchSexticMod71]
-    ring
-  have h4 : branchSexticMod71 ∣ X ^ 4 - r4 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h2 2) (by simpa only [pow_two] using c4)
-  let r8 : (ZMod 71)[X] := 16 * X ^ 5 + 18 * X ^ 4 + 41 * X ^ 3 + 52 * X ^ 2 + 51 * X + 23
-  have c8 : branchSexticMod71 ∣ (r4 * r4) - r8 := by
-    refine ⟨X ^ 2 + 51 * X + 59, ?_⟩
-    dsimp [r4, r8, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h8 : branchSexticMod71 ∣ X ^ 8 - r8 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h4 2) (by simpa only [pow_two] using c8)
-  let r16 : (ZMod 71)[X] := 13 * X ^ 5 + 50 * X ^ 4 + 3 * X ^ 3 + 32 * X ^ 2 + 24 * X + 8
-  have c16 : branchSexticMod71 ∣ (r8 * r8) - r16 := by
-    refine ⟨43 * X ^ 4 + 37 * X ^ 2 + 51 * X + 65, ?_⟩
-    dsimp [r8, r16, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h16 : branchSexticMod71 ∣ X ^ 16 - r16 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h8 2) (by simpa only [pow_two] using c16)
-  let r32 : (ZMod 71)[X] := 32 * X ^ 5 + 36 * X ^ 4 + 66 * X ^ 3 + 11 * X ^ 2 + 23 * X + 66
-  have c32 : branchSexticMod71 ∣ (r16 * r16) - r32 := by
-    refine ⟨27 * X ^ 4 + 50 * X ^ 3 + 39 * X ^ 2 + 8 * X + 36, ?_⟩
-    dsimp [r16, r32, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h32 : branchSexticMod71 ∣ X ^ 32 - r32 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h16 2) (by simpa only [pow_two] using c32)
-  let r64 : (ZMod 71)[X] := 18 * X ^ 5 + 29 * X ^ 4 + 16 * X ^ 3 + 58 * X ^ 2 + 64 * X + 21
-  have c64 : branchSexticMod71 ∣ (r32 * r32) - r64 := by
-    refine ⟨30 * X ^ 4 + 47 * X ^ 2 + 19 * X + 70, ?_⟩
-    dsimp [r32, r64, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h64 : branchSexticMod71 ∣ X ^ 64 - r64 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h32 2) (by simpa only [pow_two] using c64)
-  let r68 : (ZMod 71)[X] := 59 * X ^ 5 + 56 * X ^ 4 + 53 * X ^ 3 + 21 * X ^ 2 + 52 * X + 61
-  have c68 : branchSexticMod71 ∣ (r64 * r4) - r68 := by
-    refine ⟨18 * X ^ 3 + 24 * X ^ 2 + X + 33, ?_⟩
-    dsimp [r64, r4, r68, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h68 : branchSexticMod71 ∣ X ^ 68 - r68 := by
-    simpa only [← pow_add] using
-      remainder_trans (remainder_mul h64 h4) c68
-  let r70 : (ZMod 71)[X] := 14 * X ^ 4 + 33 * X ^ 3 + 31 * X ^ 2 + 34 * X + 48
-  have c70 : branchSexticMod71 ∣ (r68 * r2) - r70 := by
-    refine ⟨59 * X + 12, ?_⟩
-    dsimp [r68, r2, r70, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h70 : branchSexticMod71 ∣ X ^ 70 - r70 := by
-    simpa only [← pow_add] using
-      remainder_trans (remainder_mul h68 h2) c70
-  let r71 : (ZMod 71)[X] := 14 * X ^ 5 + 33 * X ^ 4 + 31 * X ^ 3 + 34 * X ^ 2 + 48 * X
-  have c71 : branchSexticMod71 ∣ (r70 * X) - r71 := by
-    refine ⟨0, ?_⟩
-    dsimp [r70, r71, branchSexticMod71]
-    ring
-  have h71 : branchSexticMod71 ∣ X ^ 71 - r71 := by
-    simpa only [← pow_add] using
-      remainder_trans (remainder_mul h70 (by simp : branchSexticMod71 ∣ X ^ 1 - X)) c71
-  exact h71
-
-private lemma branchFrobeniusCoprime1 :
-    IsCoprime branchSexticMod71 (branchFrobeniusRemainder1 - X) := by
-  refine ⟨9 * X ^ 4 + 25 * X ^ 3 + 62 * X ^ 2 + 30 * X + 53,
-    45 * X ^ 5 + X ^ 4 + 19 * X ^ 3 + 27 * X ^ 2 + 6 * X + 9, ?_⟩
-  unfold branchSexticMod71 branchFrobeniusRemainder1
-  ring_nf
-  reduce_mod_char
 
 private def branchFrobeniusRemainder2 : (ZMod 71)[X] :=
   36 * X ^ 5 + 48 * X ^ 4 + 49 * X ^ 3 + 53 * X ^ 2 + 36 * X + 42
 
-private lemma branchFrobeniusStep2 :
-    branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 71 - branchFrobeniusRemainder2 := by
-  let r2 : (ZMod 71)[X] := 22 * X ^ 5 + 66 * X ^ 4 + 11 * X ^ 3 + 53 * X ^ 2 + 10 * X + 25
-  have c2 : branchSexticMod71 ∣ (branchFrobeniusRemainder1 * branchFrobeniusRemainder1) - r2 := by
-    refine ⟨54 * X ^ 4 + 57 * X ^ 3 + 11 * X ^ 2 + 68 * X + 24, ?_⟩
-    dsimp [branchFrobeniusRemainder1, r2, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h2 : branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 2 - r2 := by
-    simpa only [pow_two] using c2
-  let r4 : (ZMod 71)[X] := 19 * X ^ 5 + 34 * X ^ 4 + 57 * X ^ 3 + 11 * X ^ 2 + 47 * X + 46
-  have c4 : branchSexticMod71 ∣ (r2 * r2) - r4 := by
-    refine ⟨58 * X ^ 4 + 40 * X ^ 3 + 24 * X ^ 2 + 12 * X + 15, ?_⟩
-    dsimp [r2, r4, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h4 : branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 4 - r4 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h2 2) (by simpa only [pow_two] using c4)
-  let r8 : (ZMod 71)[X] := 30 * X ^ 5 + 38 * X ^ 4 + 70 * X ^ 3 + 30 * X ^ 2 + 32 * X + 69
-  have c8 : branchSexticMod71 ∣ (r4 * r4) - r8 := by
-    refine ⟨6 * X ^ 4 + 36 * X ^ 3 + 59 * X ^ 2 + 49 * X + 3, ?_⟩
-    dsimp [r4, r8, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h8 : branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 8 - r8 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h4 2) (by simpa only [pow_two] using c8)
-  let r16 : (ZMod 71)[X] := 25 * X ^ 5 + 12 * X ^ 4 + 62 * X ^ 3 + 64 * X ^ 2 + 34 * X + 5
-  have c16 : branchSexticMod71 ∣ (r8 * r8) - r16 := by
-    refine ⟨48 * X ^ 4 + 42 * X ^ 3 + 9 * X ^ 2 + 63 * X + 18, ?_⟩
-    dsimp [r8, r16, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h16 : branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 16 - r16 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h8 2) (by simpa only [pow_two] using c16)
-  let r32 : (ZMod 71)[X] := 55 * X ^ 5 + 9 * X ^ 4 + 30 * X ^ 3 + 64 * X ^ 2 + 19 * X + 63
-  have c32 : branchSexticMod71 ∣ (r16 * r16) - r32 := by
-    refine ⟨57 * X ^ 4 + 28 * X ^ 3 + 3 * X ^ 2 + 47 * X + 45, ?_⟩
-    dsimp [r16, r32, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h32 : branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 32 - r32 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h16 2) (by simpa only [pow_two] using c32)
-  let r64 : (ZMod 71)[X] := 5 * X ^ 5 + 59 * X ^ 4 + 44 * X ^ 3 + 54 * X ^ 2 + 15 * X + 32
-  have c64 : branchSexticMod71 ∣ (r32 * r32) - r64 := by
-    refine ⟨43 * X ^ 4 + 59 * X ^ 3 + 34 * X ^ 2 + 52 * X + 63, ?_⟩
-    dsimp [r32, r64, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h64 : branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 64 - r64 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h32 2) (by simpa only [pow_two] using c64)
-  let r68 : (ZMod 71)[X] := 68 * X ^ 5 + 30 * X ^ 4 + 66 * X ^ 3 + 66 * X ^ 2 + 20 * X + 51
-  have c68 : branchSexticMod71 ∣ (r64 * r4) - r68 := by
-    refine ⟨24 * X ^ 4 + 30 * X ^ 3 + 23 * X ^ 2 + 2 * X + 53, ?_⟩
-    dsimp [r64, r4, r68, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h68 : branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 68 - r68 := by
-    simpa only [← pow_add] using
-      remainder_trans (remainder_mul h64 h4) c68
-  let r70 : (ZMod 71)[X] := 32 * X ^ 5 + 61 * X ^ 4 + 7 * X ^ 3 + 41 * X ^ 2 + 67 * X + 36
-  have c70 : branchSexticMod71 ∣ (r68 * r2) - r70 := by
-    refine ⟨5 * X ^ 4 + 7 * X ^ 3 + 63 * X ^ 2 + 56 * X + 63, ?_⟩
-    dsimp [r68, r2, r70, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h70 : branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 70 - r70 := by
-    simpa only [← pow_add] using
-      remainder_trans (remainder_mul h68 h2) c70
-  let r71 : (ZMod 71)[X] := 36 * X ^ 5 + 48 * X ^ 4 + 49 * X ^ 3 + 53 * X ^ 2 + 36 * X + 42
-  have c71 : branchSexticMod71 ∣ (r70 * branchFrobeniusRemainder1) - r71 := by
-    refine ⟨22 * X ^ 4 + 50 * X ^ 3 + 68 * X ^ 2 + 25 * X + 46, ?_⟩
-    dsimp [r70, branchFrobeniusRemainder1, r71, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h71 : branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 71 - r71 := by
-    simpa only [← pow_add] using
-      remainder_trans (remainder_mul h70
-        (by simp : branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 1 -
-          branchFrobeniusRemainder1)) c71
-  exact h71
-
-private lemma branchFrobeniusCoprime2 :
-    IsCoprime branchSexticMod71 (branchFrobeniusRemainder2 - X) := by
-  refine ⟨20 * X ^ 4 + 34 * X ^ 3 + 31 * X ^ 2 + 13 * X + 24,
-    31 * X ^ 5 + 61 * X ^ 4 + 42 * X ^ 3 + 61 * X ^ 2 + 39 * X + 4, ?_⟩
-  unfold branchSexticMod71 branchFrobeniusRemainder2
-  ring_nf
-  reduce_mod_char
-
 private def branchFrobeniusRemainder3 : (ZMod 71)[X] :=
   37 * X ^ 5 + 22 * X ^ 4 + 60 * X ^ 3 + 13 * X ^ 2 + 66 * X + 35
 
+/-- Check a polynomial identity modulo 71. A second normalization pass is
+needed because reducing coefficients can expose further cancellations. -/
+local macro "mod71_check" : tactic =>
+  `(tactic| (simp only [branchSexticMod71, branchFrobeniusRemainder1, branchFrobeniusRemainder2,
+      branchFrobeniusRemainder3]; ring_nf; try reduce_mod_char; try ring_nf; try reduce_mod_char))
+
+/-- The variable over `ZMod 71`; fixing the coefficient ring keeps elaboration cheap. -/
+local notation "Y" => (X : (ZMod 71)[X])
+
+private lemma branchFrobeniusStep1 :
+    branchSexticMod71 ∣ X ^ 71 - branchFrobeniusRemainder1 :=
+  remainder_pow_71
+    (r₂ := Y ^ 2)
+    (r₄ := Y ^ 4)
+    (r₈ := 16 * Y ^ 5 + 18 * Y ^ 4 + 41 * Y ^ 3 + 52 * Y ^ 2 + 51 * Y + 23)
+    (r₁₆ := 13 * Y ^ 5 + 50 * Y ^ 4 + 3 * Y ^ 3 + 32 * Y ^ 2 + 24 * Y + 8)
+    (r₃₂ := 32 * Y ^ 5 + 36 * Y ^ 4 + 66 * Y ^ 3 + 11 * Y ^ 2 + 23 * Y + 66)
+    (r₆₄ := 18 * Y ^ 5 + 29 * Y ^ 4 + 16 * Y ^ 3 + 58 * Y ^ 2 + 64 * Y + 21)
+    (r₆₈ := 59 * Y ^ 5 + 56 * Y ^ 4 + 53 * Y ^ 3 + 21 * Y ^ 2 + 52 * Y + 61)
+    (r₇₀ := 14 * Y ^ 4 + 33 * Y ^ 3 + 31 * Y ^ 2 + 34 * Y + 48)
+    (.intro 0 (by mod71_check))
+    (.intro 0 (by mod71_check))
+    (.intro (Y ^ 2 + 51 * Y + 59) (by mod71_check))
+    (.intro (43 * Y ^ 4 + 37 * Y ^ 2 + 51 * Y + 65) (by mod71_check))
+    (.intro (27 * Y ^ 4 + 50 * Y ^ 3 + 39 * Y ^ 2 + 8 * Y + 36) (by mod71_check))
+    (.intro (30 * Y ^ 4 + 47 * Y ^ 2 + 19 * Y + 70) (by mod71_check))
+    (.intro (18 * Y ^ 3 + 24 * Y ^ 2 + Y + 33) (by mod71_check))
+    (.intro (59 * Y + 12) (by mod71_check))
+    (.intro 0 (by mod71_check))
+
+private lemma branchFrobeniusCoprime1 :
+    IsCoprime branchSexticMod71 (branchFrobeniusRemainder1 - X) :=
+  ⟨9 * X ^ 4 + 25 * X ^ 3 + 62 * X ^ 2 + 30 * X + 53,
+    45 * X ^ 5 + X ^ 4 + 19 * X ^ 3 + 27 * X ^ 2 + 6 * X + 9, by mod71_check⟩
+
+private lemma branchFrobeniusStep2 :
+    branchSexticMod71 ∣ branchFrobeniusRemainder1 ^ 71 - branchFrobeniusRemainder2 :=
+  remainder_pow_71
+    (r₂ := 22 * Y ^ 5 + 66 * Y ^ 4 + 11 * Y ^ 3 + 53 * Y ^ 2 + 10 * Y + 25)
+    (r₄ := 19 * Y ^ 5 + 34 * Y ^ 4 + 57 * Y ^ 3 + 11 * Y ^ 2 + 47 * Y + 46)
+    (r₈ := 30 * Y ^ 5 + 38 * Y ^ 4 + 70 * Y ^ 3 + 30 * Y ^ 2 + 32 * Y + 69)
+    (r₁₆ := 25 * Y ^ 5 + 12 * Y ^ 4 + 62 * Y ^ 3 + 64 * Y ^ 2 + 34 * Y + 5)
+    (r₃₂ := 55 * Y ^ 5 + 9 * Y ^ 4 + 30 * Y ^ 3 + 64 * Y ^ 2 + 19 * Y + 63)
+    (r₆₄ := 5 * Y ^ 5 + 59 * Y ^ 4 + 44 * Y ^ 3 + 54 * Y ^ 2 + 15 * Y + 32)
+    (r₆₈ := 68 * Y ^ 5 + 30 * Y ^ 4 + 66 * Y ^ 3 + 66 * Y ^ 2 + 20 * Y + 51)
+    (r₇₀ := 32 * Y ^ 5 + 61 * Y ^ 4 + 7 * Y ^ 3 + 41 * Y ^ 2 + 67 * Y + 36)
+    (.intro (54 * Y ^ 4 + 57 * Y ^ 3 + 11 * Y ^ 2 + 68 * Y + 24) (by mod71_check))
+    (.intro (58 * Y ^ 4 + 40 * Y ^ 3 + 24 * Y ^ 2 + 12 * Y + 15) (by mod71_check))
+    (.intro (6 * Y ^ 4 + 36 * Y ^ 3 + 59 * Y ^ 2 + 49 * Y + 3) (by mod71_check))
+    (.intro (48 * Y ^ 4 + 42 * Y ^ 3 + 9 * Y ^ 2 + 63 * Y + 18) (by mod71_check))
+    (.intro (57 * Y ^ 4 + 28 * Y ^ 3 + 3 * Y ^ 2 + 47 * Y + 45) (by mod71_check))
+    (.intro (43 * Y ^ 4 + 59 * Y ^ 3 + 34 * Y ^ 2 + 52 * Y + 63) (by mod71_check))
+    (.intro (24 * Y ^ 4 + 30 * Y ^ 3 + 23 * Y ^ 2 + 2 * Y + 53) (by mod71_check))
+    (.intro (5 * Y ^ 4 + 7 * Y ^ 3 + 63 * Y ^ 2 + 56 * Y + 63) (by mod71_check))
+    (.intro (22 * Y ^ 4 + 50 * Y ^ 3 + 68 * Y ^ 2 + 25 * Y + 46) (by mod71_check))
+
+private lemma branchFrobeniusCoprime2 :
+    IsCoprime branchSexticMod71 (branchFrobeniusRemainder2 - X) :=
+  ⟨20 * X ^ 4 + 34 * X ^ 3 + 31 * X ^ 2 + 13 * X + 24,
+    31 * X ^ 5 + 61 * X ^ 4 + 42 * X ^ 3 + 61 * X ^ 2 + 39 * X + 4, by mod71_check⟩
+
 private lemma branchFrobeniusStep3 :
-    branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 71 - branchFrobeniusRemainder3 := by
-  let r2 : (ZMod 71)[X] := 17 * X ^ 5 + 70 * X ^ 4 + 40 * X ^ 3 + X ^ 2 + 25 * X + 3
-  have c2 : branchSexticMod71 ∣ (branchFrobeniusRemainder2 * branchFrobeniusRemainder2) - r2 := by
-    refine ⟨18 * X ^ 4 + 43 * X ^ 3 + 41 * X ^ 2 + 9 * X + 39, ?_⟩
-    dsimp [branchFrobeniusRemainder2, r2, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h2 : branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 2 - r2 := by
-    simpa only [pow_two] using c2
-  let r4 : (ZMod 71)[X] := 28 * X ^ 5 + 6 * X ^ 4 + 36 * X ^ 3 + 48 * X ^ 2 + 7 * X + 3
-  have c4 : branchSexticMod71 ∣ (r2 * r2) - r4 := by
-    refine ⟨5 * X ^ 4 + 8 * X ^ 3 + 64 * X ^ 2 + 60 * X + 34, ?_⟩
-    dsimp [r2, r4, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h4 : branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 4 - r4 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h2 2) (by simpa only [pow_two] using c4)
-  let r8 : (ZMod 71)[X] := 57 * X ^ 5 + 58 * X ^ 4 + 34 * X ^ 3 + 4 * X ^ 2 + 2 * X + 53
-  have c8 : branchSexticMod71 ∣ (r4 * r4) - r8 := by
-    refine ⟨3 * X ^ 4 + 63 * X ^ 3 + 53 * X ^ 2 + 57 * X + 11, ?_⟩
-    dsimp [r4, r8, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h8 : branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 8 - r8 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h4 2) (by simpa only [pow_two] using c8)
-  let r16 : (ZMod 71)[X] := 42 * X ^ 5 + 62 * X ^ 4 + 15 * X ^ 3 + 60 * X ^ 2 + 27 * X + 45
-  have c16 : branchSexticMod71 ∣ (r8 * r8) - r16 := by
-    refine ⟨54 * X ^ 4 + 65 * X ^ 3 + 22 * X ^ 2 + 13 * X + 19, ?_⟩
-    dsimp [r8, r16, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h16 : branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 16 - r16 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h8 2) (by simpa only [pow_two] using c16)
-  let r32 : (ZMod 71)[X] := 39 * X ^ 5 + 54 * X ^ 4 + 16 * X ^ 3 + 62 * X ^ 2 + 6 * X + 41
-  have c32 : branchSexticMod71 ∣ (r16 * r16) - r32 := by
-    refine ⟨60 * X ^ 4 + 32 * X ^ 3 + 50 * X ^ 2 + 52 * X + 1, ?_⟩
-    dsimp [r16, r32, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h32 : branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 32 - r32 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h16 2) (by simpa only [pow_two] using c32)
-  let r64 : (ZMod 71)[X] := 13 * X ^ 5 + 67 * X ^ 4 + 55 * X ^ 3 + 68 * X ^ 2 + 65 * X + 61
-  have c64 : branchSexticMod71 ∣ (r32 * r32) - r64 := by
-    refine ⟨30 * X ^ 4 + 62 * X ^ 3 + 7 * X ^ 2 + 26 * X + 21, ?_⟩
-    dsimp [r32, r64, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h64 : branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 64 - r64 := by
-    simpa only [← pow_mul] using
-      remainder_trans (remainder_pow h32 2) (by simpa only [pow_two] using c64)
-  let r68 : (ZMod 71)[X] := 50 * X ^ 5 + 24 * X ^ 3 + 61 * X ^ 2 + 65 * X + 61
-  have c68 : branchSexticMod71 ∣ (r64 * r4) - r68 := by
-    refine ⟨9 * X ^ 4 + 70 * X ^ 3 + 9 * X + 5, ?_⟩
-    dsimp [r64, r4, r68, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h68 : branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 68 - r68 := by
-    simpa only [← pow_add] using
-      remainder_trans (remainder_mul h64 h4) c68
-  let r70 : (ZMod 71)[X] := 67 * X ^ 5 + 19 * X ^ 4 + 24 * X ^ 3 + 36 * X ^ 2 + 45 * X + 12
-  have c70 : branchSexticMod71 ∣ (r68 * r2) - r70 := by
-    refine ⟨69 * X ^ 4 + 61 * X ^ 3 + 24 * X ^ 2 + 47 * X + 46, ?_⟩
-    dsimp [r68, r2, r70, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h70 : branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 70 - r70 := by
-    simpa only [← pow_add] using
-      remainder_trans (remainder_mul h68 h2) c70
-  let r71 : (ZMod 71)[X] := 37 * X ^ 5 + 22 * X ^ 4 + 60 * X ^ 3 + 13 * X ^ 2 + 66 * X + 35
-  have c71 : branchSexticMod71 ∣ (r70 * branchFrobeniusRemainder2) - r71 := by
-    refine ⟨69 * X ^ 4 + 35 * X ^ 3 + 66 * X + 7, ?_⟩
-    dsimp [r70, branchFrobeniusRemainder2, r71, branchSexticMod71]
-    ring_nf
-    reduce_mod_char
-    ring_nf
-    reduce_mod_char
-  have h71 : branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 71 - r71 := by
-    simpa only [← pow_add] using
-      remainder_trans (remainder_mul h70
-        (by simp : branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 1 -
-          branchFrobeniusRemainder2)) c71
-  exact h71
+    branchSexticMod71 ∣ branchFrobeniusRemainder2 ^ 71 - branchFrobeniusRemainder3 :=
+  remainder_pow_71
+    (r₂ := 17 * Y ^ 5 + 70 * Y ^ 4 + 40 * Y ^ 3 + Y ^ 2 + 25 * Y + 3)
+    (r₄ := 28 * Y ^ 5 + 6 * Y ^ 4 + 36 * Y ^ 3 + 48 * Y ^ 2 + 7 * Y + 3)
+    (r₈ := 57 * Y ^ 5 + 58 * Y ^ 4 + 34 * Y ^ 3 + 4 * Y ^ 2 + 2 * Y + 53)
+    (r₁₆ := 42 * Y ^ 5 + 62 * Y ^ 4 + 15 * Y ^ 3 + 60 * Y ^ 2 + 27 * Y + 45)
+    (r₃₂ := 39 * Y ^ 5 + 54 * Y ^ 4 + 16 * Y ^ 3 + 62 * Y ^ 2 + 6 * Y + 41)
+    (r₆₄ := 13 * Y ^ 5 + 67 * Y ^ 4 + 55 * Y ^ 3 + 68 * Y ^ 2 + 65 * Y + 61)
+    (r₆₈ := 50 * Y ^ 5 + 24 * Y ^ 3 + 61 * Y ^ 2 + 65 * Y + 61)
+    (r₇₀ := 67 * Y ^ 5 + 19 * Y ^ 4 + 24 * Y ^ 3 + 36 * Y ^ 2 + 45 * Y + 12)
+    (.intro (18 * Y ^ 4 + 43 * Y ^ 3 + 41 * Y ^ 2 + 9 * Y + 39) (by mod71_check))
+    (.intro (5 * Y ^ 4 + 8 * Y ^ 3 + 64 * Y ^ 2 + 60 * Y + 34) (by mod71_check))
+    (.intro (3 * Y ^ 4 + 63 * Y ^ 3 + 53 * Y ^ 2 + 57 * Y + 11) (by mod71_check))
+    (.intro (54 * Y ^ 4 + 65 * Y ^ 3 + 22 * Y ^ 2 + 13 * Y + 19) (by mod71_check))
+    (.intro (60 * Y ^ 4 + 32 * Y ^ 3 + 50 * Y ^ 2 + 52 * Y + 1) (by mod71_check))
+    (.intro (30 * Y ^ 4 + 62 * Y ^ 3 + 7 * Y ^ 2 + 26 * Y + 21) (by mod71_check))
+    (.intro (9 * Y ^ 4 + 70 * Y ^ 3 + 9 * Y + 5) (by mod71_check))
+    (.intro (69 * Y ^ 4 + 61 * Y ^ 3 + 24 * Y ^ 2 + 47 * Y + 46) (by mod71_check))
+    (.intro (69 * Y ^ 4 + 35 * Y ^ 3 + 66 * Y + 7) (by mod71_check))
 
 private lemma branchFrobeniusCoprime3 :
-    IsCoprime branchSexticMod71 (branchFrobeniusRemainder3 - X) := by
-  refine ⟨25 * X ^ 4 + 11 * X ^ 3 + 53 * X ^ 2 + 59 * X + 48,
-    7 * X ^ 5 + 30 * X ^ 4 + 65 * X ^ 3 + 64 * X ^ 2 + 25 * X + 40, ?_⟩
-  unfold branchSexticMod71 branchFrobeniusRemainder3
-  ring_nf
-  reduce_mod_char
+    IsCoprime branchSexticMod71 (branchFrobeniusRemainder3 - X) :=
+  ⟨25 * X ^ 4 + 11 * X ^ 3 + 53 * X ^ 2 + 59 * X + 48,
+    7 * X ^ 5 + 30 * X ^ 4 + 65 * X ^ 3 + 64 * X ^ 2 + 25 * X + 40, by mod71_check⟩
 
 private lemma remainder_frobenius_iteration {p r s : (ZMod 71)[X]} (k n : ℕ)
     (hn : 71 ^ n = 71 ^ k * 71)
@@ -467,39 +248,10 @@ lemma branchSexticSpecialization_isPrimitive : branchSexticSpecialization.IsPrim
   convert dvd_sub (dvd_add h4 (h0.mul_left 36283)) (h6.mul_left 203743) using 1
   norm_num
 
-private lemma primitive_irreducible_of_mod71
-    {p : ℤ[X]} (hp : p.IsPrimitive)
-    (hdegree : (p.map (Int.castRingHom (ZMod 71))).natDegree = p.natDegree)
-    (hirr : Irreducible (p.map (Int.castRingHom (ZMod 71)))) : Irreducible p := by
-  let φ := Int.castRingHom (ZMod 71)
-  refine ⟨hirr.not_isUnit ∘ IsUnit.map (mapRingHom φ), fun a b hab ↦ ?_⟩
-  have hm : p.map φ = a.map φ * b.map φ := by rw [hab, Polynomial.map_mul]
-  have hma0 : a.map φ ≠ 0 := (mul_ne_zero_iff.mp (hm ▸ hirr.ne_zero)).1
-  have hmb0 : b.map φ ≠ 0 := (mul_ne_zero_iff.mp (hm ▸ hirr.ne_zero)).2
-  have ha0 : a ≠ 0 := by intro h; simp [h] at hma0
-  have hb0 : b ≠ 0 := by intro h; simp [h] at hmb0
-  have hsum : (a.map φ).natDegree + (b.map φ).natDegree = a.natDegree + b.natDegree := by
-    rw [← natDegree_mul hma0 hmb0, ← hm, hdegree, hab, natDegree_mul ha0 hb0]
-  have ha_le : (a.map φ).natDegree ≤ a.natDegree := natDegree_map_le
-  have hb_le : (b.map φ).natDegree ≤ b.natDegree := natDegree_map_le
-  have hunit : ∀ q : ℤ[X], q.natDegree = 0 → q ∣ p → IsUnit q := by
-    intro q hq hqp
-    have hqC := eq_C_of_natDegree_eq_zero hq
-    rw [hqC] at hqp ⊢
-    exact isUnit_C.mpr (hp _ hqp)
-  rcases hirr.isUnit_or_isUnit hm with hma | hmb
-  · left
-    apply hunit a _ ⟨b, hab⟩
-    have := natDegree_eq_zero_of_isUnit hma
-    omega
-  · right
-    apply hunit b _ ⟨a, hab.trans (mul_comm a b)⟩
-    have := natDegree_eq_zero_of_isUnit hmb
-    omega
-
 /-- The exact specialized sextic is irreducible over the integers. -/
 theorem branchSexticSpecialization_irreducible : Irreducible branchSexticSpecialization := by
-  apply primitive_irreducible_of_mod71 branchSexticSpecialization_isPrimitive
+  apply primitive_irreducible_of_degree_preserving_specialization (Int.castRingHom (ZMod 71))
+    branchSexticSpecialization_isPrimitive
   · have hdegree : branchSexticSpecialization.natDegree = 6 := by
       unfold branchSexticSpecialization
       compute_degree <;> norm_num

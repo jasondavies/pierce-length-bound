@@ -90,57 +90,26 @@ theorem orbit_infinity_residue_sign
     (F : Type*) [Field F] [Algebra ℚ F] [Algebra (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     [IsScalarTower ℚ (MvPolynomial (Fin 3) ℚ ⧸ I) F]
     [IsFractionRing (MvPolynomial (Fin 3) ℚ ⧸ I) F] :
-    let R := MvPolynomial (Fin 3) ℚ ⧸ I
-    let ι := IsScalarTower.toAlgHom ℚ R F
-    let S := projectiveChart I ι (Ideal.Quotient.mk I (X 0))
-    let C := integralClosure S F
-    let w := chartInfinityCoordinate I ι (Ideal.Quotient.mk I (X 0))
-    let r := chartHomogeneousMap I ι (Ideal.Quotient.mk I (X 0))
+    let r := chartHomogeneousMap I (orbitChartEmbedding I F) (Ideal.Quotient.mk I (X 0))
       (curveHomogenize 10 (curveResultant (patternRhoQ a b i) (patternUQ a b i)
         (patternVQ a b i) (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1))
         (patternVQ a b (i + 1))))
-    ∀ p : IsDedekindDomain.HeightOneSpectrum C, algebraMap S C w ∈ p.asIdeal →
-      ∃ β : C ⧸ p.asIdeal,
-        β ^ 2 * Ideal.Quotient.mk p.asIdeal (algebraMap S C r) =
-          Ideal.Quotient.mk p.asIdeal (algebraMap ℚ C ((a : ℚ) / (Lz a b i : ℚ))) := by
+    ∀ p ∈ orbitInfinityBranches I F, ∃ β : orbitChartClosure I F ⧸ p.asIdeal,
+      β ^ 2 * Ideal.Quotient.mk p.asIdeal (algebraMap (orbitChart I F) _ r) =
+        Ideal.Quotient.mk p.asIdeal (algebraMap ℚ _ ((a : ℚ) / (Lz a b i : ℚ))) := by
   classical
-  let R := MvPolynomial (Fin 3) ℚ ⧸ I
-  let ι := IsScalarTower.toAlgHom ℚ R F
-  let S := projectiveChart I ι (Ideal.Quotient.mk I (X 0))
-  let C := integralClosure S F
-  let w := chartInfinityCoordinate I ι (Ideal.Quotient.mk I (X 0))
-  let hnormal := orbit_chart_normalization_in_field hba hi hne I hf hg hd hdegree F
-  let : IsFractionRing S F := hnormal.1
-  let : IsDedekindDomain C := hnormal.2.1
-  let : IsFractionRing C F := IsIntegralClosure.isFractionRing_of_finite_extension S F F C
-  have hι : Function.Injective ι := IsFractionRing.injective R F
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  have hA : (Lz a b i : ℚ) ≠ 0 := by
-    exact_mod_cast (show Lz a b i ≠ 0 by
-      have := Lz_pos hba (by omega : i + 5 < P a b)
-      omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
-  let : Module.Finite (Algebra.adjoin ℚ {w}) S :=
-    nonexceptional_chart_finite_over_parameter hρ hu hv hne'
-      (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-      (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
-  have hw : Transcendental ℚ w := nonexceptional_chart_parameter_transcendental hρ hu hv hne'
-    (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-    (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
+  let ι := orbitChartEmbedding I F
+  let S := orbitChart I F
+  let C := orbitChartClosure I F
+  let w := orbitChartParameter I F
+  obtain ⟨_, _, _, hι, ha, hA, hρ, hu, hv, hne', _, hw⟩ :=
+    orbit_infinity_chart_setup hba hi hne I hf hg hd hdegree F
   let φ := chartHomogeneousMap I ι (Ideal.Quotient.mk I (X 0))
-  let r : S := φ (curveHomogenize 10 (curveResultant (patternRhoQ a b i)
-    (patternUQ a b i) (patternVQ a b i) (patternRhoQ a b (i + 1))
-    (patternUQ a b (i + 1)) (patternVQ a b (i + 1))))
   let u : S := φ (curveHomogenize 3 (curveNorm (patternRhoQ a b i)
     (patternUQ a b i) (patternVQ a b i) (patternRhoQ a b (i + 1))
     (patternUQ a b (i + 1)) (patternVQ a b (i + 1))))
   let c : S := algebraMap ℚ S ((a : ℚ) / (Lz a b i : ℚ))
-  change ∀ p : IsDedekindDomain.HeightOneSpectrum C, algebraMap S C w ∈ p.asIdeal →
-    ∃ β : C ⧸ p.asIdeal, β ^ 2 * Ideal.Quotient.mk p.asIdeal (algebraMap S C r) =
-      Ideal.Quotient.mk p.asIdeal (algebraMap ℚ C ((a : ℚ) / (Lz a b i : ℚ)))
-  intro p hp
+  intro r p hp
   have hrunit : IsUnit (Ideal.Quotient.mk (Ideal.span {w}) r) :=
     rational_nonexceptional_chart_resultant_unit hρ hu hv hne'
       (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
@@ -162,7 +131,7 @@ theorem orbit_infinity_residue_sign
     (patternVQ a b i) (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1))
     (patternVQ a b (i + 1)) (Lz a b i : ℚ) (a : ℚ) he
   have hφ (q : ℚ) : φ (Polynomial.C (MvPolynomial.C q)) = algebraMap ℚ S q := by
-    simp [φ, chartHomogeneousMap, S]
+    simp [φ, chartHomogeneousMap, S, ι]
   have hφX : φ Polynomial.X = w := chartHomogeneousMap_X I ι _
   rw [hφX] at heqA
   change φ (Polynomial.C (MvPolynomial.C (Lz a b i : ℚ))) * w ^ 2 * r =

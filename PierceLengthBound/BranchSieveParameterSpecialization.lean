@@ -5,9 +5,8 @@ Authors: Jason Davies
 -/
 module
 
+public import PierceLengthBound.BranchSievePolynomialSubstitution
 public import Mathlib.Algebra.MvPolynomial.Equiv
-public import Mathlib.Algebra.Polynomial.Eval.Degree
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic
 
 /-! Exact specialization and uniform coefficient bounds for the induction on
@@ -70,17 +69,13 @@ theorem branchHeadSpecialization_coeff_abs_le {r d H B : ℕ}
     {t : ℤ} (ht : |t| ≤ (B : ℤ)) (s : Fin r →₀ ℕ) :
     |(branchHeadSpecialization t f).coeff s| ≤ ((d + 1) * H * B ^ d : ℕ) := by
   rw [branchHeadSpecialization_sum t f hd, coeff_sum]
-  refine (abs_sum_le_sum_abs _ _).trans ?_
-  calc
-    _ ≤ ∑ _j ∈ range (d + 1), (H : ℤ) * (B : ℤ) ^ d := by
-      apply sum_le_sum
-      intro j hj
-      rw [mul_comm _ (C _), coeff_C_mul, finSuccEquiv_coeff_coeff, abs_mul, abs_pow]
-      rw [mul_comm (|t| ^ j)]
-      apply mul_le_mul (hH _) ?_ (by positivity) (by positivity)
-      exact (pow_le_pow_left₀ (abs_nonneg t) ht j).trans
-        (pow_le_pow_right₀ (by exact_mod_cast hB) (by simpa using mem_range.mp hj))
-    _ = _ := by simp; ring
+  refine (branch_abs_sum_le_card_mul _ _ (M := (H : ℤ) * (B : ℤ) ^ d) fun j hj => ?_).trans_eq
+    (by rw [card_range]; push_cast; ring)
+  rw [mul_comm _ (C _), coeff_C_mul, finSuccEquiv_coeff_coeff, abs_mul, abs_pow,
+    mul_comm (|t| ^ j)]
+  apply mul_le_mul (hH _) ?_ (by positivity) (by positivity)
+  exact (pow_le_pow_left₀ (abs_nonneg t) ht j).trans
+    (pow_le_pow_right₀ (by exact_mod_cast hB) (by simpa using mem_range.mp hj))
 
 /-- Rational coefficients, without specializing the parameter variables. -/
 def branchFamilyRational {r : ℕ} (p : Polynomial (MvPolynomial (Fin r) ℤ)) :

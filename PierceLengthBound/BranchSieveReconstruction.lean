@@ -188,5 +188,12 @@ theorem branchGenericSignExtension_field_degree (a : ℚ) (ha : a ≠ 0) :
   exact ⟨branchSignExtension_isField haa branchGenericDelta_ne_zero,
     branchSignTower_finrank branchLocationExtension_finrank _ _⟩
 
+theorem branchGenericSignPolynomial_irreducible {a : ℚ} (ha : a ≠ 0) :
+    Irreducible (branchSignPolynomial
+      (algebraMap ℚ BranchLocationExtension a) branchGenericDelta) :=
+  branchSignPolynomial_irreducible
+    (by simpa only [map_zero] using (algebraMap ℚ BranchLocationExtension).injective.ne ha)
+    branchGenericDelta_ne_zero
+
 end
 end PierceLengthBound.FixedDividend
