@@ -93,7 +93,6 @@ theorem finite_prime_decomposition_height_two {K σ : Type*} [Field K] [Finite �
   · intro x
     simpa only [hfin.mem_toFinset] using common_zero_iff_minimalPrime f g x
 
-
 lemma curveQuadratic_degree_le_two {K : Type*} [CommRing K] [Nontrivial K]
     (ρ u v ρ' u' v' : K) : (curveQuadratic ρ u v ρ' u' v').totalDegree ≤ 2 :=
   lineQuadratic_totalDegree_le_two ρ u v ρ' u' v' MvPolynomial.X (by simp)
@@ -123,24 +122,6 @@ lemma curveResultant_degree_le_ten {K : Type*} [Field K]
     ring
   rw [he]
   exact linear_form_degree_le _ _ _
-
-/-- The fixed-dividend equations have a finite prime decomposition, and every
-component has height exactly two. The component-degree sum is a further obligation. -/
-theorem curve_finite_prime_decomposition {ρ u v : ℝ}
-    (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℂ) (ha : a ≠ 0) :
-    ∃ S : Finset (Ideal (MvPolynomial (Fin 3) ℂ)),
-      (∀ p ∈ S, p.IsPrime ∧ p.height = 2) ∧
-      (∀ x, (MvPolynomial.eval x (curveQuadratic (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v') = 0 ∧
-        MvPolynomial.eval x (curveEquation (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' A a) = 0) ↔
-        ∃ p ∈ S, x ∈ coordinateZeroLocus p) := by
-  apply finite_prime_decomposition_height_two
-  · apply Irreducible.prime
-    apply lineQuadratic_irreducible
-    · exact_mod_cast ne_of_gt hρ
-    · exact_mod_cast (show ρ + u ≠ 0 by linarith)
-    · exact_mod_cast (show u - v ≠ 0 by linarith)
-    · exact_mod_cast (show v - 1 ≠ 0 by linarith)
-  · exact curveQuadratic_not_dvd_fixed_dividend hρ hu hv ρ' u' v' A a ha
 
 end
 end PierceLengthBound.FixedDividend

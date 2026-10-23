@@ -8,11 +8,11 @@ module
 public import PierceLengthBound.FixedDividendCriticalGrowth
 
 /-!
-# Degree-one prime curves are affine lines
+# Affine coordinates give affine lines
 
-The eventual Hilbert-degree definition implies a one-dimensional increase in
-successive filtered spaces. Critical growth forces every coordinate to be affine
-in one transcendental coordinate, giving polynomial containment of an affine line.
+Filtered coordinate spaces are monotone and stable under multiplication by a
+coordinate. Affine coordinate formulas in a prime quotient give polynomial
+containment of an affine line.
 -/
 
 @[expose] public section
@@ -39,45 +39,6 @@ lemma coordinate_mul_filtered_mem {K σ : Type*} [Field K]
   apply (totalDegree_mul _ _).trans
   rw [totalDegree_X]
   omega
-
-/-- A prime curve of Hilbert degree one has all coordinates affine in one
-transcendental coordinate. -/
-theorem degree_one_coordinates_affine {K : Type*} [Field K] [IsAlgClosed K]
-    (p : Ideal (MvPolynomial (Fin 3) K)) [p.IsPrime] (hp : p.height = 2)
-    (hdegree : ∃ N : ℕ, ∃ b : ℤ, ∀ n ≥ N,
-      (Module.finrank K (filteredCoordinateSpace p n) : ℤ) = n + b) :
-    ∃ (j : Fin 3) (c d : Fin 3 → K), c j ≠ 0 ∧
-      Transcendental K ((Ideal.Quotient.mk p) (X j)) ∧ ∀ k,
-      (Ideal.Quotient.mk p) (X k) =
-        c k • (Ideal.Quotient.mk p) (X j) + algebraMap K (MvPolynomial (Fin 3) K ⧸ p) (d k) := by
-  obtain ⟨N, b, hN⟩ := hdegree
-  obtain ⟨j, hj⟩ := height_two_has_transcendental_coordinate p hp
-  have hdim : Module.finrank K (filteredCoordinateSpace p (N + 1)) =
-      Module.finrank K (filteredCoordinateSpace p N) + 1 := by
-    have h0 := hN N le_rfl
-    have h1 := hN (N + 1) (by omega)
-    omega
-  have hUone : (1 : MvPolynomial (Fin 3) K ⧸ p) ∈ filteredCoordinateSpace p N := by
-    apply Submodule.mem_map.mpr
-    refine ⟨1, ?_, by simp⟩
-    rw [mem_restrictTotalDegree, totalDegree_one]
-    omega
-  have hex (k : Fin 3) : ∃ c d : K,
-      (Ideal.Quotient.mk p) (X k) = c • (Ideal.Quotient.mk p) (X j) +
-        algebraMap K (MvPolynomial (Fin 3) K ⧸ p) d :=
-    affine_of_critical_growth (filteredCoordinateSpace p N) (filteredCoordinateSpace p (N + 1))
-      (filteredCoordinateSpace_mono p (by omega)) hUone hdim hj
-      (fun _ hu => coordinate_mul_filtered_mem p j N hu)
-      (fun _ hu => coordinate_mul_filtered_mem p k N hu)
-  choose c d hcd using hex
-  have hcj : c j ≠ 0 := by
-    intro hc
-    have he := hcd j
-    rw [hc, zero_smul, zero_add] at he
-    apply hj
-    rw [he]
-    exact isAlgebraic_algebraMap (d j)
-  exact ⟨j, c, d, hcj, hj, hcd⟩
 
 /-- Affine coordinate formulas in a prime quotient give polynomial containment
 of an affine line through each base-field-valued point. -/
@@ -139,19 +100,6 @@ theorem line_through_point_of_affine_coordinates {K : Type*} [Field K]
   refine ⟨c, ⟨j, hcj⟩, ?_⟩
   intro f hf
   rw [← htranslate, AlgHom.comp_apply, hφ f hf, map_zero]
-
-/-- Every point on a prime curve of Hilbert degree one lies on a nonconstant
-affine line contained in that prime ideal's zero locus, as a polynomial identity. -/
-theorem degree_one_line_through_point {K : Type*} [Field K] [IsAlgClosed K]
-    (p : Ideal (MvPolynomial (Fin 3) K)) [p.IsPrime] (hp : p.height = 2)
-    (hdegree : ∃ N : ℕ, ∃ b : ℤ, ∀ n ≥ N,
-      (Module.finrank K (filteredCoordinateSpace p n) : ℤ) = n + b)
-    (z : Fin 3 → K) (hz : z ∈ coordinateZeroLocus p) :
-    ∃ c : Fin 3 → K, (∃ j, c j ≠ 0) ∧ ∀ f ∈ p,
-      MvPolynomial.aeval
-        (fun k => Polynomial.C (z k) + Polynomial.C (c k) * Polynomial.X) f = 0 := by
-  obtain ⟨j, c, d, hcj, hj, hcd⟩ := degree_one_coordinates_affine p hp hdegree
-  exact line_through_point_of_affine_coordinates p j c d hcj hj hcd z hz
 
 end
 end PierceLengthBound.FixedDividend

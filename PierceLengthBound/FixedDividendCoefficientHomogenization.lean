@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendChartResultant
+public import PierceLengthBound.FixedDividendChartHomogenization
 public import PierceLengthBound.FixedDividendRationalCurves
 
 /-!

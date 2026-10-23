@@ -5,7 +5,11 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendRationalConicInfinity
+public import PierceLengthBound.FixedDividendRationalChartResultant
+public import PierceLengthBound.FixedDividendConicInfinity
+public import PierceLengthBound.FixedDividendLocalizationParity
+public import PierceLengthBound.FixedDividendLocalParity
+public import Mathlib.RingTheory.Localization.FractionRing
 public import PierceLengthBound.FixedDividendConicDiscriminant
 
 /-!

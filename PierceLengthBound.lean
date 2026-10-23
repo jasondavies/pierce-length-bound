@@ -83,7 +83,6 @@ public import PierceLengthBound.ConicParameterHeight
 public import PierceLengthBound.ConicFactorHeight
 public import PierceLengthBound.ConicCofactors
 public import PierceLengthBound.FixedDividendRationalParityCover
-public import PierceLengthBound.FixedDividendRationalConicInfinity
 public import PierceLengthBound.IntegralLiftMoments
 public import PierceLengthBound.IntegralLiftPatternCount
 public import PierceLengthBound.IntegralLiftParabola
@@ -91,7 +90,7 @@ public import PierceLengthBound.IntegralLiftCofactors
 public import PierceLengthBound.FixedDividendRationalParabolicModel
 public import PierceLengthBound.IntegralLiftCoordinateSystem
 public import PierceLengthBound.FixedDividendOrbitConicParameter
-public import PierceLengthBound.FixedDividendOrbitConicIdentities
+public import PierceLengthBound.FixedDividendConicPolynomialIdentities
 public import PierceLengthBound.IntegralLiftOrbitConicProperness
 public import PierceLengthBound.IntegralLiftGraph
 public import PierceLengthBound.JointLiftPatternCount

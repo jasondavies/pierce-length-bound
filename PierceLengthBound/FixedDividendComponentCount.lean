@@ -12,7 +12,8 @@ public import PierceLengthBound.FixedDividendTranscendentalCoordinate
 
 Separators and a transcendental coordinate on each component give independent
 families of arbitrary length. The filtered coordinate-space slope consequently
-bounds the number of components, without assuming existence of Hilbert polynomials.
+bounds the number of components with a transcendental coordinate, without assuming
+existence of Hilbert polynomials.
 -/
 
 @[expose] public section
@@ -99,54 +100,6 @@ theorem minimalPrime_card_le_of_transcendental_coordinates {K : Type*} [Field K]
   have hhi := hbound (D + m) (by omega)
   dsimp [m] at hlo hhi
   nlinarith
-
-
-/-- A linear filtered-space bound controls the number of height-two minimal primes. -/
-theorem minimalPrime_card_le_of_filtered_bound {K : Type*} [Field K] [IsAlgClosed K]
-    (I : Ideal (MvPolynomial (Fin 3) K)) (S : Finset (Ideal (MvPolynomial (Fin 3) K)))
-    (hS : ∀ p ∈ S, p ∈ I.minimalPrimes ∧ p.height = 2)
-    (C : ℕ) (hbound : ∀ N, 14 ≤ N → Module.finrank K (filteredCoordinateSpace I N) ≤ C * (N + 2)) :
-    S.card ≤ C := by
-  apply minimalPrime_card_le_of_transcendental_coordinates I S hS _ C hbound
-  intro p hp
-  let : p.IsPrime := (hS p hp).1.isPrime
-  exact height_two_has_transcendental_coordinate p (hS p hp).2
-
-
-/-- At most twenty-four prime components suffice for the actual fixed-dividend
-intersection. The bound is proved directly from filtered dimensions. -/
-theorem curve_finite_prime_decomposition_le_twenty_four {ρ u v : ℝ}
-    (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℂ) (ha : a ≠ 0) :
-    ∃ S : Finset (Ideal (MvPolynomial (Fin 3) ℂ)), S.card ≤ 24 ∧
-      (∀ p ∈ S, p.IsPrime ∧ p.height = 2) ∧
-      (∀ x, (MvPolynomial.eval x (curveQuadratic (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v') = 0 ∧
-        MvPolynomial.eval x (curveEquation (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' A a) = 0) ↔
-        ∃ p ∈ S, x ∈ coordinateZeroLocus p) := by
-  classical
-  let f := curveQuadratic (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v'
-  let g := curveEquation (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' A a
-  let I : Ideal (MvPolynomial (Fin 3) ℂ) := Ideal.span {f, g}
-  have hf : Prime f := by
-    apply Irreducible.prime
-    apply lineQuadratic_irreducible
-    all_goals exact_mod_cast (by linarith : _ ≠ (0 : ℝ))
-  have hfg : ¬ f ∣ g := curveQuadratic_not_dvd_fixed_dividend hρ hu hv ρ' u' v' A a ha
-  let hfin := Ideal.finite_minimalPrimes_of_isNoetherianRing (MvPolynomial (Fin 3) ℂ) I
-  let S := hfin.toFinset
-  have hS (p : Ideal (MvPolynomial (Fin 3) ℂ)) (hp : p ∈ S) :
-      p ∈ I.minimalPrimes ∧ p.height = 2 := by
-    have hp' := hfin.mem_toFinset.mp hp
-    exact ⟨hp', minimalPrime_pair_height_two hf hfg hp'⟩
-  refine ⟨S, ?_, ?_, ?_⟩
-  · apply minimalPrime_card_le_of_filtered_bound I S hS 24
-    intro N hN
-    exact curve_filteredCoordinateSpace_le hρ hu hv ρ' u' v' A a ha I
-      (Ideal.subset_span (by simp : f ∈ ({f, g} : Set (MvPolynomial (Fin 3) ℂ))))
-      (Ideal.subset_span (by simp : g ∈ ({f, g} : Set (MvPolynomial (Fin 3) ℂ)))) hN
-  · intro p hp
-    exact ⟨(hS p hp).1.isPrime, (hS p hp).2⟩
-  · intro x
-    simpa only [S, hfin.mem_toFinset] using common_zero_iff_minimalPrime f g x
 
 end
 end PierceLengthBound.FixedDividend

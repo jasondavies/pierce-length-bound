@@ -227,40 +227,5 @@ theorem transcendental_coordinate_filtered_lower {K σ : Type*} [Field K] [Finit
     LinearIndependent.of_comp (filteredCoordinateSpace I N).subtype hlin
   simpa using hv.fintype_card_le_finrank
 
-/-- Prime curve components have a positive eventual Hilbert slope. -/
-theorem height_two_filtered_degree_exists {K : Type*} [Field K] [IsAlgClosed K]
-    (p : Ideal (MvPolynomial (Fin 3) K)) [p.IsPrime] (hp : p.height = 2) (C : ℕ)
-    (hbound : ∀ N ≥ 14, Module.finrank K (filteredCoordinateSpace p N) ≤ C * (N + 2)) :
-    ∃ d, 0 < d ∧ d ≤ C ∧ ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
-      (Module.finrank K (filteredCoordinateSpace p n) : ℤ) = (d : ℤ) * n + c := by
-  obtain ⟨d, hd, N, c, hlinear⟩ := filteredCoordinateSpace_eventually_linear p C hbound
-  obtain ⟨j, hj⟩ := height_two_has_transcendental_coordinate p hp
-  have hpos : 0 < d := by
-    by_contra h
-    have hd0 : d = 0 := by omega
-    have hlo := transcendental_coordinate_filtered_lower p hj (N + c.natAbs)
-    have hhi := hlinear (N + c.natAbs) (by omega)
-    rw [hd0] at hhi
-    simp only [Nat.cast_zero, zero_mul, zero_add] at hhi
-    have habs : c ≤ (c.natAbs : ℤ) := Int.le_natAbs
-    have hlo' : ((N + c.natAbs + 1 : ℕ) : ℤ) ≤
-        (Module.finrank K (filteredCoordinateSpace p (N + c.natAbs)) : ℤ) := by exact_mod_cast hlo
-    push_cast at hlo'
-    omega
-  exact ⟨d, hpos, hd, N, c, hlinear⟩
-
-/-- Every prime component of the actual fixed-dividend intersection has a
-well-defined positive affine Hilbert degree at most twenty-four. -/
-theorem curve_component_degree_exists {ρ u v : ℝ}
-    (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℂ) (ha : a ≠ 0)
-    (p : Ideal (MvPolynomial (Fin 3) ℂ)) [p.IsPrime] (hp : p.height = 2)
-    (hf : curveQuadratic (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' ∈ p)
-    (hg : curveEquation (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' A a ∈ p) :
-    ∃ d : ℕ, 0 < d ∧ d ≤ 24 ∧ ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
-      (Module.finrank ℂ (filteredCoordinateSpace p n) : ℤ) = (d : ℤ) * n + c := by
-  apply height_two_filtered_degree_exists p hp 24
-  intro N hN
-  exact curve_filteredCoordinateSpace_le hρ hu hv ρ' u' v' A a ha p hf hg hN
-
 end
 end PierceLengthBound.FixedDividend

@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendInfinitySection
+public import PierceLengthBound.FixedDividendProjectiveFiltration
 
 /-!
 # Regularity of a linear coordinate on the infinity section

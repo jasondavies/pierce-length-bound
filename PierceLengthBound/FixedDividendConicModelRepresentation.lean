@@ -6,7 +6,8 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendConicPatternCoefficients
-public import PierceLengthBound.FixedDividendParabolicCharts
+public import PierceLengthBound.FixedDividendSecondParabolicModel
+public import PierceLengthBound.FixedDividendConicPlanePivot
 
 /-! The actual rational plane models equal their explicitly cleared forms. -/
 

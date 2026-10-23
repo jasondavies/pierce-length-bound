@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendConicBoundedParameter
+public import PierceLengthBound.FixedDividendConicCoefficientHeight
 
 /-! Integer numerators for the exact ternary fixed-dividend quadratic. -/
 
