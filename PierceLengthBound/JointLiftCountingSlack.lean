@@ -8,14 +8,18 @@ module
 public import PierceLengthBound.JointLiftPointCount
 public import PierceLengthBound.ExceptionalSlack
 
-/-! The actual joint box has polynomial height in the dividend. Consequently
-the logarithm in the proved curve theorem costs a proved subpolynomial factor. -/
+/-! # Slowly growing coefficient for the joint graph count
+
+The joint-lift point box has height at most `10²⁵ a¹⁵`, so the logarithm in the curve-counting
+bound costs only a slowly growing factor. This turns the per-pattern graph count
+`selected_jointGraph_gap_count` into a bound `R(a) B^(1/lo)` with `R` slowly growing. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
-/-- A generous polynomial bound suffices here: only its logarithm is used. -/
+/-- The joint-lift point box has height at most `10²⁵ a¹⁵`; only the logarithm of this bound
+is used. -/
 lemma jointPointBoxHeight_polynomial {a A T : ℕ} (ha : 1 ≤ a) (hA : A ≤ a) :
     jointPointBoxHeight a A T ≤ 10 ^ 25 * a ^ 15 := by
   have hH : selectedGapHeight a A T ≤ 29 * a := by
@@ -41,8 +45,8 @@ lemma jointPointBoxHeight_polynomial {a A T : ℕ} (ha : 1 ≤ a) (hA : A ≤ a)
         _ = (1259991040 * 29 ^ 10) * a ^ 15 := by ring
         _ ≤ 10 ^ 25 * a ^ 15 := by gcongr; norm_num
 
-/-- Relate the natural logarithm in the point count to the integer logarithm
-whose subpolynomial growth is already proved. -/
+/-- If `1 ≤ B ≤ c aᵉ`, then `log B + 1` is at most twice the binary logarithm of `c aᵉ` (plus
+one), a slowly growing function of `a` (`polynomial_log_slow`). -/
 lemma box_log_le_polynomial_log {B c e a : ℕ} (hB : 1 ≤ B) (hpoly : B ≤ c * a ^ e) :
     Real.log (B : ℝ) + 1 ≤ 2 * ((Nat.log 2 (c * a ^ e) + 1 : ℕ) : ℝ) := by
   have hpow : (B : ℝ) ≤ (2 : ℝ) ^ (Nat.log 2 (c * a ^ e) + 1) := by
@@ -56,8 +60,9 @@ lemma box_log_le_polynomial_log {B c e a : ℕ} (hB : 1 ≤ B) (hpoly : B ≤ c 
   push_cast at hlog ⊢
   nlinarith
 
-/-- For actual windows and fixed degree range, the curve theorem supplies the
-subpolynomial coefficient needed by the per-pattern counting argument. -/
+/-- If the joint graph over a prime component `I` has degree `δ ∈ [lo, 5928]`, then any set of
+selected starts of one pattern with free nodes on `I` has at most `R(a) B^(1/lo)` distinct gap
+vectors, where `B = max(H, S, Y)` and `R` grows slowly. -/
 theorem selected_jointGraph_gap_count_slow (lo : ℕ) (hlo : 0 < lo) (hlohi : lo ≤ 5928) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ {a b s T A i : ℕ}, b < a →
       (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →

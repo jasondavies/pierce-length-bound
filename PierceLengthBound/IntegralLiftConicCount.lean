@@ -9,13 +9,18 @@ public import PierceLengthBound.IntegralLiftCoefficientHeight
 public import PierceLengthBound.ConicRepresentationCount
 public import PierceLengthBound.IntegralLiftOrbitConicProperness
 
-/-! Uniform divisor bounds for actual orbit points on nonexceptional conics. -/
+/-! The count of Proposition 8.9 (`prop:jointconic`) for one nonexceptional conic in a given
+bounded integer plane. Along the bounded integral parameter of the conic, the orbit lift
+parameter is a proper rational function with bounded integer representatives and takes the
+integer value `I₃` at every orbit state on the conic, so Lemma A.3 (`lem:jointconicdivisors`)
+bounds the number of such states. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- States with the same `θ` have the same lift numerator and denominator polynomials. -/
 lemma orbitLift_polynomials_congr {a b i l : ℕ} (h : theta a b i = theta a b l) :
     orbitLiftNumeratorQ a b i = orbitLiftNumeratorQ a b l ∧
     orbitLiftDenominatorQ a b i = orbitLiftDenominatorQ a b l := by
@@ -23,6 +28,9 @@ lemma orbitLift_polynomials_congr {a b i l : ℕ} (h : theta a b i = theta a b l
   simp only [orbitLiftNumeratorQ, orbitLiftDenominatorQ, orbitCurveCofactorsQ,
     hρ, hu, hv, hρ', hu', hv', and_self]
 
+/-- If the parametrization `z` passes through the free nodes of a state `l` with the same `θ`
+at an integer `t`, then the lift denominator is nonzero at `t` and the lift quotient takes the
+integer value `I₃(l)` there. -/
 lemma orbitLift_parameter_integer_value {a b i l : ℕ} (hba : b < a)
     (hl : l + 7 < P a b) (hθ : theta a b i = theta a b l)
     (z : Fin 3 → Polynomial ℚ) (t : ℤ)
@@ -36,8 +44,11 @@ lemma orbitLift_parameter_integer_value {a b i l : ℕ} (hba : b < a)
   obtain ⟨hD, he⟩ := orbitLift_evaluation hba hl
   exact ⟨hD, integralLiftCoordinate a b l, ((eq_div_iff hD).mp he).symm⟩
 
-/-- The constants are uniform in the dividend, component, and bounded plane.
-The finite exceptional alternative is included explicitly in the bound. -/
+/-- There are absolute constants `D, C, e` such that the following holds. Let the pattern at
+`i` be nonexceptional, and let `I` be a degree-two prime component (Hilbert polynomial `2m + c`)
+of the pattern curve, through the free nodes at `i` and contained in an integer plane of height
+at most `L`. Then the states `l j` with the same `θ` whose free nodes are distinct points of `I`
+number at most `492 + integerValueSlack D C e (conicInputHeight a X L)`. -/
 theorem orbit_conic_integer_points_bound :
     ∃ D C e : ℕ, 1 ≤ C ∧ ∀  {a b i : ℕ} (_hba : b < a)
     (_hi : i + 7 < P a b) {X L : ℕ} (_hX : 1 ≤ X) (_hL : 1 ≤ L)

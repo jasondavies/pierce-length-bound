@@ -9,21 +9,21 @@ public import PierceLengthBound.PoweredJointComponentCount
 public import PierceLengthBound.JointPatternAssembly
 public import PierceLengthBound.OrdinaryPatternCount
 
-/-! The powered joint-lift pattern estimate, with all component and external counting
-hypotheses discharged for every fixed pair of positive powers; its assembly into the three
-local terms, and the integer-power count branches extracted without changing their exponents. -/
+/-! The powered joint pattern estimate for every fixed pair of positive powers, its assembly
+into the three-term window estimate (paper, Proposition 8.13 `prop:jointwindow`)
+`T ≪ a^ε (X⁵ + X⁴H^{1/2} + X⁵ B^{1/(10n + 7m)})`, `B = max(H, Sᵐ, Yⁿ)`, and the three
+integer-power count branches with the same exponents. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open Finset
 
-/-- Geometric estimates remaining per full pattern: square-root counting for
-exceptional patterns, and a constant plus the powered-graph count otherwise. -/
+/-- Per-pattern estimates in the powered box: square-root counting for exceptional patterns,
+and a constant plus the powered-graph count otherwise. -/
 def PoweredJointPatternEstimate (m n : ℕ) (R : ℕ → ℕ) : Prop :=
   JointPatternEstimate (poweredJointBox m n) (1 / ((10 * n + 7 * m : ℕ) : ℝ)) R
 
-/-- The powered joint-lift pattern estimate holds with a proved subpolynomial coefficient.
-It has no external counting, graph-degree, or retained-component assumptions. -/
+/-- The powered joint pattern estimate holds with a subpolynomial coefficient. -/
 theorem poweredJointPatternEstimate_exists (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ PoweredJointPatternEstimate m n R := by
   obtain ⟨Rn, hRn, hcountn⟩ := selected_nonexceptional_powered_joint_gap_count_slow m n hm hn
@@ -80,7 +80,9 @@ theorem powered_joint_branches_of_three_term_count {T H X B R L : ℕ} (hL : 2 �
       simpa only [mul_pow, hs, ← pow_mul, Nat.reduceMul, mul_assoc] using hp
     exact_mod_cast he
 
-/-- The displayed powered estimate on actual remainder windows. -/
+/-- The three-term powered estimate on remainder windows (paper, `prop:jointwindow`): under the
+scale condition `124928 A⁴ H⁵ X < a³`,
+`T ≤ R a (X⁵ + X⁴H^{1/2} + X⁵ max(H, Sᵐ, Yⁿ)^{1/(10n + 7m)})`. -/
 def PoweredJointThreeTermEstimate (m n : ℕ) (R : ℕ → ℕ) : Prop :=
   ∀ a b s T A : ℕ, b < a →
     (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
@@ -125,7 +127,7 @@ theorem powered_joint_three_term_of_pattern_estimate {m n : ℕ} {R : ℕ → �
     _ = _ := by simp only [patternSlack, Nat.cast_mul, Nat.cast_add,
         Nat.cast_ofNat, B, H, X, e]; ring
 
-/-- Every fixed pair of positive powers has the full local three-term bound. -/
+/-- Every fixed pair of positive powers has the three-term window estimate. -/
 theorem poweredJointThreeTermEstimate_exists (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ PoweredJointThreeTermEstimate m n R := by
   obtain ⟨R, hR, hcount⟩ := poweredJointPatternEstimate_exists m n hm hn

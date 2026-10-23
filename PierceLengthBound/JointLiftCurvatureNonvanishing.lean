@@ -7,20 +7,27 @@ module
 
 public import PierceLengthBound.JointLiftDirection
 
-/-! The curvature coordinates have no common zero on the affine joint graph.
-This is an identity on the graph, not just a property of orbit points. -/
+/-! # A curvature combination with an affine zero
+
+The cleared identity behind `W · (r₀, r₁, r₂) = N₀`, which shows that the curvature
+coordinates have no common zero on the affine joint graph, and the construction of
+Lemma 8.10: on a component of degree at least three of an irreducible quadric through the free
+nodes of an orbit state, a nonzero rational combination of `W₀, W₁, W₂` vanishes at that
+point. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- The first three quadratic moment-row entries, expressed in consecutive gaps. -/
+/-- The row `r_j = k_j (s_j + s_{j+1}) + k_{j+1}`, `j < 3`, written in the gaps (with
+`s₀ = 0`). -/
 def curvatureRow {R : Type*} [CommRing R] (k : Fin 5 → R) : Fin 3 → R :=
   ![k 0 ^ 2 + k 1, k 1 * (2 * k 0 + k 1) + k 2,
     k 2 * (2 * k 0 + 2 * k 1 + k 2) + k 3]
 
-/-- Cleared form of W · r = A. -/
+/-- Cleared form of `W · r = A`: the curvature numerators dotted with `curvatureRow k` give
+`A` times the common denominator. -/
 theorem jointLiftNumerators_dot_row (P Q A J : MvPolynomial (Fin 3) ℚ)
     (k : Fin 5 → MvPolynomial (Fin 3) ℚ) :
     ∑ j : Fin 3, jointLiftNumerators P Q A J k j.castSucc * curvatureRow k j =
@@ -29,8 +36,8 @@ theorem jointLiftNumerators_dot_row (P Q A J : MvPolynomial (Fin 3) ℚ)
     curvatureRow, rawHankelThree]
   ring
 
-/-- A nonconstant projective vector admits a nonzero linear combination that
-vanishes at any point where the vector itself is nonzero. -/
+/-- If `W` is not of the form `t v` for a fixed nonzero `v`, and some `W_j` is nonzero at the
+point `φ`, then some nonzero `K`-linear combination of the `W_j` vanishes at `φ`. -/
 theorem exists_curvature_combination_vanishing {K R ι : Type*} [Field K]
     [CommRing R] [Algebra K R] [Fintype ι]
     (W : ι → R) (φ : R →ₐ[K] K) (hne : ∃ j, φ (W j) ≠ 0)
@@ -71,9 +78,9 @@ theorem exists_curvature_combination_vanishing {K R ι : Type*} [Field K]
       _ = algebraMap K R ((φ (W r))⁻¹) * (algebraMap K R (φ (W j)) * W r) := he
       _ = _ := by ring
 
-/-- On a retained degree-at-least-three component, a nonzero curvature
-combination vanishes at the supported actual point. This supplies the extra
-finite zero in the candidate; relating zero and pole degrees is separate. -/
+/-- On a component of degree at least three of an irreducible quadric through the free nodes
+of state `i`, some nonzero rational combination of the curvature coordinates on the joint graph
+vanishes at that point (Lemma 8.10). -/
 theorem orbitJoint_exists_curvature_combination_vanishing {a b i d : ℕ}
     (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]

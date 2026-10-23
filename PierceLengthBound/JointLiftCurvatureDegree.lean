@@ -10,8 +10,13 @@ public import PierceLengthBound.JointLiftNormalizedOrders
 public import PierceLengthBound.NormalizationInfinityDegree
 public import PierceLengthBound.BranchZeroDegree
 
-/-! The curvature zero orders at old infinity, with the extra normalized zero,
-force the degree gain used by the joint lift. -/
+/-! # The curvature pole degree
+
+Lemma 8.11 of the paper. On a retained nonexceptional component of degree `d ≥ 3`, each branch
+above infinity has multiplicity `2t` and every rational curvature combination vanishes there to
+order at least `3t`; together with the additional affine zero of Lemma 8.10 this gives a
+curvature combination of function-field degree at least `3d/2 + 1`, and hence the same lower
+bound for the degree of the curvature pole envelope. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -19,6 +24,9 @@ noncomputable section
 open MvPolynomial
 open scoped IntermediateField
 
+/-- At a height-one prime `p` of the normalized infinity chart of a retained nonexceptional
+component that contains the infinity coordinate `w`, the multiplicity of `w` is `2t` with
+`t > 0`, and every rational combination of the curvature coordinates has order at least `3t`. -/
 theorem retained_curvature_normalized_zero_order
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -92,8 +100,8 @@ theorem retained_curvature_normalized_zero_order
 
 set_option synthInstance.maxHeartbeats 200000 in
 -- The parameter algebra, chart, normalization and residue fields form nested scalar towers.
-/-- The actual extra zero and all old infinity branches give the curvature
-combination a function-field degree of at least 3d/2 + 1. -/
+/-- On a retained nonexceptional component of degree `d ≥ 3` lying on an irreducible quadric,
+some rational curvature combination `x` is transcendental with `3d + 2 ≤ 2 [F : ℚ(x)]`. -/
 theorem retained_curvature_function_degree_lower_bound {a b i d N : ℕ} {c₀ : ℤ}
     (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -176,9 +184,9 @@ theorem retained_curvature_function_degree_lower_bound {a b i d N : ℕ} {c₀ :
       _ = d := hsum.trans hdim
   · exact fun hp => hout ((hB p).mp hp)
 
-/-- The curvature pole envelope on the actual affine normalization has degree
-at least 3d/2 + 1. All poles, infinity zeros, and the additional finite zero
-are accounted for by the preceding normalized-branch theorems. -/
+/-- Lemma 8.11: on a retained nonexceptional component of degree `d ≥ 3` lying on an
+irreducible quadric, the pole envelope of the three curvature coordinates on the affine
+normalization has degree at least `3d/2 + 1`. -/
 theorem retained_curvature_pole_degree_lower_bound {a b i d N : ℕ} {c₀ : ℤ}
     (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

@@ -22,8 +22,8 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open scoped IntermediateField IntermediateField.algebraAdjoinAdjoin
 
-/-- Finiteness over any transcendental parameter follows from one known finite
-parameter; it need not be supplied separately for each rational function. -/
+/-- A field `L` essentially of finite type over `K` with transcendence degree at most one is
+finite over `K(x)` for every `x ∈ L` transcendental over `K`. -/
 theorem finite_over_parameter_of_trdeg_le_one {K L : Type*} [Field K] [Field L] [Algebra K L]
     [Algebra.EssFiniteType K L] (hdim : Algebra.trdeg K L ≤ 1)
     (x : L) (hx : Transcendental K x) : FiniteDimensional K⟮x⟯ L := by

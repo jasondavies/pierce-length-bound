@@ -13,10 +13,10 @@ public import PierceLengthBound.LatticeExterior
 # Curvature coordinates in the exterior of the pattern lattice
 
 Every curvature minor `d_j k_l - d_l k_j` of the five-column pattern matrix has the uniform
-height `148 a H³ / q³`, using six future gaps (`orbit_curvature_minor_height 5`). The pivot
+height `148 a H³ / q³`, using six later gaps (`orbit_curvature_minor_height 5`). The pivot
 columns of the drop and gap rows lie in the pattern lattice, so the cross product `w` of their
 pivot parts has integer coordinates `c` in the exterior of a reduced basis, with
-`3 λ² |cᵢ| ≤ 8 S` (`wcoord_bound`). The old curvature vector `W` of columns `0, 1, 2` satisfies
+`3 λ² |cᵢ| ≤ 8 S` (`wcoord_bound`). The curvature vector `W` of columns `0, 1, 2` satisfies
 `m² W = Cof · w` (Binet–Cauchy), so `c = G W` for a rational matrix `G` with nonzero determinant
 that depends only on the pattern (`lattice_curvature_coordinates`, paper `lem:latticecoords`).
 Here `m` is the pivot entry, which the paper writes `p_π`, and `Δ` is the lattice determinant,
@@ -56,7 +56,7 @@ theorem selected_curvature_minor_bound {a b s T A i : ℕ} (hba : b < a)
   exact le_cubic_height_div (abs_nonneg _) (by omega)
     (window_quotient_lower hba (by omega : i < P a b) hA) hh (by norm_num)
 
-/-! ### Transport from the exterior coordinates to the old curvature vector -/
+/-! ### Transport from the exterior coordinates to the curvature vector of columns `0, 1, 2` -/
 
 /-- The first three entries of a row of five gaps or drops. -/
 def firstThree (x : Fin 5 → ℤ) : Fin 3 → ℤ := fun j => x (Fin.castLE (by decide) j)
@@ -70,7 +70,7 @@ lemma firstThree_Mi (a b l : ℕ) :
 
 /-- **Curvature coordinates for a fixed pattern.** There is a rational matrix `G` with nonzero
 determinant, depending only on `p`, and integer coordinates `c(d, k)` such that every matrix
-with pattern `p` and rows `d, k` has `c = G W`, where `W` is the old curvature vector of the
+with pattern `p` and rows `d, k` has `c = G W`, where `W` is the curvature vector of the
 first three columns, and `3 λ² |cᵢ| ≤ 8 S` when all ten curvature minors are at most `S`. -/
 theorem lattice_curvature_coordinates {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
     (hp : ∃ M : Fin 3 → Fin 5 → ℤ, plk M = p) :

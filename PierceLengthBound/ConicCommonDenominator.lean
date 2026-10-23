@@ -16,8 +16,9 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- Clearing a common denominator does not depend on the parameter values.
-The new variable `none` denotes that common denominator. -/
+/-- For a fixed integer polynomial `f` there are `d` and an integer polynomial `F` with
+`f(v / B) * B ^ d = F(B, v)` for every nonzero `B` and every `v`; the extra variable `none`
+stands for the common denominator `B`. -/
 theorem fixed_polynomial_clear_denominator {σ K : Type*} [Field K]
     (f : MvPolynomial σ ℤ) :
     ∃ d : ℕ, ∃ F : MvPolynomial (Option σ) ℤ,

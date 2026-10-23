@@ -18,9 +18,9 @@ Fix a full minor pattern `p`. The three node coordinates are replaced by their c
 reduced basis of the pattern lattice, of size `3H/λ`, and the three curvature coordinates by the
 exterior coordinates `c = G W`, of size `8S'/(3λ²)` (`lattice_curvature_coordinates`). The
 powered graph with coordinates `(y, cᵐ, Jⁿ)` is the image of the graph of `(nodes, (G W)ᵐ, Jⁿ)`
-under an invertible block matrix, so it keeps primality and its Hilbert degree. The external
-curve theorem then counts the gap vectors of a pattern in the smaller box
-(`selected_latticeJointGraph_gap_count_slow`).
+under an invertible block matrix, so it keeps primality and its Hilbert degree. The curve
+point count `affine_curve_points_finite_coordinates` then counts the gap vectors of a pattern in
+the smaller box (`selected_latticeJointGraph_gap_count_slow`).
 -/
 
 @[expose] public section
@@ -151,7 +151,7 @@ lemma le_latticeJointBoxHeight_rankFive (p : Fin 10 → ℤ) (a A T m n : ℕ) :
   ((le_max_right _ _).trans (le_max_right _ _)).trans (le_max_right _ _)
 
 /-- The lattice box is at most the polynomial bound `10²⁵ᵏ a¹⁵ᵏ`, `k = m + n + 1`, of
-`poweredJointPointBoxHeight_polynomial`, so the logarithmic factor is unchanged. -/
+`poweredJointPointBoxHeight_polynomial`, so the logarithmic factor is that of the powered box. -/
 lemma latticeJointBoxHeight_polynomial {p : Fin 10 → ℤ} {a A T : ℕ} (ha : 1 ≤ a) (hA : A ≤ a)
     (m n : ℕ) : latticeJointBoxHeight p a A T m n ≤
       (10 ^ 25) ^ (m + n + 1) * a ^ (15 * (m + n + 1)) := by
@@ -209,7 +209,8 @@ lemma lattice_curvature_power_le {p : Fin 10 → ℤ} (hp0 : p 0 ≠ 0) {S m : �
   exact pow_le_pow_left₀ (abs_nonneg _) (by exact_mod_cast h1) m
 
 /-- Uniform counting of the gap vectors of one full pattern on one component, in the lattice
-box. -/
+box `B`: at most `C B^{1/lo} (log B + 1)` when the linearly changed graph has degree in
+`[lo, hi]`. -/
 theorem selected_latticeJointGraph_gap_count (m n lo hi : ℕ) (hlo : 0 < lo) (hlohi : lo ≤ hi) :
     ∃ C : ℝ, 0 < C ∧ ∀ {a b s T A i : ℕ}, b < a →
       (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
@@ -347,7 +348,8 @@ theorem selected_latticeJointGraph_gap_count (m n lo hi : ℕ) (hlo : 0 < lo) (h
   have hc := hcount I' hprime δ hdlo hdhi hd' (Bx : ℝ) hB Sz hSbox hSpts
   rwa [hScard] at hc
 
-/-- The logarithm costs a proved subpolynomial factor. -/
+/-- `selected_latticeJointGraph_gap_count` with the logarithm absorbed into a subpolynomial
+coefficient. -/
 theorem selected_latticeJointGraph_gap_count_slow (m n lo hi : ℕ)
     (hlo : 0 < lo) (hlohi : lo ≤ hi) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ {a b s T A i : ℕ}, b < a →

@@ -10,8 +10,13 @@ public import PierceLengthBound.FixedDividendPolynomialSection
 import all PierceLengthBound.FixedDividendTotalDegree
 public import PierceLengthBound.JointLiftCoordinates
 
-/-! The actual normalization equation gives a bounded polynomial cut on every
-prime component, without requiring a conic parametrization. -/
+/-! # The normalization cut
+
+The normalization identity `N₀ P₄(-Q) = a H₄`, with denominators cleared, is a polynomial of
+total degree at most `166` in the free nodes that vanishes at the free nodes of every state with
+the given pattern. On a prime component of degree `d` it either lies in the component's ideal
+or at most `166 d` states of the pattern have free nodes on the component (Lemma 8.2). Within
+one pattern the free nodes determine the state. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -66,7 +71,8 @@ lemma muH4_totalDegree {K σ : Type*} [Field K]
     Lean.Elab.Tactic.replaceMainGoal [g']
   fixed_dividend_mv_degree
 
-/-- Cleared equation A P(-q) = a H4 in the three original affine coordinates. -/
+/-- The normalization identity `N₀ P₄(-Q) = a H₄` with denominators cleared, as a polynomial
+in the three free nodes. -/
 def jointNormalizationPolynomial (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   let n := orbitQuotientNumeratorQ a b i
   let q := orbitQuotientDenominatorQ a b i
@@ -76,7 +82,8 @@ def jointNormalizationPolynomial (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
       (patternVQ a b i) j.castSucc)) X n q -
     C (a : ℚ) * muH4 (k 0) (k 1) (k 2) (k 3) (k 4) * q ^ 4
 
-/-- Its degree is uniformly at most 166, independently of the pattern and dividend. -/
+/-- The cleared normalization polynomial has total degree at most `166`, for every pattern and
+dividend. -/
 theorem jointNormalizationPolynomial_degree (a b i : ℕ) :
     (jointNormalizationPolynomial a b i).totalDegree ≤ 166 := by
   have h := orbitQuotient_polynomial_degrees a b i
@@ -113,8 +120,9 @@ lemma jointNormalizationPolynomial_congr {a b i l : ℕ} (h : theta a b i = thet
   simp only [jointNormalizationPolynomial, orbitQuotientNumeratorQ, orbitQuotientDenominatorQ,
     orbitCurveCofactorsQ, jointGapPolynomials, h0, hρ, hu, hv, hρ', hu', hv']
 
-/-- If normalization is not an identity on a prime degree-d component, it has
-at most 166d distinct actual points of the fixed pattern. -/
+/-- If the cleared normalization polynomial is not in the prime component `I` of degree `d`,
+then a family of states with the pattern of `i`, distinct free nodes, and free nodes on `I` has
+at most `166 d` members. -/
 theorem jointNormalizationPolynomial_proper_cut {a b i d : ℕ} (hba : b < a)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
     (hd : ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
@@ -132,8 +140,8 @@ theorem jointNormalizationPolynomial_proper_cut {a b i d : ℕ} (hba : b < a)
   rw [jointNormalizationPolynomial_congr (hθ j)]
   exact jointNormalizationPolynomial_eval hba (hi j)
 
-/-- Quotient reconstruction makes the three free nodes injective on supported
-states of one complete pattern. -/
+/-- Distinct states with the same pattern have distinct free nodes, since the free nodes and
+the pattern determine the quotient `qᵢ`, which is strictly increasing. -/
 theorem orbitFreeNodesQ_injective_of_pattern {a b i : ℕ} (hba : b < a)
     {ι : Type*} (l : ι → ℕ) (hl : Function.Injective l)
     (hi : ∀ j, l j + 7 < P a b) (hθ : ∀ j, theta a b i = theta a b (l j)) :
@@ -153,8 +161,9 @@ theorem orbitFreeNodesQ_injective_of_pattern {a b i : ℕ} (hba : b < a)
   · exact (qq_strictMono (a := a) (b := b) hlt (by have := hi k; omega)).ne hq
   · exact (qq_strictMono (a := a) (b := b) hlt (by have := hi j; omega)).ne hq.symm
 
-/-- In a family of distinct supported states, normalization either holds on the
-whole prime component or the family contains at most 166d states. -/
+/-- For a family of distinct states with the pattern of `i` whose free nodes lie on the prime
+component `I` of degree `d`, either the cleared normalization polynomial lies in `I` or the
+family has at most `166 d` members. -/
 theorem jointNormalizationPolynomial_identity_or_card_bound {a b i d : ℕ} (hba : b < a)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
     (hd : ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,

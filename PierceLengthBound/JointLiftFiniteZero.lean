@@ -9,17 +9,26 @@ public import PierceLengthBound.NormalizationPointBranch
 public import PierceLengthBound.JointLiftPoleDegree
 public import PierceLengthBound.ChartFunctionField
 
-/-! The extra affine zero of a curvature combination survives normalization
-and lies outside the old infinity fiber. -/
+/-! # The additional affine zero on the normalization
+
+The last step of Lemma 8.10: the curvature combination vanishing at the free nodes of an orbit
+state has a zero of positive order at a height-one prime of the normalized infinity chart that
+does not lie over infinity, and it is transcendental over `ℚ`. Also the infinity chart of a
+nonexceptional component has the component's function field and a finite Dedekind
+normalization. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- The numerator `∑ⱼ cⱼ Nⱼ` of a rational combination of the curvature coordinates, over the
+common denominator `orbitJointDenominator a b i`. -/
 def jointCurvatureNumerator (a b i : ℕ) (c : Fin 3 → ℚ) : MvPolynomial (Fin 3) ℚ :=
   ∑ j, C (c j) * orbitJointNumerators a b i j.castSucc
 
+/-- A rational curvature combination is `jointCurvatureNumerator` over the common
+denominator. -/
 theorem jointCurvatureCombination_eq_fraction {F : Type*} [Field F] [Algebra ℚ F]
     (ψ : MvPolynomial (Fin 3) ℚ →ₐ[ℚ] F) (a b i : ℕ) (c : Fin 3 → ℚ) :
     jointCurvatureCombination ψ a b i c =
@@ -32,6 +41,8 @@ theorem jointCurvatureCombination_eq_fraction {F : Type*} [Field F] [Algebra ℚ
 
 set_option synthInstance.maxHeartbeats 200000 in
 -- The graph localization carries the quotient's scalar tower.
+/-- On the joint graph, a rational curvature combination is the image of
+`jointCurvatureNumerator` times the inverse of the common denominator. -/
 theorem jointGraph_curvature_combination_eq_numerator
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) (a b i : ℕ) (c : Fin 3 → ℚ) :
     (∑ j : Fin 3, algebraMap ℚ _ (c j) *
@@ -50,8 +61,9 @@ theorem jointGraph_curvature_combination_eq_numerator
     (graphLocalization I (orbitJointDenominator a b i))]
   ring
 
-/-- The chosen linear combination has a nonzero numerator on the component,
-and that numerator vanishes at the actual orbit point. -/
+/-- On a component of degree at least three of an irreducible quadric through the free nodes
+of state `i`, some rational curvature combination has a numerator that is nonzero on the
+component and vanishes at the free nodes. -/
 theorem orbitJoint_exists_curvature_numerator_zero {a b i d : ℕ}
     (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
@@ -110,8 +122,10 @@ theorem orbit_chart_normalization_in_field
   exact ⟨inferInstance, finite_parameter_normalization (chartInfinityCoordinate I ι l)
     (chartInfinityCoordinate_transcendental I ι hι l hlmem hl hd hdegree hs) F⟩
 
-/-- The extra zero is an actual normalized branch, separate from old infinity;
-the curvature combination is transcendental in the component function field. -/
+/-- On a nonexceptional component of degree `d ≥ 3` of an irreducible quadric through the free
+nodes of state `i`, some rational curvature combination is transcendental over `ℚ` and has
+positive order at a height-one prime of the normalized infinity chart not containing the
+infinity coordinate. -/
 theorem orbitJoint_exists_extra_normalized_zero {a b i d N : ℕ} {c₀ : ℤ}
     (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

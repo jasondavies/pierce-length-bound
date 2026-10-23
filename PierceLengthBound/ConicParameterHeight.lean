@@ -8,8 +8,9 @@ module
 public import PierceLengthBound.ConicArithmetic
 public import Mathlib.Algebra.Polynomial.Degree.Operations
 
-/-! Integer parameters and explicit common-denominator height bounds for a
-parabolic conic contained in a bounded integer plane. -/
+/-! The integral parameter of Lemma A.1 (`lem:jointconicparameter`) with explicit heights: a
+discriminant-zero conic in an integer plane has an injective integer parameter
+`t = 2αx + βy + d` and quadratic integer numerators over a common nonzero denominator. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -45,8 +46,9 @@ lemma quadraticNumerator_eval (a b c t : ℤ) :
   simp [quadraticNumerator]
 
 /-- The discriminant-zero conic in an integer plane has an injective integer
-parameter and quadratic integer numerators with a common nonzero denominator.
-The explicit height `33 L K³` bounds all numerator coefficients, and `12 L K³`
+parameter and quadratic integer numerators with a common nonzero denominator `D`:
+`D z_j = N_j(2α z₀ + β z₁ + d)` at every integer point `z`, and `N₁` has nonzero leading
+coefficient. The explicit height `33 L K³` bounds all numerator coefficients, and `12 L K³`
 bounds the denominator. -/
 theorem parabola_integer_parameter_height
     {α β γ d e f ℓ μ ν c : ℤ} {K L : ℕ}

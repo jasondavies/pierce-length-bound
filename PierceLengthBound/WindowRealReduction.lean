@@ -8,8 +8,20 @@ module
 public import PierceLengthBound.Main
 public import PierceLengthBound.SixStep
 
-/-! Real window bounds from integer-power estimates: the large-mean-gap case and the generic
-branch exponent arithmetic. -/
+/-!
+# Window lemmas shared by the window bounds
+
+Real window bounds from integer-power estimates, used by the powered joint, lattice and polar
+window bounds:
+
+* `window_real_large_mean_gap`, `window_real_large_mean_gap_of_base`: a window with
+  `A T > 28 a` has `T ≤ B a^α` for `α ≥ 5/17`;
+* `window_real_of_branch_power`: one window constant `c₀ (K + 1) Δ^e` absorbs every integer
+  branch bound `T^N ≤ c k Δ^f a^r` with `r / N ≤ α`;
+* `window_branch_exponent`: the exponent arithmetic that combines a branch count with the gap
+  height, the minor height and the drop bound;
+* `gap_cube_box`: `H T³ ≤ C D a`.
+-/
 
 @[expose] public section
 namespace PierceLengthBound

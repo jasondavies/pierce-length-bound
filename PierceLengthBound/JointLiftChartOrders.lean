@@ -9,17 +9,20 @@ public import PierceLengthBound.JointLiftRetainedOrders
 public import PierceLengthBound.JointLiftFieldCoordinates
 public import PierceLengthBound.JointLiftInfinityOrder
 
-/-! Infinity orders of the actual four coordinates defining the joint graph.
-All statements concern arbitrary discrete valuations centered on the original
-infinity chart, including those lying above singular points. -/
+/-! # Orders of the joint coordinates at infinity
+
+Corollary 8.8 of the paper for the four coordinates `W₀, W₁, W₂, J` of the joint graph, at an
+arbitrary discrete valuation centered on the infinity chart of a retained nonexceptional
+component, including valuations lying above singular points. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- On a retained component, the curvature vector has minimum order 3t
-(attained by its first and third coordinates), whereas I5 has order -5t. -/
+/-- On a retained nonexceptional component, at a discrete valuation centered on the infinity
+chart with infinity multiplicity `e`, one has `e = 2t` with `t > 0`, the curvature coordinates
+`W₀` and `W₂` have order `3t`, `W₁` has order at least `3t`, and `J` has order `-5t`. -/
 theorem retained_joint_coordinates_discrete_orders
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

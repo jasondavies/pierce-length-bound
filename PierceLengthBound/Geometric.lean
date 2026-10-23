@@ -13,8 +13,8 @@ public import Mathlib
 `sum_min_le`: `∑_{k < L} min(α (2^k)^{-1/3}, β (2^k)^{1/2}) ≤ 9 α^{3/5} β^{2/5}`, uniformly in `L`.
 It is the case `s = 1/3`, `t = 1/2` of `sum_min_le_gen`, which bounds
 `∑_{k < L} min(α (2^k)^{-s}, β (2^k)^t)` by `C_{s,t} α^{t/(s+t)} β^{s/(s+t)}`.
-This is the reason no factor `log a` appears when the two window bounds are summed over the
-dyadic ranges.
+This is the reason no factor `log a` appears when two window bounds are summed over the
+dyadic ranges (`Conditional.lean`, `RisesMain.lean`).
 -/
 
 @[expose] public section
@@ -90,7 +90,7 @@ lemma geom_high {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) {Y : ℝ} (hY : 0 ≤
         simp only [zero_add]
         exact div_nonneg (by linarith) h1σ.le
 
-/-- **The dyadic min-sum, general exponents.** For `α, β, s, t > 0`,
+/-- **The dyadic min-sum, general exponents** (Lemma 11.5). For `α, β, s, t > 0`,
 `∑_{k < L} min(α (2^k)^{-s}, β (2^k)^t) ≤ C_{s,t} α^{t/(s+t)} β^{s/(s+t)}` with
 `C_{s,t} = 1/(1 - 2^{-s}) + 2^t/(2^t - 1)`. -/
 theorem sum_min_le_gen {α β s t : ℝ} (hα : 0 < α) (hβ : 0 < β) (hs : 0 < s) (ht : 0 < t)

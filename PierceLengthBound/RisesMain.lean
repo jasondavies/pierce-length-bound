@@ -13,8 +13,10 @@ public import PierceLengthBound.Main
 # `P(a, b) ≪ a^{1/4} √R`
 
 `R = rises a b + 1`, where `rises a b` counts the indices `i` with `kᵢ < k_{i+1}` among the
-quotient increments `kᵢ = ⌊a/b_{i+1}⌋ - ⌊a/bᵢ⌋` of the whole orbit. In particular an orbit with
-nonincreasing quotient increments has length `O(a^{1/4})` (`P_le_of_no_rises`).
+quotient increments `kᵢ = ⌊a/b_{i+1}⌋ - ⌊a/bᵢ⌋` of the whole orbit. Each dyadic window obeys
+the three bounds of Proposition 11.4 (`visits_real_rises`), and summing them with
+`sum_min_le_gen` gives `P(a, b) ≪ a^{1/4} √R` (`P_le_rises`, Theorem 1.5). In particular an
+orbit with nonincreasing quotient increments has length `O(a^{1/4})` (`P_le_of_no_rises`).
 -/
 
 @[expose] public section
@@ -96,7 +98,7 @@ theorem visits_real_rises {a b k : ℕ} (hba : b ≤ a) :
   have hAcast : ((2 ^ k : ℕ) : ℝ) = Ar := by push_cast; rfl
   have hT1 : ((T - 1 : ℕ) : ℝ) = (T : ℝ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
   have hsqA : Real.sqrt Ar = Ar ^ (1 / 2 : ℝ) := Real.sqrt_eq_rpow Ar
-  -- Proposition 9.5(1): `T - 1 ≤ √R Y`
+  -- Proposition 11.4(1): `T - 1 ≤ √R Y`
   have hdrop : (T : ℝ) - 1 ≤ Real.sqrt R * Y := by
     have h := W.rises_drop_bound (by omega)
     have h' : (((T - 1) ^ 2 : ℕ) : ℝ) ≤ ((2 * (ρ + 1) * (2 ^ k - 1) : ℕ) : ℝ) := by
@@ -118,7 +120,7 @@ theorem visits_real_rises {a b k : ℕ} (hba : b ≤ a) :
         simp only [Y]
         rw [show 2 * R * Ar = R * (2 * Ar) by ring, Real.sqrt_mul (by linarith),
           Real.sqrt_mul (by norm_num), hsqA]
-  -- Proposition 9.5(2): `T - 1 ≤ a / A`
+  -- Proposition 11.4(2): `T - 1 ≤ a / A`
   have hquot : (T : ℝ) - 1 ≤ Wr := by
     have h := W.rises_quot_bound (by omega)
     have : ((T - 1 : ℕ) : ℝ) ≤ ((a / 2 ^ k : ℕ) : ℝ) := by exact_mod_cast h
@@ -128,7 +130,7 @@ theorem visits_real_rises {a b k : ℕ} (hba : b ≤ a) :
       _ = Wr := by rw [hAcast]; simp only [Wr, Real.rpow_neg_one, div_eq_mul_inv]
   have hgoal : (T : ℝ) - 1 ≤ Real.sqrt R * min X Y + min Wr Z := by
     by_cases h6 : 6 * 2 ^ k ≤ a
-    · -- Proposition 9.5(3)
+    · -- Proposition 11.4(3)
       obtain ⟨l, s, hls, hl, hs⟩ := W.rises_incr_bound (by omega) h6
       have hl' : (l : ℝ) ≤ Real.sqrt R * X := by
         have : ((l ^ 2 : ℕ) : ℝ) ≤ ((8 * (ρ + 1) * (a / 2 ^ k) : ℕ) : ℝ) := by exact_mod_cast hl
@@ -182,7 +184,7 @@ theorem visits_real_rises {a b k : ℕ} (hba : b ≤ a) :
       linarith
   linarith
 
-/-- **Theorem 1.3.** `P(a, b) ≪ a^{1/4} √R`, with `R` one more than the number of rises in the
+/-- **Theorem 1.5.** `P(a, b) ≪ a^{1/4} √R`, with `R` one more than the number of rises in the
 quotient increments. -/
 theorem P_le_rises : ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ (1 / 4 : ℝ) * Real.sqrt (rises a b + 1) := by
@@ -275,7 +277,8 @@ theorem P_le_rises : ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
           rw [this]; exact le_mul_of_one_le_right (by positivity) hsR
         nlinarith
 
-/-- **Corollary.** If the quotient increments never rise, `P(a, b) ≪ a^{1/4}`. -/
+/-- **Theorem 1.5, second part.** If the quotient increments never rise,
+`P(a, b) ≪ a^{1/4}`. -/
 theorem P_le_of_no_rises : ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a → rises a b = 0 →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ (1 / 4 : ℝ) := by
   obtain ⟨C, hC, h⟩ := P_le_rises

@@ -106,6 +106,7 @@ theorem normalizedBranchOrder_uniformizer {R : Type*} [CommRing R] [IsDedekindDo
   change discreteNegativeLog (p.valuation L π) = 1
   simp only [hπ, discreteNegativeLog_exp, neg_neg, WithTop.coe_one]
 
+/-- A nonzero element of `p` has a positive integer order at `p`. -/
 theorem normalizedBranchOrder_parameter {R : Type*} [CommRing R] [IsDedekindDomain R]
     (p : IsDedekindDomain.HeightOneSpectrum R) (L : Type*) [Field L]
     [Algebra R L] [IsFractionRing R L] {x : R} (hx : x ≠ 0) (hp : x ∈ p.asIdeal) :

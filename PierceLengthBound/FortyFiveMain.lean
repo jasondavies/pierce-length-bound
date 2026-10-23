@@ -13,12 +13,15 @@ public import PierceLengthBound.EightMain
 # `P(a, b) ≪_ε a^{45/152 + ε}`
 
 For each minor vector `p`, the gap vectors with that minor vector are counted through the
-lattice `Λ_p`: at most `(8 ⌊3H/λ₁(p)⌋ + 3) Ξ` of them (`pattern_count_lattice`). Few minor vectors
-have a short lattice vector (`short_count`), and every `Λ_p` has one of length
-`≤ L ≍ X^{1/3}` (`pivLat_short`). Partial summation (`abel_sum`) then gives
-`T ≪ Ξ (H X^{14/3} + X⁵)` in place of `T ≪ Ξ H X⁵`, so `T³ ≤ C Ξ⁹ (H³X¹⁴ + X¹⁵)`
-(`two_state_window_152`). The exponent arithmetic turns this into `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`, hence
-`P ≪ a^{45/152 + ε}`.
+lattice `Λ_p`: at most `(8 ⌊3H/λ(p)⌋ + 3) Ξ` of them (`pattern_count_lattice`). Few minor
+vectors have a short lattice vector (`short_count`, Proposition 9.6 of the paper), and every
+`Λ_p` has a nonzero vector of sup norm `≤ L` with `X ≤ L³ ≤ 8X` (`pivLat_short`,
+`exists_cube_root`). Partial summation (`abel_sum`, via `inv_telescope`) then gives
+`T ≪ Ξ³ (H X^{14/3} + X⁵)`, so `T³ ≤ C Ξ⁹ (H³X¹⁴ + X¹⁵)` (`arith_152`, `two_state_window_152`).
+The exponent arithmetic turns this into `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵` (`window_152`, `visits_152`),
+hence `P ≪ a^{45/152 + ε}` (`P_le_45_152`).
+
+This is the `45/152` row of the table in the paper's introduction; the paper omits its proof.
 -/
 
 @[expose] public section
@@ -30,12 +33,13 @@ open Finset
 /-- The polynomial range for the lattice slices. -/
 abbrev Pbig2 : ℕ → ℕ := PbigOf 1000 400
 
-/-- The slack factor of the lattice count. -/
+/-- The slack factor `Ξ₂(a)` of the lattice count. -/
 abbrev Xi2 : ℕ → ℕ := XiOf 1000 400
 
 set_option exponentiation.threshold 1000 in
 -- `norm_num` must evaluate the constant `10 ^ 1000` of `Pbig2`.
-/-- The polynomial range bound. -/
+/-- The quantities controlled by `Ξ₂(a)` lie in `[1, Pbig2 a]`, for minor height
+`X ≤ 2 · 10¹⁶ a⁷`. -/
 lemma pbig2_bounds {a X H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hX : X ≤ 2 * 10 ^ 16 * a ^ 7) :
     116 * (248832 * X ^ 8) ^ 4 * (12 * H + 1) ^ 2 ≤ Pbig2 a ∧
       (11 * (248832 * X ^ 8) ^ 2 * (12 * H + 1) * (3 * (248832 * X ^ 8) + 2)) ^ 2 ≤ Pbig2 a ∧
@@ -47,7 +51,8 @@ lemma pbig2_bounds {a X H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hX : X ≤ 
 /-- **The slack factor is `O_η(a^η)`.** -/
 lemma slack_le2 : SlowGrowth Xi2 := xiOf_slow 1000 400
 
-/-- **Partial summation.** -/
+/-- **Partial summation.** If `1 ≤ R(p) ≤ L` on `S` and `#{p : R(p) ≤ r} ≤ C r³` for `r ≥ 1`,
+then `L ∑_p ⌊N/R(p)⌋ ≤ N |S| + N C L³`. -/
 theorem abel_sum {ι : Type*} (S : Finset ι) (R : ι → ℕ) {L N C : ℕ}
     (hR : ∀ p ∈ S, 1 ≤ R p ∧ R p ≤ L)
     (hc : ∀ r, 1 ≤ r → (S.filter fun p => R p ≤ r).card ≤ C * r ^ 3) :
@@ -112,10 +117,11 @@ theorem abel_sum {ι : Type*} (S : Finset ι) (R : ι → ℕ) {L N C : ℕ}
       _ = N * S.card + N * C * L ^ 3 := by field_simp
   exact_mod_cast hreal
 
-/-- The constant of the window bound. -/
+/-- The constant `C₃` of the window bound. -/
 def C3w : ℕ := 32 * 607461312 ^ 3
 
-/-- **The window arithmetic.** -/
+/-- **The window arithmetic.** The lattice count, partial summation, the minor-vector count and
+a cube root `X ≤ L³ ≤ 8X` give `T³ ≤ C₃ Ξ⁹ (H³ X¹⁴ + X¹⁵)`. -/
 theorem arith_152 {T G L X H Xi Ssum Sc τ0 : ℕ} (hT : T ≤ 2 * G)
     (hG : G ≤ 4 * Xi * (8 * Ssum + 3 * Sc))
     (hab : L * Ssum ≤ 3 * H * Sc + 3 * H * (393660 * X ^ 4 * τ0 ^ 2) * L ^ 3)
@@ -184,7 +190,9 @@ section Window
 
 variable {a b : ℕ}
 
-/-- **The window bound through the pattern lattices.** -/
+/-- **The window bound through the pattern lattices.** For a window run of `T ≥ 36` terms in
+`[A, 2A)` and `H = ⌊28a/(AT)⌋ + 1`, `T³ ≤ C₃ Ξ₂(a)⁹ (H³ X¹⁴ + X¹⁵)` with
+`X = ⌊3609600 A⁴ H⁶ / a³⌋ + 1`. -/
 theorem two_state_window_152 (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T) :
@@ -270,19 +278,23 @@ end Window
 
 section Exponent
 
-/-- The constants of the exponent arithmetic. -/
+/-- The constant of the case `Y = 0` of the exponent arithmetic. -/
 def c0w : ℕ := 512 * (2 * C3w) * 56 ^ 3
+/-- The constant of the case `2Y ≤ H³`. -/
 def cAw : ℕ := 2 ^ 15 * C3w * 3609600 ^ 14 * 56 ^ 87
+/-- The constant of the case `2Y ≥ H³`. -/
 def cBw : ℕ := 2 ^ 16 * C3w * 3609600 ^ 15 * 56 ^ 90
+/-- The constant in `window_152`. -/
 def C152 : ℕ := 122449 ^ 38 + c0w ^ 13 + 8 ^ 31 * cAw + 8 ^ 30 * cBw
 
+/-- `c Δᵉ Xᶠ aᵍ ≤ C₁₅₂ Δ³⁹ X¹¹⁷ a⁴⁵` for `c ≤ C₁₅₂`, `e ≤ 39`, `f ≤ 117`, `g ≤ 45`. -/
 lemma mono_152 {Δ X a c e f g : ℕ} (hΔ : 1 ≤ Δ) (hX : 1 ≤ X) (ha : 1 ≤ a) (hc : c ≤ C152)
     (he : e ≤ 39) (hf : f ≤ 117) (hg : g ≤ 45) :
     c * Δ ^ e * X ^ f * a ^ g ≤ C152 * Δ ^ 39 * X ^ 117 * a ^ 45 :=
   Nat.mul_le_mul (Nat.mul_le_mul (Nat.mul_le_mul hc (Nat.pow_le_pow_right hΔ he))
     (Nat.pow_le_pow_right hX hf)) (Nat.pow_le_pow_right ha hg)
 
-/-- The case `AT > 28a`: then `T⁴ ≤ 122449 a`. -/
+/-- The case `AT > 28a`, where `T⁴ ≤ 122449 a`. -/
 lemma window_152_big {a A T Δ X : ℕ} (ha : 1 ≤ a) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X)
     (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hbig : 28 * a < A * T) :
     T ^ 152 ≤ C152 * Δ ^ 39 * X ^ 117 * a ^ 45 := by
@@ -293,7 +305,7 @@ lemma window_152_big {a A T Δ X : ℕ} (ha : 1 ≤ a) (hΔ : 1 ≤ Δ) (hX : 1 
     _ = 122449 ^ 38 * Δ ^ 0 * X ^ 0 * a ^ 38 := by ring
     _ ≤ _ := mono_152 hΔ hX ha hC1 (by norm_num) (by norm_num) (by norm_num)
 
-/-- The case `Y = 0` (minor height `1`): `T³ ≤ C (H³ + 1)`. -/
+/-- The case `Y = 0` (minor height `1`), where `T³ ≤ C₃ X⁹ (H³ + 1)`. -/
 lemma window_152_zero {a A T Δ X H : ℕ} (ha : 1 ≤ a) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X) (hT : 36 ≤ T)
     (hH1 : 1 ≤ H) (hT2 : T ^ 2 ≤ 8 * A * Δ) (hHAT : H * (A * T) ≤ 56 * a)
     (hwin : T ^ 3 ≤ C3w * X ^ 9 * (H ^ 3 + 1)) :
@@ -324,7 +336,7 @@ lemma window_152_zero {a A T Δ X H : ℕ} (ha : 1 ≤ a) (hΔ : 1 ≤ Δ) (hX :
     _ = c0w ^ 13 * Δ ^ 39 * X ^ 117 * a ^ 39 := by ring
     _ ≤ _ := mono_152 hΔ hX ha hC2 (by norm_num) (by norm_num) (by norm_num)
 
-/-- The case `2Y ≤ H³`: `T³ ≪ H³ Y¹⁴`. -/
+/-- The case `2Y ≤ H³`, where `T³ ≪ X⁹ H³ Y¹⁴`. -/
 lemma window_152_A {a A T Δ X H Y : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X)
     (hT2 : T ^ 2 ≤ 8 * A * Δ) (hHAT : H * (A * T) ≤ 56 * a)
     (hYa : Y * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6)
@@ -360,7 +372,7 @@ lemma window_152_A {a A T Δ X H Y : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1
     _ = 8 ^ 31 * cAw * Δ ^ 31 * X ^ 9 * a ^ 45 := by ring
     _ ≤ _ := mono_152 hΔ hX ha hC3 (by norm_num) (by norm_num) (by norm_num)
 
-/-- The case `2Y ≥ H³`: `T³ ≪ Y¹⁵`. -/
+/-- The case `2Y ≥ H³`, where `T³ ≪ X⁹ Y¹⁵`. -/
 lemma window_152_B {a A T Δ X H Y : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1 ≤ Δ) (hX : 1 ≤ X)
     (hT : 36 ≤ T) (hT2 : T ^ 2 ≤ 8 * A * Δ) (hHAT : H * (A * T) ≤ 56 * a)
     (hYa : Y * a ^ 3 ≤ 3609600 * A ^ 4 * H ^ 6)
@@ -396,7 +408,8 @@ lemma window_152_B {a A T Δ X H Y : ℕ} (ha : 1 ≤ a) (hA : 1 ≤ A) (hΔ : 1
     _ = 8 ^ 30 * cBw * Δ ^ 30 * X ^ 9 * a ^ 45 := by ring
     _ ≤ _ := mono_152 hΔ hX ha hC4 (by norm_num) (by norm_num) (by norm_num)
 
-/-- **The exponent arithmetic.** Every window run satisfies `T¹⁵² ≤ C Δ³⁹ Ξ¹¹⁷ a⁴⁵`. -/
+/-- **The exponent arithmetic.** The six-step bound, the drop bound and the window bound with a
+slack factor `X` in place of `Ξ₂(a)` (for `T ≥ 36`) give `T¹⁵² ≤ C₁₅₂ Δ³⁹ X¹¹⁷ a⁴⁵`. -/
 theorem window_152 {a A T Δ X : ℕ}
     (hT : 36 ≤ T) (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hdrop : T * (T - 1) ≤ 4 * A * Δ)
     (hwin : T ^ 3 ≤ C3w * X ^ 9 * ((28 * a / (A * T) + 1) ^ 3 *

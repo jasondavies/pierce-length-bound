@@ -7,9 +7,12 @@ module
 
 public import PierceLengthBound.LinearJointGraph
 
-/-! The old infinity poles of the rank-five coordinate and the finite curvature
-poles are distinct normalized branches. Together they force graph degree 4d+1. The argument is
-the one of `LinearJointGraph` with first powers and `G = 1`. -/
+/-! # Lower degree bound for the unpowered joint graph
+
+Lemma 8.12 for `m = n = 1`: the poles of the rank-five coordinate over infinity and the affine
+poles of the curvature coordinates lie on distinct normalized branches, and together they give
+graph degree at least `4d + 1`. The argument is the one of `LinearJointGraph` with first powers
+and `G = 1`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -17,8 +20,9 @@ noncomputable section
 open MvPolynomial
 attribute [local instance] FractionRing.liftAlgebra
 
-/-- The old infinity poles of the rank-five coordinate and the finite curvature poles force
-graph degree `4d + 1`: the case `G = 1`, `m = k = 1` of
+/-- On a retained nonexceptional component of degree `d ≥ 3` lying on an irreducible quadric, the
+poles of the rank-five coordinate above infinity and the affine poles of the curvature
+coordinates force joint graph degree at least `4d + 1`: the case `G = 1`, `m = k = 1` of
 `retained_linearJointGraph_degree_lower_bound`. -/
 theorem retained_jointGraph_degree_lower_bound {a b i d δ N : ℕ} {c₀ : ℤ}
     (hba : b < a) (hi : i + 7 < P a b)
@@ -44,8 +48,8 @@ theorem retained_jointGraph_degree_lower_bound {a b i d δ N : ℕ} {c₀ : ℤ}
     I hf hg hz hnorm hres Q hQ hQdeg hQI hd3 hdegree hgraph F
   omega
 
-/-- The retained degree-at-least-four components have the actual graph-degree
-range required by the proved seven-dimensional point-counting bound. -/
+/-- On a retained nonexceptional component of degree `d ≥ 4` lying on an irreducible quadric,
+the joint graph has a degree `δ` with `17 ≤ δ ≤ 247 d`. -/
 theorem orbitJointGraph_retained_degree_range {a b i d : ℕ}
     (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

@@ -28,7 +28,9 @@ namespace PierceLengthBound
 
 open Finset
 
-/-- **The counting lemma.** -/
+/-- **The counting lemma.** States with injective quotients `Q`, patterns `|θₜ| ≤ M` with
+`θ₀, θ₁ ≥ 1`, gaps in `[1, H]`, the two `k`-relations, the `r`-relation and the multiplicity
+identity number at most `8 (2M+1)⁷ H²`. -/
 theorem pattern_count {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ : ℕ → Fin 5 → ℤ} {Q : ℕ → ℤ}
     {a : ℤ} {M H : ℕ}
     (hQ : Set.InjOn Q G)

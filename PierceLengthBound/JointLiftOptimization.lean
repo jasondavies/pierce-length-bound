@@ -9,8 +9,13 @@ public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Topology.Instances.Rat
 public import Mathlib
 
-/-! Exact optimization of the two powered-coordinate exponents.
-These results optimize the proposed local count; they do not prove that count. -/
+/-! # Optimizing the powered joint exponent
+
+The two fractions `E_S(r)` and `E_Y(r)` of the powered exponent `E(m, n)` as functions of
+`r = n/m`, their crossing at `r_* = (5 + √655)/30` with common value
+`α_* = (1310 - √655)/4365`, and the choice of positive integer powers `m, n` with
+`E(m, n) < α_* + ε` (proof of Theorem 1.2). Also the degree bound `δ ≥ 10n + 7m` of
+Lemma 8.12 from `2δ ≥ (5n + 3m) d + 2m` and `d ≥ 4`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -51,9 +56,13 @@ lemma rat_eq_div_scaled {r : ℚ} (hr : 0 < r) {c : ℕ} (hc : 0 < c) :
 
 /-! ### The powered joint exponents -/
 
+/-- The curvature-box fraction `E_S(r) = (150 r + 106)/(510 r + 360)`, `r = n/m`. -/
 def jointExponentS (r : ℝ) : ℝ := (150 * r + 106) / (510 * r + 360)
+/-- The rank-five-box fraction `E_Y(r) = (156 r + 105)/(530 r + 357)`, `r = n/m`. -/
 def jointExponentY (r : ℝ) : ℝ := (156 * r + 105) / (530 * r + 357)
+/-- The crossing ratio `r_* = (5 + √655)/30`, the positive root of `30 r² - 10 r - 21`. -/
 def jointOptimalRatio : ℝ := (5 + Real.sqrt 655) / 30
+/-- The optimal joint exponent `α_* = (1310 - √655)/4365` of Theorem 1.2. -/
 def jointOptimalExponent : ℝ := (1310 - Real.sqrt 655) / 4365
 
 lemma jointOptimalRatio_pos : 0 < jointOptimalRatio := by
@@ -96,7 +105,7 @@ theorem jointOptimal_minimum {r : ℝ} (hr : 0 < r) :
   · rw [← jointOptimal_crossing.2]
     exact (jointExponentY_monotone jointOptimalRatio_pos h).trans (le_max_right _ _)
 
-/-- Positive rational ratios attain every prescribed loss above the optimum. -/
+/-- For every `ε > 0` some positive rational `r` has `max (E_S r) (E_Y r) < α_* + ε`. -/
 theorem jointOptimal_rational_approximation {ε : ℝ} (hε : 0 < ε) :
     ∃ r : ℚ, 0 < r ∧
       max (jointExponentS r) (jointExponentY r) < jointOptimalExponent + ε :=
@@ -105,12 +114,13 @@ theorem jointOptimal_rational_approximation {ε : ℝ} (hε : 0 < ε) :
     (continuousAt_ratio (ne_of_gt (by linarith [jointOptimalRatio_pos]))) jointOptimal_crossing.1
     jointOptimal_crossing.2 hε
 
-/-- The claimed powered degree inequality gives 10n+7m on every component d>=4. -/
+/-- If `2δ ≥ (5n + 3m) d + 2m` and `d ≥ 4`, then `δ ≥ 10n + 7m` (Lemma 8.12). -/
 lemma joint_powered_degree_minimum {d m n δ : ℕ} (hd : 4 ≤ d)
     (hdegree : (5 * n + 3 * m) * d + 2 * m ≤ 2 * δ) : 10 * n + 7 * m ≤ δ := by
   have h := Nat.mul_le_mul_left (5 * n + 3 * m) hd
   nlinarith
 
+/-- With `δ_min = 10n + 7m`, the two fractions of `E(m, n)` are `E_S(n/m)` and `E_Y(n/m)`. -/
 lemma joint_powered_exponents {m n : ℝ} (hm : 0 < m) (hn : 0 < n) :
     (15 * (10 * n + 7 * m) + m) / (51 * (10 * n + 7 * m) + 3 * m) =
         jointExponentS (n / m) ∧
@@ -118,7 +128,7 @@ lemma joint_powered_exponents {m n : ℝ} (hm : 0 < m) (hn : 0 < n) :
         jointExponentY (n / m) := by
   constructor <;> dsimp [jointExponentS, jointExponentY] <;> field_simp <;> ring
 
-/-- The powers can be fixed positive integers depending only on the desired loss. -/
+/-- For every `ε > 0` there are positive integers `m, n` with `E(m, n) < α_* + ε`. -/
 theorem jointOptimal_integer_powers {ε : ℝ} (hε : 0 < ε) :
     ∃ m n : ℕ, 0 < m ∧ 0 < n ∧
       max ((15 * (10 * (n : ℝ) + 7 * m) + m) / (51 * (10 * n + 7 * m) + 3 * m))

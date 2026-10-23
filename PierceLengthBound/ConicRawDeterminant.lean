@@ -8,9 +8,10 @@ module
 public import PierceLengthBound.TwoState
 public import Mathlib.Tactic.ComputeDegree
 
-/-! The leading Vandermonde term of the polynomial in the actual multiplicity
-identity. This is enough for the parabolic degree argument without requiring a
-new identification with a raw Hankel determinant. -/
+/-! The leading Vandermonde term of the multiplicity polynomial `muH4`:
+`muH4 = k₀k₁k₂(k₀+k₁)(k₁+k₂)(k₀+k₁+k₂) + rawDetLower`, with `rawDetLower` of total gap degree at
+most five. Under a quadratic parametrization of the gaps, `muH4` has degree at most twelve with
+an explicit coefficient of `t¹²`, and degree exactly twelve when that coefficient is nonzero. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -79,6 +80,8 @@ theorem rawDetLower_degree_le {K : Type*} [Field K] (k : Fin 5 → Polynomial K)
 
 open Polynomial
 
+/-- The coefficient of `t¹²` in the Vandermonde product of quadratic gaps is the same product
+of their leading coefficients. -/
 lemma vandermonde_six_coeff {K : Type*} [Field K] (k : Fin 5 → Polynomial K)
     (hk : ∀ j, (k j).natDegree ≤ 2) :
     (k 0 * k 1 * k 2 * (k 0 + k 1) * (k 1 + k 2) * (k 0 + k 1 + k 2)).coeff 12 =
@@ -115,7 +118,8 @@ theorem muH4_quadratic_degree_le {K : Type*} [Field K] (k : Fin 5 → Polynomial
     omega
   · exact (rawDetLower_degree_le k hk).trans (by omega)
 
-/-- The leading coefficient required by the parabolic degree comparison. -/
+/-- Under a quadratic gap parametrization, the coefficient of `t¹²` in `muH4` is the
+Vandermonde product of the leading gap coefficients. -/
 theorem muH4_quadratic_coeff_twelve {K : Type*} [Field K] (k : Fin 5 → Polynomial K)
     (hk : ∀ j, (k j).natDegree ≤ 2) :
     (muH4 (k 0) (k 1) (k 2) (k 3) (k 4)).coeff 12 =

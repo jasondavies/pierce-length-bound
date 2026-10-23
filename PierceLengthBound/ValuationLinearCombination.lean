@@ -16,6 +16,7 @@ condition over the infinite constant field. -/
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
+/-- The linear map `c ↦ ∑ⱼ cⱼ Wⱼ`. -/
 def coordinateCombinationMap {K L ι : Type*} [Field K] [Field L] [Algebra K L]
     [Fintype ι] (W : ι → L) : (ι → K) →ₗ[K] L where
   toFun c := ∑ j, algebraMap K L (c j) * W j
@@ -28,6 +29,7 @@ def coordinateCombinationMap {K L ι : Type*} [Field K] [Field L] [Algebra K L]
     (W : ι → L) (j : ι) : coordinateCombinationMap W (Pi.single j (1 : K)) = W j := by
   simp [coordinateCombinationMap, Pi.single_apply]
 
+/-- The `K`-subspace of elements of order greater than `n`. -/
 def orderAboveSubmodule {K L : Type*} [Field K] [Field L] [Algebra K L]
     (ν : AddValuation L (WithTop ℤ)) (hK : ∀ c : K, 0 ≤ ν (algebraMap K L c))
     (n : ℤ) : Submodule K L where
@@ -39,8 +41,10 @@ def orderAboveSubmodule {K L : Type*} [Field K] [Field L] [Algebra K L]
     rw [Algebra.smul_def, ν.map_mul]
     exact hx.trans_le (le_add_of_nonneg_left (hK c))
 
-/-- Constant coefficients can avoid cancellation at any finite family of
-branches, even when their residue fields are extensions of the constants. -/
+/-- Over an infinite field `K` of constants, suppose that at each of finitely many orders
+`ν k` every `W j` has order at least `n k`, and some `W j` has order exactly `n k`. Then a single
+combination `∑ cⱼ Wⱼ` has order exactly `n k` at every `k`. The residue fields may be
+extensions of `K`. -/
 theorem exists_combination_exact_orders {K L ι κ : Type*}
     [Field K] [Infinite K] [Field L] [Algebra K L] [Fintype ι] [Finite κ]
     (ν : κ → AddValuation L (WithTop ℤ))

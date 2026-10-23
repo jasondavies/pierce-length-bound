@@ -7,16 +7,16 @@ module
 
 public import PierceLengthBound.FixedDividendRationalOrbit
 
-/-! The three original node coordinates distinguish complete gap vectors
-within a fixed minor pattern. This uses only the two linear gap identities. -/
+/-! The three node coordinates distinguish complete gap vectors within a fixed minor pattern,
+by the two linear gap identities. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
 
-/-- The final two gaps are recovered from the first three using the positive
-consecutive minors. No lattice enumeration is needed. -/
+/-- Within a fixed pattern the node coordinates determine the gap vector: the final two gaps
+are recovered from the first three using the positive consecutive minors. -/
 theorem kap_eq_of_orbitFreeNodesQ_eq {a b i l : ℕ} (hba : b < a)
     (hi : i + 6 < P a b) (hθ : theta a b i = theta a b l)
     (hz : orbitFreeNodesQ a b i = orbitFreeNodesQ a b l) :
@@ -71,8 +71,8 @@ theorem kap_eq_of_orbitFreeNodesQ_eq {a b i l : ℕ} (hba : b < a)
     Matrix.cons_val_two, Matrix.cons_val_three, Matrix.cons_val, Matrix.head_cons,
     Matrix.tail_cons] using (by assumption)
 
-/-- Pick one actual start for each distinct gap vector. The resulting rational
-node points are injective, as required by both conic and joint-graph counts. -/
+/-- Pick one start for each distinct gap vector. The resulting rational node points are
+injective, as required by both conic and joint-graph counts. -/
 theorem gap_image_representatives {a b i : ℕ} (hba : b < a) (G : Finset ℕ)
     (hmargin : ∀ l ∈ G, l + 6 < P a b)
     (hθ : ∀ l ∈ G, theta a b i = theta a b l) :

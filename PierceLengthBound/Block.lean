@@ -14,10 +14,10 @@ Let `x = bᵢ`, `y = b_{i+1} = a mod x`, `z = b_{i+2} = a mod y`, `w = b_{i+3} =
 `z > 0`. Write `q = ⌊a/x⌋`, `u = ⌊a/y⌋ - ⌊a/x⌋`, `v = ⌊a/z⌋ - ⌊a/y⌋` and
 `d = x - y`, `e = y - z`, `f = z - w`. The *curvature* of the block is `D = dv - eu`.
 
-* `curvature_identity`: `D z = df + ude + (u-1)e²`, hence `D ≥ 1` (`one_le_bD`);
+* `curvature_identity`: `D z = df + ude + (u-1)e²`, hence `D ≥ 1` (`one_le_bD`; Lemma 3.2);
 * `block_fiber_eq`: `x M(q) = a N(q) + D` with `M(q) = uq² + (u²+u+v)q + v`,
-  `N(q) = uq + u² + v`;
-* `bu_mul_le`, `bv_mul_le`, `bD_mul_le`: the size bounds used in the counting.
+  `N(q) = uq + u² + v` (Lemma 3.3);
+* `bu_mul_le`, `bv_mul_le`, `bD_mul_le`: the size bounds used in the counting (Lemma 3.4).
 -/
 
 @[expose] public section

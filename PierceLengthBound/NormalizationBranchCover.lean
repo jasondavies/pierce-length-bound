@@ -7,8 +7,9 @@ module
 
 public import PierceLengthBound.BranchValuationComparison
 
-/-! A nontrivial normalized order regular on a model has a nonzero prime center
-on that model. Regularity extends to normalization. -/
+/-! An integer-valued order attaining `1` and nonnegative on a model `R` of its fraction field
+has a nonzero prime center on `R`; on a Dedekind model it is the normalized order of that
+branch. Regularity extends to the integral closure, so the same holds on the normalization. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -35,6 +36,8 @@ theorem regular_branch_center {R L : Type*} [CommRing R] [IsDomain R] [Field L] 
   rw [hmul, ν.map_mul, hπ]
   exact lt_of_lt_of_le zero_lt_one (le_add_of_nonneg_right (hR b))
 
+/-- On a Dedekind model, an order nonnegative on `R` and attaining `1` is the normalized order
+of a branch of `R`. -/
 theorem regular_branch_realized {R L : Type*} [CommRing R] [IsDedekindDomain R]
     [Field L] [Algebra R L] [IsFractionRing R L]
     (ν : AddValuation L (WithTop ℤ)) (hR : ∀ r : R, 0 ≤ ν (algebraMap R L r))
@@ -43,6 +46,8 @@ theorem regular_branch_realized {R L : Type*} [CommRing R] [IsDedekindDomain R]
   obtain ⟨p, hp⟩ := regular_branch_center ν hR hπ
   exact ⟨p, centered_branch_order_eq p ν hR hp hπ⟩
 
+/-- An order nonnegative on a domain `R` and attaining `1` has a center on the integral closure
+of `R` in its fraction field. -/
 theorem regular_normalization_branch_center {R L : Type*} [CommRing R] [IsDomain R]
     [Field L] [Algebra R L] [IsFractionRing R L]
     (ν : AddValuation L (WithTop ℤ)) (hR : ∀ r : R, 0 ≤ ν (algebraMap R L r))

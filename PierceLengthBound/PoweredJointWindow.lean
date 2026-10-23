@@ -8,13 +8,17 @@ module
 public import PierceLengthBound.PoweredJointExponent
 public import PierceLengthBound.PoweredJointLocalEstimate
 
-/-! The joint-lift count branches in actual remainder-window coordinates.
-All geometric counting assertions remain explicit hypotheses. -/
+/-! The window bound from the three powered count branches. If every window in the scale range
+`124928 A⁴ H⁵ X < a³` satisfies one of the branches `PoweredJointCountBranches`, then every
+window has `T ≪ Δ^{O(1)} a^α` for each `α ≥ 5/17` dominating the two powered ratios
+`(15L + m)/(51L + 3m)` and `(15L + 6n)/(51L + 20n)`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 
-/-- A constant covering all window ranges for fixed coordinate powers. -/
+/-- A constant covering all window ranges for fixed coordinate powers. After `1`, the summands
+are the constants of the large-mean-gap window (`122449`), of the first two branches, of the
+third branch in its curvature and rank-five cases, and of the small-scale window. -/
 def poweredJointWindowBase (m n L : ℕ) : ℕ :=
   1 + 122449 + 3609600 ^ 5 * 56 ^ 30 * 8 ^ 10 +
     3609600 ^ 8 * 56 ^ 49 * 8 ^ 17 +

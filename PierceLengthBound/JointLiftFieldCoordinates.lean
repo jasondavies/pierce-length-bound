@@ -8,14 +8,19 @@ module
 public import PierceLengthBound.JointLiftRetainedIdentities
 public import PierceLengthBound.JointLiftCurvatureNonvanishing
 
-/-! The polynomial graph coordinates agree with the rational curvature
-formulas in every field where their common denominator is nonzero. -/
+/-! # Joint coordinates in a field
+
+Under a ring map to a field in which the common denominator is nonzero, the common-denominator
+coordinates are the rational formulas `W = (E₁₂, -E₀₂, E₀)` and `J` of Section 8.6, and they
+satisfy `W · r = A`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- Under a ring map `φ` to a field with `φ (jointLiftDenominator Q k) ≠ 0`, the four joint
+coordinates are `E₁₂ = (H₃' E₀ - A k₁) / H₃`, `-(k₀ E₁₂ + k₂ E₀) / k₁`, `E₀ = P / Q` and `J`. -/
 theorem jointLift_field_coordinates {F : Type*} [Field F]
     (φ : MvPolynomial (Fin 3) ℚ →+* F)
     (P Q A J : MvPolynomial (Fin 3) ℚ) (k : Fin 5 → MvPolynomial (Fin 3) ℚ)
@@ -38,8 +43,8 @@ theorem jointLift_field_coordinates {F : Type*} [Field F]
       map_mul, map_add, map_sub, map_neg, map_rawHankelThree]
   all_goals field_simp
 
-/-- The curvature identity survives the passage from common-denominator
-polynomial coordinates to rational functions in the component field. -/
+/-- Under a ring map to a field in which the common denominator is nonzero, the curvature
+coordinates satisfy `W · r = A`. -/
 theorem jointLift_field_dot_row {F : Type*} [Field F]
     (φ : MvPolynomial (Fin 3) ℚ →+* F)
     (P Q A J : MvPolynomial (Fin 3) ℚ) (k : Fin 5 → MvPolynomial (Fin 3) ℚ)

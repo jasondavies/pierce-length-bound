@@ -11,11 +11,14 @@ public import PierceLengthBound.Gram
 # Sizes of the pattern integers
 
 At a state whose increments `k₀,…,k₅` lie in `[1, H]`, with labels `L(i), L(i+1) ≥ 1` obeying
-the label bound `L · a³ ≤ 256 A⁴ gramP`, and under the scale condition
-`237568 A⁴ H⁵ ≤ a³`, the four pattern integers `L(i), L(i+1), U₁, U₂` are at most
-`172032 A⁴ H⁶ / a³` in absolute value (`state_bound`).
+the label bound `L · a³ ≤ 256 A⁴ gramP` (Lemma 7.4), whose cofactors satisfy the `k`- and
+`r`-relations of Lemma 7.1, and under the scale condition `237568 A⁴ H⁵ ≤ a³`, the four pattern
+integers `L(i), L(i+1), U₁, U₂` are at most `172032 A⁴ H⁶ / a³` in absolute value
+(`state_bound`).
 
-The proof: `gramP ≤ Δ₄ + 464 H⁵` and `Δ₄ ≤ 6 H³ V` with `V = k₁ k₂ (k₁ + k₂)`, for both
+The proof: `gramP ≤ Δ₄ + 464 H⁵` with the leading part
+`Δ₄(k₀,k₁,k₂) = k₀ · k₁(k₀+k₁) · k₂(k₁+k₂)(k₀+k₁+k₂)`, and `Δ₄ ≤ 6 H³ V` with
+`V = k₁ k₂ (k₁ + k₂)`, for both
 adjacent states; the scale condition absorbs the error, giving `L a³ ≤ 3072 A⁴ H³ V` and
 `V ≥ 77 H²`. Then Cramer's rule for `(U₁, U₂)` has determinant `δ = k₁ r₂ - k₂ r₁ ≥ V/2`
 and numerators `≤ 14 (L(i) + L(i+1)) H³`.
@@ -152,7 +155,10 @@ private lemma abs_lin_le {N M x y X Y Z : ℤ} (hN : 0 ≤ N) (hM : 0 ≤ M) (hx
         · exact hy.trans hY
     _ = (N + M) * Z := by ring
 
-/-- **The pattern integers are small.** -/
+/-- **The pattern integers are small.** If `1 ≤ k₀, …, k₅ ≤ H`, `A ≥ 1`, the labels
+`Nn = L(i)`, `N1 = L(i+1)` are `≥ 1` and satisfy the label bounds, `237568 A⁴ H⁵ ≤ a³`, and
+`U(i) = (-N1, u1, u2, Nn)` satisfies the `k`- and `r`-relations, then `|u1|`, `|u2|`, `Nn`, `N1`
+are all `≤ 172032 A⁴ H⁶ / a³`. -/
 theorem state_bound {a A H Nn N1 u1 u2 k0 k1 k2 k3 k4 k5 : ℤ}
     (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 ≤ k2) (h3 : 1 ≤ k3) (h4 : 1 ≤ k4) (h5 : 1 ≤ k5)
     (g0 : k0 ≤ H) (g1 : k1 ≤ H) (g2 : k2 ≤ H) (g3 : k3 ≤ H) (g4 : k4 ≤ H) (g5 : k5 ≤ H)

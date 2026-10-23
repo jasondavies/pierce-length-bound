@@ -17,9 +17,11 @@ public import PierceLengthBound.JointLiftPointBox
 
 Replace the three curvature coordinates `W` by `G W` for a constant invertible matrix `G`. An
 invertible constant matrix leaves the pole envelope unchanged at every branch, so the powered
-graph keeps the degree lower bound `10n + 7m` (paper, `lem:latticedegree`). The powered graph of
-`PoweredJointGraph` is the case `G = 1` (`orbitLinearJointGraphIdeal_one`), and
-`PoweredJointGraphLowerDegree` derives its bounds from the ones here.
+graph `(nodes, (G W)ᵐ, Jⁿ)` satisfies `2δ ≥ (5n + 3m) d + 2m` and `10n + 7m ≤ δ ≤
+((m + n) 247 + 1) d` (paper, Lemma 8.12 `lem:jointpowereddegree` and Lemma 9.11
+`lem:latticedegree`). The powered graph of `PoweredJointGraph` is the case `G = 1`
+(`orbitLinearJointGraphIdeal_one`), and `PoweredJointGraphLowerDegree` derives its bounds from
+the ones here.
 -/
 
 @[expose] public section
@@ -85,8 +87,8 @@ lemma linearJointNumerators_totalDegree {σ : Type*} (G : Matrix (Fin 3) (Fin 3)
   · exact hsum 2
   · exact hP 3
 
-/-- In the function field, the new curvature coordinates are the constant combinations of the
-old ones. -/
+/-- In the function field, the curvature coordinates of `linearJointNumerators G P` are the
+constant combinations, with coefficients `G`, of those of `P`. -/
 lemma linear_jointGraphFieldCoordinates {σ F : Type*} [Field F] [Algebra ℚ F]
     (I : Ideal (MvPolynomial σ ℚ)) (G : Matrix (Fin 3) (Fin 3) ℚ)
     (P : Fin 4 → MvPolynomial σ ℚ) (D : MvPolynomial σ ℚ)
@@ -126,7 +128,8 @@ lemma orbitLinearJointGraph_congr {a b i l : ℕ} (h : theta a b i = theta a b l
   obtain ⟨hP, hD⟩ := orbitJoint_polynomials_congr h
   simp only [orbitLinearJointGraphIdeal, orbitLinearJointNumerators, hP, hD]
 
-/-- With first powers the powered graph is the original joint graph: `P D / D² = P / D`. -/
+/-- With `m = n = 1` the powered graph is the joint graph `orbitJointGraphIdeal`:
+`P D / D² = P / D`. -/
 lemma orbitPoweredJointGraphIdeal_one_one {a b i : ℕ} (I : Ideal (MvPolynomial (Fin 3) ℚ))
     [I.IsPrime] (hD : orbitJointDenominator a b i ∉ I) :
     orbitPoweredJointGraphIdeal a b i 1 1 I = orbitJointGraphIdeal a b i I := by
@@ -278,8 +281,10 @@ theorem linearJointGraph_envelope_pole_le {σ R F : Type*} [CommRing R] [Algebra
     discretePoleOrder ν (V' j ^ jointCoordinatePowers m k j.castSucc)
   rw [jointCoordinatePowers_castSucc, discretePoleOrder_pow, he, henv]
 
-/-- The powered graph accounts for all old-infinity rank-five poles and the
-entire affine curvature pole envelope, independently of a lower bound on that envelope. -/
+/-- The pole bound for the degree `δ` of the linearly changed powered graph:
+`5 k d + 2 m e ≤ 2 δ`, where `e` is the degree of the pole envelope of the affine curvature
+coordinates. The branches above old infinity contribute the rank-five poles `k · 5t`, and the
+affine branches the curvature poles `m` times the envelope. -/
 theorem retained_linearJointGraph_degree_lower_bound_from_envelope
     {a b i d δ N m k : ℕ} {c₀ : ℤ}
     (G : Matrix (Fin 3) (Fin 3) ℚ) (hG : IsUnit G.det) (hm : 0 < m) (hk : 0 < k)
@@ -395,8 +400,10 @@ theorem retained_linearJointGraph_degree_lower_bound_from_envelope
     (fun q hq => Nat.mul_pos hm (hnpos q hq)) hdisjoint hinfinityPole hfinitePole
   exact pole_sum_degree_arith B E _ t _ n _ (fun p hp => (ht p hp).2.1) (hsum.trans hdim) hbound
 
-/-- **Lower bound for the linearly changed powered graph.** The curvature coordinates `W` are
-replaced by `G W` with `G` invertible; the degree bound is the same as for `W`. -/
+/-- **Lower bound for the linearly changed powered graph** (paper, `lem:jointpowereddegree`).
+For `G` invertible the graph `(nodes, (G W)ᵐ, Jᵏ)` has `(5k + 3m) d + 2m ≤ 2δ`, combining
+`retained_linearJointGraph_degree_lower_bound_from_envelope` with the curvature pole degree
+`retained_curvature_pole_degree_lower_bound` (`lem:jointpoledegree`). -/
 theorem retained_linearJointGraph_degree_lower_bound {a b i d δ N m k : ℕ} {c₀ : ℤ}
     (G : Matrix (Fin 3) (Fin 3) ℚ) (hG : IsUnit G.det) (hm : 0 < m) (hk : 0 < k)
     (hba : b < a) (hi : i + 7 < P a b)
@@ -424,8 +431,9 @@ theorem retained_linearJointGraph_degree_lower_bound {a b i d δ N m k : ℕ} {c
   dsimp only at hgraphbound hcurv
   nlinarith [Nat.mul_le_mul_left m hcurv]
 
-/-- The linearly changed powered graph has the degree range required by the curve theorem,
-uniformly over components of degree at least four. -/
+/-- The linearly changed powered graph has the degree range `10n + 7m ≤ δ ≤
+((m + n) 247 + 1) d` required by the curve theorem, uniformly over components of degree
+`d ≥ 4`. -/
 theorem orbitLinearJointGraph_retained_degree_range {a b i d m n : ℕ}
     (G : Matrix (Fin 3) (Fin 3) ℚ) (hG : IsUnit G.det)
     (hm : 0 < m) (hn : 0 < n) (hba : b < a) (hi : i + 7 < P a b)

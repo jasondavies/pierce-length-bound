@@ -10,15 +10,16 @@ public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 public import Mathlib.Algebra.Algebra.Hom.Rat
 public import Mathlib.RingTheory.Jacobson.Ring
 
-/-! Residue degrees are invariant when a branch is represented on another
-Dedekind model of the same function field. -/
+/-! Residue degrees of branches: positive on a Dedekind domain of finite type over `ℚ`, and
+unchanged when a branch is represented on another Dedekind model of the same function field,
+in particular on the parameter normalization of a function. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
-/-- Closed branches of an affine rational curve have positive finite residue
-degree, even when the branch itself is not rational over ℚ. -/
+/-- A height-one prime of a Dedekind domain of finite type over `ℚ` has residue field finite
+over `ℚ`, so its residue degree is positive; the residue field need not be `ℚ`. -/
 theorem branch_residue_degree_pos {R : Type*} [CommRing R] [IsDedekindDomain R]
     [Algebra ℚ R] [Algebra.FiniteType ℚ R]
     (p : IsDedekindDomain.HeightOneSpectrum R) :

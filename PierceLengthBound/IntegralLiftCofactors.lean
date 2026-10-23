@@ -8,9 +8,9 @@ module
 public import PierceLengthBound.ConicCofactors
 public import PierceLengthBound.ConicReconstruction
 
-/-! The new graph coordinates recovered from the explicit maximal minors.
-The matrix hypotheses remain explicit: the actual shifted-polynomial system
-must still be assembled and its row independence established uniformly. -/
+/-! Reconstruction of the orbit quotient `q_i` and the moments `h_i(j)`, `j ≤ 8`, from the
+signed maximal minors of a linearly independent `8 × 9` system annihilating the moment vector.
+Here the system is a hypothesis; `IntegralLiftMomentSystem` constructs it for the orbit. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -60,8 +60,9 @@ theorem cofactor_normalized_reconstruction
   apply mul_left_cancel₀ hc
   linear_combination (c 1 ^ 2 - c 0 * c 2) * hprop j + c j * hscale
 
-/-- At an actual orbit start, any independent eight-row moment system gives
-exactly the rational formulas used to define the lifted curve. -/
+/-- At an orbit state `i` with `i + 1 < P(a,b)`, every linearly independent `8 × 9` system
+annihilating `(h_i(j))_{j ≤ 8}` has cofactors `c` with `c₀ ≠ 0`,
+`q_i = (c₁ - c₂) / (c₁ - c₀)` and `h_i(j) = c_j (c₁ - c₀) / (c₁² - c₀ c₂)`. -/
 theorem orbit_cofactor_reconstruction {a b i : ℕ} (hba : b < a)
     (hi : i + 1 < P a b) (M : Matrix (Fin 8) (Fin 9) ℝ)
     (hM : LinearIndependent ℝ M.row)

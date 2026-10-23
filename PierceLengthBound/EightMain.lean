@@ -12,10 +12,14 @@ public import PierceLengthBound.ElevenMain
 # `P(a, b) ≪_ε a^{8/27 + ε}`
 
 The seven pattern integers are signed coordinates of the vector of ten minors of `𝓜ᵢ`
-(`theta_eq`, in `OrbitPattern`). Counting minor vectors (`minor_vector_count`) instead of seven
-independent integers replaces `X⁷` by `X⁵ τ`, and the uniform minor bound (`minor_height`)
-removes the scale condition. This gives `T⁵⁴ ≤ C Δ¹⁴ Ξ(a)²⁸ a¹⁶` per window, hence
-`P ≪ a^{8/27 + ε}`.
+(`theta_eq`, in `OrbitPattern`). Counting minor vectors (`minor_vector_count`, Proposition 7.9
+of the paper) instead of seven independent integers replaces `X⁷` by `X⁵ τ`, and the uniform
+minor bound (`minor_height`, Proposition 7.8) holds without a scale condition. With the slice
+count `pattern_count_slice_gen` this gives `T ≤ 24 · 14581 (M+1)⁵ H Ξ(a)²` for a window run
+(`two_state_window_54`), then `T⁵⁴ ≤ C Δ¹⁴ Ξ(a)²⁸ a¹⁶` per window (`window_54`, `visits_54`),
+hence `P ≪ a^{8/27 + ε}` (`P_le_8_27`).
+
+This is the `8/27` row of the table in the paper's introduction; the paper omits its proof.
 -/
 
 @[expose] public section
@@ -37,7 +41,8 @@ lemma goodStarts_minor_le (hba : b < a) {s T A H : ℕ}
   obtain ⟨hP, hk, hb0, -⟩ := mem_goodStarts hmem hsT hi
   exact abs_le_div (pow_pos (by omega) 3) (by exact_mod_cast minor_height (A := A) hba hP hb0 hk t)
 
-/-- **The window bound with minor vectors.** -/
+/-- **The window bound with minor vectors.** For a window run of `T ≥ 36` terms in `[A, 2A)`
+and `H = ⌊28a/(AT)⌋ + 1`, `T ≤ 24 · 14581 (M + 1)⁵ H Ξ(a)²` with `M = ⌊3609600 A⁴ H⁶ / a³⌋`. -/
 theorem two_state_window_54 (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T) :
@@ -100,7 +105,8 @@ section Exponent
 def C54 : ℕ := 122449 ^ 14 + (448 * (24 * 14581)) ^ 14 +
   8 ^ 11 * (32 * (24 * 14581) * 3609600 ^ 5) * 56 ^ 31
 
-/-- **The exponent arithmetic.** Every window run satisfies `T⁵⁴ ≤ C₅₄ Δ¹⁴ Ξ²⁸ a¹⁶`. -/
+/-- **The exponent arithmetic.** The six-step bound, the drop bound and the window bound with a
+slack factor `X` in place of `Ξ(a)` (for `T ≥ 36`) give `T⁵⁴ ≤ C₅₄ Δ¹⁴ X²⁸ a¹⁶`. -/
 theorem window_54 {a A T Δ X : ℕ}
     (hT : 36 ≤ T) (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hdrop : T * (T - 1) ≤ 4 * A * Δ)
     (hwin : T ≤ 24 * 14581 * (3609600 * A ^ 4 * (28 * a / (A * T) + 1) ^ 6 / a ^ 3 + 1) ^ 5 *

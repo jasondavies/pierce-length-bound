@@ -9,14 +9,18 @@ public import PierceLengthBound.BranchPoleEnvelope
 public import PierceLengthBound.NormalizationBranchCover
 public import PierceLengthBound.BranchResidueComparison
 
-/-! A function's field-extension degree is bounded by a coordinate pole
-envelope once all its poles are covered by the chosen Dedekind model. -/
+/-! The degree `[L : ℚ(x)]` of a rational combination `x = ∑ cⱼ Wⱼ` is at most the pole
+envelope degree of the coordinates `W` on a Dedekind model `R`, provided every pole of `x` lies on
+`R`. This is the inequality `deg (φ)_∞ ≤ deg 𝓕` in the proof of Lemma 8.11. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open scoped IntermediateField BigOperators
 
+/-- Let `x = ∑ cⱼ Wⱼ` with rational `cⱼ` be transcendental, and suppose every discrete order of
+`L` that is nonnegative on `ℚ`, attains `1` and is negative at `x` is nonnegative on `R`. Then
+`[L : ℚ(x)]` is at most `poleEnvelopeDegree R W`. -/
 theorem function_degree_le_poleEnvelope {R L ι : Type*}
     [CommRing R] [IsDedekindDomain R] [Algebra ℚ R]
     [Field L] [Algebra ℚ L] [Algebra R L] [IsScalarTower ℚ R L] [IsFractionRing R L]

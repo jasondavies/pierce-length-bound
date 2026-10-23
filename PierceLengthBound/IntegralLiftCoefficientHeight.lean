@@ -8,16 +8,19 @@ module
 public import PierceLengthBound.IntegralLiftIntegerInputs
 public import PierceLengthBound.ConicCommonDenominator
 
-/-! Uniform integer coefficient bounds for the actual cofactor lift after the
-proved bounded quadratic parametrization. -/
+/-! Uniform integer coefficient bounds for the orbit lift parameter `orbitLiftParameter` along
+a bounded quadratic parametrization of a conic: it is a quotient `A / B` of integer polynomials
+of absolutely bounded degree and polynomially bounded height. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
-/-- The degree and height constants depend only on the fixed cofactor formula,
-not on the dividend, minor pattern, plane, or conic. -/
+/-- Along a parametrization `normalizedParameter σ E F` with `E ≠ 0` and quadratic integer
+numerators `F j`, where `a`, `θ`, `E` and the coefficients of `F` are bounded by `M`, the orbit
+lift parameter is `A / B` with `deg A, deg B ≤ D` and heights at most `C M^e`. The constants
+`D, C, e` come from the fixed cofactor formula and are absolute. -/
 theorem orbitLift_integer_representation_height :
     ∃ D C e : ℕ, 1 ≤ C ∧ ∀ {a b i M : ℕ}, b < a → i + 7 < P a b → 1 ≤ M →
       (∀ j, |theta a b i j| ≤ M) → a ≤ M →
@@ -47,13 +50,14 @@ theorem orbitLift_integer_representation_height :
   · simpa only [← pow_mul] using hAc
   · simpa only [← pow_mul] using hBc
 
-/-- A single explicit polynomial bound contains every actual input height
-provided by the bounded conic parameter theorem. -/
+/-- A single height bounding `a`, `X`, and the numerator height `33 L K³` of
+`parabola_integer_parameter_height` with `K = 10 (12 X⁴)² L²`. -/
 def conicInputHeight (a X L : ℕ) : ℕ :=
   1 + a + X + 33 * L * (10 * (12 * X ^ 4) ^ 2 * L ^ 2) ^ 3
 
-/-- Specializing the universal bound needs only the coefficient bounds already
-proved for the actual bounded integer parametrization. -/
+/-- `orbitLift_integer_representation_height` for the denominator and numerator heights
+`12 L K³` and `33 L K³` of `parabola_integer_parameter_height`, with `K = 10 (12 X⁴)² L²`:
+the coefficient heights are at most `C · conicInputHeight a X L ^ e`. -/
 theorem orbitLift_bounded_parameter_height :
     ∃ D C e : ℕ, 1 ≤ C ∧ ∀ {a b i X L : ℕ}, b < a → i + 7 < P a b →
       (∀ j, |theta a b i j| ≤ X) →

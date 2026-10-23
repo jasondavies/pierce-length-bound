@@ -8,17 +8,19 @@ module
 public import PierceLengthBound.ConicResultantHeight
 public import PierceLengthBound.BranchSieveFactorHeight
 
-/-! Polynomial height stays controlled when common integer factors are cancelled.
-The bound follows from the Mahler-measure factor estimate
-`branch_integer_factor_coeff_height`. -/
+/-! The integer-value count of Lemma A.3 (`lem:jointconicdivisors`) for a coprime pair
+`F' ∣ F`, `G' ∣ G` obtained by cancelling common factors (the cancellation step of Lemma A.2,
+`lem:jointconicproper`). The heights of `F'` and `G'` are controlled through the Mahler-measure
+factor estimate `branch_integer_factor_coeff_height`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset
 
-/-- Cancelling any common integer factor preserves a polynomial bound on both
-coefficient heights, so the proved divisor estimate applies to a coprime reduction. -/
+/-- If `F' ∣ F` and `G' ∣ G` with `F, G` nonzero of degree at most `d` and height at most `H`,
+and `F', G'` are coprime over `ℚ` with `G'` nonconstant, then the integers `t` with
+`G'(t) ∣ F'(t)` number at most `2d · τmax((2d)! (2^d (d+1) H)^(2d))`. -/
 theorem reduced_integer_values_card {F G F' G' : ℤ[X]} {d H : ℕ}
     (hF : F ≠ 0) (hG : G ≠ 0) (hF' : F' ∣ F) (hG' : G' ∣ G)
     (hFd : F.natDegree ≤ d) (hGd : G.natDegree ≤ d) (hH : 1 ≤ H)

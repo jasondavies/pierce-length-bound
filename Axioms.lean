@@ -13,9 +13,11 @@ import Lean.Util.CollectAxioms
 
 `lake env lean Axioms.lean` (also run by `lake build`) fails unless each theorem selected in
 `comparator.json` depends only on the three standard axioms `propext`, `Classical.choice` and
-`Quot.sound`. The `#print axioms` checks below also record proved components of unfinished
-refinements. The final check audits every exported declaration of `PierceLengthBound`, of the
-CCDN library, and of CCDN's vendored Bombieri–Vaaler development (`ArithmeticHeights`).
+`Quot.sound`. Further `#print axioms` checks cover selected intermediate results: the moment
+and line identities, the orbit identities and resultant degree bounds, and the polar identities,
+certificates and reductions. The final check audits every exported declaration of
+`PierceLengthBound`, of the CCDN library, and of CCDN's vendored Bombieri–Vaaler development
+(`ArithmeticHeights`).
 -/
 
 open PierceLengthBound
@@ -80,7 +82,7 @@ open PierceLengthBound
 #guard_msgs in
 #print axioms hankelInv_pos_int
 
-/-! The following audit covers proved components of the unfinished `13/44` refinement. -/
+/-! Orthogonality of the Newton quartic and the rank-four resultant. -/
 
 /-- info: 'PierceLengthBound.newtonQuartic_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
@@ -90,7 +92,7 @@ open PierceLengthBound
 #guard_msgs in
 #print axioms FixedDividend.resultant_four
 
-/-! Proved components of the unfinished `18/61` refinement. -/
+/-! The line identities and the affine-norm degree argument. -/
 
 /-- info: 'PierceLengthBound.FixedDividend.line_identity_03' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
@@ -112,7 +114,7 @@ open PierceLengthBound
 #guard_msgs in
 #print axioms FixedDividend.norm_degree_le_one
 
-/-! Actual orbit identities and universal resultant degree bounds. -/
+/-! Orbit identities, line exclusion and universal resultant degree bounds. -/
 
 /-- info: 'PierceLengthBound.FixedDividend.orbit_fixed_dividend_identity' depends on axioms: [propext,
  Classical.choice,
@@ -164,7 +166,8 @@ open PierceLengthBound
 #guard_msgs in
 #print axioms FixedDividend.orbit_no_exceptional_line
 
-/-! The polar identities, certificates and explicitly conditional exponent reductions. -/
+/-! The polar identities and certificates, the hypersurface pattern count, and the reductions
+of the polar exponents to the six-term estimates. -/
 
 /-- info: 'PierceLengthBound.FixedDividend.orbit_polar_identity' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in

@@ -7,14 +7,18 @@ module
 
 public import PierceLengthBound.ExceptionalZeroMinorCount
 
-/-! Bounded integral column changes for the four exceptional minor relations.
-The induced maps are injective on complete minor vectors, preserving common factors. -/
+/-! Bounded integral column changes for the four exceptional minor relations
+(Lemma 8.5). Each change turns one relation into the vanishing of the first maximal minor;
+the induced maps on the ten minors are injective, with explicit inverses, and increase the
+height by at most a factor of three. Combined with `zero_minor_vector_count` this gives the
+`O(X⁴ log 2X)` count of exceptional minor vectors. -/
 
 @[expose] public section
 namespace PierceLengthBound
 open Finset
 
-/-- The four exceptional relations, in the ten-minor indexing used by this project. -/
+/-- The four exceptional relations of Lemma 8.5, in the ten-minor indexing used by this
+project. -/
 def ExceptionalMinorRelation (p : Fin 10 → ℤ) (d : Fin 4) : Prop :=
   ![p 6 - p 1 - p 0, p 6 - p 1, p 3 - p 0, p 0 - p 6 - p 3] d = 0
 
@@ -38,7 +42,7 @@ def exceptionalMinorChange (d : Fin 4) (p : Fin 10 → ℤ) : Fin 10 → ℤ :=
     ![p 0 - p 3 - p 6, -p 0, p 4 + p 7, p 1, -p 2 - p 5 - p 8, p 2,
        -p 6, p 7 - p 9, -p 7, p 8]] d
 
-/-- Explicit inverse transformations; in particular no common factors are discarded. -/
+/-- Explicit integral inverses of the minor changes `exceptionalMinorChange`. -/
 def exceptionalMinorInverse (d : Fin 4) (p : Fin 10 → ℤ) : Fin 10 → ℤ :=
   ![![p 1, p 3, -p 5, p 6, -p 8, -p 9, p 0 + p 1 + p 3,
        p 2 - p 5, p 4 + p 5, p 7 + p 8 + p 9],
@@ -59,13 +63,14 @@ theorem exceptionalMinorChange_injective (d : Fin 4) :
   have := congrArg (exceptionalMinorInverse d) h
   simpa only [exceptionalMinorInverse_left] using this
 
-/-- These ten-coordinate maps are the minors of the actual changed matrix. -/
+/-- The ten-coordinate maps `exceptionalMinorChange` are the minors of the changed matrix. -/
 theorem plk_exceptionalColumnChange (d : Fin 4) (M : Fin 3 → Fin 5 → ℤ) :
     plk (exceptionalColumnChange d M) = exceptionalMinorChange d (plk M) := by
   funext j
   fin_cases d <;> fin_cases j <;>
     norm_num [plk, trip, minor3, exceptionalColumnChange, exceptionalMinorChange] <;> ring
 
+/-- Under the `d`-th exceptional relation the changed first minor vanishes. -/
 theorem exceptionalMinorChange_zero {d : Fin 4} {p : Fin 10 → ℤ}
     (h : ExceptionalMinorRelation p d) : exceptionalMinorChange d p 0 = 0 := by
   fin_cases d <;> norm_num [ExceptionalMinorRelation, exceptionalMinorChange] at h ⊢ <;>
@@ -88,7 +93,8 @@ theorem exceptionalMinorChange_height {X : ℕ} {p : Fin 10 → ℤ}
   fin_cases d <;> fin_cases j <;> norm_num [exceptionalMinorChange] <;>
     rw [abs_le] <;> constructor <;> omega
 
-/-- Count one actual exceptional relation by an injective bounded column change. -/
+/-- Count the minor vectors of height `≤ X` satisfying one exceptional relation, via an
+injective bounded column change to a vanishing first minor. -/
 theorem exceptional_relation_count {S : Finset (Fin 10 → ℤ)} {X : ℕ} (hX : 1 ≤ X)
     (d : Fin 4) (hS : ∀ p ∈ S, (∀ j, |p j| ≤ X) ∧
       (∃ M : Fin 3 → Fin 5 → ℤ, plk M = p) ∧ ExceptionalMinorRelation p d) :
@@ -106,7 +112,8 @@ theorem exceptional_relation_count {S : Finset (Fin 10 → ℤ)} {X : ℕ} (hX :
   rw [card_image_of_injective _ (exceptionalMinorChange_injective d)] at h
   convert h using 1; ring
 
-/-- The complete exceptional-pattern estimate, including every common divisor. -/
+/-- Integral minor vectors of height `≤ X` satisfying some exceptional relation number at
+most four times the single-relation bound, i.e. `O(X⁴ log 2X)`. -/
 theorem exceptional_minor_vector_count {S : Finset (Fin 10 → ℤ)} {X : ℕ} (hX : 1 ≤ X)
     (hS : ∀ p ∈ S, (∀ j, |p j| ≤ X) ∧
       (∃ M : Fin 3 → Fin 5 → ℤ, plk M = p) ∧ ∃ d, ExceptionalMinorRelation p d) :

@@ -8,16 +8,19 @@ module
 public import PierceLengthBound.CurveCountingDegreeRange
 public import PierceLengthBound.FixedDividendAffineTransport
 
-/-! Transport the counting theorem to arbitrary finite coordinate index types,
-including Fin 3 ⊕ Fin 4 for the actual seven-coordinate joint graph. -/
+/-! The degree-range curve count for an arbitrary finite coordinate index type `σ`, such as
+`Fin 3 ⊕ Fin 4` for the seven-coordinate joint graph, obtained by renaming the coordinates to
+`Fin (Fintype.card σ)`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- Renaming coordinates preserves the point count, box and exact Hilbert
-function, so the external theorem applies to the actual graph's index type. -/
+/-- For a finite index type `σ` with at least two elements and `0 < lo ≤ hi`, there is a
+constant `C` such that every prime curve `I ⊆ ℚ[x_σ]` of degree `d ∈ [lo, hi]` has at most
+`C B^{1/lo} (log B + 1)` integer points in the box `[-B, B]^σ`. Renaming coordinates preserves
+the point count, the box and the Hilbert function. -/
 theorem affine_curve_points_finite_coordinates (σ : Type*) [Fintype σ]
     (lo hi : ℕ) (hn : 2 ≤ Fintype.card σ) (hlo : 0 < lo) (hhi : lo ≤ hi) :
     ∃ C : ℝ, 0 < C ∧ ∀ I : Ideal (MvPolynomial σ ℚ), I.IsPrime →

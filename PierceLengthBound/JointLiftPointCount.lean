@@ -9,8 +9,12 @@ public import PierceLengthBound.CurveCountingCoordinates
 public import PierceLengthBound.JointLiftPointBox
 public import PierceLengthBound.OrbitGapCoordinates
 
-/-! Apply the proved affine-curve theorem to actual joint-lift points and
-count distinct gap vectors, the objects used in the pattern estimate. -/
+/-! # Counting points on the joint graph
+
+The coefficient-uniform affine-curve bound of Castryck–Cluckers–Dittmann–Nguyen (quoted in
+Section 8.9), applied to the integer points of the joint graph: for a graph of degree
+`δ ∈ [lo, 5928]`, the selected starts of one pattern on a component have at most
+`C B^(1/lo) (log B + 1)` distinct gap vectors, where `B` is the joint point box. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -25,8 +29,8 @@ lemma jointPointBoxHeight_pos (a A T : ℕ) : 1 ≤ jointPointBoxHeight a A T :=
     (max (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T))
   omega
 
-/-- Equality of the seven integral coordinates implies equality of their
-three rational node coordinates, independently of the chosen rank-five value. -/
+/-- Two joint points with the same coordinates have the same free nodes, whatever their
+rank-five values. -/
 lemma orbitFreeNodesQ_eq_of_jointPoint_eq {a b i l J K : ℕ}
     (h : orbitJointPoint a b i J = orbitJointPoint a b l K) :
     orbitFreeNodesQ a b i = orbitFreeNodesQ a b l := by
@@ -37,9 +41,10 @@ lemma orbitFreeNodesQ_eq_of_jointPoint_eq {a b i l J K : ℕ}
   dsimp only [orbitFreeNodesQ]
   exact_mod_cast he
 
-/-- Uniform counting on the actual joint graph. The only unproved geometric
-input here is its specified Hilbert-degree range; integrality, point membership,
-the box, and separation of gap vectors are all supplied by actual-state lemmas. -/
+/-- If the joint graph over the prime component `I` has degree `δ ∈ [lo, 5928]`, then any set
+of selected starts with the pattern of `i` and free nodes on `I` has at most
+`C B^(1/lo) (log B + 1)` distinct gap vectors, where `B = jointPointBoxHeight a A T` and `C`
+depends only on `lo`. -/
 theorem selected_jointGraph_gap_count (lo : ℕ) (hlo : 0 < lo) (hlohi : lo ≤ 5928) :
     ∃ C : ℝ, 0 < C ∧ ∀ {a b s T A i : ℕ}, b < a →
       (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →

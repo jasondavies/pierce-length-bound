@@ -112,7 +112,7 @@ theorem lattice_branches_of_five_term_count {T H X S Y R hN m n : ℕ}
     have hn : T ^ hN ≤ D ^ hN * X ^ (5 * hN) * Y ^ n := by exact_mod_cast he
     exact hn.trans (Nat.mul_le_mul_right _ (Nat.mul_le_mul_right _ (hDle hN (by omega))))
 
-/-- The original five-term split uses degree `10n + 7m`. -/
+/-- The five-term split at the degree `h = 10n + 7m`. -/
 theorem lattice_joint_branches_of_five_term_count {T H X S Y R m n : ℕ} (hm : 0 < m)
     (hcount : let h : ℝ := ((10 * n + 7 * m : ℕ) : ℝ)
       (T : ℝ) ≤ R * ((X : ℝ) ^ 5 + (X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ) +
@@ -138,10 +138,10 @@ def latticeWindowBase (h m n : ℕ) : ℕ :=
 `30h - 4m` and `10h + 5n` of the five branches for arbitrary graph degree `h`. -/
 def latticeWindowDeltaExponent (h n : ℕ) : ℕ := 30 * h + 5 * n + 17
 
-/-- The degree bound used by the original lattice embedding. -/
+/-- The window constant `latticeWindowBase` at the degree `h = 10n + 7m`. -/
 abbrev latticeJointWindowBase (m n : ℕ) : ℕ := latticeWindowBase (10 * n + 7 * m) m n
 
-/-- The corresponding power of the divisor bound. -/
+/-- The power `latticeWindowDeltaExponent` of the divisor bound at `h = 10n + 7m`. -/
 abbrev latticeJointWindowDeltaExponent (m n : ℕ) : ℕ :=
   latticeWindowDeltaExponent (10 * n + 7 * m) n
 
@@ -275,7 +275,7 @@ theorem window_real_of_lattice_count {a A T Δ K h m n : ℕ} {α : ℝ}
     exact window_real_of_branch_power (c := 124928 * 3609600 * 56 ^ 11 * 8 ^ 3) (k := 1) (f := 3)
       ha hΔ (by omega) (by decide) (by omega) (by omega) (by omega) (hw.trans_eq (by ring)) hα
 
-/-- The original lattice reduction is the specialization `h = 10n + 7m`. -/
+/-- `window_real_of_lattice_count` at the degree `h = 10n + 7m`. -/
 theorem window_real_of_lattice_joint_count {a A T Δ K m n : ℕ} {α : ℝ}
     (hm : 0 < m)
     (hα : (5 : ℝ) / 17 ≤ α) (hHexp : latticeExponentH (10 * n + 7 * m) ≤ α)

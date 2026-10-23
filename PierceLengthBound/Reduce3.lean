@@ -16,9 +16,10 @@ has integer Cramer coordinates (`basis_of_min`). Among such bases, minimise `d�
 then `d₂ = |b₁|²|b₂|² - ⟨b₁, b₂⟩²`. Swapping and shearing the minimiser give `3d₁² ≤ 4d₂` and
 `3d₂² ≤ 4d₁I²`, and size reduction then gives a basis with
 `27 |b₁|²|b₂|²|b₃|² ≤ 64 I²` (`reduced_basis`). So every `w ∈ Λ` has coordinates with
-`27 |bᵢ|² yᵢ² ≤ 64 |w|²` (`reduced_coords`).
+`27 |bᵢ|² yᵢ² ≤ 64 |w|²` (`reduced_coords`). This is Lemma 9.4 of the paper, proved in its
+Appendix C.
 
-Everything is integer arithmetic. No real numbers or geometry of numbers are needed.
+The proof uses only integer arithmetic.
 -/
 
 @[expose] public section
@@ -172,6 +173,7 @@ variable (Λ : AddSubgroup (Fin 3 → ℤ))
 def HasTri (n : ℕ) : Prop :=
   0 < n ∧ ∃ b1 ∈ Λ, ∃ b2 ∈ Λ, ∃ b3 ∈ Λ, (det3 b1 b2 b3).natAbs = n
 
+/-- If `Λ ⊇ mℤ³`, then `(m e₁, m e₂, m e₃)` gives a triple with `|det| = m³`. -/
 lemma hasTri_of {m : ℕ} (hm : 0 < m) (hΛ : ∀ x : Fin 3 → ℤ, (∀ j, (m : ℤ) ∣ x j) → x ∈ Λ) :
     HasTri Λ (m ^ 3) := by
   refine ⟨by positivity, ![(m : ℤ), 0, 0], hΛ _ fun j => ?_, ![0, (m : ℤ), 0], hΛ _ fun j => ?_,
@@ -181,7 +183,7 @@ lemma hasTri_of {m : ℕ} (hm : 0 < m) (hΛ : ∀ x : Fin 3 → ℤ, (∀ j, (m 
   · fin_cases j <;> simp
   · simp [det3_apply]; ring_nf; simp [Int.natAbs_pow]
 
-/-- The minimal determinant triples with a given value of `|b₁|²`. -/
+/-- The triples in `Λ` with `|det(b₁, b₂, b₃)| = I`. -/
 def MinTri (I : ℕ) (b1 b2 b3 : Fin 3 → ℤ) : Prop :=
   b1 ∈ Λ ∧ b2 ∈ Λ ∧ b3 ∈ Λ ∧ (det3 b1 b2 b3).natAbs = I
 
@@ -231,7 +233,9 @@ lemma basis_of_min {I : ℕ} (hI : ∀ n, n < I → ¬ HasTri Λ n) {b1 b2 b3 : 
     rw [e1, e2] at this
     exact dvd_neg.mp (neg_dvd.mp this)
 
-/-- **The reduced basis.** -/
+/-- **The reduced basis** (Lemma 9.4). If `Λ ⊇ mℤ³` with `m ≥ 1`, then `Λ` has a basis
+`b₁, b₂, b₃` (every `w ∈ Λ` has integer Cramer coordinates) with `0 < |det| ≤ m³` and
+`27 |b₁|²|b₂|²|b₃|² ≤ 64 det²`. -/
 theorem reduced_basis {m : ℕ} (hm : 0 < m)
     (hΛ : ∀ x : Fin 3 → ℤ, (∀ j, (m : ℤ) ∣ x j) → x ∈ Λ) :
     ∃ b1 b2 b3 : Fin 3 → ℤ, b1 ∈ Λ ∧ b2 ∈ Λ ∧ b3 ∈ Λ ∧ det3 b1 b2 b3 ≠ 0 ∧
@@ -339,7 +343,8 @@ theorem reduced_basis {m : ℕ} (hm : 0 < m)
 
 end Lattice
 
-/-- **Coordinates in a reduced basis.** -/
+/-- **Coordinates in a reduced basis.** If `w` has integer Cramer coordinates `y` in a basis with
+`27 |b₁|²|b₂|²|b₃|² ≤ 64 det²`, then `27 |bᵢ|² yᵢ² ≤ 64 |w|²`. -/
 theorem reduced_coords {b1 b2 b3 w : Fin 3 → ℤ} (hD : det3 b1 b2 b3 ≠ 0)
     (hdvd : det3 b1 b2 b3 ∣ det3 w b2 b3 ∧ det3 b1 b2 b3 ∣ det3 b1 w b3 ∧
       det3 b1 b2 b3 ∣ det3 b1 b2 w)

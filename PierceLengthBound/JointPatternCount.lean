@@ -14,8 +14,9 @@ public import PierceLengthBound.OrbitPatternCurveCount
 The steps from a count on one component of a nonexceptional pattern to the per-pattern estimate
 do not depend on the box of the graph count. They are stated here for a box `B p a A T` of the
 pattern `p` and an exponent `e`, and used by the powered joint graph (`PoweredJointLocalEstimate`)
-and the exterior lattice coordinates (`LatticeJointPatternCount`), each with `e = 1/h`. The box
-is inferred from the count, and its nonnegativity is discharged by `positivity`.
+and the exterior lattice coordinates (`LatticeJointPatternCount`), each with `e = 1/h`, and by
+the polar projection (`PolarProjectionPointCount`) with `e = 1`. The box is inferred from the
+count, and its nonnegativity is discharged by `positivity`.
 -/
 
 @[expose] public section
@@ -25,8 +26,8 @@ open Finset
 
 variable (B : (Fin 10 → ℤ) → ℕ → ℕ → ℕ → ℝ) (e : ℝ)
 
-/-- A count on every supported nonexceptional component, with coefficient `R` and graph count
-`B ^ e` in the box `B p a A T` of the pattern `p`. -/
+/-- A count on every nonexceptional component of degree `2` or `4, …, 24`, with coefficient `R`
+and graph count `B ^ e` in the box `B p a A T` of the pattern `p`. -/
 def JointComponentCount (R : ℕ → ℕ) : Prop :=
   ∀ {a b s T A i : ℕ}, b < a →
     (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →

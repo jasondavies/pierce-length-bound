@@ -10,14 +10,18 @@ public import PierceLengthBound.JointLiftGraph
 public import PierceLengthBound.JointLiftRankFiveHeight
 public import PierceLengthBound.JointLiftCurvatureHeight
 
-/-! Actual integral joint-graph points, uniform over a complete minor pattern. -/
+/-! # Integer points on the joint graph
+
+Each selected start with a given pattern gives an integer point of the joint graph of that
+pattern: the three free nodes, the curvature-minor vector `W` and the rank-five integer `J`. All
+seven coordinates lie in the box of height `max(3H, S, Y)`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
-/-- The joint rational map depends only on the existing complete minor pattern. -/
+/-- The joint numerators and denominator depend only on the pattern `θ`. -/
 theorem orbitJoint_polynomials_congr {a b i l : ℕ} (h : theta a b i = theta a b l) :
     orbitJointNumerators a b i = orbitJointNumerators a b l ∧
       orbitJointDenominator a b i = orbitJointDenominator a b l := by
@@ -32,7 +36,8 @@ lemma orbitJointGraph_congr {a b i l : ℕ} (h : theta a b i = theta a b l)
   obtain ⟨hn, hd⟩ := orbitJoint_polynomials_congr h
   simp only [orbitJointGraphIdeal, hn, hd]
 
-/-- Seven actual integer coordinates: three quotient offsets, W, and J. -/
+/-- The seven integer coordinates of state `i`: the free nodes `s₁, s₂, s₃`, the
+curvature-minor vector `W`, and the rank-five value `J`. -/
 def orbitJointPoint (a b i J : ℕ) : Fin 3 ⊕ Fin 4 → ℤ :=
   Sum.elim (fun j => sq a b i (j.val + 1))
     ![orbitCurvatureVector a b i 0, orbitCurvatureVector a b i 1,
@@ -69,8 +74,9 @@ lemma selected_node_height {a b s T A i : ℕ}
       gcongr
       exact_mod_cast (show j.val + 1 ≤ 3 by omega)
 
-/-- The node-coordinate version differs from the candidate's gap box by an
-absolute factor of at most three. -/
+/-- The height `max(3H, S, Y)` of the joint point box; the factor `3` accounts for the free
+nodes being sums of up to three gaps. It is at most `3 max(H, S, Y)`
+(`jointPointBoxHeight_le`). -/
 def jointPointBoxHeight (a A T : ℕ) : ℕ :=
   max (3 * selectedGapHeight a A T)
     (max (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T))
@@ -90,8 +96,9 @@ lemma jointPointBoxHeight_le (a A T : ℕ) :
         (selectedRankFiveHeight a A T)
       omega
 
-/-- Every selected state with a fixed minor pattern gives an actual integer
-point in one and the same joint graph, inside the proved uniform box. -/
+/-- A selected start `l` with the pattern of `i` and free nodes on `I` gives, with a positive
+integer `J`, an integer point of the joint graph of `i` over `I` whose coordinates are at most
+`jointPointBoxHeight a A T` in absolute value. -/
 theorem selected_jointGraph_integerPoint {a b s T A i l : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hl : l ∈ selectedStarts a b s T A)

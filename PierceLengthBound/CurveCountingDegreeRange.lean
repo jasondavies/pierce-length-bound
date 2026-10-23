@@ -7,16 +7,16 @@ module
 
 public import PierceLengthBound.CurveCounting
 
-/-! Uniform bounds for the finite degree ranges in the exceptional curves and
-the joint-coordinate graph. The counting theorem is now proved; actual curve
-membership and the degree range remain geometric obligations. -/
+/-! The curve count uniformly over a finite degree range `lo ≤ d ≤ hi`: the factors `d³` and
+`log B + d` are absorbed into a constant depending on `hi`, and `B^{1/d} ≤ B^{1/lo}`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
-/-- A fixed lower degree controls the box exponent; all bounded upper-degree
-factors are absorbed into a single coefficient-independent constant. -/
+/-- For `n ≥ 2` and `0 < lo ≤ hi` there is a constant `C` such that every prime curve in `n`
+coordinates of degree `d ∈ [lo, hi]` has at most `C B^{1/lo} (log B + 1)` integer points in the
+box `[-B, B]ⁿ`. The constant depends only on `n` and `hi`. -/
 theorem affine_curve_points_degree_range (n lo hi : ℕ) (hn : 2 ≤ n)
     (hlo : 0 < lo) (hhi : lo ≤ hi) :
     ∃ C : ℝ, 0 < C ∧ ∀ I : Ideal (MvPolynomial (Fin n) ℚ), I.IsPrime →

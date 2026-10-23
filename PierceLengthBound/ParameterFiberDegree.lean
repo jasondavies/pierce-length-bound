@@ -12,8 +12,8 @@ public import Mathlib.RingTheory.Localization.Integral
 public import Mathlib.RingTheory.LocalRing.Basic
 public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
-/-! A finite domain over a transcendental parameter has fiber dimension equal
-to its module rank. This includes singular curve algebras. -/
+/-! A domain `S` finite over `K[w]`, `w` transcendental, has `dim_K S/(w)` equal to its rank
+over `K[w]`. The integral closure of `S` in its fraction field has the same rank over `K[w]`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -50,6 +50,7 @@ theorem polynomial_parameter_fiber_finrank {K T S : Type*}
     _ = Module.finrank T S :=
       Algebra.finrank_eq_of_equiv_equiv e.toRingEquiv (RingEquiv.refl S) rfl
 
+/-- `dim_K S/(w) = rank_{K[w]} S` for a domain `S` finite over `K[w]`, `w` transcendental. -/
 theorem parameter_fiber_finrank {K S : Type*} [Field K] [CommRing S] [IsDomain S]
     [Algebra K S] (w : S) (hw : Transcendental K w)
     [Module.Finite (Algebra.adjoin K {w}) S] :
@@ -62,8 +63,8 @@ theorem parameter_fiber_finrank {K S : Type*} [Field K] [CommRing S] [IsDomain S
     rw [Polynomial.algEquivOfTranscendental_apply_X]
   rwa [he] at hh
 
-/-- A finite birational extension has the same parameter rank, independently
-of singularities of the original algebra. -/
+/-- The integral closure of `S` in its fraction field has the same rank over `K[w]` as `S`,
+since it has rank one over `S`. -/
 theorem normalization_parameter_rank {K S L : Type*}
     [Field K] [CommRing S] [IsDomain S] [Algebra K S]
     [Field L] [Algebra S L] [IsFractionRing S L] (w : S) :

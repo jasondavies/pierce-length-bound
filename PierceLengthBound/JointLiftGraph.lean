@@ -8,14 +8,19 @@ module
 public import PierceLengthBound.JointLiftCoordinates
 public import Mathlib.RingTheory.Localization.Away.Basic
 
-/-! Graph ideals for several rational functions with a common denominator, constructed in
-the localization at the denominator. This construction does not assert a graph degree bound. -/
+/-! # Graph ideals
+
+The graph of a family of rational functions `Pⱼ / Q` on a prime component `I`, as the kernel of
+the map to the localization of `K[x]/I` at `Q`. The graph ideal is prime and contracts to `I`,
+points of `I` with `Q ≠ 0` lift to it, and the joint graph `Γ ⊆ 𝔸⁷` of Section 8.8 (here with
+`m = n = 1`) contains the free nodes of an orbit state together with `W` and `J`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- The localization of `K[x]/I` at the denominator `Q`. -/
 abbrev graphLocalization {K σ : Type*} [Field K]
     (I : Ideal (MvPolynomial σ K)) (Q : MvPolynomial σ K) :=
   Localization.Away (Ideal.Quotient.mk I Q)
@@ -51,7 +56,8 @@ lemma graphPointMap_invSelf {K σ : Type*} [Field K]
   rw [map_mul, map_one, graphPointMap_mk] at h
   exact eq_inv_of_mul_eq_one_right h
 
-/-- Old coordinates and any family of rational coordinates in one localization. -/
+/-- The map sending the base coordinates to themselves and the added coordinates to `Pⱼ / Q`,
+in the localization at `Q`. -/
 def jointGraphMap {K σ ι : Type*} [Field K]
     (I : Ideal (MvPolynomial σ K)) (P : ι → MvPolynomial σ K) (Q : MvPolynomial σ K) :
     MvPolynomial (σ ⊕ ι) K →ₐ[K] graphLocalization I Q :=
@@ -61,6 +67,7 @@ def jointGraphMap {K σ ι : Type*} [Field K]
     (fun j => algebraMap (MvPolynomial σ K ⧸ I) (graphLocalization I Q)
       (Ideal.Quotient.mk I (P j)) * IsLocalization.Away.invSelf (Ideal.Quotient.mk I Q)))
 
+/-- The graph ideal of the rational functions `Pⱼ / Q` over the component `I`. -/
 def jointGraphIdeal {K σ ι : Type*} [Field K]
     (I : Ideal (MvPolynomial σ K)) (P : ι → MvPolynomial σ K) (Q : MvPolynomial σ K) :
     Ideal (MvPolynomial (σ ⊕ ι) K) := RingHom.ker (jointGraphMap I P Q)
@@ -128,7 +135,8 @@ theorem jointGraph_point {K σ ι : Type*} [Field K]
   rw [AlgHom.comp_apply, hf0, map_zero] at he
   exact he.symm
 
-/-- The concrete seven-dimensional graph of the three curvature minors and I5. -/
+/-- The graph ideal in seven variables of the joint coordinates `W₀, W₁, W₂, J` over the
+component `I`. -/
 def orbitJointGraphIdeal (a b i : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ)) :
     Ideal (MvPolynomial (Fin 3 ⊕ Fin 4) ℚ) :=
   jointGraphIdeal I (orbitJointNumerators a b i) (orbitJointDenominator a b i)
@@ -145,7 +153,8 @@ theorem orbitJointGraphIdeal_isPrime {a b i : ℕ} (hba : b < a) (hi : i + 7 < P
     (orbitJointGraphIdeal a b i I).IsPrime :=
   jointGraphIdeal_isPrime I _ _ (orbitJoint_denominator_not_mem hba hi I hz)
 
-/-- The actual orbit point, with its four new integer coordinates, lies on this graph. -/
+/-- The free nodes of state `i`, together with the curvature-minor vector `W` and the
+rank-five integer `J = I₄(i) Ψ`, lie on the joint graph. -/
 theorem orbitJointGraph_point {a b i J : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ))
     (hz : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I)

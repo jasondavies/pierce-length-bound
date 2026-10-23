@@ -16,10 +16,11 @@ public import PierceLengthBound.SixStep
 `ShortDivisorBound G` says that, for `x ≥ x₀`, `x^{1/4} ≤ y ≤ x` and `A ≥ 1`,
 `∑_{x < n ≤ x + y} #{d ∣ n : A ≤ d < 2A} ≤ C y G(x)`.
 
-From it, each window run satisfies both `T ≪ a^{1/2} A^{-1/3}` (`six_step_bound`, no
-hypothesis) and `T ≪ (G(a) A)^{1/2} + G(a) a^{1/4}` (`drop_count_bound_short_interval`).
-Summing the minimum over the dyadic ranges (`sum_min_le`) gives
-`P(a, b) ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`).
+From it, each window run satisfies both `T ≪ a^{1/2} A^{-1/3}` (`six_step_bound`,
+unconditionally) and `T ≪ (G(a) A)^{1/2} + G(a) a^{1/4}` (`drop_count_bound_short_interval`);
+`visits_real_bound` combines the two. Summing the minimum over the dyadic ranges
+(`sum_min_le`) gives `P(a, b) ≪ a^{3/10} G(a)^{1/5}` when `1 ≤ G(x) ≪ x^{1/40}`
+(`P_le_of_shortDivisorBound`). `Hooley.lean` supplies such a `G`.
 -/
 
 @[expose] public section
@@ -33,7 +34,8 @@ def ShortDivisorBound (G : ℕ → ℝ) : Prop :=
   ∃ C x₀ : ℝ, 0 < C ∧ ∀ x y A : ℕ, x₀ ≤ x → (x : ℝ) ^ (1 / 4 : ℝ) ≤ y → y ≤ x → 1 ≤ A →
     (∑ n ∈ Ioc x (x + y), (dcount A n : ℝ)) ≤ C * y * G x
 
-/-- Solving `T(T-1) ≤ c(2A + β₀(T-1))`: `T ≤ 2cβ₀ + √(8cA)`. -/
+/-- Solving `T(T-1) ≤ c(2A + β₀(T-1))`: if `T ≥ 2`, `T ≤ c(H + β₀)` and `H(T-1) ≤ 2A`, then
+`T ≤ 2cβ₀ + √(8cA)`. -/
 lemma quadratic_solve {T c β₀ H A : ℝ} (hT : 2 ≤ T) (hc : 0 ≤ c) (hβ : 0 ≤ β₀)
     (h1 : T ≤ c * (H + β₀)) (h2 : H * (T - 1) ≤ 2 * A) :
     T ≤ 2 * c * β₀ + Real.sqrt (8 * c * A) := by
@@ -71,8 +73,10 @@ lemma six_root {T A a K : ℕ} (hA : 1 ≤ A) (h : T ^ 6 * A ^ 2 ≤ K * a ^ 3) 
   have h6 := le_of_mul_le_mul_right h' (by positivity)
   exact (pow_le_pow_iff_left₀ (by positivity) hR (by norm_num)).mp h6
 
-/-- **One window, both bounds.** For `x₀ ≤ a`, the number of visits to `[2^k, 2^{k+1})` is at
-most `19 + γ + min(α (2^k)^{-1/3}, β (2^k)^{1/2})`. -/
+/-- **One window, both bounds.** Under the short-interval bound with constants `C, x₀` and
+`G ≥ 1`, for `x₀ ≤ a` the number of visits to `[2^k, 2^{k+1})` is at most
+`19 + γ + min(α (2^k)^{-1/3}, β (2^k)^{1/2})`, where `γ = 4 C G(a)(a^{1/4} + 1)`,
+`α = (96·10⁶)^{1/6} a^{1/2}` and `β = 4 √(C G(a))`. -/
 theorem visits_real_bound {G : ℕ → ℝ} {C x₀ : ℝ} (hC : 0 < C)
     (hshort : ∀ x y A : ℕ, x₀ ≤ x → (x : ℝ) ^ (1 / 4 : ℝ) ≤ y → y ≤ x → 1 ≤ A →
       (∑ n ∈ Ioc x (x + y), (dcount A n : ℝ)) ≤ C * y * G x)
@@ -159,8 +163,8 @@ theorem visits_real_bound {G : ℕ → ℝ} {C x₀ : ℝ} (hC : 0 < C)
     · rw [min_eq_right hm]; linarith
   linarith
 
-/-- **The conditional theorem.** A short-interval divisor bound with growth `G` gives
-`P(a, b) ≪ a^{3/10} G(a)^{1/5}`. -/
+/-- **The conditional theorem.** A short-interval divisor bound with growth `G`, where
+`1 ≤ G(x) ≪ x^{1/40}`, gives `P(a, b) ≪ a^{3/10} G(a)^{1/5}` uniformly in `0 < b < a`. -/
 theorem P_le_of_shortDivisorBound {G : ℕ → ℝ} (hG : ShortDivisorBound G) (hG1 : ∀ x, 1 ≤ G x)
     (hGs : ∃ C' : ℝ, ∀ x : ℕ, 1 ≤ x → G x ≤ C' * (x : ℝ) ^ (1 / 40 : ℝ)) :
     ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →

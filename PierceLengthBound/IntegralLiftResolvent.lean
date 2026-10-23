@@ -7,8 +7,9 @@ module
 
 public import Mathlib
 
-/-! The rank-three resolvent identity for the added integral Hankel coordinate.
-All identities are polynomial and hold over arbitrary commutative rings. -/
+/-! The rank-three resolvent identity for the integral Hankel coordinate `I₃` added by the
+integral lift, and the raw rank-three and mixed Hankel minors as polynomials in three or four
+consecutive gaps. All identities are polynomial and hold over arbitrary commutative rings. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -22,8 +23,10 @@ def hankelThree {R : Type*} [CommRing R] (v : ℕ → R) : R :=
 def hankelMixed {R : Type*} [CommRing R] (v : ℕ → R) : R :=
   (!![v 0, v 1, v 3; v 1, v 2, v 4; v 2, v 3, v 5]).det
 
-/-- The candidate's resolvent formula with its denominator cleared. No
-invertibility hypothesis is needed for this polynomial identity. -/
+/-- The resolvent formula with its denominator cleared: if `v` satisfies the quartic
+recurrence with coefficients `p₀, …, p₃`, then
+`H₃(v) (q⁴ - p₃q³ + p₂q² - p₁q + p₀) = (q - p₃) H₃(w) - H_mixed(w)` with
+`w_j = q v_j + v_{j+1}`. -/
 theorem hankel_three_resolvent {R : Type*} [CommRing R]
     (p0 p1 p2 p3 q : R) (v : ℕ → R)
     (hrec : ∀ j < 3, p0 * v j + p1 * v (j + 1) + p2 * v (j + 2) +

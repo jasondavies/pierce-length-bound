@@ -8,16 +8,20 @@ module
 public import PierceLengthBound.ChartDiscreteOrders
 public import PierceLengthBound.FixedDividendChartResultant
 
-/-! Exact rank-five pole order on the actual nonexceptional infinity chart.
-The valuation may lie over a singular point; only its center on this chart is used. -/
+/-! # Resultant and rank-five orders at infinity
+
+At a discrete valuation centered on the infinity chart of a nonexceptional component, with
+`ν(1/s₁) = e > 0`, the resultant `Res(P₄, Z)` has order `-10e` (Lemma 8.3), `e = 2t` is even,
+and the rank-five coordinate `J = N₀ Ψ` has order `-5t` (Corollary 8.4). The valuation may lie
+over a singular point; only its center on this chart is used. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- The proved resultant unit on the infinity section gives its exact affine
-order at every discrete valuation centered on that section. -/
+/-- At a discrete valuation centered on the infinity chart of a nonexceptional component, with
+`ν(1/s₁) = e > 0`, the resultant has order `-10e`. -/
 theorem nonexceptional_resultant_discrete_order
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
@@ -44,9 +48,9 @@ theorem nonexceptional_resultant_discrete_order
     (nonexceptional_chart_resultant_unit hρ hu hv hne ρ' u' v' A a ha
       I hf hg ι hι hd hdegree)
 
-/-- On the actual chart the original infinity multiplicity is even, and the
-already defined rank-five function A*D has pole order 5e/2. This does not assume
-the local parity statement or the resultant's pole order. -/
+/-- At a discrete valuation centered on the infinity chart of a nonexceptional component, with
+`ν(1/s₁) = e > 0`, the multiplicity `e = 2t` is even and the rank-five coordinate `A Ψ` has
+order `-5t`. -/
 theorem nonexceptional_rank_five_discrete_order
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)

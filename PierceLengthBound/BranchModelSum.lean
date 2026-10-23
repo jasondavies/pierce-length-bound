@@ -13,13 +13,16 @@ public import Mathlib.Data.Nat.Totient
 public import Mathlib.CategoryTheory.Category.Init
 public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
-/-! Algebra structures on a family selecting between two branch models.
-Explicit instances keep the selected ring and its field embedding compatible. -/
+/-! The family `branchModelSum R S : ι ⊕ κ → Type u`, equal to `R` on the left summand and `S`
+on the right. It combines branches on two Dedekind models of one function field into a single
+indexed family. The ring, Dedekind, algebra, scalar-tower and fraction-field instances are
+defined summand by summand, so the selected ring and its map to the field stay compatible. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 universe u
 
+/-- The family that is `R` on `ι` and `S` on `κ`. -/
 def branchModelSum (R S : Type u) {ι κ : Type*} : ι ⊕ κ → Type u
   | .inl _ => R
   | .inr _ => S

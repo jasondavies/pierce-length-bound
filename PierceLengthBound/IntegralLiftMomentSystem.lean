@@ -8,16 +8,22 @@ module
 public import PierceLengthBound.IntegralLiftCofactors
 public import PierceLengthBound.FixedDividendIdentity
 
-/-! The actual eight-row moment system and its independence. -/
+/-! The eight-row moment system of an orbit state: the coefficient rows of
+`Q_i, X Q_i, X² Q_i, X³ Q_i` and of the same shifts of `X · nextQuartic`, which annihilate the
+moment vector `(h_i(j))_{j ≤ 8}` and are linearly independent. With `IntegralLiftCofactors` this
+gives the cofactor reconstruction `orbitMomentSystem_reconstruction`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Matrix Finset
 
+/-- The shifted polynomials `P Xʲ` and `Z Xʲ` for `j < 4`. -/
 def shiftedMomentPolynomial {K : Type*} [CommRing K] (P Z : K[X]) : Fin 4 ⊕ Fin 4 → K[X] :=
   Sum.elim (fun j => P * X ^ j.val) (fun j => Z * X ^ j.val)
 
+/-- For `deg P = 4` and `P` coprime to `Z`, the eight shifted polynomials are linearly
+independent. -/
 theorem shiftedMomentPolynomial_independent {K : Type*} [Field K]
     (P Z : K[X]) (hP : P.natDegree = 4) (hcop : IsCoprime P Z) :
     LinearIndependent K (shiftedMomentPolynomial P Z) := by
@@ -47,6 +53,7 @@ theorem shiftedMomentPolynomial_independent {K : Type*} [Field K]
 def momentSystemPolynomial {K : Type*} [CommRing K] (P Z : K[X]) (j : Fin 8) : K[X] :=
   shiftedMomentPolynomial P Z (finSumFinEquiv.symm j)
 
+/-- The `8 × 9` matrix of coefficients of `t⁰, …, t⁸` of the shifted polynomials. -/
 def momentSystem {K : Type*} [CommRing K] (P Z : K[X]) : Matrix (Fin 8) (Fin 9) K :=
   fun i j => (momentSystemPolynomial P Z i).coeff j.val
 
@@ -90,8 +97,9 @@ lemma orbitShiftedQuintic_degree (a b i : ℕ) :
   rw [natDegree_mul monic_X.ne_zero (nextQuartic_monic i).ne_zero,
     natDegree_X, nextQuartic_natDegree]
 
-/-- Positivity of the actual quartic norm excludes a common root of the two
-polynomials, so the eight rows are independent at every supported orbit state. -/
+/-- The orbit quartic is coprime to `X · nextQuartic`: a common root would make their
+resultant vanish, contradicting `orbit_fixed_dividend_identity` and the positivity of the
+orbit norm. -/
 theorem orbitQuartic_coprime_shifted {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     IsCoprime (orbitQuartic a b i) (X * nextQuartic a b i) := by
   by_contra h
@@ -104,6 +112,7 @@ theorem orbitQuartic_coprime_shifted {a b i : ℕ} (hba : b < a) (hi : i + 7 < P
   have : 0 < (a : ℝ) * orbitNorm a b i ^ 4 := by positivity
   linarith
 
+/-- The moment system of the orbit state `i`. -/
 def orbitMomentSystem (a b i : ℕ) : Matrix (Fin 8) (Fin 9) ℝ :=
   momentSystem (orbitQuartic a b i) (X * nextQuartic a b i)
 
@@ -112,6 +121,7 @@ theorem orbitMomentSystem_independent {a b i : ℕ} (hba : b < a) (hi : i + 7 < 
   momentSystem_independent _ _ (orbitQuartic_natDegree i)
     (orbitShiftedQuintic_degree a b i).le (orbitQuartic_coprime_shifted hba hi)
 
+/-- `ν_i(f) = ∑_{j ≤ 8} [Xʲ]f · h_i(j)` for `deg f ≤ 8`. -/
 lemma nuF_eq_sum_nine {a b i : ℕ} (f : ℝ[X]) (hf : f.natDegree ≤ 8) :
     nuF a b i f = ∑ j : Fin 9, f.coeff j.val * hm a b i j.val := by
   conv_lhs => rw [f.as_sum_range_C_mul_X_pow' (show f.natDegree < 9 by omega)]
@@ -119,7 +129,7 @@ lemma nuF_eq_sum_nine {a b i : ℕ} (f : ℝ[X]) (hf : f.natDegree ≤ 8) :
   simp only [nuF_C_mul, nuF_X_pow]
   exact (Fin.sum_univ_eq_sum_range (fun k => f.coeff k * hm a b i k) 9).symm
 
-/-- The actual moment vector is annihilated by the explicit coefficient matrix. -/
+/-- The moment vector `(h_i(j))_{j ≤ 8}` lies in the kernel of the orbit moment system. -/
 theorem orbitMomentSystem_kernel {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     orbitMomentSystem a b i *ᵥ (fun j => hm a b i j.val) = 0 := by
   ext k
@@ -133,8 +143,9 @@ theorem orbitMomentSystem_kernel {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b
   · exact orbitQuartic_orthogonal hba (by omega) j.val j.isLt
   · exact nextQuartic_orthogonal hba hi j.val j.isLt
 
-/-- Fully instantiated reconstruction: the eight-row matrix and its rank/kernel
-conditions are proved from the actual orbit, rather than supplied as premises. -/
+/-- Cofactor reconstruction at every orbit state with `i + 7 < P(a,b)`, from the orbit moment
+system: `c₀ ≠ 0`, `q_i = (c₁ - c₂) / (c₁ - c₀)` and
+`h_i(j) = c_j (c₁ - c₀) / (c₁² - c₀ c₂)`. -/
 theorem orbitMomentSystem_reconstruction {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     let c := momentCofactors (orbitMomentSystem a b i)
     c 0 ≠ 0 ∧ c 1 - c 0 ≠ 0 ∧ c 1 ^ 2 - c 0 * c 2 ≠ 0 ∧

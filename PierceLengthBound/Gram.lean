@@ -15,7 +15,7 @@ The Hankel matrix of `νᵢ` becomes the Gram matrix `(νᵢ(Fⱼ Fₗ))` of the
 unit lower triangular change of basis. Hadamard's inequality bounds its determinant by
 `∏ⱼ νᵢ(Fⱼ²) ≤ ∏ⱼ μᵢ(Fⱼ²)/qᵢ`. For `r = 4` the right side is an explicit polynomial in the
 increments (`gramP`), and `I₄(i)` is the six-step integer `L` (`hankelInv_four`), so
-`L qᵢ⁴ ≤ a · gramP` in `ℤ` (`label_bound`).
+`L qᵢ⁴ ≤ a · gramP` in `ℤ` (`label_bound`, the first bound of Lemma 7.4).
 -/
 
 @[expose] public section
@@ -55,7 +55,7 @@ lemma nbMat_det (i r : ℕ) : (nbMat a b i r).det = 1 := by
     simp only [nbMat, of_apply]
     exact coeff_eq_zero_of_natDegree_lt (by rw [nb_natDegree]; exact hjt)
 
-/-- The Newton-basis Gram matrix is `U H Uᵀ`. -/
+/-- The Newton-basis Gram matrix is `U H Uᵀ`, with `U = nbMat` and `H` the Hankel matrix. -/
 lemma gram_eq (i r : ℕ) (j l : Fin r) :
     nuF a b i (nb a b i j * nb a b i l) =
       (nbMat a b i r * hankel a b i r * (nbMat a b i r)ᵀ) j l := by
@@ -106,6 +106,7 @@ lemma pt_eq_sum (i : ℕ) : ∀ j, pt a b i j = ∑ m ∈ range j, kk a b (i + m
     rw [sum_range_succ, ← pt_eq_sum i j]
     simp [pt, kk, ← add_assoc]
 
+/-- `∏_{j<4} μᵢ(Fⱼ²) = gramP(kᵢ, …, k_{i+4})`. -/
 lemma muF_nb_sq (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
     ∏ j : Fin 4, muF a b i (nb a b i j * nb a b i j) =
       ((gramP ((qq a b (i + 1) : ℤ) - qq a b i) ((qq a b (i + 2) : ℤ) - qq a b (i + 1))
@@ -154,8 +155,8 @@ lemma muF_nb_sq (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
     show i + 2 + 1 = i + 3 from rfl, show i + 1 + 1 = i + 2 from rfl]
   ring
 
-/-- **The label bound.** `L qᵢ⁴ ≤ a · gramP(k₀, …, k₄)`, where `L = I₄(i)` is the six-step
-integer. -/
+/-- **The label bound** (Lemma 7.4). `L qᵢ⁴ ≤ a · gramP(k₀, …, k₄)`, where `L = I₄(i)` is the
+six-step integer. -/
 theorem label_bound (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
     sixL ((qq a b (i + 1) : ℤ) - qq a b i) ((qq a b (i + 2) : ℤ) - qq a b (i + 1))
       ((qq a b (i + 3) : ℤ) - qq a b (i + 2)) ((qq a b (i + 4) : ℤ) - qq a b (i + 3))

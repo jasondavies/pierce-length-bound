@@ -10,7 +10,9 @@ public import PierceLengthBound.FixedDividendParity
 public import PierceLengthBound.FixedDividendSelection
 public import PierceLengthBound.FixedDividendCoordinates
 
-/-! Exceptional-pattern counting on actual selected orbit windows. -/
+/-! Exceptional-pattern counting on selected orbit windows (Lemma 8.5): exceptional orbit
+patterns satisfy one of the four integer minor relations, and the selected starts of a
+window have `O(X⁴ log 2X)` exceptional minor vectors, `X = selectedMinorHeight a A T`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -26,7 +28,8 @@ theorem exceptional_minor_relation_of_ratios {p : Fin 10 → ℤ} (hp : p 0 ≠ 
   all_goals norm_cast at h
   all_goals omega
 
-/-- Exceptional patterns in a finite set of actual integer matrices. -/
+/-- Count of the exceptional minor vectors among the minors of a finite family of integer
+matrices. -/
 theorem exceptional_matrix_pattern_count {ι : Type*} (G : Finset ι)
     (M : ι → Fin 3 → Fin 5 → ℤ) {X : ℕ} (hX : 1 ≤ X)
     (hheight : ∀ i ∈ G, ∀ j, |plk (M i) j| ≤ X) :
@@ -39,7 +42,7 @@ theorem exceptional_matrix_pattern_count {ι : Type*} (G : Finset ι)
   obtain ⟨i, hi, rfl⟩ := mem_image.mp hp
   exact ⟨hheight i hi, ⟨M i, rfl⟩, hd⟩
 
-/-- Exact exceptional-pattern count in the selected remainder window. -/
+/-- Exceptional-pattern count for the selected starts of a remainder window. -/
 theorem selected_exceptional_pattern_count {a b s T A : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hT : 36 ≤ T) :
@@ -52,7 +55,7 @@ theorem selected_exceptional_pattern_count {a b s T A : ℕ} (hba : b < a)
     (selectedMinorHeight_pos hba hmem hsT hT)
     (fun i hi j => selectedStart_minor_height hba hmem hsT hi j)
 
-/-- Every exceptional actual orbit pattern satisfies one of the counted minor cuts. -/
+/-- Every exceptional orbit pattern satisfies one of the four exceptional minor relations. -/
 theorem orbit_exceptional_minor_relation {a b i : ℕ} (hba : b < a)
     (hi : i + 6 < P a b)
     (hne : ¬NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i)) :

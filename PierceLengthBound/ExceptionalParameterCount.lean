@@ -7,20 +7,23 @@ module
 
 public import PierceLengthBound.ExceptionalPlaneCount
 
-/-! The uniform count on one dyadic range of primitive directions. -/
+/-! Parameter sets for the rank-one/orthogonality count of Lemma 8.5: a primitive direction
+`z` with `|z|_∞` in a dyadic range `[Z, 2Z]`, two scalars of size `≤ X / Z` and an integer
+point of the plane `z ⬝ᵥ t = 0`. Each dyadic range has `O(X⁴)` parameter tuples. -/
 
 @[expose] public section
 namespace PierceLengthBound
 open Finset
 noncomputable section
 
-/-- Primitive directions with a coordinate between `Z` and the ambient height. -/
+/-- Primitive directions in the box of radius `2Z` with a coordinate of absolute value
+between `Z` and `X`. -/
 def exceptionalNormals (X Z : ℕ) : Finset (Fin 3 → ℤ) := by
   classical
   exact (ibox3 (2 * Z)).filter fun z =>
     (∃ c, c ⬝ᵥ z = 1) ∧ ∃ j, Z ≤ (z j).natAbs ∧ (z j).natAbs ≤ X
 
-/-- Two scalar multiples of a primitive direction. -/
+/-- Pairs of scalars of absolute value at most `X / Z`. -/
 def exceptionalScalars (X Z : ℕ) : Finset (ℤ × ℤ) :=
   Icc (-(X / Z : ℕ) : ℤ) (X / Z : ℕ) ×ˢ Icc (-(X / Z : ℕ) : ℤ) (X / Z : ℕ)
 
@@ -28,7 +31,7 @@ def exceptionalScalars (X Z : ℕ) : Finset (ℤ × ℤ) :=
 def exceptionalPlane (X : ℕ) (z : Fin 3 → ℤ) : Finset (Fin 3 → ℤ) :=
   (ibox3 X).filter fun t => z ⬝ᵥ t = 0
 
-/-- Parameter tuples for one dyadic range. -/
+/-- Parameter tuples `(z, (r, s), t)` for one dyadic range. -/
 def exceptionalParameters (X Z : ℕ) :
     Finset ((Fin 3 → ℤ) × (ℤ × ℤ) × (Fin 3 → ℤ)) := by
   classical
@@ -40,8 +43,8 @@ lemma ibox3_card (X : ℕ) : (ibox3 X).card = (2 * X + 1) ^ 3 := by
   rw [ibox3, Fintype.card_piFinset, Fin.prod_univ_three, hi]
   ring
 
-/-- Each dyadic primitive-direction range contributes at most an absolute
-constant times `X⁴`, including nonprimitive scalar multiples. -/
+/-- Each dyadic primitive-direction range contributes at most `273375 X⁴` parameter
+tuples. -/
 theorem exceptional_parameters_count {X Z : ℕ} (hZ : 1 ≤ Z) (hZX : Z ≤ X) :
     (exceptionalParameters X Z).card ≤ 273375 * X ^ 4 := by
   classical

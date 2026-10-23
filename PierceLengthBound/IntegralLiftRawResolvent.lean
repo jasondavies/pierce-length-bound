@@ -8,7 +8,9 @@ module
 public import PierceLengthBound.IntegralLiftMoments
 public import PierceLengthBound.FixedDividendRationalOrbit
 
-/-! Explicit raw moment determinants and the actual rational resolvent identity. -/
+/-! The raw moments `μ_i(X⁴)`, `μ_i(X⁵)` in the gaps, the rank-three and mixed Hankel minors of
+the raw moments as the explicit gap polynomials `rawHankelThree`, `rawHankelMixed`, and the
+resolvent formula of `IntegralLiftMoments` in this gap form, over `ℝ` and over `ℚ`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -47,6 +49,7 @@ lemma muF_X_five {a b i : ℕ} (hba : b < a) (hi : i + 5 < P a b) :
   rw [show (X : Polynomial ℝ) ^ 5 = X * X ^ 4 by ring,
     muF_X_mul (by omega), pow_comp, X_comp, muF_shift_four hba (by omega)]
 
+/-- The rank-three Hankel minor of the raw moments is `rawHankelThree` of the gaps. -/
 lemma orbit_raw_hankelThree {a b i : ℕ} (hba : b < a) (hi : i + 4 < P a b) :
     hankelThree (fun j => muF a b i (X ^ j)) =
       rawHankelThree (kk a b i) (kk a b (i + 1)) (kk a b (i + 2)) := by
@@ -56,6 +59,7 @@ lemma orbit_raw_hankelThree {a b i : ℕ} (hba : b < a) (hi : i + 4 < P a b) :
     muF_X_cube hba (by omega), muF_X_four hba hi]
   exact hankelThree_raw_identity _ _ _
 
+/-- The mixed Hankel minor of the raw moments is `rawHankelMixed` of the gaps. -/
 lemma orbit_raw_hankelMixed {a b i : ℕ} (hba : b < a) (hi : i + 5 < P a b) :
     hankelMixed (fun j => muF a b i (X ^ j)) =
       rawHankelMixed (kk a b i) (kk a b (i + 1)) (kk a b (i + 2)) (kk a b (i + 3)) := by
@@ -65,7 +69,7 @@ lemma orbit_raw_hankelMixed {a b i : ℕ} (hba : b < a) (hi : i + 5 < P a b) :
     muF_X_cube hba (by omega), muF_X_four hba (by omega), muF_X_five hba hi]
   exact hankelMixed_raw_identity _ _ _ _
 
-/-- Actual resolvent, with both raw determinants given explicitly by gaps. -/
+/-- The resolvent formula at an orbit state, with both raw minors written in the gaps. -/
 theorem orbit_integralLift_raw_resolvent {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) :
     (integralLiftCoordinate a b i : ℝ) * (orbitQuartic a b i).eval (-(qq a b i : ℝ)) =
       (a : ℝ) * (((qq a b i : ℝ) - (orbitQuartic a b i).coeff 3) *
@@ -74,6 +78,8 @@ theorem orbit_integralLift_raw_resolvent {a b i : ℕ} (hba : b < a) (hi : i + 6
   rw [orbit_integralLift_resolvent hba hi, orbit_raw_hankelThree hba (by omega),
     orbit_raw_hankelMixed hba (by omega)]
 
+/-- The orbit quartic over `ℚ`, as the first Newton quartic of the rational pattern at the
+free nodes. -/
 def orbitNewtonQuarticQ (a b i : ℕ) : Polynomial ℚ :=
   firstNewtonQuartic
     (fun j : Fin 4 => coeffs (patternRhoQ a b i) (patternUQ a b i)
@@ -87,7 +93,8 @@ lemma orbitNewtonQuarticQ_map (a b i : ℕ) :
     patternRhoQ_cast, patternUQ_cast, patternVQ_cast, orbitFreeNodesQ_cast,
     orbitFreeNodes, patternRho, patternU, patternV]
 
-/-- The actual raw resolvent also holds over the rational counting field. -/
+/-- The gap form of the resolvent formula over `ℚ`, with `orbitNewtonQuarticQ` in place of
+the orbit quartic. -/
 theorem orbit_integralLift_raw_resolvent_Q {a b i : ℕ} (hba : b < a)
     (hi : i + 7 < P a b) :
     (integralLiftCoordinate a b i : ℚ) *

@@ -7,8 +7,12 @@ module
 
 public import PierceLengthBound.JointLiftGraph
 
-/-! Clearing a common denominator bounds the actual filtered Hilbert function of a rational
-graph. -/
+/-! # Degree of a rational graph
+
+Clearing a common denominator of degree less than `D` bounds the filtered Hilbert function of
+the graph of rational functions `Pⱼ / Q` over a prime component of degree `d`, so the graph has
+a degree `δ` with `d ≤ δ ≤ D d`. For the joint graph (`m = n = 1`) this gives
+`d ≤ δ ≤ 247 d`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -224,6 +228,7 @@ lemma filtered_uniform_linear_bound {K σ : Type*} [Field K] [Finite σ]
       _ = C * 1 := by simp
       _ ≤ C * (n + 1) := Nat.mul_le_mul_left _ (by omega)
 
+/-- If `a n + c ≤ b n + e` for all `n ≥ N`, then `a ≤ b`. -/
 lemma eventual_affine_slope_le {a b N : ℕ} {c e : ℤ}
     (h : ∀ n ≥ N, (a : ℤ) * n + c ≤ (b : ℤ) * n + e) : a ≤ b := by
   by_contra hab
@@ -281,8 +286,8 @@ theorem jointGraph_degree_bounds {K σ ι : Type*} [Field K] [Finite σ] [Finite
     nlinarith
   exact ⟨δ, hlo, hhi, M, e, hg⟩
 
-/-- The actual seven-dimensional joint graph has a well-defined degree at most
-247 times its base degree; this proves the candidate's upper degree bound. -/
+/-- Over a prime component of degree `d` through the free nodes of state `i`, the joint graph
+in seven variables has a degree `δ` with `d ≤ δ ≤ 247 d`. -/
 theorem orbitJointGraph_degree_bounds {a b i d : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
     (hz : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I)

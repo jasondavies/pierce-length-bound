@@ -9,8 +9,11 @@ public import PierceLengthBound.BranchPoleDegree
 public import PierceLengthBound.JointLiftPoleCoverage
 public import PierceLengthBound.FunctionParameterChange
 
-/-! The field degree of a transcendental curvature combination is bounded by
-the actual curvature pole-envelope degree on the affine normalization. -/
+/-! # Function degree and the curvature pole envelope
+
+On a retained nonexceptional component, the field degree `[F : ℚ(x)]` of a transcendental
+curvature combination `x` is at most the degree of the curvature pole envelope on the
+normalization of the affine coordinate ring. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -18,6 +21,8 @@ noncomputable section
 open MvPolynomial
 open scoped IntermediateField
 
+/-- The affine coordinate ring of a nonexceptional component has a finite Dedekind
+normalization in its function field. -/
 theorem orbit_affine_normalization
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -36,9 +41,9 @@ theorem orbit_affine_normalization
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i : ℚ) (a : ℚ) ha I hf hg hd hdegree F
 
-/-- This is the actual retained-component upper comparison for the curvature
-pole envelope. Normalization, parameter finiteness and coverage of every pole
-are proved from the component hypotheses. -/
+/-- On a retained nonexceptional component, a transcendental rational curvature combination
+`x` has `[F : ℚ(x)]` at most the degree of the curvature pole envelope on the affine
+normalization. -/
 theorem retained_curvature_function_degree_le_envelope
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

@@ -7,14 +7,18 @@ module
 
 public import PierceLengthBound.BranchResidueComparison
 
-/-! Zero and pole orders can be summed across different affine models of the
-same function field. Distinct normalized orders prevent counting a branch twice. -/
+/-! Weighted zero and pole counts for a finite family of branches `p k` on possibly different
+Dedekind models `R k` of one function field `L`. If the normalized orders of the branches are
+pairwise distinct and `x` has a zero (or pole) of order `m k` at each, then
+`∑ₖ m k · [R k / p k : ℚ] ≤ [L : ℚ(x)]`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open scoped IntermediateField
 
+/-- Branches on different Dedekind models with pairwise distinct normalized orders, at which
+`x` has zero orders `m k > 0`, satisfy `∑ₖ m k · [R k / p k : ℚ] ≤ [L : ℚ(x)]`. -/
 theorem branch_family_zero_degree_le {κ L : Type*} [Fintype κ]
     [Field L] [Algebra ℚ L] (R : κ → Type*)
     [∀ k, CommRing (R k)] [∀ k, IsDedekindDomain (R k)] [∀ k, Algebra ℚ (R k)]
@@ -62,6 +66,9 @@ theorem branch_family_zero_degree_le {κ L : Type*} [Fintype κ]
     _ ≤ ∑ q ∈ B, weight q := Finset.sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => Nat.zero_le _)
     _ = Module.finrank ℚ⟮x⟯ L := hsum
 
+/-- The pole version of `branch_family_zero_degree_le`: pole orders `m k > 0` of `x` at
+branches with pairwise distinct normalized orders satisfy
+`∑ₖ m k · [R k / p k : ℚ] ≤ [L : ℚ(x)]`. -/
 theorem branch_family_pole_degree_le {κ L : Type*} [Fintype κ]
     [Field L] [Algebra ℚ L] (R : κ → Type*)
     [∀ k, CommRing (R k)] [∀ k, IsDedekindDomain (R k)] [∀ k, Algebra ℚ (R k)]

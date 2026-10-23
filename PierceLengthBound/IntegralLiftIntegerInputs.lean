@@ -8,16 +8,20 @@ module
 public import PierceLengthBound.IntegralLiftUniversalExpression
 public import PierceLengthBound.FixedDividendConicPolynomialIdentities
 
-/-! The actual minor ratios and bounded integer conic parameter have a common
-integer denominator with polynomially bounded numerator coefficients. -/
+/-! Along an integral conic parametrization `normalizedParameter σ E F`, the ten inputs of the
+universal lift (the two pattern-ratio triples, the three free nodes and `a`) share the integer
+denominator `θ₀ θ₁ E`, with integer numerators of degree at most two and height at most `M⁴`
+when `θ`, `a`, `E` and the coefficients of `F` are bounded by `M`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- The common denominator `θ₀ θ₁ E` of the universal lift inputs. -/
 def liftInputDenominator (θ : Fin 7 → ℤ) (E : ℤ) : ℤ := θ 0 * θ 1 * E
 
+/-- The integer numerators of the ten universal lift inputs over `liftInputDenominator θ E`. -/
 def liftInputNumerators (θ : Fin 7 → ℤ) (a E : ℤ)
     (σ : Fin 3 ≃ Fin 3) (F : Fin 3 → Polynomial ℤ) : Fin 10 → Polynomial ℤ :=
   ![C (θ 1 * θ 1 * E), C (θ 3 * θ 1 * E), C (θ 4 * θ 1 * E),
@@ -89,7 +93,9 @@ lemma liftInputNumerators_height {θ : Fin 7 → ℤ} {a E : ℤ} {M : ℕ}
   · exact hp (σ.symm 2) k
   · exact hc _ h4 k
 
-/-- Exact denominator-cleared inputs for the actual bounded conic parameter. -/
+/-- At an orbit state, `liftInputDenominator (θ i) E ≠ 0`, and along
+`normalizedParameter σ E F` the lift inputs `orbitLiftInputs` are the numerators
+`liftInputNumerators` divided by it. -/
 theorem actualLiftInput_numerators_spec {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (σ : Fin 3 ≃ Fin 3) {E : ℤ} (hE : E ≠ 0) (F : Fin 3 → Polynomial ℤ) :
     liftInputDenominator (theta a b i) E ≠ 0 ∧

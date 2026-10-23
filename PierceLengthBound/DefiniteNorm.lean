@@ -10,11 +10,12 @@ public import PierceLengthBound.NormCount
 /-!
 # The definite norm count
 
-For `D ≥ 1` and `N ≠ 0`, the equation `U² + D V² = N` has at most `4 τ(|N|)³` integer solutions
-(`norm_count_def`). Write `D = d f²` with `d` squarefree, reduce a solution to a primitive
-`u² + d w² = n` with `N = g² n`, and attach the class `t ≡ u w⁻¹ (mod n)`, a square root of `-d`
-(this is the reduction of `NormCount` for `-d`, `card_le_of_class_card_le`). Two solutions in one
-class differ by a unit `r + s√-d` with `r² + d s² = 1`, of which there are at most four.
+For `D ≥ 1` and `N ≠ 0`, the equation `U² + D V² = N` has at most `4 τ(|N|)³` integer
+solutions (`norm_count_def`). Write `D = d f²` with `d` squarefree, reduce a solution to a
+primitive `u² + d w² = n` with `N = g² n`, and attach the class `t ≡ u w⁻¹ (mod n)`, a square
+root of `-d` (the reduction `card_le_of_class_card_le` of `NormCount`, for `-d`). Two solutions
+in one class differ by a unit `r + s√-d` with `r² + d s² = 1`, of which there are at most four
+(`def_class_units`).
 -/
 
 @[expose] public section
@@ -71,7 +72,8 @@ lemma def_class_units {d : ℕ} (hd : 1 ≤ d) {n t : ℤ} (hn : n ≠ 0) (ht : 
   all_goals (try norm_num at hnorm ⊢)
   all_goals omega
 
-/-- **The definite norm count.** -/
+/-- **The definite norm count.** For `D ≥ 1` and `N ≠ 0`, the equation `U² + D V² = N` has at
+most `4 τ(|N|)³` solutions in any box `[-B, B]²`. -/
 theorem norm_count_def {D : ℕ} {N : ℤ} (B : ℕ) (hD : 1 ≤ D) (hN : N ≠ 0) :
     (defSols D N B).card ≤ 4 * N.natAbs.divisors.card ^ 3 := by
   obtain ⟨d, f, hd0, hf0, hDf, hsf⟩ := Nat.sq_mul_squarefree_of_pos (by omega : 0 < D)

@@ -152,3 +152,27 @@ public import PierceLengthBound.BranchSieveMonicHilbert
 public import PierceLengthBound.BranchSieveMultivariateKronecker
 public import PierceLengthBound.BranchSievePatternCountSlow
 public import PierceLengthBound.PolarProjectionMain
+
+/-!
+# Hankel determinants and the length of finite Pierce expansions
+
+Root module of the development. For `0 < b < a`, `P a b` is the number of positive terms of
+`b₀ = b`, `bᵢ₊₁ = a mod bᵢ`. The principal results, each uniform in `0 < b < a`:
+
+* `P_le_polar_optimal`, `P_le_4317_14677` (`PolarProjectionMain`): `P ≪ a^{β* + ε}` with
+  `β* = (41301 − 3√82849)/137480` (Theorem 1.1), and the rational instance `4317/14677`.
+* `P_le_joint_optimal`, `P_le_2201_7480`, `P_le_128_435` (`JointLiftMain`): the
+  joint-invariant bound `a^{α* + ε}`, `α* = (1310 − √655)/4365` (Theorem 1.2), and the
+  powers `m = 50, n = 51` and `m = n = 1`.
+* `P_le_lattice_optimal`, `P_le_153_520` (`LatticeJointMain`): the exterior lattice bound
+  `a^{γ* + ε}`, `γ* = 471/1559 − 6√105/7795` (Theorem 1.3), and `153/520`.
+* `P_le_45_152`, `P_le_8_27`, `P_le_11_37`, `P_le_23_77` (`FortyFiveMain`, `EightMain`,
+  `ElevenMain`, `TwentyThreeMain`): the pattern bounds.
+* `P_le` (`Main`): `P ≪ a^{3/10 + ε}` (Theorem 1.4).
+* `P_le_loglog` (`Hooley`): `P ≪ a^{3/10} √(log log 3a)`, assuming the theorems of
+  Nair–Tenenbaum and de la Bretèche–Tenenbaum as explicit hypotheses.
+* `P_le_rises` (`RisesMain`): `P ≪ a^{1/4} √(R + 1)`, where `R` counts the rises of the
+  quotient increments (Theorem 1.5).
+* `hankelInv_pos_int` (`Hankel`): the Hankel determinants `I_r(i)` are positive integers
+  (Theorem 6.2).
+-/

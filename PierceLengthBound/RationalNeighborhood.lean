@@ -9,14 +9,19 @@ public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib
 
 /-! Clearing rational expressions on a principal neighborhood of a specified
-rational point. The denominator is required to be nonzero at that point, so
-the resulting exceptional polynomial has a concrete nonzero witness. -/
+rational point. `RationalNear p f` says that `f = N / D` wherever `D ≠ 0`, for polynomials
+with `D(p) ≠ 0`. The predicate is closed under the field operations (inverses and quotients of
+functions nonzero at `p`), finite sums and products, determinants, polynomial substitution and
+composition. A function nonzero at `p` is nonzero off the zero set of one polynomial that does
+not vanish at `p`, so the resulting exceptional polynomial has a concrete nonzero witness. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open MvPolynomial
 noncomputable section
 
+/-- Near `p`, `f` is a quotient `N / D` of polynomials with `D(p) ≠ 0`, valid wherever
+`D ≠ 0`. -/
 def RationalNear {σ : Type*} (p : σ → ℚ) (f : (σ → ℚ) → ℚ) : Prop :=
   ∃ N D : MvPolynomial σ ℚ, eval p D ≠ 0 ∧
     ∀ x, eval x D ≠ 0 → f x = eval x N / eval x D
@@ -121,6 +126,7 @@ theorem polynomial {τ : Type*} (F : MvPolynomial τ ℚ)
   | add F G hF hG => simpa using hF.add hG
   | mul_X F j hF => simpa using hF.mul (hg j)
 
+/-- Composition with a map `g` that is rational near `p` with `g p = q`. -/
 theorem comp {τ : Type*} {q : τ → ℚ} {f : (τ → ℚ) → ℚ}
     (hf : RationalNear q f) (g : (σ → ℚ) → τ → ℚ)
     (hg : ∀ j, RationalNear p (fun x => g x j)) (hp : g p = q) :

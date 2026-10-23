@@ -13,16 +13,18 @@ public import PierceLengthBound.SliceCount
 At a state with pattern `θ = (A, A', A'', U, V, U', V')` and gaps `κ = (k₀, …, k₄)`:
 
 * the Cramer formulas `U S(k₁,k₂,k₃) = A' E(k₀,k₁,k₂,k₃) + A S(k₂,k₃,k₄)` and
-  `-V S(k₁,k₂,k₃) = A' S(k₀,k₁,k₂) + A E(k₁,k₂,k₃,k₄)` give `U > 0 > V` (`pattern_signs`);
+  `-V S(k₁,k₂,k₃) = A' S(k₀,k₁,k₂) + A E(k₁,k₂,k₃,k₄)` give `U > 0 > V` (`pattern_signs`,
+  Lemma 7.5 of the paper);
 * eliminating `k₀` and `k₄` leaves the ternary quadratic `F_θ(k₁, k₂, k₃) = 0` (`tern_rel`),
   whose binary part has `α = U(U + A') > 0`, discriminant `-4A'V(A' + U)(U - V) > 0`, and slice
   leading coefficient `16 A A'² U (A - V)(A' + U)²(U - V) ≠ 0`.
 
 So each pattern accounts for at most `(2H+1)(W+4)` gap triples (`slice_count`), and
-`#G ≤ 4 (2M+1)⁷ (2H+1)(W+4)` (`pattern_count_slice`). The same count for patterns in an
-arbitrary set `B` is `pattern_count_slice_gen`, used for `8/27`.
+`#G ≤ 4 (2M+1)⁷ (2H+1)(W+4)` (`pattern_count_slice`). For patterns in a set `B` the count is
+`#G ≤ 4 |B| (2H+1)(W+4)` (`pattern_count_slice_gen`, used for `8/27`).
 
-Here `A, A', U, V` are the paper's `N₀, N₁, u₁, u₂`.
+Here `(A, A', A'', U, V, U', V')` is the paper's `(N₀, N₁, N₂, u₁, u₂, v₁, v₂)`, and `S`, `E` are
+its `σ`, `σ̃`.
 -/
 
 @[expose] public section
@@ -51,7 +53,8 @@ lemma eF_pos {a b c d : ℤ} (ha : 1 ≤ a) (hb : 1 ≤ b) (hc : 1 ≤ c) (hd : 
   have h4 : 0 < a * d := by positivity
   linarith
 
-/-- **The signs**: `U > 0` and `V < 0`. -/
+/-- **The signs** (Lemma 7.5): if `A, A' ≥ 1` and all gaps are `≥ 1`, then `U > 0` and
+`V < 0`. -/
 theorem pattern_signs {A A' U V k0 k1 k2 k3 k4 : ℤ} (hA : 1 ≤ A) (hA' : 1 ≤ A')
     (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 ≤ k2) (h3 : 1 ≤ k3) (h4 : 1 ≤ k4)
     (e0 : -A' * k0 + U * k1 + V * k2 + A * k3 = 0)
@@ -96,10 +99,12 @@ theorem tern_rel {A A' A'' U V U' V' k0 k1 k2 k3 k4 : ℤ} (hA' : A' ≠ 0)
       A * A' * e4
   exact (mul_eq_zero.mp h).resolve_left hA'
 
+/-- The discriminant of the binary part of `F_θ`. -/
 lemma tern_disc (A' U V : ℤ) :
     (2 * V * (U + A')) ^ 2 - 4 * (U * (U + A')) * (V * (V + A')) =
       -4 * A' * V * (A' + U) * (U - V) := by ring
 
+/-- The `z²` coefficient of the norm-equation right side `N(z)` of `F_θ`. -/
 lemma tern_lead (A A' U V : ℤ) :
     (2 * V * (U + A') * (2 * A * (U + A')) - 2 * (U * (U + A')) * (2 * A * (V + A'))) ^ 2 +
       ((2 * V * (U + A')) ^ 2 - 4 * (U * (U + A')) * (V * (V + A'))) *
@@ -142,7 +147,9 @@ lemma tern_coef_le {A A' A'' U V U' V' M : ℤ} (hA : |A| ≤ M) (hA' : |A'| ≤
 lemma mem_ibox_of {H : ℕ} {x : ℤ} (h1 : 1 ≤ x) (h2 : x ≤ H) : x ∈ ibox H :=
   mem_Icc.mpr ⟨by omega, h2⟩
 
-/-- **The counting lemma for an arbitrary set of patterns.** -/
+/-- **The counting lemma for an arbitrary set of patterns.** If the patterns of the states in
+`G` lie in `B`, are bounded by `M`, and `W` bounds the norm counts of the slices, then
+`#G ≤ 4 |B| (2H+1)(W+4)`. -/
 theorem pattern_count_slice_gen {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ : ℕ → Fin 5 → ℤ}
     {Q : ℕ → ℤ} {a : ℤ} {M H W : ℕ} {B : Finset (Fin 7 → ℤ)} (hH : 1 ≤ H)
     (hB : ∀ i ∈ G, θ i ∈ B)
@@ -278,7 +285,8 @@ theorem pattern_count_slice_gen {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {�
     _ ≤ 4 * (((2 * H + 1) * (W + 4)) * B.card) := Nat.mul_le_mul_left _ step3
     _ = 4 * B.card * ((2 * H + 1) * (W + 4)) := by ring
 
-/-- **The refined counting lemma.** -/
+/-- **The refined counting lemma.** Patterns bounded by `M` give
+`#G ≤ 4 (2M+1)⁷ (2H+1)(W+4)`. -/
 theorem pattern_count_slice {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ : ℕ → Fin 5 → ℤ}
     {Q : ℕ → ℤ} {a : ℤ} {M H W : ℕ} (hH : 1 ≤ H)
     (hQ : Set.InjOn Q G)

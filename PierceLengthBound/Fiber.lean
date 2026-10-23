@@ -31,7 +31,7 @@ theorem fiber_poly_identity (u v c ℓ q : ℤ) :
       u * ℓ ^ 2 - c * (u ^ 2 + u + v) * ℓ + c ^ 2 * v := by
   ring
 
-/-- **Fiber count.** If `Δ` bounds the divisor function on `[1, 32 a⁷]`, a fixed triple
+/-- **Fiber count** (Lemma 4.1). If `Δ` bounds the divisor function on `[1, 32 a⁷]`, a fixed triple
 `(u, v, D)` with `u, v ≤ a`, `D ≤ 2a` admits at most `Δ` quotients `q` for which the
 fiber equation `x M(q) = L(q)` has a positive solution `x`. -/
 theorem fiber_card_le (a u v D Δ : ℕ) (ha : 1 ≤ a) (hu : 1 ≤ u) (hua : u ≤ a) (hv : 1 ≤ v)

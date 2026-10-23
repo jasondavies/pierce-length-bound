@@ -9,8 +9,9 @@ public import Mathlib.RingTheory.Polynomial.GaussLemma
 public import Mathlib.FieldTheory.RatFunc.Degree
 public import Mathlib
 
-/-! Gcd cancellation over the integers preserves a rational representation and
-supplies the rational coprimality required by the integer-value theorem. -/
+/-! Cancelling the integer gcd of two nonzero integer polynomials preserves their quotient in
+`RatFunc ℚ` and leaves a pair coprime over `ℚ`, as required by the integer-value count
+`integer_values_card`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -18,6 +19,7 @@ noncomputable section
 open Polynomial
 open scoped nonZeroDivisors
 
+/-- Integer polynomials that are relatively prime in `ℤ[X]` are coprime over `ℚ`. -/
 lemma integer_relPrime_rat_coprime {F G : Polynomial ℤ} (hF : F ≠ 0)
     (hcop : IsRelPrime F G) :
     IsCoprime (F.map (Int.castRingHom ℚ)) (G.map (Int.castRingHom ℚ)) := by
@@ -42,8 +44,8 @@ lemma integer_relPrime_rat_coprime {F G : Polynomial ℤ} (hF : F ≠ 0)
     (Polynomial.IsPrimitive.Int.dvd_iff_map_cast_dvd_map_cast _ _ hp).mpr (hpdvd.trans hqG)
   exact Polynomial.isUnit_or_eq_zero_of_isUnit_integerNormalization_primPart hq (hcop hpF hpG)
 
-/-- A rational representation by two nonzero integer polynomials admits common
-integer-factor cancellation, rational coprimality, and no increase in degrees. -/
+/-- Two nonzero integer polynomials `F, G` have nonzero divisors `F' ∣ F`, `G' ∣ G`, coprime
+over `ℚ`, with `F' / G' = F / G` in `RatFunc ℚ`. -/
 theorem integer_rational_reduction (F G : Polynomial ℤ) (hF : F ≠ 0) (hG : G ≠ 0) :
     ∃ F' G' : Polynomial ℤ,
       F' ∣ F ∧ G' ∣ G ∧ F' ≠ 0 ∧ G' ≠ 0 ∧

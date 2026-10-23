@@ -17,7 +17,9 @@ form two vectors `u, v ∈ ℤ³` (Cramer's rule), and the remaining three minor
 `m ∣ u × v`. For fixed `m` and `u` there are at most `27 m g²` such `v` in the box, where
 `g = gcd(m, u)` (`card_cross_fiber`): `v` is a multiple of `u/g` modulo `m/g`. Summing,
 `#{(u, v)} ≤ 729 m⁴ τ(m)` (`card_crossSet`), and there are at most
-`1 + 20 ∑_{m ≤ Y} 729 m⁴ τ(m)` minor vectors of height `≤ Y` (`minor_vector_count`).
+`1 + 20 ∑_{m ≤ Y} 729 m⁴ τ(m)` minor vectors of height `≤ Y` (`minor_vector_count`,
+Proposition 7.9 of the paper). The general form `minor_vector_count_of` restricts `u` by a
+predicate; `ShortVec` uses it for the short-vector count.
 -/
 
 @[expose] public section
@@ -27,24 +29,32 @@ namespace PierceLengthBound
 open Finset
 open scoped Matrix
 
+/-- The column triples `c₁ < c₂ < c₃` in lexicographic order, indexing the ten minors. -/
 def trip : Fin 10 → Fin 5 × Fin 5 × Fin 5 := ![(0, 1, 2), (0, 1, 3), (0, 1, 4), (0, 2, 3),
     (0, 2, 4), (0, 3, 4), (1, 2, 3), (1, 2, 4), (1, 3, 4), (2, 3, 4)]
 
+/-- For a pivot `τ`, the indices of the minors with the `a`-th pivot column replaced by the
+first non-pivot column. -/
 def puX : Fin 10 → Fin 3 → Fin 10 := ![![6, 3, 1], ![6, 3, 0], ![7, 4, 0], ![6, 1, 0], ![7, 2, 0],
     ![8, 2, 1], ![3, 1, 0], ![4, 2, 0], ![5, 2, 1], ![5, 4, 3]]
 
+/-- The signs of the column permutations for `puX`. -/
 def puS : Fin 10 → Fin 3 → ℤ := ![![1, -1, 1], ![-1, 1, 1], ![-1, 1, 1], ![1, 1, -1], ![1, 1, -1],
     ![1, 1, -1], ![1, -1, 1], ![1, -1, 1], ![1, -1, 1], ![1, -1, 1]]
 
+/-- As `puX`, for the second non-pivot column. -/
 def pvX : Fin 10 → Fin 3 → Fin 10 := ![![7, 4, 2], ![8, 5, 2], ![8, 5, 1], ![9, 5, 4], ![9, 5, 3],
     ![9, 4, 3], ![9, 8, 7], ![9, 8, 6], ![9, 7, 6], ![8, 7, 6]]
 
+/-- The signs of the column permutations for `pvX`. -/
 def pvS : Fin 10 → Fin 3 → ℤ := ![![1, -1, 1], ![1, -1, 1], ![-1, 1, 1], ![1, -1, 1], ![-1, 1, 1],
     ![1, 1, -1], ![1, -1, 1], ![-1, 1, 1], ![1, 1, -1], ![1, -1, 1]]
 
+/-- The indices of the minors on both non-pivot columns and the `a`-th pivot column. -/
 def pwX : Fin 10 → Fin 3 → Fin 10 := ![![5, 8, 9], ![4, 7, 9], ![3, 6, 9], ![2, 7, 8], ![1, 6, 8],
     ![0, 6, 7], ![2, 4, 5], ![1, 3, 5], ![0, 3, 4], ![0, 1, 2]]
 
+/-- The signs in the Plücker relations `p_τ p_{pwX τ a} = pwS τ a · (u × v)_a`. -/
 def pwS : Fin 10 → Fin 3 → ℤ := ![![1, 1, 1], ![1, 1, -1], ![1, 1, 1], ![1, -1, -1], ![1, -1, 1],
     ![1, 1, 1], ![-1, -1, -1], ![-1, -1, 1], ![-1, 1, 1], ![1, 1, 1]]
 
@@ -76,6 +86,7 @@ def vVec (p : Fin 10 → R) (t : Fin 10) (a : Fin 3) : R := pvS t a * p (pvX t a
 def PluckerRel (p : Fin 10 → R) : Prop :=
   ∀ t a, p t * p (pwX t a) = pwS t a * (uVec p t ⨯₃ vVec p t) a
 
+/-- The minors of every `3 × 5` matrix satisfy the Plücker relations. -/
 theorem plucker (M : Fin 3 → Fin 5 → R) : PluckerRel (plk M) := by
   intro t a
   fin_cases t <;> fin_cases a <;>
@@ -382,9 +393,9 @@ lemma piv_cross {p : Fin 10 → ℤ} (hpl : PluckerRel p) (a : Fin 3) :
   have h2 := (sign_sq τ a).2.2
   linear_combination (-pwS τ a) * h1 - (uVec p τ ⨯₃ vVec p τ) a * h2
 
-/-- **The minor-vector count, refined.** Vectors of height `≤ Y` satisfying the Plücker relations,
-with nonzero pivot `m` and `P |m| u` for the first row `u` of the pivot, number at most
-`20 ∑_{m ≤ Y} #{(u, v) ∈ crossSet m : P m u}`. -/
+/-- **The minor-vector count, refined.** Vectors of height `≤ Y` satisfying the Plücker
+relations, with nonzero pivot entry `m` and `P |m| u` for the vector `u = uVec p (piv p)`, number
+at most `20 ∑_{m ≤ Y} #{(u, v) ∈ crossSet m : P m u}`. -/
 theorem minor_vector_count_of (P : ℕ → (Fin 3 → ℤ) → Prop) [∀ m u, Decidable (P m u)]
     {S : Finset (Fin 10 → ℤ)} {Y : ℕ}
     (hS : ∀ p ∈ S, (∀ t, |p t| ≤ Y) ∧ PluckerRel p ∧ p (piv p) ≠ 0 ∧
@@ -468,8 +479,8 @@ theorem minor_vector_count_of (P : ℕ → (Fin 3 → ℤ) → Prop) [∀ m u, D
       exact mul_left_cancel₀ hm (e1.trans e2.symm)
   exact (card_le_card_of_injOn key hmaps hinj).trans hKS
 
-/-- **The minor-vector lemma.** Vectors of height `≤ Y` satisfying the Plücker relations number
-at most `1 + 20 ∑_{m ≤ Y} 729 m⁴ τ(m)`. -/
+/-- **The minor-vector lemma** (Proposition 7.9). Vectors of height `≤ Y` satisfying the Plücker
+relations number at most `1 + 20 ∑_{m ≤ Y} 729 m⁴ τ(m)`. -/
 theorem minor_vector_count {S : Finset (Fin 10 → ℤ)} {Y : ℕ}
     (hS : ∀ p ∈ S, (∀ t, |p t| ≤ Y) ∧ PluckerRel p) :
     S.card ≤ 1 + 20 * ∑ m ∈ Icc 1 Y, 729 * m ^ 4 * m.divisors.card := by

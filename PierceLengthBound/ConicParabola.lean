@@ -9,9 +9,10 @@ public import Mathlib.FieldTheory.RatFunc.Degree
 public import Mathlib.RingTheory.Polynomial.RationalRoot
 public import PierceLengthBound.TwoState
 
-/-! Polynomial degree calculations for the generic parabolic branch.
-The geometric parametrization and its coefficient-height estimates are not
-assumed to have been constructed by this file. -/
+/-! Degree calculations along a quadratic parametrization of a parabolic conic: the quartic
+`parabolaV` in shifted quotients has degree `4m` when the shifts have equal degree `m > 0`, so
+degree twelve forces a cubic quotient; and a degree-nine over degree-twelve rational function
+has a nonconstant reduced denominator, of degree three more than its numerator. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -74,8 +75,8 @@ theorem parabola_quotient_degree_three {K : Type*} [Field K] (c : Fin 4 → K)
   have hd := parabolaV_degree c (fun j => q + s j) (by omega : 0 < q.natDegree) hv
   omega
 
-/-- The actual normalization identity transfers degree twelve from the raw
-multiplicity polynomial to the quartic. -/
+/-- A normalization identity `A V = a μ_H4(k)` with `A, a ≠ 0` transfers degree twelve from
+the raw multiplicity polynomial `muH4` to the quartic `V = parabolaV c v`. -/
 theorem parabola_normalization_degree {K : Type*} [Field K] (c : Fin 4 → K)
     (v : Fin 4 → K[X]) (k : Fin 5 → K[X]) {A a : K} (hA : A ≠ 0) (ha : a ≠ 0)
     (hdegree : (muH4 (k 0) (k 1) (k 2) (k 3) (k 4)).natDegree = 12)

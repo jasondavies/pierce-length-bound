@@ -23,8 +23,9 @@ exactly this definition). Two published theorems are stated as propositions:
   Erdős–Hooley Delta-function*, Acta Arith. 219 (2025), Theorem 1.1:
   `∑_{n≤x} Δ(n) ≪ x (log log x)^{5/2}` for `x` large.
 
-From them we prove `ShortDivisorBound` with `G = (log log x)^{5/2}` (partial summation,
-`shortDivisorBound_of_hooley`) and hence `P(a, b) ≪ a^{3/10} √(log log 3a)` (`P_le_loglog`).
+From them we prove `ShortDivisorBound` with `G = ℓ(x)^{5/2}`, `ℓ(x) = max(1, log log x)`
+(partial summation, `shortDivisorBound_of_hooley`) and hence
+`P(a, b) ≪ a^{3/10} √(log log 3a)` (`P_le_loglog`).
 -/
 
 @[expose] public section
@@ -67,13 +68,15 @@ lemma dcount_le_hooleyDelta {A : ℕ} (hA : 1 ≤ A) (n : ℕ) : dcount A n ≤ 
     have : (d : ℝ) < 2 * A := by exact_mod_cast h2
     linarith
 
-/-- **Nair–Tenenbaum (1998)** for `F = Δ`, `Q(X) = X`, `ε = 1/4`. -/
+/-- **Nair–Tenenbaum (1998)** for `F = Δ`, `Q(X) = X`, short-interval exponent `1/4`:
+`∑_{x<n≤x+y} Δ(n) ≪ (y / log x) ∑_{n≤x} Δ(n)/n` for `x^{1/4} ≤ y ≤ x`, `x ≥ x₀`. -/
 def NairTenenbaumDelta : Prop :=
   ∃ C x₀ : ℝ, ∀ x y : ℕ, x₀ ≤ x → (x : ℝ) ^ (1 / 4 : ℝ) ≤ y → y ≤ x →
     ∑ n ∈ Ioc x (x + y), (hooleyDelta n : ℝ) ≤
       C * (y / Real.log x) * ∑ n ∈ Icc 1 x, (hooleyDelta n : ℝ) / n
 
-/-- **de la Bretèche–Tenenbaum (2025), Theorem 1.1.** -/
+/-- **de la Bretèche–Tenenbaum (2025), Theorem 1.1.** `∑_{n≤x} Δ(n) ≪ x (log log x)^{5/2}`
+for `x ≥ x₀`. -/
 def BretecheTenenbaumMean : Prop :=
   ∃ C x₀ : ℝ, ∀ x : ℕ, x₀ ≤ x →
     ∑ n ∈ Icc 1 x, (hooleyDelta n : ℝ) ≤ C * x * Real.log (Real.log x) ^ (5 / 2 : ℝ)
@@ -261,7 +264,8 @@ theorem sum_hooleyDelta_div_le (hBT : BretecheTenenbaumMean) :
             _ ≤ _ := by gcongr
     _ = (N0 + 36 * Cp) * Real.log x * ell x ^ (5 / 2 : ℝ) := by ring
 
-/-- **The short-interval divisor bound from the two published theorems.** -/
+/-- **The short-interval divisor bound from the two published theorems**, with
+`G(x) = ℓ(x)^{5/2}`. -/
 theorem shortDivisorBound_of_hooley (hNT : NairTenenbaumDelta) (hBT : BretecheTenenbaumMean) :
     ShortDivisorBound fun x => ell x ^ (5 / 2 : ℝ) := by
   obtain ⟨C1, x₀, hNT⟩ := hNT

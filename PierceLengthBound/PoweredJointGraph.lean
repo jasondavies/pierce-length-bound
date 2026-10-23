@@ -8,8 +8,10 @@ module
 public import PierceLengthBound.GraphFunctionField
 public import PierceLengthBound.JointLiftGraphDegree
 
-/-! Raise rational graph coordinates to individually chosen integer powers,
-retaining the original coordinates and one common denominator. -/
+/-! Powered graphs: the graph coordinates `P j / D` are raised to individually chosen integer
+powers `e j ≤ N`, with the base coordinates kept and the common denominator `D ^ N`. The powered
+graph is prime with degree between `d` and `(N C + 1) d`. The orbit instance is the powered joint
+graph `(nodes, Wᵐ, Jⁿ)` (paper, `Γ_{m,n}`). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -34,8 +36,8 @@ lemma poweredGraphNumerators_field {K σ τ F : Type*} [Field K] [Field F] [Alge
   simp only [poweredGraphNumerators, map_mul, map_pow]
   exact powered_fraction _ _ hD (he j)
 
-/-- Old coordinates are unchanged; every additional graph coordinate is its
-specified power, in the original function field. -/
+/-- In the function field of `I`, the base coordinates are unchanged and each graph coordinate
+is raised to its power `e j`. -/
 lemma powered_jointGraphFieldCoordinates {K σ τ F : Type*}
     [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial σ K)) (P : τ → MvPolynomial σ K) (D : MvPolynomial σ K)
@@ -61,8 +63,8 @@ lemma poweredGraphNumerators_totalDegree {K σ τ : Type*} [Field K]
   apply h.trans
   rw [← Nat.add_mul, Nat.add_sub_of_le (he j)]
 
-/-- Powered graphs remain prime curves of degree bounded linearly in the
-maximum power and in the degree of the original curve. -/
+/-- The powered graph over a prime curve of degree `d` is prime, of degree `δ` with
+`d ≤ δ ≤ (N C + 1) d`, where `C` bounds the degrees of the numerators and the denominator. -/
 theorem powered_jointGraph_degree_bounds {K σ τ : Type*} [Field K] [Finite σ] [Finite τ]
     (I : Ideal (MvPolynomial σ K)) [I.IsPrime]
     (P : τ → MvPolynomial σ K) (D : MvPolynomial σ K) (hD : D ∉ I)
@@ -101,10 +103,13 @@ lemma jointCoordinatePowers_le (m n : ℕ) (j : Fin 4) :
     jointCoordinatePowers m n j ≤ m + n := by
   fin_cases j <;> simp [jointCoordinatePowers]
 
+/-- The powered numerators of the orbit graph `(nodes, Wᵐ, Jⁿ)`. -/
 def orbitPoweredJointNumerators (a b i m n : ℕ) : Fin 4 → MvPolynomial (Fin 3) ℚ :=
   poweredGraphNumerators (orbitJointNumerators a b i) (orbitJointDenominator a b i)
     (jointCoordinatePowers m n) (m + n)
 
+/-- The ideal of the powered orbit graph `(nodes, Wᵐ, Jⁿ)` (paper, `Γ_{m,n}`) over the
+component `I`. -/
 def orbitPoweredJointGraphIdeal (a b i m n : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ)) :
     Ideal (MvPolynomial (Fin 3 ⊕ Fin 4) ℚ) :=
   jointGraphIdeal I (orbitPoweredJointNumerators a b i m n)

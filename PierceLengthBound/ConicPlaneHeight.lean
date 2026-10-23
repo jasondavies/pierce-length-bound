@@ -7,8 +7,9 @@ module
 
 public import PierceLengthBound.FixedDividendHyperplaneDegree
 
-/-! Explicit bounded-height integer planes through three bounded integer points.
-The construction includes collinear triples. -/
+/-! Explicit bounded-height integer planes through three bounded integer points (collinear
+triples included), and the first step of Lemma A.1 (`lem:jointconicparameter`): a degree-two
+prime component through three distinct bounded integer points lies in such a plane. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -106,7 +107,7 @@ theorem three_points_integer_plane_height {z : Fin 3 → Fin 3 → ℤ} {H : ℕ
       simp only [vec3_dotProduct] at hnv ⊢
       linear_combination hnv
 
-/-- A plane with integer coefficients, viewed over the curve-counting field. -/
+/-- The affine linear polynomial `c + n ⬝ x` with integer coefficients, over `ℚ`. -/
 def integerPlanePolynomial (n : Fin 3 → ℤ) (c : ℤ) : MvPolynomial (Fin 3) ℚ :=
   MvPolynomial.C (c : ℚ) + ∑ j, MvPolynomial.C (n j : ℚ) * MvPolynomial.X j
 
@@ -125,8 +126,9 @@ lemma integerPlanePolynomial_eval (n z : Fin 3 → ℤ) (c : ℤ) :
   simp [integerPlanePolynomial, vec3_dotProduct, Fin.sum_univ_three]
   ring
 
-/-- An actual degree-two rational component with three bounded integer points
-has a containing integer plane of polynomially bounded coefficient height. -/
+/-- A prime ideal of Hilbert polynomial `2m + c` (a degree-two curve) whose zero locus contains
+three distinct integer points of height at most `H` contains an integer plane with normal height
+at most `8H²` and constant coefficient at most `24H³`. -/
 theorem degree_two_integer_plane_height
     (p : Ideal (MvPolynomial (Fin 3) ℚ)) [p.IsPrime]
     (hdegree : ∃ N : ℕ, ∃ c : ℤ, ∀ m ≥ N,

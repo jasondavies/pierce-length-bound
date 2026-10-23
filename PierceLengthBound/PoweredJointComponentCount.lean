@@ -10,8 +10,10 @@ public import PierceLengthBound.PoweredJointCountingSlack
 public import PierceLengthBound.PoweredJointGraphLowerDegree
 public import PierceLengthBound.JointPatternCount
 
-/-! Combine conic counting, bounded polynomial cuts, and the proved degree
-range of the retained joint graph on each actual nonexceptional component; the nonexceptional
+/-! The count on each nonexceptional component of the pattern curve, for the powered joint
+graph: conic components by the conic divisor estimate, components on which a retained identity
+fails by bounded polynomial cuts, and the remaining components by the curve count on the
+powered graph, using its degree range `10n + 7m ≤ δ ≤ ((m + n) 247 + 1) d`. The nonexceptional
 powered count is then `JointPatternCount` applied in the box `poweredJointBox`. -/
 
 @[expose] public section
@@ -24,10 +26,11 @@ abbrev poweredJointBox (m n : ℕ) (_p : Fin 10 → ℤ) (a A T : ℕ) : ℝ :=
   (max (max (selectedGapHeight a A T) (selectedCurvatureHeight a A T ^ m))
     (selectedRankFiveHeight a A T ^ n) : ℝ)
 
-/-- Every supported nonexceptional component has the required powered-graph
-count, including components on which either retained identity fails: then one of the cuts
-bounds its starts by `404 d ≤ 404 · 24 = 9696` (`jointResolventPolynomial_identity_or_card_bound`;
-the normalization cut gives `166 d`). -/
+/-- Every supported nonexceptional component has the powered-graph count
+`≤ R a (1 + B^{1/(10n + 7m)})`, `B = max(H, Sᵐ, Yⁿ)`. Conic components (`d = 2`) are counted by
+`orbit_conic_gap_count_slow`. If a retained identity fails on a component of degree `d ≥ 4`,
+one of the cuts bounds its starts by `404 d ≤ 404 · 24 = 9696`
+(`jointResolventPolynomial_identity_or_card_bound`; the normalization cut gives `166 d`). -/
 theorem selected_powered_joint_component_gap_count_slow (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ {a b s T A i : ℕ}, b < a →
       (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
@@ -117,8 +120,8 @@ theorem selected_powered_joint_component_gap_count_slow (m n : ℕ) (hm : 0 < m)
   · apply hsmall
     simp [not_nonempty_iff_eq_empty.mp hnonempty]
 
-/-- The nonexceptional branch of the powered pattern count, with all
-geometric and arithmetic inputs discharged on the actual orbit. -/
+/-- The nonexceptional branch of the powered pattern count: `JointNonexceptionalCount` in the
+box `poweredJointBox` with exponent `1/(10n + 7m)`. -/
 theorem selected_nonexceptional_powered_joint_gap_count_slow (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧
       JointNonexceptionalCount (poweredJointBox m n) (1 / ((10 * n + 7 * m : ℕ) : ℝ)) R := by
