@@ -174,23 +174,5 @@ theorem branchMultiKronecker_natDegree_le {a n : ℕ} (ha : 1 ≤ a)
       · simp
     _ ≤ a ^ n * p.totalDegree := Nat.mul_le_mul_left _ (le_totalDegree hs)
 
-theorem branchMultiKronecker_coeff_abs_le {a n H : ℕ}
-    (p : MvPolynomial (Fin n) ℤ) (hH : ∀ s, |p.coeff s| ≤ (H : ℤ)) (j : ℕ) :
-    |(branchMultiKronecker a n p).coeff j| ≤ (p.support.card * H : ℕ) := by
-  classical
-  conv_lhs => rw [p.as_sum, map_sum, Polynomial.finsetSum_coeff]
-  calc
-    |∑ s ∈ p.support, (branchMultiKronecker a n (monomial s (p.coeff s))).coeff j|
-      ≤ ∑ s ∈ p.support, |(branchMultiKronecker a n (monomial s (p.coeff s))).coeff j| :=
-        abs_sum_le_sum_abs _ _
-    _ ≤ ∑ _s ∈ p.support, (H : ℤ) := by
-      apply sum_le_sum
-      intro s _
-      rw [branchMultiKronecker_monomial, Polynomial.coeff_monomial]
-      split_ifs
-      · exact hH s
-      · simp only [abs_zero]; positivity
-    _ = _ := by simp
-
 end
 end PierceLengthBound.FixedDividend

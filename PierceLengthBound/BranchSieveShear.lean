@@ -65,12 +65,6 @@ theorem branchPowerShear_eval (e : ℕ) (c : R) (p : MvPolynomial (Fin 2) R) (t 
     · fin_cases i <;> simp [branchPowerShearHom]
   exact DFunLike.congr_fun hh p
 
-/-- Every original integral root has an integral counterpart on the sheared curve. -/
-theorem branchPowerShear_integer_root (e : ℕ) (p : MvPolynomial (Fin 2) ℤ) (t y : ℤ)
-    (hy : eval ![t, y] p = 0) :
-    eval ![t, y - t ^ e] (branchPowerShearHom e 1 p) = 0 := by
-  simpa only [branchPowerShear_eval, one_mul, sub_add_cancel] using hy
-
 def branchKroneckerHom (e : ℕ) : MvPolynomial (Fin 2) R →+* Polynomial R :=
   eval₂Hom Polynomial.C ![Polynomial.X, Polynomial.X ^ e]
 

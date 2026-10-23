@@ -43,15 +43,6 @@ theorem branchMonicization_monic {R : Type*} [CommSemiring R]
     simp only [ite_eq_right (by omega : n ≠ j), ite_eq_right (by omega : ¬j < n), add_zero]
   · simp [branchMonicization_coeff]
 
-theorem branchMonicization_natDegree {R : Type*} [CommSemiring R] [Nontrivial R]
-    (n : ℕ) (p : R[X]) : (branchMonicization n p).natDegree = n := by
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · rw [natDegree_le_iff_coeff_eq_zero]
-    intro j hj
-    rw [branchMonicization_coeff]
-    simp only [ite_eq_right (by omega : n ≠ j), ite_eq_right (by omega : ¬j < n), add_zero]
-  · simp [branchMonicization_coeff]
-
 theorem branchMonicization_eq_integralNormalization
     {R : Type*} [CommSemiring R] (n : ℕ) (p : R[X]) (hp : p ≠ 0)
     (hn : p.natDegree = n) : branchMonicization n p = p.integralNormalization := by
@@ -91,27 +82,6 @@ theorem branchMonicization_irreducible_iff {K : Type*} [Field K]
   have hp : p ≠ 0 := by intro hz; simp [hz] at hlead
   rw [branchMonicization_eq_integralNormalization n p hp hn]
   exact branch_integralNormalization_irreducible_iff p hp (by omega)
-
-theorem branchMonicization_eval₂_scaled {R S : Type*}
-    [CommSemiring R] [CommSemiring S] (n : ℕ) (p : R[X])
-    (hn : p.natDegree = n) (hpos : 1 ≤ n) (φ : R →+* S) (x : S) :
-    (branchMonicization n p).eval₂ φ (φ (p.coeff n) * x) =
-      φ (p.coeff n) ^ (n - 1) * p.eval₂ φ x := by
-  have hp : p ≠ 0 := by intro hz; simp only [hz, natDegree_zero] at hn; omega
-  rw [branchMonicization_eq_integralNormalization n p hp hn]
-  have h := integralNormalization_eval₂_leadingCoeff_mul (by omega : 1 ≤ p.natDegree) φ x
-  simpa only [leadingCoeff, hn] using h
-
-theorem branchMonicization_specialized_irreducible_iff
-    {R K : Type*} [CommSemiring R] [Field K]
-    (n : ℕ) (p : R[X]) (hd : p.natDegree ≤ n) (hpos : 1 ≤ n)
-    (φ : R →+* K) (hlead : φ (p.coeff n) ≠ 0) :
-    Irreducible ((branchMonicization n p).map φ) ↔ Irreducible (p.map φ) := by
-  rw [branchMonicization_map]
-  have hlead' : (p.map φ).coeff n ≠ 0 := by simpa only [coeff_map] using hlead
-  have hn : (p.map φ).natDegree = n := le_antisymm (natDegree_map_le.trans hd)
-    (le_natDegree_of_ne_zero hlead')
-  exact branchMonicization_irreducible_iff n (p.map φ) hn hpos hlead'
 
 theorem branchMonicization_eq_of_leading_zero {R : Type*} [CommSemiring R]
     (n : ℕ) (p : R[X]) (hn : 1 ≤ n) (hz : p.coeff n = 0) :

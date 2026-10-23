@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveResultantLabel
-public import PierceLengthBound.BranchSieveNormPolynomial
+public import PierceLengthBound.BranchSievePrimitive
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 
 /-! The explicit branch resultant has degree twelve: over a splitting field it

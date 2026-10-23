@@ -6,7 +6,9 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveIntegerSpecialization
-public import PierceLengthBound.BranchSieveFactorFamily
+public import Mathlib.RingTheory.Polynomial.UniqueFactorization
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Data.Multiset.Powerset
 import Mathlib.Tactic
 
 /-! A single finite family of integral coefficient equations covers all
@@ -18,11 +20,37 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset
 
+/-- A split degree-`d` polynomial has at most `2^d` monic divisors. -/
+theorem branch_monic_factor_card_le {L : Type*} [Field L] (p : L[X]) (hp : p ≠ 0)
+    (hsplit : p.Splits) :
+    letI := Polynomial.fintypeSubtypeMonicDvd p hp
+    Fintype.card {q : L[X] // q.Monic ∧ q ∣ p} ≤ 2 ^ p.natDegree := by
+  classical
+  let := Polynomial.fintypeSubtypeMonicDvd p hp
+  let S := p.roots.powerset.toFinset
+  let f : {q : L[X] // q.Monic ∧ q ∣ p} → S := fun q =>
+    ⟨q.val.roots, Multiset.mem_toFinset.mpr
+      (Multiset.mem_powerset.mpr (Polynomial.roots.le_of_dvd hp q.property.2))⟩
+  have hinj : Function.Injective f := by
+    intro q r h
+    have hr : q.val.roots = r.val.roots := congrArg Subtype.val h
+    apply Subtype.ext
+    rw [(hsplit.of_dvd hp q.property.2).eq_prod_roots_of_monic q.property.1,
+      (hsplit.of_dvd hp r.property.2).eq_prod_roots_of_monic r.property.1, hr]
+  apply (Fintype.card_le_of_injective f hinj).trans
+  rw [Fintype.card_coe]
+  apply (Multiset.toFinset_card_le _).trans
+  rw [Multiset.card_powerset]
+  exact Nat.pow_le_pow_right (by norm_num) (Polynomial.card_roots' p)
+
 variable {R F L : Type*} [CommRing R] [IsDomain R] [IsIntegrallyClosed R]
   [Field F] [Algebra R F] [IsFractionRing R F]
   [Field L] [Algebra R L] [Algebra F L] [IsScalarTower R F L]
 
-theorem branch_exists_integral_equation_family_with_origin (p : R[X]) (hp : p.Monic)
+/-- One finite family of monic integral coefficient equations, each recorded with the
+factor and coefficient it comes from, contains every factor-coefficient minimal
+polynomial of degree at least two. -/
+theorem branch_exists_integral_equation_family (p : R[X]) (hp : p.Monic)
     (hsplit : (p.map (algebraMap R L)).Splits) :
     ∃ E : Finset R[X], E.card ≤ 2 ^ p.natDegree * (p.natDegree + 1) ∧
       (∀ f ∈ E, f.Monic ∧ Irreducible (f.map (algebraMap R F)) ∧ 2 ≤ f.natDegree ∧
@@ -86,17 +114,6 @@ theorem branch_exists_integral_equation_family_with_origin (p : R[X]) (hp : p.Mo
       simpa only [hp.natDegree_map] using Polynomial.natDegree_le_of_dvd hdiv (hp.map _).ne_zero
     exact Finset.mem_filter.mpr ⟨Finset.mem_image.mpr
       ⟨⟨⟨q, hq, hdiv⟩, ⟨j, by omega⟩⟩, Finset.mem_univ _, rfl⟩, hdeg⟩
-
-theorem branch_exists_integral_equation_family (p : R[X]) (hp : p.Monic)
-    (hsplit : (p.map (algebraMap R L)).Splits) :
-    ∃ E : Finset R[X], E.card ≤ 2 ^ p.natDegree * (p.natDegree + 1) ∧
-      (∀ f ∈ E, f.Monic ∧ Irreducible (f.map (algebraMap R F)) ∧ 2 ≤ f.natDegree) ∧
-      ∀ q : Polynomial (integralClosure R L), q.Monic →
-        q ∣ p.map (algebraMap R (integralClosure R L)) →
-        ∀ j : ℕ, 2 ≤ (minpoly R (q.coeff j)).natDegree → minpoly R (q.coeff j) ∈ E := by
-  obtain ⟨E, hcard, hE, hcover⟩ :=
-    branch_exists_integral_equation_family_with_origin (F := F) p hp hsplit
-  exact ⟨E, hcard, fun f hf => ⟨(hE f hf).1, (hE f hf).2.1, (hE f hf).2.2.1⟩, hcover⟩
 
 end
 end PierceLengthBound.FixedDividend

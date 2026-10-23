@@ -41,10 +41,6 @@ lemma branchMonicVertexFamily_monic (c : ℕ) : (branchMonicVertexFamily c).Moni
 lemma branchMonicVertexFamilyAt_monic (a : ℤ) (c : ℕ) :
     (branchMonicVertexFamilyAt a c).Monic := (branchMonicVertexFamily_monic c).map _
 
-lemma branchMonicVertexFamilyAt_natDegree (a : ℤ) (c : ℕ) :
-    (branchMonicVertexFamilyAt a c).natDegree = 12 := by
-  rw [branchMonicVertexFamilyAt_eq, branchMonicization_natDegree]
-
 lemma branchGenericResultantLabel_intCast (a : ℤ) (c : ℕ) :
     branchResultantLabel (a : RatFunc BranchLocationField) RatFunc.X c
       (branchResultantGenericCoefficient 0) (branchResultantGenericCoefficient 1)

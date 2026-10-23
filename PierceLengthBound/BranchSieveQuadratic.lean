@@ -56,6 +56,17 @@ theorem branchSignPolynomial_irreducible {a Δ : K} (ha : a ≠ 0) (hΔ : Δ ≠
   X_pow_sub_C_irreducible_of_prime (by norm_num : Nat.Prime 2)
     (branchSignSquare_not_square ha hΔ)
 
+/-- The adjoined branch sign squares to `a Δ / A`. -/
+lemma branchSignRoot_square (a Δ : K) :
+    (AdjoinRoot.root (branchSignPolynomial a Δ)) ^ 2 =
+      algebraMap (RatFunc K) (AdjoinRoot (branchSignPolynomial a Δ)) (branchSignSquare a Δ) := by
+  have he : Polynomial.eval₂ (AdjoinRoot.of (branchSignPolynomial a Δ))
+      (AdjoinRoot.root (branchSignPolynomial a Δ))
+      (Polynomial.X ^ 2 - Polynomial.C (branchSignSquare a Δ)) = 0 :=
+    AdjoinRoot.eval₂_root (branchSignPolynomial a Δ)
+  rw [Polynomial.eval₂_sub, Polynomial.eval₂_pow, Polynomial.eval₂_X, Polynomial.eval₂_C] at he
+  exact sub_eq_zero.mp he
+
 lemma branchSignPolynomial_natDegree (a Δ : K) :
     (branchSignPolynomial a Δ).natDegree = 2 := by
   exact Polynomial.natDegree_X_pow_sub_C
@@ -67,22 +78,6 @@ theorem branchSignExtension_finrank (a Δ : K) :
     Polynomial.X_pow_sub_C_ne_zero (by decide : 0 < 2) _
   simpa only [AdjoinRoot.powerBasis_dim, branchSignPolynomial_natDegree] using
     (AdjoinRoot.powerBasis hp).finrank
-
-/-- Translation by the location preserves the irreducible quadratic equation.
-This is the degree-two part of the primitive element `t + β`. -/
-theorem branchTranslatedSignPolynomial_irreducible {a Δ : K}
-    (ha : a ≠ 0) (hΔ : Δ ≠ 0) (t : K) :
-    Irreducible ((Polynomial.X - Polynomial.C (RatFunc.C t)) ^ 2 -
-      Polynomial.C (branchSignSquare a Δ)) := by
-  apply Polynomial.irreducible_of_degree_le_three_of_not_isRoot
-  · have hd : (((Polynomial.X - Polynomial.C (RatFunc.C t)) ^ 2 -
-        Polynomial.C (branchSignSquare a Δ)) : Polynomial (RatFunc K)).natDegree = 2 := by
-      compute_degree
-      simp
-    simp [hd]
-  · intro z hz
-    exact branchSignSquare_not_square ha hΔ (z - RatFunc.C t)
-      (by simpa [Polynomial.IsRoot, Polynomial.eval_sub, sub_eq_zero] using hz)
 
 /-- For nonzero dividend and invariant, the branch-sign algebra is a field. -/
 theorem branchSignExtension_isField {a Δ : K} (ha : a ≠ 0) (hΔ : Δ ≠ 0) :

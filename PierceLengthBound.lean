@@ -155,7 +155,6 @@ public import PierceLengthBound.BranchSieveSpecialization
 public import PierceLengthBound.BranchSieveElimination
 public import PierceLengthBound.BranchSieveSextic
 public import PierceLengthBound.BranchSieveQuadratic
-public import PierceLengthBound.BranchSieveConjugates
 public import PierceLengthBound.BranchSieveReconstruction
 public import PierceLengthBound.PolarProjectionBaseDegree
 public import PierceLengthBound.PolarProjectionRankFiveDegree
@@ -167,8 +166,6 @@ public import PierceLengthBound.BranchSieveUniformRootBound
 public import PierceLengthBound.BranchSieveBivariateFactorHeight
 public import PierceLengthBound.BranchSieveCoefficientResolvent
 public import PierceLengthBound.BranchSieveIntegerSpecialization
-public import PierceLengthBound.BranchSieveFactorFamily
-public import PierceLengthBound.BranchSieveIntegralFamily
 public import PierceLengthBound.PolarProjectionGeometryGoodPattern
 public import PierceLengthBound.BranchSieveMonicHilbert
 public import PierceLengthBound.BranchSieveMultivariateKronecker

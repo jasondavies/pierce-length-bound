@@ -238,59 +238,6 @@ lemma branchFamilyEval_eq_map {r : ℕ} (x : Fin r → ℤ)
     branchFamilyEval x p = p.map
       (MvPolynomial.eval₂Hom (Int.castRingHom ℚ) (fun j => (x j : ℚ))) := rfl
 
-def branchFieldScale (K : Type) [Field K] (e : ℕ) (A : K)
-    (q : Polynomial K) : Polynomial K := Polynomial.C (A ^ e) * q
-
-lemma branchFieldScale_eq (K : Type) [Field K] (e : ℕ) (A : K)
-    (q : Polynomial K) : branchFieldScale K e A q = Polynomial.C (A ^ e) * q := rfl
-
-lemma branchVertexFamilyAt_eval_scaled (a : ℤ) (c : ℕ) (K : Type) [Field K]
-    (x : Fin 4 → K) (hx : x 0 ≠ 0) :
-    (branchVertexFamilyAt a c).map (MvPolynomial.eval₂Hom (Int.castRingHom K) x) =
-      branchFieldScale K (branchVertexClearingExponent c) (x 0)
-        (branchResultantLabel (a : K) (x 0) c
-          ((-x 3 - x 2) / x 0) ((x 2 + x 1) / x 0) ((-x 1 - x 0) / x 0)) := by
-  exact (branchVertexFamilyAt_eval_field a c K x hx).trans
-    (branchFieldScale_eq K (branchVertexClearingExponent c) (x 0) _).symm
-
-lemma branchFieldScale_rat (e : ℕ) (A : ℚ) (q : Polynomial ℚ) :
-    branchFieldScale ℚ e A q = Polynomial.C (A ^ e) * q := rfl
-
-lemma branchFieldScale_rat_coordinate (e : ℕ) (x : Fin 4 → ℤ) (q : Polynomial ℚ) :
-    branchFieldScale ℚ e ((fun j => (x j : ℚ)) 0) q =
-      Polynomial.C ((x 0 : ℚ) ^ e) * q := rfl
-
-lemma branchResultantLabel_rat_cast (a : ℤ) (c : ℕ) (x : Fin 4 → ℤ) :
-    @branchResultantLabel ℚ Rat.instField.toCommRing
-      (Int.castRingHom ℚ a) ((fun j => (x j : ℚ)) 0) c
-      ((-((fun j => (x j : ℚ)) 3) - ((fun j => (x j : ℚ)) 2)) /
-        ((fun j => (x j : ℚ)) 0))
-      ((((fun j => (x j : ℚ)) 2) + ((fun j => (x j : ℚ)) 1)) /
-        ((fun j => (x j : ℚ)) 0))
-      ((-((fun j => (x j : ℚ)) 1) - ((fun j => (x j : ℚ)) 0)) /
-        ((fun j => (x j : ℚ)) 0)) =
-    branchResultantLabel (a : ℚ) (x 0 : ℚ) c
-      ((-(x 3 : ℚ) - x 2) / x 0) (((x 2 : ℚ) + x 1) / x 0)
-      ((-(x 1 : ℚ) - x 0) / x 0) := rfl
-
-lemma branchFieldScale_rat_cast (e : ℕ) (a : ℤ) (c : ℕ) (x : Fin 4 → ℤ) :
-    branchFieldScale ℚ e ((fun j => (x j : ℚ)) 0)
-      (@branchResultantLabel ℚ Rat.instField.toCommRing
-        (Int.castRingHom ℚ a) ((fun j => (x j : ℚ)) 0) c
-        ((-((fun j => (x j : ℚ)) 3) - ((fun j => (x j : ℚ)) 2)) /
-          ((fun j => (x j : ℚ)) 0))
-        ((((fun j => (x j : ℚ)) 2) + ((fun j => (x j : ℚ)) 1)) /
-          ((fun j => (x j : ℚ)) 0))
-        ((-((fun j => (x j : ℚ)) 1) - ((fun j => (x j : ℚ)) 0)) /
-          ((fun j => (x j : ℚ)) 0))) =
-      Polynomial.C ((x 0 : ℚ) ^ e) *
-        branchResultantLabel (a : ℚ) (x 0 : ℚ) c
-          ((-(x 3 : ℚ) - x 2) / x 0) (((x 2 : ℚ) + x 1) / x 0)
-          ((-(x 1 : ℚ) - x 0) / x 0) := by
-  exact (branchFieldScale_rat_coordinate e x _).trans
-    (congrArg (fun q : Polynomial ℚ => Polynomial.C ((x 0 : ℚ) ^ e) * q)
-      (branchResultantLabel_rat_cast a c x))
-
 /-- Specialization at an integer dividend retains the same exact branch equation. -/
 theorem branchVertexFamilyAt_eval (a : ℤ) (c : ℕ) (x : Fin 4 → ℤ) (hx : x 0 ≠ 0) :
     branchFamilyEval x (branchVertexFamilyAt a c) =
@@ -298,10 +245,8 @@ theorem branchVertexFamilyAt_eval (a : ℤ) (c : ℕ) (x : Fin 4 → ℤ) (hx : 
         branchResultantLabel (a : ℚ) (x 0 : ℚ) c
           ((-(x 3 : ℚ) - x 2) / x 0) (((x 2 : ℚ) + x 1) / x 0)
           ((-(x 1 : ℚ) - x 0) / x 0) := by
-  exact (branchFamilyEval_eq_map x (branchVertexFamilyAt a c)).trans
-    ((branchVertexFamilyAt_eval_scaled a c ℚ (fun j => (x j : ℚ))
-      (by exact_mod_cast hx)).trans
-        (branchFieldScale_rat_cast (branchVertexClearingExponent c) a c x))
+  rw [branchFamilyEval_eq_map]
+  exact branchVertexFamilyAt_eval_field a c ℚ (fun j => (x j : ℚ)) (by exact_mod_cast hx)
 
 /-- Every fixed integral polynomial family has finite degree and coefficient
 height bounds, including all coefficients outside its finite support. -/
@@ -356,29 +301,6 @@ theorem branch_bounded_slope_family_bounds {r : ℕ}
   refine ⟨(hd i).trans hi, fun j => (hp i j).trans hi, ?_⟩
   intro j s
   exact (hH i j s).trans (by exact_mod_cast hhi)
-
-/-- The 145 permitted slopes have one common degree and height bound. -/
-theorem branchVertexFamily_uniform_bounds :
-    ∃ d H : ℕ, 0 < H ∧ ∀ c : ℕ, c ≤ 144 →
-      (branchVertexFamily c).natDegree ≤ d ∧
-      (∀ j, ((branchVertexFamily c).coeff j).totalDegree ≤ d) ∧
-      ∀ j s, |((branchVertexFamily c).coeff j).coeff s| ≤ (H : ℤ) :=
-  branch_bounded_slope_family_bounds branchVertexFamily
-
-/-- Dividend specialization has polynomial coefficient height, with constants
-uniform over all bounded slopes and independent of the dividend. -/
-theorem branchVertexFamilyAt_uniform_bounds :
-    ∃ d C : ℕ, 0 < C ∧ ∀ (a : ℤ) (c : ℕ), c ≤ 144 →
-      (branchVertexFamilyAt a c).natDegree ≤ d ∧
-      (∀ j, ((branchVertexFamilyAt a c).coeff j).totalDegree ≤ d) ∧
-      ∀ j s, |((branchVertexFamilyAt a c).coeff j).coeff s| ≤
-        (C * (a.natAbs + 1) ^ d : ℕ) := by
-  obtain ⟨d, H, hH, hb⟩ := branchVertexFamily_uniform_bounds
-  refine ⟨d, (d + 1) * H, by positivity, ?_⟩
-  intro a c hc
-  obtain ⟨hd, hp, hh⟩ := hb c hc
-  exact branchFamilyHead_degree_height (branchVertexFamily c) hd hp hh (by omega)
-    (show |a| ≤ ((a.natAbs + 1 : ℕ) : ℤ) by simp)
 
 end
 end PierceLengthBound.FixedDividend

@@ -18,26 +18,6 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset
 
-theorem branch_polynomial_cut_card_le (G : Finset ℤ[X]) (d : ℕ)
-    (hG : ∀ q ∈ G, q ≠ 0 ∧ q.natDegree ≤ d)
-    (S : Finset ℤ) (hS : ∀ t ∈ S, ∃ q ∈ G, q.eval t = 0) :
-    S.card ≤ G.card * d := by
-  classical
-  let T (q : ℤ[X]) := S.filter (fun t => q.eval t = 0)
-  have hsubset : S ⊆ G.biUnion T := by
-    intro t ht
-    obtain ⟨q, hq, hz⟩ := hS t ht
-    exact mem_biUnion.mpr ⟨q, hq, mem_filter.mpr ⟨ht, hz⟩⟩
-  calc
-    S.card ≤ ∑ q ∈ G, (T q).card := (card_le_card hsubset).trans card_biUnion_le
-    _ ≤ ∑ _q ∈ G, d := by
-      apply sum_le_sum
-      intro q hq
-      apply (Polynomial.card_le_degree_of_subset_roots (p := q) ?_).trans (hG q hq).2
-      intro t ht
-      exact (Polynomial.mem_roots (hG q hq).1).mpr (mem_filter.mp ht).2
-    _ = _ := by simp
-
 theorem branch_rational_polynomial_cut_card_le (G : Finset ℚ[X]) (d : ℕ)
     (hG : ∀ q ∈ G, q ≠ 0 ∧ q.natDegree ≤ d)
     (S : Finset ℤ) (hS : ∀ t ∈ S, ∃ q ∈ G, q.eval (t : ℚ) = 0) :

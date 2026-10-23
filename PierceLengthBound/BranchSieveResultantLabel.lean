@@ -36,37 +36,6 @@ def branchResultantLabel {R : Type*} [CommRing R] (a A c c1 c2 c3 : R) : R[X] :=
   ((branchLocationSextic c1 c2 c3).map C).resultant
     (branchLabelEliminand a A c c1 c2 c3) 6 11
 
-lemma branchLocationDenominator_natDegree_le {R : Type*} [CommRing R] (c1 c2 c3 : R) :
-    (branchLocationDenominator c1 c2 c3).natDegree ≤ 2 := by
-  unfold branchLocationDenominator
-  compute_degree
-
-lemma branchLocationNumerator_natDegree_le {R : Type*} [CommRing R] (c1 c2 c3 : R) :
-    (branchLocationNumerator c1 c2 c3).natDegree ≤ 3 := by
-  unfold branchLocationNumerator
-  compute_degree
-
-lemma branchDeltaNumerator_natDegree_le {R : Type*} [CommRing R] (c1 c2 c3 : R) :
-    (branchDeltaNumerator c1 c2 c3).natDegree ≤ 11 := by
-  let D := branchLocationDenominator c1 c2 c3
-  let N := branchLocationNumerator c1 c2 c3
-  have hD : D.natDegree ≤ 2 := branchLocationDenominator_natDegree_le _ _ _
-  have hN : N.natDegree ≤ 3 := branchLocationNumerator_natDegree_le _ _ _
-  have hn : (-N).natDegree ≤ 3 := by simpa using hN
-  have h₁ : (X - (1 : R[X])).natDegree ≤ 1 := by compute_degree
-  have h₂ : (-N - D).natDegree ≤ 3 := (natDegree_sub_le _ _).trans (max_le hn (hD.trans (by omega)))
-  have h₃ : (-N - X * D).natDegree ≤ 3 := (natDegree_sub_le _ _).trans (max_le hn
-    (natDegree_mul_le.trans (Nat.add_le_add natDegree_X_le hD)))
-  change (X * (-N) * (X - 1) * (-N - D) * (-N - X * D)).natDegree ≤ 11
-  exact natDegree_mul_le.trans (by
-    have h₄ : (X * (-N)).natDegree ≤ 4 := natDegree_mul_le.trans
-      (Nat.add_le_add natDegree_X_le hn)
-    have h₅ : (X * (-N) * (X - 1)).natDegree ≤ 5 :=
-      natDegree_mul_le.trans (Nat.add_le_add h₄ h₁)
-    have h₆ : (X * (-N) * (X - 1) * (-N - D)).natDegree ≤ 8 :=
-      natDegree_mul_le.trans (Nat.add_le_add h₅ h₂)
-    exact Nat.add_le_add h₆ h₃)
-
 lemma branchLabelEliminand_natDegree_le {R : Type*} [CommRing R] (a A c c1 c2 c3 : R) :
     (branchLabelEliminand a A c c1 c2 c3).natDegree ≤ 11 := by
   unfold branchLabelEliminand branchDeltaNumerator branchLocationDenominator branchLocationNumerator

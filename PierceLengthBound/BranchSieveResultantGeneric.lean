@@ -49,8 +49,8 @@ lemma branchGeneric_location_reconstruction_zero :
   rw [hD, hN, branchGenericThirdLocation, mul_div_cancel₀ _ branchGenericDenominator_ne_zero]
   exact neg_add_cancel _
 
-/-- The explicit resultant annihilates the same primitive generic label as the
-norm polynomial. The proof uses the original polynomial relations. -/
+/-- The explicit resultant annihilates the primitive generic label `t + cβ`.
+The proof uses the original polynomial relations. -/
 theorem branchGenericResultantLabel_root (a : ℚ) (ha : a ≠ 0) (c : ℕ) :
     Polynomial.aeval (branchGenericLocationInSignAlgebra a +
       (c : BranchGenericSignAlgebra a) * branchGenericSignRoot a)

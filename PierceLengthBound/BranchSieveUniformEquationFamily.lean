@@ -39,7 +39,7 @@ theorem branch_uniform_integer_equation_family (n D : ℕ) :
   refine ⟨M, E, C, hC, ?_⟩
   intro F L _ _ _ _ _ _ _ _ p hp hn hir hsplit H hD hH
   obtain ⟨G, hcard, hG, hcover⟩ :=
-    branch_exists_integral_equation_family_with_origin (F := F) p hp hsplit
+    branch_exists_integral_equation_family (F := F) p hp hsplit
   refine ⟨G, by simpa only [hn] using hcard, ?_, ?_⟩
   · intro f hf
     obtain ⟨hfm, hfir, hfdeg, q, hq, hdiv, j, hj, rfl⟩ := hG f hf

@@ -42,47 +42,6 @@ theorem branchInfinity_linear_subresultant {R : Type*} [CommRing R] (c1 c2 c3 t 
     branchLocationNumerator, eval_add, eval_sub, eval_mul, eval_C, eval_pow, eval_X]
   ring
 
-/-- Substitution into the quadratic gives the sextic, with its exact scalar factor. -/
-theorem branchInfinity_reconstruction_identity {R : Type*} [CommRing R] (c1 c2 c3 t : R) :
-    let D := (branchLocationDenominator c1 c2 c3).eval t
-    let N := (branchLocationNumerator c1 c2 c3).eval t
-    c3 * (c3 + 1) * N ^ 2 - 2 * c3 * (c1 + c2 * t) * N * D +
-      (c1 + c2 * t ^ 2 + (c1 + c2 * t) ^ 2) * D ^ 2 =
-        (c3 + 1) * (branchLocationSextic c1 c2 c3).eval t := by
-  simp only [branchLocationDenominator, branchLocationNumerator, branchLocationSextic,
-    eval_add, eval_mul, eval_C, eval_pow, eval_X]
-  ring
-
-/-- A nondegenerate sextic root reconstructs a common solution of the two moment equations. -/
-theorem branchInfinity_reconstructs {K : Type*} [Field K] (c1 c2 c3 t : K)
-    (hc3 : c3 ≠ 0) (hc31 : c3 + 1 ≠ 0)
-    (hD : (branchLocationDenominator c1 c2 c3).eval t ≠ 0)
-    (hE : (branchLocationSextic c1 c2 c3).eval t = 0) :
-    let y := -(branchLocationNumerator c1 c2 c3).eval t /
-      (branchLocationDenominator c1 c2 c3).eval t
-    (branchInfinityQuadratic c1 c2 c3 t).eval y = 0 ∧
-      (branchInfinityCubic c1 c2 c3 t).eval y = 0 := by
-  dsimp only
-  let D := (branchLocationDenominator c1 c2 c3).eval t
-  let N := (branchLocationNumerator c1 c2 c3).eval t
-  have he := branchInfinity_reconstruction_identity c1 c2 c3 t
-  rw [hE, mul_zero] at he
-  have hq : (branchInfinityQuadratic c1 c2 c3 t).eval (-N / D) = 0 := by
-    simp only [branchInfinityQuadratic, eval_add, eval_mul, eval_C, eval_pow, eval_X]
-    apply (mul_right_injective₀ (pow_ne_zero 2 hD))
-    change D ^ 2 * _ = _
-    field_simp [show D ≠ 0 from hD]
-    linear_combination he
-  refine ⟨hq, ?_⟩
-  have hg := branchInfinity_linear_subresultant c1 c2 c3 t (-N / D)
-  rw [hq, mul_zero, sub_zero] at hg
-  have hlinear : D * (-N / D) + N = 0 := by
-    field_simp [show D ≠ 0 from hD]
-    ring
-  change (c3 * (c3 + 1)) ^ 2 * _ = c3 ^ 2 * (c3 + 1) * (D * (-N / D) + N) at hg
-  rw [hlinear, mul_zero] at hg
-  exact (mul_eq_zero.mp hg).resolve_left (pow_ne_zero 2 (mul_ne_zero hc3 hc31))
-
 /-- The evaluation map from parameter polynomials in `t` to the generic sextic field. -/
 def branchLocationEvaluation : BranchLocationParameters[X] →+* BranchLocationExtension :=
   (AdjoinRoot.mk _).comp (Polynomial.mapRingHom
@@ -210,61 +169,6 @@ theorem branchGenericDelta_ne_zero : branchGenericDelta ≠ 0 := by
 /-- A normalized coefficient viewed in the generic location field. -/
 def branchGenericCoefficient (i : Fin 3) : BranchLocationExtension :=
   branchLocationEvaluation (C (MvPolynomial.X i))
-
-private lemma branchGeneric_sextic_zero :
-    (branchLocationSextic (branchGenericCoefficient 0) (branchGenericCoefficient 1)
-      (branchGenericCoefficient 2)).eval (branchLocationEvaluation X) = 0 := by
-  have h : branchLocationEvaluation branchGenericLocationSextic = 0 := by
-    exact AdjoinRoot.mk_self
-  simpa [branchGenericLocationSextic, branchLocationSextic, branchGenericCoefficient,
-    map_ofNat] using h
-
-private lemma branchGeneric_denominator_evaluation :
-    (branchLocationDenominator (branchGenericCoefficient 0) (branchGenericCoefficient 1)
-      (branchGenericCoefficient 2)).eval (branchLocationEvaluation X) =
-      branchLocationEvaluation branchGenericDenominator := by
-  simp [branchGenericCoefficient, branchGenericDenominator, branchLocationDenominator,
-    map_ofNat]
-
-private lemma branchGeneric_numerator_evaluation :
-    (branchLocationNumerator (branchGenericCoefficient 0) (branchGenericCoefficient 1)
-      (branchGenericCoefficient 2)).eval (branchLocationEvaluation X) =
-      branchLocationEvaluation branchGenericNumerator := by
-  simp [branchGenericCoefficient, branchGenericNumerator, branchLocationNumerator, map_ofNat]
-
-private lemma branchGeneric_coefficient2_ne_zero : branchGenericCoefficient 2 ≠ 0 := by
-  apply branchLocationEvaluation_ne_zero
-  · simp
-  · simp
-
-private lemma branchGeneric_coefficient2_add_one_ne_zero :
-    branchGenericCoefficient 2 + 1 ≠ 0 := by
-  have h : branchLocationEvaluation (C (MvPolynomial.X 2) + 1) ≠ 0 := by
-    apply branchLocationEvaluation_ne_zero
-    · compute_degree
-      norm_num
-    · intro hz
-      have := congrArg (fun p : ℚ[X] => p.coeff 0) hz
-      norm_num at this
-  simpa only [map_add, map_one, branchGenericCoefficient] using h
-
-/-- The reconstructed generic locations satisfy both original moment equations. -/
-theorem branchGeneric_locations_satisfy_moments :
-    let c1 := branchGenericCoefficient 0
-    let c2 := branchGenericCoefficient 1
-    let c3 := branchGenericCoefficient 2
-    let t := branchLocationEvaluation X
-    let y := branchGenericThirdLocation
-    c1 + c2 * t ^ 2 + c3 * y ^ 2 + (-c1 - c2 * t - c3 * y) ^ 2 = 0 ∧
-      c1 + c2 * t ^ 3 + c3 * y ^ 3 + (-c1 - c2 * t - c3 * y) ^ 3 = 0 := by
-  have h := branchInfinity_reconstructs (branchGenericCoefficient 0)
-    (branchGenericCoefficient 1) (branchGenericCoefficient 2) (branchLocationEvaluation X)
-    branchGeneric_coefficient2_ne_zero branchGeneric_coefficient2_add_one_ne_zero
-    (by rw [branchGeneric_denominator_evaluation]; exact branchGenericDenominator_ne_zero)
-    branchGeneric_sextic_zero
-  simpa only [branchGenericThirdLocation, branchGeneric_denominator_evaluation,
-    branchGeneric_numerator_evaluation,
-    branchInfinityQuadratic_eval, branchInfinityCubic_eval] using h
 
 open scoped RatFunc
 attribute [local instance] Polynomial.algebra

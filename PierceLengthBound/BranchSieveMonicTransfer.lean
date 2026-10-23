@@ -47,19 +47,6 @@ theorem branchMonicization_irreducible_of_scalar
     (branchMonicization_monic n p)
     (branchMonicization_map_irreducible_of_scalar n p φ s q he hs hq hd hn)
 
-/-- Reflect the preceding transfer through an intermediate coefficient ring. -/
-theorem branchMonicization_map_irreducible_of_scalar_comp
-    {R S K : Type*} [CommSemiring R] [CommRing S] [IsDomain S] [Field K]
-    (n : ℕ) (p : Polynomial R) (ρ : R →+* S) (ψ : S →+* K)
-    (s : K) (q : Polynomial K)
-    (he : p.map (ψ.comp ρ) = Polynomial.C s * q) (hs : s ≠ 0)
-    (hq : Irreducible q) (hd : q.natDegree = n) (hn : 1 ≤ n) :
-    Irreducible ((branchMonicization n p).map ρ) := by
-  apply Polynomial.Monic.irreducible_of_irreducible_map ψ _
-    ((branchMonicization_monic n p).map ρ)
-  rw [Polynomial.map_map]
-  exact branchMonicization_map_irreducible_of_scalar n p (ψ.comp ρ) s q he hs hq hd hn
-
 /-- An irreducible fixed-degree monicization excludes leading-degree collapse;
 therefore a nonzero scalar factor can be removed with the degree preserved. -/
 theorem branchMonicization_irreducible_scalar_consequences
@@ -84,19 +71,6 @@ theorem branchMonicization_rat_scalar_consequences
     (s : ℚ) (q : Polynomial ℚ) (he : p = Polynomial.C s * q) (hs : s ≠ 0) :
     Irreducible q ∧ q.natDegree = n :=
   branchMonicization_irreducible_scalar_consequences n p hd hn hir s q he hs
-
-/-- The preceding consequence for a coefficient specialization of a family. -/
-theorem branchMonicization_map_irreducible_scalar_consequences
-    {R K : Type*} [CommSemiring R] [Field K]
-    (n : ℕ) (p : Polynomial R) (φ : R →+* K)
-    (hd : p.natDegree ≤ n) (hn : 2 ≤ n)
-    (hir : Irreducible ((branchMonicization n p).map φ))
-    (s : K) (q : Polynomial K) (he : p.map φ = Polynomial.C s * q) (hs : s ≠ 0) :
-    Irreducible q ∧ q.natDegree = n := by
-  have hi : Irreducible (branchMonicization n (p.map φ)) := by
-    simpa only [branchMonicization_map] using hir
-  exact branchMonicization_irreducible_scalar_consequences n (p.map φ)
-    (natDegree_map_le.trans hd) hn hi s q he hs
 
 end
 end PierceLengthBound.FixedDividend

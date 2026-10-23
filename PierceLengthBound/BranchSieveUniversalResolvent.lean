@@ -82,10 +82,6 @@ theorem branchUniversalResolvent_monic {d : ℕ} (P : MvPolynomial (Fin d) ℤ) 
     (branchUniversalResolvent P).Monic :=
   (branch_exists_universal_resolvent P).choose_spec.1
 
-theorem branchUniversalResolvent_natDegree {d : ℕ} (P : MvPolynomial (Fin d) ℤ) :
-    (branchUniversalResolvent P).natDegree = d.factorial :=
-  (branch_exists_universal_resolvent P).choose_spec.2.1
-
 theorem branchUniversalResolvent_map {d : ℕ} (P : MvPolynomial (Fin d) ℤ) :
     (branchUniversalResolvent P).map
       (aeval (fun i : Fin d => esymm (Fin d) ℤ (i.val + 1))).toRingHom =

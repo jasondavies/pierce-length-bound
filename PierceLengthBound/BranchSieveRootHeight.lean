@@ -54,44 +54,5 @@ theorem branch_integer_root_abs_le {p : ℤ[X]} (hp : p ≠ 0) {H : ℕ}
     Real.norm_eq_abs] at hr'
   exact_mod_cast hr'
 
-/-- Evaluation in an integer interval preserves an explicit coefficient-height bound. -/
-theorem branch_integer_polynomial_eval_abs_le (p : ℤ[X]) {d H B : ℕ}
-    (hd : p.natDegree ≤ d) (hH : ∀ j, |p.coeff j| ≤ (H : ℤ))
-    (hB : 1 ≤ B) {t : ℤ} (ht : |t| ≤ (B : ℤ)) :
-    |p.eval t| ≤ ((d + 1) * H * B ^ d : ℕ) := by
-  rw [eval_eq_sum_range' (by omega : p.natDegree < d + 1)]
-  calc
-    |∑ j ∈ range (d + 1), p.coeff j * t ^ j|
-        ≤ ∑ j ∈ range (d + 1), |p.coeff j * t ^ j| := abs_sum_le_sum_abs _ _
-    _ ≤ ∑ _j ∈ range (d + 1), (H : ℤ) * (B : ℤ) ^ d := by
-      apply sum_le_sum
-      intro j hj
-      rw [abs_mul, abs_pow]
-      apply mul_le_mul (hH j) ?_ (by positivity) (by positivity)
-      exact (pow_le_pow_left₀ (abs_nonneg t) ht j).trans
-        (pow_le_pow_right₀ (by exact_mod_cast hB)
-          (by simpa using Nat.le_of_lt_succ (mem_range.mp hj)))
-    _ = _ := by simp; ring
-
-/-- Outside the leading-coefficient zero set, an integral root of the specialized
-bivariate polynomial has controlled height. All constants are displayed. -/
-theorem branch_specialization_root_abs_le (p : ℤ[X][Y]) {d H B : ℕ}
-    (hd : ∀ i, (p.coeff i).natDegree ≤ d)
-    (hH : ∀ i j, |(p.coeff i).coeff j| ≤ (H : ℤ))
-    (hB : 1 ≤ B) {t y : ℤ} (ht : |t| ≤ (B : ℤ))
-    (hlead : p.leadingCoeff.eval t ≠ 0) (hy : p.evalEval t y = 0) :
-    |y| ≤ ((d + 1) * H * B ^ d : ℕ) + 1 := by
-  let q : ℤ[X] := p.map (evalRingHom t)
-  have hq : q ≠ 0 := by
-    intro hz
-    have hh := congrArg (fun f : ℤ[X] => f.coeff p.natDegree) hz
-    apply hlead
-    simpa only [q, coeff_map, coeff_natDegree, coeff_zero, coe_evalRingHom] using hh
-  apply branch_integer_root_abs_le hq
-  · intro j
-    simpa only [q, coeff_map, coe_evalRingHom] using
-      branch_integer_polynomial_eval_abs_le (p.coeff j) (hd j) (hH j) hB ht
-  · simpa only [q, eval_map, eval₂_evalRingHom] using hy
-
 end
 end PierceLengthBound.FixedDividend
