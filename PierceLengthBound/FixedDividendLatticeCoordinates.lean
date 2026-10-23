@@ -40,7 +40,8 @@ lemma liftFirstM_det_ne {p : Fin 10 → ℤ} {M : Fin 3 → Fin 5 → ℤ} {b1 b
         ![dot3 (Lrow p τ 1) b1, dot3 (Lrow p τ 1) b2, dot3 (Lrow p τ 1) b3],
         ![dot3 (Lrow p τ 2) b1, dot3 (Lrow p τ 2) b2, dot3 (Lrow p τ 2) b3]] := by
     ext i j
-    fin_cases i <;> fin_cases j <;> simp [liftFirstM, liftv_spec h1, liftv_spec h2, liftv_spec h3, τ]
+    fin_cases i <;> fin_cases j <;>
+      simp [liftFirstM, liftv_spec h1, liftv_spec h2, liftv_spec h3, τ]
   have he := det3_mul (Lrow p τ 0) (Lrow p τ 1) (Lrow p τ 2) b1 b2 b3
   rw [← hE, Matrix.det_smul, Fintype.card_fin] at he
   have hL := lift_first_det M τ

@@ -13,7 +13,6 @@ public import PierceLengthBound.FixedDividendComponentParameter
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
-set_option maxHeartbeats 1000000
 
 /-- Every integral point of the actual degree-two component has a bounded
 quadratic representation in an injective integer parameter. -/

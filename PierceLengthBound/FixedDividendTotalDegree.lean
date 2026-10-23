@@ -85,7 +85,6 @@ private meta partial def proveMvDegree : TacticM Unit := do
 
 elab "fixed_dividend_mv_degree" : tactic => proveMvDegree
 
-set_option maxHeartbeats 800000 in
 -- Certify all sixteen entries of the explicit Newton-basis matrix.
 /-- The Newton matrix degree staircase holds in every multivariate coordinate ring. -/
 lemma newtonBezout_totalDegree {R σ : Type*} [CommRing R] (c e : Fin 4 → R)
@@ -95,7 +94,12 @@ lemma newtonBezout_totalDegree {R σ : Type*} [CommRing R] (c e : Fin 4 → R)
   have h1 := hs 1
   have h2 := hs 2
   have h3 := hs 3
-  fin_cases i <;> fin_cases j <;> simp [newtonBezout]
+  fin_cases i <;> fin_cases j <;>
+    simp only [newtonBezout, Fin.isValue, Function.comp_apply, Fin.zero_eta, Fin.mk_one,
+      Fin.reduceFinMk, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.cons_val_fin_one, max_self, tsub_zero, zero_le, sup_of_le_right,
+      sup_of_le_left, Nat.add_one_sub_one, Nat.reduceSub, Nat.one_le_ofNat, Nat.reduceLeDiff,
+      ge_iff_le]
   all_goals fixed_dividend_mv_degree
 
 
@@ -153,10 +157,13 @@ lemma lineQuadratic_totalDegree_le_two {R σ : Type*} [CommRing R]
   have h0 := hs 0
   have h1 := hs 1
   have h2 := hs 2
-  simp [lineQuadratic, lineNodes, lineGaps, fourthNode, coeffs, Fin.sum_univ_succ]
+  simp only [lineQuadratic, coeffs, lineNodes, Fin.isValue, fourthNode, lineGaps, Matrix.cons_val,
+    Fin.sum_univ_succ, Matrix.cons_val_zero, Fin.castSucc_zero, ne_eq, OfNat.ofNat_ne_zero,
+    not_false_eq_true, zero_pow, zero_add, Matrix.cons_val_succ, Fin.castSucc_succ, Nat.reduceAdd,
+    Finset.univ_unique, Fin.default_eq_zero, Matrix.cons_val_fin_one, one_mul,
+    Finset.sum_singleton, ge_iff_le]
   fixed_dividend_mv_degree
 
-set_option maxHeartbeats 800000 in
 -- Elimination introduces a quadratic last gap; the complete norm is still cubic.
 /-- The eliminated norm has total degree at most three. -/
 lemma lineNorm_totalDegree_le_three {R σ : Type*} [CommRing R]
@@ -166,7 +173,11 @@ lemma lineNorm_totalDegree_le_three {R σ : Type*} [CommRing R]
   have h0 := hs 0
   have h1 := hs 1
   have h2 := hs 2
-  simp [lineNorm, lineNodes, extendedLineGaps, lineGaps, fourthNode, coeffs, Fin.sum_univ_succ]
+  simp only [lineNorm, coeffs, lineNodes, Fin.isValue, fourthNode, lineGaps, Matrix.cons_val,
+    extendedLineGaps, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_succ,
+    Fin.sum_univ_succ, Fin.castSucc_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
+    mul_zero, add_zero, zero_mul, zero_add, Fin.castSucc_succ, Nat.reduceAdd, Finset.univ_unique,
+    Fin.default_eq_zero, Matrix.cons_val_fin_one, one_mul, Finset.sum_singleton, ge_iff_le]
   fixed_dividend_mv_degree
 
 end

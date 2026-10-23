@@ -14,7 +14,6 @@ public import PierceLengthBound.ConicPlaneHeight
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
-set_option maxHeartbeats 1000000
 
 /-- Actual minor heights give the complete bounded integral conic model.
 The only plane input is its integer coefficient bound and actual membership. -/

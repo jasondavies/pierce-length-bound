@@ -21,7 +21,6 @@ denominator to be nonzero.
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
-set_option maxHeartbeats 1000000
 
 /-- Binary coefficients in order α, β, γ, d, e, f, with x the second original
 node, y the first, and the third node equal to k*y+m*x+t. -/

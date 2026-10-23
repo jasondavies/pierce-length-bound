@@ -13,7 +13,6 @@ public import PierceLengthBound.FixedDividendConicPolynomialIdentities
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
-set_option maxHeartbeats 1000000
 
 /-- At least twenty-five integral points force the actual polynomial equations
 and the exact determinant degrees along the bounded integer parameter. -/

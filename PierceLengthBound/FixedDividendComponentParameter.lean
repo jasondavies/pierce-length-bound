@@ -12,8 +12,9 @@ public import PierceLengthBound.FixedDividendOrbitConicModel
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
-set_option maxHeartbeats 1000000
 
+set_option maxHeartbeats 400000 in
+-- This proof uses about 320k heartbeats (`#count_heartbeats`).
 /-- A certified integral plane-conic model gives bounded quadratic numerators
 for every integral component point, and an injective integer parameter. -/
 theorem component_integer_parameter

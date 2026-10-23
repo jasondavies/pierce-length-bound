@@ -21,7 +21,6 @@ denominator to be nonzero.
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
-set_option maxHeartbeats 1000000
 
 /-- The binary equation in the first two original coordinate variables. -/
 def secondPlaneConicPolynomial {K : Type*} [CommRing K] (v : Fin 6 → K) :

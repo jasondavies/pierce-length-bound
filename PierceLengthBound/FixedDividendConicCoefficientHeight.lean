@@ -12,7 +12,6 @@ public import PierceLengthBound.FixedDividendConicIntegralCoefficients
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
-set_option maxHeartbeats 1000000
 
 /-- A single polynomial bound for all six cleared binary coefficients. -/
 theorem integralPlaneConicCoefficients_height

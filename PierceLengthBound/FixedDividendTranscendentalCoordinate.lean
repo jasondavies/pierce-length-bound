@@ -69,8 +69,8 @@ lemma partialCoordinateEval_ker_lt {K : Type*} [Field K] (c : Fin 3 → K)
   have hsingle : (0 : Fin 3 →₀ ℕ) ≠ Finsupp.single j 1 := by
     intro h
     have := DFunLike.congr_fun h j
-    simpa using this
-  simpa [hsingle] using hc
+    simp at this
+  simp [hsingle] at hc
 
 /-- Fixing all three coordinates gives a prime ideal of height at least three. -/
 lemma three_le_height_coordinate_kernel {K : Type*} [Field K] (c : Fin 3 → K) :

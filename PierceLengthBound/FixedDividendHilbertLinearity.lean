@@ -126,7 +126,7 @@ theorem lowerSet_shell_card_eventually_constant {σ : Type*} [Fintype σ] [Decid
   exact (Nat.card_congr (Equiv.ofBijective φ ⟨hinj, hsurj⟩)).symm
 
 /-- Splitting off the top degree shell gives the Hilbert-function increment. -/
-theorem standard_card_succ {K σ : Type*} [Field K] [Fintype σ]
+theorem standard_card_succ {K σ : Type*} [Field K] [Finite σ]
     [LinearOrder σ] (I : Ideal (MvPolynomial σ K)) (N : ℕ) :
     Module.finrank K (filteredCoordinateSpace I (N + 1)) =
       Module.finrank K (filteredCoordinateSpace I N) +
@@ -167,12 +167,13 @@ theorem standard_card_succ {K σ : Type*} [Field K] [Fintype σ]
 
 /-- Any linear upper bound on a filtered coordinate ring implies an eventually
 affine Hilbert function, with natural slope at most that upper-bound slope. -/
-theorem filteredCoordinateSpace_eventually_linear {K σ : Type*} [Field K] [Fintype σ]
+theorem filteredCoordinateSpace_eventually_linear {K σ : Type*} [Field K] [Finite σ]
     [LinearOrder σ] (I : Ideal (MvPolynomial σ K)) (C : ℕ)
     (hbound : ∀ N ≥ 14, Module.finrank K (filteredCoordinateSpace I N) ≤ C * (N + 2)) :
     ∃ d ≤ C, ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
       (Module.finrank K (filteredCoordinateSpace I n) : ℤ) = (d : ℤ) * n + c := by
   classical
+  cases nonempty_fintype σ
   let B := 2 * C + 14
   obtain ⟨N, hN⟩ := lowerSet_shell_card_eventually_constant
     (standardExponents I MonomialOrder.degLex) (standardExponents_lower I MonomialOrder.degLex)
@@ -207,7 +208,7 @@ theorem filteredCoordinateSpace_eventually_linear {K σ : Type*} [Field K] [Fint
   ring
 
 /-- A transcendental coordinate contributes all of its powers to the filtration. -/
-theorem transcendental_coordinate_filtered_lower {K σ : Type*} [Field K] [Fintype σ]
+theorem transcendental_coordinate_filtered_lower {K σ : Type*} [Field K] [Finite σ]
     (I : Ideal (MvPolynomial σ K)) {j : σ}
     (hj : Transcendental K ((Ideal.Quotient.mk I) (MvPolynomial.X j))) (N : ℕ) :
     N + 1 ≤ Module.finrank K (filteredCoordinateSpace I N) := by
