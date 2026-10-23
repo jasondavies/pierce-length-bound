@@ -37,7 +37,8 @@ theorem function_degree_le_poleEnvelope {R L ι : Type*}
   let mult := fun q : IsDedekindDomain.HeightOneSpectrum C =>
     multiplicity q.asIdeal (Ideal.span {functionParameterElement y})
   have hbound (p : IsDedekindDomain.HeightOneSpectrum R) :
-      discretePoleOrder (normalizedBranchOrder p L) x ≤ branchPoleEnvelope (normalizedBranchOrder p L) W := by
+      discretePoleOrder (normalizedBranchOrder p L) x ≤
+        branchPoleEnvelope (normalizedBranchOrder p L) W := by
     rw [hexpr]
     apply combination_pole_order_le_envelope
     intro a

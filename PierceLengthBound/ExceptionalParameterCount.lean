@@ -61,7 +61,8 @@ theorem exceptional_parameters_count {X Z : ℕ} (hZ : 1 ≤ Z) (hZX : Z ≤ X) 
   have hplane (z : Fin 3 → ℤ) (hz : z ∈ exceptionalNormals X Z) :
       Z * (exceptionalPlane X z).card ≤ 243 * X ^ 2 := by
     obtain ⟨_, ⟨c, hc⟩, j, hj, hjX⟩ := mem_filter.mp hz
-    calc Z * (exceptionalPlane X z).card ≤ (z j).natAbs * (exceptionalPlane X z).card := Nat.mul_le_mul_right _ hj
+    calc Z * (exceptionalPlane X z).card ≤ (z j).natAbs * (exceptionalPlane X z).card :=
+          Nat.mul_le_mul_right _ hj
       _ ≤ 243 * X ^ 2 := primitive_plane_count z c hc j (by omega) hjX (by
         intro t ht
         obtain ⟨ht, he⟩ := mem_filter.mp ht

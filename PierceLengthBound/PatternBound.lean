@@ -26,7 +26,7 @@ and numerators `≤ 14 (L(i) + L(i+1)) H³`.
 
 namespace PierceLengthBound
 
-private lemma mul_le_mul' {x y X Y : ℤ} (hx : 0 ≤ x) (hy : 0 ≤ y) (hX : x ≤ X) (hY : y ≤ Y) :
+private lemma int_mul_le_mul {x y X Y : ℤ} (hx : 0 ≤ x) (hy : 0 ≤ y) (hX : x ≤ X) (hY : y ≤ Y) :
     x * y ≤ X * Y :=
   mul_le_mul hX hY hy (hx.trans hX)
 
@@ -53,13 +53,13 @@ lemma gramP_le {k0 k1 k2 k3 k4 H : ℤ} (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 
   have e3le : e3 ≤ 28 * H ^ 2 := by
     rw [← he3]
     have t1 : (k0 + k1 + k2) * (k1 + k2) ≤ (3 * H) * (2 * H) :=
-      mul_le_mul' (by linarith) (by linarith) (by linarith) (by linarith)
+      int_mul_le_mul (by linarith) (by linarith) (by linarith) (by linarith)
     have t2 : (k0 + k1 + k2) * k2 ≤ (3 * H) * H :=
-      mul_le_mul' (by linarith) (by linarith) (by linarith) g2
+      int_mul_le_mul (by linarith) (by linarith) (by linarith) g2
     have t3 : (k1 + k2) * k2 ≤ (2 * H) * H :=
-      mul_le_mul' (by linarith) (by linarith) (by linarith) g2
+      int_mul_le_mul (by linarith) (by linarith) (by linarith) g2
     have t4 : (k0 + 2 * k1 + 3 * k2) * (k3 + 1) ≤ (6 * H) * (2 * H) :=
-      mul_le_mul' (by linarith) (by linarith) (by linarith) (by linarith)
+      int_mul_le_mul (by linarith) (by linarith) (by linarith) (by linarith)
     have t5 : k3 ^ 2 ≤ H ^ 2 := pow_le_pow_left₀ (by linarith) g3 2
     have t6 : H ≤ H ^ 2 := by
       calc H = H ^ 1 := (pow_one H).symm
@@ -72,17 +72,17 @@ lemma gramP_le {k0 k1 k2 k3 k4 H : ℤ} (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 
   have e3nn : 0 ≤ e3 := by rw [← he3]; positivity
   have m1le : m1 ≤ 2 * H ^ 2 := by
     rw [← hm1]
-    have := mul_le_mul' (by linarith) (by linarith) g1 (by linarith : k0 + k1 ≤ 2 * H)
+    have := int_mul_le_mul (by linarith) (by linarith) g1 (by linarith : k0 + k1 ≤ 2 * H)
     linarith [show H * (2 * H) = 2 * H ^ 2 by ring]
   have m1nn : 0 ≤ m1 := by rw [← hm1]; positivity
   have M3le : M3 ≤ 6 * H ^ 3 := by
     rw [← hM3]
-    have a1 := mul_le_mul' (by linarith) (by linarith) g2 (by linarith : k1 + k2 ≤ 2 * H)
-    have a2 := mul_le_mul' (by positivity) (by linarith) a1 (by linarith : k0 + k1 + k2 ≤ 3 * H)
+    have a1 := int_mul_le_mul (by linarith) (by linarith) g2 (by linarith : k1 + k2 ≤ 2 * H)
+    have a2 := int_mul_le_mul (by positivity) (by linarith) a1 (by linarith : k0 + k1 + k2 ≤ 3 * H)
     linarith [show H * (2 * H) * (3 * H) = 6 * H ^ 3 by ring]
   have M3nn : 0 ≤ M3 := by rw [← hM3]; positivity
   have k0m1 : k0 * m1 ≤ 2 * H ^ 3 := by
-    have := mul_le_mul' (by linarith) m1nn g0 m1le
+    have := int_mul_le_mul (by linarith) m1nn g0 m1le
     linarith [show H * (2 * H ^ 2) = 2 * H ^ 3 by ring]
   have p23 : H ^ 2 ≤ H ^ 3 := pow_le_pow_right₀ hH (by norm_num)
   have p12 : H ≤ H ^ 2 := by
@@ -91,11 +91,11 @@ lemma gramP_le {k0 k1 k2 k3 k4 H : ℤ} (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 
   have B3le : M3 + e3 ≤ 34 * H ^ 3 := by linarith
   have A2le : m1 + e2 ≤ 7 * H ^ 2 := by linarith
   have t1 : k0 * m1 * e3 ≤ 2 * H ^ 3 * (28 * H ^ 2) :=
-    mul_le_mul' (by positivity) e3nn k0m1 e3le
+    int_mul_le_mul (by positivity) e3nn k0m1 e3le
   have t2 : k0 * e2 * (M3 + e3) ≤ H * (5 * H) * (34 * H ^ 3) :=
-    mul_le_mul' (by positivity) (by linarith) (mul_le_mul' (by linarith) e2nn g0 e2le) B3le
+    int_mul_le_mul (by positivity) (by linarith) (int_mul_le_mul (by linarith) e2nn g0 e2le) B3le
   have t3 : (m1 + e2) * (M3 + e3) ≤ 7 * H ^ 2 * (34 * H ^ 3) :=
-    mul_le_mul' (by linarith) (by linarith) A2le B3le
+    int_mul_le_mul (by linarith) (by linarith) A2le B3le
   have hsplit : (k0 + 1) * (m1 + e2) * (M3 + e3) = k0 * m1 * M3 +
       (k0 * m1 * e3 + k0 * e2 * (M3 + e3) + (m1 + e2) * (M3 + e3)) := by ring
   rw [hsplit]
@@ -109,8 +109,8 @@ lemma delta_left_le {k0 k1 k2 H : ℤ} (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 �
     k0 * (k1 * (k0 + k1)) * (k2 * (k1 + k2) * (k0 + k1 + k2)) ≤
       6 * H ^ 3 * (k1 * k2 * (k1 + k2)) := by
   have hV : 0 ≤ k1 * k2 * (k1 + k2) := by positivity
-  have a1 := mul_le_mul' (by linarith) (by linarith) g0 (by linarith : k0 + k1 ≤ 2 * H)
-  have a2 := mul_le_mul' (by positivity) (by linarith) a1 (by linarith : k0 + k1 + k2 ≤ 3 * H)
+  have a1 := int_mul_le_mul (by linarith) (by linarith) g0 (by linarith : k0 + k1 ≤ 2 * H)
+  have a2 := int_mul_le_mul (by positivity) (by linarith) a1 (by linarith : k0 + k1 + k2 ≤ 3 * H)
   have hW : k0 * (k0 + k1) * (k0 + k1 + k2) ≤ 6 * H ^ 3 := by
     linarith [show H * (2 * H) * (3 * H) = 6 * H ^ 3 by ring]
   calc k0 * (k1 * (k0 + k1)) * (k2 * (k1 + k2) * (k0 + k1 + k2)) =
@@ -123,8 +123,8 @@ lemma delta_right_le {k1 k2 k3 H : ℤ} (h1 : 1 ≤ k1) (h2 : 1 ≤ k2) (h3 : 1 
     k1 * (k2 * (k1 + k2)) * (k3 * (k2 + k3) * (k1 + k2 + k3)) ≤
       6 * H ^ 3 * (k1 * k2 * (k1 + k2)) := by
   have hV : 0 ≤ k1 * k2 * (k1 + k2) := by positivity
-  have a1 := mul_le_mul' (by linarith) (by linarith) g3 (by linarith : k2 + k3 ≤ 2 * H)
-  have a2 := mul_le_mul' (by positivity) (by linarith) a1 (by linarith : k1 + k2 + k3 ≤ 3 * H)
+  have a1 := int_mul_le_mul (by linarith) (by linarith) g3 (by linarith : k2 + k3 ≤ 2 * H)
+  have a2 := int_mul_le_mul (by positivity) (by linarith) a1 (by linarith : k1 + k2 + k3 ≤ 3 * H)
   have hW : k3 * (k2 + k3) * (k1 + k2 + k3) ≤ 6 * H ^ 3 := by
     linarith [show H * (2 * H) * (3 * H) = 6 * H ^ 3 by ring]
   calc k1 * (k2 * (k1 + k2)) * (k3 * (k2 + k3) * (k1 + k2 + k3)) =
@@ -190,7 +190,7 @@ theorem state_bound {a A H Nn N1 u1 u2 k0 k1 k2 k3 k4 k5 : ℤ}
   have hVpos : 0 < V := by rw [← hV]; positivity
   have hVle : V ≤ 2 * H ^ 3 := by
     rw [← hV]
-    have := mul_le_mul' (by positivity) (by linarith) (mul_le_mul' (by linarith) (by linarith)
+    have := int_mul_le_mul (by positivity) (by linarith) (int_mul_le_mul (by linarith) (by linarith)
       g1 g2) (by linarith : k1 + k2 ≤ 2 * H)
     linarith [show H * H * (2 * H) = 2 * H ^ 3 by ring]
   -- labels
@@ -236,15 +236,16 @@ theorem state_bound {a A H Nn N1 u1 u2 k0 k1 k2 k3 k4 k5 : ℤ}
     linarith
   have br1 : |r1| ≤ 4 * H ^ 2 := by
     rw [← hr1, abs_of_nonneg (by positivity)]
-    have := mul_le_mul' (by linarith) (by linarith) g1 (by linarith : 2 * k0 + k1 ≤ 3 * H)
+    have := int_mul_le_mul (by linarith) (by linarith) g1 (by linarith : 2 * k0 + k1 ≤ 3 * H)
     linarith [show H * (3 * H) = 3 * H ^ 2 by ring]
   have br2 : |r2| ≤ 6 * H ^ 2 := by
     rw [← hr2, abs_of_nonneg (by positivity)]
-    have := mul_le_mul' (by linarith) (by linarith) g2 (by linarith : 2 * k0 + 2 * k1 + k2 ≤ 5 * H)
+    have := int_mul_le_mul (by linarith) (by linarith) g2
+      (by linarith : 2 * k0 + 2 * k1 + k2 ≤ 5 * H)
     linarith [show H * (5 * H) = 5 * H ^ 2 by ring]
   have br3 : |r3| ≤ 8 * H ^ 2 := by
     rw [← hr3, abs_of_nonneg (by positivity)]
-    have := mul_le_mul' (by linarith) (by linarith) g3
+    have := int_mul_le_mul (by linarith) (by linarith) g3
       (by linarith : 2 * k0 + 2 * k1 + 2 * k2 + k3 ≤ 7 * H)
     linarith [show H * (7 * H) = 7 * H ^ 2 by ring]
   have bρ1 : |N1 * k0 - Nn * k3| ≤ (N1 + Nn) * H := abs_lin_le hN10 hNn0 bk0 bk3 le_rfl le_rfl

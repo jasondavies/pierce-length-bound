@@ -32,6 +32,7 @@ def Pbig2 (a : ℕ) : ℕ := 10 ^ 1000 * a ^ 400
 def Xi2 (a : ℕ) : ℕ := 2 * tauMax (Pbig2 a) ^ 3 * (Nat.log 3 (Pbig2 a) + 1) + 4
 
 set_option exponentiation.threshold 1000 in
+-- `norm_num` must evaluate the constant `10 ^ 1000` of `Pbig2`.
 /-- The polynomial range bound. -/
 lemma pbig2_bounds {a X H : ℕ} (ha : 1 ≤ a) (hH : H ≤ 29 * a) (hX : X ≤ 2 * 10 ^ 16 * a ^ 7) :
     116 * (248832 * X ^ 8) ^ 4 * (12 * H + 1) ^ 2 ≤ Pbig2 a ∧

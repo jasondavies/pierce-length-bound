@@ -50,7 +50,8 @@ def exceptionalMinorInverse (d : Fin 4) (p : Fin 10 → ℤ) : Fin 10 → ℤ :=
 theorem exceptionalMinorInverse_left (d : Fin 4) (p : Fin 10 → ℤ) :
     exceptionalMinorInverse d (exceptionalMinorChange d p) = p := by
   funext j
-  fin_cases d <;> fin_cases j <;> norm_num [exceptionalMinorInverse, exceptionalMinorChange] <;> ring
+  fin_cases d <;> fin_cases j <;>
+    norm_num [exceptionalMinorInverse, exceptionalMinorChange] <;> ring
 
 theorem exceptionalMinorChange_injective (d : Fin 4) :
     Function.Injective (exceptionalMinorChange d) := by
@@ -112,11 +113,13 @@ theorem exceptional_minor_vector_count {S : Finset (Fin 10 → ℤ)} {X : ℕ} (
     S.card ≤ 4 * ((6 * X + 1) ^ 3 +
       (Nat.log 2 (3 * X) + 1) * (273375 * (3 * X) ^ 4)) := by
   classical
-  have hsub : S ⊆ univ.biUnion (fun d : Fin 4 => S.filter fun p => ExceptionalMinorRelation p d) := by
+  have hsub :
+      S ⊆ univ.biUnion (fun d : Fin 4 => S.filter fun p => ExceptionalMinorRelation p d) := by
     intro p hp
     obtain ⟨d, hd⟩ := (hS p hp).2.2
     exact mem_biUnion.mpr ⟨d, mem_univ _, mem_filter.mpr ⟨hp, hd⟩⟩
-  calc S.card ≤ (univ.biUnion (fun d : Fin 4 => S.filter fun p => ExceptionalMinorRelation p d)).card :=
+  calc S.card
+      ≤ (univ.biUnion (fun d : Fin 4 => S.filter fun p => ExceptionalMinorRelation p d)).card :=
         card_le_card hsub
     _ ≤ ∑ d : Fin 4, (S.filter fun p => ExceptionalMinorRelation p d).card := card_biUnion_le
     _ ≤ ∑ _d : Fin 4, ((6 * X + 1) ^ 3 +

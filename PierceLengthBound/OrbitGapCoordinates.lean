@@ -47,7 +47,8 @@ theorem kap_eq_of_orbitFreeNodesQ_eq {a b i l : ℕ} (hba : b < a)
   have ht5 := congrFun hθ 5
   have ht6 := congrFun hθ 6
   simp only [theta, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
-    Matrix.cons_val_three, Matrix.cons_val, Matrix.head_cons, Matrix.tail_cons] at ht0 ht1 ht2 ht3 ht4 ht5 ht6
+    Matrix.cons_val_three, Matrix.cons_val, Matrix.head_cons, Matrix.tail_cons]
+    at ht0 ht1 ht2 ht3 ht4 ht5 ht6
   have hL0 : Lz a b i ≠ 0 := by have := Lz_pos hba (i := i) (by omega); omega
   have hL1 : Lz a b (i + 1) ≠ 0 := by
     have := Lz_pos hba (i := i + 1) (by omega)
