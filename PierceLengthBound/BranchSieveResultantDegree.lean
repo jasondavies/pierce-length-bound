@@ -161,13 +161,7 @@ theorem branchResultantLabel_natDegree {K : Type*} [Field K]
 
 open scoped RatFunc
 attribute [local instance] Polynomial.algebra
-local instance branchResultantDegreeLocationField : Field BranchLocationField := inferInstance
-local instance branchResultantDegreeLocationExtension : Field BranchLocationExtension :=
-  inferInstance
-local instance branchResultantDegreeRatField : Field (RatFunc BranchLocationField) :=
-  inferInstance
-local instance branchResultantDegreeRatExtension : Field (RatFunc BranchLocationExtension) :=
-  inferInstance
+open scoped BranchLocationFields
 
 /-- The normalized vertex parameters in the generic scale function field. -/
 def branchResultantGenericCoefficient (i : Fin 3) : RatFunc BranchLocationField :=

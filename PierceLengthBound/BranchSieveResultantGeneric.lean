@@ -16,14 +16,7 @@ noncomputable section
 open Polynomial
 open scoped RatFunc
 attribute [local instance] Polynomial.algebra
-local instance branchResultantGenericLocationField : Field BranchLocationField :=
-  inferInstance
-local instance branchResultantGenericLocationExtension : Field BranchLocationExtension :=
-  inferInstance
-local instance branchResultantGenericRatField : Field (RatFunc BranchLocationField) :=
-  inferInstance
-local instance branchResultantGenericRatExtension : Field (RatFunc BranchLocationExtension) :=
-  inferInstance
+open scoped BranchLocationFields
 
 lemma branchGeneric_location_sextic_eval_zero :
     (branchLocationSextic (branchGenericCoefficient 0) (branchGenericCoefficient 1)
@@ -55,11 +48,10 @@ theorem branchGenericResultantLabel_root (a : ℚ) (ha : a ≠ 0) (c : ℕ) :
     Polynomial.aeval (branchGenericLocationInSignAlgebra a +
       (c : BranchGenericSignAlgebra a) * branchGenericSignRoot a)
       (branchGenericResultantLabel a c) = 0 := by
+  -- Stated here so that the instance uses this file's field instances.
   let : Fact (Irreducible (branchSignPolynomial
       (algebraMap ℚ BranchLocationExtension a) branchGenericDelta)) :=
-    ⟨branchSignPolynomial_irreducible
-      (by simpa only [map_zero] using (algebraMap ℚ BranchLocationExtension).injective.ne ha)
-      branchGenericDelta_ne_zero⟩
+    ⟨branchGenericSignPolynomial_irreducible ha⟩
   let : Field (BranchGenericSignAlgebra a) := inferInstance
   let R := RatFunc BranchLocationField
   let L := BranchLocationExtension
@@ -128,11 +120,10 @@ irreducible of degree twelve for every nonzero rational dividend. -/
 theorem branchGeneric_exists_irreducible_resultant_label (a : ℚ) (ha : a ≠ 0) :
     ∃ c : ℕ, c ≤ 144 ∧ Irreducible (branchGenericResultantLabel a c) ∧
       (branchGenericResultantLabel a c).natDegree = 12 := by
+  -- Stated here so that the instance uses this file's field instances.
   let : Fact (Irreducible (branchSignPolynomial
       (algebraMap ℚ BranchLocationExtension a) branchGenericDelta)) :=
-    ⟨branchSignPolynomial_irreducible
-      (by simpa only [map_zero] using (algebraMap ℚ BranchLocationExtension).injective.ne ha)
-      branchGenericDelta_ne_zero⟩
+    ⟨branchGenericSignPolynomial_irreducible ha⟩
   obtain ⟨c, hc, hirr, hdeg⟩ := branchGeneric_exists_degree_twelve_polynomial a ha
   have hp0 : branchGenericResultantLabel a c ≠ 0 := by
     intro hz

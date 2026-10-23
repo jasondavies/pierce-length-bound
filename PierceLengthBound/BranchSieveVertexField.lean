@@ -17,7 +17,7 @@ noncomputable section
 open Polynomial
 open scoped RatFunc
 attribute [local instance] Polynomial.algebra
-attribute [local instance] branchResultantDegreeLocationField branchResultantDegreeRatField
+open scoped BranchLocationFields
 
 /-- Generic vertices in order `(A,D,C,B)`, inverse to the normalized location
 coefficients `c₁=−(B+C)/A`, `c₂=(C+D)/A`, `c₃=−(D+A)/A`. -/
