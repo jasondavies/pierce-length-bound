@@ -84,19 +84,14 @@ theorem retained_polar_base_degree_le_four
     have hnormal := orbit_affine_normalization hba hi hne I hf hg hd hdegree F
     let : IsDedekindDomain (integralClosure A F) := hnormal.1
     let : Module.Finite A (integralClosure A F) := hnormal.2
-    obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-    have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-        (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
-    have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
+    obtain ⟨hρ, hu, hv, hne', ha, hA⟩ := orbit_rational_nonexceptional_data hba hi hne
     obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
-      hρ hu hv hne' (q 3) (q 4) (q 5) (Lz a b i : ℚ) (a : ℚ) ha I hf hg
+      hρ hu hv hne' _ _ _ _ _ ha I hf hg
     let w := Ideal.Quotient.mk I (X 0)
     let : Module.Finite (Algebra.adjoin ℚ {w}) A := coordinateRing_finite_over_parameter I w hs
     have hw := coordinate_parameter_transcendental I w hd hdegree hs
     let : Ring.KrullDimLE 1 R := finite_parameter_local_dimension (R := R) w hw
       p.primeCompl p.primeCompl_le_nonZeroDivisors
-    have hA : (Lz a b i : ℚ) ≠ 0 := by
-      exact_mod_cast (ne_of_gt (Lz_pos hba (by omega : i + 5 < P a b)))
     let ψR := (IsScalarTower.toAlgHom ℚ A R).comp (Ideal.Quotient.mkₐ ℚ I)
     let : IsLocalization.AtPrime R (RingHom.ker
         (coordinatePoint I ![z 0, z 0 + z 1, z 0 + z 1 + z 2] hzbase).toRingHom) := by

@@ -10,9 +10,11 @@ public import PierceLengthBound.OrbitConicGapCount
 public import PierceLengthBound.PoweredJointCountingSlack
 public import PierceLengthBound.PoweredJointGraphLowerDegree
 public import PierceLengthBound.FixedDividendCountAssembly
+public import PierceLengthBound.JointPatternCount
 
 /-! Combine conic counting, bounded polynomial cuts, and the proved degree
-range of the retained joint graph on each actual nonexceptional component. -/
+range of the retained joint graph on each actual nonexceptional component; the nonexceptional
+powered count is then `JointPatternCount` applied in the box `poweredJointBox`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -116,6 +118,16 @@ theorem selected_powered_joint_component_gap_count_slow (m n : ℕ) (hm : 0 < m)
         exact_mod_cast this
   · apply hsmall
     simp [not_nonempty_iff_eq_empty.mp hnonempty]
+
+/-- The nonexceptional branch of the powered pattern count, with all
+geometric and arithmetic inputs discharged on the actual orbit. -/
+theorem selected_nonexceptional_powered_joint_gap_count_slow (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
+    ∃ R : ℕ → ℕ, SlowGrowth R ∧
+      JointNonexceptionalCount (poweredJointBox m n) (1 / ((10 * n + 7 * m : ℕ) : ℝ)) R := by
+  obtain ⟨R, hR, hcount⟩ := selected_powered_joint_component_gap_count_slow m n hm hn
+  exact jointNonexceptionalCount_of_components hR
+    fun hba hmem hsT hT hne I hI hf hg hd G hG hpat hz =>
+      hcount hba hmem hsT hT hne I hI hf hg hd G hG (theta_eq_of_plk_eq hpat) hz
 
 end
 end PierceLengthBound.FixedDividend

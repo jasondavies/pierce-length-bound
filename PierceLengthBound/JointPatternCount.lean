@@ -14,7 +14,7 @@ public import PierceLengthBound.ExceptionalOrbitCount
 
 The steps from a count on one component of a nonexceptional pattern to the per-pattern estimate
 do not depend on the box of the graph count. They are stated here for a box `B p a A T` of the
-pattern `p` and an exponent `e`, and used by the powered joint graph (`PoweredJointPatternCount`)
+pattern `p` and an exponent `e`, and used by the powered joint graph (`PoweredJointLocalEstimate`)
 and the exterior lattice coordinates (`LatticeJointPatternCount`), each with `e = 1/h`. The box
 is inferred from the count, and its nonnegativity is discharged by `positivity`.
 -/

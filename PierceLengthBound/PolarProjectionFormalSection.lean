@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.PolarProjectionGeometry
+public import PierceLengthBound.PolarProjectionCenteredQuadric
 public import PierceLengthBound.PolarProjectionInitialForm
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.AdicCompletion.Completeness

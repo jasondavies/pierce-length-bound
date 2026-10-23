@@ -5,15 +5,28 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.PoweredJointPatternCount
-public import PierceLengthBound.OrdinaryPatternCount
+public import PierceLengthBound.PoweredJointComponentCount
+public import PierceLengthBound.JointPatternAssembly
 
-/-! Assemble the proved powered pattern counts into the three local terms
-and extract integer-power count branches without changing their exponents. -/
+/-! The powered joint-lift pattern estimate, with all component and external counting
+hypotheses discharged for every fixed pair of positive powers; its assembly into the three
+local terms, and the integer-power count branches extracted without changing their exponents. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open Finset
+
+/-- Geometric estimates remaining per full pattern: square-root counting for
+exceptional patterns, and a constant plus the powered-graph count otherwise. -/
+def PoweredJointPatternEstimate (m n : ℕ) (R : ℕ → ℕ) : Prop :=
+  JointPatternEstimate (poweredJointBox m n) (1 / ((10 * n + 7 * m : ℕ) : ℝ)) R
+
+/-- The powered joint-lift pattern estimate holds with a proved subpolynomial coefficient.
+It has no external counting, graph-degree, or retained-component assumptions. -/
+theorem poweredJointPatternEstimate_exists (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
+    ∃ R : ℕ → ℕ, SlowGrowth R ∧ PoweredJointPatternEstimate m n R := by
+  obtain ⟨Rn, hRn, hcountn⟩ := selected_nonexceptional_powered_joint_gap_count_slow m n hm hn
+  exact jointPatternEstimate_of_nonexceptional hRn hcountn
 
 /-- Three possible dominant terms in the powered count. -/
 def PoweredJointCountBranches (K T H X B L : ℕ) : Prop :=
@@ -86,38 +99,30 @@ theorem powered_joint_three_term_of_pattern_estimate {m n : ℕ} {R : ℕ → �
     PoweredJointThreeTermEstimate m n (patternSlack R) := by
   intro a b s T A hba hmem hsT hT hscale
   classical
-  let G := selectedStarts a b s T A
-  let pm := fun i => plk (Mi a b i)
-  let H := selectedGapHeight a A T
-  let X := selectedMinorHeight a A T
-  let B := max (max H (selectedCurvatureHeight a A T ^ m)) (selectedRankFiveHeight a A T ^ n)
-  have hp := pattern_sum_two_classes G pm (kap a b) (fun p => ∃ d, ExceptionalMinorRelation p d)
-    (show (0 : ℝ) ≤ R a * (1 + (B : ℝ) ^ (1 / ((10 * n + 7 * m : ℕ) : ℝ))) by positivity)
-    (show (0 : ℝ) ≤ R a * (H : ℝ) ^ (1 / 2 : ℝ) by positivity)
-    (show ((G.image pm).card : ℝ) ≤ ordinaryPatternSlack a * (X : ℝ) ^ 5 by
-      exact_mod_cast selected_ordinary_pattern_count hba hmem hsT hT)
-    (show (((G.image pm).filter fun p => ∃ d, ExceptionalMinorRelation p d).card : ℝ) ≤
-        exceptionalPatternSlack a * (X : ℝ) ^ 4 by
-      exact_mod_cast selected_exceptional_pattern_count_slack hba hmem hsT hT)
-    (by simpa only [G, pm, H, B, Nat.cast_max, Nat.cast_pow]
-      using hcurve a b s T A hba hmem hsT hT hscale)
-  have hTc : (T : ℝ) ≤ 8 * ((G.image fun i => (pm i, kap a b i)).card : ℝ) := by
-    exact_mod_cast le_eight_mul_pair_image hba hmem hsT hT
+  set H := selectedGapHeight a A T
+  set X := selectedMinorHeight a A T
+  set B : ℝ := max (max (H : ℝ) ((selectedCurvatureHeight a A T : ℝ) ^ m))
+    ((selectedRankFiveHeight a A T : ℝ) ^ n)
+  set e : ℝ := 1 / ((10 * n + 7 * m : ℕ) : ℝ)
+  have hT8 := selected_count_le_pattern_sum hcurve hba hmem hsT hT hscale
+  simp only [poweredJointBox, sum_const, nsmul_eq_mul] at hT8
+  have hP : (((selectedStarts a b s T A).image fun i => plk (Mi a b i)).card : ℝ) ≤
+      ordinaryPatternSlack a * (X : ℝ) ^ 5 := by
+    exact_mod_cast selected_ordinary_pattern_count hba hmem hsT hT
   dsimp only
   have hO : (ordinaryPatternSlack a : ℝ) ≤ ordinaryPatternSlack a + exceptionalPatternSlack a :=
     le_add_of_nonneg_right (Nat.cast_nonneg _)
   have hE : (exceptionalPatternSlack a : ℝ) ≤ ordinaryPatternSlack a + exceptionalPatternSlack a :=
     le_add_of_nonneg_left (Nat.cast_nonneg _)
-  calc (T : ℝ) ≤ 8 * ((ordinaryPatternSlack a : ℝ) * (X : ℝ) ^ 5 *
-        ((R a : ℝ) * (1 + (B : ℝ) ^ (1 / ((10 * n + 7 * m : ℕ) : ℝ)))) +
-        (exceptionalPatternSlack a : ℝ) * (X : ℝ) ^ 4 * ((R a : ℝ) * (H : ℝ) ^ (1 / 2 : ℝ))) :=
-      hTc.trans (mul_le_mul_of_nonneg_left hp (by norm_num))
-    _ ≤ 8 * (((ordinaryPatternSlack a : ℝ) + exceptionalPatternSlack a) * (X : ℝ) ^ 5 *
-        ((R a : ℝ) * (1 + (B : ℝ) ^ (1 / ((10 * n + 7 * m : ℕ) : ℝ)))) +
-        ((ordinaryPatternSlack a : ℝ) + exceptionalPatternSlack a) * (X : ℝ) ^ 4 *
-          ((R a : ℝ) * (H : ℝ) ^ (1 / 2 : ℝ))) := by gcongr
+  have hB : (0 : ℝ) ≤ 1 + B ^ e := by positivity
+  calc (T : ℝ) ≤ 8 * ((R a : ℝ) * ((ordinaryPatternSlack a : ℝ) * (X : ℝ) ^ 5 *
+        (1 + B ^ e)) + (R a : ℝ) * (H : ℝ) ^ (1 / 2 : ℝ) *
+        ((exceptionalPatternSlack a : ℝ) * (X : ℝ) ^ 4)) := hT8.trans (by gcongr)
+    _ ≤ 8 * ((R a : ℝ) * (((ordinaryPatternSlack a : ℝ) + exceptionalPatternSlack a) *
+        (X : ℝ) ^ 5 * (1 + B ^ e)) + (R a : ℝ) * (H : ℝ) ^ (1 / 2 : ℝ) *
+        (((ordinaryPatternSlack a : ℝ) + exceptionalPatternSlack a) * (X : ℝ) ^ 4)) := by gcongr
     _ = _ := by simp only [patternSlack, Nat.cast_mul, Nat.cast_add,
-        Nat.cast_ofNat, Nat.cast_max, Nat.cast_pow, B, H, X]; ring
+        Nat.cast_ofNat, B, H, X, e]; ring
 
 /-- Every fixed pair of positive powers has the full local three-term bound. -/
 theorem poweredJointThreeTermEstimate_exists (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :

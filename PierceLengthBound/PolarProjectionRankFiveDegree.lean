@@ -21,6 +21,17 @@ open MvPolynomial
 open scoped IntermediateField
 attribute [local instance] FractionRing.liftAlgebra
 
+/-- The rational data of an actual nonexceptional orbit state used by the chart theorems:
+the pattern signs, the rational nonexceptional condition, and nonvanishing of `a` and `L`. -/
+theorem orbit_rational_nonexceptional_data {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
+    (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i)) :
+    0 < patternRhoQ a b i ∧ 0 < patternUQ a b i ∧ patternVQ a b i < 0 ∧
+      NonexceptionalPattern (patternRhoQ a b i : ℝ) (patternUQ a b i : ℝ)
+        (patternVQ a b i : ℝ) ∧ (a : ℚ) ≠ 0 ∧ (Lz a b i : ℚ) ≠ 0 := by
+  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
+  refine ⟨hρ, hu, hv, by simpa using hne, by exact_mod_cast (show a ≠ 0 by omega), ?_⟩
+  exact_mod_cast (ne_of_gt (Lz_pos hba (by omega : i + 5 < P a b)))
+
 /-- At any branch where the old first coordinate has a pole, the rank-five function has
 a strictly negative order. The precise order is supplied by the existing infinity theorem. -/
 theorem retained_rank_five_negative_at_infinity
@@ -44,26 +55,16 @@ theorem retained_rank_five_negative_at_infinity
   obtain ⟨e, he⟩ := WithTop.ne_top_iff_exists.mp (ν.ne_top_iff.mpr hl0)
   have heneg : e < 0 := by rw [← he] at hneg; exact_mod_cast hneg
   have hw : ν ((ι l)⁻¹) = ((-e : ℤ) : WithTop ℤ) := by rw [ν.map_inv, ← he]; rfl
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  have hA : (Lz a b i : ℚ) ≠ 0 := by
-    exact_mod_cast (show Lz a b i ≠ 0 by
-      have := Lz_pos hba (by omega : i + 5 < P a b)
-      omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  obtain ⟨hρ, hu, hv, hne', ha, hA⟩ := orbit_rational_nonexceptional_data hba hi hne
   let : Module.Finite (Algebra.adjoin ℚ {w}) S :=
-    nonexceptional_chart_finite_over_parameter hρ hu hv hne'
-      (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-      (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
+    nonexceptional_chart_finite_over_parameter hρ hu hv hne' _ _ _ _ _ ha I hf hg ι hι hd hdegree
   have hregular (r : S) : 0 ≤ ν (r : F) := by
     apply branch_order_nonnegative_of_finite_parameter w ν hQ _ r
     change 0 ≤ ν ((ι l)⁻¹)
     rw [hw]
     exact_mod_cast (show (0 : ℤ) ≤ -e by omega)
-  obtain ⟨t, ht, _, hJ⟩ := nonexceptional_rank_five_discrete_order hρ hu hv hne'
-    (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-    (Lz a b i : ℚ) (a : ℚ) hA ha I hf hg ι hι hd hdegree ν hregular
+  obtain ⟨t, ht, _, hJ⟩ := nonexceptional_rank_five_discrete_order hρ hu hv hne' _ _ _ _ _
+    hA ha I hf hg ι hι hd hdegree ν hregular
     (show (0 : ℤ) < -e by omega) hw
   change ν (ι (Ideal.Quotient.mk I (jointRankFivePolynomial a b i))) = _ at hJ
   rw [hJ]
@@ -94,13 +95,9 @@ theorem retained_rank_five_zero_normalization_regular
     have hh := retained_rank_five_negative_at_infinity hba hi hne I hf hg
       ι (IsFractionRing.injective R F) hd hdegree ν hQ (lt_of_not_ge h)
     exact (not_lt_of_ge hJ.le) hh
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation hρ hu hv hne'
-    (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-    (Lz a b i : ℚ) (a : ℚ) ha I hf hg
+  obtain ⟨hρ, hu, hv, hne', ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
+  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
+    hρ hu hv hne' _ _ _ _ _ ha I hf hg
   let : Module.Finite (Algebra.adjoin ℚ {l}) R := coordinateRing_finite_over_parameter I l hs
   exact branch_order_nonnegative_on_normalization ν
     (branch_order_nonnegative_of_finite_parameter l ν hQ hl)
@@ -138,26 +135,15 @@ theorem retained_rank_five_degree_lower_bound
   let : IsDedekindDomain C := hnormal.2.1
   let : IsFractionRing C F := IsIntegralClosure.isFractionRing_of_finite_extension S F F C
   have hι : Function.Injective ι := IsFractionRing.injective R F
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  have hA : (Lz a b i : ℚ) ≠ 0 := by
-    exact_mod_cast (show Lz a b i ≠ 0 by
-      have := Lz_pos hba (by omega : i + 5 < P a b)
-      omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  obtain ⟨hρ, hu, hv, hne', ha, hA⟩ := orbit_rational_nonexceptional_data hba hi hne
   let : Module.Finite (Algebra.adjoin ℚ {w}) S :=
-    nonexceptional_chart_finite_over_parameter hρ hu hv hne'
-      (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-      (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
-  have hw : Transcendental ℚ w := nonexceptional_chart_parameter_transcendental hρ hu hv hne'
-    (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-    (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree
+    nonexceptional_chart_finite_over_parameter hρ hu hv hne' _ _ _ _ _ ha I hf hg ι hι hd hdegree
+  have hw : Transcendental ℚ w := nonexceptional_chart_parameter_transcendental
+    hρ hu hv hne' _ _ _ _ _ ha I hf hg ι hι hd hdegree
   obtain ⟨B, hB, hsum⟩ := normalized_parameter_branches (L := F) w hw
   have hdim : Module.finrank ℚ (S ⧸ Ideal.span {w}) = d :=
-    (rational_nonexceptional_chart_infinity_dimension hρ hu hv hne'
-      (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-      (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree).2
+    (rational_nonexceptional_chart_infinity_dimension hρ hu hv hne' _ _ _ _ _
+      ha I hf hg ι hι hd hdegree).2
   have hwC0 : algebraMap S C w ≠ 0 := by
     intro hz
     have hh := congrArg (algebraMap C F) hz
@@ -178,9 +164,8 @@ theorem retained_rank_five_degree_lower_bound
         change ν (algebraMap C F (algebraMap S C w)) = _ at hwν
         rw [← IsScalarTower.algebraMap_apply S C F] at hwν
         exact hwν
-      obtain ⟨t, ht, het, hJ⟩ := nonexceptional_rank_five_discrete_order hρ hu hv hne'
-        (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-        (Lz a b i : ℚ) (a : ℚ) hA ha I hf hg ι hι hd hdegree ν hregular he hwν'
+      obtain ⟨t, ht, het, hJ⟩ := nonexceptional_rank_five_discrete_order
+        hρ hu hv hne' _ _ _ _ _ hA ha I hf hg ι hι hd hdegree ν hregular he hwν'
       have hmult := normalizedBranchOrder_eq_multiplicity p F hwC0
       rw [hwν] at hmult
       have hmult' : multiplicity p.asIdeal (Ideal.span {algebraMap S C w}) = 2 * t.toNat := by
