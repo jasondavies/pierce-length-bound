@@ -47,29 +47,5 @@ theorem rational_nonexceptional_curve_decomposition {ρ u v : ℚ}
   refine ⟨hprime, hheight, hf, hg, d, by omega, hd24, ⟨m, hm⟩,
     by omega, N, c, hdegree⟩
 
-/-- The existing actual-window rational component interface gains the exact
-parity split required by the quarter-root branch of the counting argument. -/
-theorem orbit_rational_component_parity_range {a b i : ℕ}
-    (hba : b < a) (hi : i + 7 < P a b)
-    (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
-    {H X₀ : ℤ} (hX : 1 ≤ X₀) (hgaps : ∀ m < 5, kq a b (i + m) ≤ H)
-    (hU : |U1z a b i| ≤ X₀) (hV : |U2z a b i| ≤ X₀)
-    (hscale : (a : ℤ) * H ^ 5 * (24 * X₀ + 464) < (qq a b i : ℤ) ^ 4)
-    (p : Ideal (MvPolynomial (Fin 3) ℚ)) [p.IsPrime] (hp : p.height = 2)
-    (hf : orbitCurveQuadraticQ a b i ∈ p) (he : orbitCurveEquationQ a b i ∈ p)
-    (hx : orbitFreeNodesQ a b i ∈ coordinateZeroLocus p) :
-    ∃ d : ℕ, 2 ≤ d ∧ d ≤ 24 ∧ Even d ∧ (d = 2 ∨ 4 ≤ d) ∧
-      ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
-        (Module.finrank ℚ (filteredCoordinateSpace p n) : ℤ) = (d : ℤ) * n + c := by
-  obtain ⟨d, hd, hd24, N, c, hdegree⟩ :=
-    orbit_rational_component_degree_range hba hi hX hgaps hU hV hscale p hp hf he hx
-  obtain ⟨hρ, hu, hv, hne', ha, hL⟩ := orbit_rational_nonexceptional_data hba hi hne
-  have heven := rational_nonexceptional_component_degree_even hρ hu hv hne'
-    (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-    (Lz a b i) a hL ha p hf he
-    (by omega : 0 < d) hdegree
-  obtain ⟨m, hm⟩ := heven
-  exact ⟨d, hd, hd24, ⟨m, hm⟩, by omega, N, c, hdegree⟩
-
 end
 end PierceLengthBound.FixedDividend

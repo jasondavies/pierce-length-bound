@@ -41,21 +41,6 @@ lemma standard_polynomial_eq_zero {K σ : Type*} [Field K]
   by_contra hn
   exact (hf (m.degree_mem_support hn)) f hI hn le_rfl
 
-/-- Quotient classes determine standard representatives uniquely. -/
-lemma standard_quotient_injective {K σ : Type*} [Field K]
-    (I : Ideal (MvPolynomial σ K)) (m : MonomialOrder σ) :
-    Function.Injective ((Ideal.Quotient.mkₐ K I).toLinearMap.comp
-      (restrictSupport K (standardExponents I m)).subtype) := by
-  intro f g h
-  apply Subtype.ext
-  apply sub_eq_zero.mp
-  apply standard_polynomial_eq_zero I m
-  · exact Submodule.sub_mem _ f.property g.property
-  · apply Ideal.Quotient.eq_zero_iff_mem.mp
-    change (Ideal.Quotient.mkₐ K I) (f.val - g.val) = 0
-    rw [map_sub, sub_eq_zero]
-    exact h
-
 /-- Degree-compatible division gives a standard representative in the same
 filtered piece of the quotient. -/
 theorem exists_standard_representative {K σ : Type*} [Field K]

@@ -12,8 +12,8 @@ public import Mathlib.RingTheory.Nullstellensatz
 # The first-node chart covers the nonexceptional infinity section
 
 The leading quadratic and fourth power of the leading norm have no nonzero
-common zero with first node zero. The Nullstellensatz therefore supplies powers
-of every coordinate in the corresponding homogeneous boundary ideal.
+common zero with first node zero, so the corresponding homogeneous boundary ideal
+has only the origin as complex zero.
 -/
 
 @[expose] public section
@@ -60,37 +60,6 @@ theorem nonexceptional_infinity_boundary_zero {ρ u v : ℝ}
   have he : completeDirection (ρ : ℂ) (u : ℂ) (v : ℂ) z 1 =
       completeDirection (ρ : ℂ) (u : ℂ) (v : ℂ) z 0 := by simpa [completeDirection] using hz0
   exact (by decide : (1 : Fin 5) ≠ 0) (hinj he)
-
-/-- Each coordinate is nilpotent modulo the homogeneous boundary ideal. -/
-theorem nonexceptional_infinity_coordinate_power {ρ u v : ℝ}
-    (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (hne : NonexceptionalPattern ρ u v)
-    (j : Fin 3) : ∃ n : ℕ, (X j : MvPolynomial (Fin 3) ℂ) ^ n ∈
-      infinityBoundaryIdeal (ρ : ℂ) (u : ℂ) (v : ℂ) := by
-  have hvn : (X j : MvPolynomial (Fin 3) ℂ) ∈
-      vanishingIdeal ℂ (zeroLocus ℂ (infinityBoundaryIdeal (ρ : ℂ) (u : ℂ) (v : ℂ))) := by
-    intro z hz
-    rw [nonexceptional_infinity_boundary_zero hρ hu hv hne z hz]
-    simp
-  rw [vanishingIdeal_zeroLocus_eq_radical] at hvn
-  exact hvn
-
-/-- A common positive exponent is available for all three coordinates. -/
-theorem nonexceptional_infinity_coordinate_powers {ρ u v : ℝ}
-    (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (hne : NonexceptionalPattern ρ u v) :
-    ∃ N : ℕ, 0 < N ∧ ∀ j : Fin 3, (X j : MvPolynomial (Fin 3) ℂ) ^ N ∈
-      infinityBoundaryIdeal (ρ : ℂ) (u : ℂ) (v : ℂ) := by
-  classical
-  choose n hn using nonexceptional_infinity_coordinate_power hρ hu hv hne
-  let N := (Finset.univ.sup n) + 1
-  refine ⟨N, by dsimp [N]; omega, ?_⟩
-  intro j
-  have hj : n j ≤ N := by
-    have := Finset.le_sup (f := n) (Finset.mem_univ j)
-    dsimp [N]
-    omega
-  have ht := (infinityBoundaryIdeal (ρ : ℂ) (u : ℂ) (v : ℂ)).mul_mem_left
-    ((X j : MvPolynomial (Fin 3) ℂ) ^ (N - n j)) (hn j)
-  simpa only [← pow_add, Nat.sub_add_cancel hj] using ht
 
 end
 end PierceLengthBound.FixedDividend

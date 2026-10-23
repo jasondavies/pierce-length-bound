@@ -438,7 +438,7 @@ below.
 | `JointPatternCount` | from component counts to nonexceptional and per-pattern estimates, for any box and exponent; shared by the powered, lattice and polar chains |
 | `JointPatternAssembly` | the window length bounded by the per-pattern estimate summed over the selected patterns, shared by the local estimates |
 | `OrdinaryPatternCount` | the ordinary minor-pattern count `O(τ X⁵)`, the two-class pattern sum and the pattern slack, shared by the local estimates |
-| `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges; `window_real_large_mean_gap` and `window_branch_exponent` are the window lemmas shared by all chains |
+| `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges; `window_real_large_mean_gap`, `window_branch_exponent` and the window-constant bookkeeping `window_real_of_branch_power` are the window lemmas shared by all chains |
 | `RealPowerBounds` | elementary real-power inequalities: concavity over a finite sum, powers of maxima, one dominant term among five |
 | `PoweredJointBound` | the optimized exponent and its rational versions `m = 50`, `n = 51` (`2201/7480`) and `m = n = 1` (`128/435`) |
 

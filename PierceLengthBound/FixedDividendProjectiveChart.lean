@@ -108,25 +108,5 @@ theorem mem_projectiveChart_iff {K σ F : Type*} [Field K] [Field F] [Algebra K 
     Submodule.mem_iSup_of_directed _ (projectiveChartPiece_mono I ι l hl hl0).directed_le]
   simp only [mem_projectiveChartPiece]
 
-/-- Each chart piece retains the exact affine filtered dimension. -/
-theorem projectiveChartPiece_finrank {K σ F : Type*} [Field K] [Field F] [Algebra K F]
-    [Finite σ] (I : Ideal (MvPolynomial σ K))
-    (ι : (MvPolynomial σ K ⧸ I) →ₐ[K] F) (hι : Function.Injective ι)
-    (l : MvPolynomial σ K ⧸ I) (hl0 : ι l ≠ 0) (n : ℕ) :
-    Module.finrank K (projectiveChartPiece I ι l n) =
-      Module.finrank K (filteredCoordinateSpace I n) := by
-  let f : (MvPolynomial σ K ⧸ I) →ₗ[K] F :=
-    (ι l)⁻¹ ^ n • ι.toLinearMap
-  have hf : Function.Injective f := by
-    intro a b hab
-    apply hι
-    exact mul_left_cancel₀ (pow_ne_zero n (inv_ne_zero hl0)) hab
-  have he : projectiveChartPiece I ι l n = (filteredCoordinateSpace I n).map f := by
-    ext x
-    rw [mem_projectiveChartPiece, Submodule.mem_map]
-    simp only [f, LinearMap.smul_apply, AlgHom.toLinearMap_apply, smul_eq_mul, mul_comm]
-  rw [he]
-  exact (Submodule.equivMapOfInjective f hf (filteredCoordinateSpace I n)).finrank_eq.symm
-
 end
 end PierceLengthBound.FixedDividend
