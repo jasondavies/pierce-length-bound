@@ -6,14 +6,18 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveVertexFamily
-public import PierceLengthBound.BranchSieveVertexField
 public import PierceLengthBound.BranchSieveMonicization
 public import PierceLengthBound.BranchSieveMonicTransfer
 public import PierceLengthBound.PolarProjectionGeometryGoodPattern
+public import PierceLengthBound.BranchSieveResultantGeneric
 
 /-! The actual monic four-vertex family for Hilbert specialization. It has
 uniform degree and polynomial dividend height, is generically irreducible for
-a bounded slope, and detects every bad nonzero-scale orbit pattern. -/
+a bounded slope, and detects every bad nonzero-scale orbit pattern.
+
+Generic unnormalized first-minor vertices recover the normalized branch
+coefficients. They provide a coefficient map for proving generic irreducibility
+of the monic integer family. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -21,7 +25,28 @@ noncomputable section
 open Polynomial
 open scoped RatFunc
 attribute [local instance] Polynomial.algebra
-attribute [local instance] branchResultantDegreeLocationField branchResultantDegreeRatField
+open scoped BranchLocationFields
+
+/-- Generic vertices in order `(A,D,C,B)`, inverse to the normalized location
+coefficients `c₁=−(B+C)/A`, `c₂=(C+D)/A`, `c₃=−(D+A)/A`. -/
+def branchGenericVertex : Fin 4 → RatFunc BranchLocationField :=
+  ![RatFunc.X, -RatFunc.X * (branchResultantGenericCoefficient 2 + 1),
+    RatFunc.X * (branchResultantGenericCoefficient 1 + branchResultantGenericCoefficient 2 + 1),
+    -RatFunc.X * (branchResultantGenericCoefficient 0 + branchResultantGenericCoefficient 1 +
+      branchResultantGenericCoefficient 2 + 1)]
+
+lemma branchGenericVertex_zero :
+    branchGenericVertex 0 = (RatFunc.X : RatFunc BranchLocationField) := rfl
+
+lemma branchGenericVertex_normalized :
+    (-branchGenericVertex 3 - branchGenericVertex 2) / branchGenericVertex 0 =
+        branchResultantGenericCoefficient 0 ∧
+      (branchGenericVertex 2 + branchGenericVertex 1) / branchGenericVertex 0 =
+        branchResultantGenericCoefficient 1 ∧
+      (-branchGenericVertex 1 - branchGenericVertex 0) / branchGenericVertex 0 =
+        branchResultantGenericCoefficient 2 := by
+  dsimp [branchGenericVertex]
+  constructor <;> (try constructor) <;> field_simp [RatFunc.X_ne_zero] <;> ring
 
 /-- Monic degree-twelve family, before fixing its dividend variable. -/
 def branchMonicVertexFamily (c : ℕ) : Polynomial (MvPolynomial (Fin 5) ℤ) :=
