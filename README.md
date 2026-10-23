@@ -36,26 +36,28 @@ proves, uniformly in `0 < b < a`:
 
 ## Polar projection and the arithmetic sieve
 
-[`PolarProjectionMain.lean`](PierceLengthBound/PolarProjectionMain.lean) proves both new
-exponents unconditionally. The exact orbit identity `D W = A (Gk + ℓ)` identifies the
-projective curvature coordinates with linear forms. Their actual residue-weighted
-common-base contribution is at most four. On the good degree-24 components this gives
+[`PolarProjectionMain.lean`](PierceLengthBound/PolarProjectionMain.lean) proves the polar exponent
+`β*` and its rational instance `4317/14677`. The exact orbit identity `Ψ W = N₀ V`, with
+`V = Gk + ℓ` (rank-five form `J W = N₀² V`), identifies the projective curvature
+coordinates with linear forms. Their residue-weighted common-base contribution is at
+most four. On the good degree-24 components this gives
 the powered graph degree bound `60n+56m`.
 
 The branch condition comes from an explicit degree-12 polynomial whose roots specialize
-to labels in the actual residue fields at infinity. A coefficient-uniform effective
+to labels in the residue fields at infinity. A coefficient-uniform effective
 Hilbert irreducibility theorem is proved in
 [`BranchSieveMultivariateHilbert.lean`](PierceLengthBound/BranchSieveMultivariateHilbert.lean),
 using CCDN, integer factor-height bounds, universal resolvents, integral specialization,
 Kronecker substitution and induction over the parameters. It bounds the bad four-label
 vertices uniformly in the dividend and their common divisor. The completion count
-transfers this saving to full patterns, retaining all common factors and pivot charts.
+transfers this saving to full patterns: they are covered by eight signed pivot charts on
+the first-four-column minors, and common divisors enter through the dilation.
 The [reusable Hilbert irreducibility entry points](#reusable-hilbert-irreducibility)
 are listed separately below.
 
 A fixed proper exceptional polynomial handles the local geometric exclusions. Its
-pattern count has power `X^(14/3)` with a slowly growing coefficient. Summing the actual
-curve estimates proves the six-term window bound and hence the new global exponents.
+pattern count is `K (1 + τ_max(X)²) X^(14/3)`, hence `O(X^(14/3+ε))`. Summing the curve
+estimates proves the six-term window bound and hence the polar exponents.
 The paper's section “Exact polar projection and the branch sieve” presents the argument.
 
 ## Repository layout
@@ -183,7 +185,7 @@ python3 scripts/verify-polar-kernels.py                     # manual: additional
   build alone does not establish a Palomar verification pass.
 
 `scripts/verify-polar-kernels.py` exports thirty-two additional principal polar results,
-including the actual common-base bound, pattern count, effective Hilbert theorem,
+including the common-base bound, pattern count, effective Hilbert theorem,
 arithmetic sieve, graph-degree reduction and global reductions, and replays their proofs with Lean,
 NanoDa and con-ron at their standard settings.
 This is an additional proof check; these statements are not compared with an independent
@@ -277,7 +279,7 @@ dependency audit checks that these are the only weighted counts they reach.
 ### Joint-invariant refinement
 
 The joint lift adjoins three integer curvature minors `W` and the positive integer rank-five
-invariant `I₅ = A D` to the three gap coordinates of a pattern. Over each prime component of the
+invariant `I₅ = I₄ Ψ` (`J = N₀ Ψ`) to the three gap coordinates of a pattern. Over each prime component of the
 pattern curve these seven coordinates define a graph, and all selected states with the same
 minor pattern are integer points of that graph in a uniform box. The ordinary `X⁵` pattern
 count suffices, with subpolynomial divisor slack; no weighted-lattice count is used.
@@ -300,7 +302,7 @@ gives `α* = (1310 − √655)/4365 = 0.2942513246…`, and `m = 50`, `n = 51` g
 The coefficient-uniform affine-curve theorem is proved in
 [`ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth). `CCDN.affineCurveBound`
 gives `C(n) * d³ * B^(1/d) * (log B + d)` for every prime affine curve over `ℚ` in ambient
-dimension `n ≥ 2`, using its actual affine Hilbert degree and every real `B ≥ 1`. Its proof
+dimension `n ≥ 2`, using its affine Hilbert degree and every real `B ≥ 1`. Its proof
 includes the plane theorem, bounded degree-preserving projections, and uniform box rescaling.
 There is no external counting hypothesis.
 
@@ -312,7 +314,7 @@ All modules are in `PierceLengthBound/`; the `.lean` extension is omitted.
 
 These theorems apply to general monic integer polynomial families, without orbit or
 branch assumptions. Their constants depend only on the degree bounds and number of
-parameters. They currently retain the namespace `PierceLengthBound.FixedDividend`.
+parameters. They live in the namespace `PierceLengthBound.FixedDividend`.
 
 | Entry point | Module |
 |---|---|
@@ -332,15 +334,16 @@ then applies the general estimate uniformly in the dividend and common divisor.
 | `Defs` | `P`, the orbit `orb`, `P ≤ b` (`P_le_self`), the quotients `qq` with `bᵢqᵢ + bᵢ₊₁ = a` and strict monotonicity (`qq_lt`, `qq_strictMono`); check `P 35 22 = 7` |
 | `Block` | curvature `D = dv − eu`: identity `Dz = df + ude + (u−1)e²`, `D ≥ 1`, fiber equation `x M(q) = a N(q) + D`, size bounds |
 | `Fiber` | a fixed `(u, v, D)` allows at most `max_{n ≤ 32a⁷} τ(n)` starting points |
-| `Window` | for a run of `T` terms in `[A, 2A)`: its quotient increments and drops, `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
+| `Window` | for a run of `T` terms in `[A, 2A)`: its quotient increments and drops and their telescoping sums, the shared estimates `le_four_mul`, `lt_three_mul`, `drop_bound_sq` and `gap_height_mul_le`, `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³` |
 | `Main` | dyadic decomposition (`visits_run`), `P_le_of_real_visits` and `P_le_of_visits` (window bounds `T ≤ S(a) a^α`, or `T^N ≤ K S(a) aʳ`, with `S(a) ≪ a^η` give `P ≪ a^{α+ε}`, resp. `a^{r/N+ε}`), and the unconditional theorem `P_le` |
-| `PolarProjectionMain` | unconditional optimized polar bound and `4317/14677`; assembles the proved arithmetic sieve, geometry and six-term window estimate |
-| `PolarProjectionRetainedBase`, `PolarProjectionRetainedDegree` | actual common-base contribution at most four and the retained powered graph degree bound `60n+56m` |
+| `PolarProjectionMain` | the optimized polar bound and `4317/14677`; assembles the arithmetic sieve, geometry and six-term window estimate |
+| `PolarProjectionWindow`, `PolarProjectionBound` | the six-term window reduction and the global polar bounds |
+| `PolarProjectionRetainedBase`, `PolarProjectionRetainedDegree` | common-base contribution at most four and the retained powered graph degree bound `60n+56m` |
 | `PolarProjectionGeometryGoodPattern` | explicit branch irreducibility and the fixed proper exceptional polynomial imply the good-pattern geometric estimate |
-| `BranchSieveVertexMonic`, `BranchSieveArithmeticVertexCount` | the actual integer degree-12 family, generic irreducibility, specialization compatibility and uniform scaled-vertex sieve |
+| `BranchSieveVertexMonic`, `BranchSieveArithmeticVertexCount` | the integer degree-12 family, generic irreducibility, specialization compatibility and uniform scaled-vertex sieve |
 | `BranchSievePatternCount`, `BranchSievePatternCountSlow` | completion to full minor patterns with all common divisors and the slow-growth bound on selected orbit windows |
-| `HypersurfacePatternCount`, `HypersurfacePatternCountSlow` | proper algebraic exceptional loci have pattern exponent `14/3` |
-| `SixStep` | the six-step identity `q w L = J E + S F`, `L ≥ 1` (exported as `Lz_pos` in `OrbitPattern.lean`), and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10`, hence `T⁴ ≤ 122449 a` when `AT > 28a` (`window_large_mean_gap`) |
+| `HypersurfacePatternCount`, `HypersurfacePatternCountSlow` | proper algebraic exceptional loci have pattern count `K (1 + τ_max(X)²) X^(14/3)`, hence exponent `14/3 + ε` |
+| `SixStep` | the six-step identity `q w L = J E + S F`, `L ≥ 1`, the window preamble `window_facts`, and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10`, hence `T⁴ ≤ 122449 a` when `AT > 28a` (`window_large_mean_gap`) |
 | `ShortSum` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
 | `Geometric` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}`, and the general form `∑_k min(α 2^{−sk}, β 2^{tk}) ≪ α^{t/(s+t)} β^{s/(s+t)}` (`sum_min_le_gen`) |
 | `Conditional` | any short-interval divisor bound `≪ y G(x)` for `x^{1/4} ≤ y ≤ x`, with `1 ≤ G(x) ≪ x^{1/40}`, gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
@@ -351,7 +354,7 @@ then applies the general estimate uniformly in the dividend and common divisor.
 | `Functional` | the moment functionals `μᵢ`, `νᵢ` on polynomials, the Newton basis, shift rules, `νᵢ(f²) ≤ μᵢ(f²)/qᵢ` |
 | `Gram` | `Iᵣ(i) ≤ a ∏ⱼ μᵢ(Fⱼ²)/qᵢʳ`, and the label bound `L(i) qᵢ⁴ ≤ a · gramP` |
 | `TwoState` | the cofactors, null relations, reduced quadratic, the multiplicity identity, root counting |
-| `PatternBound` | the seven pattern integers are `≤ 172032 A⁴H⁶/a³` under the scale condition |
+| `PatternBound` | `state_bound`: the four pattern integers of a state are `≤ 172032 A⁴H⁶/a³` under the scale condition (applied at `i` and `i+1` for all seven) |
 | `PatternCount` | the counting lemma `#G ≤ 8 (2M+1)⁷ H²` |
 | `OrbitPattern` | the orbit-state vocabulary: the integer increments and drops `kq`, `dq`, the six-step integer `Lz` (`Lz_pos`), the cofactors `U1z`, `U2z`, the pattern `theta` and gaps `kap` with their identities (`e0_at`, `e3_at`, `mult_at`), the good starts (`good_card`, `goodStarts`) and their pattern hypotheses (`PatternHyps`, `goodStarts_patternHyps`), and the matrix `𝓜ᵢ` (`Mi`) with the pattern as signed minors (`projθ`, `theta_eq`, `orbit_pattern_first`) |
 | `TwentyThreeMain` | the label bound in window form, the pattern height at good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
@@ -398,7 +401,7 @@ below.
 
 | Module | Contents |
 |---|---|
-| `JointLiftAlgebra` | curvature reconstruction and dot-product identities; `I₅ = A D`, with positivity and integrality |
+| `JointLiftAlgebra` | curvature reconstruction and dot-product identities; `I₅ = I₄ Ψ`, with positivity and integrality |
 | `JointLiftCurvatureHeight` | first-order reciprocal expansion; `\|W_j\| q³ ≤ 68 a H³` for all three curvature coordinates |
 | `JointLiftRankFiveHeight` | the Newton Gram product bound `1230460 H¹⁰`, the rank-five height, and its floored selected box |
 | `JointLiftCoordinates`, `JointLiftFieldCoordinates` | polynomial graph coordinates with a common denominator, agreeing with the rational curvature formulas |
@@ -430,7 +433,7 @@ below.
 | `JointLiftPointCount`, `JointLiftCountingSlack` | the curve count on seven-coordinate integer points; the logarithm absorbed via the polynomial box bound |
 | `OrbitConicGapCount` | the conic divisor estimate applied directly to distinct gap vectors |
 | `OrbitCurveGapCount`, `OrbitPatternCurveCount` | the square-root count after excluding lines at the window scale |
-| `JointLiftComponentCount` | conics, the two bounded cuts and retained graphs, in the unpowered box |
+| `JointLiftComponentCount` | conics, the two bounded cuts and retained graphs, in the unpowered box; used by the polar chain |
 | `JointLiftExponent` | the selected curvature and rank-five boxes, and their products with powers of the window length |
 | `JointLiftOptimization` | rational approximation of a crossing (`exists_rat_max_lt_of_crossing`), the optimal crossing, the minimum of the two exponent functions, and approximation by fixed integer powers |
 | `PoweredJointGraph`, `PoweredPoleOrder` | the graph with coordinates `W_jᵐ` and `Jⁿ`, of degree at most `((m+n)·247+1)d`; powers multiply pole orders |
@@ -440,7 +443,7 @@ below.
 | `JointPatternCount` | from component counts to nonexceptional and per-pattern estimates, for any box and exponent; shared by the powered, lattice and polar chains |
 | `JointPatternAssembly` | the window length bounded by the per-pattern estimate summed over the selected patterns, shared by the local estimates |
 | `OrdinaryPatternCount` | the ordinary minor-pattern count `O(τ X⁵)`, the two-class pattern sum and the pattern slack, shared by the local estimates |
-| `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges; `window_real_large_mean_gap`, `window_branch_exponent` and the window-constant bookkeeping `window_real_of_branch_power` are the window lemmas shared by all chains |
+| `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges; `window_real_large_mean_gap`, `window_branch_exponent` and the window-constant bookkeeping `window_real_of_branch_power` are the window lemmas shared by the powered, lattice and polar chains (the earlier chains use `window_large_mean_gap` and `window_real_bound_of_power`) |
 | `RealPowerBounds` | elementary real-power inequalities: concavity over a finite sum, powers of maxima, one dominant term among five |
 | `PoweredJointBound` | the optimized exponent and its rational versions `m = 50`, `n = 51` (`2201/7480`) and `m = n = 1` (`128/435`) |
 
@@ -450,9 +453,10 @@ below.
 |---|---|
 | `FixedDividend*` | the fixed-dividend resultant identity, quadratic irreducibility, relative primality, a rational component cover of total degree at most 24, even degree of nonexceptional components, line exclusion, conic plane models, and filtered Hilbert-degree infinity charts |
 | `Exceptional*` | the exceptional-pattern count `O(X⁴ log 2X)` |
-| `IntegralLift*` | bounded integer conic parameters, monic quotient normalization, cubic quotient degree, and properness of the `I₃` lift after at most 492 exceptional points |
+| `IntegralLift*` | reconstruction of `I₃` from the cofactors of the eight-row moment system, the resolvent identities, monic quotient normalization, cubic quotient degree, and properness of the `I₃` lift after at most 492 exceptional points |
 | `Conic*` | conic arithmetic, integer values of rational functions, and coefficient heights |
-| `Chart*`, `Branch*`, `Normalization*`, `NormalizedBranchValuation`, `CurveNormalization`, `ParameterFiberDegree`, `LinearFunctionDegree` | chart and normalization infrastructure for branch orders and function-field degrees |
+| `Chart*`, `Branch*` (other than `BranchSieve*`), `Normalization*`, `NormalizedBranchValuation`, `CurveNormalization`, `ParameterFiberDegree`, `LinearFunctionDegree` | chart and normalization infrastructure for branch orders and function-field degrees |
+| `RationalNeighborhood`, `RationalNeighborhoodJet` | rational expressions cleared on a principal neighborhood of a rational point (`RationalNear`), and rational dependence of the first two coefficients of formal paths; used to build the exceptional polynomial `Θ` |
 | `NewtonCoefficientDegrees`, `RawDeterminantTotalDegree`, `OrbitPatternGeometry` | coefficient degrees of the Newton quartic and raw determinants; transport of component data within a pattern |
 
 ## Dependencies
