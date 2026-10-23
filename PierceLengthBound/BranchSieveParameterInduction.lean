@@ -64,12 +64,10 @@ theorem branch_integer_box_card {r B : ℕ} (S : Finset (Fin r → ℤ))
 
 theorem branch_integer_interval_card {B : ℕ} (S : Finset ℤ)
     (hS : ∀ x ∈ S, |x| ≤ (B : ℤ)) : S.card ≤ 2 * B + 1 := by
-  have hsub : S ⊆ Icc (-(B : ℤ)) B := by
-    intro x hx
-    exact mem_Icc.mpr (abs_le.mp (hS x hx))
-  apply (card_le_card hsub).trans
-  simp only [Int.card_Icc]
-  omega
+  simpa using branch_integer_box_card
+    (S.map ⟨fun x (_ : Fin 1) => x, fun _ _ h => congrFun h 0⟩) fun _ hx _ => by
+      obtain ⟨a, ha, rfl⟩ := mem_map.mp hx
+      exact hS a ha
 
 /-- Separate exceptional first coordinates from fibers to which the
 induction hypothesis applies. This counts the actual finite set of tuples. -/

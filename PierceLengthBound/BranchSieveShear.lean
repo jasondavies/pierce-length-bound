@@ -67,7 +67,7 @@ theorem branchPowerShear_eval (e : ℕ) (c : R) (p : MvPolynomial (Fin 2) R) (t 
 
 /-- The Kronecker substitution has degree at least the shear power times the
 original degree in the root variable. -/
-theorem branchKroneckerHom_natDegree_lower {p : MvPolynomial (Fin 2) R}
+theorem branchMultiKronecker_two_natDegree_lower {p : MvPolynomial (Fin 2) R}
     (hp : p ≠ 0) {e : ℕ} (he : p.degreeOf 0 < e) :
     e * p.degreeOf 1 ≤ (branchMultiKronecker e 2 p).natDegree := by
   obtain ⟨s, hs, hdeg⟩ := Finset.exists_mem_eq_sup p.support
@@ -111,7 +111,7 @@ root-variable degree, with no genericity assumption on the coefficients. -/
 theorem branchPowerShear_totalDegree_lower {p : MvPolynomial (Fin 2) R}
     (hp : p ≠ 0) {e : ℕ} (he : p.degreeOf 0 < e) :
     e * p.degreeOf 1 ≤ (branchPowerShearHom e 1 p).totalDegree := by
-  apply (branchKroneckerHom_natDegree_lower hp he).trans
+  apply (branchMultiKronecker_two_natDegree_lower hp he).trans
   rw [← branchAxisHom_shear]
   exact branchAxisHom_natDegree_le _
 
