@@ -6,19 +6,18 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendRationalChartResultant
-public import PierceLengthBound.FixedDividendConicInfinity
 public import PierceLengthBound.FixedDividendLocalizationParity
-public import PierceLengthBound.FixedDividendLocalParity
 public import Mathlib.RingTheory.Localization.FractionRing
 public import PierceLengthBound.FixedDividendConicDiscriminant
 
 /-!
 # The actual nonexceptional conic has parabolic leading form
 
-For any containing rational plane whose third coefficient is nonzero, restriction
-of the actual leading quadratic to that plane has zero binary discriminant.
-The proof uses the actual rational infinity section and its nonzero nilpotent
-norm residue; no geometric classification premise is assumed.
+For any containing rational plane whose third (or second) coefficient is
+nonzero, restriction of the actual leading quadratic to that plane has zero
+binary discriminant. Both plane charts use the same actual rational infinity
+section and its nonzero nilpotent norm residue; the second chart exchanges the
+last two section nodes. No geometric classification premise is assumed.
 -/
 
 @[expose] public section
@@ -26,69 +25,59 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-lemma affine_plane_top_component {K : Type*} [Field K] (n0 n1 n2 e : K) :
-    homogeneousComponent 1 (C n0 * X 0 + C n1 * X 1 + C n2 * X 2 + C e :
-      MvPolynomial (Fin 3) K) = C n0 * X 0 + C n1 * X 1 + C n2 * X 2 := by
-  have hX (j : Fin 3) : homogeneousComponent 1 (X j : MvPolynomial (Fin 3) K) = X j :=
-    homogeneousComponent_eq_self (isHomogeneous_X K j)
-  have hC : homogeneousComponent 1 (C e : MvPolynomial (Fin 3) K) = 0 :=
-    homogeneousComponent_eq_zero 1 _ (by simp)
-  simp only [map_add, homogeneousComponent_C_mul, hX, hC, add_zero]
-
-/-- A nonscalar normalized node prevents an additional affine linear equation
-with nonzero coefficient on that node. -/
-lemma chart_no_affine_linear_relation {K F : Type*}
-    [Field K] [Field F] [Algebra K F]
+/-- An affine linear equation in `I` restricts to its linear part on the
+infinity section of a chart. -/
+lemma chart_linear_relation {K F : Type*} [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial (Fin 3) K)) (ι : (MvPolynomial (Fin 3) K ⧸ I) →ₐ[K] F)
     (l : MvPolynomial (Fin 3) K ⧸ I) (hl : ι l ≠ 0)
-    (hz0 : Ideal.Quotient.mk (chartInfinityIdeal I ι l) (chartNode I ι l 0) = 1)
-    (hns : ∀ c : K, Ideal.Quotient.mk (chartInfinityIdeal I ι l) (chartNode I ι l 1) ≠
-      algebraMap K _ c) :
-    ∀ a0 a1 c : K, a1 ≠ 0 → C a0 * X 0 + C a1 * X 1 + C c ∉ I := by
-  let q := Ideal.Quotient.mkₐ K (chartInfinityIdeal I ι l)
-  let z := fun j => q (chartNode I ι l j)
-  have hquot (p : Polynomial (MvPolynomial (Fin 3) K)) :
-      q (chartHomogeneousMap I ι l p) = MvPolynomial.aeval z (p.eval 0) :=
-    chart_infinity_evaluation I ι l p
-  intro a0 a1 c ha1 hline
-  have hline' : C a0 * X 0 + C a1 * X 1 + C (0 : K) * X 2 + C c ∈ I := by
-    simpa using hline
-  have hld : (C a0 * X 0 + C a1 * X 1 + C (0 : K) * X 2 + C c :
-      MvPolynomial (Fin 3) K).totalDegree ≤ 1 :=
-    (totalDegree_add _ _).trans (max_le (linear_form_degree_le _ _ _) (by simp))
-  have hh := chartHomogeneousMap_homogenize_eq_zero I ι l hl hline' hld
-  have ht := congrArg q hh
-  rw [hquot, curveHomogenize_at_infinity, radialMap_coeff_eq_homogeneousComponent,
-    affine_plane_top_component, map_zero] at ht
-  have hz0' : z 0 = 1 := hz0
-  have hrel : algebraMap K _ a0 + algebraMap K _ a1 * z 1 = 0 := by
-    simpa only [map_add, map_mul, MvPolynomial.aeval_C, MvPolynomial.aeval_X,
-      map_zero, zero_mul, add_zero, hz0', mul_one] using ht
-  exact hns (-a0 / a1) (algebra_scalar_of_linear_eq ha1 hrel)
+    {L : MvPolynomial (Fin 3) K} (hL : L.IsHomogeneous 1) {e : K} (hmem : L + C e ∈ I) :
+    MvPolynomial.aeval (fun j => Ideal.Quotient.mk (chartInfinityIdeal I ι l)
+      (chartNode I ι l j)) L = 0 := by
+  have hdeg : (L + C e).totalDegree ≤ 1 :=
+    (totalDegree_add _ _).trans (max_le hL.totalDegree_le (by simp))
+  have ht := congrArg (Ideal.Quotient.mk (chartInfinityIdeal I ι l))
+    (chartHomogeneousMap_homogenize_eq_zero I ι l hl hmem hdeg)
+  have hC : homogeneousComponent 1 (C e : MvPolynomial (Fin 3) K) = 0 :=
+    homogeneousComponent_eq_zero 1 _ (by simp)
+  rwa [chart_infinity_evaluation, curveHomogenize_at_infinity,
+    radialMap_coeff_eq_homogeneousComponent, map_add, homogeneousComponent_eq_self hL, hC,
+    add_zero, map_zero] at ht
 
-set_option maxHeartbeats 800000 in
--- This proof uses about 475k heartbeats (`#count_heartbeats`).
-/-- The actual plane model has zero leading discriminant. -/
-theorem rational_nonexceptional_conic_plane_geometry
+/-- A nonscalar section node excludes every affine linear equation with nonzero
+coefficient on that node. -/
+lemma section_no_affine_line {K S : Type*} [Field K] [CommRing S] [Algebra K S]
+    (I : Ideal (MvPolynomial (Fin 3) K)) (z : Fin 3 → S) (hz0 : z 0 = 1)
+    (hrel : ∀ {L : MvPolynomial (Fin 3) K} {e : K}, L.IsHomogeneous 1 → L + C e ∈ I →
+      MvPolynomial.aeval z L = 0)
+    (j : Fin 3) (hns : ∀ c : K, z j ≠ algebraMap K S c) :
+    ∀ a0 a1 c : K, a1 ≠ 0 → C a0 * X 0 + C a1 * X j + C c ∉ I := by
+  intro a0 a1 c ha1 hline
+  have ht := hrel ((isHomogeneous_C_mul_X a0 0).add (isHomogeneous_C_mul_X a1 j)) hline
+  simp only [map_add, MvPolynomial.aeval_C, MvPolynomial.aeval_X, map_mul, hz0,
+    mul_one] at ht
+  exact hns (-a0 / a1) (algebra_scalar_of_linear_eq ha1 ht)
+
+/-- The infinity section of the first-node chart of an actual nonexceptional
+component of Hilbert degree two: a two-dimensional algebra with a nonzero
+nilpotent, generated by the chart nodes, on which the leading quadratic and the
+linear part of every affine linear equation of the component vanish. -/
+theorem rational_nonexceptional_infinity_section
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
     (hA : A ≠ 0) (ha : a ≠ 0)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
     (hf : curveQuadratic (ρ : ℚ) u v ρ' u' v' ∈ I)
     (hg : curveEquation (ρ : ℚ) u v ρ' u' v' A a ∈ I)
-    (n0 n1 n2 e : ℚ) (hn2 : n2 ≠ 0)
-    (hplane : C n0 * X 0 + C n1 * X 1 + C n2 * X 2 + C e ∈ I)
     {N : ℕ} {b : ℤ}
     (hdegree : ∀ n ≥ N,
       (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = 2 * n + b) :
-    let k := -n0 / n2
-    let m := -n1 / n2
-    let α := (u - v) + (v - 1) * m ^ 2 + ((u - v) + (v - 1) * m) ^ 2
-    let β := 2 * (v - 1) * k * m +
-      2 * (-ρ - u + (v - 1) * k) * ((u - v) + (v - 1) * m)
-    let γ := (-ρ - u) + (v - 1) * k ^ 2 + (-ρ - u + (v - 1) * k) ^ 2
-    α ≠ 0 ∧ β ^ 2 - 4 * α * γ = 0 ∧
-      ∀ a0 a1 c : ℚ, a1 ≠ 0 → C a0 * X 0 + C a1 * X 1 + C c ∉ I := by
+    ∃ (S : Type) (_ : CommRing S) (_ : Algebra ℚ S) (_ : Module.Finite ℚ S)
+      (_ : S →ₐ[ℚ] ℂ) (δ : S) (z : Fin 3 → S),
+      Module.finrank ℚ S = 2 ∧ δ ≠ 0 ∧ IsNilpotent δ ∧ z 0 = 1 ∧
+      Function.Surjective (MvPolynomial.aeval (R := ℚ) z) ∧
+      MvPolynomial.aeval z (leadingQuadratic (-ρ - u) (u - v) (v - 1)) = 0 ∧
+      ∀ {L : MvPolynomial (Fin 3) ℚ} {e : ℚ}, L.IsHomogeneous 1 → L + C e ∈ I →
+        MvPolynomial.aeval z L = 0 := by
   let B := MvPolynomial (Fin 3) ℚ ⧸ I
   let F := FractionRing B
   let ι : B →ₐ[ℚ] F := IsScalarTower.toAlgHom ℚ B F
@@ -147,31 +136,109 @@ theorem rational_nonexceptional_conic_plane_geometry
     ⟨X 0, by simp [mem_restrictTotalDegree], rfl⟩
   have hgen : Function.Surjective (MvPolynomial.aeval (R := ℚ) z) :=
     chart_nodes_generate_infinity I ι l hlmem hl
-  have hquot (p : Polynomial (MvPolynomial (Fin 3) ℚ)) :
-      q (chartHomogeneousMap I ι l p) = MvPolynomial.aeval z (p.eval 0) :=
-    chart_infinity_evaluation I ι l p
   have hq : MvPolynomial.aeval z
       (leadingQuadratic (-ρ - u) (u - v) (v - 1)) = 0 := by
     have hh := chartHomogeneousMap_homogenize_eq_zero I ι l hl hf
       (curveQuadratic_degree_le_two _ _ _ _ _ _)
     have ht := congrArg q hh
-    rw [hquot, curveQuadratic_at_infinity, map_zero] at ht
+    rw [show q (chartHomogeneousMap I ι l _) = _ from chart_infinity_evaluation I ι l _,
+      curveQuadratic_at_infinity, map_zero] at ht
     exact ht
-  have hpld : (C n0 * X 0 + C n1 * X 1 + C n2 * X 2 + C e :
-      MvPolynomial (Fin 3) ℚ).totalDegree ≤ 1 :=
-    (totalDegree_add _ _).trans (max_le (linear_form_degree_le _ _ _) (by simp))
-  have hp : algebraMap ℚ S n0 * z 0 + algebraMap ℚ S n1 * z 1 +
-      algebraMap ℚ S n2 * z 2 = 0 := by
-    have hh := chartHomogeneousMap_homogenize_eq_zero I ι l hl hplane hpld
-    have ht := congrArg q hh
-    rw [hquot, curveHomogenize_at_infinity,
-      radialMap_coeff_eq_homogeneousComponent, affine_plane_top_component, map_zero] at ht
-    simpa only [map_add, map_mul, MvPolynomial.aeval_C, MvPolynomial.aeval_X] using ht
-  have hcoeff := section_plane_quadratic_coefficients hdim' ψ hnorm.1 hnorm.2
+  exact ⟨S, inferInstance, inferInstance, hfin', ψ, _, z, hdim', hnorm.1, hnorm.2, hz0, hgen,
+    hq, fun hL hmem => chart_linear_relation I ι l hl hL hmem⟩
+
+/-- The linear part of an affine plane, evaluated at section nodes. -/
+lemma section_plane_relation {K S : Type*} [Field K] [CommRing S] [Algebra K S]
+    (I : Ideal (MvPolynomial (Fin 3) K)) (z : Fin 3 → S)
+    (hrel : ∀ {L : MvPolynomial (Fin 3) K} {e : K}, L.IsHomogeneous 1 → L + C e ∈ I →
+      MvPolynomial.aeval z L = 0)
+    {n0 n1 n2 e : K} (hplane : C n0 * X 0 + C n1 * X 1 + C n2 * X 2 + C e ∈ I) :
+    algebraMap K S n0 * z 0 + algebraMap K S n1 * z 1 + algebraMap K S n2 * z 2 = 0 := by
+  have ht := hrel (((isHomogeneous_C_mul_X n0 0).add (isHomogeneous_C_mul_X n1 1)).add
+    (isHomogeneous_C_mul_X n2 2)) hplane
+  simpa only [map_add, map_mul, MvPolynomial.aeval_C, MvPolynomial.aeval_X] using ht
+
+/-- The actual plane model has zero leading discriminant. -/
+theorem rational_nonexceptional_conic_plane_geometry
+    {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
+    (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
+    (hA : A ≠ 0) (ha : a ≠ 0)
+    (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
+    (hf : curveQuadratic (ρ : ℚ) u v ρ' u' v' ∈ I)
+    (hg : curveEquation (ρ : ℚ) u v ρ' u' v' A a ∈ I)
+    (n0 n1 n2 e : ℚ) (hn2 : n2 ≠ 0)
+    (hplane : C n0 * X 0 + C n1 * X 1 + C n2 * X 2 + C e ∈ I)
+    {N : ℕ} {b : ℤ}
+    (hdegree : ∀ n ≥ N,
+      (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = 2 * n + b) :
+    let k := -n0 / n2
+    let m := -n1 / n2
+    let α := (u - v) + (v - 1) * m ^ 2 + ((u - v) + (v - 1) * m) ^ 2
+    let β := 2 * (v - 1) * k * m +
+      2 * (-ρ - u + (v - 1) * k) * ((u - v) + (v - 1) * m)
+    let γ := (-ρ - u) + (v - 1) * k ^ 2 + (-ρ - u + (v - 1) * k) ^ 2
+    α ≠ 0 ∧ β ^ 2 - 4 * α * γ = 0 ∧
+      ∀ a0 a1 c : ℚ, a1 ≠ 0 → C a0 * X 0 + C a1 * X 1 + C c ∉ I := by
+  obtain ⟨S, _, _, _, ψ, δ, z, hdim, hδ, hnil, hz0, hgen, hq, hrel⟩ :=
+    rational_nonexceptional_infinity_section hρ hu hv hne ρ' u' v' A a hA ha I hf hg hdegree
+  have hp := section_plane_relation I z hrel hplane
+  have hcoeff := section_plane_quadratic_coefficients hdim ψ hδ hnil
     z hz0 hgen hn2 (by linarith) (by linarith) (by linarith) (by linarith) hp hq
-  refine ⟨hcoeff.1, hcoeff.2, ?_⟩
-  exact chart_no_affine_linear_relation I ι l hl hz0
-    (section_plane_remaining_node_nonscalar hdim' z hz0 hgen hn2 hp)
+  exact ⟨hcoeff.1, hcoeff.2, section_no_affine_line I z hz0 hrel 1
+    (section_plane_remaining_node_nonscalar hdim z hz0 hgen hn2 hp)⟩
+
+/-- The complementary plane chart, eliminating the second node: the same
+section with its last two nodes exchanged. -/
+theorem rational_nonexceptional_conic_plane_geometry_second
+    {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
+    (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
+    (hA : A ≠ 0) (ha : a ≠ 0)
+    (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
+    (hf : curveQuadratic (ρ : ℚ) u v ρ' u' v' ∈ I)
+    (hg : curveEquation (ρ : ℚ) u v ρ' u' v' A a ∈ I)
+    (n0 n1 n2 e : ℚ) (hn1 : n1 ≠ 0)
+    (hplane : C n0 * X 0 + C n1 * X 1 + C n2 * X 2 + C e ∈ I)
+    {N : ℕ} {b : ℤ}
+    (hdegree : ∀ n ≥ N,
+      (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = 2 * n + b) :
+    let k := -n0 / n1
+    let m := -n2 / n1
+    let α := (v - 1) + (u - v) * m ^ 2 + ((v - 1) + (u - v) * m) ^ 2
+    let β := 2 * (u - v) * k * m +
+      2 * (-ρ - u + (u - v) * k) * ((v - 1) + (u - v) * m)
+    let γ := (-ρ - u) + (u - v) * k ^ 2 + (-ρ - u + (u - v) * k) ^ 2
+    α ≠ 0 ∧ β ^ 2 - 4 * α * γ = 0 ∧
+      ∀ a0 a1 c : ℚ, a1 ≠ 0 → C a0 * X 0 + C a1 * X 2 + C c ∉ I := by
+  obtain ⟨S, _, _, _, ψ, δ, z, hdim, hδ, hnil, hz0, hgen, hq, hrel⟩ :=
+    rational_nonexceptional_infinity_section hρ hu hv hne ρ' u' v' A a hA ha I hf hg hdegree
+  have hp := section_plane_relation I z hrel hplane
+  let z' : Fin 3 → S := z ∘ Equiv.swap 1 2
+  have hz'0 : z' 0 = 1 := hz0
+  have hz'1 : z' 1 = z 2 := rfl
+  have hz'2 : z' 2 = z 1 := rfl
+  have hgen' : Function.Surjective (MvPolynomial.aeval (R := ℚ) z') := by
+    intro x
+    obtain ⟨p, hpx⟩ := hgen x
+    refine ⟨rename (Equiv.swap 1 2) p, ?_⟩
+    have he : z' ∘ Equiv.swap 1 2 = z := by
+      funext j
+      simp only [z', Function.comp_apply, Equiv.swap_apply_self]
+    rw [aeval_rename, he]
+    exact hpx
+  have hp' : algebraMap ℚ S n0 * z' 0 + algebraMap ℚ S n2 * z' 1 +
+      algebraMap ℚ S n1 * z' 2 = 0 := by
+    rw [hz'0, hz'1, hz'2]
+    rw [hz0] at hp
+    linear_combination hp
+  have hq' : MvPolynomial.aeval z'
+      (leadingQuadratic (-ρ - u) (v - 1) (u - v)) = 0 := by
+    simp only [leadingQuadratic, ternaryQuadratic, map_add, map_mul, map_pow,
+      MvPolynomial.aeval_C, MvPolynomial.aeval_X, map_zero, hz'0, hz'1, hz'2, hz0] at hq ⊢
+    linear_combination hq
+  have hcoeff := section_plane_quadratic_coefficients hdim ψ hδ hnil
+    z' hz'0 hgen' hn1 (by linarith) (by linarith) (by linarith) (by linarith) hp' hq'
+  exact ⟨hcoeff.1, hcoeff.2, section_no_affine_line I z hz0 hrel 2
+    (section_plane_remaining_node_nonscalar hdim z' hz'0 hgen' hn1 hp')⟩
 
 /-- Nonzero square coefficient and zero discriminant of the actual plane model. -/
 theorem rational_nonexceptional_conic_plane_coefficients

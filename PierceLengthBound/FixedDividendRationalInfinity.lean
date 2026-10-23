@@ -7,7 +7,6 @@ module
 
 public import PierceLengthBound.FixedDividendChartHomogenization
 public import PierceLengthBound.FixedDividendLocalizationParity
-public import PierceLengthBound.FixedDividendLocalParity
 public import Mathlib.RingTheory.Localization.FractionRing
 public import PierceLengthBound.FixedDividendRationalCurves
 

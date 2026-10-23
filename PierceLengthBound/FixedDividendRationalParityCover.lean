@@ -66,9 +66,8 @@ theorem orbit_rational_component_parity_range {a b i : ℕ}
   obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
   have hL : (Lz a b i : ℚ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (Lz_pos hba (by omega : i + 5 < P a b)))
-  have hneQ : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
-  have heven := rational_nonexceptional_component_degree_even hρ hu hv hneQ
+  have heven := rational_nonexceptional_component_degree_even hρ hu hv
+    (nonexceptionalPattern_ratCast hne)
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i) a hL (by exact_mod_cast (show a ≠ 0 by omega)) p hf he
     (by omega : 0 < d) hdegree

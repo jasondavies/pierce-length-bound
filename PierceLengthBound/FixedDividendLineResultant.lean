@@ -129,114 +129,77 @@ def nextNewtonCoeffs {R : Type*} [CommRing R] (e : Fin 4 → R) (s : Fin 4 → R
       s 1 * s 2 + s 1 * s 3 + s 2 * s 3,
     e 3 - (s 0 + s 1 + s 2 + s 3)]
 
-/-- The four nodes along the exceptional `(0,3)` direction. -/
-def nodes03 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
-  ![C (a 0) + X, C (a 1) + X, C (a 2), C (a 3) + X]
-
 /-- Transformed Bézout matrix for any choice of the three initial Newton nodes. -/
 def changedBezout {R : Type*} [CommRing R] (c e s : Fin 4 → R) (a b d : R) :=
   newtonBasisChange a b d * quarticBezout (firstNewtonCoeffs c s) (nextNewtonCoeffs e s) *
     (newtonBasisChange a b d).transpose
-
--- Normalize the ten polynomial entries of the fixed-size Bézout certificate.
-lemma changedBezout03_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j : Fin 4) :
-    ((changedBezout (C ∘ c) (C ∘ e) (nodes03 a)
-      (nodes03 a 0) (nodes03 a 1) 0) i j).natDegree ≤
-      (![1, 1, 0, 0] i) + (![1, 1, 1, 1] j) := by
-  fin_cases i <;> fin_cases j <;>
-    simp [changedBezout, newtonBasisChange, quarticBezout, firstNewtonCoeffs,
-      nextNewtonCoeffs, nodes03, Matrix.mul_apply, Fin.sum_univ_succ] <;>
-    ring_nf
-  all_goals compute_degree
-  all_goals omega
-
-/-- The four nodes along exceptional direction `(1,2)`. -/
-def nodes12 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
-  ![C (a 0) + X, C (a 1) + X, C (a 2), C (a 3)]
-
--- Normalize the polynomial entries of the fixed-size Bézout certificate.
-lemma changedBezout12_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j : Fin 4) :
-    ((changedBezout (C ∘ c) (C ∘ e) (nodes12 a)
-      (nodes12 a 0) 0 (nodes12 a 1)) i j).natDegree ≤
-      (![2, 1, 1, 0] i) + (![1, 1, 0, 0] j) := by
-  fin_cases i <;> fin_cases j <;>
-    simp [changedBezout, newtonBasisChange, quarticBezout, firstNewtonCoeffs,
-      nextNewtonCoeffs, nodes12, Matrix.mul_apply, Fin.sum_univ_succ] <;>
-    ring_nf
-  all_goals first | (apply Nat.eq_zero_of_le_zero; compute_degree) | compute_degree
-  all_goals omega
-
-/-- The four nodes along exceptional direction `(2,3)`. -/
-def nodes23 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
-  ![C (a 0), C (a 1) + X, C (a 2) + X, C (a 3)]
-
--- Normalize the polynomial entries of the fixed-size Bézout certificate.
-lemma changedBezout23_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j : Fin 4) :
-    ((changedBezout (C ∘ c) (C ∘ e) (nodes23 a)
-      (nodes23 a 0) (nodes23 a 1) 0) i j).natDegree ≤
-      (![1, 1, 1, 0] i) + (![1, 1, 1, 0] j) := by
-  fin_cases i <;> fin_cases j <;>
-    simp [changedBezout, newtonBasisChange, quarticBezout, firstNewtonCoeffs,
-      nextNewtonCoeffs, nodes23, Matrix.mul_apply, Fin.sum_univ_succ] <;>
-    ring_nf
-  all_goals first | (apply Nat.eq_zero_of_le_zero; compute_degree) | compute_degree
-  all_goals omega
-
-/-- The four nodes along exceptional direction `(1,4)`. -/
-def nodes14 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
-  ![C (a 0) + X, C (a 1), C (a 2), C (a 3) + X]
-
--- Normalize the polynomial entries of the fixed-size Bézout certificate.
-lemma changedBezout14_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) (i j : Fin 4) :
-    ((changedBezout (C ∘ c) (C ∘ e) (nodes14 a)
-      0 (nodes14 a 0) (nodes14 a 1)) i j).natDegree ≤
-      (![2, 1, 1, 1] i) + (![1, 0, 0, 0] j) := by
-  fin_cases i <;> fin_cases j <;>
-    simp [changedBezout, newtonBasisChange, quarticBezout, firstNewtonCoeffs,
-      nextNewtonCoeffs, nodes14, Matrix.mul_apply, Fin.sum_univ_succ] <;>
-    ring_nf
-  all_goals compute_degree
 
 lemma changedBezout_det {R : Type*} [CommRing R] (c e s : Fin 4 → R) (a b d : R) :
     (changedBezout c e s a b d).det =
       (quarticBezout (firstNewtonCoeffs c s) (nextNewtonCoeffs e s)).det :=
   det_newtonBasisChange _ _ _ _
 
-/-- Universal degree-six bound in exceptional direction `(0,3)`. -/
-theorem resultant_degree_03 {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
-    (resultant (monicQuartic (firstNewtonCoeffs (C ∘ c) (nodes03 a)))
-      (monicQuartic (nextNewtonCoeffs (C ∘ e) (nodes03 a))) 4 4).natDegree ≤ 6 := by
-  rw [resultant_monicQuartic, ← changedBezout_det (C ∘ c) (C ∘ e) (nodes03 a)
-    (nodes03 a 0) (nodes03 a 1) 0]
-  have h := natDegree_det_le_row_col _ ![1, 1, 0, 0] ![1, 1, 1, 1] (changedBezout03_degree c e a)
-  simpa [Fin.sum_univ_succ] using h
+/-- A row-plus-column certificate of total weight six for a changed Bézout matrix
+bounds the resultant degree. -/
+theorem resultant_degree_of_certificate {R : Type*} [CommRing R] (c e : Fin 4 → R)
+    (s : Fin 4 → R[X]) (x y z : R[X]) (r k : Fin 4 → ℕ)
+    (h : ∀ i j, ((changedBezout (C ∘ c) (C ∘ e) s x y z) i j).natDegree ≤ r i + k j)
+    (hsum : (∑ i, r i) + ∑ j, k j ≤ 6) :
+    (resultant (monicQuartic (firstNewtonCoeffs (C ∘ c) s))
+      (monicQuartic (nextNewtonCoeffs (C ∘ e) s)) 4 4).natDegree ≤ 6 := by
+  rw [resultant_monicQuartic, ← changedBezout_det (C ∘ c) (C ∘ e) s x y z]
+  exact (natDegree_det_le_row_col _ r k h).trans hsum
 
-/-- Universal degree-six bound in exceptional direction `(1,2)`. -/
-theorem resultant_degree_12 {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
-    (resultant (monicQuartic (firstNewtonCoeffs (C ∘ c) (nodes12 a)))
-      (monicQuartic (nextNewtonCoeffs (C ∘ e) (nodes12 a))) 4 4).natDegree ≤ 6 := by
-  rw [resultant_monicQuartic, ← changedBezout_det (C ∘ c) (C ∘ e) (nodes12 a)
-    (nodes12 a 0) 0 (nodes12 a 1)]
-  have h := natDegree_det_le_row_col _ ![2, 1, 1, 0] ![1, 1, 0, 0] (changedBezout12_degree c e a)
-  simpa [Fin.sum_univ_succ] using h
+/-- Expand every entry of a changed Bézout matrix for the given node vector and
+bound its degree. -/
+local macro "changed_bezout_degree" nodes:ident : tactic => `(tactic| (
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [changedBezout, newtonBasisChange, quarticBezout, firstNewtonCoeffs,
+      nextNewtonCoeffs, $nodes:ident, Matrix.mul_apply, Fin.sum_univ_succ] <;>
+    ring_nf
+  all_goals first | (apply Nat.eq_zero_of_le_zero; compute_degree) | compute_degree
+  all_goals omega))
 
-/-- Universal degree-six bound in exceptional direction `(2,3)`. -/
-theorem resultant_degree_23 {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
-    (resultant (monicQuartic (firstNewtonCoeffs (C ∘ c) (nodes23 a)))
-      (monicQuartic (nextNewtonCoeffs (C ∘ e) (nodes23 a))) 4 4).natDegree ≤ 6 := by
-  rw [resultant_monicQuartic, ← changedBezout_det (C ∘ c) (C ∘ e) (nodes23 a)
-    (nodes23 a 0) (nodes23 a 1) 0]
-  have h := natDegree_det_le_row_col _ ![1, 1, 1, 0] ![1, 1, 1, 0] (changedBezout23_degree c e a)
-  simpa [Fin.sum_univ_succ] using h
+/-- The four nodes along the exceptional `(0,3)` direction. -/
+def nodes03 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
+  ![C (a 0) + X, C (a 1) + X, C (a 2), C (a 3) + X]
 
-/-- Universal degree-six bound in exceptional direction `(1,4)`. -/
-theorem resultant_degree_14 {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
-    (resultant (monicQuartic (firstNewtonCoeffs (C ∘ c) (nodes14 a)))
-      (monicQuartic (nextNewtonCoeffs (C ∘ e) (nodes14 a))) 4 4).natDegree ≤ 6 := by
-  rw [resultant_monicQuartic, ← changedBezout_det (C ∘ c) (C ∘ e) (nodes14 a)
-    0 (nodes14 a 0) (nodes14 a 1)]
-  have h := natDegree_det_le_row_col _ ![2, 1, 1, 1] ![1, 0, 0, 0] (changedBezout14_degree c e a)
-  simpa [Fin.sum_univ_succ] using h
+lemma changedBezout03_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
+    ∀ i j, ((changedBezout (C ∘ c) (C ∘ e) (nodes03 a)
+      (nodes03 a 0) (nodes03 a 1) 0) i j).natDegree ≤
+      (![1, 1, 0, 0] i) + (![1, 1, 1, 1] j) := by
+  changed_bezout_degree nodes03
+
+/-- The four nodes along exceptional direction `(1,2)`. -/
+def nodes12 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
+  ![C (a 0) + X, C (a 1) + X, C (a 2), C (a 3)]
+
+lemma changedBezout12_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
+    ∀ i j, ((changedBezout (C ∘ c) (C ∘ e) (nodes12 a)
+      (nodes12 a 0) 0 (nodes12 a 1)) i j).natDegree ≤
+      (![2, 1, 1, 0] i) + (![1, 1, 0, 0] j) := by
+  changed_bezout_degree nodes12
+
+/-- The four nodes along exceptional direction `(2,3)`. -/
+def nodes23 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
+  ![C (a 0), C (a 1) + X, C (a 2) + X, C (a 3)]
+
+lemma changedBezout23_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
+    ∀ i j, ((changedBezout (C ∘ c) (C ∘ e) (nodes23 a)
+      (nodes23 a 0) (nodes23 a 1) 0) i j).natDegree ≤
+      (![1, 1, 1, 0] i) + (![1, 1, 1, 0] j) := by
+  changed_bezout_degree nodes23
+
+/-- The four nodes along exceptional direction `(1,4)`. -/
+def nodes14 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
+  ![C (a 0) + X, C (a 1), C (a 2), C (a 3) + X]
+
+lemma changedBezout14_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
+    ∀ i j, ((changedBezout (C ∘ c) (C ∘ e) (nodes14 a)
+      0 (nodes14 a 0) (nodes14 a 1)) i j).natDegree ≤
+      (![2, 1, 1, 1] i) + (![1, 0, 0, 0] j) := by
+  changed_bezout_degree nodes14
 
 lemma monicQuartic_natDegree {R : Type*} [CommRing R] [Nontrivial R] (a : Fin 4 → R) :
     (monicQuartic a).natDegree = 4 := by
@@ -319,10 +282,18 @@ theorem line_resultant_natDegree_le_six {R : Type*} [CommRing R] [Nontrivial R]
   apply (natDegree_C_mul_le _ _).trans
   rw [firstNewtonQuartic_eq, nextNewtonQuartic_eq]
   fin_cases d
-  · exact resultant_degree_03 c e a
-  · exact resultant_degree_12 c e a
-  · exact resultant_degree_23 c e a
-  · exact resultant_degree_14 c e a
+  · exact resultant_degree_of_certificate c e (nodes03 a) _ _ _ _ _
+      (changedBezout03_degree c e a)
+      (by simp [Fin.sum_univ_succ])
+  · exact resultant_degree_of_certificate c e (nodes12 a) _ _ _ _ _
+      (changedBezout12_degree c e a)
+      (by simp [Fin.sum_univ_succ])
+  · exact resultant_degree_of_certificate c e (nodes23 a) _ _ _ _ _
+      (changedBezout23_degree c e a)
+      (by simp [Fin.sum_univ_succ])
+  · exact resultant_degree_of_certificate c e (nodes14 a) _ _ _ _ _
+      (changedBezout14_degree c e a)
+      (by simp [Fin.sum_univ_succ])
 
 end
 end PierceLengthBound.FixedDividend
