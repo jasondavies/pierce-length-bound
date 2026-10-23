@@ -175,47 +175,5 @@ theorem degree_two_plane_mem_of_three_points {K : Type*} [Field K]
   have h := hyperplane_section_card_le_degree p 2 (by simpa using hdegree) l hl hld z hz hzp hzl
   norm_num at h
 
-/-- Three affine points in three-space lie in the zero locus of a nonzero
-polynomial of degree at most one. -/
-theorem three_points_affine_plane {K : Type*} [Field K] (z : Fin 3 → Fin 3 → K) :
-    ∃ l : MvPolynomial (Fin 3) K, l ≠ 0 ∧ l.totalDegree ≤ 1 ∧
-      ∀ i, MvPolynomial.eval (z i) l = 0 := by
-  let V := MvPolynomial.restrictTotalDegree (Fin 3) K 1
-  let φ : V →ₗ[K] (Fin 3 → K) := LinearMap.pi
-    (fun i => (MvPolynomial.aeval (z i)).toLinearMap.comp V.subtype)
-  have hd : Module.finrank K (Fin 3 → K) < Module.finrank K V := by
-    rw [Module.finrank_pi, show Module.finrank K V = (1 + 3).choose 3 from
-      finrank_restrictTotalDegree_three 1]
-    norm_num
-  obtain ⟨l, hl, hne⟩ := (Submodule.ne_bot_iff φ.ker).mp
-    (LinearMap.ker_ne_bot_of_finrank_lt hd)
-  refine ⟨l.val, ?_, (MvPolynomial.mem_restrictTotalDegree _ _ _).mp l.property, ?_⟩
-  · intro h
-    exact hne (Subtype.ext h)
-  · intro i
-    have he := congrFun (LinearMap.mem_ker.mp hl) i
-    simpa [φ] using he
-
-/-- A degree-two prime curve with three distinct rational points lies in an
-affine plane. No algebraic closure or noncollinearity assumption is needed. -/
-theorem degree_two_planar_of_three_points {K : Type*} [Field K]
-    (p : Ideal (MvPolynomial (Fin 3) K)) [p.IsPrime]
-    (hdegree : ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
-      (Module.finrank K (filteredCoordinateSpace p n) : ℤ) = 2 * n + c)
-    (z : Fin 3 → Fin 3 → K) (hz : Function.Injective z)
-    (hzp : ∀ i, z i ∈ coordinateZeroLocus p) :
-    ∃ l : MvPolynomial (Fin 3) K, l ≠ 0 ∧ l.totalDegree = 1 ∧ l ∈ p := by
-  obtain ⟨l, hne, hld, hzl⟩ := three_points_affine_plane z
-  have hlp := degree_two_plane_mem_of_three_points p hdegree l hld z hz hzp hzl
-  have hdegreeOne : l.totalDegree = 1 := by
-    by_contra h
-    have hd0 : l.totalDegree = 0 := by omega
-    have he := MvPolynomial.totalDegree_eq_zero_iff_eq_C.mp hd0
-    have hc := hzl 0
-    rw [he, MvPolynomial.eval_C] at hc
-    apply hne
-    rw [he, hc, map_zero]
-  exact ⟨l, hne, hdegreeOne, hlp⟩
-
 end
 end PierceLengthBound.FixedDividend

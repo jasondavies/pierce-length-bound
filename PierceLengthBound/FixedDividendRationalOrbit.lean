@@ -53,6 +53,18 @@ lemma nonexceptionalPattern_ratCast {a b i : ℕ}
       (patternVQ a b i : ℝ) := by
   simpa using hne
 
+/-- The rational data of an actual nonexceptional orbit state used by the chart theorems:
+the pattern signs, the rational nonexceptional condition, and nonvanishing of `a` and `L`. -/
+theorem orbit_rational_nonexceptional_data {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
+    (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i)) :
+    0 < patternRhoQ a b i ∧ 0 < patternUQ a b i ∧ patternVQ a b i < 0 ∧
+      NonexceptionalPattern (patternRhoQ a b i : ℝ) (patternUQ a b i : ℝ)
+        (patternVQ a b i : ℝ) ∧ (a : ℚ) ≠ 0 ∧ (Lz a b i : ℚ) ≠ 0 := by
+  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
+  refine ⟨hρ, hu, hv, nonexceptionalPattern_ratCast hne,
+    by exact_mod_cast (show a ≠ 0 by omega), ?_⟩
+  exact_mod_cast (ne_of_gt (Lz_pos hba (by omega : i + 5 < P a b)))
+
 /-- The actual rational first equation. -/
 def orbitCurveQuadraticQ (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   curveQuadratic (patternRhoQ a b i) (patternUQ a b i) (patternVQ a b i)
@@ -202,31 +214,6 @@ theorem orbit_rational_component_degree_range {a b i : ℕ} (hba : b < a) (hi : 
     intro n hn
     simpa [heq] using hlinear n hn
   exact ⟨d, by omega, hd24, N, c, hlinear⟩
-
-/-- The actual orbit point belongs to a rational prime curve of degree between
-two and twenty-four, with both defining equations in its prime ideal. -/
-theorem orbit_exists_rational_curve_component {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
-    {H X₀ : ℤ} (hX : 1 ≤ X₀) (hgaps : ∀ m < 5, kq a b (i + m) ≤ H)
-    (hU : |U1z a b i| ≤ X₀) (hV : |U2z a b i| ≤ X₀)
-    (hscale : (a : ℤ) * H ^ 5 * (24 * X₀ + 464) < (qq a b i : ℤ) ^ 4) :
-    ∃ p : Ideal (MvPolynomial (Fin 3) ℚ), p.IsPrime ∧ p.height = 2 ∧
-      orbitCurveQuadraticQ a b i ∈ p ∧ orbitCurveEquationQ a b i ∈ p ∧
-      orbitFreeNodesQ a b i ∈ coordinateZeroLocus p ∧
-      ∃ d : ℕ, 2 ≤ d ∧ d ≤ 24 ∧ ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
-        (Module.finrank ℚ (filteredCoordinateSpace p n) : ℤ) = (d : ℤ) * n + c := by
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  obtain ⟨p, hp, hx⟩ := (common_zero_iff_minimalPrime
-    (orbitCurveQuadraticQ a b i) (orbitCurveEquationQ a b i) (orbitFreeNodesQ a b i)).mp
-      (orbit_rational_curve_zeros hba hi)
-  let : p.IsPrime := hp.isPrime
-  have hf : orbitCurveQuadraticQ a b i ∈ p := hp.le (Ideal.subset_span (by simp))
-  have he : orbitCurveEquationQ a b i ∈ p := hp.le (Ideal.subset_span (by simp))
-  have hheight : p.height = 2 := minimalPrime_pair_height_two
-    (rational_curveQuadratic_prime hρ hu hv _ _ _)
-    (rational_curveQuadratic_not_dvd hρ hu hv _ _ _ (Lz a b i : ℚ) (a : ℚ)
-      (by exact_mod_cast (show a ≠ 0 by omega))) hp
-  exact ⟨p, inferInstance, hheight, hf, he, hx,
-    orbit_rational_component_degree_range hba hi hX hgaps hU hV hscale p hheight hf he hx⟩
 
 end
 end PierceLengthBound.FixedDividend

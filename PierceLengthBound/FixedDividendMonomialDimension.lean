@@ -76,7 +76,6 @@ theorem finrank_restrictTotalDegree_three {K : Type*} [Field K] (N : ℕ) :
   simp only [Fintype.card_fin]
   rw [Nat.add_comm 3 N, Nat.choose_symm_add]
 
-
 lemma six_mul_choose_add_three (n : ℕ) :
     6 * (n + 3).choose 3 = (n + 3) * (n + 2) * (n + 1) := by
   have h := Nat.descFactorial_eq_factorial_mul_choose (n + 3) 3
@@ -128,28 +127,6 @@ theorem filteredCoordinateSpace_finrank_linear {K : Type*} [Field K]
   have h := filteredCoordinateSpace_finrank_bound hf hfg I hIf hIg hN
   simp only [finrank_restrictTotalDegree_three] at h
   exact cubic_binomial_difference_bound hN h
-
-
-/-- The actual intersection and each of its prime components have filtered
-coordinate spaces bounded by `24*(N+2)`. -/
-theorem curve_filteredCoordinateSpace_le {ρ u v : ℝ}
-    (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℂ) (ha : a ≠ 0)
-    (I : Ideal (MvPolynomial (Fin 3) ℂ))
-    (hIf : curveQuadratic (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' ∈ I)
-    (hIg : curveEquation (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' A a ∈ I)
-    {N : ℕ} (hN : 14 ≤ N) :
-    Module.finrank ℂ (filteredCoordinateSpace I N) ≤ 24 * (N + 2) := by
-  have hf : Prime (curveQuadratic (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v') := by
-    apply Irreducible.prime
-    apply lineQuadratic_irreducible
-    all_goals exact_mod_cast (by linarith : _ ≠ (0 : ℝ))
-  have hfd := curveQuadratic_degree_le_two (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v'
-  have hgd := curveEquation_degree_le (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' A a
-  have hfg : ¬ curveQuadratic (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' ∣
-      curveEquation (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' A a :=
-    curveQuadratic_not_dvd_fixed_dividend hρ hu hv ρ' u' v' A a ha
-  have h := filteredCoordinateSpace_finrank_linear (N := N) hf hfg I hIf hIg (by omega)
-  exact h.trans (Nat.mul_le_mul_right (N + 2) (Nat.mul_le_mul hfd hgd))
 
 end
 end PierceLengthBound.FixedDividend

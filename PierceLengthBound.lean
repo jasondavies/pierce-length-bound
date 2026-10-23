@@ -50,7 +50,6 @@ public import PierceLengthBound.FixedDividendWindow
 public import PierceLengthBound.FixedDividendCoprimality
 public import PierceLengthBound.FixedDividendCurveEquations
 public import PierceLengthBound.FixedDividendCount
-public import PierceLengthBound.FixedDividendMainReduction
 public import PierceLengthBound.FixedDividendSelection
 public import PierceLengthBound.FixedDividendComponents
 public import PierceLengthBound.FixedDividendFilteredIntersection

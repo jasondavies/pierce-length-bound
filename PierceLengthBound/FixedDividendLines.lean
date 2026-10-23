@@ -175,13 +175,4 @@ theorem norm_degree_le_one {A a : ℝ} {D R : Polynomial ℝ}
     Polynomial.natDegree_pow] at h
   omega
 
-/-- In particular the quadratic coefficient vanishes. -/
-theorem norm_quadratic_coeff_zero {A a : ℝ} {D R : Polynomial ℝ}
-    (hA : A ≠ 0) (ha : a ≠ 0) (hR : R.natDegree ≤ 6)
-    (hidentity : Polynomial.C A * R = Polynomial.C a * D ^ 4) :
-    D.coeff 2 = 0 := by
-  apply Polynomial.coeff_eq_zero_of_natDegree_lt
-  have := norm_degree_le_one hA ha hR hidentity
-  omega
-
 end PierceLengthBound.FixedDividend

@@ -134,18 +134,12 @@ theorem orbit_conic_quotient_cubic {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a
         show (fun j => (z j).eval t0) = orbitFreeNodesQ a b i from funext hz0]
     rw [hd, eval_zero] at he
     exact (orbitQuotient_evaluation hba hi).1 he.symm
-  have hA : (Lz a b i : ℚ) ≠ 0 := by
-    have h := Lz_pos hba (by omega : i + 5 < P a b)
-    exact_mod_cast (by omega : Lz a b i ≠ 0)
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (by omega : a ≠ 0)
+  obtain ⟨hρ, hu, hv, hneq, ha, hA⟩ := orbit_rational_nonexceptional_data hba hi hne
   have hcut := orbitNormalizationCut_zero_of_many_states hba z hz l t ht hl hθ hp hcard
   have hnorm : C (Lz a b i : ℚ) * clearedNewtonQuartic (fun j => C (c j)) z n d =
       C (a : ℚ) * muH4 (k 0) (k 1) (k 2) (k 3) (k 4) * d ^ 4 := sub_eq_zero.mp hcut
   obtain ⟨q, hq, heq⟩ := normalization_polynomial_quotient c z n d _ hA hden hnorm
-  have hsign := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hneq : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
-  have hraw := quadratic_parameter_raw_degrees hsign.1 hsign.2.1 hsign.2.2 hneq
+  have hraw := quadratic_parameter_raw_degrees hρ hu hv hneq
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i) a ha z hz hfirst hquad hcurve
   have hV := parabola_normalization_degree c

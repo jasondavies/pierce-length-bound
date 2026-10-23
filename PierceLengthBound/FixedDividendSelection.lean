@@ -26,10 +26,9 @@ def selectedGapHeight (a A T : ℕ) : ℕ := 28 * a / (A * T) + 1
 def selectedMinorHeight (a A T : ℕ) : ℕ :=
   3609600 * A ^ 4 * selectedGapHeight a A T ^ 6 / a ^ 3
 
-/-- Starts with seven small gaps and the necessary positive orbit support. -/
-def selectedStarts (a b s T A : ℕ) : Finset ℕ :=
-  (Ico s (s + T)).filter fun i => i + 9 ≤ s + T ∧
-    ∀ m ∈ range 7, kq a b (i + m) ≤ (selectedGapHeight a A T : ℤ)
+/-- Starts with seven small gaps and the necessary positive orbit support: the good starts
+at the selected gap height. -/
+abbrev selectedStarts (a b s T A : ℕ) : Finset ℕ := goodStarts a b s T (selectedGapHeight a A T)
 
 lemma selectedStarts_card {a b s T A : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
@@ -41,12 +40,9 @@ lemma selectedStart_spec {a b s T A i : ℕ}
     (hsT : s + T ≤ P a b) (hi : i ∈ selectedStarts a b s T A) :
     i + 8 < P a b ∧
       (∀ m < 7, 1 ≤ kq a b (i + m) ∧ kq a b (i + m) ≤ selectedGapHeight a A T) ∧
-      orb a b i < 2 * A := by
-  obtain ⟨hiI, h9, hk⟩ := mem_filter.mp hi
-  have := mem_Ico.mp hiI
-  refine ⟨by omega, fun m hm => ⟨kq_pos (by omega), hk m (mem_range.mpr hm)⟩, ?_⟩
-  have := (hmem (i - s) (by omega)).2
-  rwa [show s + (i - s) = i by omega] at this
+      orb a b i < 2 * A :=
+  let ⟨hP, hk, hA, _⟩ := mem_goodStarts hmem hsT hi
+  ⟨hP, hk, hA⟩
 
 /-- Every selected minor satisfies the unrounded integer height bound. -/
 lemma selectedStart_minor_height {a b s T A i : ℕ} (hba : b < a)

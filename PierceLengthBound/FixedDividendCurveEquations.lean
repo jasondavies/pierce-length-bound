@@ -10,8 +10,8 @@ public import PierceLengthBound.FixedDividendCoprimality
 /-!
 # The two coordinate-ring equations of actual orbit points
 
-This module packages their degree bounds, relative primality, and vanishing on
-actual supported windows. It makes no point-counting assertion.
+This module packages their degree bounds, evaluations, and vanishing on actual
+supported windows. It makes no point-counting assertion.
 -/
 
 @[expose] public section
@@ -56,17 +56,6 @@ lemma curveEquation_degree_le {K : Type*} [Field K] (ρ u v ρ' u' v' A a : K) :
       _ ≤ 0 + 4 * 3 := add_le_add (le_of_eq (totalDegree_C _))
         ((totalDegree_pow _ _).trans (Nat.mul_le_mul_left 4 hd))
       _ = 12 := by norm_num
-
-/-- Relative primality means that the equations have no nonunit common factor. -/
-theorem curveEquations_relPrime {ρ u v : ℝ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
-    (ρ' u' v' A a : ℂ) (ha : a ≠ 0) :
-    IsRelPrime (curveQuadratic (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v')
-      (curveEquation (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' A a) := by
-  have hq : Irreducible (curveQuadratic (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v') := by
-    apply lineQuadratic_irreducible
-    all_goals exact_mod_cast (by linarith : _ ≠ (0 : ℝ))
-  exact hq.isRelPrime_iff_not_dvd.mpr
-    (curveQuadratic_not_dvd_fixed_dividend hρ hu hv ρ' u' v' A a ha)
 
 lemma eval_curveQuadratic {K : Type*} [CommRing K] (ρ u v ρ' u' v' : K) (x : Fin 3 → K) :
     eval x (curveQuadratic ρ u v ρ' u' v') =

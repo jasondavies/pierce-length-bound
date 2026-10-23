@@ -38,12 +38,8 @@ theorem rational_nonexceptional_chart_resultant_unit
       (chartHomogeneousMap I ι (Ideal.Quotient.mk I (X 0))
         (curveHomogenize 10 (curveResultant (ρ : ℚ) u v ρ' u' v')))) := by
   let l := Ideal.Quotient.mk I (X 0)
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
-    hρ hu hv hne ρ' u' v' A a ha I hf hg
-  have hl : ι l ≠ 0 := by
-    intro hh
-    apply first_node_ne_zero_of_generation I hd hdegree hs
-    exact hι (by simpa using hh)
+  obtain ⟨hl, M, hs⟩ := nonexceptional_first_node_generation
+    hρ hu hv hne ρ' u' v' A a ha I hf hg ι hι hd hdegree
   have hfin := (rational_nonexceptional_chart_infinity_dimension hρ hu hv hne
     ρ' u' v' A a ha I hf hg ι hι hd hdegree).1
   let q := Ideal.Quotient.mkₐ ℚ (chartInfinityIdeal I ι l)

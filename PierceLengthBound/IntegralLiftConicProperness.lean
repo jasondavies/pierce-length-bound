@@ -184,11 +184,8 @@ theorem orbit_conic_integralLift_proper {a b i : ℕ} (hba : b < a) (hi : i + 7 
   obtain ⟨q, hq3, hq, hV⟩ := orbit_conic_quotient_cubic hba hi hne z hz hfirst hquad hcurve
     t0 hz0 l t ht hl hθ hp (by omega)
   let k := orbitParameterGaps a b i z
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (by omega : a ≠ 0)
-  have hsign := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hneq : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
-  have hraw := quadratic_parameter_raw_degrees hsign.1 hsign.2.1 hsign.2.2 hneq
+  obtain ⟨hρ, hu, hv, hneq, ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
+  have hraw := quadratic_parameter_raw_degrees hρ hu hv hneq
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i) a ha z hz hfirst hquad hcurve
   have hF : (orbitResolventNumerator a b i z q).natDegree = 9 := by

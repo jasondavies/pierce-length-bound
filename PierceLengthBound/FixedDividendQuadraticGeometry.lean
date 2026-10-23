@@ -174,19 +174,5 @@ theorem lineQuadratic_irreducible {K : Type*} [Field K] [CharZero K]
   exact mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (by norm_num) h1) huv) hv)
     (neg_ne_zero.mpr hρ)
 
-/-- Absolute irreducibility of the actual orbit quadratic, witnessed over ℂ. -/
-theorem orbit_lineQuadratic_irreducible {a b i : ℕ} (hba : b < a)
-    (hi : i + 6 < P a b) :
-    Irreducible (lineQuadratic
-      (C (patternRho a b i : ℂ)) (C (patternU a b i : ℂ)) (C (patternV a b i : ℂ))
-      (C (patternRho a b (i + 1) : ℂ)) (C (patternU a b (i + 1) : ℂ))
-      (C (patternV a b (i + 1) : ℂ)) (X 0) (X 1) (X 2) : MvPolynomial (Fin 3) ℂ) := by
-  obtain ⟨hρ, hu, hv⟩ := orbit_pattern_signs hba hi
-  apply lineQuadratic_irreducible
-  · exact_mod_cast hρ.ne'
-  · exact_mod_cast (show patternRho a b i + patternU a b i ≠ 0 by linarith)
-  · exact_mod_cast (show patternU a b i - patternV a b i ≠ 0 by linarith)
-  · exact_mod_cast (show patternV a b i - 1 ≠ 0 by linarith)
-
 end
 end PierceLengthBound.FixedDividend

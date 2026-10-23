@@ -51,10 +51,7 @@ theorem retained_curvature_combination_regular_at_infinity
   have hnneg : n < 0 := by rw [← hn] at hneg; exact_mod_cast hneg
   have he : 0 < -n := by omega
   have hw : ν ((ι l)⁻¹) = ((-n : ℤ) : WithTop ℤ) := by rw [ν.map_inv, ← hn]; rfl
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  obtain ⟨hρ, hu, hv, hne', ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
   let : Module.Finite (Algebra.adjoin ℚ {w}) S :=
     nonexceptional_chart_finite_over_parameter hρ hu hv hne'
       (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
@@ -114,10 +111,7 @@ theorem retained_curvature_pole_affine_center
       hba hi hne I hf hg hx hnorm hres ι (IsFractionRing.injective R F)
       hd hdegree ν hQ c (lt_of_not_ge hn)
     exact (not_lt_of_ge hh) hpole
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  obtain ⟨hρ, hu, hv, hne', ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
   obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation hρ hu hv hne'
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i : ℚ) (a : ℚ) ha I hf hg

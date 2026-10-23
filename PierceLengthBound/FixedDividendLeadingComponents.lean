@@ -32,7 +32,6 @@ lemma radialMap_monomial {K : Type*} [CommRing K] (d : Fin 3 →₀ ℕ) (c : K)
   rw [← mul_assoc, ← Polynomial.C_mul]
   rfl
 
-
 /-- Radial coefficients are exactly the ordinary homogeneous components. -/
 theorem radialMap_coeff_eq_homogeneousComponent {K : Type*} [CommRing K]
     (f : MvPolynomial (Fin 3) K) (n : ℕ) :
@@ -80,11 +79,6 @@ lemma curveQuadratic_top_component {K : Type*} [CommRing K] (ρ u v ρ' u' v' : 
     homogeneousComponent 2 (curveQuadratic ρ u v ρ' u' v') =
       leadingQuadratic (-ρ - u) (u - v) (v - 1) := by
   rw [← radialMap_coeff_eq_homogeneousComponent, radialMap_quadratic_coeff]
-
-lemma curveNorm_top_component {K : Type*} [CommRing K] (ρ u v ρ' u' v' : K) :
-    homogeneousComponent 3 (curveNorm ρ u v ρ' u' v') =
-      leadingCubic (-ρ - u) (u - v) (v - 1) := by
-  rw [← radialMap_coeff_eq_homogeneousComponent, radialMap_norm_coeff]
 
 /-- The degree-twelve leading equation is exactly minus the dividend times D₃⁴. -/
 lemma curveEquation_top_component {K : Type*} [Field K] (ρ u v ρ' u' v' A a : K) :

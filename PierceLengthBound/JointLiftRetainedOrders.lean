@@ -80,12 +80,7 @@ theorem retained_quotient_and_rank_three_discrete_orders
   have hconst (r : ℚ) (hr : r ≠ 0) : ν (ψ (C r)) = 0 := by
     rw [hc]
     exact chart_constant_discrete_order _ ν hregular hr
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  have hA : (Lz a b i : ℚ) ≠ 0 := by
-    exact_mod_cast (show Lz a b i ≠ 0 by have := Lz_pos hba (by omega : i + 5 < P a b); omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  obtain ⟨hρ, hu, hv, hne', ha, hA⟩ := orbit_rational_nonexceptional_data hba hi hne
   have hdet := nonexceptional_raw_determinant_discrete_orders hρ hu hv hne'
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i : ℚ) (a : ℚ) ha I hf hg ι hι hd hdegree ν hregular he hw

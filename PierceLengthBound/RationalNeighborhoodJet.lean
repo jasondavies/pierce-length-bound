@@ -32,24 +32,11 @@ theorem add (hf : RationalFirstJet p f) (hg : RationalFirstJet p g) :
     RationalFirstJet p (fun x => f x + g x) := by
   exact ⟨by simpa using hf.1.add hg.1, by simpa using hf.2.add hg.2⟩
 
-theorem neg (hf : RationalFirstJet p f) : RationalFirstJet p (fun x => -f x) := by
-  exact ⟨by simpa using hf.1.neg, by simpa using hf.2.neg⟩
-
-theorem sub (hf : RationalFirstJet p f) (hg : RationalFirstJet p g) :
-    RationalFirstJet p (fun x => f x - g x) := by
-  simpa only [sub_eq_add_neg] using hf.add hg.neg
-
 theorem mul (hf : RationalFirstJet p f) (hg : RationalFirstJet p g) :
     RationalFirstJet p (fun x => f x * g x) := by
   refine ⟨by simpa using hf.1.mul hg.1, ?_⟩
   simpa only [PowerSeries.coeff_one_mul] using
     (hf.2.mul hg.1).add (hg.2.mul hf.1)
-
-theorem pow (hf : RationalFirstJet p f) (n : ℕ) :
-    RationalFirstJet p (fun x => f x ^ n) := by
-  induction n with
-  | zero => simpa using constant (p := p) 1
-  | succ n ih => simpa only [pow_succ] using ih.mul hf
 
 theorem polynomial {τ : Type*} (F : MvPolynomial τ ℚ)
     (g : (σ → ℚ) → τ → PowerSeries ℚ)

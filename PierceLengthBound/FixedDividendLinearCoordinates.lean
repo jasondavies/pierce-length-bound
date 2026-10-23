@@ -7,7 +7,8 @@ module
 
 public import PierceLengthBound.FixedDividendAffineTransport
 
-/-! Rational linear coordinate changes and the curve degree used in lattice counting. -/
+/-! Rational linear coordinate changes, which preserve filtered dimensions, primality and
+zero loci; they are used in lattice counting. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -80,17 +81,6 @@ theorem matrix_coordinate_filtered_finrank {K ι : Type*} [Field K] [Fintype ι]
   exact affine_equiv_filtered_finrank (matrixCoordinateEquiv C D hCD hDC)
     (matrixSubstitution_X_degree C) (matrixSubstitution_X_degree D) I N
 
-/-- Full Hilbert-degree invariance for the linear substitutions needed by lattices. -/
-theorem matrix_coordinate_degree {K ι : Type*} [Field K] [Fintype ι] [DecidableEq ι]
-    (C D : Matrix ι ι K) (hCD : C * D = 1) (hDC : D * C = 1)
-    (I : Ideal (MvPolynomial ι K)) (d : ℕ)
-    (hd : ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
-      (Module.finrank K (filteredCoordinateSpace I n) : ℤ) = (d : ℤ) * n + c) :
-    ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,
-      (Module.finrank K (filteredCoordinateSpace (I.map (matrixSubstitution C).toRingHom) n) : ℤ) =
-        (d : ℤ) * n + c := by
-  simpa only [matrix_coordinate_filtered_finrank C D hCD hDC] using hd
-
 /-- A nonsingular matrix preserves the exact filtered Hilbert function. -/
 theorem nonsingular_matrix_filtered_finrank {K ι : Type*} [Field K] [Fintype ι] [DecidableEq ι]
     (C : Matrix ι ι K) (hC : C.det ≠ 0) (I : Ideal (MvPolynomial ι K)) (N : ℕ) :
@@ -129,29 +119,6 @@ theorem matrix_coordinate_zeroLocus {K ι : Type*} [Field K] [Fintype ι] [Decid
     change eval y (matrixSubstitution C g) = 0
     rw [eval_matrixSubstitution]
     exact hy g hg
-
-/-- A finite component cover remains a cover after changing coordinates, without
-increasing its cardinality. -/
-theorem matrix_coordinate_component_cover {K ι : Type*} [Field K] [Fintype ι] [DecidableEq ι]
-    (C : Matrix ι ι K) (hC : C.det ≠ 0)
-    (S : Finset (Ideal (MvPolynomial ι K))) :
-    ∃ S' : Finset (Ideal (MvPolynomial ι K)), S'.card ≤ S.card ∧
-      (∀ y, (∃ I ∈ S', y ∈ coordinateZeroLocus I) ↔
-        ∃ I ∈ S, C *ᵥ y ∈ coordinateZeroLocus I) ∧
-      ∀ J ∈ S', ∃ I ∈ S, J = I.map (matrixSubstitution C).toRingHom := by
-  classical
-  refine ⟨S.image (fun I => I.map (matrixSubstitution C).toRingHom), Finset.card_image_le, ?_, ?_⟩
-  · intro y
-    constructor
-    · rintro ⟨J, hJ, hy⟩
-      obtain ⟨I, hI, rfl⟩ := Finset.mem_image.mp hJ
-      exact ⟨I, hI, (matrix_coordinate_zeroLocus C hC I y).mp hy⟩
-    · rintro ⟨I, hI, hy⟩
-      exact ⟨_, Finset.mem_image.mpr ⟨I, hI, rfl⟩,
-        (matrix_coordinate_zeroLocus C hC I y).mpr hy⟩
-  · intro J hJ
-    obtain ⟨I, hI, he⟩ := Finset.mem_image.mp hJ
-    exact ⟨I, hI, he.symm⟩
 
 end
 end PierceLengthBound.FixedDividend

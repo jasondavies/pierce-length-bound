@@ -31,10 +31,7 @@ theorem orbit_affine_normalization
     IsDedekindDomain (integralClosure (MvPolynomial (Fin 3) ℚ ⧸ I) F) ∧
       Module.Finite (MvPolynomial (Fin 3) ℚ ⧸ I)
         (integralClosure (MvPolynomial (Fin 3) ℚ ⧸ I) F) := by
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  obtain ⟨hρ, hu, hv, hne', ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
   exact nonexceptional_affine_normalization hρ hu hv hne'
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i : ℚ) (a : ℚ) ha I hf hg hd hdegree F
@@ -73,10 +70,7 @@ theorem retained_curvature_function_degree_le_envelope
   let : IsDedekindDomain C := (orbit_affine_normalization hba hi hne I hf hg hd hdegree F).1
   let : IsFractionRing C F := IsIntegralClosure.isFractionRing_of_finite_extension R F F C
   let l := Ideal.Quotient.mk I (X 0)
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  obtain ⟨hρ, hu, hv, hne', ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
   obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation hρ hu hv hne'
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
     (Lz a b i : ℚ) (a : ℚ) ha I hf hg

@@ -125,10 +125,7 @@ theorem retained_curvature_function_degree_lower_bound {a b i d N : ℕ} {c₀ :
   let : IsDedekindDomain C := hn.2.1
   let : IsFractionRing C F := IsIntegralClosure.isFractionRing_of_finite_extension S F F C
   let : Module.Finite S C := hn.2.2
-  have ha : (a : ℚ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hne' : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  obtain ⟨hρ, hu, hv, hne', ha, -⟩ := orbit_rational_nonexceptional_data hba hi hne
   let : Module.Finite (Algebra.adjoin ℚ {w}) S :=
     nonexceptional_chart_finite_over_parameter hρ hu hv hne'
       (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))

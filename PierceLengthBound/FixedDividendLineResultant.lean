@@ -150,17 +150,6 @@ theorem resultant_degree_of_certificate {R : Type*} [CommRing R] (c e : Fin 4 �
   rw [resultant_monicQuartic, ← changedBezout_det (C ∘ c) (C ∘ e) s x y z]
   exact (natDegree_det_le_row_col _ r k h).trans hsum
 
-/-- Expand every entry of a changed Bézout matrix for the given node vector and
-bound its degree. -/
-local macro "changed_bezout_degree" nodes:ident : tactic => `(tactic| (
-  intro i j
-  fin_cases i <;> fin_cases j <;>
-    simp [changedBezout, newtonBasisChange, quarticBezout, firstNewtonCoeffs,
-      nextNewtonCoeffs, $nodes:ident, Matrix.mul_apply, Fin.sum_univ_succ] <;>
-    ring_nf
-  all_goals first | (apply Nat.eq_zero_of_le_zero; compute_degree) | compute_degree
-  all_goals omega))
-
 /-- The four nodes along the exceptional `(0,3)` direction. -/
 def nodes03 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
   ![C (a 0) + X, C (a 1) + X, C (a 2), C (a 3) + X]
@@ -169,7 +158,13 @@ lemma changedBezout03_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
     ∀ i j, ((changedBezout (C ∘ c) (C ∘ e) (nodes03 a)
       (nodes03 a 0) (nodes03 a 1) 0) i j).natDegree ≤
       (![1, 1, 0, 0] i) + (![1, 1, 1, 1] j) := by
-  changed_bezout_degree nodes03
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [changedBezout, newtonBasisChange, quarticBezout, firstNewtonCoeffs,
+      nextNewtonCoeffs, nodes03, Matrix.mul_apply, Fin.sum_univ_succ] <;>
+    ring_nf
+  all_goals compute_degree
+  all_goals omega
 
 /-- The four nodes along exceptional direction `(1,2)`. -/
 def nodes12 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
@@ -179,7 +174,13 @@ lemma changedBezout12_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
     ∀ i j, ((changedBezout (C ∘ c) (C ∘ e) (nodes12 a)
       (nodes12 a 0) 0 (nodes12 a 1)) i j).natDegree ≤
       (![2, 1, 1, 0] i) + (![1, 1, 0, 0] j) := by
-  changed_bezout_degree nodes12
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [changedBezout, newtonBasisChange, quarticBezout, firstNewtonCoeffs,
+      nextNewtonCoeffs, nodes12, Matrix.mul_apply, Fin.sum_univ_succ] <;>
+    ring_nf
+  all_goals first | (apply Nat.eq_zero_of_le_zero; compute_degree) | compute_degree
+  all_goals omega
 
 /-- The four nodes along exceptional direction `(2,3)`. -/
 def nodes23 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
@@ -189,7 +190,13 @@ lemma changedBezout23_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
     ∀ i j, ((changedBezout (C ∘ c) (C ∘ e) (nodes23 a)
       (nodes23 a 0) (nodes23 a 1) 0) i j).natDegree ≤
       (![1, 1, 1, 0] i) + (![1, 1, 1, 0] j) := by
-  changed_bezout_degree nodes23
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [changedBezout, newtonBasisChange, quarticBezout, firstNewtonCoeffs,
+      nextNewtonCoeffs, nodes23, Matrix.mul_apply, Fin.sum_univ_succ] <;>
+    ring_nf
+  all_goals first | (apply Nat.eq_zero_of_le_zero; compute_degree) | compute_degree
+  all_goals omega
 
 /-- The four nodes along exceptional direction `(1,4)`. -/
 def nodes14 {R : Type*} [CommRing R] (a : Fin 4 → R) : Fin 4 → R[X] :=
@@ -199,7 +206,12 @@ lemma changedBezout14_degree {R : Type*} [CommRing R] (c e a : Fin 4 → R) :
     ∀ i j, ((changedBezout (C ∘ c) (C ∘ e) (nodes14 a)
       0 (nodes14 a 0) (nodes14 a 1)) i j).natDegree ≤
       (![2, 1, 1, 1] i) + (![1, 0, 0, 0] j) := by
-  changed_bezout_degree nodes14
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [changedBezout, newtonBasisChange, quarticBezout, firstNewtonCoeffs,
+      nextNewtonCoeffs, nodes14, Matrix.mul_apply, Fin.sum_univ_succ] <;>
+    ring_nf
+  all_goals compute_degree
 
 lemma monicQuartic_natDegree {R : Type*} [CommRing R] [Nontrivial R] (a : Fin 4 → R) :
     (monicQuartic a).natDegree = 4 := by

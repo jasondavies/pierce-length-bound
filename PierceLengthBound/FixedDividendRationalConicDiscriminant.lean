@@ -88,12 +88,8 @@ theorem rational_nonexceptional_infinity_section
   let w : R := chartInfinityCoordinate I ι l
   let φ := chartHomogeneousMap I ι l
   let r : R := φ (curveHomogenize 10 (curveResultant (ρ : ℚ) u v ρ' u' v'))
-  obtain ⟨M, hs⟩ := rational_nonexceptional_eventual_first_node_generation
-    hρ hu hv hne ρ' u' v' A a ha I hf hg
-  have hl : ι l ≠ 0 := by
-    intro hh
-    apply first_node_ne_zero_of_generation I hd hdegree hs
-    exact hι (by simpa using hh)
+  obtain ⟨hl, M, hs⟩ := nonexceptional_first_node_generation
+    hρ hu hv hne ρ' u' v' A a ha I hf hg ι hι hd hdegree
   obtain ⟨hfin, hdim⟩ := rational_nonexceptional_chart_infinity_dimension hρ hu hv hne
     ρ' u' v' A a ha I hf hg ι hι hd hdegree
   have hfin' : Module.Finite ℚ (R ⧸ Ideal.span {w}) := hfin
@@ -239,53 +235,6 @@ theorem rational_nonexceptional_conic_plane_geometry_second
     z' hz'0 hgen' hn1 (by linarith) (by linarith) (by linarith) (by linarith) hp' hq'
   exact ⟨hcoeff.1, hcoeff.2, section_no_affine_line I z hz0 hrel 2
     (section_plane_remaining_node_nonscalar hdim z' hz'0 hgen' hn1 hp')⟩
-
-/-- Nonzero square coefficient and zero discriminant of the actual plane model. -/
-theorem rational_nonexceptional_conic_plane_coefficients
-    {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
-    (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
-    (hA : A ≠ 0) (ha : a ≠ 0)
-    (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
-    (hf : curveQuadratic (ρ : ℚ) u v ρ' u' v' ∈ I)
-    (hg : curveEquation (ρ : ℚ) u v ρ' u' v' A a ∈ I)
-    (n0 n1 n2 e : ℚ) (hn2 : n2 ≠ 0)
-    (hplane : C n0 * X 0 + C n1 * X 1 + C n2 * X 2 + C e ∈ I)
-    {N : ℕ} {b : ℤ}
-    (hdegree : ∀ n ≥ N,
-      (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = 2 * n + b) :
-    let k := -n0 / n2
-    let m := -n1 / n2
-    let α := (u - v) + (v - 1) * m ^ 2 + ((u - v) + (v - 1) * m) ^ 2
-    let β := 2 * (v - 1) * k * m +
-      2 * (-ρ - u + (v - 1) * k) * ((u - v) + (v - 1) * m)
-    let γ := (-ρ - u) + (v - 1) * k ^ 2 + (-ρ - u + (v - 1) * k) ^ 2
-    α ≠ 0 ∧ β ^ 2 - 4 * α * γ = 0 := by
-  have h := rational_nonexceptional_conic_plane_geometry hρ hu hv hne
-    ρ' u' v' A a hA ha I hf hg n0 n1 n2 e hn2 hplane hdegree
-  exact ⟨h.1, h.2.1⟩
-
-/-- The discriminant-only form of the actual plane coefficient theorem. -/
-theorem rational_nonexceptional_conic_plane_discriminant
-    {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
-    (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
-    (hA : A ≠ 0) (ha : a ≠ 0)
-    (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
-    (hf : curveQuadratic (ρ : ℚ) u v ρ' u' v' ∈ I)
-    (hg : curveEquation (ρ : ℚ) u v ρ' u' v' A a ∈ I)
-    (n0 n1 n2 e : ℚ) (hn2 : n2 ≠ 0)
-    (hplane : C n0 * X 0 + C n1 * X 1 + C n2 * X 2 + C e ∈ I)
-    {N : ℕ} {b : ℤ}
-    (hdegree : ∀ n ≥ N,
-      (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = 2 * n + b) :
-    let k := -n0 / n2
-    let m := -n1 / n2
-    let α := (u - v) + (v - 1) * m ^ 2 + ((u - v) + (v - 1) * m) ^ 2
-    let β := 2 * (v - 1) * k * m +
-      2 * (-ρ - u + (v - 1) * k) * ((u - v) + (v - 1) * m)
-    let γ := (-ρ - u) + (v - 1) * k ^ 2 + (-ρ - u + (v - 1) * k) ^ 2
-    β ^ 2 - 4 * α * γ = 0 := by
-  exact (rational_nonexceptional_conic_plane_coefficients hρ hu hv hne
-    ρ' u' v' A a hA ha I hf hg n0 n1 n2 e hn2 hplane hdegree).2
 
 end
 end PierceLengthBound.FixedDividend

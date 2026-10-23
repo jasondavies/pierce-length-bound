@@ -24,6 +24,26 @@ lemma window_real_large_mean_gap {a A T B : ℕ} {α : ℝ} (ha : 1 ≤ a) (hB :
     (by simpa using (window_large_mean_gap ha hsix hbig).trans (Nat.mul_le_mul_right a hB))
     ((by norm_num : ((1 : ℕ) : ℝ) / (4 : ℕ) ≤ 5 / 17).trans hα)
 
+/-- The window constant `c₀ (K + 1) Δ^e` absorbs every integer branch `T^N ≤ c k Δ^f a^r` with
+`c ≤ c₀`, `k ≤ K + 1` and `f ≤ e`: such a branch gives `T ≤ c₀ (K + 1) Δ^e a^α` once
+`r / N ≤ α`. -/
+lemma window_real_of_branch_power {a T K Δ c₀ e N r c k f : ℕ} {α : ℝ} (ha : 1 ≤ a)
+    (hΔ : 1 ≤ Δ) (hc₀ : 1 ≤ c₀) (hN : 0 < N) (hc : c ≤ c₀) (hk : k ≤ K + 1) (hf : f ≤ e)
+    (hT : T ^ N ≤ c * k * Δ ^ f * a ^ r) (hr : (r : ℝ) / N ≤ α) :
+    (T : ℝ) ≤ (c₀ * (K + 1) * Δ ^ e : ℕ) * (a : ℝ) ^ α :=
+  window_real_bound_of_power ha (Nat.mul_pos (Nat.mul_pos hc₀ K.succ_pos) (pow_pos hΔ e)) hN
+    (hT.trans (Nat.mul_le_mul_right _
+      (Nat.mul_le_mul (Nat.mul_le_mul hc hk) (Nat.pow_le_pow_right hΔ hf)))) hr
+
+/-- The large-mean-gap case `A T > 28 a` for a window constant `c₀ (K + 1) Δ^e` with
+`c₀ ≥ 122449`. -/
+lemma window_real_large_mean_gap_of_base {a A T K Δ c₀ e : ℕ} {α : ℝ} (ha : 1 ≤ a)
+    (hΔ : 1 ≤ Δ) (hc₀ : 122449 ≤ c₀) (hα : (5 : ℝ) / 17 ≤ α)
+    (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hbig : 28 * a < A * T) :
+    (T : ℝ) ≤ (c₀ * (K + 1) * Δ ^ e : ℕ) * (a : ℝ) ^ α :=
+  window_real_large_mean_gap ha (hc₀.trans ((Nat.le_mul_of_pos_right c₀ K.succ_pos).trans
+    (Nat.le_mul_of_pos_right _ (pow_pos hΔ e)))) hα hsix hbig
+
 /-- **The generic window lemma.** A branch `T^L ≤ K X^q B` with a box bound `B T^u ≤ F a^v`,
 the gap height `H ≤ C a/(A T)`, the minor height `X ≤ E A⁴ H⁶/a³` and the drop bound
 `T² ≤ D A` give `T^{L+10q+u} ≪ a^{3q+v}`. -/

@@ -83,17 +83,6 @@ lemma rational_curveQuadratic_prime {ρ u v : ℚ}
   apply lineQuadratic_irreducible
   all_goals linarith
 
-/-- The rational equations have a finite decomposition into prime curves. -/
-theorem rational_curve_finite_prime_decomposition {ρ u v : ℚ}
-    (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℚ) (ha : a ≠ 0) :
-    ∃ S : Finset (Ideal (MvPolynomial (Fin 3) ℚ)),
-      (∀ p ∈ S, p.IsPrime ∧ p.height = 2) ∧
-      (∀ x, (MvPolynomial.eval x (curveQuadratic ρ u v ρ' u' v') = 0 ∧
-        MvPolynomial.eval x (curveEquation ρ u v ρ' u' v' A a) = 0) ↔
-        ∃ p ∈ S, x ∈ coordinateZeroLocus p) :=
-  finite_prime_decomposition_height_two (rational_curveQuadratic_prime hρ hu hv ρ' u' v')
-    (rational_curveQuadratic_not_dvd hρ hu hv ρ' u' v' A a ha)
-
 /-- The rational quotient filtration has the same coefficient-uniform slope bound. -/
 theorem rational_curve_filtered_bound {ρ u v : ℚ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)

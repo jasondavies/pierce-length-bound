@@ -76,23 +76,6 @@ theorem common_zero_iff_minimalPrime {K σ : Type*} [Field K]
     exact ⟨hx f (hp.le (Ideal.subset_span (by simp))),
       hx g (hp.le (Ideal.subset_span (by simp)))⟩
 
-/-- A finite decomposition into prime zero loci, each of codimension two. -/
-theorem finite_prime_decomposition_height_two {K σ : Type*} [Field K] [Finite σ]
-    {f g : MvPolynomial σ K} (hf : Prime f) (hfg : ¬ f ∣ g) :
-    ∃ S : Finset (Ideal (MvPolynomial σ K)),
-      (∀ p ∈ S, p.IsPrime ∧ p.height = 2) ∧
-      (∀ x, (MvPolynomial.eval x f = 0 ∧ MvPolynomial.eval x g = 0) ↔
-        ∃ p ∈ S, x ∈ coordinateZeroLocus p) := by
-  classical
-  let hfin := Ideal.finite_minimalPrimes_of_isNoetherianRing
-    (MvPolynomial σ K) (Ideal.span ({f, g} : Set (MvPolynomial σ K)))
-  refine ⟨hfin.toFinset, ?_, ?_⟩
-  · intro p hp
-    have hp' := hfin.mem_toFinset.mp hp
-    exact ⟨hp'.isPrime, minimalPrime_pair_height_two hf hfg hp'⟩
-  · intro x
-    simpa only [hfin.mem_toFinset] using common_zero_iff_minimalPrime f g x
-
 lemma curveQuadratic_degree_le_two {K : Type*} [CommRing K] [Nontrivial K]
     (ρ u v ρ' u' v' : K) : (curveQuadratic ρ u v ρ' u' v').totalDegree ≤ 2 :=
   lineQuadratic_totalDegree_le_two ρ u v ρ' u' v' MvPolynomial.X (by simp)

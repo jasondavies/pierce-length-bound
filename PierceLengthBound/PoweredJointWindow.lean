@@ -42,26 +42,15 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
     (T : ℝ) ≤ (poweredJointWindowBase m n L * (K + 1) * Δ ^ (17 + 10 * L + 5 * n + m) : ℕ) *
       (a : ℝ) ^ α := by
   obtain ⟨hA, hΔ, ha, hT2⟩ := window_facts (by omega) hsix hdrop
-  let B := poweredJointWindowBase m n L * (K + 1) * Δ ^ (17 + 10 * L + 5 * n + m)
-  have hc : 1 ≤ poweredJointWindowBase m n L := by unfold poweredJointWindowBase; omega
-  have hB : 1 ≤ B := Nat.one_le_iff_ne_zero.mpr (by dsimp [B]; positivity)
-  have hbase : poweredJointWindowBase m n L ≤ B := by
-    calc poweredJointWindowBase m n L = poweredJointWindowBase m n L * 1 * 1 := by ring
-      _ ≤ B := by
-        dsimp [B]
-        gcongr
-        · omega
-        · exact Nat.one_le_pow (17 + 10 * L + 5 * n + m) Δ hΔ
+  have hc₀ : 122449 + 124928 * 3609600 * 56 ^ 11 * 8 ^ 3 ≤ poweredJointWindowBase m n L := by
+    unfold poweredJointWindowBase; omega
   replace hT2 : T ^ 2 ≤ (8 * Δ) * A := hT2.trans_eq (by ring)
-  have hcoeff {c e : ℕ} (hc : c ≤ poweredJointWindowBase m n L) (he : e ≤ 17 + 10 * L + 5 * n + m) :
-      c * K * Δ ^ e ≤ B := by
-    dsimp only [B]
-    gcongr
-    omega
+  have hfin {N r c f : ℕ} (hN : 0 < N) (hc : c ≤ poweredJointWindowBase m n L)
+      (hf : f ≤ 17 + 10 * L + 5 * n + m)
+      (hT : T ^ N ≤ c * K * Δ ^ f * a ^ r) (hr : (r : ℝ) / N ≤ α) :=
+    window_real_of_branch_power ha hΔ (by omega) hN hc K.le_succ hf hT hr
   by_cases hbig : 28 * a < A * T
-  · exact window_real_large_mean_gap ha
-      ((show 122449 ≤ poweredJointWindowBase m n L by
-        unfold poweredJointWindowBase; omega).trans hbase) hα hsix hbig
+  · exact window_real_large_mean_gap_of_base ha hΔ (by omega) hα hsix hbig
   let H := 28 * a / (A * T) + 1
   let X := 3609600 * A ^ 4 * H ^ 6 / a ^ 3
   have hH : H * (A * T) ≤ 56 * a := gap_height_mul_le (not_lt.mp hbig)
@@ -70,24 +59,20 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
   · rcases hlocal hscale with h | h | h
     · have hm := window_branch_exponent (L := 1) (q := 5) (u := 0) (v := 0) (B := 1) (F := 1)
         (by omega : 0 < a) (by simpa using h) hH hX (by simp) hT2
-      have h' : T ^ 51 ≤ B * a ^ 15 := by
+      have h' : T ^ 51 ≤ 3609600 ^ 5 * 56 ^ 30 * 8 ^ 10 * K * Δ ^ 10 * a ^ 15 := by
         calc T ^ 51 ≤ K * (3609600 * 56 ^ 6 * (8 * Δ) ^ 2) ^ 5 * 1 * a ^ (3 * 5 + 0) := hm
-          _ = (3609600 ^ 5 * 56 ^ 30 * 8 ^ 10 * K * Δ ^ 10) * a ^ 15 := by ring
-          _ ≤ _ := Nat.mul_le_mul_right _
-            (hcoeff (by unfold poweredJointWindowBase; omega) (by omega))
-      apply window_real_bound_of_power ha hB (by decide : 0 < 51) h'
-      exact (by norm_num : (15 : ℝ) / 51 ≤ 5 / 17).trans hα
+          _ = _ := by ring
+      exact hfin (by decide) (by unfold poweredJointWindowBase; omega) (by omega) h'
+        ((by norm_num : (15 : ℝ) / 51 ≤ 5 / 17).trans hα)
     · have hm := window_branch_exponent (L := 2) (q := 8) (u := 3) (v := 1) (B := H) (K := K)
         (F := 56 * (8 * Δ)) (by omega : 0 < a) (h.trans (le_of_eq (by ring)))
         hH hX (by simpa using gap_cube_box hH hT2) hT2
-      have h' : T ^ 85 ≤ B * a ^ 25 := by
+      have h' : T ^ 85 ≤ 3609600 ^ 8 * 56 ^ 49 * 8 ^ 17 * K * Δ ^ 17 * a ^ 25 := by
         calc T ^ 85 ≤ K * (3609600 * 56 ^ 6 * (8 * Δ) ^ 2) ^ 8 * (56 * (8 * Δ)) *
             a ^ (3 * 8 + 1) := hm
-          _ = (3609600 ^ 8 * 56 ^ 49 * 8 ^ 17 * K * Δ ^ 17) * a ^ 25 := by ring
-          _ ≤ _ := Nat.mul_le_mul_right _
-            (hcoeff (by unfold poweredJointWindowBase; omega) (by omega))
-      apply window_real_bound_of_power ha hB (by decide : 0 < 85) h'
-      exact (by norm_num : (25 : ℝ) / 85 ≤ 5 / 17).trans hα
+          _ = _ := by ring
+      exact hfin (by decide) (by unfold poweredJointWindowBase; omega) (by omega) h'
+        ((by norm_num : (25 : ℝ) / 85 ≤ 5 / 17).trans hα)
     · let S := 4352 * A ^ 3 * H ^ 3 / a ^ 2
       let Y := 1259991040 * A ^ 5 * H ^ 10 / a ^ 4
       rcases le_total (max H (S ^ m)) (Y ^ n) with hSY | hSY
@@ -97,17 +82,16 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
           powered_rank_five_height (by omega) (by omega) hH (Nat.div_mul_le_self _ _) hT2
         have hc := remainder_window_powered_box_exponent
           (by omega : 0 < a) h hH hX hY hT2
-        have h' : T ^ (51 * L + 20 * n) ≤ B * a ^ (15 * L + 6 * n) := by
+        have h' : T ^ (51 * L + 20 * n) ≤ 3609600 ^ (5 * L) * 56 ^ (30 * L + 10 * n) *
+            1259991040 ^ n * 8 ^ (5 * n + 10 * L) * K * Δ ^ (5 * n + 10 * L) *
+            a ^ (15 * L + 6 * n) := by
           calc _ ≤ K * 3609600 ^ (5 * L) * 56 ^ (30 * L) *
               (1259991040 * 56 ^ 10 * (8 * Δ) ^ 5) ^ n * (8 * Δ) ^ (10 * L) *
               a ^ (15 * L + 6 * n) := hc
-            _ = (3609600 ^ (5 * L) * 56 ^ (30 * L + 10 * n) * 1259991040 ^ n *
-              8 ^ (5 * n + 10 * L) * K * Δ ^ (5 * n + 10 * L)) * a ^ (15 * L + 6 * n) := by
+            _ = _ := by
                 simp only [mul_pow, ← pow_mul, pow_add]
                 ring
-            _ ≤ _ := Nat.mul_le_mul_right _
-              (hcoeff (by unfold poweredJointWindowBase; omega) (by omega))
-        exact window_real_bound_of_power ha hB (by omega) h' hYexp
+        exact hfin (by omega) (by unfold poweredJointWindowBase; omega) (by omega) h' hYexp
       · rw [max_eq_left hSY] at h
         have hS : S * T ^ 3 ≤ 4352 * 56 ^ 3 * a := curvature_height_times_cube
           (by omega) (by omega) hH (Nat.div_mul_le_self _ _)
@@ -115,31 +99,19 @@ theorem window_real_of_powered_joint_count {a A T Δ K m n L : ℕ} {α : ℝ}
           (show 1 ≤ 8 * Δ by omega) (show 1 ≤ H from Nat.le_add_left 1 _) hH hS hT2
         have hc := remainder_window_powered_box_exponent
           (by omega : 0 < a) h hH hX hbox hT2
-        have h' : T ^ (51 * L + 3 * m) ≤ B * a ^ (15 * L + m) := by
+        have h' : T ^ (51 * L + 3 * m) ≤ 3609600 ^ (5 * L) * 56 ^ (30 * L) *
+            (4352 * 56 ^ 3 + 56) ^ m * 8 ^ (m + 10 * L) * K * Δ ^ (m + 10 * L) *
+            a ^ (15 * L + m) := by
           calc _ ≤ K * 3609600 ^ (5 * L) * 56 ^ (30 * L) *
               ((4352 * 56 ^ 3 + 56) * (8 * Δ)) ^ m * (8 * Δ) ^ (10 * L) *
               a ^ (15 * L + m) := hc
-            _ = (3609600 ^ (5 * L) * 56 ^ (30 * L) * (4352 * 56 ^ 3 + 56) ^ m *
-              8 ^ (m + 10 * L) * K * Δ ^ (m + 10 * L)) * a ^ (15 * L + m) := by
+            _ = _ := by
                 simp only [mul_pow, pow_add]
                 ring
-            _ ≤ _ := Nat.mul_le_mul_right _
-              (hcoeff (by unfold poweredJointWindowBase; omega) (by omega))
-        exact window_real_bound_of_power ha hB (by omega) h' hSexp
+        exact hfin (by omega) (by unfold poweredJointWindowBase; omega) (by omega) h' hSexp
   · have hm := remainder_window_small_exponent (by omega : 0 < a) (by omega : 0 < A)
       (by omega : a ^ 3 ≤ 124928 * A ^ 4 * H ^ 5 * X) hH hX hT2
-    have h' : T ^ 17 ≤ B * a ^ 5 := by
-      calc T ^ 17 ≤ 124928 * 3609600 * 56 ^ 11 * (8 * Δ) ^ 3 * a ^ 5 := hm
-        _ = (124928 * 3609600 * 56 ^ 11 * 8 ^ 3 * Δ ^ 3) * a ^ 5 := by ring
-        _ ≤ B * a ^ 5 := by
-          apply Nat.mul_le_mul_right
-          dsimp [B]
-          have hc' : 124928 * 3609600 * 56 ^ 11 * 8 ^ 3 ≤ poweredJointWindowBase m n L := by
-            unfold poweredJointWindowBase; omega
-          calc _ ≤ poweredJointWindowBase m n L * Δ ^ (17 + 10 * L + 5 * n + m) :=
-              Nat.mul_le_mul hc' (Nat.pow_le_pow_right hΔ (by omega))
-            _ = poweredJointWindowBase m n L * 1 * Δ ^ (17 + 10 * L + 5 * n + m) := by ring
-            _ ≤ _ := by gcongr; omega
-    exact window_real_bound_of_power ha hB (by decide : 0 < 17) h' hα
+    exact window_real_of_branch_power (c := 124928 * 3609600 * 56 ^ 11 * 8 ^ 3) (k := 1) (f := 3)
+      ha hΔ (by omega) (by decide) (by omega) (by omega) (by omega) (hm.trans_eq (by ring)) hα
 
 end PierceLengthBound.FixedDividend

@@ -78,15 +78,10 @@ theorem jointNonexceptionalCount_of_components {B e} {R : ℕ → ℕ} (hR : Slo
   refine ⟨fun a => 24 * R a, (slowGrowth_const 24).mul hR, ?_⟩
   intro a b s T A i hba hmem hsT hT hi hne G hG hpat
   have hθ := theta_eq_of_plk_eq hpat
-  obtain ⟨hρ, hu, hv⟩ := orbit_rational_pattern_signs hba (by omega : i + 6 < P a b)
-  have hL : (Lz a b i : ℚ) ≠ 0 := by
-    have := Lz_pos hba (by omega : i + 5 < P a b)
-    exact_mod_cast (show Lz a b i ≠ 0 by omega)
-  have hneQ : NonexceptionalPattern (patternRhoQ a b i : ℝ)
-      (patternUQ a b i : ℝ) (patternVQ a b i : ℝ) := by simpa using hne
+  obtain ⟨hρ, hu, hv, hneQ, ha, hL⟩ := orbit_rational_nonexceptional_data hba hi hne
   obtain ⟨S, hS, hcomp, hcover⟩ := rational_nonexceptional_curve_decomposition hρ hu hv hneQ
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
-    (Lz a b i) a hL (by exact_mod_cast (show a ≠ 0 by omega))
+    (Lz a b i) a hL ha
   have hpoints (l) (hl : l ∈ G) : ∃ I ∈ S, orbitFreeNodesQ a b l ∈ coordinateZeroLocus I := by
     apply (hcover _).mp
     change MvPolynomial.eval (orbitFreeNodesQ a b l) (orbitCurveQuadraticQ a b i) = 0 ∧

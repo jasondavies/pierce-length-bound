@@ -55,29 +55,6 @@ theorem selected_ordinary_pattern_count {a b s T A : ℕ} (hba : b < a)
   · intro m hm
     exact tau_le_tauMax ((mem_Icc.mp hm).2.trans hXb)
 
-/-- The ordinary sum over patterns splits into two uniformly bounded classes. -/
-theorem pattern_sum_two_classes {ι α β : Type*} [DecidableEq α] [DecidableEq β]
-    (G : Finset ι) (p : ι → α) (k : ι → β) (E : α → Prop) [DecidablePred E]
-    {M N U V : ℝ} (hU : 0 ≤ U) (hV : 0 ≤ V)
-    (hM : ((G.image p).card : ℝ) ≤ M)
-    (hN : (((G.image p).filter E).card : ℝ) ≤ N)
-    (hc : ∀ v ∈ G.image p, (((G.filter fun i => p i = v).image k).card : ℝ) ≤
-      if E v then V else U) :
-    ((G.image fun i => (p i, k i)).card : ℝ) ≤ M * U + N * V := by
-  have hs : ((G.image fun i => (p i, k i)).card : ℝ) ≤
-      ∑ v ∈ G.image p, (((G.filter fun i => p i = v).image k).card : ℝ) := by
-    exact_mod_cast pair_image_card_le_sum G p k
-  calc _ ≤ ∑ v ∈ G.image p, if E v then V else U := hs.trans (sum_le_sum hc)
-    _ = (((G.image p).filter E).card : ℝ) * V +
-        (((G.image p).filter fun v => ¬ E v).card : ℝ) * U := by
-      rw [sum_ite]
-      simp
-    _ ≤ N * V + ((G.image p).card : ℝ) * U := by
-      gcongr
-      exact filter_subset _ _
-    _ ≤ N * V + M * U := by gcongr
-    _ = _ := by ring
-
 /-- The combined ordinary and exceptional pattern slack, with no lattice weights. -/
 def patternSlack (R : ℕ → ℕ) (a : ℕ) : ℕ :=
   8 * R a * (ordinaryPatternSlack a + exceptionalPatternSlack a)
