@@ -16,8 +16,6 @@ namespace PierceLengthBound.FixedDividend
 open Polynomial Matrix
 noncomputable section
 
-set_option maxHeartbeats 1200000 in
--- The cubic norm contains nested products whose linear coefficient is expanded here.
 theorem polar_certificate_formal_norm_linear (x : Fin 3 → PowerSeries ℚ) (s t : ℚ)
     (hx0 : ∀ j, PowerSeries.constantCoeff (x j) = ![-1 / 7, -3 / 28, -1 / 2] j)
     (hx1 : ∀ j, PowerSeries.coeff 1 (x j) = ![(9 * s - 5 * t) / 4, s, t] j) :
@@ -30,8 +28,6 @@ theorem polar_certificate_formal_norm_linear (x : Fin 3 → PowerSeries ℚ) (s 
     hx0, hx1, polarCertificateNormLinear, map_ofNat]
   ring
 
-set_option maxHeartbeats 1200000 in
--- The monomial coefficients are obtained from the Newton remainder before taking first jets.
 theorem polar_certificate_formal_remainder_linear (x : Fin 3 → PowerSeries ℚ) (s t : ℚ)
     (hx0 : ∀ j, PowerSeries.constantCoeff (x j) = ![-1 / 7, -3 / 28, -1 / 2] j)
     (hx1 : ∀ j, PowerSeries.coeff 1 (x j) = ![(9 * s - 5 * t) / 4, s, t] j) :
@@ -63,8 +59,6 @@ theorem polar_certificate_formal_remainder_linear (x : Fin 3 → PowerSeries ℚ
   rw [hr]
   rfl
 
-set_option maxHeartbeats 800000 in
--- The actual curve equation contains the quartic resultant as a nested polynomial expression.
 /-- For every nonzero leading label and every dividend, the rational
 certificate admits a smooth formal section whose actual curve equation has
 colength four. This uses the constructed Hensel section, not its tangent line. -/

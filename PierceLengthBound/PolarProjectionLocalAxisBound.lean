@@ -23,10 +23,6 @@ def polarCenteredNodeGaps {K R : Type*} [CommRing K] [CommRing R] [Algebra K R]
   ![ψ (X 0) - algebraMap K R (z 0), ψ (X 1) - ψ (X 0) - algebraMap K R (z 1),
     ψ (X 2) - ψ (X 1) - algebraMap K R (z 2)]
 
-set_option synthInstance.maxHeartbeats 400000 in
--- The two local models and the section quotient carry distinct scalar towers.
-set_option maxHeartbeats 1600000 in
--- Constructing and comparing the local quotient maps requires substantial elaboration.
 /-- On every component through the base point outside the fixed exceptional
 locus, one of the two centered coordinate gaps cuts out a finite local
 section of dimension at most four. -/

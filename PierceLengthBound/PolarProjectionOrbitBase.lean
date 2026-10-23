@@ -32,8 +32,8 @@ theorem orbitPolarParameters_eq_minor (a b i : ℕ) :
   have h5 := ht 5
   have h6 := ht 6
   simp only [theta, projθ, Matrix.cons_val_zero, Matrix.cons_val_one,
-    Matrix.cons_val_two, Matrix.cons_val_three, Matrix.cons_val_succ,
-    Matrix.head_cons, Matrix.tail_cons] at h0 h1 h2 h3 h4 h5 h6
+    Matrix.cons_val_two, Matrix.cons_val_three, Matrix.head_cons,
+    Matrix.tail_cons] at h0 h1 h2 h3 h4 h5 h6
   change U2z a b i = -plk (Mi a b i) 1 at h4
   change U1z a b (i + 1) = plk (Mi a b i) 8 at h5
   change U2z a b (i + 1) = -plk (Mi a b i) 7 at h6

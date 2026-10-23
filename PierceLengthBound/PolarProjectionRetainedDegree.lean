@@ -19,10 +19,6 @@ namespace PierceLengthBound.FixedDividend
 open MvPolynomial
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 400000 in
--- Both normalized models use the canonical fraction field of the component.
-set_option maxHeartbeats 1000000 in
--- Elaborating their scalar towers dominates this final theorem composition.
 /-- On a degree-24 component the actual polar cuts and the explicit chart
 and quartic conditions imply the full powered graph degree bound. -/
 theorem retained_polar_linearJointGraph_degree
@@ -51,10 +47,6 @@ theorem retained_polar_linearJointGraph_degree
     (retained_polar_base_degree_le_four hba hi hne I hf hg hz hcut hguard hminor
       (by norm_num : 0 < 24) hdegree F)
 
-set_option synthInstance.maxHeartbeats 400000 in
--- The branch and polar constructions share the component's canonical fraction field.
-set_option maxHeartbeats 1000000 in
--- Retain enough elaboration budget for both normalized models.
 /-- Irreducibility of the actual degree-twelve label polynomial forces
 component degree 24, and hence the polar graph bound. -/
 theorem retained_polar_linearJointGraph_degree_of_irreducible_label

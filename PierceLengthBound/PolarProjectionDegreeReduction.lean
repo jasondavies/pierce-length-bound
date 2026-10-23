@@ -53,10 +53,6 @@ theorem orbit_curvature_field_nonzero {F : Type*} [Field F] [Algebra ℚ F]
   simp only [h, zero_mul, Finset.sum_const_zero] at he
   exact hA' he.symm
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The affine normalization and the rank-five parameter give several nested scalar towers.
-set_option maxHeartbeats 800000 in
--- Constructing both normalized models needs more elaboration than the final degree arithmetic.
 /-- On a degree-24 component the actual curvature pole envelope has degree
 at least 56 once the weighted common-base contribution of `J W` is at most four.
 Subtracting the old-infinity curvature zero degree 36 leaves at least 20.
@@ -114,10 +110,6 @@ theorem retained_curvature_degree_lower_bound_of_base_degree_le_four
   have h60 : 60 ≤ Module.finrank ℚ⟮J⟯ F := hJdata.2.2
   constructor <;> omega
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The scalar normalization and affine curvature model use different algebra towers over the field.
-set_option maxHeartbeats 800000 in
--- Elaborating the two constructed normalized models dominates the final degree arithmetic.
 /-- The actual powered graph, including an arbitrary invertible constant
 change of curvature coordinates, has degree at least `56m + 60n` on a
 retained degree-24 component with weighted common-base contribution at most four. -/

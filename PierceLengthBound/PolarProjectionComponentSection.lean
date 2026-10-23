@@ -17,10 +17,6 @@ namespace PierceLengthBound.FixedDividend
 open MvPolynomial Matrix
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 200000 in
--- Source and target are localizations of different polynomial quotients over the same field.
-set_option maxHeartbeats 800000 in
--- Elaborating the quotient and localization scalar towers dominates the argument.
 /-- The local section of any component through the base point is a
 surjective image of the explicit smooth section, and its fixed-dividend
 equation is killed by this map. -/

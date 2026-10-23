@@ -52,10 +52,6 @@ theorem common_order_le_section_order {R L ι : Type*}
     rw [map_mul, ν.map_mul]
     simpa only [zero_add] using add_le_add (hR r) hx
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The scalar normalization and the local normalization have different scalar towers.
-set_option maxHeartbeats 800000 in
--- Transporting the finite branch family requires elaborating both normalized models.
 /-- A local section through the common base point bounds the actual
 residue-weighted common-base contribution. The center hypothesis concerns
 regularity on the local curve ring; no multiplicity is assumed. -/
