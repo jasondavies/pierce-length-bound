@@ -14,7 +14,6 @@ public import PierceLengthBound.FixedDividendConicLeadingNodes
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
-set_option maxHeartbeats 1000000
 
 def orbitParameterGaps (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) : Fin 5 → Polynomial ℚ :=
   lineGaps (C (patternRhoQ a b i)) (C (patternUQ a b i)) (C (patternVQ a b i))
@@ -126,7 +125,8 @@ lemma orbit_pattern_eq_of_theta {a b i l : ℕ} (h : theta a b i = theta a b l) 
   have h5 := congrFun h 5
   have h6 := congrFun h 6
   simp only [theta, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
-    Matrix.cons_val_three, Matrix.cons_val, Matrix.head_cons, Matrix.tail_cons] at h0 h1 h2 h3 h4 h5 h6
+    Matrix.cons_val_three, Matrix.cons_val, Matrix.head_cons, Matrix.tail_cons]
+    at h0 h1 h2 h3 h4 h5 h6
   refine ⟨h0, ?_⟩
   simp only [patternRhoQ, patternUQ, patternVQ, h0, h1, h2, h3, h4, h5, h6,
     Nat.add_assoc, Nat.reduceAdd, and_self]

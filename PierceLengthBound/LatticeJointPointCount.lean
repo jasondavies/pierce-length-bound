@@ -62,7 +62,7 @@ theorem patternCurvature_spec {p : Fin 10 → ℤ} (h0 : p 0 ≠ 0)
             ∀ t, 3 * (shortR p : ℤ) ^ 2 * |c (M 0) (M 1) t| ≤ 8 * S := by
   classical
   have h : p 0 ≠ 0 ∧ ∃ M : Fin 3 → Fin 5 → ℤ, plk M = p := ⟨h0, hp⟩
-  rw [patternCurvatureMatrix, dite_cond_eq_true (eq_true h)]
+  rw [patternCurvatureMatrix, dite_eq_left_of_eq_true (eq_true h)]
   exact Classical.choose_spec (lattice_curvature_coordinates h.1 h.2)
 
 /-! ### Points of the linearly changed powered graph -/

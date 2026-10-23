@@ -19,8 +19,6 @@ open Finset
 def PoweredJointCountBranches (K T H X B L : ℕ) : Prop :=
   T ≤ K * X ^ 5 ∨ T ^ 2 ≤ K * H * X ^ 8 ∨ T ^ L ≤ K * X ^ (5 * L) * B
 
-set_option maxHeartbeats 1000000 in
--- The three-term real inequality requires normalization of the nested maximum.
 /-- The displayed joint-coordinate estimate implies the three integer-power branches. -/
 theorem powered_joint_branches_of_three_term_count {T H X B R L : ℕ} (hL : 2 ≤ L)
     (hcount : (T : ℝ) ≤ R * ((X : ℝ) ^ 5 + (X : ℝ) ^ 4 * (H : ℝ) ^ (1 / 2 : ℝ) +
@@ -101,7 +99,8 @@ theorem powered_joint_three_term_of_pattern_estimate {m n : ℕ} {R : ℕ → �
     (show (((G.image pm).filter fun p => ∃ d, ExceptionalMinorRelation p d).card : ℝ) ≤
         exceptionalPatternSlack a * (X : ℝ) ^ 4 by
       exact_mod_cast selected_exceptional_pattern_count_slack hba hmem hsT hT)
-    (by simpa only [G, pm, H, B, Nat.cast_max, Nat.cast_pow] using hcurve a b s T A hba hmem hsT hT hscale)
+    (by simpa only [G, pm, H, B, Nat.cast_max, Nat.cast_pow]
+      using hcurve a b s T A hba hmem hsT hT hscale)
   have hTc : (T : ℝ) ≤ 8 * ((G.image fun i => (pm i, kap a b i)).card : ℝ) := by
     exact_mod_cast le_eight_mul_pair_image hba hmem hsT hT
   dsimp only

@@ -15,7 +15,6 @@ cofactor lift. This makes its uniform coefficient-height control concrete. -/
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
-set_option maxHeartbeats 1000000
 
 /-- Variables zero through five are the two consecutive minor-ratio triples;
 six through eight are the free nodes, and nine is the fixed dividend. -/
@@ -63,7 +62,8 @@ def orbitLiftInputs (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) : Fin 10 → Ra
 lemma universalLiftCofactors_orbit (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) (j : Fin 9) :
     MvPolynomial.eval₂ (Int.castRingHom (RatFunc ℚ)) (orbitLiftInputs a b i z)
         (universalLiftCofactors j) =
-      algebraMap (Polynomial ℚ) (RatFunc ℚ) (MvPolynomial.aeval z (orbitCurveCofactorsQ a b i j)) := by
+      algebraMap (Polynomial ℚ) (RatFunc ℚ)
+        (MvPolynomial.aeval z (orbitCurveCofactorsQ a b i j)) := by
   let φ : MvPolynomial (Fin 3) ℚ →+* RatFunc ℚ :=
     (algebraMap (Polynomial ℚ) (RatFunc ℚ)).comp (MvPolynomial.aeval z).toRingHom
   change _ = φ (orbitCurveCofactorsQ a b i j)
@@ -82,8 +82,10 @@ lemma universalLiftCofactors_orbit (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) 
 
 /-- The fixed universal pair specializes to the actual lifted rational function. -/
 theorem universalLift_orbit (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) :
-    MvPolynomial.eval₂ (Int.castRingHom (RatFunc ℚ)) (orbitLiftInputs a b i z) universalLiftNumerator /
-      MvPolynomial.eval₂ (Int.castRingHom (RatFunc ℚ)) (orbitLiftInputs a b i z) universalLiftDenominator =
+    MvPolynomial.eval₂ (Int.castRingHom (RatFunc ℚ)) (orbitLiftInputs a b i z)
+        universalLiftNumerator /
+      MvPolynomial.eval₂ (Int.castRingHom (RatFunc ℚ)) (orbitLiftInputs a b i z)
+        universalLiftDenominator =
         orbitLiftParameter a b i z := by
   let φ : MvPolynomial (Fin 10) ℤ →+* RatFunc ℚ :=
     MvPolynomial.eval₂Hom (Int.castRingHom (RatFunc ℚ)) (orbitLiftInputs a b i z)

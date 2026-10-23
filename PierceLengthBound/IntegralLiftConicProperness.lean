@@ -14,7 +14,6 @@ public import PierceLengthBound.IntegralLiftRawResolvent
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
-set_option maxHeartbeats 1000000
 
 def orbitResolventP3 (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) : Polynomial ℚ :=
   C (patternVQ a b i - 1) - z 0 - z 1 - z 2

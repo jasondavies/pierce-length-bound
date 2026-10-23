@@ -14,7 +14,6 @@ public import PierceLengthBound.IntegralLiftQuotientNormalization
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
-set_option maxHeartbeats 1000000
 
 lemma muF_X_four {a b i : ℕ} (hba : b < a) (hi : i + 4 < P a b) :
     muF a b i (X ^ 4) = kk a b i ^ 3 + 3 * kk a b i ^ 2 +

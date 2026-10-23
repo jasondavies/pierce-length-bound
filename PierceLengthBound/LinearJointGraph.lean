@@ -154,9 +154,130 @@ theorem orbitLinearJointGraph_degree_bounds {a b i d : ℕ} (G : Matrix (Fin 3) 
     (linearJointNumerators_totalDegree G _ (orbitJoint_totalDegree_le a b i).1)
     ((orbitJoint_totalDegree_le a b i).2.trans (by norm_num)) hd
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The two normalized chart models and their residue fields have nested scalar towers.
-set_option maxHeartbeats 1200000 in
+/-- The degree arithmetic behind `retained_linearJointGraph_degree_lower_bound_from_envelope`:
+the infinity branches, of total weighted multiplicity `d = 2 Σ t`, contribute `5k/2 · d`. -/
+private lemma pole_sum_degree_arith {α β : Type*} (B : Finset α) (E : Finset β)
+    (μ t r : α → ℕ) (n s : β → ℕ) {d δ k m : ℕ}
+    (hμ : ∀ p ∈ B, μ p = 2 * t p) (hsum : ∑ p ∈ B, μ p * r p = d)
+    (hbound : ∑ p ∈ B, 5 * k * t p * r p + ∑ q ∈ E, m * n q * s q ≤ δ) :
+    5 * k * d + 2 * m * ∑ q ∈ E, n q * s q ≤ 2 * δ := by
+  have htwice : 2 * ∑ p ∈ B, t p * r p = d := by
+    rw [← hsum, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun p hp => by rw [hμ p hp, mul_assoc]
+  have h1 : ∑ p ∈ B, 5 * k * t p * r p = 5 * k * ∑ p ∈ B, t p * r p := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun p _ => by ring
+  have h2 : ∑ q ∈ E, m * n q * s q = m * ∑ q ∈ E, n q * s q := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun q _ => by ring
+  rw [h1, h2] at hbound
+  rw [← htwice]
+  linarith
+
+/-- At a normalized branch above old infinity, where the infinity coordinate vanishes to order
+`2t`, the first node has a pole and the rank-five coordinate has pole order exactly `5t`. -/
+theorem retained_infinity_branch_rank_five_pole
+    {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
+    (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
+    (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
+    (hf : orbitCurveQuadraticQ a b i ∈ I) (hg : orbitCurveEquationQ a b i ∈ I)
+    (hz : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I)
+    (hnorm : jointNormalizationPolynomial a b i ∈ I)
+    (hres : jointResolventPolynomial a b i ∈ I)
+    {d N : ℕ} {c₀ : ℤ} (hd : 0 < d)
+    (hdegree : ∀ n ≥ N,
+      (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = (d : ℤ) * n + c₀)
+    {F : Type*} [Field F] [Algebra ℚ F]
+    (ι : (MvPolynomial (Fin 3) ℚ ⧸ I) →ₐ[ℚ] F) (hι : Function.Injective ι)
+    (hfrac : ∀ z : F, ∃ x y : MvPolynomial (Fin 3) ℚ ⧸ I, z = ι x / ι y)
+    [IsFractionRing (projectiveChart I ι (Ideal.Quotient.mk I (X 0))) F]
+    [IsDedekindDomain (integralClosure
+      (projectiveChart I ι (Ideal.Quotient.mk I (X 0))) F)]
+    (p : IsDedekindDomain.HeightOneSpectrum
+      (integralClosure (projectiveChart I ι (Ideal.Quotient.mk I (X 0))) F))
+    (hp : algebraMap (projectiveChart I ι (Ideal.Quotient.mk I (X 0)))
+      (integralClosure (projectiveChart I ι (Ideal.Quotient.mk I (X 0))) F)
+      (chartInfinityCoordinate I ι (Ideal.Quotient.mk I (X 0))) ∈ p.asIdeal) :
+    let S := projectiveChart I ι (Ideal.Quotient.mk I (X 0))
+    let C := integralClosure S F
+    let w := algebraMap S C (chartInfinityCoordinate I ι (Ideal.Quotient.mk I (X 0)))
+    let : IsFractionRing C F := IsIntegralClosure.isFractionRing_of_finite_extension S F F C
+    ∃ t : ℕ, 0 < t ∧ multiplicity p.asIdeal (Ideal.span {w}) = 2 * t ∧
+      normalizedBranchOrder p F (ι (Ideal.Quotient.mk I (X 0))) < 0 ∧
+      discretePoleOrder (normalizedBranchOrder p F)
+        (jointGraphFieldCoordinates I (orbitJointNumerators a b i)
+          (orbitJointDenominator a b i) ι (Sum.inr 3)) = 5 * t := by
+  let S := projectiveChart I ι (Ideal.Quotient.mk I (X 0))
+  let C := integralClosure S F
+  let w := algebraMap S C (chartInfinityCoordinate I ι (Ideal.Quotient.mk I (X 0)))
+  let : IsFractionRing C F := IsIntegralClosure.isFractionRing_of_finite_extension S F F C
+  obtain ⟨ν, hcenter, hregular, hπ, t, ht, hwν, _, _, _, hJ⟩ :=
+    retained_normalized_branch_joint_orders hba hi hne I hf hg hz hnorm hres
+      ι hι hfrac hd hdegree p hp
+  have hν : normalizedBranchOrder p F = ν := centered_branch_order_eq p ν
+    (branch_order_nonnegative_on_normalization ν hregular) (fun r => (hcenter r).symm) hπ
+  have hw' : ν (algebraMap C F w) = ((2 * t : ℤ) : WithTop ℤ) := hwν
+  have hw0 : w ≠ 0 := by
+    intro he
+    rw [he, map_zero, ν.map_zero] at hw'
+    exact WithTop.coe_ne_top hw'.symm
+  have hmult := normalizedBranchOrder_eq_multiplicity p F hw0
+  rw [hν, hw'] at hmult
+  have hm : multiplicity p.asIdeal (Ideal.span {w}) = 2 * t.toNat := by
+    have he : 2 * t = (multiplicity p.asIdeal (Ideal.span {w}) : ℤ) := by
+      exact_mod_cast hmult
+    omega
+  refine ⟨t.toNat, by omega, hm, ?_, ?_⟩
+  · rw [hν]
+    have hl := congrArg (fun z : WithTop ℤ => -z) hwν
+    rw [ν.map_inv, neg_neg] at hl
+    rw [hl, ← WithTop.LinearOrderedAddCommGroup.coe_neg]
+    exact_mod_cast (show -(2 * t) < 0 by omega)
+  · rw [hν]
+    have hJ' : ν (jointGraphFieldCoordinates I (orbitJointNumerators a b i)
+        (orbitJointDenominator a b i) ι (Sum.inr 3)) = ((-5 * t : ℤ) : WithTop ℤ) := hJ
+    rw [discretePoleOrder_eq ν hJ']
+    omega
+
+/-- On a branch of the affine normalization where the curvature coordinates have a pole, the
+linearly changed powered graph has a coordinate whose pole order is at least `m` times their
+pole envelope. -/
+theorem linearJointGraph_envelope_pole_le {σ R F : Type*} [CommRing R] [Algebra ℚ R]
+    [Field F] [Algebra ℚ F] [Algebra R F] [IsScalarTower ℚ R F]
+    [IsDedekindDomain (integralClosure R F)] [IsFractionRing (integralClosure R F) F]
+    (I : Ideal (MvPolynomial σ ℚ)) (G : Matrix (Fin 3) (Fin 3) ℚ) (hG : IsUnit G.det)
+    (P : Fin 4 → MvPolynomial σ ℚ) (D : MvPolynomial σ ℚ)
+    (ι : (MvPolynomial σ ℚ ⧸ I) →ₐ[ℚ] F) (hD : ι (Ideal.Quotient.mk I D) ≠ 0) (m k : ℕ)
+    (q : IsDedekindDomain.HeightOneSpectrum (integralClosure R F))
+    (hpos : 0 < branchPoleEnvelope (normalizedBranchOrder q F)
+      (fun j : Fin 3 => jointGraphFieldCoordinates I P D ι (Sum.inr j.castSucc))) :
+    ∃ j, m * branchPoleEnvelope (normalizedBranchOrder q F)
+        (fun j : Fin 3 => jointGraphFieldCoordinates I P D ι (Sum.inr j.castSucc)) ≤
+      discretePoleOrder (normalizedBranchOrder q F)
+        (jointGraphFieldCoordinates I (poweredGraphNumerators (linearJointNumerators G P) D
+          (jointCoordinatePowers m k) (m + k)) (D ^ (m + k)) ι j) := by
+  let ν := normalizedBranchOrder q F
+  let V := fun j : Fin 3 => jointGraphFieldCoordinates I P D ι (Sum.inr j.castSucc)
+  let W' := jointGraphFieldCoordinates I (linearJointNumerators G P) D ι
+  let V' := fun j : Fin 3 => W' (Sum.inr j.castSucc)
+  have hV' : V' = fun j => ∑ l, algebraMap ℚ F (G j l) * V l := by
+    funext j
+    exact linear_jointGraphFieldCoordinates I G _ _ ι j
+  have henv : branchPoleEnvelope ν V' = branchPoleEnvelope ν V := by
+    rw [hV']
+    refine branchPoleEnvelope_linear_eq _ (fun c => ?_) G V hG
+    rw [IsScalarTower.algebraMap_apply ℚ R F,
+      IsScalarTower.algebraMap_apply R (integralClosure R F) F]
+    exact normalizedBranchOrder_nonnegative q F _
+  have hpos' : 0 < branchPoleEnvelope ν V' := henv ▸ hpos
+  obtain ⟨j, hj⟩ := branchPoleEnvelope_attained ν V' hpos'
+  have he := (discretePoleOrder_eq_iff_of_pos ν (V' j) hpos').mpr hj
+  refine ⟨Sum.inr j.castSucc, ?_⟩
+  rw [powered_jointGraphFieldCoordinates I _ _ _ _ (jointCoordinatePowers_le m k) ι hD]
+  change m * branchPoleEnvelope ν V ≤
+    discretePoleOrder ν (V' j ^ jointCoordinatePowers m k j.castSucc)
+  rw [jointCoordinatePowers_castSucc, discretePoleOrder_pow, he, henv]
+
 /-- The powered graph accounts for all old-infinity rank-five poles and the
 entire affine curvature pole envelope, independently of a lower bound on that envelope. -/
 theorem retained_linearJointGraph_degree_lower_bound_from_envelope
@@ -235,42 +356,11 @@ theorem retained_linearJointGraph_degree_lower_bound_from_envelope
         discretePoleOrder (normalizedBranchOrder p F) (W (Sum.inr 3)) = 5 * t := by
     intro p
     by_cases hp : p ∈ B
-    · obtain ⟨ν, hcenter, hregular, hπ, t, ht, hwν, _, _, _, hJ⟩ :=
-        retained_normalized_branch_joint_orders hba hi hne I hf hg hz hnorm hres
-          ι hι hfrac (by omega : 0 < d) hdegree p ((hB p).mp hp)
-      have hν : normalizedBranchOrder p F = ν := centered_branch_order_eq p ν
-        (branch_order_nonnegative_on_normalization ν hregular) (fun r => (hcenter r).symm) hπ
-      have hw' : ν (algebraMap C F (algebraMap S C w)) = ((2 * t : ℤ) : WithTop ℤ) := hwν
-      have hw0 : algebraMap S C w ≠ 0 := by
-        intro he
-        rw [he, map_zero, ν.map_zero] at hw'
-        exact WithTop.coe_ne_top hw'.symm
-      have hmult := normalizedBranchOrder_eq_multiplicity p F hw0
-      rw [hν, hw'] at hmult
-      have hm : multiplicity p.asIdeal (Ideal.span {algebraMap S C w}) = 2 * t.toNat := by
-        have he : 2 * t = (multiplicity p.asIdeal (Ideal.span {algebraMap S C w}) : ℤ) := by
-          exact_mod_cast hmult
-        omega
-      refine ⟨t.toNat, fun _ => ⟨by omega, hm, ?_, ?_⟩⟩
-      · rw [hν]
-        have hl := congrArg (fun z : WithTop ℤ => -z) hwν
-        rw [ν.map_inv, neg_neg] at hl
-        rw [hl, ← WithTop.LinearOrderedAddCommGroup.coe_neg]
-        exact_mod_cast (show -(2 * t) < 0 by omega)
-      · rw [hν]
-        have hJ' : ν (W (Sum.inr 3)) = ((-5 * t : ℤ) : WithTop ℤ) := hJ
-        rw [discretePoleOrder_eq ν hJ']
-        omega
+    · obtain ⟨t, ht⟩ := retained_infinity_branch_rank_five_pole hba hi hne I hf hg hz hnorm
+        hres (by omega : 0 < d) hdegree ι hι hfrac p ((hB p).mp hp)
+      exact ⟨t, fun _ => ht⟩
     · exact ⟨0, fun h => False.elim (hp h)⟩
   choose t ht using ht
-  have htwice : (∑ p ∈ B, (2 * t p) * Module.finrank ℚ (C ⧸ p.asIdeal)) = d := by
-    calc
-      _ = ∑ p ∈ B, multiplicity p.asIdeal (Ideal.span {algebraMap S C w}) *
-          Module.finrank ℚ (C ⧸ p.asIdeal) := by
-        apply Finset.sum_congr rfl
-        intro p hp
-        rw [(ht p hp).2.1]
-      _ = d := hsum.trans hdim
   let E := poleEnvelopeBranches A V
   let n := fun q : IsDedekindDomain.HeightOneSpectrum A =>
     branchPoleEnvelope (normalizedBranchOrder q F) V
@@ -284,39 +374,16 @@ theorem retained_linearJointGraph_degree_lower_bound_from_envelope
       (algebraMap R A (Ideal.Quotient.mk I (X 0)))
     rw [← IsScalarTower.algebraMap_apply R A F] at hnonneg
     exact (not_lt_of_ge hnonneg) hneg
-  let W' := jointGraphFieldCoordinates I (linearJointNumerators G (orbitJointNumerators a b i))
-    (orbitJointDenominator a b i) ι
-  let V' := fun j : Fin 3 => W' (Sum.inr j.castSucc)
-  have hV' : V' = fun j => ∑ l, algebraMap ℚ F (G j l) * V l := by
-    funext j
-    exact linear_jointGraphFieldCoordinates I G _ _ ι j
-  have henv (q : IsDedekindDomain.HeightOneSpectrum A) :
-      branchPoleEnvelope (normalizedBranchOrder q F) V' = n q := by
-    rw [hV']
-    refine branchPoleEnvelope_linear_eq _ (fun c => ?_) G V hG
-    rw [IsScalarTower.algebraMap_apply ℚ R F, IsScalarTower.algebraMap_apply R A F]
-    exact normalizedBranchOrder_nonnegative q F _
   let Wp := jointGraphFieldCoordinates I (orbitLinearJointNumerators G a b i m k)
     (orbitJointDenominator a b i ^ (m + k)) ι
-  have hWp : Wp = Sum.elim (fun j => W' (Sum.inl j))
-      (fun j => W' (Sum.inr j) ^ jointCoordinatePowers m k j) :=
-    powered_jointGraphFieldCoordinates I _ _ _ _ (jointCoordinatePowers_le m k) ι hD
   have hfinitePole (q) (hq : q ∈ E) : ∃ j, m * n q ≤
-      discretePoleOrder (normalizedBranchOrder q F) (Wp j) := by
-    have hpos : 0 < branchPoleEnvelope (normalizedBranchOrder q F) V' := by
-      rw [henv q]; exact hnpos q hq
-    obtain ⟨j, hj⟩ := branchPoleEnvelope_attained (normalizedBranchOrder q F) V' hpos
-    have he := (discretePoleOrder_eq_iff_of_pos (normalizedBranchOrder q F) (V' j)
-      hpos).mpr hj
-    refine ⟨Sum.inr j.castSucc, ?_⟩
-    rw [hWp]
-    change m * n q ≤ discretePoleOrder (normalizedBranchOrder q F)
-      (V' j ^ jointCoordinatePowers m k j.castSucc)
-    rw [jointCoordinatePowers_castSucc, discretePoleOrder_pow, he, henv q]
+      discretePoleOrder (normalizedBranchOrder q F) (Wp j) :=
+    linearJointGraph_envelope_pole_le I G hG _ _ ι hD m k q (hnpos q hq)
   have hinfinityPole (p) (hp : p ∈ B) : ∃ j, (5 * k) * t p ≤
       discretePoleOrder (normalizedBranchOrder p F) (Wp j) := by
     refine ⟨Sum.inr 3, ?_⟩
-    rw [hWp]
+    simp only [Wp, orbitLinearJointNumerators]
+    rw [powered_jointGraphFieldCoordinates I _ _ _ _ (jointCoordinatePowers_le m k) ι hD]
     change (5 * k) * t p ≤ discretePoleOrder (normalizedBranchOrder p F)
       (W (Sum.inr 3) ^ k)
     rw [discretePoleOrder_pow, (ht p hp).2.2.2]
@@ -329,16 +396,7 @@ theorem retained_linearJointGraph_degree_lower_bound_from_envelope
     (fun p => (5 * k) * t p) (fun q => m * n q)
     (fun p hp => Nat.mul_pos (Nat.mul_pos (by decide) hk) (ht p hp).1)
     (fun q hq => Nat.mul_pos hm (hnpos q hq)) hdisjoint hinfinityPole hfinitePole
-  simp_rw [mul_assoc] at htwice hbound
-  rw [← Finset.mul_sum] at htwice
-  simp_rw [← Finset.mul_sum] at hbound
-  let e := ∑ p ∈ B, t p * Module.finrank ℚ (C ⧸ p.asIdeal)
-  let f := ∑ q ∈ E, n q * Module.finrank ℚ (A ⧸ q.asIdeal)
-  change 2 * e = d at htwice
-  change 5 * (k * e) + m * f ≤ δ at hbound
-  change 5 * k * d + 2 * m * f ≤ 2 * δ
-  rw [← htwice]
-  nlinarith
+  exact pole_sum_degree_arith B E _ t _ n _ (fun p hp => (ht p hp).2.1) (hsum.trans hdim) hbound
 
 /-- **Lower bound for the linearly changed powered graph.** The curvature coordinates `W` are
 replaced by `G W` with `G` invertible; the degree bound is the same as for `W`. -/

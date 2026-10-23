@@ -58,7 +58,7 @@ theorem curvatureDirectionPlane_not_mem {K : Type*} [Field K]
   have hdiv : ¬F ∣ curvatureDirectionPlane v := by
     intro h
     obtain ⟨u, hu⟩ := h
-    have hu0 : u ≠ 0 := by intro hz; simp [hz] at hu; exact hG0 hu
+    have hu0 : u ≠ 0 := by intro hz; simp only [hz, mul_zero] at hu; exact hG0 hu
     rw [hu, totalDegree_mul_of_isDomain hF.ne_zero hu0, hFdeg] at hG
     omega
   obtain ⟨N, c, hf⟩ := hd

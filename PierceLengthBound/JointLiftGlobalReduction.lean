@@ -20,7 +20,8 @@ def JointLiftLocalWindowCount (K : ℕ → ℕ) : Prop :=
     (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
     s + T ≤ P a b → 36 ≤ T →
     124928 * A ^ 4 * selectedGapHeight a A T ^ 5 * selectedMinorHeight a A T < a ^ 3 →
-    JointLiftCountBranches (K a) T (selectedGapHeight a A T) (selectedMinorHeight a A T) (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T)
+    JointLiftCountBranches (K a) T (selectedGapHeight a A T) (selectedMinorHeight a A T)
+      (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T)
 
 /-- Apply the full integral-coordinate window reduction to actual dyadic visits. -/
 theorem visits_227070_of_joint_lift_count {K : ℕ → ℕ} (hlocal : JointLiftLocalWindowCount K)

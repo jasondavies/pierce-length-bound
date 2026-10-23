@@ -96,7 +96,8 @@ theorem selected_jointGraph_integerPoint {a b s T A i l : ℕ} (hba : b < a)
     (hθ : theta a b i = theta a b l) (I : Ideal (MvPolynomial (Fin 3) ℚ))
     (hz : orbitFreeNodesQ a b l ∈ coordinateZeroLocus I) :
     ∃ J : ℕ, 0 < J ∧
-      (fun j => (orbitJointPoint a b l J j : ℚ)) ∈ coordinateZeroLocus (orbitJointGraphIdeal a b i I) ∧
+      (fun j => (orbitJointPoint a b l J j : ℚ)) ∈
+        coordinateZeroLocus (orbitJointGraphIdeal a b i I) ∧
       ∀ j, |orbitJointPoint a b l J j| ≤ (jointPointBoxHeight a A T : ℤ) := by
   have hP := (selectedStart_spec hmem hsT hl).1
   obtain ⟨J, hpos, hJ, hheight⟩ := selected_rankFive_positive_integer hba hmem hsT hl
@@ -108,11 +109,13 @@ theorem selected_jointGraph_integerPoint {a b s T A i l : ℕ} (hba : b < a)
       exact_mod_cast (le_max_left (3 * selectedGapHeight a A T)
         (max (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T)))
     have hS : (selectedCurvatureHeight a A T : ℤ) ≤ (jointPointBoxHeight a A T : ℤ) := by
-      exact_mod_cast ((le_max_left (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T)).trans
+      exact_mod_cast
+        ((le_max_left (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T)).trans
         (le_max_right (3 * selectedGapHeight a A T)
           (max (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T))))
     have hY : (selectedRankFiveHeight a A T : ℤ) ≤ (jointPointBoxHeight a A T : ℤ) := by
-      exact_mod_cast ((le_max_right (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T)).trans
+      exact_mod_cast
+        ((le_max_right (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T)).trans
         (le_max_right (3 * selectedGapHeight a A T)
           (max (selectedCurvatureHeight a A T) (selectedRankFiveHeight a A T))))
     cases j with

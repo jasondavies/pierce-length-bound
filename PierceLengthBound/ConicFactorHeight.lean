@@ -32,7 +32,8 @@ lemma integer_polynomial_mahler_le {F : ℤ[X]} {d H : ℕ}
     (F.map (Int.castRingHom ℂ)).mahlerMeasure ≤ (d + 1 : ℕ) * (H : ℝ) := by
   let FC := F.map (Int.castRingHom ℂ)
   have hdeg : FC.natDegree ≤ d := by
-    simpa only [FC, natDegree_map_eq_of_injective (f := Int.castRingHom ℂ) Int.cast_injective] using hd
+    simpa only [FC, natDegree_map_eq_of_injective (f := Int.castRingHom ℂ) Int.cast_injective]
+      using hd
   have hcoef (i : ℕ) : ‖FC.coeff i‖ ≤ (H : ℝ) := by
     have hi := hH i
     simpa only [FC, coeff_map, Int.coe_castRingHom, Complex.norm_intCast] using
@@ -51,14 +52,15 @@ theorem integer_factor_height {F G : ℤ[X]} {d H : ℕ} (hF : F ≠ 0) (hGF : G
     (hd : F.natDegree ≤ d) (hH : ∀ n, |F.coeff n| ≤ H) :
     ∀ n, |G.coeff n| ≤ (2 ^ d * (d + 1) * H : ℕ) := by
   obtain ⟨Q, he⟩ := hGF
-  have hG : G ≠ 0 := by intro hz; simp [hz] at he; exact hF he
-  have hQ : Q ≠ 0 := by intro hz; simp [hz] at he; exact hF he
+  have hG : G ≠ 0 := by intro hz; simp only [hz, zero_mul] at he; exact hF he
+  have hQ : Q ≠ 0 := by intro hz; simp only [hz, mul_zero] at he; exact hF he
   have hgdeg : G.natDegree ≤ d := (natDegree_le_of_dvd ⟨Q, he⟩ hF).trans hd
   intro n
   have hc := norm_coeff_le_choose_mul_mahlerMeasure_of_one_le_mahlerMeasure n
     (G.map (Int.castRingHom ℂ)) (Q.map (Int.castRingHom ℂ))
     (integer_polynomial_mahler_ge_one hQ)
-  rw [← Polynomial.map_mul, ← he, natDegree_map_eq_of_injective (f := Int.castRingHom ℂ) Int.cast_injective] at hc
+  rw [← Polynomial.map_mul, ← he,
+    natDegree_map_eq_of_injective (f := Int.castRingHom ℂ) Int.cast_injective] at hc
   have hchoose : (G.natDegree.choose n : ℝ) ≤ 2 ^ d := by
     exact_mod_cast (Nat.choose_le_two_pow G.natDegree n).trans
       (Nat.pow_le_pow_right (by decide : 1 ≤ 2) hgdeg)

@@ -14,7 +14,6 @@ public import PierceLengthBound.ConicRepresentationCount
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
-set_option maxHeartbeats 1000000
 
 lemma orbitLift_polynomials_congr {a b i l : ℕ} (h : theta a b i = theta a b l) :
     orbitLiftNumeratorQ a b i = orbitLiftNumeratorQ a b l ∧

@@ -36,8 +36,10 @@ lemma integer_relPrime_rat_coprime {F G : Polynomial ℤ} (hF : F ≠ 0)
     change Q.map (Int.castRingHom ℚ) = c • q at he
     rw [he, Algebra.smul_def] at hmap
     exact (hcu.dvd_mul_left).mp hmap
-  have hpF : Q.primPart ∣ F := (Polynomial.IsPrimitive.Int.dvd_iff_map_cast_dvd_map_cast _ _ hp).mpr (hpdvd.trans hqF)
-  have hpG : Q.primPart ∣ G := (Polynomial.IsPrimitive.Int.dvd_iff_map_cast_dvd_map_cast _ _ hp).mpr (hpdvd.trans hqG)
+  have hpF : Q.primPart ∣ F :=
+    (Polynomial.IsPrimitive.Int.dvd_iff_map_cast_dvd_map_cast _ _ hp).mpr (hpdvd.trans hqF)
+  have hpG : Q.primPart ∣ G :=
+    (Polynomial.IsPrimitive.Int.dvd_iff_map_cast_dvd_map_cast _ _ hp).mpr (hpdvd.trans hqG)
   exact Polynomial.isUnit_or_eq_zero_of_isUnit_integerNormalization_primPart hq (hcop hpF hpG)
 
 /-- A rational representation by two nonzero integer polynomials admits common

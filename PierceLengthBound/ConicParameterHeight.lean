@@ -44,8 +44,6 @@ lemma quadraticNumerator_eval (a b c t : ℤ) :
     (quadraticNumerator a b c).eval t = a + b * t + c * t ^ 2 := by
   simp [quadraticNumerator]
 
-set_option maxHeartbeats 1000000 in
--- Expanding the three numerators and proving their coefficient bounds is substantial.
 /-- The discriminant-zero conic in an integer plane has an injective integer
 parameter and quadratic integer numerators with a common nonzero denominator.
 The explicit height `33 L K³` bounds all numerator coefficients, and `12 L K³`

@@ -14,7 +14,6 @@ integer denominator with polynomially bounded numerator coefficients. -/
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
-set_option maxHeartbeats 1000000
 
 def liftInputDenominator (θ : Fin 7 → ℤ) (E : ℤ) : ℤ := θ 0 * θ 1 * E
 
