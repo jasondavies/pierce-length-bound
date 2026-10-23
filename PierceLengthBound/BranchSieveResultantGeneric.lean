@@ -49,9 +49,6 @@ lemma branchGeneric_location_reconstruction_zero :
   rw [hD, hN, branchGenericThirdLocation, mul_div_cancel₀ _ branchGenericDenominator_ne_zero]
   exact neg_add_cancel _
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The coefficient, location, scale and sign extensions form a four-stage scalar tower.
-set_option maxHeartbeats 1000000 in
 /-- The explicit resultant annihilates the same primitive generic label as the
 norm polynomial. The proof uses the original polynomial relations. -/
 theorem branchGenericResultantLabel_root (a : ℚ) (ha : a ≠ 0) (c : ℕ) :

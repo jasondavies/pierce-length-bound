@@ -103,7 +103,6 @@ def branchVertexFamily (c : ℕ) : Polynomial (MvPolynomial (Fin 5) ℤ) :=
 def branchVertexFamilyAt (a : ℤ) (c : ℕ) : Polynomial (MvPolynomial (Fin 4) ℤ) :=
   branchFamilyHead a (branchVertexFamily c)
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The chosen denominator clearing satisfies its universal identity. Keep
 the choice data behind this accessor when specializing the resultant. -/
 theorem branchVertexClearing_spec (c : ℕ) (K : Type) [Field K]

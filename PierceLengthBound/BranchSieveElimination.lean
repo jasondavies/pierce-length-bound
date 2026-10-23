@@ -61,8 +61,6 @@ private theorem quadratic_cubic_resultant_formula (a0 a1 a2 b0 b1 b2 b3 : R) :
     Matrix.submatrix_apply, Fin.succAbove]
   ring
 
-set_option maxHeartbeats 1200000 in
--- Expansion compares the full degree-six resultant in four independent scalar variables.
 /-- The complete resultant identity, valid before imposing any nondegeneracy conditions. -/
 theorem branchInfinity_resultant (c1 c2 c3 t : R) :
     resultant (branchInfinityQuadratic c1 c2 c3 t) (branchInfinityCubic c1 c2 c3 t) 2 3 =

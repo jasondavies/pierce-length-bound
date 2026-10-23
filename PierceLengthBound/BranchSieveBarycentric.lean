@@ -159,9 +159,6 @@ theorem chart_infinity_barycentric_identity
     MvPolynomial.eval_X, map_sub, map_add, Matrix.cons_val] at hb ⊢
   simpa only [map_one, z₄, fourthNode, z, rρ, ru, rv] using hb
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The component, infinity chart, normalization and branch residue have nested scalar towers.
-set_option maxHeartbeats 1200000 in
 /-- The actual normalized infinity residue contains the branch sign used by
 the specialization polynomial, with first location normalized to one. -/
 theorem orbit_infinity_residue_scaled_sign

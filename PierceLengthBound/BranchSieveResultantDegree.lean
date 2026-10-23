@@ -47,8 +47,6 @@ lemma branchLabelEliminand_coeff_natDegree_le {R : Type*} [CommRing R]
   simp only [coeff_add, coeff_sub, coeff_C_mul, coeff_map]
   compute_degree
 
-set_option maxHeartbeats 1000000 in
--- Summing the two Sylvester column blocks elaborates the fixed 17-dimensional index type.
 /-- Every specialization of the explicit branch resultant has label degree at
 most twelve, including degenerate sextics and vanishing scale. -/
 theorem branchResultantLabel_natDegree_le {R : Type*} [CommRing R]
@@ -68,10 +66,8 @@ theorem branchResultantLabel_natDegree_le {R : Type*} [CommRing R]
       split_ifs <;> simp
   have hh := branch_matrix_det_natDegree_le _ d hd
   have hs : ∑ j, d j = 12 := by
-    change (∑ j : Fin (6 + 11), Fin.addCases (fun _ : Fin 6 => 2)
-      (fun _ : Fin 11 => 0) j) = 12
     rw [Fin.sum_univ_add]
-    simp
+    simp [d]
   simpa only [branchResultantLabel, resultant, hs] using hh
 
 /-- Evaluating the eliminated location leaves a quadratic in the label. -/

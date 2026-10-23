@@ -77,9 +77,6 @@ theorem normalization_residue_ne_zero_of_unit_mod_parameter
   have hunit := hr.map ψ
   exact hunit.ne_zero
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The infinity chart and its normalization carry compatible quotient and field structures.
-set_option maxHeartbeats 1200000 in
 /-- Every actual infinity branch residue contains a square root of `(a/A)/r`,
 where `r` is the homogenized resultant. This is the unscaled branch sign. -/
 theorem orbit_infinity_residue_sign

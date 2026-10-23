@@ -98,14 +98,8 @@ lemma branchLabelEliminand_map {R S : Type*} [CommRing R] [CommRing S]
     (φ : R →+* S) (a A c c1 c2 c3 : R) :
     (branchLabelEliminand a A c c1 c2 c3).map (Polynomial.mapRingHom φ) =
       branchLabelEliminand (φ a) (φ A) (φ c) (φ c1) (φ c2) (φ c3) := by
-  have hm (p : R[X]) : (p.map C).map (Polynomial.mapRingHom φ) = (p.map φ).map C := by
-    rw [Polynomial.map_map, Polynomial.map_map]
-    congr 1
-    ext r
-    simp
   simp only [branchLabelEliminand, Polynomial.map_sub, Polynomial.map_mul,
-    Polynomial.map_pow, Polynomial.map_C, Polynomial.map_X, coe_mapRingHom,
-    Polynomial.map_C, Polynomial.map_X, map_mul, map_pow,
+    Polynomial.map_pow, Polynomial.map_C, Polynomial.map_X, coe_mapRingHom, map_mul, map_pow,
     branchLocationDenominator_map, branchDeltaNumerator_map]
 
 /-- No injectivity is required: the explicit resultant family specializes at
@@ -222,9 +216,8 @@ def orbitBranchLabelPolynomial (a b i : ℕ) (c : ℚ) : ℚ[X] :=
   branchResultantLabel a (Lz a b i : ℚ) c (-patternRhoQ a b i - patternUQ a b i)
     (patternUQ a b i - patternVQ a b i) (patternVQ a b i - 1)
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The projective chart, normalization and residue field have nested scalar towers.
 set_option maxHeartbeats 1200000 in
+-- The `simp only` steps on the transported moment identities need more than the default.
 /-- Every actual normalized branch at infinity contains a root of the explicit
 rational label polynomial. This is the geometric input for the degree-24
 component theorem once the specialized polynomial is irreducible of degree 12. -/

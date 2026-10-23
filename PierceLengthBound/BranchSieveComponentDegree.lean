@@ -126,9 +126,6 @@ theorem component_degree_lower_of_irreducible_infinity_labels
   rw [hsumd] at hterm
   exact (Nat.mul_le_mul hmult' hfdeg).trans hterm
 
-set_option synthInstance.maxHeartbeats 200000 in
--- The residue-label hypothesis names the actual integral closure of the infinity chart.
-set_option maxHeartbeats 800000 in
 /-- A degree-twelve irreducible branch label forces every such component to
 have degree exactly twenty-four, using the already proved total degree bound. -/
 theorem component_degree_twenty_four_of_irreducible_infinity_labels

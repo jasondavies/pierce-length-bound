@@ -62,8 +62,6 @@ theorem branchHeadSpecialization_totalDegree_le {r d : ℕ} (t : ℤ)
     rw [totalDegree_C, Nat.add_zero]
     omega
 
-set_option maxHeartbeats 1000000 in
--- Expanding coefficients through the polynomial equivalence is elaboration intensive.
 /-- Specialization increases coefficient height by at most
 `(d+1) B^d`, uniformly in the number of parameters. -/
 theorem branchHeadSpecialization_coeff_abs_le {r d H B : ℕ}
@@ -72,11 +70,8 @@ theorem branchHeadSpecialization_coeff_abs_le {r d H B : ℕ}
     {t : ℤ} (ht : |t| ≤ (B : ℤ)) (s : Fin r →₀ ℕ) :
     |(branchHeadSpecialization t f).coeff s| ≤ ((d + 1) * H * B ^ d : ℕ) := by
   rw [branchHeadSpecialization_sum t f hd, coeff_sum]
+  refine (abs_sum_le_sum_abs _ _).trans ?_
   calc
-    |∑ j ∈ range (d + 1), ((finSuccEquiv ℤ r f).coeff j * C (t ^ j)).coeff s|
-      ≤ ∑ j ∈ range (d + 1),
-          |((finSuccEquiv ℤ r f).coeff j * C (t ^ j)).coeff s| :=
-        abs_sum_le_sum_abs _ _
     _ ≤ ∑ _j ∈ range (d + 1), (H : ℤ) * (B : ℤ) ^ d := by
       apply sum_le_sum
       intro j hj

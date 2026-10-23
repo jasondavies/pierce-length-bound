@@ -92,7 +92,6 @@ structure BranchLabelIntegralModel (c : ℕ) where
 private def branchVertexDenominators : Submonoid (Polynomial BranchVertexParameters) :=
   (nonZeroDivisors BranchVertexParameters).map Polynomial.C
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- All matrix denominators can be cleared by one vertex polynomial, without
 introducing a dividend-dependent exceptional divisor. -/
 theorem branchLabelIntegralModel_nonempty (c : ℕ) : Nonempty (BranchLabelIntegralModel c) := by
@@ -111,8 +110,8 @@ theorem branchLabelIntegralModel_nonempty (c : ℕ) : Nonempty (BranchLabelInteg
   have he := hQ (i, j)
   simp only [Algebra.smul_def, Polynomial.algebraMap_def] at he
   rw [← hqb] at he
-  simpa only [Polynomial.coe_mapRingHom, Polynomial.map_C, Matrix.map_apply,
-    Matrix.smul_apply, smul_eq_mul] using he
+  simp only [Polynomial.coe_mapRingHom, Polynomial.map_C] at he
+  exact he
 
 /-- A fixed cleared model for each slope. -/
 def branchLabelIntegralModel (c : ℕ) : BranchLabelIntegralModel c :=

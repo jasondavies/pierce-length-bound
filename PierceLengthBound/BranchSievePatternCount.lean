@@ -140,7 +140,8 @@ lemma branchPatternChartKey_injOn (t : Fin 4) (b : Bool) (S : Finset (Fin 10 →
   intro p hp q hq he
   obtain ⟨hpp, hpt, hpb⟩ := hS p hp
   obtain ⟨hqp, hqt, hqb⟩ := hS q hq
-  have hab : (p (branchFirstIndex t)).natAbs = (q (branchFirstIndex t)).natAbs := congrArg Prod.fst he
+  have hab : (p (branchFirstIndex t)).natAbs = (q (branchFirstIndex t)).natAbs :=
+    congrArg Prod.fst he
   have hu := congrArg (fun x : BranchChartState => x.2.1) he
   have hv := congrArg (fun x : BranchChartState => x.2.2) he
   apply branch_chart_injective hpp hqp (branchFirstIndex t) hpt ?_ hu hv
