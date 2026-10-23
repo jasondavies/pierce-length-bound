@@ -31,7 +31,7 @@ classification:
   msc2020: ["11A67", "11N37", "11H06"]
 
 sources:
-  - title: "Bounds for the Length of Finite Pierce Expansions"
+  - title: "Hankel Determinants and the Length of Finite Pierce Expansions"
     authors: ["Jason Davies"]
     type: original-proof
     relationship: other

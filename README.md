@@ -1,4 +1,7 @@
-# Bounds for the iteration `x ↦ a mod x`
+# Hankel determinants and the length of finite Pierce expansions
+
+Paper: [`paper/pierce_length_bound.pdf`](paper/pierce_length_bound.pdf). This repository
+contains the paper and its complete Lean formalization.
 
 For integers `a > b > 0` let `b₀ = b` and `b_{i+1} = a mod bᵢ` until zero.
 Let `P(a, b)` be the number of positive terms
