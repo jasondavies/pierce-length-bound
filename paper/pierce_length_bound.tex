@@ -1,15 +1,10 @@
-\documentclass[11pt]{amsart}
-
-\usepackage[margin=1.15in]{geometry}
-\usepackage{amsmath,amssymb,amsthm}
-\usepackage{mathtools}
-\usepackage{booktabs}
-\usepackage[hidelinks]{hyperref}
-\hypersetup{pdftitle={Bounds for the Length of Finite Pierce Expansions},pdfauthor={Jason Davies}}
-\usepackage{xcolor}
-\emergencystretch=2em
-\raggedbottom
-
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs}
+\usepackage[margin=1in]{geometry}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\hypersetup{pdftitle={Bounds for the length of finite Pierce expansions},pdfauthor={Jason Davies}}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
@@ -18,18 +13,15 @@
 \newtheorem{definition}[theorem]{Definition}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
-
-\newcommand{\lean}[1]{\texttt{#1}}
-
-\title[The length of finite Pierce expansions]{Bounds for the Length of Finite Pierce Expansions}
-
-\author{Jason Davies}
-\email{jason@jasondavies.com}
-
-\date{October 2026}
-
+% Lean identifiers, breakable after dots and underscores.
+\newcommand{\lean}[1]{\nolinkurl{#1}}
+\makeatletter\g@addto@macro\UrlBreaks{\do\_}\makeatother
+\emergencystretch=2em
+\title{Bounds for the length of finite Pierce expansions}
+\author{Jason Davies\thanks{\href{mailto:jason@jasondavies.com}{\nolinkurl{jason@jasondavies.com}}}}
+\date{October 23, 2026}
 \begin{document}
-
+\maketitle
 \begin{abstract}
 For integers $a>b>0$, let $P(a,b)$ be the number of steps the iteration
 $x\mapsto a\bmod x$ takes to reach $0$ from $b$; it is the length of the
@@ -51,9 +43,6 @@ elementary proof of the exponent $3/10+\varepsilon$ and a bound for orbits
 whose quotient increments rarely rise. All results are formalized in Lean~4
 with Mathlib. Shallit's conjectured $O((\log a)^2)$ bound remains open.
 \end{abstract}
-
-\maketitle
-\enlargethispage{1.1\baselineskip}
 
 \section{Introduction}\label{sec:intro}
 
@@ -2845,15 +2834,18 @@ bounds the number of such $t$ by $O(\operatorname{lg}(H)^4B^{1/2}(1+\log B))$.
 \emph{Step 3: one parameter, the others free.} Let $r\ge2$. We claim that for
 all but $O(\operatorname{lg}(H)^4B^{1/2}(1+\log B))$ integers $t_1\in[-B,B]$, the
 polynomial $F(t_1,T_2,\dots,T_r,Y)$ is irreducible over $\mathbb Q(T_2,\dots,T_r)$.
-Fix an integer $b>d$ and let $\mathcal K$ be the Kronecker map sending
-$T_2^{a_2}\cdots T_r^{a_r}Y^{a_{r+1}}$ to $\omega^{a_2+a_3b+\dots+a_{r+1}b^{r-1}}$. It is a
+Fix an integer $b>d$ and let $\mathcal K$ be the Kronecker map
+\[
+ T_2^{a_2}\cdots T_r^{a_r}Y^{a_{r+1}}\longmapsto\omega^{a_2+a_3b+\dots+a_{r+1}b^{r-1}}.
+\]
+It is a
 linear bijection from polynomials with all partial degrees less than $b$ onto
 polynomials in $\omega$ of degree less than $b^r$, it commutes with specializing
 $T_1$, and it is multiplicative on products whose partial degrees stay below $b$.
 Since $Y$ occupies the highest position, $\mathcal K(F)\in\mathbb Z[T_1][\omega]$ is monic.
 Factor $\mathcal K(F)=\prod_\nu \mathcal A_\nu$ into monic irreducible factors over
-$\mathbb Q(T_1)$; again $\mathcal A_\nu\in\mathbb Z[T_1][\omega]$ with bounded degree and height
-$O(H^{O(1)})$. By Step~2, outside an exceptional set of the stated size, every
+$\mathbb Q(T_1)$. Again $\mathcal A_\nu$ lies in $\mathbb Z[T_1][\omega]$, with bounded
+degree and height $O(H^{O(1)})$. By Step~2, outside an exceptional set of the stated size, every
 $\mathcal A_\nu(t_1,\omega)$ is irreducible over $\mathbb Q$.
 
 Let $t_1$ be outside this set, and suppose
@@ -3236,7 +3228,10 @@ T_k\le 1+\sqrt R\,\min\bigl(\sqrt{8a}\,2^{-k/2},\ \sqrt2\,2^{k/2}\bigr)
 +\min\bigl(a\,2^{-k},\ 30\cdot2^{k/3}\bigr).
 \]
 Lemma~\ref{lem:geom} gives
-$\sum_k\min(\sqrt{8a}\,2^{-k/2},\sqrt2\,2^{k/2})\ll(\sqrt{8a}\sqrt2)^{1/2}=2a^{1/4}$. It also gives
+\[
+ \sum_k\min(\sqrt{8a}\,2^{-k/2},\sqrt2\,2^{k/2})\ll(\sqrt{8a}\sqrt2)^{1/2}=2a^{1/4}.
+\]
+It also gives
 $\sum_k\min(a2^{-k},30\cdot2^{k/3})\ll a^{1/4}$. Since $\log_2a+1\ll a^{1/4}$, summing over $k$
 gives the theorem.
 \end{proof}
@@ -3269,14 +3264,14 @@ theorem P\_le\_polar\_optimal :\\
 \hspace*{2em}C * (a : $\mathbb R$) \^{} (((41301 : $\mathbb R$) - 3 * Real.sqrt 82849) / 137480 + $\varepsilon$)
 \end{quote}
 The quantifier order makes uniformity explicit: $C$ may depend on
-$\varepsilon$, but not on $a$ or $b$. The function \lean{P a b} is defined
+$\varepsilon$, but not on $a$ or $b$. The function \texttt{P a b} is defined
 by well-founded recursion,
 \[
  P(a,0)=0,\qquad P(a,b)=1+P(a,a\bmod b)\quad(b>0),
 \]
 and counts the positive terms of the zero-indexed orbit, as in the paper.
 The rational bound $4317/14677$ is exported separately as
-\lean{P\_le\_4317\_14677}. Both results are assembled in
+\lean{P_le_4317_14677}. Both results are assembled in
 \lean{PolarProjectionMain} from proved arithmetic, geometric and
 counting estimates. The repository README gives the correspondence between
 the other results and their Lean declarations.
@@ -3290,7 +3285,7 @@ estimate and its application to the actual branch-label family. Thus neither
 counting input is an assumed proposition in the final polar bound.
 
 The repository also contains a conditional refinement of
-Theorem~\ref{thm:main}, \lean{P\_le\_loglog}, which proves
+Theorem~\ref{thm:main}, \lean{P_le_loglog}, which proves
 $P(a,b)\ll a^{3/10}\sqrt{\log\log3a}$ from two explicit hypotheses: the
 short-sum estimate for the Erd\H{o}s--Hooley function from~\cite{NT}, over
 intervals $(x,x+y]$ with $y\ge x^{1/4}$, and the mean-value estimate
@@ -3298,7 +3293,7 @@ from~\cite{BT}. Their statements include the constants and thresholds; their
 proofs are not formalized here. This result is weaker than
 Theorem~\ref{thm:polar} and is not used elsewhere.
 
-The proof library contains no \lean{sorry} and uses no \lean{native\_decide}.
+The proof library contains no \lean{sorry} and uses no \lean{native_decide}.
 Its axiom audit permits only \lean{propext}, \lean{Classical.choice} and
 \lean{Quot.sound}, the standard axioms used by Mathlib. Fifteen public
 statements are compared with independent Mathlib-only specifications, and
