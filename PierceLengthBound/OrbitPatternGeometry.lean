@@ -5,9 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.JointLiftGraphLowerDegree
-public import PierceLengthBound.JointLiftPointBox
 public import PierceLengthBound.FixedDividendSelection
+public import PierceLengthBound.IntegralLiftNormalizationCut
 
 /-! Transport actual component data between states of one complete pattern,
 and discharge the prime quadratic input of the retained graph theorem. -/

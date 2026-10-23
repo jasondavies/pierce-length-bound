@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveCertificate
-public import PierceLengthBound.BranchSieveSpecialization
 public import Mathlib.RingTheory.Polynomial.UniqueFactorization
 public import Mathlib.RingTheory.UniqueFactorizationDomain.GCDMonoid
 import Mathlib.Tactic

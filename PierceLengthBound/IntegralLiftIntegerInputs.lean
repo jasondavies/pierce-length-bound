@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.IntegralLiftUniversalExpression
+public import PierceLengthBound.FixedDividendConicPolynomialIdentities
 
 /-! The actual minor ratios and bounded integer conic parameter have a common
 integer denominator with polynomially bounded numerator coefficients. -/

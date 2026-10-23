@@ -5,9 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendIdentity
 public import PierceLengthBound.FixedDividendLines
 public import PierceLengthBound.PatternBound
+public import PierceLengthBound.OrbitPattern
 
 /-!
 # Large gaps exclude the four line obstructions

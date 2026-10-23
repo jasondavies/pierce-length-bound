@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.PoweredJointComponentCount
 public import PierceLengthBound.JointPatternAssembly
+public import PierceLengthBound.OrdinaryPatternCount
 
 /-! The powered joint-lift pattern estimate, with all component and external counting
 hypotheses discharged for every fixed pair of positive powers; its assembly into the three

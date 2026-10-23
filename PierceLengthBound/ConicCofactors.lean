@@ -5,9 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.ConicReconstruction
-public import PierceLengthBound.ConicResultantHeight
 public import Mathlib.LinearAlgebra.Matrix.Rank
+public import Mathlib
 
 /-! Explicit cofactor reconstruction for a codimension-one moment system. -/
 

@@ -5,9 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.JointLiftExponent
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Topology.Instances.Rat
+public import Mathlib
 
 /-! Exact optimization of the two powered-coordinate exponents.
 These results optimize the proposed local count; they do not prove that count. -/

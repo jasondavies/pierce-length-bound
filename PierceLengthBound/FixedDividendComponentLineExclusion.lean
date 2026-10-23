@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendDegreeOne
+public import PierceLengthBound.FixedDividendCoprimality
 
 /-!
 # Restricting the fixed-dividend equations to affine lines

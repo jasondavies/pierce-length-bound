@@ -5,8 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendEventualGeneration
-public import PierceLengthBound.FixedDividendComponents
+public import PierceLengthBound.FixedDividendFilteredIntersection
 
 /-!
 # The first-node chart coordinate is nonzero

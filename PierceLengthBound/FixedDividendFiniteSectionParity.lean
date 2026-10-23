@@ -5,9 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendHomogenization
 public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
 public import Mathlib.LinearAlgebra.Dimension.Finrank
+public import Mathlib
 
 /-!
 # Parity of finite-dimensional principal sections

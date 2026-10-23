@@ -8,6 +8,7 @@ module
 public import PierceLengthBound.PolarProjectionExponent
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Topology.Instances.Rat
+public import PierceLengthBound.JointLiftOptimization
 
 /-!
 # Optimizing the polar-projection exponents

@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.IntegralLiftNormalizationCut
-public import PierceLengthBound.IntegralLiftParabola
+public import PierceLengthBound.ConicParabola
 
 /-! The actual normalization cut forces a polynomial quotient of degree three. -/
 

@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendComponentSeparation
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib
 
 /-!
 # Coordinate evaluation kernels

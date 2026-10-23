@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.PolarProjectionLinearSystem
+public import PierceLengthBound.PolarProjectionAlgebra
 
 /-! The polar quadric centered at a zero of the polar forms, over arbitrary
 commutative rings. No curve-degree or normalization-multiplicity conclusion

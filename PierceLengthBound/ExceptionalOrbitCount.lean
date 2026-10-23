@@ -8,6 +8,7 @@ module
 public import PierceLengthBound.ExceptionalMinorChanges
 public import PierceLengthBound.FixedDividendParity
 public import PierceLengthBound.FixedDividendSelection
+public import PierceLengthBound.FixedDividendCoordinates
 
 /-! Exceptional-pattern counting on actual selected orbit windows. -/
 

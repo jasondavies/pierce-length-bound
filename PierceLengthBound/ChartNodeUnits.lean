@@ -5,7 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.ChartDiscreteOrders
+public import PierceLengthBound.FixedDividendChartGeneration
+public import PierceLengthBound.FixedDividendRationalChartResultant
 
 /-! The resultant unit on the actual infinity section forces every normalized
 node difference to be a unit. This works in the possibly nonreduced section. -/

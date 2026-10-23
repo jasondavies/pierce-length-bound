@@ -5,9 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.ConicFactorHeight
 public import Mathlib.RingTheory.Polynomial.GaussLemma
 public import Mathlib.FieldTheory.RatFunc.Degree
+public import Mathlib
 
 /-! Gcd cancellation over the integers preserves a rational representation and
 supplies the rational coprimality required by the integer-value theorem. -/

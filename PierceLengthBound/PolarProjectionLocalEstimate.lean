@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PolarProjectionWindow
+public import PierceLengthBound.LatticeCurvature
 
 /-! From the six-term polar estimate to integer-power counting branches.
 The estimate is defined here and supplied by the arithmetic and geometric proofs

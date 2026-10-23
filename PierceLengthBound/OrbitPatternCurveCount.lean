@@ -7,7 +7,6 @@ module
 
 public import PierceLengthBound.OrbitCurveGapCount
 public import PierceLengthBound.OrbitPatternGeometry
-public import PierceLengthBound.FixedDividendWindow
 
 /-! The original curve cover and actual-window line exclusion give the
 square-root count for every pattern in the large-scale range. -/

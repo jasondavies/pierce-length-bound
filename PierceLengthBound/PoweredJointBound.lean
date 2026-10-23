@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PoweredJointWindow
-public import PierceLengthBound.JointLiftOptimization
+public import PierceLengthBound.FixedDividendGlobalReduction
 
 /-! Unconditional optimized length bounds from fixed positive integer powers
 of the two joint invariants. -/

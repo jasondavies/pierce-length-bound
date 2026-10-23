@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.JointLiftRetainedIdentities
+public import PierceLengthBound.JointLiftCurvatureNonvanishing
 
 /-! The polynomial graph coordinates agree with the rational curvature
 formulas in every field where their common denominator is nonzero. -/

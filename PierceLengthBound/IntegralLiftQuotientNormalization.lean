@@ -6,8 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.IntegralLiftCoordinateSystem
-public import PierceLengthBound.FixedDividendPolynomialSubstitution
-public import PierceLengthBound.ConicParabola
 
 /-! Actual quotient reconstruction and its monic quartic normalization. -/
 

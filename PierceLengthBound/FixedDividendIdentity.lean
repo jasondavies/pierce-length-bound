@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendOrthogonal
+public import PierceLengthBound.FixedDividendResultant
 
 /-!
 # The fixed-dividend resultant identity for actual orbit windows

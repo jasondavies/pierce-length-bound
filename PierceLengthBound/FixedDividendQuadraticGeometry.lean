@@ -5,10 +5,10 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendCoordinates
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import PierceLengthBound.FixedDividendLines
 
 /-!
 # Irreducibility from a nonsingular quadratic part

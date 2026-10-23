@@ -7,7 +7,6 @@ module
 
 public import PierceLengthBound.PoweredJointExponent
 public import PierceLengthBound.PoweredJointLocalEstimate
-public import PierceLengthBound.WindowRealReduction
 
 /-! The joint-lift count branches in actual remainder-window coordinates.
 All geometric counting assertions remain explicit hypotheses. -/

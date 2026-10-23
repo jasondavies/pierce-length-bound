@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.ExceptionalDirection
+public import PierceLengthBound.ExceptionalPlaneCount
 
 /-! The uniform count on one dyadic range of primitive directions. -/
 

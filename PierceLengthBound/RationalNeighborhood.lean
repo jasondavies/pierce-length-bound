@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.HypersurfacePatternChart
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib
 
 /-! Clearing rational expressions on a principal neighborhood of a specified
 rational point. The denominator is required to be nonzero at that point, so

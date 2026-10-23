@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveRootHeight
-public import PierceLengthBound.BranchSieveShear
 public import PierceLengthBound.BranchSievePolynomialSubstitution
 import Mathlib.Tactic
 

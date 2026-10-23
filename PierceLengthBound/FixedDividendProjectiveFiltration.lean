@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendDegreeOne
 public import Mathlib.Algebra.Polynomial.AlgebraMap
+public import PierceLengthBound.FixedDividendFilteredIntersection
 
 /-!
 # The filtered homogeneous coordinate algebra

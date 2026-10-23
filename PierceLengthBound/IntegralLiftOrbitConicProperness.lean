@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.IntegralLiftConicProperness
 public import PierceLengthBound.FixedDividendConicPolynomialIdentities
+public import PierceLengthBound.FixedDividendOrbitConicParameter
 
 /-! Actual degree-two components admit bounded integer parameters with proper lift,
 unless they contain at most 492 distinct supported orbit coordinate points. -/

@@ -9,6 +9,7 @@ public import PierceLengthBound.LinearJointGraph
 public import PierceLengthBound.LatticeCurvature
 public import PierceLengthBound.FixedDividendLatticeCurveCover
 public import PierceLengthBound.PoweredJointCountingSlack
+public import PierceLengthBound.FixedDividendLinearCoordinates
 
 /-!
 # Counting powered points in exterior lattice coordinates

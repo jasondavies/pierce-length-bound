@@ -6,6 +6,8 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchPoleEnvelope
+public import PierceLengthBound.NormalizationBranchCover
+public import PierceLengthBound.BranchResidueComparison
 
 /-! A function's field-extension degree is bounded by a coordinate pole
 envelope once all its poles are covered by the chosen Dedekind model. -/

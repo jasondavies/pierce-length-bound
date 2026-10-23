@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendWindow
+public import PierceLengthBound.MinorHeight
 
 /-!
 # Selected orbit windows and their exact minor height

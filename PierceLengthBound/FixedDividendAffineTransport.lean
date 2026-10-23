@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendRationalComponents
+public import PierceLengthBound.FixedDividendFilteredIntersection
 
 /-! Affine coordinate changes preserve the exact filtered Hilbert function. -/
 

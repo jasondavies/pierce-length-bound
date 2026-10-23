@@ -5,10 +5,10 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.JointLiftDirection
 public import PierceLengthBound.IntegralLiftConicProperness
 public import PierceLengthBound.FixedDividendPolynomialSection
 import all PierceLengthBound.FixedDividendTotalDegree
+public import PierceLengthBound.JointLiftCoordinates
 
 /-! The actual normalization equation gives a bounded polynomial cut on every
 prime component, without requiring a conic parametrization. -/

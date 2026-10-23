@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.ConicIntegerReduction
+public import PierceLengthBound.ConicFactorHeight
 
 /-! Applying the integer-value theorem to a proper rational function represented
 by bounded integer polynomials. Common factors and parameter poles are handled. -/

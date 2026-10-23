@@ -5,8 +5,14 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FunctionParameterNormalization
 public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
+public import Mathlib.RingTheory.Adjoin.Polynomial.Transcendental
+public import Mathlib.Basic.NNReal.Defs
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+public import Mathlib.Tactic.Continuity.Init
+public import Mathlib.Data.Nat.Totient
+public import Mathlib.CategoryTheory.Category.Init
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
 /-! Changing the parameter of a one-variable function field. A finite extension
 of K(t) is finite over K(x) for every transcendental x in that extension. -/

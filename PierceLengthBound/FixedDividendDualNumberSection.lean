@@ -6,9 +6,8 @@ Authors: Jason Davies
 module
 
 public import Mathlib.LinearAlgebra.Eigenspace.Zero
-public import PierceLengthBound.FixedDividendChartHomogenization
-public import PierceLengthBound.FixedDividendLocalizationParity
 public import Mathlib.RingTheory.Localization.FractionRing
+public import Mathlib
 
 /-!
 # Quadratic relations in a two-dimensional nonreduced section

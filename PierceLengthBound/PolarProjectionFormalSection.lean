@@ -6,9 +6,9 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PolarProjectionCenteredQuadric
-public import PierceLengthBound.PolarProjectionInitialForm
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.AdicCompletion.Completeness
+public import PierceLengthBound.PolarProjectionBasePoint
 
 /-! Smooth formal sections of the quadric through its polar base point.
 The section is constructed by Hensel lifting; it is not assumed as input. -/

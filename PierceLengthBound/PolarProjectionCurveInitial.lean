@@ -5,10 +5,10 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.PolarProjectionFormalSection
 public import PierceLengthBound.PolarProjectionFirstJet
 public import PierceLengthBound.NewtonCoefficientDegrees
 public import PierceLengthBound.ChartNodeUnits
+public import PierceLengthBound.PolarProjectionInitialForm
 
 /-! The initial coefficient of the original fixed-dividend curve equation
 along an arbitrary formal section through the polar base point. -/

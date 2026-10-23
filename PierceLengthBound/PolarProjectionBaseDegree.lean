@@ -6,7 +6,9 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PolarProjectionLinearSystem
-public import PierceLengthBound.BranchPoleDegree
+public import PierceLengthBound.BranchPoleEnvelope
+public import PierceLengthBound.NormalizationBranchCover
+public import PierceLengthBound.BranchResidueComparison
 
 /-! The common-zero contribution in the normalized zero fiber of a scalar
 function. The fiber is constructed from the function parameter normalization;

@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.Fiber
+public import PierceLengthBound.Block
 
 /-!
 # Counting the visits to a dyadic window

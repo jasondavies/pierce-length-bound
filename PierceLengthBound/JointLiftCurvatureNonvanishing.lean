@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.JointLiftNormalizationCut
+public import PierceLengthBound.JointLiftDirection
 
 /-! The curvature coordinates have no common zero on the affine joint graph.
 This is an identity on the graph, not just a property of orbit points. -/

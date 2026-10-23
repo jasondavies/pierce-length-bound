@@ -8,6 +8,7 @@ module
 public import PierceLengthBound.PolarProjectionOrbit
 public import PierceLengthBound.JointLiftNormalizationCut
 public import PierceLengthBound.JointLiftPointBox
+public import PierceLengthBound.JointLiftGraphDegree
 
 /-! Polynomial cuts retaining the actual affine polar identities on prime curves.
 The three identities either hold on the whole component or cut out a uniformly

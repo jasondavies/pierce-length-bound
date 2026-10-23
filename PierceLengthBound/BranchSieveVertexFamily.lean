@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.BranchSieveResultantGeneric
 public import PierceLengthBound.BranchSieveParameterSpecialization
+public import PierceLengthBound.BranchSieveResultantDegree
 
 /-! A fixed integer polynomial family for the four first-frame minors.
 The vertex order is `(p₀,p₁,p₃,p₆)`. All denominators are cleared before

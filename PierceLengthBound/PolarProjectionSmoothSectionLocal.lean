@@ -5,7 +5,6 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.PolarProjectionFormalSection
 public import PierceLengthBound.PolarProjectionSectionDVR
 public import PierceLengthBound.PolarProjectionLocalCenter
 

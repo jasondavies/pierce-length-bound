@@ -5,9 +5,9 @@ Authors: Jason Davies
 -/
 module
 public import PierceLengthBound.PolarProjectionCoordinateIdeal
-public import PierceLengthBound.PolarProjectionGoodSection
 public import PierceLengthBound.PolarProjectionRankFiveDegree
-public import PierceLengthBound.OrbitPattern
+public import PierceLengthBound.PolarProjectionExceptionalPolynomial
+public import PierceLengthBound.PolarProjectionPointSection
 
 /-! Specialization of the base-point and local-normalization comparisons
 to the actual orbit component and its scalar-cleared polar coordinates. -/

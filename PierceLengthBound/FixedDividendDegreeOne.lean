@@ -5,7 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendCriticalGrowth
+public import PierceLengthBound.FixedDividendFilteredIntersection
+public import PierceLengthBound.FixedDividendComponents
 
 /-!
 # Affine coordinates give affine lines

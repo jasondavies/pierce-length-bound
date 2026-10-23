@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendHomogeneousLift
-public import PierceLengthBound.FixedDividendChartSection
+public import PierceLengthBound.FixedDividendProjectiveFiltration
+public import PierceLengthBound.FixedDividendDegreeOne
 
 /-!
 # Coordinate-power reductions imply eventual generation

@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.ExceptionalOrbitCount
 public import PierceLengthBound.FixedDividendCountAssembly
+public import PierceLengthBound.Main
 
 /-! Absorbing the proved exceptional-pattern logarithm on actual orbit windows. -/
 

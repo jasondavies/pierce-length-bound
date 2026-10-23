@@ -5,8 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.PolarProjectionBasePoint
-public import PierceLengthBound.ValuationLinearCombination
+public import PierceLengthBound.PolarProjectionAlgebra
 
 /-! The polar base ideal and its order on every normalized branch. These
 identities do not assume or compute a total base-divisor degree. -/

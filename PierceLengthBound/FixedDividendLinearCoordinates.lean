@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendAffineTransport
+public import PierceLengthBound.FixedDividendComponents
 
 /-! Rational linear coordinate changes, which preserve filtered dimensions, primality and
 zero loci; they are used in lattice counting. -/

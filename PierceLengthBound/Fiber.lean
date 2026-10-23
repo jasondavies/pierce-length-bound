@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.Block
+public import Mathlib
 
 /-!
 # A fixed triple `(u, v, D)` allows few starting points

@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.FixedDividendRationalCurves
 public import PierceLengthBound.FixedDividendParity
+public import PierceLengthBound.FixedDividendComponentLineExclusion
 
 /-!
 # Actual orbit points on rational components

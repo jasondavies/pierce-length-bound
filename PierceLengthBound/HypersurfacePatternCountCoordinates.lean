@@ -5,8 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.HypersurfacePatternCountLattice
-public import PierceLengthBound.LatticeExterior
+public import PierceLengthBound.LatticeCount
 
 /-! # Reduced coordinates for the cross-congruence polynomial fibers -/
 

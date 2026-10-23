@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendRationalConicDiscriminant
 public import PierceLengthBound.ConicArithmetic
+public import PierceLengthBound.FixedDividendQuadraticGeometry
 
 /-!
 # Explicit restriction of the actual ternary quadratic to a plane

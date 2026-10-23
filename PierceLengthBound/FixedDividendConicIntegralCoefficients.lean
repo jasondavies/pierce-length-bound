@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendPlaneConicModel
-public import PierceLengthBound.ConicParameterHeight
 
 /-! Explicit denominator clearing for the two parabolic plane charts. -/
 

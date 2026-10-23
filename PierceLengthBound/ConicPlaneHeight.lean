@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendHyperplaneDegree
-public import PierceLengthBound.ExceptionalDirection
 
 /-! Explicit bounded-height integer planes through three bounded integer points.
 The construction includes collinear triples. -/

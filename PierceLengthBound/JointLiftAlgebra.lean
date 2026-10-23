@@ -8,7 +8,6 @@ module
 public import PierceLengthBound.IntegralLiftInvariant
 public import PierceLengthBound.IntegralLiftResolvent
 public import PierceLengthBound.FixedDividendIdentity
-public import PierceLengthBound.MinorHeight
 
 /-! The joint lift's exact curvature identities and the actual rank-five
 identity I5 = A D. These algebraic results do not assert the new graph degree. -/

@@ -5,7 +5,6 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.BranchSieveDilation
 public import PierceLengthBound.BranchSieveParameterInduction
 public import PierceLengthBound.JointLiftCountingSlack
 import Mathlib.Tactic

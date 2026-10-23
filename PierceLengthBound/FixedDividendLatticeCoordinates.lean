@@ -5,7 +5,6 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendLinearCoordinates
 public import PierceLengthBound.LatticeCount
 
 /-! Integral reduced-lattice coordinates for the actual three node variables. -/

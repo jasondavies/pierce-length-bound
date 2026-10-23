@@ -5,8 +5,10 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.JointLiftGraphDegree
 public import PierceLengthBound.IntegralLiftNormalizationCut
+public import PierceLengthBound.JointLiftGraph
+public import PierceLengthBound.JointLiftRankFiveHeight
+public import PierceLengthBound.JointLiftCurvatureHeight
 
 /-! Actual integral joint-graph points, uniform over a complete minor pattern. -/
 

@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendStandardMonomials
+public import PierceLengthBound.FixedDividendMonomialDimension
 
 /-!
 # Linear-growth monomial sets

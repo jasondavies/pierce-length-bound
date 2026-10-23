@@ -6,6 +6,8 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendRationalComponents
+public import PierceLengthBound.FixedDividendComponentCount
+public import PierceLengthBound.FixedDividendCurveEquations
 
 /-!
 # Rational fixed-dividend curves

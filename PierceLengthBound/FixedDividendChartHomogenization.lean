@@ -5,7 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendNonexceptionalChart
+public import PierceLengthBound.FixedDividendChartSection
+public import PierceLengthBound.FixedDividendLeadingComponents
 
 /-!
 # Homogeneous equations in the actual affine chart

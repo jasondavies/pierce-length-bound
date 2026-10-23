@@ -6,7 +6,9 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PolarProjectionSmoothSectionLocal
-public import PierceLengthBound.PolarProjectionCurveInitial
+public import PierceLengthBound.PolarProjectionCenteredQuadric
+public import PierceLengthBound.PolarProjectionBasePoint
+public import PierceLengthBound.FixedDividendCurveEquations
 
 /-! Explicit coordinates on sections through the polar base point. -/
 

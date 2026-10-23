@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveResidueSigns
-public import PierceLengthBound.FixedDividendLeadingResultant
 
 /-! The barycentric identity converts the actual normalized branch sign to the
 quadratic extension used by the specialization sieve. -/

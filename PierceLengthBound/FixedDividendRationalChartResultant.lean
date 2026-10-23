@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.FixedDividendRationalChart
 public import PierceLengthBound.FixedDividendCoefficientHomogenization
+public import PierceLengthBound.FixedDividendRationalCurves
 
 /-!
 # The resultant is invertible along the actual infinity section

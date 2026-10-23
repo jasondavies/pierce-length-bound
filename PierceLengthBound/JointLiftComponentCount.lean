@@ -8,7 +8,7 @@ module
 public import PierceLengthBound.OrbitPatternGeometry
 public import PierceLengthBound.OrbitConicGapCount
 public import PierceLengthBound.JointLiftCountingSlack
-public import PierceLengthBound.FixedDividendCountAssembly
+public import PierceLengthBound.JointLiftGraphLowerDegree
 
 /-! Combine conic counting, bounded polynomial cuts, and the proved degree
 range of the retained joint graph on each actual nonexceptional component. -/

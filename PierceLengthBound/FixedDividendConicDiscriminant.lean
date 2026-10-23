@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendDualNumberSection
-public import PierceLengthBound.FixedDividendChartGeneration
+public import PierceLengthBound.FixedDividendCubicGeometry
 
 /-!
 # The binary discriminant of a nonreduced conic section

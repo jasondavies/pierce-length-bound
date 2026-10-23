@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendCoordinates
+public import PierceLengthBound.FixedDividendGapExclusion
 
 /-!
 # Exclusion of the four normalized line directions

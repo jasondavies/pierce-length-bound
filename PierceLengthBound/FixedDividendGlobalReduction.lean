@@ -5,7 +5,6 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendSelection
 public import PierceLengthBound.Main
 
 /-!

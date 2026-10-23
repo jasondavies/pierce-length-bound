@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendChartHomogenization
-public import PierceLengthBound.FixedDividendRationalCurves
 
 /-!
 # Coefficient maps and residue fields for chart homogenization

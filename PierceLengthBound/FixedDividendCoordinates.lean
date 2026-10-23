@@ -5,8 +5,10 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendGapExclusion
 public import PierceLengthBound.FixedDividendLineResultant
+public import PierceLengthBound.FixedDividendIdentity
+public import PierceLengthBound.FixedDividendLines
+public import PierceLengthBound.ElevenCount
 
 /-!
 # Coordinates of the actual orbit quartics

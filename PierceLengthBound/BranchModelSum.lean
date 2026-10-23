@@ -5,7 +5,13 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.BranchFamilyDegree
+public import Mathlib.Basic.NNReal.Defs
+public import Mathlib.RingTheory.DedekindDomain.Basic
+public import Mathlib.Combinatorics.Matroid.Init
+public import Mathlib.Tactic.Continuity.Init
+public import Mathlib.Data.Nat.Totient
+public import Mathlib.CategoryTheory.Category.Init
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
 /-! Algebra structures on a family selecting between two branch models.
 Explicit instances keep the selected ring and its field embedding compatible. -/

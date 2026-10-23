@@ -8,6 +8,7 @@ module
 public import PierceLengthBound.ShortSum
 public import PierceLengthBound.Geometric
 public import PierceLengthBound.Main
+public import PierceLengthBound.SixStep
 
 /-!
 # `P(a, b) ≪ a^{3/10} G(a)^{1/5}` from a short-interval divisor bound

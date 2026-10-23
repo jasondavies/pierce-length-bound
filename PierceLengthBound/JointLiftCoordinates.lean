@@ -5,9 +5,10 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.JointLiftRankFiveHeight
 public import PierceLengthBound.IntegralLiftCoordinateSystem
 import all PierceLengthBound.FixedDividendTotalDegree
+public import PierceLengthBound.JointLiftAlgebra
+public import PierceLengthBound.IntegralLiftQuotientNormalization
 
 /-! Polynomial coordinates of the joint lift, with a common denominator.
 These bounds concern the defining rational functions, not the degree of their graph. -/

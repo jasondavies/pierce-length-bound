@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.FixedDividendConicBoundedModel
 public import PierceLengthBound.ConicPlaneHeight
+public import PierceLengthBound.ConicParameterHeight
 
 /-!
 # Bounded integer parametrization of actual conic components

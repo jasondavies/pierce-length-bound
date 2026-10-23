@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendIdentity
+public import PierceLengthBound.FixedDividendMoments
 
 /-! Rational reconstruction identities from the normalized first two moments.
 The cofactor construction and its parameter-height bounds remain separate tasks. -/

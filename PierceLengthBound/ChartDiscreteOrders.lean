@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.JointLiftQuotientOrder
-public import PierceLengthBound.FixedDividendRationalChartResultant
 public import PierceLengthBound.FixedDividendChartGeneration
 
 /-! Valuations centered on the actual infinity chart. Units modulo the infinity

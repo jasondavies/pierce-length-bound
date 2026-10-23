@@ -7,9 +7,7 @@ module
 
 public import PierceLengthBound.NormalizationPointBranch
 public import PierceLengthBound.JointLiftPoleDegree
-public import PierceLengthBound.JointLiftCurvatureNonvanishing
 public import PierceLengthBound.ChartFunctionField
-public import PierceLengthBound.CurveNormalization
 
 /-! The extra affine zero of a curvature combination survives normalization
 and lies outside the old infinity fiber. -/

@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.JointLiftCurvatureNonvanishing
 import all PierceLengthBound.FixedDividendTotalDegree
+public import PierceLengthBound.JointLiftNormalizationCut
 
 /-! A uniformly bounded multivariate cut for the actual raw resolvent identity. -/
 

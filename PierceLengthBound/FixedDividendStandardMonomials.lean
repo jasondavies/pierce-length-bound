@@ -5,9 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendComponentCount
 public import Mathlib.RingTheory.MvPolynomial.Groebner
 public import Mathlib.RingTheory.MvPolynomial.MonomialOrder.DegLex
+public import PierceLengthBound.FixedDividendFilteredIntersection
 
 /-!
 # Standard monomials in a filtered coordinate ring

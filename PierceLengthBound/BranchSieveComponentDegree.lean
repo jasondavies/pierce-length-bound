@@ -5,7 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.PolarProjectionRankFiveDegree
+public import PierceLengthBound.JointLiftFiniteZero
+public import PierceLengthBound.NormalizationInfinityDegree
 
 /-! Residue-field branch labels force the full component degree. This avoids
 introducing an absolute Galois action: an irreducible label of degree r in a

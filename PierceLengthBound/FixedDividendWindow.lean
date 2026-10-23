@@ -5,8 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendComplexLines
-public import PierceLengthBound.FixedDividendWeights
+public import PierceLengthBound.Defs
 
 /-!
 # Window scales for the fixed-dividend bound

@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.NormCount
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
+public import Mathlib
 
 /-! The integer-value lemma for rational functions in the conic refinement.
 A nonconstant denominator at an integral value divides the nonzero resultant.

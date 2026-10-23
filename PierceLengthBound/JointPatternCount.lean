@@ -7,7 +7,6 @@ module
 
 public import PierceLengthBound.FixedDividendRationalParityCover
 public import PierceLengthBound.OrbitPatternCurveCount
-public import PierceLengthBound.ExceptionalOrbitCount
 
 /-!
 # Pattern counts from component counts

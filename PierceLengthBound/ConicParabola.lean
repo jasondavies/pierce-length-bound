@@ -5,9 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.ConicRawDeterminant
 public import Mathlib.FieldTheory.RatFunc.Degree
 public import Mathlib.RingTheory.Polynomial.RationalRoot
+public import PierceLengthBound.TwoState
 
 /-! Polynomial degree calculations for the generic parabolic branch.
 The geometric parametrization and its coefficient-height estimates are not

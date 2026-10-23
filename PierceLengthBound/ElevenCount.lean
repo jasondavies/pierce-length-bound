@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.SliceCount
-public import PierceLengthBound.PatternCount
 
 /-!
 # The refined counting lemma

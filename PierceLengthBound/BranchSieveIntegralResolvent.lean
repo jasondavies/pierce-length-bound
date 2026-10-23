@@ -6,8 +6,9 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveCoefficientResolvent
-public import PierceLengthBound.BranchSieveIntegerSpecialization
 import Mathlib.Tactic
+public import Mathlib.RingTheory.Polynomial.IsIntegral
+public import Mathlib.FieldTheory.Minpoly.Basic
 
 /-! Integral coefficient minimal polynomials divide fixed universal
 resolvents after substitution of the original polynomial coefficients.

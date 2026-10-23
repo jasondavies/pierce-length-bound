@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.BranchResidueComparison
+public import PierceLengthBound.BranchValuationComparison
 
 /-! A nontrivial normalized order regular on a model has a nonzero prime center
 on that model. Regularity extends to normalization. -/

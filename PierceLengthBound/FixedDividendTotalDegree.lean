@@ -5,8 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendDirectionExtraction
 public import Mathlib.Algebra.MvPolynomial.CommRing
+public import PierceLengthBound.FixedDividendLeadingResultant
+public import PierceLengthBound.FixedDividendLines
 
 /-!
 # Multivariate degree of the fixed-dividend resultant

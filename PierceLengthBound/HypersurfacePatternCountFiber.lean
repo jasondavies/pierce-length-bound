@@ -7,6 +7,8 @@ module
 
 public import PierceLengthBound.HypersurfacePatternCountCoordinates
 public import PierceLengthBound.HypersurfacePatternCountGrid
+public import PierceLengthBound.HypersurfacePatternCountLattice
+public import PierceLengthBound.LatticeExterior
 
 /-!
 # Polynomial zeros in cross-congruence fibers

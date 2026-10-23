@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.JointLiftGraph
-public import PierceLengthBound.FixedDividendHilbertLinearity
 
 /-! Clearing a common denominator bounds the actual filtered Hilbert function of a rational
 graph. -/

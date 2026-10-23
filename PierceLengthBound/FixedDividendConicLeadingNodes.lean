@@ -7,6 +7,9 @@ module
 
 public import PierceLengthBound.FixedDividendPolynomialSubstitution
 public import PierceLengthBound.IntegralLiftParabola
+public import PierceLengthBound.FixedDividendLeadingComponents
+public import PierceLengthBound.ConicRawDeterminant
+public import PierceLengthBound.FixedDividendComponents
 
 /-! Leading-node noncollision and exact raw determinant degrees for polynomial
 parametrizations of the actual fixed-dividend equations. -/

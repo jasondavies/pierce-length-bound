@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.JointLiftAlgebra
 public import Mathlib.RingTheory.Valuation.Basic
+public import PierceLengthBound.IntegralLiftResolvent
 
 /-! Discrete valuation calculations for the joint lift. These lemmas use actual
 additive valuations, with infinity for the zero function. Constructing the

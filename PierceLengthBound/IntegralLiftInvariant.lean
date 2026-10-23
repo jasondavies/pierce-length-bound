@@ -5,8 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendSelection
-public import PierceLengthBound.Gram
+public import PierceLengthBound.OrbitPattern
 
 /-! The added coordinate is a positive integer with the required small box bound
 at actual selected orbit starts. -/

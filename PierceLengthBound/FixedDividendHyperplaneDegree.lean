@@ -5,7 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendComponentLineExclusion
+public import PierceLengthBound.FixedDividendFilteredIntersection
+public import PierceLengthBound.FixedDividendComponents
 
 /-!
 # Hyperplane sections and affine Hilbert degree

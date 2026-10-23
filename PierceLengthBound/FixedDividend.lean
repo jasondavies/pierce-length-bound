@@ -5,10 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendMoments
-public import PierceLengthBound.FixedDividendResultant
-public import PierceLengthBound.ElevenCount
 public import Mathlib.LinearAlgebra.Vandermonde
+public import Mathlib
 
 /-!
 # Newton coefficients for the fixed-dividend refinement

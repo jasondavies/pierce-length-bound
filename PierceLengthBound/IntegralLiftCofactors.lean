@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.ConicCofactors
+public import PierceLengthBound.ConicReconstruction
 
 /-! The new graph coordinates recovered from the explicit maximal minors.
 The matrix hypotheses remain explicit: the actual shifted-polynomial system

@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.ChartDiscreteOrders
+public import PierceLengthBound.FixedDividendRationalChartResultant
 
 /-! Exact rank-five pole order on the actual nonexceptional infinity chart.
 The valuation may lie over a singular point; only its center on this chart is used. -/

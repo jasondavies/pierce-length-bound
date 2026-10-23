@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveMonicHilbert
-public import PierceLengthBound.BranchSieveMonicFactorization
 import Mathlib.Tactic
 
 /-! Uniform finite unions of Hilbert exceptional sets and polynomial

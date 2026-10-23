@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.IntegralLiftCoordinateSystem
 import all PierceLengthBound.FixedDividendTotalDegree
+public import PierceLengthBound.FixedDividendLineResultant
 
 /-! The Newton quartic has coefficient degree at most 4-j at x^j. These
 individual bounds are needed to prove strict leading-term dominance at infinity. -/

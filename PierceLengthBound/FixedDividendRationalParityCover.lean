@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendRationalDegreeParity
-public import PierceLengthBound.FixedDividendRationalOrbit
 
 /-!
 # Rational curve covers with the nonexceptional parity split

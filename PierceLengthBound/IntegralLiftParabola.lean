@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.IntegralLiftResolvent
-public import PierceLengthBound.ConicParabola
 
 /-! Degree calculations for the added invariant on a parabolic component.
 The hypotheses record the polynomial parametrization data; constructing these

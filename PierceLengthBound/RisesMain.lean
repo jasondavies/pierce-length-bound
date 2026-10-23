@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.Rises
 public import PierceLengthBound.Geometric
+public import PierceLengthBound.Main
 
 /-!
 # `P(a, b) ≪ a^{1/4} √R`

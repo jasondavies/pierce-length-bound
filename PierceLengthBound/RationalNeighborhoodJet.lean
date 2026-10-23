@@ -5,7 +5,6 @@ Authors: Jason Davies
 -/
 module
 public import PierceLengthBound.RationalNeighborhood
-public import PierceLengthBound.PolarProjectionFirstJet
 
 /-! Rational dependence of the first two coefficients of formal paths. -/
 @[expose] public section

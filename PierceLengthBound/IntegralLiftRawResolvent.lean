@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.IntegralLiftMoments
-public import PierceLengthBound.IntegralLiftQuotientNormalization
+public import PierceLengthBound.FixedDividendRationalOrbit
 
 /-! Explicit raw moment determinants and the actual rational resolvent identity. -/
 

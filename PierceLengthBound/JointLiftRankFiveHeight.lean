@@ -5,8 +5,10 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.JointLiftCurvatureHeight
 public import PierceLengthBound.IntegralLiftRawResolvent
+public import PierceLengthBound.JointLiftExponent
+public import PierceLengthBound.JointLiftAlgebra
+public import PierceLengthBound.FixedDividendWindow
 
 /-! The rank-five integer coordinate lies in the joint-lift box at actual selected states. -/
 

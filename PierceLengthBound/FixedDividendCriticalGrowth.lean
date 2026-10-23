@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendHilbertLinearity
 public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
+public import Mathlib
 
 /-!
 # Critical growth of a finite-dimensional coordinate space

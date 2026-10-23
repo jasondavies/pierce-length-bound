@@ -5,7 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.LinearJointGraph
+public import PierceLengthBound.BranchFamilyDegree
+public import PierceLengthBound.JointLiftFiniteZero
+public import PierceLengthBound.NormalizationInfinityDegree
 
 /-!
 # Degree and zero coverage of the rank-five function

@@ -7,6 +7,8 @@ module
 
 public import PierceLengthBound.ChartNodeUnits
 public import PierceLengthBound.RawDeterminantTotalDegree
+public import PierceLengthBound.ChartDiscreteOrders
+public import PierceLengthBound.IntegralLiftQuotientNormalization
 
 /-! Exact raw Hankel determinant orders on the actual nonexceptional chart.
 The degree-six Vandermonde dominates its entire degree-at-most-five remainder. -/

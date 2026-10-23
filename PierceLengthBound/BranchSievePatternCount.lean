@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveVertexCount
-public import PierceLengthBound.HypersurfacePatternCover
 
 /-! The four charts whose pivots lie in the first four columns preserve the
 branch-sieve vertex. They give a finite cover without imposing a maximal pivot

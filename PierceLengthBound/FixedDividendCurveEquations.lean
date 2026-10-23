@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendCoprimality
+public import PierceLengthBound.FixedDividendTotalDegree
 
 /-!
 # The two coordinate-ring equations of actual orbit points

@@ -9,6 +9,7 @@ public import PierceLengthBound.BranchSieveArithmeticVertexBounds
 public import PierceLengthBound.BranchSieveVertexMonic
 public import PierceLengthBound.BranchSieveMultivariateHilbert
 import Mathlib.Tactic
+public import PierceLengthBound.BranchSieveDilation
 
 /-! The actual uniform branch sieve in scaled four-vertex boxes. Generic
 irreducibility is supplied by the explicit degree-twelve branch family;

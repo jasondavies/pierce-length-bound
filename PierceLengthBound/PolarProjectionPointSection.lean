@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PolarProjectionLocalCenter
-public import PierceLengthBound.AffineNormalization
 public import Mathlib.RingTheory.Localization.Finiteness
 public import Mathlib.RingTheory.DedekindDomain.Dvr
 

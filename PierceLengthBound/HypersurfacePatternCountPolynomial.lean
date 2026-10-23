@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.HypersurfacePatternCountFiber
+public import PierceLengthBound.FixedDividendAffineTransport
 
 /-! # Polynomial families on a maximal-minor chart -/
 

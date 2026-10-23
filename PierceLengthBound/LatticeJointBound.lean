@@ -6,6 +6,8 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.LatticeJointWindow
+public import PierceLengthBound.LatticeJointLocalEstimate
+public import PierceLengthBound.FixedDividendGlobalReduction
 
 /-!
 # Length bounds from the exterior lattice coordinates

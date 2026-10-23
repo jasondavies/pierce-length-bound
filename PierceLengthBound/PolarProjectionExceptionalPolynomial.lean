@@ -6,6 +6,9 @@ Authors: Jason Davies
 module
 public import PierceLengthBound.RationalNeighborhoodJet
 public import PierceLengthBound.PolarProjectionCertificateSection
+public import PierceLengthBound.PolarProjectionCurveInitial
+public import PierceLengthBound.PolarProjectionFormalSection
+public import PierceLengthBound.HypersurfacePatternChart
 
 /-! A fixed exceptional polynomial for the polar base point. The rational
 certificate proves properness; clearing denominators retains every pattern. -/

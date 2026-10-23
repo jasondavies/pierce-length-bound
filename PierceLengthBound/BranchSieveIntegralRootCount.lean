@@ -9,6 +9,7 @@ public import PierceLengthBound.BranchSieveFiberHeight
 public import CCDN.Plane.PlaneCount
 public import CCDN.Height.PolynomialBoxHeight
 import Mathlib.Tactic
+public import PierceLengthBound.BranchSieveShear
 
 /-! A coefficient-uniform integral-root count obtained from the proved CCDN
 plane-curve theorem. The power shear trades coefficient height for degree;

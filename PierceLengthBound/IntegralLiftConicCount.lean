@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.IntegralLiftCoefficientHeight
 public import PierceLengthBound.ConicRepresentationCount
+public import PierceLengthBound.IntegralLiftOrbitConicProperness
 
 /-! Uniform divisor bounds for actual orbit points on nonexceptional conics. -/
 

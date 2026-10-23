@@ -8,6 +8,7 @@ module
 public import PierceLengthBound.BranchSieveKroneckerFactors
 public import PierceLengthBound.BranchSieveFiniteHilbert
 public import PierceLengthBound.BranchSieveRootFactors
+public import PierceLengthBound.BranchSieveMonicFactorization
 
 /-! A one-parameter Hilbert estimate for multivariate polynomial families,
 obtained by actual Kronecker factorization and nonzero coefficient cuts. -/

@@ -5,7 +5,10 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendHyperplaneDegree
+public import PierceLengthBound.FixedDividendDegreeOne
+public import PierceLengthBound.FixedDividendCriticalGrowth
+public import PierceLengthBound.FixedDividendHilbertLinearity
+public import PierceLengthBound.FixedDividendTranscendentalCoordinate
 
 /-!
 # Prime components with a rational point

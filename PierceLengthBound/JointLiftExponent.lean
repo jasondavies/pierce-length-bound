@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendSelection
-public import PierceLengthBound.WindowRealReduction
 
 /-! Exact exponent arithmetic for the joint curvature/rank-five lift.
 The graph count and the invariant height bounds remain explicit premises. -/

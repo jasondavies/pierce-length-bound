@@ -5,10 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendChartHomogenization
-public import PierceLengthBound.FixedDividendLocalizationParity
 public import Mathlib.RingTheory.Localization.FractionRing
-public import PierceLengthBound.FixedDividendRationalCurves
+public import PierceLengthBound.FixedDividendInfinityCover
 
 /-!
 # Rational certificates for the nonexceptional infinity chart

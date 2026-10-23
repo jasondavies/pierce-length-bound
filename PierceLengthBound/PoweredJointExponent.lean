@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.JointLiftExponent
+public import PierceLengthBound.WindowRealReduction
 
 /-! Exponent arithmetic with an arbitrary powered-graph degree. -/
 

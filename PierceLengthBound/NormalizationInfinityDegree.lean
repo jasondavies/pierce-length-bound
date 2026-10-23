@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.NormalizedFiberOrders
+public import PierceLengthBound.CurveNormalization
 
 /-! The branches of a transcendental parameter's fiber on the normalization:
 their residue-degree weighted orders sum to the dimension of the original

@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.JointLiftPointBox
+public import PierceLengthBound.JointLiftGraphDegree
 
 /-! Nonconstancy of the projective curvature direction follows algebraically
 from the degree-two bound for plane sections of an irreducible quadratic. -/

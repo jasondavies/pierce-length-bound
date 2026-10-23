@@ -5,7 +5,6 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendTotalDegree
 public import PierceLengthBound.FixedDividendCubicGeometry
 public import PierceLengthBound.FixedDividendComplexLines
 

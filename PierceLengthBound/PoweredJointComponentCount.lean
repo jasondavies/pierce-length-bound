@@ -5,11 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.OrbitPatternGeometry
 public import PierceLengthBound.OrbitConicGapCount
 public import PierceLengthBound.PoweredJointCountingSlack
 public import PierceLengthBound.PoweredJointGraphLowerDegree
-public import PierceLengthBound.FixedDividendCountAssembly
 public import PierceLengthBound.JointPatternCount
 
 /-! Combine conic counting, bounded polynomial cuts, and the proved degree

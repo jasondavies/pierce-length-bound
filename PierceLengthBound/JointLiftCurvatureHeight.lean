@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.JointLiftAlgebra
 public import PierceLengthBound.JointLiftExponent
+public import PierceLengthBound.FixedDividendWindow
 
 /-! First-order reciprocal expansion for the uniform curvature-minor height. The height of the
 minors among the first `c` columns (`orbit_curvature_minor_height`) serves the joint lift

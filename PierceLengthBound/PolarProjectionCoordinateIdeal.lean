@@ -4,9 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jason Davies
 -/
 module
-public import PierceLengthBound.PolarProjectionPointSection
 public import PierceLengthBound.PolarProjectionCenteredQuadric
 public import PierceLengthBound.PolarProjectionCuts
+public import PierceLengthBound.PolarProjectionLinearSystem
+public import PierceLengthBound.PolarProjectionBasePoint
 
 /-! The exact polar coordinate ideal in the original cumulative-node
 coordinate ring, including the nonzero scalar in the orbit identity. -/

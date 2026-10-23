@@ -5,8 +5,12 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.CurveNormalization
 public import Mathlib.LinearAlgebra.FreeModule.Norm
+public import Mathlib.RingTheory.Adjoin.Polynomial.Transcendental
+public import Mathlib.Combinatorics.Matroid.Init
+public import Mathlib.RingTheory.Localization.Integral
+public import Mathlib.RingTheory.LocalRing.Basic
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
 /-! A finite domain over a transcendental parameter has fiber dimension equal
 to its module rank. This includes singular curve algebras. -/

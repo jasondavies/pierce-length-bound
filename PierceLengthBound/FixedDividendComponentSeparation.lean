@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendMonomialDimension
 public import Mathlib.RingTheory.Algebraic.Basic
+public import Mathlib
 
 /-!
 # Separating prime components

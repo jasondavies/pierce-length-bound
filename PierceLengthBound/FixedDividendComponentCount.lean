@@ -5,7 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendTranscendentalCoordinate
+public import PierceLengthBound.FixedDividendComponentSeparation
+public import PierceLengthBound.FixedDividendFilteredIntersection
 
 /-!
 # Bounding the number of prime curve components

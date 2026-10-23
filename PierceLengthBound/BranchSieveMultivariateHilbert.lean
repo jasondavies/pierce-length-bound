@@ -8,6 +8,7 @@ module
 public import PierceLengthBound.BranchSieveKroneckerHilbert
 public import PierceLengthBound.BranchSieveParameterRearrangement
 public import PierceLengthBound.BranchSieveParameterInduction
+public import PierceLengthBound.BranchSieveRootKronecker
 
 /-! The complete fixed-degree monic Hilbert estimate in any number of
 integer parameters. Kronecker encoding proves the one-coordinate input;

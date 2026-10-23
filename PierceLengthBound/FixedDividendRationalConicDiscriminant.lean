@@ -6,9 +6,9 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendRationalChartResultant
-public import PierceLengthBound.FixedDividendLocalizationParity
 public import Mathlib.RingTheory.Localization.FractionRing
 public import PierceLengthBound.FixedDividendConicDiscriminant
+public import PierceLengthBound.FixedDividendChartGeneration
 
 /-!
 # The actual nonexceptional conic has parabolic leading form

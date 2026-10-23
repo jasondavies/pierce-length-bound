@@ -5,8 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.IntegralLiftOrbitConicProperness
-public import PierceLengthBound.ConicCommonDenominator
+public import PierceLengthBound.IntegralLiftConicProperness
 
 /-! A single fixed integer polynomial pair represents every substituted actual
 cofactor lift. This makes its uniform coefficient-height control concrete. -/

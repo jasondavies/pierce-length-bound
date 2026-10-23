@@ -5,9 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.BranchSieveRootKronecker
 public import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
 import Mathlib.Tactic
+public import PierceLengthBound.BranchSieveMultivariateKronecker
 
 /-! A proper bounded multivariate factorization can be normalized so that its
 Kronecker image is monic. This is the actual specialized factor witness in the

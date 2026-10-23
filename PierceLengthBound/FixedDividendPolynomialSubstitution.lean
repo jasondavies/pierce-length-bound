@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendOrbitConicParameter
 public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib
 
 /-! Degree and leading-coefficient control under polynomial coordinate substitution. -/
 

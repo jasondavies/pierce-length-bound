@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.PolarProjectionInitialForm
 public import Mathlib.Algebra.DualNumber
+public import Mathlib
 
 /-! First jets of formal sections. Polynomial equations have the same
 constant and linear coefficients on any two sections with matching first jets. -/

@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendPlaneConicModel
+public import PierceLengthBound.FixedDividendRationalConicDiscriminant
 
 /-!
 # Actual rational parabolic plane models

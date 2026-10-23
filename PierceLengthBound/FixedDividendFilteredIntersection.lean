@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendComponents
 public import Mathlib.LinearAlgebra.Dimension.Finrank
+public import Mathlib
 
 /-!
 # Filtered multiples in a two-equation ideal

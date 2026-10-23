@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.IntegralLiftCofactors
+public import PierceLengthBound.FixedDividendIdentity
 
 /-! The actual eight-row moment system and its independence. -/
 

@@ -7,7 +7,6 @@ module
 
 public import PierceLengthBound.PolarProjectionRetainedBase
 public import PierceLengthBound.PolarProjectionDegreeReduction
-public import PierceLengthBound.BranchSieveComponentDegree
 public import PierceLengthBound.BranchSieveResultantLabel
 
 /-! The polar graph degree on actual retained components. The local

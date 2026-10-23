@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.IntegralLiftIntegerInputs
+public import PierceLengthBound.ConicCommonDenominator
 
 /-! Uniform integer coefficient bounds for the actual cofactor lift after the
 proved bounded quadratic parametrization. -/

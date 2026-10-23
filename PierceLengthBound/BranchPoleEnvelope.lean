@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.NormalizationBranchCover
 public import Mathlib.RingTheory.DedekindDomain.Factorization
+public import PierceLengthBound.NormalizedBranchValuation
 
 /-! Pole multiplicities and the pole envelope of a finite family of functions. -/
 

@@ -6,8 +6,8 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.ConicRawDeterminant
-public import PierceLengthBound.IntegralLiftQuotientNormalization
 import all PierceLengthBound.FixedDividendTotalDegree
+public import PierceLengthBound.FixedDividendLines
 
 /-! Degree bounds for the lower terms of the raw fourth determinant, for use
 on arbitrary curve components rather than only polynomial parametrizations. -/

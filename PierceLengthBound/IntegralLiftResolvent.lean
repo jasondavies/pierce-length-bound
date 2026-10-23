@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.ConicCofactors
+public import Mathlib
 
 /-! The rank-three resolvent identity for the added integral Hankel coordinate.
 All identities are polynomial and hold over arbitrary commutative rings. -/

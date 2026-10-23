@@ -5,9 +5,10 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendCurveEquations
 public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
+public import PierceLengthBound.FixedDividendCoprimality
+public import PierceLengthBound.FixedDividendTotalDegree
 
 /-!
 # Finite prime decomposition of the fixed-dividend intersection

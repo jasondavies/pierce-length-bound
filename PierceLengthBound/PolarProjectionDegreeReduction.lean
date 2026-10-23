@@ -6,8 +6,8 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PolarProjectionBaseDegree
-public import PierceLengthBound.JointLiftPoleDegree
 public import PierceLengthBound.PolarProjectionRankFiveDegree
+public import PierceLengthBound.LinearJointGraph
 
 /-! The retained-component reduction of the curvature degree to the local
 weighted common-base contribution. -/

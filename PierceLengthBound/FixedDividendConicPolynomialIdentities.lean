@@ -5,8 +5,9 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendConicLeadingNodes
 public import PierceLengthBound.FixedDividendPolynomialSubstitution
+public import PierceLengthBound.FixedDividendComponents
+public import PierceLengthBound.FixedDividendCurveEquations
 
 /-! Rational polynomial coordinates from the checked bounded integer parameters.
 Actual integral component points force symbolic identities along the bounded

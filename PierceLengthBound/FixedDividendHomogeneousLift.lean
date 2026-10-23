@@ -6,8 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendLeadingComponents
-public import PierceLengthBound.FixedDividendInfinityCover
-public import PierceLengthBound.FixedDividendProjectiveFiltration
 
 /-!
 # Lifting homogeneous ideal certificates

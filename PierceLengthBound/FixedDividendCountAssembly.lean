@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendCount
-public import PierceLengthBound.FixedDividendGlobalReduction
+public import PierceLengthBound.FixedDividendSelection
 
 /-!
 # From selected orbit starts to distinct gap counts

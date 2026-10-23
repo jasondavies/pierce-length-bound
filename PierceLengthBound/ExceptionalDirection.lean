@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.ExceptionalPlaneCount
+public import PierceLengthBound.MinorCount
 
 /-! Primitive common directions for rank-one pairs of integer vectors. -/
 

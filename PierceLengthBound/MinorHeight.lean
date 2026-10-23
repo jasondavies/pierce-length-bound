@@ -5,7 +5,6 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.MinorCount
 public import PierceLengthBound.Functional
 public import PierceLengthBound.OrbitPattern
 

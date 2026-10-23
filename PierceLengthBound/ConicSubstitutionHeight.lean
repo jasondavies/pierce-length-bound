@@ -5,8 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.ConicFactorHeight
 public import Mathlib.Algebra.MvPolynomial.Basic
+public import Mathlib
 
 /-! Uniform integer coefficient bounds for fixed polynomial constructions under
 bounded quadratic substitution. -/

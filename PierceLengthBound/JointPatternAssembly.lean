@@ -6,8 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.JointPatternCount
-public import PierceLengthBound.OrdinaryPatternCount
-public import PierceLengthBound.FixedDividendCountAssembly
 
 /-!
 # Summing per-pattern estimates

@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.HypersurfacePatternCountPolynomial
-public import PierceLengthBound.HypersurfacePatternCountScaling
+public import PierceLengthBound.HypersurfacePatternCountGrid
 
 /-! # Polynomial zeros among divisible first vertices -/
 

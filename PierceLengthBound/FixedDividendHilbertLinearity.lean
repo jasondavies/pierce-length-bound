@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendMonomialRays
+public import PierceLengthBound.FixedDividendComponentSeparation
 
 /-!
 # Eventual linearity from a linear Hilbert bound

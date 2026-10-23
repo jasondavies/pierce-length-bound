@@ -6,6 +6,10 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendRationalInfinity
+public import PierceLengthBound.FixedDividendNonexceptionalChart
+public import PierceLengthBound.FixedDividendEventualGeneration
+public import PierceLengthBound.FixedDividendChartSection
+public import PierceLengthBound.FixedDividendHomogeneousLift
 
 /-!
 # The actual rational nonexceptional first-node chart

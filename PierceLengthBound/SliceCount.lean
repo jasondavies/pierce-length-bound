@@ -5,7 +5,6 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.NormCount
 public import PierceLengthBound.DefiniteNorm
 public import PierceLengthBound.TwoState
 

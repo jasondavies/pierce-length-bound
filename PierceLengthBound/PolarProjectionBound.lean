@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.PolarProjectionLocalEstimate
 public import PierceLengthBound.PolarProjectionOptimization
+public import PierceLengthBound.FixedDividendGlobalReduction
 
 /-! Global consequences of the local polar estimate. This module keeps the six-term estimate
 as an explicit input. `PolarProjectionMain` supplies its proof from the degree-24 branch sieve,

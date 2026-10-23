@@ -7,6 +7,7 @@ module
 
 public import PierceLengthBound.IntegralLiftResolvent
 public import PierceLengthBound.IntegralLiftInvariant
+public import PierceLengthBound.FixedDividendOrbit
 
 /-! The resolvent formula for the actual finite positive moment functionals. -/
 

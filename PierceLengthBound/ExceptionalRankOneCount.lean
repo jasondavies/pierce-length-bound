@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.ExceptionalParameterCount
+public import PierceLengthBound.ExceptionalDirection
 
 /-! Counting rank-one pairs with an orthogonal third vector, including every
 common divisor. This is the zero-Plücker-coordinate counting problem. -/

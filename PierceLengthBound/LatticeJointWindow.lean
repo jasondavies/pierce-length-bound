@@ -5,9 +5,10 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.LatticeJointLocalEstimate
-public import PierceLengthBound.PoweredJointWindow
 public import PierceLengthBound.RealPowerBounds
+public import PierceLengthBound.PoweredJointExponent
+public import PierceLengthBound.FixedDividendWindow
+public import ArithmeticHeights.Absolute
 
 /-!
 # Window exponents for the exterior lattice coordinates

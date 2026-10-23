@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.SixStep
+public import PierceLengthBound.Window
 
 /-!
 # Divisors in a dyadic range, counted over a short interval

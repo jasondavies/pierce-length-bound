@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.Main
+public import PierceLengthBound.Window
 
 /-!
 # Trajectories with few rises in the quotient increments
