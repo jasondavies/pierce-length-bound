@@ -208,11 +208,11 @@ open PierceLengthBound
 #guard_msgs in
 #print axioms FixedDividend.orbit_rankFive_polar_identity
 
-/-- info: 'PierceLengthBound.FixedDividend.polarCertificate_initial_nonzero' depends on axioms: [propext,
+/-- info: 'PierceLengthBound.FixedDividend.polar_good_axis_local_colength_four' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms FixedDividend.polarCertificate_initial_nonzero
+#print axioms FixedDividend.polar_good_axis_local_colength_four
 
 /-- info: 'PierceLengthBound.FixedDividend.branchSexticSpecialization_irreducible_rat' depends on axioms: [propext,
  Classical.choice,

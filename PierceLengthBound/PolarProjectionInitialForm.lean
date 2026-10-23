@@ -6,7 +6,6 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.PolarProjectionNewton
-public import PierceLengthBound.PolarProjectionLocalIntersection
 
 /-! Initial forms of the polar resultant along arbitrary formal sections.
 The proofs retain all higher-order terms of the section. -/
@@ -195,22 +194,6 @@ theorem polar_equation_initial_form {R : Type*} [CommRing R] [Nontrivial R]
   · intro k hk
     simp [hlower k hk, hDlower k hk]
   · simp [hfirst, hDfirst]
-
-/-- A nonzero quartic initial coefficient gives colength four on the actual
-formal section, including every higher-order term of that section. -/
-theorem polar_formal_section_colength_four {K : Type*} [Field K]
-    (a r : Fin 4 → PowerSeries K) (D : PowerSeries K) (A b : K)
-    (hr : ∀ j, PowerSeries.constantCoeff (r j) = 0)
-    (hD : PowerSeries.constantCoeff D = 0)
-    (hfirst : A * resultant
-        (monicQuartic (fun j => PowerSeries.constantCoeff (a j)))
-        (polarCubic (fun j => PowerSeries.coeff 1 (r j))) 4 4 -
-          b * PowerSeries.coeff 1 D ^ 4 ≠ 0) :
-    Module.finrank K (PowerSeries K ⧸ Ideal.span
-      {PowerSeries.C A * resultant (monicQuartic a) (polarCubic r) 4 4 -
-        PowerSeries.C b * D ^ 4}) = 4 := by
-  obtain ⟨hlower, hcoeff⟩ := polar_equation_initial_form a r D A b hr hD
-  exact formal_section_colength_of_coefficients _ 4 hlower (hcoeff ▸ hfirst)
 
 end
 end PierceLengthBound.FixedDividend

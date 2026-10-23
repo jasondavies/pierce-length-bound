@@ -28,41 +28,6 @@ def polarCertificateRemainder (s t : ℚ) : ℚ[X] :=
 /-- The linear part of the cubic norm on the certificate's tangent plane. -/
 def polarCertificateNormLinear (s t : ℚ) : ℚ := (3 * s + 85 * t) / 28
 
-/-- A first-order displacement of the certificate's base point in the tangent plane. -/
-def polarCertificateGapPath (s t : ℚ) : Fin 3 → ℚ[X] :=
-  ![C (-1 / 7) + C ((9 * s - 5 * t) / 4) * X,
-    C (-3 / 28) + C s * X, C (-1 / 2) + C t * X]
-
-/-- The corresponding four node paths after the first linear elimination. -/
-def polarCertificateNodePath (s t : ℚ) : Fin 4 → ℚ[X] :=
-  let x := polarCertificateGapPath s t
-  completeNodes (C 2) (C 5) (C (-3)) ![x 0, x 0 + x 1, x 0 + x 1 + x 2]
-
-set_option maxHeartbeats 1200000 in
--- Expanding the cubic norm over the polynomial ring has a large coefficient-convolution term.
-/-- The norm's actual coefficient of the infinitesimal parameter is the displayed linear form. -/
-theorem polarCertificateNormLinear_eq_coeff (s t : ℚ) :
-    (lineNorm (C 2) (C 5) (C (-3)) (C 3) (C 6) (C (-5))
-      (polarCertificateGapPath s t 0)
-      (polarCertificateGapPath s t 0 + polarCertificateGapPath s t 1)
-      (polarCertificateGapPath s t 0 + polarCertificateGapPath s t 1 +
-        polarCertificateGapPath s t 2)).coeff 1 = polarCertificateNormLinear s t := by
-  norm_num [lineNorm, lineNodes, extendedLineGaps, lineGaps, fourthNode, coeffs,
-    polarCertificateGapPath, polarCertificateNormLinear, Fin.sum_univ_succ, pow_succ,
-    Polynomial.coeff_mul, Polynomial.coeff_one, Finset.Nat.antidiagonal_succ]
-  ring
-
-/-- The displayed cubic is the actual first-order remainder on every tangent direction. -/
-theorem polarCertificateRemainder_eq_coeff (s t ξ : ℚ) :
-    ((polarNewtonRemainder (C 2) (C 5) (C (-3)) (C 3) (C 6) (C (-5))
-      (polarCertificateNodePath s t)).eval (C ξ)).coeff 1 =
-        (polarCertificateRemainder s t).eval ξ := by
-  norm_num [polarNewtonRemainder, polarRemainderCoefficients, polarQuotientConstant,
-    polarCertificateNodePath, polarCertificateGapPath, completeNodes, fourthNode,
-    polarCertificateRemainder, Fin.sum_univ_succ, pow_succ,
-    Polynomial.coeff_mul, Polynomial.coeff_one, Finset.Nat.antidiagonal_succ]
-  ring
-
 /-- The quartic resultant of the specialized quartic and first-order remainder. -/
 def polarCertificateInitialResultant (s t : ℚ) : ℚ :=
   resultant polarCertificateQuartic (polarCertificateRemainder s t) 4 4
@@ -115,29 +80,6 @@ theorem polar_initial_axes_nonzero {K : Type*} [CommRing K] [IsDomain K]
   by_contra! h
   apply mul_ne_zero hA hminor
   linear_combination D₁ ^ 4 * h.1 - D₀ ^ 4 * h.2
-
-/-- The rational certificate always admits one of the two coordinate
-hyperplane sections, uniformly in the dividend. -/
-theorem polarCertificate_initial_axes_nonzero (A b : ℚ) (hA : A ≠ 0) :
-    A * polarCertificateInitialResultant 1 0 - b * polarCertificateNormLinear 1 0 ^ 4 ≠ 0 ∨
-      A * polarCertificateInitialResultant 0 1 - b * polarCertificateNormLinear 0 1 ^ 4 ≠ 0 := by
-  apply polar_initial_axes_nonzero _ _ _ _ A b hA
-  rw [polarCertificate_initial_minor]
-  norm_num
-
-/-- No nonzero scalar combination with a nonzero coefficient on the resultant
-vanishes identically, uniformly over the second scalar (the dividend). -/
-theorem polarCertificate_initial_nonzero (A a : ℚ) (hA : A ≠ 0) :
-    ∃ s t : ℚ,
-      A * polarCertificateInitialResultant s t - a * polarCertificateNormLinear s t ^ 4 ≠ 0 := by
-  by_contra! h
-  have hs := h 1 0
-  have ht := h 0 1
-  have hm := polarCertificate_initial_minor
-  have he : A * (26291112152499 / 60236288 : ℚ) = 0 := by
-    linear_combination polarCertificateNormLinear 0 1 ^ 4 * hs -
-      polarCertificateNormLinear 1 0 ^ 4 * ht - A * hm
-  exact (mul_ne_zero hA (by norm_num)) he
 
 end
 end PierceLengthBound.FixedDividend

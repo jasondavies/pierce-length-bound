@@ -99,7 +99,6 @@ public import PierceLengthBound.JointLiftCurvatureHeight
 public import PierceLengthBound.JointLiftOptimization
 public import PierceLengthBound.IntegralLiftConicSlack
 public import PierceLengthBound.JointLiftResolventCut
-public import PierceLengthBound.CurveCountingCover
 public import PierceLengthBound.JointLiftCoverCount
 public import PierceLengthBound.OrbitConicGapCount
 public import PierceLengthBound.JointLiftInfinityOrder
@@ -108,7 +107,6 @@ public import PierceLengthBound.JointLiftChartOrders
 public import PierceLengthBound.JointLiftNormalizedOrders
 public import PierceLengthBound.JointLiftNormalizedFiniteOrders
 public import PierceLengthBound.NormalizationInfinityDegree
-public import PierceLengthBound.ChartFunctionParameters
 public import PierceLengthBound.JointLiftCurvatureTranscendence
 public import PierceLengthBound.BranchZeroDegree
 public import PierceLengthBound.JointLiftPoleDegree
@@ -150,7 +148,6 @@ public import PierceLengthBound.PolarProjectionBound
 public import PierceLengthBound.HypersurfacePatternCount
 public import PierceLengthBound.PolarProjectionLinearSystem
 public import PierceLengthBound.PolarProjectionGeometry
-public import PierceLengthBound.PolarProjectionLocalIntersection
 public import PierceLengthBound.BranchSieveSpecialization
 public import PierceLengthBound.BranchSieveElimination
 public import PierceLengthBound.BranchSieveSextic

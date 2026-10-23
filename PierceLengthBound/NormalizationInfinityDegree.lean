@@ -5,11 +5,11 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.NormalizationFiberDegree
 public import PierceLengthBound.NormalizedFiberOrders
 
-/-! The total residue-degree weighted order of the old infinity parameter
-on the normalization equals the original affine Hilbert degree. -/
+/-! The branches of a transcendental parameter's fiber on the normalization:
+their residue-degree weighted orders sum to the dimension of the original
+fiber. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -49,44 +49,6 @@ theorem normalized_parameter_branches {S L : Type*}
   · exact hB
   · rw [parameter_fiber_finrank w hw, ← normalization_parameter_rank (L := L) w]
     exact hsum
-
-set_option synthInstance.maxHeartbeats 200000 in
--- The chart, parameter algebra and normalization form nested subalgebra towers.
-/-- Every normalized infinity branch is counted, and its residue degree times
-its order of the old infinity parameter contributes to a sum exactly equal
-to the original Hilbert degree d. -/
-theorem nonexceptional_normalized_infinity_degree
-    {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
-    (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)
-    (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
-    (hf : curveQuadratic ρ u v ρ' u' v' ∈ I)
-    (hg : curveEquation ρ u v ρ' u' v' A a ∈ I)
-    {F : Type*} [Field F] [Algebra ℚ F]
-    (ι : (MvPolynomial (Fin 3) ℚ ⧸ I) →ₐ[ℚ] F) (hι : Function.Injective ι)
-    {d N : ℕ} {b : ℤ} (hd : 0 < d)
-    (hdegree : ∀ n ≥ N,
-      (Module.finrank ℚ (filteredCoordinateSpace I n) : ℤ) = (d : ℤ) * n + b) :
-    let l := Ideal.Quotient.mk I (MvPolynomial.X 0)
-    let S := projectiveChart I ι l
-    let C := chartNormalization I ι l
-    let w := algebraMap S C (chartInfinityCoordinate I ι l)
-    ∃ B : Finset (IsDedekindDomain.HeightOneSpectrum C),
-      (∀ q, q ∈ B ↔ w ∈ q.asIdeal) ∧
-      ∑ q ∈ B, multiplicity q.asIdeal (Ideal.span {w}) *
-        Module.finrank ℚ (C ⧸ q.asIdeal) = d := by
-  let l := Ideal.Quotient.mk I (MvPolynomial.X 0)
-  let S := projectiveChart I ι l
-  let w := chartInfinityCoordinate I ι l
-  let : Module.Finite (Algebra.adjoin ℚ {w}) S :=
-    nonexceptional_chart_finite_over_parameter hρ hu hv hne ρ' u' v' A a ha
-      I hf hg ι hι hd hdegree
-  have hw : Transcendental ℚ w :=
-    nonexceptional_chart_parameter_transcendental hρ hu hv hne ρ' u' v' A a ha
-      I hf hg ι hι hd hdegree
-  obtain ⟨B, hB, hsum⟩ := normalized_parameter_branches (L := FractionRing S) w hw
-  refine ⟨B, hB, hsum.trans ?_⟩
-  exact (rational_nonexceptional_chart_infinity_dimension hρ hu hv hne ρ' u' v' A a ha
-    I hf hg ι hι hd hdegree).2
 
 end
 end PierceLengthBound.FixedDividend

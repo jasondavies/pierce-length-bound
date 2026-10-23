@@ -13,7 +13,7 @@ public import Mathlib.Topology.Instances.Rat
 # Optimizing the polar-projection exponents
 
 The two powered-coordinate exponents cross at
-`r = (√82849 - 47)/360`. Their minimum maximum is
+`r = (√82849 - 47)/360`, where both equal
 `α = (41301 - 3√82849)/137480`. Positive integer coordinate powers achieve every prescribed
 loss above `α`; doubling a positive rational numerator and denominator also makes the gap
 exponent smaller than `α`.
@@ -42,12 +42,6 @@ lemma polarProjectionOptimalRatio_pos : 0 < polarProjectionOptimalRatio := by
   unfold polarProjectionOptimalRatio
   linarith
 
-lemma polarProjectionOptimalRatio_equation :
-    180 * polarProjectionOptimalRatio ^ 2 + 47 * polarProjectionOptimalRatio - 112 = 0 := by
-  have hs := sqrt82849_facts.1
-  unfold polarProjectionOptimalRatio
-  nlinarith
-
 lemma polarProjectionOptimal_crossing :
     polarProjectionExponentSRatio polarProjectionOptimalRatio = polarProjectionOptimalExponent ∧
       polarProjectionExponentYRatio polarProjectionOptimalRatio =
@@ -63,13 +57,6 @@ lemma polarProjectionOptimal_crossing :
     apply (div_eq_iff (by positivity)).mpr
     unfold polarProjectionOptimalRatio polarProjectionOptimalExponent
     linear_combination (11 / 58920 : ℝ) * hs
-
-lemma polarProjectionOptimalExponent_equation :
-    68740 * polarProjectionOptimalExponent ^ 2 -
-      41301 * polarProjectionOptimalExponent + 6201 = 0 := by
-  have hs := sqrt82849_facts.1
-  unfold polarProjectionOptimalExponent
-  nlinarith
 
 /-- The optimized exponent is above the method's threshold, below the explicit rational
 choice, and above the gap exponent at degree 232. -/
@@ -87,24 +74,6 @@ lemma polarProjectionExponentSRatio_antitone {r s : ℝ} (hr : 0 < r) (hrs : r �
   unfold polarProjectionExponentSRatio
   apply (div_le_div_iff₀ (by positivity) (by positivity)).mpr
   nlinarith
-
-lemma polarProjectionExponentYRatio_monotone {r s : ℝ} (hr : 0 < r) (hrs : r ≤ s) :
-    polarProjectionExponentYRatio r ≤ polarProjectionExponentYRatio s := by
-  have hs : 0 < s := hr.trans_le hrs
-  unfold polarProjectionExponentYRatio
-  apply (div_le_div_iff₀ (by positivity) (by positivity)).mpr
-  nlinarith
-
-/-- The positive crossing minimizes the larger of the two powered-coordinate exponents. -/
-theorem polarProjectionOptimal_minimum {r : ℝ} (hr : 0 < r) :
-    polarProjectionOptimalExponent ≤
-      max (polarProjectionExponentSRatio r) (polarProjectionExponentYRatio r) := by
-  rcases le_total r polarProjectionOptimalRatio with h | h
-  · rw [← polarProjectionOptimal_crossing.1]
-    exact (polarProjectionExponentSRatio_antitone hr h).trans (le_max_left _ _)
-  · rw [← polarProjectionOptimal_crossing.2]
-    exact (polarProjectionExponentYRatio_monotone polarProjectionOptimalRatio_pos h).trans
-      (le_max_right _ _)
 
 lemma polarProjectionExponentYRatio_sub {r s : ℝ} (hr : 0 < r) (hs : 0 < s) :
     polarProjectionExponentYRatio s - polarProjectionExponentYRatio r =

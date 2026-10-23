@@ -56,13 +56,6 @@ theorem polarMatrix_det {R : Type*} [CommRing R] (ρ u v : R) :
   simp [polarMatrix, Matrix.det_fin_three]
   ring
 
-/-- The actual pattern signs force an invertible polar matrix. -/
-theorem polarMatrix_det_ne_zero {ρ u v : ℝ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) :
-    (polarMatrix ρ u v).det ≠ 0 := by
-  rw [polarMatrix_det]
-  exact mul_ne_zero (mul_ne_zero (mul_ne_zero (by linarith) (by linarith))
-    (by linarith)) (by linarith)
-
 /-- Pairing the polar direction with the quadratic moment row gives the cubic norm,
 modulo the defining quadric. This is an identity before imposing any curve equation. -/
 theorem polarVector_dot_moment_sub_norm {R : Type*} [CommRing R]

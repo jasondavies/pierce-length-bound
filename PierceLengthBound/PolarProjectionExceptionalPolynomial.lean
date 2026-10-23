@@ -202,14 +202,6 @@ lemma polarChartGuard_certificate : polarChartGuard polarParameterCertificate �
   norm_num [polarChartGuard, polarParameterCertificate, polarMatrix, polarLinear,
     Matrix.det_fin_three]
 
-theorem exists_polar_parameter_exceptional_polynomial :
-    ∃ F : MvPolynomial (Fin 6) ℚ, eval polarParameterCertificate F ≠ 0 ∧
-      ∀ q, eval q F ≠ 0 → polarChartGuard q ≠ 0 ∧ polarInitialMinor q ≠ 0 := by
-  obtain ⟨F, hF, hf⟩ :=
-    (rational_guard.mul polar_initial_minor_rational).exists_nonvanishing_polynomial
-      (mul_ne_zero polarChartGuard_certificate (by rw [polarInitialMinor_certificate]; norm_num))
-  exact ⟨F, hF, fun q hq => mul_ne_zero_iff.mp (hf q hq)⟩
-
 /-- Six normalized coefficients read from the ten full minor coordinates. -/
 def polarMinorParameters (p : Fin 10 → ℚ) : Fin 6 → ℚ :=
   ![p 6 / p 0, p 3 / p 0, -p 1 / p 0, p 9 / p 6, p 8 / p 6, -p 7 / p 6]

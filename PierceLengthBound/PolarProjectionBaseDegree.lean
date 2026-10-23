@@ -200,20 +200,5 @@ theorem function_degree_le_poleEnvelope_add_baseDegree {R L ι : Type*}
       simp only [add_mul, Finset.sum_add_distrib, functionCommonBaseDegree, B, C]
     _ ≤ _ := Nat.add_le_add_right hpoles _
 
-/-- The global degree reduction with the single numerical local input
-that the weighted common-base contribution is four. -/
-theorem poleEnvelope_lower_bound_of_base_degree_four {R L ι : Type*}
-    [CommRing R] [IsDedekindDomain R] [Algebra ℚ R]
-    [Field L] [Algebra ℚ L] [Algebra R L] [IsScalarTower ℚ R L] [IsFractionRing R L]
-    [Fintype ι] [Nonempty ι] (W : ι → L) (hW : ∃ j, W j ≠ 0)
-    (D : L) (hD : Transcendental ℚ D) [FiniteDimensional ℚ⟮D⟯ L]
-    (hcover : ∀ ν : AddValuation L (WithTop ℤ),
-      (∀ a : ℚ, 0 ≤ ν (algebraMap ℚ L a)) → (∃ π : L, ν π = 1) →
-      0 < ν D → ∀ r : R, 0 ≤ ν (algebraMap R L r))
-    (hbase : functionCommonBaseDegree D hD W = 4) :
-    Module.finrank ℚ⟮D⟯ L ≤ poleEnvelopeDegree R W + 4 := by
-  simpa only [hbase] using
-    function_degree_le_poleEnvelope_add_baseDegree W hW D hD hcover
-
 end
 end PierceLengthBound.FixedDividend

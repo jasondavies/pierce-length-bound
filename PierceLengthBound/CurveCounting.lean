@@ -16,9 +16,6 @@ and filtered Hilbert degrees used throughout the Pierce development. -/
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
-lemma coordinateSpace_eq_external {n : ℕ} (I : Ideal (MvPolynomial (Fin n) ℚ)) (N : ℕ) :
-    filteredCoordinateSpace I N = CCDN.coordinateSpace I N := rfl
-
 lemma coordinateZeroLocus_eq_external {n : ℕ} (I : Ideal (MvPolynomial (Fin n) ℚ)) :
     coordinateZeroLocus I = CCDN.idealZeroLocus I := rfl
 

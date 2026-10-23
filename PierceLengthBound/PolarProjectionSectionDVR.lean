@@ -5,7 +5,6 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.PolarProjectionLocalIntersection
 public import PierceLengthBound.FixedDividendFiniteSectionParity
 public import Mathlib.RingTheory.DiscreteValuationRing.TFAE
 public import Mathlib.RingTheory.Filtration
@@ -122,23 +121,6 @@ theorem local_section_ideal_power_of_formal_coefficients
     PowerSeries.order_pow, hφt, hfOrder, nsmul_eq_mul, mul_one] at ho
   have hmn : m = n := by exact_mod_cast ho.symm
   simpa only [hmn] using hm
-
-/-- The domain premise in the ideal-power calculation follows from the
-formal section itself when its parameter has order one. -/
-theorem local_section_ideal_power_of_formal_coefficients_of_principal
-    {K R : Type*} [Field K] [CommRing R] [IsNoetherianRing R] [IsLocalRing R]
-    (t : R) (ht : IsLocalRing.maximalIdeal R = Ideal.span {t})
-    (φ : R →+* PowerSeries K) (hφt : (φ t).order = 1)
-    (f : R) (n : ℕ)
-    (hlower : ∀ j < n, PowerSeries.coeff j (φ f) = 0)
-    (hfirst : PowerSeries.coeff n (φ f) ≠ 0) :
-    Ideal.span {f} = IsLocalRing.maximalIdeal R ^ n := by
-  have ht0 : φ t ≠ 0 := by
-    intro hz
-    simp [hz] at hφt
-  have hφ := local_principal_parameter_map_injective t ht φ ht0
-  let : IsDomain R := hφ.isDomain φ
-  exact local_section_ideal_power_of_formal_coefficients t ht φ hφt f n hlower hfirst
 
 /-- The actual local section has the colength read from its formal first
 nonzero coefficient, multiplied by the residue-field degree. The domain and

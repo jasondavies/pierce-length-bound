@@ -39,20 +39,6 @@ theorem inertiaDeg_eq_ground_finrank {K T C : Type*} [Field K]
   rw [Ideal.inertiaDeg_eq_of_isMaximal p q,
     ← Module.finrank_mul_finrank K (T ⧸ p) (C ⧸ q), hp, one_mul]
 
-/-- Every closed branch above a rational base point has positive residue degree. -/
-theorem fiber_residue_degree_pos {K T C : Type*} [Field K]
-    [CommRing T] [Algebra K T] [CommRing C] [Algebra K C] [Algebra T C]
-    [IsScalarTower K T C] [Module.Finite T C]
-    (p : Ideal T) (q : Ideal C) [p.IsMaximal] [q.IsPrime] [q.LiesOver p]
-    (hp : Module.finrank K (T ⧸ p) = 1) :
-    0 < Module.finrank K (C ⧸ q) := by
-  let : Field (T ⧸ p) := Ideal.Quotient.field p
-  let : Module.Finite K (T ⧸ p) := Module.finite_of_finrank_pos (hp.symm ▸ Nat.zero_lt_one)
-  let : Module.Finite (T ⧸ p) (C ⧸ q) :=
-    Module.Finite.of_restrictScalars_finite T (T ⧸ p) (C ⧸ q)
-  let : Module.Finite K (C ⧸ q) := Module.Finite.trans (T ⧸ p) (C ⧸ q)
-  exact Module.finrank_pos
-
 /-- The sum of the multiplicities times residue degrees over a rational point
 equals the rank of a finite flat Dedekind algebra. -/
 theorem sum_fiber_multiplicity_residue_degree {K T C : Type*} [Field K]
@@ -121,35 +107,6 @@ theorem polynomial_parameter_branches {K T C : Type*} [Field K]
         IsDedekindDomain.HeightOneSpectrum.ext rfl⟩
   · rw [Finset.sum_image (fun q _ r _ h => hf h)]
     simpa only [hmap] using sum_fiber_multiplicity_residue_degree p hdim hp0
-
-/-- The same fiber formula expressed directly in the canonical normalized
-orders, without choosing or assuming valuations. -/
-theorem polynomial_parameter_branch_orders {K T C L : Type*} [Field K]
-    [CommRing T] [IsDomain T] [IsPrincipalIdealRing T] [Algebra K T]
-    [CommRing C] [IsDedekindDomain C] [Algebra K C] [Algebra T C]
-    [IsScalarTower K T C] [FaithfulSMul T C] [Module.Finite T C]
-    [Field L] [Algebra C L] [IsFractionRing C L]
-    (e : Polynomial K ≃ₐ[K] T) :
-    let w := algebraMap T C (e Polynomial.X)
-    ∃ (B : Finset (IsDedekindDomain.HeightOneSpectrum C))
-      (m : IsDedekindDomain.HeightOneSpectrum C → ℕ),
-      (∀ q, q ∈ B ↔ w ∈ q.asIdeal) ∧
-      (∀ q, normalizedBranchOrder q L (algebraMap C L w) = ((m q : ℤ) : WithTop ℤ)) ∧
-      (∀ q, q ∈ B ↔ 0 < m q) ∧
-      ∑ q ∈ B, m q * Module.finrank K (C ⧸ q.asIdeal) = Module.finrank T C := by
-  let w := algebraMap T C (e Polynomial.X)
-  have hw : w ≠ 0 := by
-    simpa only [Function.comp_apply, map_zero] using
-      ((FaithfulSMul.algebraMap_injective T C).comp e.injective).ne Polynomial.X_ne_zero
-  obtain ⟨B, hB, hsum⟩ := polynomial_parameter_branches (C := C) e
-  let m := fun q : IsDedekindDomain.HeightOneSpectrum C =>
-    multiplicity q.asIdeal (Ideal.span {w})
-  have hm : ∀ q, normalizedBranchOrder q L (algebraMap C L w) =
-      ((m q : ℤ) : WithTop ℤ) := fun q => normalizedBranchOrder_eq_multiplicity q L hw
-  refine ⟨B, m, hB, hm, ?_, hsum⟩
-  intro q
-  rw [hB q, ← normalizedBranchOrder_positive_iff q L w, hm q]
-  norm_cast
 
 end
 end PierceLengthBound.FixedDividend

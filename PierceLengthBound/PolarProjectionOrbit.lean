@@ -175,15 +175,6 @@ theorem orbit_polar_identity {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) (j
   congr 1
   fin_cases j <;> simp [orbitCurvatureVector, curvatureVector, kk, kq]
 
-/-- The polar vector is nonzero at every supported orbit state. -/
-theorem orbitPolarVector_ne_zero {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
-    orbitPolarVector a b i ≠ 0 := by
-  intro hz
-  have he := orbitPolarVector_dot_moment hba (by omega : i + 6 < P a b)
-  rw [hz] at he
-  simp only [Pi.zero_apply, zero_mul, Finset.sum_const_zero] at he
-  exact (orbitNorm_pos hba hi).ne' he.symm
-
 /-- Clearing the positive norm gives `J W = A² (G x + ℓ)`. -/
 theorem orbit_rankFive_polar_identity {a b i : ℕ} (hba : b < a)
     (hi : i + 7 < P a b) (j : Fin 3) :
