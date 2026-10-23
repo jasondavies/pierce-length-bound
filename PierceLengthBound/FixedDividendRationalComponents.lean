@@ -14,8 +14,10 @@ public import PierceLengthBound.FixedDividendTranscendentalCoordinate
 # Prime components with a rational point
 
 A base-field-valued point replaces algebraic closedness in the algebraicity and
-critical-growth arguments. Thus the geometric Hilbert-degree interface can be
-used directly over the rationals, without a complex component-descent assumption.
+critical-growth arguments. Over any field, a height-two prime in three variables
+with such a point has a transcendental coordinate and a positive eventual Hilbert
+degree. In degree one its coordinates are affine in one of them, so it contains a
+line through the point.
 -/
 
 @[expose] public section
@@ -101,8 +103,8 @@ theorem affine_of_critical_growth_of_point {K A : Type*} [Field K]
   rw [algebraic_eq_scalar_of_point φ hc]
   abel
 
-/-- A prime component containing a base-field point has a positive eventual
-Hilbert degree, bounded by any proved linear filtration-growth bound. -/
+/-- A height-two prime containing a base-field point has a positive eventual
+Hilbert degree, at most the slope `C` of any linear bound on its filtration. -/
 theorem height_two_degree_exists_of_point {K : Type*} [Field K]
     (p : Ideal (MvPolynomial (Fin 3) K)) [p.IsPrime] (hp : p.height = 2)
     (z : Fin 3 → K) (hz : z ∈ coordinateZeroLocus p) (C : ℕ)
@@ -126,7 +128,7 @@ theorem height_two_degree_exists_of_point {K : Type*} [Field K]
   exact ⟨d, hpos, hd, N, c, hlinear⟩
 
 /-- A degree-one prime curve containing a base-field point has affine coordinate
-formulas over that same field. In particular this holds directly over `ℚ`. -/
+formulas over that same field. -/
 theorem degree_one_coordinates_affine_of_point {K : Type*} [Field K]
     (p : Ideal (MvPolynomial (Fin 3) K)) [p.IsPrime] (hp : p.height = 2)
     (hdegree : ∃ N : ℕ, ∃ b : ℤ, ∀ n ≥ N,
@@ -166,7 +168,8 @@ theorem degree_one_coordinates_affine_of_point {K : Type*} [Field K]
     exact isAlgebraic_algebraMap (d j)
   exact ⟨j, c, d, hcj, hj, hcd⟩
 
-/-- Degree-one line containment over an arbitrary field with a rational point. -/
+/-- A degree-one prime curve containing a base-field point contains a line through
+that point. -/
 theorem degree_one_line_through_rational_point {K : Type*} [Field K]
     (p : Ideal (MvPolynomial (Fin 3) K)) [p.IsPrime] (hp : p.height = 2)
     (hdegree : ∃ N : ℕ, ∃ b : ℤ, ∀ n ≥ N,

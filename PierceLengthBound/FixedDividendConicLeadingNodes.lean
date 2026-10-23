@@ -11,15 +11,16 @@ public import PierceLengthBound.FixedDividendLeadingComponents
 public import PierceLengthBound.ConicRawDeterminant
 public import PierceLengthBound.FixedDividendComponents
 
-/-! Leading-node noncollision and exact raw determinant degrees for polynomial
-parametrizations of the actual fixed-dividend equations. -/
+/-! Distinct leading nodes and exact raw determinant degrees for quadratic
+parametrizations of nonexceptional fixed-dividend components. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
-/-- The two actual polynomial identities force the two leading moment equations. -/
+/-- Along a parametrization of degree at most two, the quadratic and fixed-dividend
+equations force the leading quadratic and cubic to vanish at the leading coefficients. -/
 theorem quadratic_parameter_leading_equations {K : Type*} [Field K]
     (ρ u v ρ' u' v' A a : K) (ha : a ≠ 0)
     (z : Fin 3 → Polynomial K) (hz : ∀ j, (z j).natDegree ≤ 2)
@@ -40,7 +41,8 @@ theorem quadratic_parameter_leading_equations {K : Type*} [Field K]
   have hh := (mul_eq_zero.mp h2.symm).resolve_left (neg_ne_zero.mpr ha)
   exact (pow_eq_zero_iff (by decide : 4 ≠ 0)).mp hh
 
-/-- Rational leading nodes are distinct for actual nonexceptional patterns. -/
+/-- For a nonexceptional pattern, the leading nodes of a quadratic parametrization
+are distinct. -/
 theorem rational_quadratic_parameter_leading_nodes
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
@@ -70,6 +72,7 @@ theorem rational_quadratic_parameter_leading_nodes
     · simpa only [eval_leadingQuadratic_moment] using hquad
     · simpa only [eval_leadingCubic_moment] using hcubic
 
+/-- The eliminated gaps of a quadratic parametrization have degree at most two. -/
 lemma parameter_lineGaps_degree {K : Type*} [Field K]
     (ρ u v ρ' u' v' : K) (z : Fin 3 → Polynomial K)
     (hz : ∀ j, (z j).natDegree ≤ 2) :
@@ -80,8 +83,8 @@ lemma parameter_lineGaps_degree {K : Type*} [Field K]
   intro j
   fin_cases j <;> dsimp [lineGaps, fourthNode] <;> compute_degree <;> omega
 
-/-- Noncollision forces degrees six and twelve for the two raw determinants;
-these are the previously conditional degree inputs in the parabolic argument. -/
+/-- Distinct leading nodes give degrees exactly six and twelve for the raw
+three-gap determinant and `μH₄`, and degree at most eight for the mixed determinant. -/
 theorem quadratic_parameter_raw_degrees
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)

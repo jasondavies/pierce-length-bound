@@ -12,12 +12,13 @@ public import PierceLengthBound.FixedDividendChartSection
 public import PierceLengthBound.FixedDividendHomogeneousLift
 
 /-!
-# The actual rational nonexceptional first-node chart
+# The first-node chart of a rational nonexceptional component
 
 The fixed-dividend equations force eventual generation by the first node.
-Consequently the finite infinity section in that chart has dimension equal to
-the affine Hilbert degree. The generation premise in the abstract chart theorem
-is discharged using the actual leading equations and the Nullstellensatz.
+Consequently the infinity section in that chart is finite of dimension equal to
+the affine Hilbert degree. The generation hypothesis of
+`chart_infinity_dimension_eq_degree` follows from the leading equations and the
+Nullstellensatz.
 -/
 
 @[expose] public section
@@ -68,8 +69,8 @@ theorem nonexceptional_eventual_first_node_generation
     simpa only [curveQuadratic_top_component, hgt, rationalInfinityBoundaryIdeal] using hm
   exact ⟨3 * M, eventual_generation_of_coordinate_power_reductions I 0 (by omega) hpow⟩
 
-/-- On an actual nonexceptional component the first node eventually generates the degree
-filtration, and it is nonzero in every injective image of the coordinate ring. -/
+/-- On a nonexceptional component of positive degree the first node eventually generates
+the degree filtration, and it is nonzero in every injective image of the coordinate ring. -/
 theorem nonexceptional_first_node_generation
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)
@@ -90,8 +91,9 @@ theorem nonexceptional_first_node_generation
   refine ⟨fun hh => first_node_ne_zero_of_generation I hd hdegree hs ?_, M, hs⟩
   exact hι (by simpa using hh)
 
-/-- The genuine infinity section of a nonexceptional component is finite and
-has its certified Hilbert degree as vector-space dimension. -/
+/-- The infinity section of the first-node chart of a prime nonexceptional component
+is finite-dimensional, and its dimension is the slope `d` of the affine Hilbert
+function. -/
 theorem nonexceptional_chart_infinity_dimension
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)

@@ -9,10 +9,11 @@ public import PierceLengthBound.FixedDividendCoprimality
 public import PierceLengthBound.FixedDividendTotalDegree
 
 /-!
-# The two coordinate-ring equations of actual orbit points
+# The fixed-dividend equations in the coordinate ring
 
-This module packages their degree bounds, evaluations, and vanishing on actual
-supported windows. It makes no point-counting assertion.
+The quadratic and the degree-twelve fixed-dividend equation `A R - a N⁴` in three
+free node coordinates: their degree bounds, evaluations, and vanishing at orbit
+points.
 -/
 
 @[expose] public section
@@ -85,7 +86,7 @@ lemma eval_curveResultant {K : Type*} [CommRing K] (ρ u v ρ' u' v' : K) (x : F
   rw [← Polynomial.resultant_map_map, Polynomial.map_mul, Polynomial.map_X,
     map_firstNewtonQuartic, map_nextNewtonQuartic, hn, hc, hc]
 
-/-- The actual supported orbit point lies on the quadratic in the coordinate ring. -/
+/-- The orbit point lies on the coordinate-ring quadratic. -/
 theorem orbit_curveQuadratic_zero {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) :
     eval (orbitFreeNodes a b i) (curveQuadratic (patternRho a b i)
       (patternU a b i) (patternV a b i) (patternRho a b (i + 1))
@@ -93,7 +94,7 @@ theorem orbit_curveQuadratic_zero {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a 
   rw [eval_curveQuadratic]
   exact orbit_lineQuadratic_zero hba hi
 
-/-- The fixed-dividend coordinate-ring equation vanishes at the actual orbit point. -/
+/-- The fixed-dividend coordinate-ring equation vanishes at the orbit point. -/
 theorem orbit_curveEquation_zero {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     eval (orbitFreeNodes a b i) (curveEquation (patternRho a b i)
       (patternU a b i) (patternV a b i) (patternRho a b (i + 1))

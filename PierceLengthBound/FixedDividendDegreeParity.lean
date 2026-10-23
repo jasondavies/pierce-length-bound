@@ -10,14 +10,12 @@ public import PierceLengthBound.FixedDividendLocalizationParity
 public import Mathlib.RingTheory.Localization.FractionRing
 
 /-!
-# Even Hilbert degree of actual nonexceptional components
+# Even Hilbert degree of nonexceptional components
 
 The first-node chart captures the full infinity section, whose dimension equals
 the affine Hilbert degree. Its resultant is invertible along infinity. After
-localization, the actual homogeneous equation identifies a square principal
+localization, the homogenized fixed-dividend equation identifies a square principal
 section with a fourth-power principal section, forcing the degree to be even.
-No smoothness, normalization, local valuation, or projective degree hypothesis
-is assumed.
 -/
 
 @[expose] public section
@@ -25,7 +23,7 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- Every positive-degree rational component of the actual nonexceptional
+/-- Every prime component of positive degree of the rational nonexceptional
 fixed-dividend equations has even affine Hilbert degree. -/
 theorem nonexceptional_component_degree_even
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)

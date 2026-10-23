@@ -12,8 +12,9 @@ public import PierceLengthBound.FixedDividendLines
 /-!
 # Multivariate degree of the fixed-dividend resultant
 
-The staircase Bézout matrix proves degree at most ten directly in the coordinate
-ring, without inferring a multivariate bound from specializations.
+The staircase Bézout matrix gives total degree at most ten for the fixed-dividend
+resultant in the coordinate ring. The eliminated quadratic and norm have total
+degree at most two and three.
 -/
 
 @[expose] public section
@@ -134,7 +135,8 @@ theorem newton_resultant_totalDegree_le_ten {R σ : Type*} [CommRing R]
   rw [← newtonBezout_det]
   exact staircase_det_totalDegree _ (newtonBezout_totalDegree c e s hs)
 
-/-- The exact fixed-dividend resultant has multivariate total degree at most ten. -/
+/-- The fixed-dividend resultant, with the factor `X` on the next quartic, has
+multivariate total degree at most ten. -/
 theorem fixed_dividend_resultant_totalDegree_le_ten {R σ : Type*} [CommRing R] [Nontrivial R]
     (c e : Fin 4 → R) (s : Fin 4 → MvPolynomial σ R)
     (hs : ∀ j, (s j).totalDegree ≤ 1) :

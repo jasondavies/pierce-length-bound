@@ -13,8 +13,8 @@ public import PierceLengthBound.FixedDividendDegreeOne
 
 When a linear coordinate generates the next graded piece and the Hilbert
 function has reached its linear range, it cannot kill a nonzero element of the
-previous graded piece. This finite-dimensional argument will identify the
-section's stable graded dimension with its affine-chart dimension.
+previous graded piece. This identifies the stable graded dimension of the section
+with its affine-chart dimension in `FixedDividendChartSection`.
 -/
 
 @[expose] public section
@@ -79,8 +79,8 @@ theorem filtered_linear_coordinate_strict {K σ : Type*} [Field K] [Finite σ]
   rw [← haa]
   exact ha'
 
-/-- Iterating strictness removes every artificial power of the chart coordinate.
-This is the saturation statement needed for injectivity of the chart section. -/
+/-- Iterating strictness removes powers of the chart coordinate: if `l ^ k * a` lies in
+degree `n + k`, then `a` lies in degree `n`. -/
 theorem filtered_linear_coordinate_saturation {K σ : Type*} [Field K] [Finite σ]
     (I : Ideal (MvPolynomial σ K)) [I.IsPrime]
     (l : MvPolynomial σ K ⧸ I) (hl : l ∈ filteredCoordinateSpace I 1) (hl0 : l ≠ 0)

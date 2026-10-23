@@ -10,11 +10,12 @@ public import PierceLengthBound.FixedDividendParity
 public import PierceLengthBound.FixedDividendComponentLineExclusion
 
 /-!
-# Actual orbit points on rational components
+# Orbit points on rational components
 
-The rational minor ratios and quotient differences map to the existing real
-orbit data. Rational degree-one components give complex lines, so the proved
-orbit estimates exclude degree one directly over the counting field `ℚ`.
+The rational pattern ratios and free nodes cast to the real orbit data. A rational
+degree-one component through an orbit point gives a complex line, which the orbit
+line exclusion rules out. Components through orbit points satisfying the scale
+condition therefore have degree between 2 and 24.
 -/
 
 @[expose] public section
@@ -22,10 +23,14 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- The rational pattern ratio `L_{i+1} / L_i`. -/
 def patternRhoQ (a b i : ℕ) : ℚ := (Lz a b (i + 1) : ℚ) / Lz a b i
+/-- The rational pattern ratio `U₁ / L_i`. -/
 def patternUQ (a b i : ℕ) : ℚ := (U1z a b i : ℚ) / Lz a b i
+/-- The rational pattern ratio `U₂ / L_i`. -/
 def patternVQ (a b i : ℕ) : ℚ := (U2z a b i : ℚ) / Lz a b i
 
+/-- The three free nodes of an orbit window, as rationals. -/
 def orbitFreeNodesQ (a b i : ℕ) : Fin 3 → ℚ :=
   fun j => (qq a b (i + (j.val + 1)) : ℚ) - qq a b i
 
@@ -54,7 +59,7 @@ lemma nonexceptionalPattern_ratCast {a b i : ℕ}
       (patternVQ a b i : ℝ) := by
   simpa using hne
 
-/-- The rational data of an actual nonexceptional orbit state used by the chart theorems:
+/-- The rational data of a nonexceptional orbit state used by the chart theorems:
 the pattern signs, the rational nonexceptional condition, and nonvanishing of `a` and `L`. -/
 theorem orbit_rational_nonexceptional_data {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i)) :
@@ -66,16 +71,17 @@ theorem orbit_rational_nonexceptional_data {a b i : ℕ} (hba : b < a) (hi : i +
     by exact_mod_cast (show a ≠ 0 by omega), ?_⟩
   exact_mod_cast (ne_of_gt (Lz_pos hba (by omega : i + 5 < P a b)))
 
-/-- The actual rational first equation. -/
+/-- The rational quadratic at an orbit window. -/
 def orbitCurveQuadraticQ (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   curveQuadratic (patternRhoQ a b i) (patternUQ a b i) (patternVQ a b i)
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
 
-/-- The actual rational fixed-dividend equation. -/
+/-- The rational fixed-dividend equation at an orbit window. -/
 def orbitCurveEquationQ (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   curveEquation (patternRhoQ a b i) (patternUQ a b i) (patternVQ a b i)
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1)) (Lz a b i) a
 
+/-- The orbit point lies on both rational equations. -/
 lemma orbit_rational_curve_zeros {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     MvPolynomial.eval (orbitFreeNodesQ a b i) (orbitCurveQuadraticQ a b i) = 0 ∧
       MvPolynomial.eval (orbitFreeNodesQ a b i) (orbitCurveEquationQ a b i) = 0 := by
@@ -148,9 +154,9 @@ lemma map_affineRestriction_equation_zero {K L : Type*} [CommRing K] [CommRing L
   rw [affineRestriction_equation] at hg
   exact sub_eq_zero.mp hg
 
-/-- A rational prime component through an actual large-scale orbit point cannot
-have degree one. The resulting rational line is mapped into the checked complex
-line-exclusion theorem. -/
+/-- A height-two rational prime component through an orbit point satisfying the scale
+condition does not have Hilbert degree one: its rational line maps to a complex line,
+which `orbit_no_complex_line` excludes. -/
 theorem orbit_rational_component_not_degree_one {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     {H X₀ : ℤ} (hX : 1 ≤ X₀) (hgaps : ∀ m < 5, kq a b (i + m) ≤ H)
     (hU : |U1z a b i| ≤ X₀) (hV : |U2z a b i| ≤ X₀)
@@ -193,8 +199,8 @@ theorem orbit_rational_component_not_degree_one {a b i : ℕ} (hba : b < a) (hi 
   exact orbit_no_complex_line hba hi hX hgaps hU hV hscale (f ∘ z) hz' hq
     (resultantNormRelation_complex_elim hg)
 
-/-- Rational components through actual large-scale orbit windows have exactly
-the degree range `2 ≤ d ≤ 24` required by the square-root curve count. -/
+/-- Height-two rational prime components through an orbit point satisfying the scale
+condition have affine Hilbert degree `d` with `2 ≤ d ≤ 24`. -/
 theorem orbit_rational_component_degree_range {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     {H X₀ : ℤ} (hX : 1 ≤ X₀) (hgaps : ∀ m < 5, kq a b (i + m) ≤ H)
     (hU : |U1z a b i| ≤ X₀) (hV : |U2z a b i| ≤ X₀)

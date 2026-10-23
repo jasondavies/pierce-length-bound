@@ -9,7 +9,11 @@ public import PierceLengthBound.FixedDividendOrthogonal
 public import PierceLengthBound.FixedDividendResultant
 
 /-!
-# The fixed-dividend resultant identity for actual orbit windows
+# The fixed-dividend resultant identity at orbit windows
+
+`X` times the shifted next quartic is the fifth orthogonal polynomial up to a multiple
+of the fourth, so its resultant with the orbit quartic is `N⁴ / det H₄`. With
+`L_i = a det H₄` this gives `L_i · Res(Q_i, X Q_{i+1}) = a N⁴`.
 -/
 
 @[expose] public section
@@ -71,7 +75,7 @@ lemma norm_ratios_telescope {h0 h1 h2 h3 h4 : ℝ}
       h4 ^ 4 / (h3 * (h2 * (h1 * h0))) := by
   field_simp
 
-/-- The consecutive rank-four resultant in terms of the actual Hankel determinant. -/
+/-- The consecutive rank-four resultant in terms of the rank-four Hankel determinant. -/
 theorem orthPoly_resultant_four (hba : b < a) {i : ℕ} (hi : i + 4 < P a b) :
     resultant (orthPoly a b i 4) (orthPoly a b i 5) 4 5 =
       orthNorm a b i 4 ^ 4 / (hankel a b i 4).det := by
@@ -94,7 +98,7 @@ theorem orthPoly_resultant_four (hba : b < a) {i : ℕ} (hi : i + 4 < P a b) :
   rw [hz, mul_one] at h0
   rw [h3, h2, h1, h0]
 
-/-- The actual shifted quartic has the same resultant as the fifth orthogonal polynomial. -/
+/-- The shifted orbit quartic has the same resultant as the fifth orthogonal polynomial. -/
 theorem nextQuartic_resultant (hba : b < a) {i : ℕ} (hi : i + 7 < P a b) :
     resultant (orbitQuartic a b i) (X * nextQuartic a b i) 4 5 =
       orbitNorm a b i ^ 4 / (hankel a b i 4).det := by
@@ -117,7 +121,8 @@ theorem orbit_label_hankel (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
   have h := hankelInv_four hba hi
   simpa only [hankelInv, Lz, kq, dq, Nat.add_assoc] using h.symm
 
-/-- **The fixed-dividend resultant equation at every supported actual orbit window.** -/
+/-- **The fixed-dividend resultant identity** at every orbit window with
+`i + 7 < P a b`. -/
 theorem orbit_fixed_dividend_identity (hba : b < a) {i : ℕ} (hi : i + 7 < P a b) :
     (Lz a b i : ℝ) * resultant (orbitQuartic a b i) (X * nextQuartic a b i) 4 5 =
       (a : ℝ) * orbitNorm a b i ^ 4 := by

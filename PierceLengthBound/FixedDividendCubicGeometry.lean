@@ -11,8 +11,8 @@ public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 /-!
 # The leading cubic is not divisible by the leading quadratic
 
-The coefficient comparison is over arbitrary characteristic-zero fields, so it
-also applies to complex factors of the actual orbit equations.
+The coefficient comparison holds over every field of characteristic zero. For the
+real pattern signs `ρ > 0`, `u > 0`, `v < 0` it applies over `ℂ`.
 -/
 
 @[expose] public section
@@ -20,6 +20,7 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- A polynomial of total degree at most one is affine in the three coordinates. -/
 lemma eq_affine_of_totalDegree_le_one {K : Type*} [CommRing K]
     (f : MvPolynomial (Fin 3) K) (hf : f.totalDegree ≤ 1) :
     f = C (f.coeff 0) + ∑ j : Fin 3, C (f.coeff (Finsupp.single j 1)) * X j := by
@@ -83,6 +84,7 @@ lemma leadingCubic_degree_le {K : Type*} [Field K] (a b c : K) :
     ((totalDegree_add _ _).trans (max_le (ht a 0) (ht b 1))) (ht c 2)))
     ((totalDegree_pow _ 3).trans (Nat.mul_le_mul_left 3 (linear_form_degree_le a b c)))
 
+/-- The cubic form is not the quadratic form times an affine form. -/
 lemma cubic_not_quadratic_mul_affine {K : Type*} [Field K] [CharZero K]
     (a b c : K) (hb : b ≠ 0) (hb1 : 1 + b ≠ 0) (hc : c ≠ 0)
     (hc1 : 1 + c ≠ 0) (hs : 1 + b + c ≠ 0) :
@@ -111,7 +113,8 @@ lemma cubic_not_quadratic_mul_affine {K : Type*} [Field K] [CharZero K]
   have he : b * (1 + b + c) = 0 := by linear_combination -(hp - hm) / 2
   exact (mul_ne_zero hb hs) he
 
-/-- Nondivisibility of the cubic, including factors over a larger coefficient field. -/
+/-- Over a field of characteristic zero, the leading quadratic does not divide the
+leading cubic under the stated nonvanishing conditions. -/
 theorem leadingQuadratic_not_dvd_cubic {K : Type*} [Field K] [CharZero K]
     (a b c : K) (ha : a ≠ 0) (hb : b ≠ 0) (hc : c ≠ 0)
     (habc : 1 + a + b + c ≠ 0) (hb1 : 1 + b ≠ 0) (hc1 : 1 + c ≠ 0)
@@ -134,7 +137,8 @@ theorem leadingQuadratic_not_dvd_cubic {K : Type*} [Field K] [CharZero K]
   rw [hgform] at hev
   simpa [leadingQuadratic, leadingCubic, ternaryQuadratic, Fin.sum_univ_succ, add_assoc] using hev
 
-/-- Actual coefficient signs rule out divisibility even over the complex numbers. -/
+/-- For `ρ > 0`, `u > 0`, `v < 0`, the leading quadratic does not divide the leading
+cubic over `ℂ`. -/
 theorem pattern_leadingQuadratic_not_dvd_cubic {ρ u v : ℝ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) :
     ¬ leadingQuadratic (-(ρ : ℂ) - u) ((u : ℂ) - v) ((v : ℂ) - 1) ∣

@@ -7,7 +7,7 @@ module
 
 public import PierceLengthBound.LatticeCount
 
-/-! Integral reduced-lattice coordinates for the actual three node variables. -/
+/-! Integral reduced-lattice coordinates for the three free node variables. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

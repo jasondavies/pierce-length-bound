@@ -177,7 +177,8 @@ lemma radialMap_resultant_degree {K : Type*} [CommRing K] [Nontrivial K]
   rw [radialMap_resultant]
   exact line_resultant_natDegree_le_ten _ _ _ _
 
-/-- The actual quadratic cannot divide the fixed-dividend equation over the complex numbers. -/
+/-- For real `ρ > 0`, `u > 0`, `v < 0`, the quadratic does not divide the
+fixed-dividend polynomial `A R - a N⁴` over `ℂ`. -/
 theorem curveQuadratic_not_dvd_fixed_dividend {ρ u v : ℝ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℂ) (ha : a ≠ 0) :
     ¬ curveQuadratic (ρ : ℂ) (u : ℂ) (v : ℂ) ρ' u' v' ∣

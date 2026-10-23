@@ -9,12 +9,12 @@ public import PierceLengthBound.ConicArithmetic
 public import PierceLengthBound.FixedDividendQuadraticGeometry
 
 /-!
-# Explicit restriction of the actual ternary quadratic to a plane
+# Restriction of a ternary quadratic to a plane
 
-The six binary coefficients are given by exact formulas. The conic equation lies
-in every ideal containing the plane and the ternary quadratic. A rational point
-and absence of additional affine linear relations force the parabolic parameter
-denominator to be nonzero.
+The six binary coefficients are given by explicit formulas. The conic equation lies
+in every ideal containing the plane and the ternary quadratic. A point of the conic
+and the absence of further affine linear relations make the parabolic parameter
+denominator nonzero.
 -/
 
 @[expose] public section
@@ -50,8 +50,8 @@ lemma affine_plane_error {K S : Type*} [Field K] [CommRing S] [Algebra K S]
   simp only [div_eq_mul_inv, map_mul, map_neg]
   linear_combination z * hh
 
-/-- Restriction is an actual ideal-theoretic consequence, including all lower
-terms of the plane and quadratic. -/
+/-- The restricted binary conic lies in every ideal containing the ternary quadratic
+and the plane. -/
 theorem planeConicPolynomial_mem {K : Type*} [Field K]
     (I : Ideal (MvPolynomial (Fin 3) K)) (a b c l0 l1 l2 n0 n1 n2 e : K)
     (hn2 : n2 ≠ 0)
@@ -84,8 +84,9 @@ theorem planeConicPolynomial_mem {K : Type*} [Field K]
   rw [← hid] at hh
   simpa only [sub_sub_cancel] using I.sub_mem hf hh
 
-/-- A rational point rules out the degenerate discriminant-zero model when
-additional affine linear equations have already been excluded. -/
+/-- If a prime ideal contains a parabolic conic (`α ≠ 0`, `β² = 4αγ`) with a point
+but no affine linear equation with nonzero `X 1` coefficient, the parameter
+denominator `2βd - 4αe` is nonzero. -/
 theorem parabola_denominator_ne_zero_of_no_line {K : Type*} [Field K] [CharZero K]
     (I : Ideal (MvPolynomial (Fin 3) K)) [I.IsPrime]
     (α β γ d e f : K) (hα : α ≠ 0) (hΔ : β ^ 2 - 4 * α * γ = 0)

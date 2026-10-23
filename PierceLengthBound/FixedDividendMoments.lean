@@ -8,10 +8,10 @@ module
 public import PierceLengthBound.MinorHeight
 
 /-!
-# Moment identities for the fixed-dividend refinement
+# Moment identities for the weighted orbit functional
 
-The support conditions are explicit. In particular the terminal point mass is never
-assigned the nonterminal first moment.
+Identities for the weighted functional `nuF` and the probability functional `muF`
+on the Newton basis, each under an explicit support condition.
 -/
 
 @[expose] public section
@@ -127,8 +127,8 @@ lemma nuF_mul_X_add (hba : b < a) (i : ℕ) (f : ℝ[X]) :
     nuF_add, nuF_C_mul] at h
   exact h
 
-/-- The four row/moment equations imply orthogonality to all monomials of degree at most
-three. The coefficients need not be specialized to a minor pattern for this lemma. -/
+/-- Coefficients satisfying the four moment equations give a Newton quartic orthogonal
+to all monomials of degree at most three. -/
 theorem newtonQuartic_orthogonal (hba : b < a) {i : ℕ} (hi : i + 6 < P a b)
     (c : Fin 5 → ℝ)
     (hc0 : ∑ j : Fin 5, c j = 0)

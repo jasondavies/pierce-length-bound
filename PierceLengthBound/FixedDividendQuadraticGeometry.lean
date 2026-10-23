@@ -147,7 +147,7 @@ lemma ternaryQuadratic_hessian_det {K : Type*} [CommRing K] (a b c l0 l1 l2 : K)
   norm_num only [map_ofNat]
   ring
 
-/-- The exact algebraic shape of the eliminated quadratic. -/
+/-- The eliminated quadratic is a ternary quadratic in this explicit shape. -/
 lemma lineQuadratic_eq_ternary {K : Type*} [CommRing K] (ρ u v ρ' u' v' : K) :
     lineQuadratic (C ρ) (C u) (C v) (C ρ') (C u') (C v') (X 0) (X 1) (X 2) =
       ternaryQuadratic (-ρ - u) (u - v) (v - 1)
@@ -158,8 +158,8 @@ lemma lineQuadratic_eq_ternary {K : Type*} [CommRing K] (ρ u v ρ' u' v' : K) :
     Fin.sum_univ_succ]
   ring
 
-/-- Irreducibility of the eliminated quadratic over any field where the four
-coefficient factors are nonzero. In particular this applies over the complex numbers. -/
+/-- The eliminated quadratic is irreducible over every field of characteristic zero in
+which `ρ`, `ρ + u`, `u - v` and `v - 1` are nonzero. -/
 theorem lineQuadratic_irreducible {K : Type*} [Field K] [CharZero K]
     (ρ u v ρ' u' v' : K) (hρ : ρ ≠ 0) (hρu : ρ + u ≠ 0)
     (huv : u - v ≠ 0) (hv : v - 1 ≠ 0) :

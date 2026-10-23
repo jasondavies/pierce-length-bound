@@ -26,8 +26,8 @@ lemma minimalPrimes_not_le {R : Type*} [CommRing R] (I : Ideal R)
   intro h
   exact hne (le_antisymm h (hq.2 hp.1 h))
 
-/-- A polynomial separating one prime component from every other component in a
-finite family. No degree bound is asserted for the separator. -/
+/-- An element separating one minimal prime from every other member of a finite
+family of minimal primes. -/
 theorem exists_component_separator {R : Type*} [CommRing R] (I : Ideal R)
     (S : Finset (Ideal R)) (hS : ∀ p ∈ S, p ∈ I.minimalPrimes)
     {p : Ideal R} (hp : p ∈ S) :

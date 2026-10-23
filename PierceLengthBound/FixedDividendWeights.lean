@@ -10,7 +10,8 @@ public import PierceLengthBound.CubeRoot
 /-!
 # Reciprocal weights
 
-The real-valued form of the existing partial-summation estimate for reciprocal weights.
+A real-valued partial-summation estimate for reciprocal weights, using the telescope
+`inv_telescope`.
 -/
 
 @[expose] public section
@@ -19,7 +20,8 @@ namespace PierceLengthBound.FixedDividend
 
 open Finset
 
-/-- The real-valued form of the existing partial-summation estimate. -/
+/-- If `1 ≤ R p ≤ L` on `S` and at most `C r³` members have `R p ≤ r`, then
+`L ∑ 1 / R p ≤ |S| + C L³`. -/
 theorem reciprocal_sum_bound {ι : Type*} (S : Finset ι) (R : ι → ℕ) {L C : ℕ}
     (hR : ∀ p ∈ S, 1 ≤ R p ∧ R p ≤ L)
     (hc : ∀ r, 1 ≤ r → (S.filter fun p => R p ≤ r).card ≤ C * r ^ 3) :

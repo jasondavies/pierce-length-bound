@@ -12,9 +12,8 @@ public import PierceLengthBound.FixedDividendFilteredIntersection
 # Bounding the number of prime curve components
 
 Separators and a transcendental coordinate on each component give independent
-families of arbitrary length. The filtered coordinate-space slope consequently
-bounds the number of components with a transcendental coordinate, without assuming
-existence of Hilbert polynomials.
+families of arbitrary length. A linear bound on the filtered coordinate spaces
+therefore bounds the number of components with a transcendental coordinate.
 -/
 
 @[expose] public section
@@ -54,7 +53,8 @@ theorem separated_component_powers_independent {K σ : Type*} [Field K]
       (LinearMap.ker_eq_bot.mpr (fun x y h => mul_left_cancel₀ hp0 h))
     simpa [Function.comp_def, LinearMap.mulLeft_apply] using h
 
-/-- A linear filtered-space bound controls minimal primes with a transcendental coordinate. -/
+/-- If `dim F_N(I) ≤ C (N + 2)` for all `N ≥ 14`, then at most `C` height-two minimal
+primes of `I` have a transcendental coordinate. -/
 theorem minimalPrime_card_le_of_transcendental_coordinates {K : Type*} [Field K]
     (I : Ideal (MvPolynomial (Fin 3) K)) (S : Finset (Ideal (MvPolynomial (Fin 3) K)))
     (hS : ∀ p ∈ S, p ∈ I.minimalPrimes ∧ p.height = 2)

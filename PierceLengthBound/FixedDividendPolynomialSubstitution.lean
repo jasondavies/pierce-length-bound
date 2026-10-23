@@ -101,8 +101,8 @@ theorem polynomial_substitution_top_coefficient {K : Type*} [CommRing K]
       ((polynomial_substitution_monomial_degree z hz e _).trans_lt
         (Nat.mul_lt_mul_of_pos_left hlt hm))
 
-/-- More distinct parameter values than the degree bound force a symbolic
-identity. This permits a bounded exceptional set instead of an assumed identity. -/
+/-- If `f` vanishes at more than `m · deg f` distinct parameter values, it vanishes
+identically along the substitution. -/
 theorem polynomial_substitution_zero_of_many_points {K ι : Type*}
     [Field K] [Fintype ι] (z : Fin 3 → Polynomial K) {m : ℕ}
     (hz : ∀ j, (z j).natDegree ≤ m) (f : MvPolynomial (Fin 3) K)

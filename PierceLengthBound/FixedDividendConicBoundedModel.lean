@@ -10,15 +10,16 @@ public import PierceLengthBound.FixedDividendRationalOrbit
 public import PierceLengthBound.FixedDividendConicCoefficientHeight
 
 /-!
-# Bounded integral conic models of actual components
+# Bounded integral conic models of nonexceptional components
 
-Every actual nonexceptional degree-two component admits a bounded integral
-parabolic equation in one of two coordinate orders.
+Every nonexceptional component of degree two in a plane satisfies a parabolic
+integral equation of bounded height in one of two coordinate orders.
 
-The exact ternary fixed-dividend quadratic has integer numerators over a common
-denominator, and the actual seven minor labels give polynomial-height common
-numerators for two adjacent rational patterns. A containing plane always has a
-nonconstant coordinate pivot, so one of the two plane charts applies.
+The ternary fixed-dividend quadratic has integer numerators over a common
+denominator, and the seven minor labels of an orbit window give common numerators
+of polynomial height for two adjacent rational patterns. A containing plane always
+has a nonzero coefficient on the second or third coordinate, so one of the two
+plane charts applies.
 -/
 
 @[expose] public section
@@ -36,6 +37,8 @@ def ternaryNumerators (r u v r' u' v' D : ℤ) : Fin 6 → ℤ :=
   ![a, b, c, (r - a - r') * D - a * T,
     (a - b + r' + u') * D - b * T, (b - c - u' + v') * D - c * T]
 
+/-- Dividing the numerators by `D` and `D²` recovers the coefficients of the
+ternary fixed-dividend quadratic. -/
 lemma ternaryNumerators_rat (r u v r' u' v' D : ℤ) (hD : D ≠ 0) :
     let w := ternaryNumerators r u v r' u' v' D
     let ρ : ℚ := r / D
@@ -113,6 +116,7 @@ def conicPatternCommon (t : Fin 7 → ℤ) : Fin 7 → ℤ :=
   ![t 1 * t 1, t 3 * t 1, t 4 * t 1, t 2 * t 0,
     t 5 * t 0, t 6 * t 0, t 0 * t 1]
 
+/-- The common numerators have height at most `X²` when the labels have height `X`. -/
 lemma conicPatternCommon_height {t : Fin 7 → ℤ} {X : ℤ}
     (ht : ∀ j, |t j| ≤ X) : ∀ j, |conicPatternCommon t j| ≤ X ^ 2 := by
   have hmul (i j : Fin 7) : |t i * t j| ≤ X ^ 2 := by
@@ -121,6 +125,7 @@ lemma conicPatternCommon_height {t : Fin 7 → ℤ} {X : ℤ}
   intro j
   fin_cases j <;> exact hmul _ _
 
+/-- The common numerators over the common denominator are the two label ratios. -/
 lemma conicPatternCommon_ratios (t : Fin 7 → ℤ) (h0 : t 0 ≠ 0) (h1 : t 1 ≠ 0) :
     let w := conicPatternCommon t
     ![(w 0 : ℚ) / w 6, (w 1 : ℚ) / w 6, (w 2 : ℚ) / w 6,
@@ -132,7 +137,8 @@ lemma conicPatternCommon_ratios (t : Fin 7 → ℤ) (h0 : t 0 ≠ 0) (h1 : t 1 �
   ext j
   fin_cases j <;> simp [conicPatternCommon] <;> field_simp
 
-/-- The common rational coefficients are precisely the actual orbit patterns. -/
+/-- For the orbit labels, the common rational coefficients are the patterns at
+`i` and `i + 1`. -/
 lemma conicPatternCommon_orbit {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) :
     let w := conicPatternCommon (theta a b i)
     ![(w 0 : ℚ) / w 6, (w 1 : ℚ) / w 6, (w 2 : ℚ) / w 6,
@@ -148,6 +154,8 @@ lemma conicPatternCommon_orbit {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) 
   simpa [theta, patternRhoQ, patternUQ, patternVQ, Nat.add_assoc] using
     conicPatternCommon_ratios (theta a b i) h0 h1
 
+/-- If the first node eventually generates a filtration of positive slope, it is
+not a scalar. -/
 lemma first_node_not_scalar_of_generation {K : Type*} [Field K]
     (I : Ideal (MvPolynomial (Fin 3) K)) {d N M : ℕ} {b : ℤ}
     (hd : 0 < d)
@@ -178,8 +186,8 @@ lemma first_node_not_scalar_of_generation {K : Type*} [Field K]
   push_cast at he
   nlinarith
 
-/-- The two plane charts cover every nonzero containing plane of an actual
-nonexceptional component of positive degree. -/
+/-- Every nonzero plane containing a prime nonexceptional component of positive
+degree has a nonzero coefficient on the second or third coordinate. -/
 theorem nonexceptional_plane_pivot
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
@@ -207,9 +215,12 @@ theorem nonexceptional_plane_pivot
   exact first_node_not_scalar_of_generation I hd hdegree hs (-e / n0)
     (algebra_scalar_of_linear_eq hn0 hr)
 
-/-- Uniform bounded integral plane model from common rational pattern
-numerators. All discriminant and nonvanishing conclusions are proved from the
-actual component geometry. -/
+/-- A prime nonexceptional component of Hilbert degree two in a plane, with a rational
+point, pattern numerators of height at most `M` and plane coefficients of height at
+most `L`, has an integral parabolic model in the coordinates `(z j, z 0)`: its
+coefficients have height at most `10 (12 M²)² L²`, the square coefficient is nonzero,
+the discriminant vanishes, the parameter denominator is nonzero, and every integer
+point of the component satisfies it. -/
 theorem nonexceptional_bounded_integer_conic_model
     (r u v r' u' v' D n0 n1 n2 e : ℤ) {M L : ℤ}
     (hM : 1 ≤ M) (hL : 0 ≤ L) (hD0 : D ≠ 0)
@@ -245,7 +256,7 @@ theorem nonexceptional_bounded_integer_conic_model
     ternaryNumerators_height hM hr hu hv hr' hu' hv' hD
   have hB : 1 ≤ 12 * M ^ 2 := by nlinarith
   have hDb : |D| ≤ 12 * M ^ 2 := by nlinarith
-  -- Both charts clear the same actual rational ternary coefficients.
+  -- Both charts clear the same rational ternary coefficients.
   have hrat := ternaryNumerators_rat r u v r' u' v' D hD0
   by_cases hp2 : n2 ≠ 0
   · have hp2q : (n2 : ℚ) ≠ 0 := by exact_mod_cast hp2

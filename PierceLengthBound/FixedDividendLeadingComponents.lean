@@ -10,9 +10,9 @@ public import PierceLengthBound.FixedDividendHomogenization
 /-!
 # Leading homogeneous components and degree drops
 
-These lemmas connect the already checked radial coefficients with the ordinary
-homogeneous components of the multivariate coordinate equations. They allow
-homogeneous ideal certificates to be lifted to the affine degree filtration.
+Radial coefficients are the ordinary homogeneous components of the multivariate
+coordinate equations. This lets homogeneous ideal certificates be lifted to the
+affine degree filtration.
 -/
 
 @[expose] public section

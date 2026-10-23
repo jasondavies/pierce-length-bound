@@ -12,10 +12,11 @@ public import PierceLengthBound.FixedDividendCurveEquations
 /-!
 # Rational fixed-dividend curves
 
-The defining equations and their degree bounds are compatible with coefficient
-maps. The checked complex nondivisibility theorem therefore proves genuine
-coprimality over the rationals. Rational components containing actual points have
-positive, bounded affine Hilbert degree directly over their counting field.
+The defining equations are compatible with coefficient maps, so nondivisibility
+over `ℂ` gives nondivisibility over `ℚ`. Every ideal containing both rational
+equations has filtered dimensions at most `24 (N + 2)`. Height-two rational prime
+components with a rational point have affine Hilbert degree between 1 and 24, and at
+most twenty-four of them cover the rational zero locus.
 -/
 
 @[expose] public section
@@ -63,8 +64,8 @@ lemma map_curveEquation {K L : Type*} [CommRing K] [CommRing L] (f : K →+* L)
       curveEquation (f ρ) (f u) (f v) (f ρ') (f u') (f v') (f A) (f a) := by
   simp [curveEquation, map_curveResultant, map_curveNorm]
 
-/-- Rational nondivisibility follows by mapping a hypothetical divisibility
-witness into the already checked complex coefficient ring. -/
+/-- Over `ℚ` the quadratic does not divide the fixed-dividend equation, since a
+divisibility witness would map to one over `ℂ`. -/
 theorem rational_curveQuadratic_not_dvd {ρ u v : ℚ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℚ) (ha : a ≠ 0) :
     ¬ curveQuadratic ρ u v ρ' u' v' ∣ curveEquation ρ u v ρ' u' v' A a := by
@@ -78,6 +79,7 @@ theorem rational_curveQuadratic_not_dvd {ρ u v : ℚ}
   apply hnot
   simpa [curveEquation] using hmap
 
+/-- Over `ℚ` the quadratic is prime. -/
 lemma rational_curveQuadratic_prime {ρ u v : ℚ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' : ℚ) :
     Prime (curveQuadratic ρ u v ρ' u' v') := by
@@ -85,7 +87,8 @@ lemma rational_curveQuadratic_prime {ρ u v : ℚ}
   apply lineQuadratic_irreducible
   all_goals linarith
 
-/-- The rational quotient filtration has the same coefficient-uniform slope bound. -/
+/-- Every ideal containing both rational equations has `dim F_N ≤ 24 (N + 2)` for
+`N ≥ 14`. -/
 theorem rational_curve_filtered_bound {ρ u v : ℚ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)
     (p : Ideal (MvPolynomial (Fin 3) ℚ))
@@ -101,8 +104,8 @@ theorem rational_curve_filtered_bound {ρ u v : ℚ}
         (curveEquation ρ u v ρ' u' v' A a).totalDegree ≤ N)
   exact h.trans (Nat.mul_le_mul_right _ (by nlinarith))
 
-/-- Each rational prime component containing a rational point has the exact
-positive affine Hilbert degree required by the external counting interface. -/
+/-- Each height-two rational prime component with a rational point has an eventually
+linear Hilbert function of slope `d` with `0 < d ≤ 24`. -/
 theorem rational_curve_component_degree_exists {ρ u v : ℚ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)
     (p : Ideal (MvPolynomial (Fin 3) ℚ)) [p.IsPrime] (hp : p.height = 2)
@@ -114,9 +117,9 @@ theorem rational_curve_component_degree_exists {ρ u v : ℚ}
   intro N hN
   exact rational_curve_filtered_bound hρ hu hv ρ' u' v' A a ha p hf hg hN
 
-/-- Rational zero loci are covered by at most twenty-four rational prime curves,
-each with a genuine positive affine Hilbert degree at most twenty-four. Components
-with no rational point can be discarded from the rational counting problem. -/
+/-- The rational zero locus is covered by at most twenty-four height-two rational prime
+components, each of affine Hilbert degree `d` with `0 < d ≤ 24`. Components without
+a rational point are discarded. -/
 theorem rational_curve_decomposition_with_degrees {ρ u v : ℚ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (ρ' u' v' A a : ℚ) (ha : a ≠ 0) :
     ∃ S : Finset (Ideal (MvPolynomial (Fin 3) ℚ)), S.card ≤ 24 ∧

@@ -91,7 +91,7 @@ theorem affine_equiv_filtered_finrank {K σ τ : Type*} [Field K]
     (Ideal.quotientEquivAlg I (I.map e.toRingHom) e rfl).injective
     (filteredCoordinateSpace I N)).finrank_eq.symm
 
-/-- In particular, the actual eventual Hilbert slope is preserved. -/
+/-- In particular, an eventually linear Hilbert function keeps its slope `d`. -/
 theorem affine_equiv_degree {K σ τ : Type*} [Field K]
     (e : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K)
     (he : ∀ j, (e (X j)).totalDegree ≤ 1)

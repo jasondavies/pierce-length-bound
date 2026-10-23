@@ -10,17 +10,18 @@ public import PierceLengthBound.FixedDividendDegreeParity
 /-!
 # Rational curve covers with the nonexceptional parity split
 
-The actual rational prime cover has only conic components and components of
-even degree at least four in a nonexceptional pattern. The cover has at most
-twenty-four members and uses their genuine affine Hilbert degrees.
+For a nonexceptional pattern, the rational fixed-dividend equations are covered by
+at most twenty-four prime components, each of even affine Hilbert degree `d` with
+`d = 2` or `4 ≤ d ≤ 24`.
 -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
-/-- The rational cover directly supplies the conic versus degree-at-least-four
-split. Positive even degree also excludes lines without a large-scale premise. -/
+/-- The rational prime cover of a nonexceptional pattern: at most twenty-four
+height-two prime components containing both equations, each of even affine Hilbert
+degree `d` with `d = 2` or `4 ≤ d ≤ 24`, whose zero loci cover the common zeros. -/
 theorem nonexceptional_curve_decomposition {ρ u v : ℚ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ))

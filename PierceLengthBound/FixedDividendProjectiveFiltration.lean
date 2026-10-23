@@ -76,7 +76,7 @@ lemma projective_monomial_mem {K σ : Type*} [Field K]
       simpa using ha
     · simp [Polynomial.coeff_monomial, hi]
 
-/-- The new coordinate `w` in the homogeneous coordinate algebra. -/
+/-- The homogenizing coordinate `w` in the homogeneous coordinate algebra. -/
 def projectiveInfinityCoordinate {K σ : Type*} [Field K]
     (I : Ideal (MvPolynomial σ K)) : projectiveCoordinateAlgebra I :=
   ⟨Polynomial.X, by

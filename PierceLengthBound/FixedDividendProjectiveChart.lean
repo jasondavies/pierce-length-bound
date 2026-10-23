@@ -20,13 +20,13 @@ by successive powers of that coordinate.
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
-/-- Evaluation defining a chart, with arbitrary faithful field realization. -/
+/-- Evaluation at `w = 1 / l` through a field realization `ι` of the coordinate ring. -/
 def projectiveChartEval {K σ F : Type*} [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial σ K)) (ι : (MvPolynomial σ K ⧸ I) →ₐ[K] F)
     (l : MvPolynomial σ K ⧸ I) : Polynomial (MvPolynomial σ K ⧸ I) →ₐ[K] F :=
   Polynomial.aevalTower ι (ι l)⁻¹
 
-/-- The affine chart ring as an actual subalgebra of the function field. -/
+/-- The affine chart ring, as a subalgebra of `F`. -/
 def projectiveChart {K σ F : Type*} [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial σ K)) (ι : (MvPolynomial σ K ⧸ I) →ₐ[K] F)
     (l : MvPolynomial σ K ⧸ I) : Subalgebra K F :=
@@ -81,7 +81,7 @@ lemma projectiveChartPiece_mono {K σ F : Type*} [Field K] [Field F] [Algebra K 
   rw [map_mul, pow_succ]
   field_simp
 
-/-- These homogeneous images exhaust the chart, not merely a subspace of it. -/
+/-- The chart is the union of the evaluated homogeneous pieces. -/
 theorem projectiveChart_eq_iSup_pieces {K σ F : Type*} [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial σ K)) (ι : (MvPolynomial σ K ⧸ I) →ₐ[K] F)
     (l : MvPolynomial σ K ⧸ I) :

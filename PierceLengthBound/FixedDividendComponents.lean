@@ -13,9 +13,10 @@ public import PierceLengthBound.FixedDividendTotalDegree
 /-!
 # Finite prime decomposition of the fixed-dividend intersection
 
-A prime first equation and genuine nondivisibility force every minimal prime of
-the two-equation ideal to have height exactly two. No Hilbert-function degree or
-Bézout estimate is assumed or claimed here.
+A prime first equation that does not divide the second forces every minimal prime
+of the two-equation ideal to have height exactly two. Common zeros are exactly the
+points of the minimal-prime components. The file also records the total-degree
+bounds `2`, `3` and `10` for the quadratic, norm and resultant.
 -/
 
 @[expose] public section

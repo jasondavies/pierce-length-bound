@@ -11,9 +11,10 @@ public import Mathlib
 /-!
 # Filtered multiples in a two-equation ideal
 
-This is linear-algebra infrastructure for a future Hilbert-degree estimate. The
-intersection of the bounded-degree multiples of two coprime equations consists
-exactly of bounded-degree multiples of their product.
+The bounded-degree multiples of a prime equation and of a second equation it does
+not divide intersect exactly in the bounded-degree multiples of their product. This
+gives the filtered Koszul bound on the filtered coordinate spaces
+`filteredCoordinateSpace` of every ideal containing both equations.
 -/
 
 @[expose] public section
@@ -100,7 +101,7 @@ theorem filteredMultiples_sup_finrank {K σ : Type*} [Field K] [Finite σ]
     totalDegree_mul_of_isDomain hf.ne_zero hg] at h
   exact h
 
-/-- A subspace known to lie in a linear map's kernel subtracts from the image dimension. -/
+/-- A subspace of the kernel of a linear map subtracts from the image dimension. -/
 lemma finrank_map_add_kernel_subspace_le {K M W : Type*} [Field K]
     [AddCommGroup M] [Module K M] [AddCommGroup W] [Module K W]
     (φ : M →ₗ[K] W) (V U : Submodule K M) [Module.Finite K V]

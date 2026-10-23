@@ -169,7 +169,7 @@ theorem contained_complex_line_real_identities {A a ρ u v : ℝ}
       complexLineMap_norm ρ u v ρ' u' v' x z d t hd]
     exact he
 
-/-- The three free coordinates of an actual orbit window. -/
+/-- The three free coordinates of an orbit window. -/
 def orbitFreeNodes (a b i : ℕ) : Fin 3 → ℝ := ![pt a b i 1, pt a b i 2, pt a b i 3]
 
 /-- Unpack the three coordinates while the predicate is still abstract. -/
@@ -183,8 +183,9 @@ lemma complex_polynomial_relation_cast (A : ℤ) (a : ℕ) (R N : ℂ[X])
     C ((A : ℝ) : ℂ) * R = C ((a : ℝ) : ℂ) * N ^ 4 := by
   simpa using h
 
-/-- No complex affine line contained in both equations passes through a large-scale
-actual orbit window. Containment is expressed by exact polynomial identities. -/
+/-- No complex affine line on both equations passes through the orbit point of a
+window satisfying the scale condition `a H⁵ (24 X₀ + 464) < q⁴`. Containment is
+expressed by polynomial identities along the line. -/
 theorem orbit_no_complex_line {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     {H X₀ : ℤ} (hX : 1 ≤ X₀) (hg : ∀ m < 5, kq a b (i + m) ≤ H)
     (hU : |U1z a b i| ≤ X₀) (hV : |U2z a b i| ≤ X₀)

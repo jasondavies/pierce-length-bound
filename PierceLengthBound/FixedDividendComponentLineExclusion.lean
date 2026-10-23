@@ -11,7 +11,7 @@ public import PierceLengthBound.FixedDividendCoprimality
 # Restricting the fixed-dividend equations to affine lines
 
 The explicit quadratic, norm and resultant restrictions to an affine line used by
-the orbit line-exclusion theorem.
+the rational orbit line exclusion in `FixedDividendRationalOrbit`.
 -/
 
 @[expose] public section

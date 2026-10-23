@@ -11,10 +11,11 @@ public import PierceLengthBound.FixedDividendLines
 public import PierceLengthBound.ElevenCount
 
 /-!
-# Coordinates of the actual orbit quartics
+# The orbit quartics in Newton coordinates
 
-These bridges identify the orbit polynomials with the explicit Newton forms used
-in the universal resultant certificates.
+The orbit polynomials are the explicit Newton forms of `FixedDividendLines`, with
+pattern ratios `patternRho`, `patternU`, `patternV`, and the orbit state satisfies
+the eliminated line equations.
 -/
 
 @[expose] public section
@@ -25,13 +26,17 @@ open Finset Polynomial
 
 variable {a b : ℕ}
 
+/-- The pattern ratio `L_{i+1} / L_i`. -/
 noncomputable def patternRho (a b i : ℕ) : ℝ := (Lz a b (i + 1) : ℝ) / Lz a b i
+/-- The pattern ratio `U₁ / L_i`. -/
 noncomputable def patternU (a b i : ℕ) : ℝ := (U1z a b i : ℝ) / Lz a b i
+/-- The pattern ratio `U₂ / L_i`. -/
 noncomputable def patternV (a b i : ℕ) : ℝ := (U2z a b i : ℝ) / Lz a b i
 
 lemma orbitCoeffs_eq (i : ℕ) :
     orbitCoeffs a b i = coeffs (patternRho a b i) (patternU a b i) (patternV a b i) := rfl
 
+/-- The orbit patterns satisfy `ρ > 0`, `u > 0` and `v < 0`. -/
 theorem orbit_pattern_signs (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
     0 < patternRho a b i ∧ 0 < patternU a b i ∧ patternV a b i < 0 := by
   have hA := Lz_pos hba (by omega : i + 5 < P a b)
@@ -46,7 +51,7 @@ theorem orbit_pattern_signs (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
   have hV : (U2z a b i : ℝ) < 0 := by exact_mod_cast hsign.2
   exact ⟨div_pos hA1 hA0, div_pos hU hA0, div_neg_of_neg_of_pos hV hA0⟩
 
-/-- Actual first quartic in the explicit Newton coordinates. -/
+/-- The orbit quartic at `i` in Newton coordinates. -/
 theorem orbitQuartic_newton (i : ℕ) :
     orbitQuartic a b i = firstNewtonQuartic
       (fun j : Fin 4 => orbitCoeffs a b i j.castSucc)
@@ -55,7 +60,7 @@ theorem orbitQuartic_newton (i : ℕ) :
     nb, prod_range_succ, pt_zero, orbitCoeffs, coeffs]
   ring
 
-/-- Actual next quartic in the same node coordinates. -/
+/-- The next orbit quartic in the same node coordinates. -/
 theorem nextQuartic_newton (i : ℕ) :
     nextQuartic a b i = nextNewtonQuartic
       (fun j : Fin 4 => orbitCoeffs a b (i + 1) j.castSucc)
@@ -88,7 +93,7 @@ lemma orbit_kernel_linear (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
   field_simp
   linear_combination he
 
-/-- The five gap coordinates after the two linear eliminations are the actual gaps. -/
+/-- The five gap coordinates after the two linear eliminations are the orbit gaps. -/
 theorem orbit_lineGaps (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
     lineGaps (patternRho a b i) (patternU a b i) (patternV a b i)
       (patternRho a b (i + 1)) (patternU a b (i + 1)) (patternV a b (i + 1))
@@ -102,7 +107,7 @@ theorem orbit_lineGaps (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
     Matrix.cons_val, pt, kk, Nat.add_assoc, Nat.add_zero] at he ⊢
   all_goals first | (solve | ring) | linear_combination -he
 
-/-- The six node coordinates after elimination are the actual quotient differences. -/
+/-- The six node coordinates after elimination are the orbit quotient differences. -/
 theorem orbit_lineNodes (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
     lineNodes (patternRho a b i) (patternU a b i) (patternV a b i)
       (patternRho a b (i + 1)) (patternU a b (i + 1)) (patternV a b (i + 1))
@@ -137,7 +142,7 @@ lemma orbit_next_kernel_quadratic (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
   simp [pt, kk, Nat.add_assoc] at h h1 ⊢
   linear_combination h + 2 * ((qq a b (i + 1) : ℝ) - qq a b i) * h1
 
-/-- The eliminated sixth gap is the actual next gap, by the next quadratic equation. -/
+/-- The eliminated sixth gap is the next orbit gap, by the next quadratic equation. -/
 theorem orbit_extendedLineGaps (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
     extendedLineGaps (patternRho a b i) (patternU a b i) (patternV a b i)
       (patternRho a b (i + 1)) (patternU a b (i + 1)) (patternV a b (i + 1))
@@ -149,7 +154,7 @@ theorem orbit_extendedLineGaps (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
   fin_cases j <;> simp
   linear_combination -he
 
-/-- The actual state lies on the first quadratic after all eliminations. -/
+/-- The orbit state lies on the first quadratic after all eliminations. -/
 theorem orbit_lineQuadratic_zero (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
     lineQuadratic (patternRho a b i) (patternU a b i) (patternV a b i)
       (patternRho a b (i + 1)) (patternU a b (i + 1)) (patternV a b (i + 1))

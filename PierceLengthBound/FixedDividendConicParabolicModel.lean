@@ -9,9 +9,9 @@ public import PierceLengthBound.FixedDividendConicPlaneModel
 public import PierceLengthBound.FixedDividendRationalConicDiscriminant
 
 /-!
-# Actual rational parabolic plane models
+# Rational parabolic plane models
 
-The coefficients below restrict the actual fixed-dividend quadratic to a
+The coefficients below restrict the fixed-dividend quadratic to a
 containing plane. For a nonexceptional component of Hilbert degree two with a
 rational point, both denominators required for parabolic reconstruction are
 nonzero. The only coordinate choice is a nonzero third or second plane
@@ -32,14 +32,15 @@ def rationalPlaneConicCoefficients (ρ u v ρ' u' v' n0 n1 n2 e : ℚ) : Fin 6 �
     ((u - v) - (v - 1) - u' + v' - (v - 1) * (v - 1 - v'))
     (-n0 / n2) (-n1 / n2) (-e / n2)
 
+/-- Evaluating the plane conic polynomial gives the binary conic value. -/
 lemma eval_planeConicPolynomial {K : Type*} [CommRing K] (c : Fin 6 → K)
     (x : Fin 3 → K) :
     eval x (planeConicPolynomial c) =
       conicValue (c 0) (c 1) (c 2) (c 3) (c 4) (c 5) (x 1) (x 0) := by
   simp [planeConicPolynomial, conicValue]
 
-/-- An actual rational degree-two component has a nondegenerate parabolic plane
-model; its rational points satisfy the exact binary equation. -/
+/-- A prime nonexceptional component of Hilbert degree two in a plane with `n2 ≠ 0`
+has a nondegenerate parabolic plane model; its points satisfy the binary equation. -/
 theorem nonexceptional_parabolic_model
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)

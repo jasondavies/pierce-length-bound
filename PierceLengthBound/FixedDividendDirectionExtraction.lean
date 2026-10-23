@@ -9,7 +9,7 @@ public import PierceLengthBound.FixedDividendDirections
 public import PierceLengthBound.FixedDividendLines
 
 /-!
-# Directions of arbitrary contained complex lines
+# Directions of contained complex lines
 
 The two polynomial containment identities force the four weighted moments and
 vanishing of the degree-ten Vandermonde form. Thus every nonconstant contained

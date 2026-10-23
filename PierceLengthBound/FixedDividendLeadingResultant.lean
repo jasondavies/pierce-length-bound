@@ -167,7 +167,8 @@ def nodeVandermonde {R : Type*} [CommRing R] (z : Fin 4 → R) : R :=
   z 0 * z 1 * z 2 * z 3 * (z 1 - z 0) * (z 2 - z 0) * (z 3 - z 0) *
     (z 2 - z 1) * (z 3 - z 1) * (z 3 - z 2)
 
-/-- Universal Vandermonde leading form; no nonzero or distinct-node hypotheses. -/
+/-- The degree-ten coefficient is `c₁ c₂ c₃` times the node Vandermonde form, over
+every commutative ring. -/
 theorem resultant_affine_coeff_ten {R : Type*} [CommRing R] (c e a z : Fin 4 → R) :
     (resultant (firstNewtonQuartic (C ∘ c) (affineNodes a z))
       (nextNewtonQuartic (C ∘ e) (affineNodes a z)) 4 4).coeff 10 =
@@ -178,7 +179,7 @@ theorem resultant_affine_coeff_ten {R : Type*} [CommRing R] (c e a z : Fin 4 →
   unfold nodeVandermonde
   ring
 
-/-- The candidate's degree-ten bound, including the factor `X` in its next polynomial. -/
+/-- The line resultant, with the factor `X` on the next quartic, has degree at most ten. -/
 theorem line_resultant_natDegree_le_ten {R : Type*} [CommRing R] [Nontrivial R]
     (c e a z : Fin 4 → R) :
     (resultant (firstNewtonQuartic (C ∘ c) (affineNodes a z))
@@ -186,7 +187,8 @@ theorem line_resultant_natDegree_le_ten {R : Type*} [CommRing R] [Nontrivial R]
   rw [resultant_firstNewton_X_mul_polynomial]
   exact (natDegree_C_mul_le _ _).trans (resultant_affine_degree_le_ten c e a z)
 
-/-- Exact degree-ten leading form in the candidate, for all node offsets and directions. -/
+/-- The degree-ten coefficient of the line resultant with the factor `X` is
+`c₀ c₁ c₂ c₃` times the node Vandermonde form, for all node offsets and directions. -/
 theorem line_resultant_coeff_ten {R : Type*} [CommRing R] [Nontrivial R]
     (c e a z : Fin 4 → R) :
     (resultant (firstNewtonQuartic (C ∘ c) (affineNodes a z))

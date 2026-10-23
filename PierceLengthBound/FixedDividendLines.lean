@@ -8,13 +8,14 @@ module
 public import PierceLengthBound.FixedDividend
 
 /-!
-# Exact line obstructions for the `18/61` candidate
+# Line obstructions along the four exceptional directions
 
-The symmetric differences below prove the candidate's four quadratic-coefficient
-identities, after eliminating the fourth node and the next two gaps. They apply to
-arbitrary real parameters. The degree-six resultant bound is proved in
-FixedDividendLineResultant;
-connecting these identities to arbitrary contained lines is handled separately.
+The fourth node and the next two gaps are eliminated through the kernel relations,
+giving the quadratic `lineQuadratic` and the norm `lineNorm` in three free nodes.
+Symmetric second differences give four quadratic-coefficient identities, one for
+each exceptional direction, for arbitrary real parameters. On a line with affine
+norm each forces an obstruction equation, which large gaps exclude. The degree-six
+resultant bound along these directions is in `FixedDividendLineResultant`.
 -/
 
 @[expose] public section
@@ -157,15 +158,15 @@ theorem line_obstruction_14 {ρ v ρ' u' v' a b c : ℝ}
   rw [hp, hm, hD] at h
   linarith
 
-/-- Once the gap lower bounds are established, all four obstruction types are impossible. -/
+/-- Under the gap lower bounds, none of the four obstruction equations holds. -/
 theorem line_obstructions_excluded {a b c d c₂ X : ℝ}
     (hc : 0 < c) (hab : 1 < b - a) (hbc : 1 < c - b)
     (hheight : c₂ ≤ 2 * X) (hlarge : 2 * X < d - a) :
     ¬ (c = 0 ∨ b - a = 1 ∨ c - b = 1 ∨ d - a = c₂) := by
   rintro (h | h | h | h) <;> linarith
 
-/-- A degree-six resultant and the fixed-dividend identity force an affine norm.
-This isolates the degree argument; the degree-six hypothesis must still be proved. -/
+/-- A resultant of degree at most six and the fixed-dividend identity force a norm of
+degree at most one. -/
 theorem norm_degree_le_one {A a : ℝ} {D R : Polynomial ℝ}
     (hA : A ≠ 0) (ha : a ≠ 0) (hR : R.natDegree ≤ 6)
     (hidentity : Polynomial.C A * R = Polynomial.C a * D ^ 4) :

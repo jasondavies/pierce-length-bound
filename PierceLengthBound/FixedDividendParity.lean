@@ -24,8 +24,8 @@ namespace PierceLengthBound.FixedDividend
 def NonexceptionalPattern (ρ u v : ℝ) : Prop :=
   ∀ d : Fin 4, ¬exceptionalRelation ρ u v d
 
-/-- The collision obstruction is algebraic over any field; no closure or ordering
-is needed once individual and pair coefficient sums are nonzero. -/
+/-- Over any field, if all weights and all pair sums are nonzero, a nonconstant
+solution of the first four moment equations has distinct entries. -/
 theorem leading_nodes_injective_of_pair_sums_ne_zero {K : Type*} [Field K]
     (c z : Fin 5 → K) (hc : ∀ j, c j ≠ 0)
     (hp : ∀ j l, j < l → c j + c l ≠ 0) (hz : ∃ i j, z i ≠ z j)

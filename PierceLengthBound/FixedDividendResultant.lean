@@ -11,9 +11,9 @@ public import Mathlib.Tactic
 /-!
 # The resultant of consecutive orthogonal polynomials
 
-The algebraic recurrence is proved here. Establishing the three-term recurrence for the
-Pierce moment functional and identifying its coefficients with Hankel determinant ratios
-remain separate obligations.
+For monic polynomials satisfying a three-term recurrence, the resultant of consecutive
+members is a product of powers of the recurrence coefficients `β`. The recurrence for
+the Pierce moment functional is `orthPoly_recurrence`.
 -/
 
 @[expose] public section

@@ -13,7 +13,7 @@ public import PierceLengthBound.FixedDividendCubicGeometry
 
 A plane relation eliminates one normalized node. Because the nodes generate a
 two-dimensional section, the remaining node is nonscalar. The restricted leading
-quadratic consequently has zero discriminant.
+quadratic consequently has zero discriminant and a nonzero square coefficient.
 -/
 
 @[expose] public section
@@ -78,7 +78,7 @@ lemma section_plane_remaining_node_nonscalar {K S : Type*} [Field K] [CommRing S
   omega
 
 /-- Explicit discriminant of the quadratic obtained by eliminating the third
-node from a homogeneous plane and the actual leading quadratic. -/
+node from a homogeneous plane and the leading quadratic. -/
 theorem section_plane_quadratic_discriminant_zero {K L S : Type*}
     [Field K] [Field L] [Algebra K L] [CommRing S] [Algebra K S]
     [Module.Finite K S] (hdim : Module.finrank K S = 2)
@@ -130,8 +130,8 @@ lemma restricted_leading_coefficients_not_all_zero {K : Type*} [Field K] [CharZe
     (by norm_num : (4 : K) ≠ 0) ha) hb) hc) hs
   exact hn (by simpa using hid)
 
-/-- The square coefficient in this chart is nonzero as well as having zero
-discriminant. The first-node chart contains every infinity point. -/
+/-- In the first-node chart (`z 0 = 1`), the restricted leading quadratic has a
+nonzero square coefficient and zero discriminant. -/
 theorem section_plane_quadratic_coefficients {K L S : Type*}
     [Field K] [CharZero K] [Field L] [Algebra K L] [CommRing S] [Algebra K S]
     [Module.Finite K S] (hdim : Module.finrank K S = 2)

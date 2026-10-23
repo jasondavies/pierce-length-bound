@@ -10,12 +10,13 @@ public import PierceLengthBound.ConicPlaneHeight
 public import PierceLengthBound.ConicParameterHeight
 
 /-!
-# Bounded integer parametrization of actual conic components
+# Bounded integer parametrization of nonexceptional conic components
 
-Actual minor heights give a bounded integral parabolic model at a Pierce orbit
-point. A certified integral plane-conic model gives bounded quadratic numerators
-for every integral component point and an injective integer parameter, hence a
-complete bounded integer parametrization of actual nonexceptional conic points.
+Minor heights at a Pierce orbit point give a bounded integral parabolic model of
+the conic component through it. An integral parabolic plane model gives bounded
+quadratic numerators for every integer point of the component, in an injective
+integer parameter. Together they parametrize the integer points of nonexceptional
+conic components through orbit points.
 -/
 
 @[expose] public section
@@ -24,8 +25,10 @@ open Matrix (vec3_dotProduct)
 noncomputable section
 open MvPolynomial
 
-/-- Actual minor heights give the complete bounded integral conic model.
-The only plane input is its integer coefficient bound and actual membership. -/
+/-- If the minor labels have height at most `X` and the plane coefficients height at
+most `L`, a prime component of Hilbert degree two in that plane through a
+nonexceptional orbit point has an integral parabolic model with coefficients of height
+at most `10 (12 X⁴)² L²`. -/
 theorem orbit_bounded_integer_conic_model {a b i : ℕ} (hba : b < a)
     (hi : i + 7 < P a b) {X L : ℤ} (hX : 1 ≤ X) (hL : 0 ≤ L)
     (ht : ∀ j, |theta a b i j| ≤ X)
@@ -87,8 +90,8 @@ theorem orbit_bounded_integer_conic_model {a b i : ℕ} (hba : b < a)
 
 set_option maxHeartbeats 400000 in
 -- This proof uses about 320k heartbeats (`#count_heartbeats`).
-/-- A certified integral plane-conic model gives bounded quadratic numerators
-for every integral component point, and an injective integer parameter. -/
+/-- An integral parabolic plane-conic model gives bounded quadratic numerators for
+every integer point of the component, in an injective integer parameter. -/
 theorem component_integer_parameter
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) (n : Fin 3 → ℤ) (e : ℤ)
     (hplane : integerPlanePolynomial n e ∈ I)
@@ -130,8 +133,8 @@ theorem component_integer_parameter
     obtain ⟨k, rfl⟩ := σ.surjective j
     exact congrFun hzt k
 
-/-- Every integral point of the actual degree-two component has a bounded
-quadratic representation in an injective integer parameter. -/
+/-- Every integer point of the degree-two component through a nonexceptional orbit
+point has a bounded quadratic representation in an injective integer parameter. -/
 theorem orbit_bounded_integer_parameter {a b i : ℕ} (hba : b < a)
     (hi : i + 7 < P a b) {X L : ℕ} (hX : 1 ≤ X) (hL : 1 ≤ L)
     (ht : ∀ j, |theta a b i j| ≤ X)

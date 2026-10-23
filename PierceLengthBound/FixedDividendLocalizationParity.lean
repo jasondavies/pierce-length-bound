@@ -12,9 +12,9 @@ public import Mathlib.RingTheory.Localization.Away.Basic
 /-!
 # Parity after inverting a unit on the infinity section
 
-Localizing at an element already invertible on a finite section preserves that
-section. Thus the square/fourth-power parity argument requires invertibility
-only along infinity, rather than throughout the original affine chart.
+Localizing at an element invertible on a finite section preserves that
+section. Thus the square/fourth-power parity argument needs the resultant to be
+invertible only modulo the infinity equation.
 -/
 
 @[expose] public section
@@ -38,8 +38,8 @@ def quotientEquivAwayOfUnit {K R S : Type*} [Field K] [CommRing R] [CommRing S]
     (Ideal.quotientMapₐ (J.map (algebraMap R S))
       (IsScalarTower.toAlgHom K R S) Ideal.le_comap_map) e.bijective
 
-/-- A section unit suffices for parity after localization; no local smoothness
-or discrete valuation hypothesis is required. -/
+/-- If `A h² r = a δ⁴` with `A`, `a` units and `r` nonzero and a unit modulo `h`, the
+finite section cut out by `h` has even dimension. -/
 theorem finite_infinity_section_even_of_unit_modulo {K R : Type*}
     [Field K] [CommRing R] [IsDomain R] [Algebra K R]
     {A a r h δ : R} (hA : IsUnit A) (ha : IsUnit a)

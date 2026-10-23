@@ -10,8 +10,9 @@ public import PierceLengthBound.FixedDividendChartHomogenization
 /-!
 # Coefficient maps and residue fields for chart homogenization
 
-Homogenization commutes with coefficient extension. Finite rational chart
-sections can therefore be tested at complex residue points directly.
+Homogenization commutes with coefficient extension. An element of a finite chart
+section is therefore a unit once it is nonzero at every residue point with values
+in an algebraically closed extension of the base field.
 -/
 
 @[expose] public section
@@ -37,7 +38,8 @@ lemma map_curveHomogenize {K L : Type*} [CommRing K] [CommRing L]
   rw [curveHomogenize, ← Polynomial.reflect_map, map_radialMap]
   rfl
 
-/-- Points may be taken in any algebraically closed overfield of the base. -/
+/-- An element of a finite `K`-algebra is a unit if it is nonzero under every
+`K`-algebra map to an algebraically closed extension `L` of `K`. -/
 theorem finite_algebra_isUnit_of_closed_points {K L R : Type*}
     [Field K] [Field L] [IsAlgClosed L] [Algebra K L]
     [CommRing R] [Algebra K R] [Module.Finite K R] (r : R)

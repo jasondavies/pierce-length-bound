@@ -11,7 +11,7 @@ public import PierceLengthBound.Defs
 # Window scales for the fixed-dividend bound
 
 These estimates express the line-exclusion condition in the remainder-window
-coordinates used by the existing dyadic decomposition.
+coordinates used by the dyadic decomposition.
 -/
 
 @[expose] public section
@@ -28,7 +28,8 @@ lemma window_quotient_lower {a b i A : ℕ} (hba : b < a) (hi : i < P a b)
   have hnq : orb a b i ≤ orb a b i * qq a b i := Nat.le_mul_of_pos_right _ hq
   nlinarith
 
-/-- One explicit window-scale inequality guarantees the orbit's line-exclusion scale. -/
+/-- The window inequality `124928 A⁴ H⁵ X < a³` implies the line-exclusion scale
+condition `a H⁵ (24 X + 464) < q⁴`. -/
 lemma window_line_scale {a b i A H X : ℕ} (hba : b < a) (hi : i < P a b)
     (hA : orb a b i < 2 * A) (hX : 1 ≤ X)
     (hscale : 124928 * A ^ 4 * H ^ 5 * X < a ^ 3) :

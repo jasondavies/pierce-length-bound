@@ -10,9 +10,10 @@ public import PierceLengthBound.MinorHeight
 /-!
 # Selected orbit windows and their exact minor height
 
-The existing selection lemma already supplies the support length needed by the
-fixed-dividend identities. The integer floor of the minor bound is positive
-whenever a selected window exists; no additive height rounding loss is necessary.
+The selected starts are the good starts at gap height `28a/(AT) + 1`; they have the
+support `i + 8 < P a b` used by the fixed-dividend identities. The integer floor of
+the minor height bound bounds every selected minor and is positive for windows of
+length at least 36.
 -/
 
 @[expose] public section
@@ -22,7 +23,7 @@ open Finset
 /-- Gap threshold for a remainder window. -/
 def selectedGapHeight (a A T : ℕ) : ℕ := 28 * a / (A * T) + 1
 
-/-- Exact integral minor height, without an added unit. -/
+/-- The integer floor of the minor height bound. -/
 def selectedMinorHeight (a A T : ℕ) : ℕ :=
   3609600 * A ^ 4 * selectedGapHeight a A T ^ 6 / a ^ 3
 
@@ -30,11 +31,14 @@ def selectedMinorHeight (a A T : ℕ) : ℕ :=
 at the selected gap height. -/
 abbrev selectedStarts (a b s T A : ℕ) : Finset ℕ := goodStarts a b s T (selectedGapHeight a A T)
 
+/-- At least half of a window of length at least 36 consists of selected starts. -/
 lemma selectedStarts_card {a b s T A : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hT : 36 ≤ T) :
     T ≤ 2 * (selectedStarts a b s T A).card := good_card hba hmem hsT hT
 
+/-- Selected starts have support `i + 8 < P a b`, seven gaps between `1` and the gap
+height, and `orb a b i < 2 * A`. -/
 lemma selectedStart_spec {a b s T A i : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hi : i ∈ selectedStarts a b s T A) :
@@ -44,7 +48,7 @@ lemma selectedStart_spec {a b s T A i : ℕ}
   let ⟨hP, hk, hA, _⟩ := mem_goodStarts hmem hsT hi
   ⟨hP, hk, hA⟩
 
-/-- Every selected minor satisfies the unrounded integer height bound. -/
+/-- Every selected minor satisfies the integer height bound. -/
 lemma selectedStart_minor_height {a b s T A i : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hi : i ∈ selectedStarts a b s T A) (t : Fin 10) :
@@ -54,7 +58,7 @@ lemma selectedStart_minor_height {a b s T A i : ℕ} (hba : b < a)
   have ha3 : 0 < a ^ 3 := by positivity
   exact abs_le_div ha3 (by exact_mod_cast minor_height (A := A) hba hP hb0 hk t)
 
-/-- A represented minor pattern has a positive exact height bound. -/
+/-- The minor height bound is positive for windows of length at least 36. -/
 lemma selectedMinorHeight_pos {a b s T A : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hT : 36 ≤ T) : 1 ≤ selectedMinorHeight a A T := by

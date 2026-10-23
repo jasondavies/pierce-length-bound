@@ -8,10 +8,11 @@ module
 public import PierceLengthBound.FixedDividendChartHomogenization
 
 /-!
-# Coordinate generators of the actual chart
+# Coordinate generators of an affine chart
 
-The homogenized coordinate map surjects onto the concrete first-node chart.
-Modulo infinity the degree-one normalized nodes generate the entire section.
+For a degree-one chart coordinate `l`, the homogenized coordinate map surjects onto
+the chart `projectiveChart I ι l`. Modulo infinity the degree-one normalized nodes
+generate the whole infinity section.
 -/
 
 @[expose] public section
@@ -19,6 +20,7 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- The chart map sends the degree-`n` homogenization of `f` to `f / l ^ n`. -/
 lemma chartHomogeneousMap_homogenize_value {K F : Type*}
     [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial (Fin 3) K)) (ι : (MvPolynomial (Fin 3) K ⧸ I) →ₐ[K] F)
@@ -41,7 +43,7 @@ lemma chartHomogeneousMap_homogenize_value {K F : Type*}
   rw [he]
   simp only [mul_assoc, ← mul_pow, inv_mul_cancel₀ hl, one_pow, mul_one]
 
-/-- Every element of the concrete chart is represented by a homogeneous polynomial. -/
+/-- Every element of the chart is represented by a homogeneous polynomial. -/
 theorem chartHomogeneousMap_surjective {K F : Type*}
     [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial (Fin 3) K)) (ι : (MvPolynomial (Fin 3) K ⧸ I) →ₐ[K] F)

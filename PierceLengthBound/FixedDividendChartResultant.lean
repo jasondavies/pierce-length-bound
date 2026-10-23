@@ -10,7 +10,7 @@ public import PierceLengthBound.FixedDividendCoefficientHomogenization
 public import PierceLengthBound.FixedDividendRationalCurves
 
 /-!
-# The resultant is invertible along the actual infinity section
+# The resultant is invertible along the infinity section
 
 The finite chart section has only nonexceptional infinity directions as residue
 points. Its homogenized resultant is therefore a unit, including at nonreduced
@@ -23,7 +23,7 @@ noncomputable section
 open MvPolynomial
 
 /-- The homogenized resultant is a unit modulo the infinity equation in the
-actual first-node chart of every positive-degree nonexceptional component. -/
+first-node chart of every positive-degree prime nonexceptional component. -/
 theorem nonexceptional_chart_resultant_unit
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)

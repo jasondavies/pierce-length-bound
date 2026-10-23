@@ -20,6 +20,7 @@ that no extra kernel is introduced by dehomogenization.
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
+/-- Powers of a degree-one element lie in the corresponding filtered pieces. -/
 lemma filteredCoordinateSpace_pow_mem {K σ : Type*} [Field K]
     (I : Ideal (MvPolynomial σ K)) {l : MvPolynomial σ K ⧸ I}
     (hl : l ∈ filteredCoordinateSpace I 1) (n : ℕ) :
@@ -65,7 +66,7 @@ instance chartInfinityIdeal_twoSided {K σ F : Type*} [Field K] [Field F] [Algeb
   intro a b ha
   simpa only [smul_eq_mul, mul_comm a b] using (chartInfinityIdeal I ι l).smul_mem b ha
 
-/-- The homogeneous-piece map to the actual affine infinity section. -/
+/-- The map from the degree-`n` piece to the infinity section of the affine chart. -/
 def chartPieceToInfinity {K σ F : Type*} [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial σ K)) (ι : (MvPolynomial σ K ⧸ I) →ₐ[K] F)
     (l : MvPolynomial σ K ⧸ I) (n : ℕ) :
@@ -120,8 +121,8 @@ theorem chartMonomial_mem_infinityIdeal {K σ F : Type*}
     rw [pow_succ]
     ring
 
-/-- The stable piece's image in the chart section has dimension exactly the
-actual affine Hilbert degree. Surjectivity onto the whole section is separate. -/
+/-- The image of the stable piece in the chart section has dimension `d`, the slope
+of the affine Hilbert function. Surjectivity is `chartPieceToInfinity_surjective`. -/
 theorem chartPieceToInfinity_finrank_range {K σ F : Type*}
     [Field K] [Field F] [Algebra K F] [Finite σ]
     (I : Ideal (MvPolynomial σ K)) [I.IsPrime]
@@ -154,6 +155,7 @@ theorem chartPieceToInfinity_finrank_range {K σ F : Type*}
   push_cast at hd1
   nlinarith
 
+/-- The images of the filtered pieces in the infinity section increase with the degree. -/
 lemma chartPieceToInfinity_range_mono {K σ F : Type*}
     [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial σ K)) (ι : (MvPolynomial σ K ⧸ I) →ₐ[K] F)
@@ -173,7 +175,8 @@ lemma chartPieceToInfinity_range_mono {K σ F : Type*}
   rw [map_mul, pow_succ]
   field_simp
 
-/-- Graded generation makes the successive chart-section images equal. -/
+/-- Generation at degree `n + 2` by the chart coordinate puts the image of piece
+`n + 2` inside that of piece `n + 1`. -/
 lemma chartPieceToInfinity_range_succ_le {K σ F : Type*}
     [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial σ K)) (ι : (MvPolynomial σ K ⧸ I) →ₐ[K] F)
@@ -239,9 +242,9 @@ theorem chartPieceToInfinity_surjective {K σ F : Type*}
   congr 1
   exact Subtype.ext hag
 
-/-- The actual affine-chart infinity section is finite-dimensional and its dimension
-is exactly the certified affine Hilbert degree, provided the chart coordinate
-eventually generates the homogeneous infinity pieces. -/
+/-- If the chart coordinate eventually generates the filtration, the infinity section
+of the affine chart is finite-dimensional of dimension `d`, the slope of the affine
+Hilbert function. -/
 theorem chart_infinity_dimension_eq_degree {K σ F : Type*}
     [Field K] [Field F] [Algebra K F] [Finite σ]
     (I : Ideal (MvPolynomial σ K)) [I.IsPrime]

@@ -11,9 +11,8 @@ public import PierceLengthBound.FixedDividendInfinityCover
 /-!
 # Rational certificates for the nonexceptional infinity chart
 
-The Nullstellensatz is applied over the rational coefficient field with complex
-zeros. Thus the chart-cover certificates themselves are rational, and no
-geometric component decomposition or degree descent is needed.
+The Nullstellensatz is applied over `ℚ` with complex zeros, so a power of every
+coordinate lies in the rational boundary ideal of the first-node chart.
 -/
 
 @[expose] public section
@@ -36,6 +35,7 @@ def rationalInfinityBoundaryIdeal (ρ u v : ℚ) : Ideal (MvPolynomial (Fin 3) �
   Ideal.span {leadingQuadratic (-ρ - u) (u - v) (v - 1),
     leadingCubic (-ρ - u) (u - v) (v - 1) ^ 4, X 0}
 
+/-- The rational boundary ideal has only the origin as complex zero. -/
 lemma rational_infinity_boundary_zero {ρ u v : ℚ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ))

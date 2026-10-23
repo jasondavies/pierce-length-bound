@@ -9,9 +9,14 @@ public import PierceLengthBound.FixedDividendPolynomialSubstitution
 public import PierceLengthBound.FixedDividendComponents
 public import PierceLengthBound.FixedDividendCurveEquations
 
-/-! Rational polynomial coordinates from the checked bounded integer parameters.
-Actual integral component points force symbolic identities along the bounded
-quadratic parameter. At most twenty-four points can avoid this conclusion. -/
+/-!
+# Polynomial identities along a quadratic parametrization
+
+An integral quadratic parametrization of the integer points of a component,
+reordered and divided by its common denominator, gives rational polynomial
+coordinates. Twenty-five parametrized integer points force both fixed-dividend
+equations to vanish identically along it.
+-/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -38,7 +43,7 @@ lemma normalizedParameter_first_coeff (σ : Fin 3 ≃ Fin 3) (hσ : σ 1 = 0)
   change ((F 1).coeff 2 : ℚ) ≠ 0
   exact_mod_cast hF
 
-/-- The rational polynomial coordinates evaluate to the actual integer point. -/
+/-- The rational polynomial coordinates evaluate to the integer point. -/
 lemma normalizedParameter_eval (σ : Fin 3 ≃ Fin 3) {E : ℤ} (hE : E ≠ 0)
     (F : Fin 3 → Polynomial ℤ) (z : Fin 3 → ℤ) (t : ℤ)
     (he : ∀ j, E * z (σ j) = (F j).eval t) :
@@ -55,8 +60,8 @@ lemma normalizedParameter_eval (σ : Fin 3 ≃ Fin 3) {E : ℤ} (hE : E ≠ 0)
   simp only [Int.coe_castRingHom]
   field_simp
 
-/-- More than twice the equation degree in integral component points suffices
-for a symbolic identity under the actual quadratic parametrization. -/
+/-- If more than `2 deg f` integer points of the component are parametrized
+injectively, every `f ∈ I` vanishes identically along the normalized parametrization. -/
 theorem normalizedParameter_vanishes_of_many_points
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) (σ : Fin 3 ≃ Fin 3)
     {E : ℤ} (hE : E ≠ 0) (F : Fin 3 → Polynomial ℤ)
@@ -85,8 +90,8 @@ theorem normalizedParameter_vanishes_of_many_points
     exact hS z z.property f hf
   · simpa only [Fintype.card_coe] using hc
 
-/-- With at least twenty-five integral points, both actual defining equations
-hold symbolically for the normalized parameter produced by the bounded theorem. -/
+/-- With at least twenty-five parametrized integer points, both fixed-dividend
+equations vanish identically along the normalized parametrization. -/
 theorem normalizedParameter_curve_identities
     (ρ u v ρ' u' v' A a : ℚ)
     (I : Ideal (MvPolynomial (Fin 3) ℚ))

@@ -11,8 +11,9 @@ public import PierceLengthBound.FixedDividendSelection
 /-!
 # From selected orbit starts to distinct gap counts
 
-This connects the actual selected orbit sets, quartic multiplicity and minor heights:
-each pair of a pattern and a gap vector comes from at most four selected starts.
+Quartic multiplicity applies to the selected orbit starts, whose minor heights lie
+in a polynomial range: each pair of a pattern and a gap vector comes from at most
+four selected starts.
 -/
 
 @[expose] public section

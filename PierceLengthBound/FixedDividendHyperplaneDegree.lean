@@ -163,7 +163,7 @@ theorem hyperplane_section_card_le_degree {K σ ι : Type*} [Field K] [Finite σ
   nlinarith
 
 /-- Any affine plane through three distinct points of a degree-two prime curve
-contains the entire curve. This form applies directly to three actual gap points. -/
+contains the entire curve. -/
 theorem degree_two_plane_mem_of_three_points {K : Type*} [Field K]
     (p : Ideal (MvPolynomial (Fin 3) K)) [p.IsPrime]
     (hdegree : ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,

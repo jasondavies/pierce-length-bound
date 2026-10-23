@@ -13,10 +13,9 @@ public import Mathlib.Algebra.Polynomial.Reverse
 # Homogenized fixed-dividend equations
 
 Reversing the radial polynomial at the prescribed degree gives the homogeneous
-polynomial, with the new polynomial variable representing the infinity coordinate.
-The fixed-dividend equation has the exact square/fourth-power form, also after
-evaluation in any chart ring, and the restrictions at infinity are the certified
-leading forms.
+polynomial, with the added polynomial variable representing the infinity coordinate.
+The fixed-dividend equation has the square/fourth-power form, also after
+evaluation in any chart ring, and the restrictions at infinity are the leading forms.
 -/
 
 @[expose] public section
@@ -24,8 +23,8 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
-/-- Homogenization with a prescribed degree, encoded as a polynomial in the new
-coordinate with multivariate coefficients. -/
+/-- Homogenization with a prescribed degree, encoded as a polynomial in the
+homogenizing coordinate with multivariate coefficients. -/
 def curveHomogenize {K : Type*} [CommRing K] (n : ℕ) (f : MvPolynomial (Fin 3) K) :
     Polynomial (MvPolynomial (Fin 3) K) := (radialMap f).reflect n
 
@@ -78,7 +77,8 @@ lemma mvPolynomial_coeff_commRing {K : Type*} [CommRing K]
     p.coeff n = @Polynomial.coeff (MvPolynomial (Fin 3) K)
       (CommRing.toCommSemiring.toSemiring) p n := rfl
 
-/-- Exact resultant form on the infinity hyperplane, before any specialization. -/
+/-- On the infinity hyperplane the resultant is a coefficient product times the node
+Vandermonde form. -/
 lemma curveResultant_at_infinity {K : Type*} [CommRing K] [Nontrivial K]
     (ρ u v ρ' u' v' : K) :
     (curveHomogenize 10 (curveResultant ρ u v ρ' u' v')).eval 0 =
@@ -117,8 +117,8 @@ lemma completeDirection_not_constant {K : Type*} [CommRing K] (ρ u v : K) (z : 
   · exact ⟨2, 0, by simpa [completeDirection] using hj⟩
   · exact ⟨3, 0, by simpa [completeDirection] using hj⟩
 
-/-- The two homogeneous equations at an actual nonzero infinity direction force
-nonvanishing of the resultant there. No smoothness assumption is used. -/
+/-- For a nonexceptional pattern, the homogenized resultant is nonzero at every nonzero
+complex infinity direction on both homogenized equations. -/
 theorem nonexceptional_resultant_at_infinity_ne_zero {ρ u v : ℝ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0) (hne : NonexceptionalPattern ρ u v)
     (ρ' u' v' A a : ℂ) (ha : a ≠ 0) (z : Fin 3 → ℂ) (hz : ∃ j, z j ≠ 0)

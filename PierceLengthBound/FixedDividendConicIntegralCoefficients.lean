@@ -23,7 +23,7 @@ def integralPlaneConicCoefficients (a b c l0 l1 l2 D n0 n1 n2 e : ℤ) : Fin 6 �
   2 * c * D * n0 * e - 2 * c * e * (a * n2 - c * n0) + l0 * n2 ^ 2 - l2 * n0 * n2,
   c * D * e ^ 2 + (c * e) ^ 2 - l2 * e * n2]
 
-/-- Clearing denominators is an exact identity, not just a height estimate. -/
+/-- Clearing denominators multiplies the plane conic coefficients by `D² n₂²`. -/
 lemma integralPlaneConicCoefficients_eq (a b c l0 l1 l2 D n0 n1 n2 e : ℤ)
     (hD : D ≠ 0) (hn : n2 ≠ 0) (j : Fin 6) :
     (integralPlaneConicCoefficients a b c l0 l1 l2 D n0 n1 n2 e j : ℚ) =

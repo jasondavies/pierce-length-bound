@@ -9,7 +9,7 @@ public import PierceLengthBound.FixedDividendChartSection
 public import PierceLengthBound.FixedDividendLeadingComponents
 
 /-!
-# Homogeneous equations in the actual affine chart
+# Homogeneous equations in an affine chart
 
 The chart homomorphism sends the homogenizing variable to the infinity equation
 and every affine variable to its degree-one chart coordinate. Homogenizations of
@@ -21,6 +21,7 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- Radial substitution does not raise degree beyond the total degree. -/
 lemma radialMap_natDegree_le {K : Type*} [CommRing K]
     (f : MvPolynomial (Fin 3) K) : (radialMap f).natDegree ≤ f.totalDegree := by
   rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
@@ -41,7 +42,7 @@ def chartNode {K F : Type*} [Field K] [Field F] [Algebra K F]
     (chartNode I ι l j : F) = ι (Ideal.Quotient.mk I (X j)) * (ι l)⁻¹ := by
   simp only [chartNode, chartMonomialMap_val, pow_one]
 
-/-- Evaluation of homogeneous coordinates in the concrete chart ring. -/
+/-- Evaluation of homogeneous coordinates in the chart ring. -/
 def chartHomogeneousMap {K F : Type*} [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial (Fin 3) K)) (ι : (MvPolynomial (Fin 3) K ⧸ I) →ₐ[K] F)
     (l : MvPolynomial (Fin 3) K ⧸ I) :
@@ -86,8 +87,8 @@ lemma chart_radial_evaluation {K F : Type*} [Field K] [Field F] [Algebra K F]
       field_simp
   exact RingHom.congr_fun he f
 
-/-- The actual chart map annihilates the bounded homogenization of every member
-of the affine component ideal. -/
+/-- The chart map annihilates the degree-`n` homogenization of every member of
+the affine ideal of total degree at most `n`. -/
 theorem chartHomogeneousMap_homogenize_eq_zero {K F : Type*}
     [Field K] [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial (Fin 3) K)) (ι : (MvPolynomial (Fin 3) K ⧸ I) →ₐ[K] F)

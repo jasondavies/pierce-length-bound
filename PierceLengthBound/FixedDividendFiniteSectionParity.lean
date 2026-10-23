@@ -14,8 +14,7 @@ public import Mathlib
 
 Multiplication gives a short exact sequence for principal sections. Consequently
 an infinity equation whose square is a unit times a fourth power cuts out an
-even-dimensional finite section. This argument works over the ground field and
-does not require geometric component descent or a sum over local branches.
+even-dimensional finite section. Dimensions are taken over the ground field.
 -/
 
 @[expose] public section
@@ -87,8 +86,7 @@ lemma principal_power_quotient_finite {K R : Type*} [Field K] [CommRing R]
     rw [pow_succ]
     exact principal_product_quotient_finite (K := K) (a ^ n) a ha
 
-/-- Ground-field section multiplicity scales by the exponent, without assuming
-a regular local ring or rationality of any closed point. -/
+/-- The section cut out by `a ^ n` has `n` times the dimension of the section of `a`. -/
 theorem principal_power_quotient_finrank {K R : Type*} [Field K] [CommRing R]
     [IsDomain R] [Algebra K R] (a : R) (ha : a ≠ 0)
     [Module.Finite K (R ⧸ Ideal.span {a})] (n : ℕ) :
@@ -104,8 +102,8 @@ theorem principal_power_quotient_finrank {K R : Type*} [Field K] [CommRing R]
     rw [pow_succ, principal_product_quotient_finrank (a ^ n) a ha, ih]
     ring
 
-/-- The square/fourth-power identity forces even dimension of a finite section.
-Both constants and the resultant are units in this chart ring. -/
+/-- If `A h² r = a δ⁴` with `A`, `a`, `r` units and both sections finite, the section
+cut out by `h` has even dimension. -/
 theorem finite_section_even_of_square_unit_eq_fourth {K R : Type*}
     [Field K] [CommRing R] [IsDomain R] [Algebra K R]
     {A a r h δ : R} (hA : IsUnit A) (ha : IsUnit a) (hr : IsUnit r)
@@ -122,8 +120,8 @@ theorem finite_section_even_of_square_unit_eq_fourth {K R : Type*}
   refine ⟨Module.finrank K (R ⧸ Ideal.span {δ}), ?_⟩
   omega
 
-/-- It suffices to know finiteness of the infinity section: the norm section is
-a quotient of its square section and therefore automatically finite. -/
+/-- The same conclusion when only the section of `h` is finite; the section of `δ` is
+then finite as well. -/
 theorem finite_infinity_section_even {K R : Type*}
     [Field K] [CommRing R] [IsDomain R] [Algebra K R]
     {A a r h δ : R} (hA : IsUnit A) (ha : IsUnit a) (hr : IsUnit r)

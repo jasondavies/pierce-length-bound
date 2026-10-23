@@ -12,8 +12,9 @@ public import PierceLengthBound.FixedDividendGapExclusion
 # Exclusion of the four normalized line directions
 
 The input is containment in the quadratic and fixed-dividend equations, expressed
-as polynomial identities along the line. The resultant degree is proved rather
-than assumed.
+as polynomial identities along the line. The fixed-dividend identity makes the
+restricted norm affine, which gives one of four obstruction equations; the gap
+estimates exclude these at orbit points.
 -/
 
 @[expose] public section
@@ -102,8 +103,9 @@ theorem exceptional_line_obstruction {A a ρ u v ρ' u' v' x y z : ℝ} {d : Fin
   · rw [hr] at hD hp hm ⊢
     exact Or.inr (Or.inr (Or.inr (line_obstruction_14 hp hm hD)))
 
-/-- The four normalized line directions cannot carry a contained line through a
-large-scale actual orbit window. Both defining polynomial identities are explicit. -/
+/-- No line in one of the four normalized directions through the orbit point
+`(pt a b i 1, pt a b i 2, pt a b i 3)` lies on both equations once
+`a H⁵ (24 X + 464) < q⁴`. -/
 theorem orbit_no_exceptional_line {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     {H X : ℤ} (hX : 1 ≤ X) (hg : ∀ m < 5, kq a b (i + m) ≤ H)
     (hU : |U1z a b i| ≤ X) (hV : |U2z a b i| ≤ X)

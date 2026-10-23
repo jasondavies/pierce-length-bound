@@ -236,7 +236,8 @@ theorem normalized_direction_of_clusters {K : Type*} [Field K] [DecidableEq K]
         hrest 3 0 (by decide) (by decide) (by decide) (by decide)
     · simpa [normalizedDirection] using heq.symm
 
-/-- The signs of the actual Newton coefficients leave precisely four possible pairs. -/
+/-- For `ρ > 0`, `u > 0`, `v < 0`, only four index pairs have Newton coefficients
+summing to zero. -/
 lemma pair_indices_exceptional {ρ u v : ℝ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     {j l : Fin 5} (hjl : j < l) (h : coeffs ρ u v j + coeffs ρ u v l = 0) :
     (j = 0 ∧ l = 3) ∨ (j = 1 ∧ l = 2) ∨ (j = 2 ∧ l = 3) ∨ (j = 1 ∧ l = 4) := by
@@ -248,6 +249,7 @@ lemma pair_indices_exceptional {ρ u v : ℝ} (hρ : 0 < ρ) (hu : 0 < u) (hv : 
 def exceptionalRelation (ρ u v : ℝ) (d : Fin 4) : Prop :=
   ![v = 1 - ρ, v = -ρ, u = 1, u = 1 - ρ] d
 
+/-- A vanishing pair sum gives the corresponding coefficient relation. -/
 lemma exceptionalRelation_of_pair {ρ u v : ℝ} (d : Fin 4)
     (h : coeffs ρ u v (exceptionalPair d).1 + coeffs ρ u v (exceptionalPair d).2 = 0) :
     exceptionalRelation ρ u v d := by
@@ -258,8 +260,9 @@ lemma coeffs_ofReal (ρ u v : ℝ) (j : Fin 5) :
     coeffs (ρ : ℂ) (u : ℂ) (v : ℂ) j = ((coeffs ρ u v j : ℝ) : ℂ) := by
   fin_cases j <;> simp [coeffs]
 
-/-- Complete classification, including complex directions: after a nonzero scalar
-normalization every direction is real and is one of the four displayed vectors. -/
+/-- A nonconstant complex direction with `z 0 = 0`, at most four distinct entries and
+vanishing moments of order below four is a nonzero multiple of one of the four
+normalized directions, and the corresponding coefficient relation holds. -/
 theorem complex_direction_classification {ρ u v : ℝ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (z : Fin 5 → ℂ) (hz : ∃ i j, z i ≠ z j) (hz0 : z 0 = 0)
@@ -301,7 +304,7 @@ lemma direction_card_of_collision {K : Type*} [DecidableEq K] (z : Fin 5 → K)
   have hinj := Finset.card_image_iff.mp hcard
   exact hjl (hinj (by simp) (by simp) heq)
 
-/-- Vanishing of the degree-ten Vandermonde form gives the needed node collision. -/
+/-- Vanishing of the degree-ten Vandermonde form gives a node collision. -/
 lemma direction_card_of_vandermonde {K : Type*} [Field K] [DecidableEq K]
     (z : Fin 5 → K) (hz0 : z 0 = 0)
     (hV : nodeVandermonde (fun j : Fin 4 => z j.succ) = 0) :
@@ -320,7 +323,8 @@ lemma direction_card_of_vandermonde {K : Type*} [Field K] [DecidableEq K]
   · exact direction_card_of_collision z (j := 4) (l := 2) (by decide) h
   · exact direction_card_of_collision z (j := 4) (l := 3) (by decide) h
 
-/-- Complete complex direction classification directly from the leading equations. -/
+/-- The same classification, with the node collision supplied by vanishing of the
+Vandermonde form. -/
 theorem complex_direction_of_leading_equations {ρ u v : ℝ}
     (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (z : Fin 5 → ℂ) (hz : ∃ i j, z i ≠ z j) (hz0 : z 0 = 0)

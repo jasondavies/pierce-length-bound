@@ -47,6 +47,7 @@ def quarticSylvester {R : Type*} [CommRing R] (a b : Fin 4 → R) : Matrix (Fin 
 set_option maxHeartbeats 400000 in
 -- Expanding both 8 × 8 determinants to certify the universal Bézout identity uses
 -- about 290k heartbeats (`#count_heartbeats`).
+/-- The Sylvester and Bézout determinants of two monic quartics agree. -/
 theorem quarticSylvester_det {R : Type*} [CommRing R] (a b : Fin 4 → R) :
     (quarticSylvester a b).det = (quarticBezout a b).det := by
   simp [quarticSylvester, quarticBezout, Matrix.det_succ_row_zero,
@@ -284,8 +285,8 @@ The entries are nodes `s₁,...,s₄`; node `s₀` is identically zero. -/
 def exceptionalNodes {R : Type*} [CommRing R] (a : Fin 4 → R) (d : Fin 4) : Fin 4 → R[X] :=
   ![nodes03 a, nodes12 a, nodes23 a, nodes14 a] d
 
-/-- The curve candidate's universal degree-six lemma. No genericity, separation,
-nonvanishing, coefficient signs, or kernel relations are needed. -/
+/-- Along each of the four exceptional directions the line resultant has degree at
+most six, over every nontrivial commutative ring. -/
 theorem line_resultant_natDegree_le_six {R : Type*} [CommRing R] [Nontrivial R]
     (c e a : Fin 4 → R) (d : Fin 4) :
     (resultant (firstNewtonQuartic (C ∘ c) (exceptionalNodes a d))

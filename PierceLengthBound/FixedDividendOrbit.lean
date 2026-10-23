@@ -10,10 +10,12 @@ public import PierceLengthBound.Gram
 public import PierceLengthBound.FixedDividendMoments
 
 /-!
-# The orthogonal quartic attached to an actual orbit window
+# The orthogonal quartic of an orbit window
 
-The coefficients here are the normalized integer cofactors of the orbit matrix.
-Thus the orthogonality statements below have only orbit support hypotheses.
+The coefficients are the normalized integer cofactors of the orbit matrix. The
+quartic is orthogonal through degree three under orbit support hypotheses alone,
+its squared norm `orbitNorm` is positive, and `orbitNorm` is the ratio of the
+rank-five and rank-four Hankel determinants.
 -/
 
 @[expose] public section
@@ -24,10 +26,12 @@ open Finset Polynomial Matrix
 
 variable {a b : ℕ}
 
+/-- The Newton coefficients of the orbit pattern at `i`. -/
 noncomputable def orbitCoeffs (a b i : ℕ) : Fin 5 → ℝ :=
   coeffs ((Lz a b (i + 1) : ℝ) / Lz a b i)
     ((U1z a b i : ℝ) / Lz a b i) ((U2z a b i : ℝ) / Lz a b i)
 
+/-- The orbit quartic: the Newton quartic with the orbit coefficients. -/
 noncomputable def orbitQuartic (a b i : ℕ) : ℝ[X] :=
   newtonQuartic a b i (orbitCoeffs a b i)
 
@@ -99,7 +103,7 @@ lemma orbitCoeffs_weighted_moment (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
   field_simp
   linear_combination -he'
 
-/-- Orthogonality for the actual normalized cofactor polynomial. -/
+/-- The orbit quartic is orthogonal to all monomials of degree at most three. -/
 theorem orbitQuartic_orthogonal (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
     ∀ m < 4, nuF a b i (orbitQuartic a b i * X ^ m) = 0 :=
   newtonQuartic_orthogonal hba hi _ (orbitCoeffs_sum i)
@@ -163,13 +167,13 @@ lemma orbitQuartic_norm_top (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
   have hc : f.coeff 4 = 1 := newtonQuartic_coeff_four i _
   rw [hc, map_one, one_mul]
 
-/-- This is the norm polynomial `D` evaluated at an actual orbit window. -/
+/-- The norm polynomial `D` evaluated at an orbit window. -/
 noncomputable def orbitNorm (a b i : ℕ) : ℝ :=
   ∑ j : Fin 5, orbitCoeffs a b i j *
     (pt a b i j ^ 3 + 3 * pt a b i j ^ 2 + 3 * pt a b i j * (1 + kk a b (i + j)) +
       (1 + kk a b (i + j)) ^ 2 + kk a b (i + j + 1))
 
-/-- The cubic moment expression is the squared norm of the actual quartic. -/
+/-- The cubic moment expression is the squared norm of the orbit quartic. -/
 theorem orbitNorm_eq_square (hba : b < a) {i : ℕ} (hi : i + 7 < P a b) :
     orbitNorm a b i = nuF a b i (orbitQuartic a b i * orbitQuartic a b i) := by
   have hm : muF a b i (orbitQuartic a b i * X ^ 3) = orbitNorm a b i := by
@@ -184,7 +188,7 @@ theorem orbitNorm_eq_square (hba : b < a) {i : ℕ} (hi : i + 7 < P a b) :
   rw [orbitQuartic_norm_top hba (by omega)]
   exact he.symm
 
-/-- Strict positivity of a polynomial square below the size of the actual support. -/
+/-- Strict positivity of a polynomial square of degree below the support size. -/
 lemma nuF_square_pos (hba : b < a) {i : ℕ} (hi : i < P a b) {f : ℝ[X]}
     (hf : f ≠ 0) (hd : f.natDegree < P a b - i) : 0 < nuF a b i (f * f) := by
   classical
@@ -216,7 +220,7 @@ lemma nuF_square_pos (hba : b < a) {i : ℕ} (hi : i < P a b) {f : ℝ[X]}
     · exact (pt_strictMono h (by omega)).ne he.symm
   exact hf (eq_zero_of_natDegree_lt_card_of_eval_eq_zero f hinj hev (by simpa using hd))
 
-/-- In particular the candidate's norm is strictly positive at supported orbit windows. -/
+/-- In particular the norm is strictly positive at orbit windows with `i + 7 < P a b`. -/
 theorem orbitNorm_pos (hba : b < a) {i : ℕ} (hi : i + 7 < P a b) :
     0 < orbitNorm a b i := by
   rw [orbitNorm_eq_square hba hi]
@@ -293,7 +297,7 @@ theorem orthogonal_norm_det {i n : ℕ} {p : ℝ[X]} (hp : p.Monic) (hd : p.natD
     rw [hzero, mul_zero, zero_mul]
   · simp
 
-/-- The actual rank-five/rank-four Hankel ratio is the cubic norm. -/
+/-- The rank-five/rank-four Hankel ratio is the cubic norm. -/
 theorem orbitNorm_hankel (hba : b < a) {i : ℕ} (hi : i + 7 < P a b) :
     (hankel a b i 5).det = orbitNorm a b i * (hankel a b i 4).det := by
   rw [orthogonal_norm_det (orbitQuartic_monic i) (orbitQuartic_natDegree i)

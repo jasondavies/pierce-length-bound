@@ -13,8 +13,9 @@ public import Mathlib.Data.Finsupp.Multiset
 # Dimension of bounded-degree polynomial spaces
 
 Adding a slack exponent identifies degree-at-most monomials with multisets of
-fixed cardinality on one extra variable. This proves the usual binomial dimension
-formula needed in the filtered intersection estimate.
+fixed cardinality on one extra variable. This gives the binomial dimension formula
+and, with the filtered Koszul bound, the linear bound
+`dim F_N(I) ≤ deg f · deg g · (N + 2)`.
 -/
 
 @[expose] public section
@@ -118,7 +119,7 @@ lemma cubic_binomial_difference_bound {H N d e : ℕ} (hN : d + e ≤ N)
   exact_mod_cast hresult
 
 /-- Linear growth of the filtered coordinate space, with the Bézout product as
-slope. Eventual Hilbert polynomials and component-degree additivity are separate. -/
+slope. -/
 theorem filteredCoordinateSpace_finrank_linear {K : Type*} [Field K]
     {f g : MvPolynomial (Fin 3) K} (hf : Prime f) (hfg : ¬ f ∣ g)
     (I : Ideal (MvPolynomial (Fin 3) K)) (hIf : f ∈ I) (hIg : g ∈ I)

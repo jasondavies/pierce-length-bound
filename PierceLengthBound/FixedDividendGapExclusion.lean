@@ -12,8 +12,10 @@ public import PierceLengthBound.OrbitPattern
 /-!
 # Large gaps exclude the four line obstructions
 
-The existing Newton-basis Gram upper bound already has the required Vandermonde
-leading term. It suffices here, without a new expansion of raw Hankel determinants.
+The Newton-basis Gram bound `gramP` and the label inequality `q⁴ ≤ a · gramP`
+force the two middle gaps above `2X` under the scale condition
+`a H⁵ (24 X + 464) < q⁴`. This excludes the four line obstruction equations at
+orbit windows.
 -/
 
 @[expose] public section
@@ -22,6 +24,7 @@ namespace PierceLengthBound.FixedDividend
 
 variable {a b : ℕ}
 
+/-- Bounds for `gramP` linear in either middle gap. -/
 lemma gramP_le_middle_gaps {k0 k1 k2 k3 k4 H : ℤ}
     (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 ≤ k2) (h3 : 1 ≤ k3) (h4 : 1 ≤ k4)
     (g0 : k0 ≤ H) (g1 : k1 ≤ H) (g2 : k2 ≤ H) (g3 : k3 ≤ H) (g4 : k4 ≤ H) :
@@ -36,7 +39,7 @@ lemma gramP_le_middle_gaps {k0 k1 k2 k3 k4 H : ℤ}
   have h21' := mul_le_mul_of_nonneg_left h21 (by positivity : 0 ≤ 6 * H ^ 3)
   constructor <;> nlinarith
 
-/-- A quantitative version of the candidate's large-scale condition. -/
+/-- The scale condition `a H⁵ (24 X + 464) < Q⁴` forces both middle gaps above `2X`. -/
 theorem middle_gaps_large {a Q X H k0 k1 k2 k3 k4 : ℤ}
     (ha : 0 < a) (h0 : 1 ≤ k0) (h1 : 1 ≤ k1) (h2 : 1 ≤ k2) (h3 : 1 ≤ k3) (h4 : 1 ≤ k4)
     (g0 : k0 ≤ H) (g1 : k1 ≤ H) (g2 : k2 ≤ H) (g3 : k3 ≤ H) (g4 : k4 ≤ H)
@@ -70,7 +73,7 @@ lemma orbit_gram_lower (hba : b < a) {i : ℕ} (hi : i + 6 < P a b) :
   have hq : 0 ≤ (qq a b i : ℤ) ^ 4 := by positivity
   nlinarith
 
-/-- Actual orbit gaps in the large-scale range. -/
+/-- At orbit windows satisfying the scale condition, both middle gaps exceed `2X`. -/
 theorem orbit_middle_gaps_large (hba : b < a) {i : ℕ} (hi : i + 6 < P a b)
     {H X : ℤ} (hg : ∀ m < 5, kq a b (i + m) ≤ H)
     (hscale : (a : ℤ) * H ^ 5 * (24 * X + 464) < (qq a b i : ℤ) ^ 4) :
@@ -92,7 +95,8 @@ lemma orbit_middle_coefficient_le (hba : b < a) {i : ℕ} (hi : i + 5 < P a b)
   rw [← sub_div, div_le_iff₀ (by linarith : (0 : ℝ) < Lz a b i)]
   nlinarith
 
-/-- None of the four line obstruction equations can hold at a large-scale orbit window. -/
+/-- None of the four line obstruction equations holds at an orbit window satisfying the
+scale condition. -/
 theorem orbit_line_obstructions_excluded (hba : b < a) {i : ℕ} (hi : i + 6 < P a b)
     {H X : ℤ} (hX : 1 ≤ X) (hg : ∀ m < 5, kq a b (i + m) ≤ H)
     (hU : |U1z a b i| ≤ X) (hV : |U2z a b i| ≤ X)

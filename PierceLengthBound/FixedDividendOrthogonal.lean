@@ -59,7 +59,8 @@ lemma orthPoly_natDegree (i n : ℕ) : (orthPoly a b i n).natDegree = n :=
   natDegree_eq_of_le_of_coeff_ne_zero (orthPoly_degree_le i n)
     (by rw [orthPoly_coeff_top]; norm_num)
 
-/-- The Hankel system is invertible throughout the supported range. -/
+/-- Throughout the supported range, `orthPoly a b i n` is orthogonal to all monomials
+of degree below `n`. -/
 theorem orthPoly_orthogonal (hba : b < a) {i n : ℕ} (hi : i < P a b)
     (hn : n ≤ P a b - i) : ∀ m < n, nuF a b i (orthPoly a b i n * X ^ m) = 0 := by
   intro m hmn
@@ -83,6 +84,7 @@ theorem orthPoly_orthogonal (hba : b < a) {i n : ℕ} (hi : i < P a b)
 noncomputable def orthNorm (a b i n : ℕ) : ℝ :=
   nuF a b i (orthPoly a b i n * orthPoly a b i n)
 
+/-- The squared norms are positive below the support size. -/
 theorem orthNorm_pos (hba : b < a) {i n : ℕ} (hn : n < P a b - i) :
     0 < orthNorm a b i n :=
   nuF_square_pos hba (by omega) (orthPoly_monic i n).ne_zero
@@ -103,6 +105,7 @@ theorem orthNorm_top (hba : b < a) {i n : ℕ} (hi : i < P a b) (hn : n ≤ P a 
       nuF_C_mul, orthPoly_orthogonal hba hi hn j j.isLt, mul_zero]
   rw [hz, sub_zero]
 
+/-- Successive Hankel determinants differ by the squared norm. -/
 theorem orthNorm_det (hba : b < a) {i n : ℕ} (hi : i < P a b) (hn : n ≤ P a b - i) :
     (hankel a b i (n + 1)).det = orthNorm a b i n * (hankel a b i n).det :=
   orthogonal_norm_det (orthPoly_monic i n) (orthPoly_natDegree i n) (orthPoly_orthogonal hba hi hn)
@@ -116,7 +119,7 @@ lemma eq_zero_of_orthogonal (hba : b < a) {i n : ℕ} (hi : i < P a b)
   have hp := nuF_square_pos hba hi hf (hd.trans_le hn)
   linarith
 
-/-- Uniqueness of the monic orthogonal polynomial for the actual measure. -/
+/-- Uniqueness of the monic orthogonal polynomial for the orbit moment functional. -/
 theorem eq_orthPoly (hba : b < a) {i n : ℕ} (hi : i < P a b)
     (hn : n ≤ P a b - i) {p : ℝ[X]} (hp : p.Monic) (hd : p.natDegree = n)
     (ho : ∀ m < n, nuF a b i (p * X ^ m) = 0) : p = orthPoly a b i n := by
@@ -155,7 +158,7 @@ noncomputable def orthAlpha (a b i n : ℕ) : ℝ :=
 noncomputable def orthBeta (a b i n : ℕ) : ℝ :=
   orthNorm a b i (n + 1) / orthNorm a b i n
 
-/-- The three-term recurrence, proved from the actual positive moment functional. -/
+/-- The three-term recurrence for the positive orbit moment functional. -/
 theorem orthPoly_recurrence (hba : b < a) {i n : ℕ} (hn : n + 2 ≤ P a b - i) :
     orthPoly a b i (n + 2) = C (-orthBeta a b i n) * orthPoly a b i n +
       orthPoly a b i (n + 1) * (X - C (orthAlpha a b i n)) := by
