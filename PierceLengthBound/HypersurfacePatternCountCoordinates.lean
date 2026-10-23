@@ -7,7 +7,10 @@ module
 
 public import PierceLengthBound.LatticeCount
 
-/-! # Reduced coordinates for the cross-congruence polynomial fibers -/
+/-! # Reduced coordinates for the cross-congruence polynomial fibers
+
+Norm bounds for a reduced basis of a lattice containing `nℤ³`, and for the integral
+coordinates of a lattice vector in that basis. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -24,8 +27,8 @@ lemma cross_ne_zero_of_det3 {x y z : Fin 3 → ℤ} (hd : det3 x y z ≠ 0) :
   rw [det3_eq_dotProduct_cross, h, dotProduct_zero] at hd
   exact hd rfl
 
-/-- A reduced basis of a lattice containing `nℤ³` has each vector of length at most
-`8n/√27`. This first-coordinate version is applied cyclically below. -/
+/-- The first vector of a reduced basis of a lattice containing `nℤ³` has length at
+most `8n/√27`, i.e. `27 |b₁|² ≤ 64 n²`. -/
 lemma reduced_basis_first_norm_le {Λ : AddSubgroup (Fin 3 → ℤ)} {n : ℕ} (hn : 0 < n)
     (hΛ : ∀ x : Fin 3 → ℤ, (∀ j, (n : ℤ) ∣ x j) → x ∈ Λ)
     {b1 b2 b3 : Fin 3 → ℤ} (hD : det3 b1 b2 b3 ≠ 0)
@@ -59,6 +62,8 @@ lemma reduced_basis_first_norm_le {Λ : AddSubgroup (Fin 3 → ℤ)} {n : ℕ} (
   have := mul_le_mul_of_nonneg_left hy01 (nrm3_nonneg b1)
   nlinarith
 
+/-- Every vector of a reduced basis of a lattice containing `nℤ³` satisfies
+`27 |bᵢ|² ≤ 64 n²` (the first-vector bound applied cyclically). -/
 theorem reduced_basis_norm_le {Λ : AddSubgroup (Fin 3 → ℤ)} {n : ℕ} (hn : 0 < n)
     (hΛ : ∀ x : Fin 3 → ℤ, (∀ j, (n : ℤ) ∣ x j) → x ∈ Λ)
     {b1 b2 b3 : Fin 3 → ℤ} (hD : det3 b1 b2 b3 ≠ 0)
@@ -98,7 +103,8 @@ theorem reduced_basis_norm_le {Λ : AddSubgroup (Fin 3 → ℤ)} {n : ℕ} (hn :
     reduced_basis_first_norm_le hn hΛ h2 hd2 hr2,
     reduced_basis_first_norm_le hn hΛ h3 hd3 hr3⟩
 
-/-- The existing integer-coordinate construction, retaining its individual norm weights. -/
+/-- In a reduced basis, the `i`-th integral coordinate `yᵢ` of a lattice vector `w`
+satisfies `27 |bᵢ|² yᵢ² ≤ 64 |w|²`. -/
 theorem reduced_ycoord_norm_bound {b1 b2 b3 w : Fin 3 → ℤ}
     (hD : det3 b1 b2 b3 ≠ 0)
     (hdvd : det3 b1 b2 b3 ∣ det3 w b2 b3 ∧

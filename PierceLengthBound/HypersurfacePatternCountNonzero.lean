@@ -17,13 +17,17 @@ open scoped Matrix
 noncomputable section
 open MvPolynomial Finset
 
+/-- Chart points `(u, v)` at pivot `m` whose fiber polynomial is nonzero and vanishes
+at `v`. -/
 def nonzeroChartFibers (B : HypersurfaceChartPolynomial) (m : ℕ) :
     Finset ((Fin 3 → ℤ) × (Fin 3 → ℤ)) :=
   (crossSet m).filter fun uv =>
     chartPolynomialFiber B (chartFirstVertex m uv.1) ≠ 0 ∧
     eval (fun i => (uv.2 i : ℚ)) (chartPolynomialFiber B (chartFirstVertex m uv.1)) = 0
 
-/-- Divide a fixed common-factor class injectively into the smaller first-vertex box. -/
+/-- Over the first vertices `u` with `gcd(m, u) = g`, the reciprocal weights of `u / g`
+sum to at most `5859 τ(m/g) (m/g)^(8/3)`: division by `g` maps this class injectively
+into the first-vertex box of size `m/g`. -/
 lemma first_vertex_weight_sum {m g : ℕ} (hm : 0 < m) (hg : g ∈ m.divisors) :
     ∑ u ∈ (ibox3 m).filter (fun u => gcd4 m u = g),
       (normalShortR (m / g) (fun i => u i / (g : ℤ)) : ℝ)⁻¹ ≤
@@ -58,7 +62,8 @@ lemma first_vertex_weight_sum {m g : ℕ} (hm : 0 < m) (hg : g ∈ m.divisors) :
       sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => by positivity)
     _ ≤ _ := normal_short_weight_sum hn
 
-/-- The contribution from one common-factor class of a nonzero polynomial family. -/
+/-- The nonzero fibers at pivot `m` whose first vertex has `gcd(m, u) = g` number at
+most `1423737 D τ_max(m) m^(11/3)`, where `D` is the degree of the chart family. -/
 theorem nonzeroChartFibers_gcd_count (B : HypersurfaceChartPolynomial) {m g : ℕ}
     (hm : 0 < m) (hg : g ∈ m.divisors) :
     (((nonzeroChartFibers B m).filter fun uv => gcd4 m uv.1 = g).card : ℝ) ≤
@@ -151,7 +156,8 @@ theorem nonzeroChartFibers_gcd_count (B : HypersurfaceChartPolynomial) {m g : �
         ← Real.rpow_add hmR]
       norm_num
 
-/-- Summing the common-factor classes costs at most one further divisor maximum. -/
+/-- The nonzero fibers at pivot `m` number at most `1423737 D τ_max(m)² m^(11/3)`;
+summing over the common-factor classes costs one further divisor maximum. -/
 theorem nonzeroChartFibers_count (B : HypersurfaceChartPolynomial) {m : ℕ} (hm : 0 < m) :
     ((nonzeroChartFibers B m).card : ℝ) ≤
       1423737 * (chartPolynomialFamily B).totalDegree * (tauMax m : ℝ) ^ 2 *
@@ -178,7 +184,8 @@ lemma hypersurface_tauMax_mono {m X : ℕ} (h : m ≤ X) : tauMax m ≤ tauMax X
   intro n hn
   exact tau_le_tauMax (by have := mem_range.mp hn; omega)
 
-/-- The nonzero fibers contribute `X^(14/3)` times a slowly growing divisor factor. -/
+/-- Over the pivots `1 ≤ m ≤ X`, the nonzero fibers number at most
+`1423737 D τ_max(X)² X^(14/3)`. -/
 theorem nonzeroChartFibers_sum (B : HypersurfaceChartPolynomial) {X : ℕ} (hX : 1 ≤ X) :
     ∑ m ∈ Icc 1 X, ((nonzeroChartFibers B m).card : ℝ) ≤
       1423737 * (chartPolynomialFamily B).totalDegree * (tauMax X : ℝ) ^ 2 *

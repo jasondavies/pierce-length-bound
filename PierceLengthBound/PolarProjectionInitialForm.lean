@@ -7,8 +7,9 @@ module
 
 public import PierceLengthBound.PolarProjectionNewton
 
-/-! Initial forms of the polar resultant along arbitrary formal sections.
-The proofs retain all higher-order terms of the section. -/
+/-! Initial forms of the polar resultant and of the fixed-dividend equation
+along arbitrary formal sections: they vanish to order four, and the fourth
+coefficient depends only on the first jet of the section. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -50,6 +51,7 @@ theorem formal_det_initial_coefficient {R : Type*} [CommRing R] {n : ℕ}
     (PowerSeries.constantCoeff (R := R)).map_det]
   congr 1
 
+/-- The coefficients below the matrix size vanish when all entries vanish. -/
 theorem formal_det_lower_coefficients {R : Type*} [CommRing R] {n : ℕ}
     (M : Matrix (Fin n) (Fin n) (PowerSeries R))
     (hM : ∀ i j, PowerSeries.constantCoeff (M i j) = 0) (k : ℕ) (hk : k < n) :
@@ -112,6 +114,7 @@ def polarRemainderMonomialCoeffs {R : Type*} [CommRing R]
   ![t 0, t 1 - s 0 * t 2 + s 0 * s 1 * t 3,
     t 2 - (s 0 + s 1) * t 3, t 3]
 
+/-- The Newton remainder is the cubic with coefficients `polarRemainderMonomialCoeffs`. -/
 theorem polarNewtonRemainder_eq_cubic {R : Type*} [CommRing R]
     (ρ u v ρ' u' v' : R) (s : Fin 4 → R) :
     polarNewtonRemainder ρ u v ρ' u' v' s =
@@ -124,8 +127,8 @@ lemma polarCubic_natDegree_le {R : Type*} [CommRing R] (r : Fin 4 → R) :
   unfold polarCubic
   compute_degree
 
-/-- The original curve resultant is exactly the resultant of the current
-monic quartic and its cubic Newton remainder, with matching padded sizes. -/
+/-- The original curve resultant is exactly the resultant of the first Newton
+quartic and its cubic Newton remainder, with matching padded sizes. -/
 theorem polar_curve_resultant_eq_cubic {R : Type*} [CommRing R] [Nontrivial R]
     (ρ u v ρ' u' v' : R) (x : Fin 3 → R) :
     let s := completeNodes ρ u v x
@@ -174,8 +177,9 @@ lemma formal_fourth_power_initial {R : Type*} [CommRing R]
     rw [zero_add, PowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow] at h
     simpa using h
 
-/-- The quartic initial coefficient of the complete fixed-dividend equation.
-This statement applies to arbitrary formal sections and ignores no higher-order terms. -/
+/-- The fixed-dividend equation `A · Res - b · D⁴` vanishes to order four along
+any formal section, and its fourth coefficient is
+`A · Res(base quartic, linear remainder) - b · (linear coefficient of D)⁴`. -/
 theorem polar_equation_initial_form {R : Type*} [CommRing R] [Nontrivial R]
     (a r : Fin 4 → PowerSeries R) (D : PowerSeries R) (A b : R)
     (hr : ∀ j, PowerSeries.constantCoeff (r j) = 0)

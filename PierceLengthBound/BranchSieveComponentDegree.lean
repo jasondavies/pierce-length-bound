@@ -8,9 +8,13 @@ module
 public import PierceLengthBound.JointLiftFiniteZero
 public import PierceLengthBound.NormalizationInfinityDegree
 
-/-! Residue-field branch labels force the full component degree. This avoids
-introducing an absolute Galois action: an irreducible label of degree r in a
-normalized infinity residue already costs at least 2r in the hyperplane fiber. -/
+/-! Residue-field labels at infinity bound the degree of an orbit component
+from below (the second part of Lemma 10.3). The file sets up the chart at
+infinity of the first coordinate, its normalization in the function field and
+the normalized branches over infinity. If every such branch has a residue root
+of an irreducible polynomial of degree `r`, the component has degree at least
+`2r`: the branch multiplicities times residue degrees sum to the degree, every
+multiplicity is even (Corollary 8.4) and every residue degree is at least `r`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -94,10 +98,8 @@ theorem orbit_infinity_chart_setup
       (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
       (Lz a b i : ℚ) (a : ℚ) ha I hf hg _ hι hd hdegree⟩
 
-/-- On an actual nonexceptional component, an irreducible polynomial whose
-roots label the normalized infinity residues forces twice its degree into the
-original curve degree. The infinity multiplicities and their weighted sum are
-constructed by the existing normalization theorems, not assumed. -/
+/-- On a nonexceptional orbit component of degree `d`, if every normalized
+infinity residue contains a root of an irreducible `f`, then `2 deg f ≤ d`. -/
 theorem component_degree_lower_of_irreducible_infinity_labels
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -163,8 +165,9 @@ theorem component_degree_lower_of_irreducible_infinity_labels
   exact (Nat.mul_le_mul hmult' hfdeg).trans
     ((Finset.single_le_sum (fun _ _ => Nat.zero_le _) hp).trans_eq hsumd)
 
-/-- A degree-twelve irreducible branch label forces every such component to
-have degree exactly twenty-four, using the already proved total degree bound. -/
+/-- Together with the degree bound `d ≤ 24` (Lemma 8.1), an irreducible
+degree-twelve label at infinity forces the component degree to be exactly
+twenty-four. -/
 theorem component_degree_twenty_four_of_irreducible_infinity_labels
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

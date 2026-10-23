@@ -19,6 +19,8 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- An integral domain extension `S` of `ℤ[X]` has, for each integer `t`, a prime
+`Q` of characteristic-zero residue ring over the kernel of evaluation at `t`. -/
 theorem branch_exists_integer_reduction (S : Type*) [CommRing S] [IsDomain S]
     [Algebra ℤ[X] S] [Algebra.IsIntegral ℤ[X] S] [FaithfulSMul ℤ[X] S] (t : ℤ) :
     ∃ Q : Ideal S, Q.IsPrime ∧ CharZero (S ⧸ Q) ∧

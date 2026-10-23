@@ -66,8 +66,9 @@ theorem polar_formal_norm_linear_eq_of_jets {K : Type*} [CommRing K]
   change (formalFirstJet _).snd = (formalFirstJet _).snd
   simp only [map_lineNorm, map_add, hj]
 
-/-- The explicit resultant formula is the quartic initial form of the
-original curve equation, on every formal path through the base point. -/
+/-- On every formal path through the base point, the original curve equation
+vanishes to order four, with fourth coefficient
+`A · Res(first Newton quartic, linear remainder) - b · (linear norm)⁴`. -/
 theorem polar_curve_formal_initial {K : Type*} [Field K]
     (ρ u v ρ' u' v' A b : K) (hG : (polarMatrix ρ u v).det ≠ 0)
     (h1 : -ρ - u ≠ 0) (h2 : u - v ≠ 0) (h3 : v - 1 ≠ 0)

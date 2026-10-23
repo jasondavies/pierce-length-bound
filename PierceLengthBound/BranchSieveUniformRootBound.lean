@@ -16,6 +16,10 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- For an integer polynomial `p(t,y)` of total degree at most `d`, irreducible
+over `ℚ` and of degree at least two in `y`, the number of `|t| ≤ B` with an
+integer root `y` is `O_d((1 + log (H + 1))^4 B^(1/2) (1 + log B))`, where `H`
+bounds the coefficients. -/
 theorem branch_uniform_integral_root_bound (d : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ (p : MvPolynomial (Fin 2) ℤ),
       Irreducible (branchRationalPolynomial p) → p.totalDegree ≤ d → 2 ≤ p.degreeOf 1 →

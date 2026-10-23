@@ -9,15 +9,16 @@ public import PierceLengthBound.BranchSieveRootHeight
 public import PierceLengthBound.BranchSievePolynomialSubstitution
 import Mathlib.Tactic
 
-/-! Coefficient and integer-root height control for a fiber of an actual
-two-variable integer polynomial. These bounds use the original coefficient
-height, before the power shear raises the total degree. -/
+/-! Coefficient and integer-root height bounds for a fiber `p(t, Y)` of a
+two-variable integer polynomial. They are stated in terms of the coefficient
+height of `p` itself, before the power shear raises the total degree. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
+/-- The fiber `p(t, Y)` as a univariate integer polynomial. -/
 def branchFiberPolynomial (t : ℤ) : MvPolynomial (Fin 2) ℤ →+* Polynomial ℤ :=
   eval₂Hom Polynomial.C ![Polynomial.C t, Polynomial.X]
 

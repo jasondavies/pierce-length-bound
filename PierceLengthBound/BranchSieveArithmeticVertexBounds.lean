@@ -9,16 +9,19 @@ public import PierceLengthBound.BranchSieveParameterInduction
 public import PierceLengthBound.JointLiftCountingSlack
 import Mathlib.Tactic
 
-/-! The coefficient-height and zero-scale terms in the actual arithmetic
-vertex sieve. Both estimates are uniform in the common divisor of a vertex.
-
-Absorbing the logarithmic height cost of four-parameter Hilbert
-irreducibility into a natural-valued subpolynomial coefficient. -/
+/-! Auxiliary bounds for the four-parameter vertex sieve of
+`BranchSieveArithmeticVertexCount`. When `H` and `B` are polynomial in `a`,
+the logarithmic factors of `branchHilbertSize 4 H B` are absorbed into a
+slowly growing natural coefficient `R a`; dilation by a common divisor
+`g ≤ K a ^ 7` keeps the coefficient height polynomial in `a`; and the
+vertices with first coordinate zero number `O(B ^ (7/2))`. All bounds are
+uniform in the common divisor `g`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
+/-- For four parameters the Hilbert size has `B`-exponent `7/2`. -/
 theorem branch_hilbert_four_size_eq (H B : ℕ) (hB : 0 < B) :
     branchHilbertSize 4 H B = (1 + Real.log (H + 1 : ℕ)) ^ 4 *
       (B : ℝ) ^ (7 / 2 : ℝ) * (1 + Real.log B) ^ 17 := by
@@ -28,6 +31,8 @@ theorem branch_hilbert_four_size_eq (H B : ℕ) (hB : 0 < B) :
   rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_sub (by positivity)]
   norm_num
 
+/-- If `H + 1 ≤ c a^e` and `B ≤ k a^f`, the four-parameter Hilbert size is at
+most `R a · B^(7/2)` for one slowly growing `R`. -/
 theorem branch_four_parameter_hilbert_slack (C : ℝ) (hC : 0 ≤ C)
     (c e k f : ℕ) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ a H B : ℕ, 0 < a → 0 < B →
@@ -61,6 +66,8 @@ theorem branch_four_parameter_hilbert_slack (C : ℝ) (hC : 0 ≤ C)
 
 open Finset
 
+/-- The height `C (a+1)^d g^d` of a family dilated by `g ≤ K a^7` is
+polynomial in `a`. -/
 theorem branch_dilated_height_polynomial (C d K a g : ℕ) (ha : 0 < a)
     (hg : g ≤ K * a ^ 7) :
     C * (a + 1) ^ d * g ^ d + 1 ≤ (C * (2 * K) ^ d + 1) * a ^ (8 * d) := by
@@ -74,6 +81,8 @@ theorem branch_dilated_height_polynomial (C d K a g : ℕ) (ha : 0 < a)
   have hpow : 1 ≤ a ^ (8 * d) := Nat.one_le_pow _ _ (by omega)
   nlinarith
 
+/-- Points of `[-B,B]^4` with first coordinate zero number at most
+`27 B^(7/2)`. -/
 theorem branch_zero_axis_card_le (B : ℕ) (hB : 0 < B)
     (S : Finset (Fin 4 → ℤ))
     (hS : ∀ x ∈ S, (∀ j, |x j| ≤ (B : ℤ)) ∧ x 0 = 0) :

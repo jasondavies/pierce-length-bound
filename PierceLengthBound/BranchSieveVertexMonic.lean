@@ -11,9 +11,10 @@ public import PierceLengthBound.BranchSieveMonicTransfer
 public import PierceLengthBound.PolarProjectionGeometryGoodPattern
 public import PierceLengthBound.BranchSieveResultantGeneric
 
-/-! The actual monic four-vertex family for Hilbert specialization. It has
-uniform degree and polynomial dividend height, is generically irreducible for
-a bounded slope, and detects every bad nonzero-scale orbit pattern.
+/-! The monic four-vertex family for Hilbert specialization. It has uniform
+degree and height polynomial in the dividend, is generically irreducible for a
+slope `c ≤ 144`, and each irreducible specialization at a vertex with nonzero
+scale makes that vertex branch-good.
 
 Generic unnormalized first-minor vertices recover the normalized branch
 coefficients. They provide a coefficient map for proving generic irreducibility
@@ -52,7 +53,8 @@ lemma branchGenericVertex_normalized :
 def branchMonicVertexFamily (c : ℕ) : Polynomial (MvPolynomial (Fin 5) ℤ) :=
   branchMonicization 12 (branchVertexFamily c)
 
-/-- The actual monic family in the four integer first-minor vertices. -/
+/-- The monic family in the four integer first-minor vertices, with integer
+dividend `a`. -/
 def branchMonicVertexFamilyAt (a : ℤ) (c : ℕ) : Polynomial (MvPolynomial (Fin 4) ℤ) :=
   branchFamilyHead a (branchMonicVertexFamily c)
 
@@ -187,8 +189,8 @@ theorem branchMonicVertexFamilyAt_exists_irreducible (a : ℤ) (ha : a ≠ 0) :
     (by exact_mod_cast ha)
   exact ⟨c, hc, branchMonicVertexFamilyAt_irreducible_of_generic a c hirr hdeg⟩
 
-/-- Uniform degree and polynomial-height bounds for the actual monic families,
-with constants independent of the dividend and the bounded slope. -/
+/-- Uniform degree and polynomial-height bounds for the monic families with
+slope `c ≤ 144`, with constants independent of the dividend and the slope. -/
 theorem branchMonicVertexFamilyAt_uniform_bounds :
     ∃ d C : ℕ, 0 < C ∧ ∀ (a : ℤ) (c : ℕ), c ≤ 144 →
       (branchMonicVertexFamilyAt a c).natDegree ≤ d ∧
@@ -208,9 +210,9 @@ lemma branchVertexLabelPolynomial_sub (a : ℕ) (c : ℕ) (x : Fin 4 → ℤ) :
       ((-(x 1 : ℚ) - x 0) / x 0) = branchVertexLabelPolynomial a x (c : ℚ) := by
   simp only [branchVertexLabelPolynomial, Int.cast_natCast, neg_add, sub_eq_add_neg]
 
-/-- An irreducible specialization of the monic family certifies the actual
-branch-good predicate. Leading-degree degeneration is automatically excluded
-by irreducibility of the monic degree-twelve equation. -/
+/-- An irreducible specialization of the monic family at a vertex with
+`x 0 ≠ 0` makes the vertex branch-good. Irreducibility of the monic
+degree-twelve equation excludes a drop in the leading degree. -/
 theorem branchVertexGood_of_monic_irreducible (a : ℕ) (c : ℕ) (x : Fin 4 → ℤ)
     (hx : x 0 ≠ 0)
     (hir : Irreducible (branchFamilyEval x (branchMonicVertexFamilyAt (a : ℤ) c))) :

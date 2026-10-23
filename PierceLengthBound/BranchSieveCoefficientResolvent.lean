@@ -11,16 +11,19 @@ public import Mathlib.RingTheory.Polynomial.Vieta
 public import Mathlib.Data.Multiset.Fintype
 import Mathlib.Tactic
 
-/-! Expressing the coefficients of every monic factor as fixed polynomial
-expressions in an enumeration of the roots. Together with universal orbit
-resolvents, this supplies coefficient equations whose form depends only on
-the original degree and a finite subset of root positions. -/
+/-! The coefficients of every monic factor of a split monic polynomial are
+fixed polynomial expressions in an enumeration of its roots. Together with the
+universal resolvents of `BranchSieveUniversalResolvent`, this gives coefficient
+equations whose form depends only on the degree and a subset of root
+positions. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
+/-- The `j`th coefficient of `∏_{i ∈ s} (X - X_i)`, as an integer polynomial in
+the roots. -/
 def branchFactorCoefficientExpression {d : ℕ} (s : Finset (Fin d)) (j : ℕ) :
     MvPolynomial (Fin d) ℤ :=
   (∏ i ∈ s, (Polynomial.X - Polynomial.C (X i)) :
@@ -75,9 +78,12 @@ theorem branch_monic_factor_coefficient_expression {L : Type*} [Field L]
   · intro j
     rw [branchFactorCoefficientExpression_eval, hprod]
 
+/-- The coefficients of `p` with the signs of the elementary symmetric functions
+of its roots, read from degree `d - 1` downward. -/
 def branchSignedCoefficients {R : Type*} [CommRing R] (p : Polynomial R) (d : ℕ) :
     Fin d → R := fun i => (-1) ^ (i.val + 1) * p.coeff (d - (i.val + 1))
 
+/-- Vieta's formulas in the indexing of `branchSignedCoefficients`. -/
 theorem branch_root_esymm_eq_signedCoefficient {L : Type*} [Field L]
     (p : Polynomial L) (hp : p.Monic) (hsplit : p.Splits)
     (roots : Fin p.natDegree → L) (hroots : Finset.univ.val.map roots = p.roots)

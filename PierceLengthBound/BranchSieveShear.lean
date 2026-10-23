@@ -12,8 +12,9 @@ import Mathlib.Tactic
 
 /-! The polynomial automorphism used to raise the total degree in the
 one-parameter integral-root estimate. It sends `(T,Y)` to `(T,Y+c T^e)`.
-Its inverse, preservation of irreducibility, and effect on integer roots
-are proved here before applying any counting theorem. -/
+This file proves its inverse, preservation of irreducibility, its effect on
+evaluation, and lower and upper bounds for the total degree of a sheared
+polynomial. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -22,6 +23,7 @@ open MvPolynomial
 
 variable {R : Type*} [CommRing R]
 
+/-- The power shear `(T,Y) ↦ (T,Y+c T^e)`. -/
 def branchPowerShearHom (e : ℕ) (c : R) :
     MvPolynomial (Fin 2) R →ₐ[R] MvPolynomial (Fin 2) R :=
   aeval ![X 0, X 1 + C c * X 0 ^ e]
@@ -44,7 +46,7 @@ lemma branchPowerShearHom_zero_coefficient (e : ℕ) :
   ext i : 1
   fin_cases i <;> simp [branchPowerShearHom]
 
-/-- The degree-raising shear is an exact polynomial automorphism. -/
+/-- The power shear is a polynomial automorphism, with inverse the shear by `-c`. -/
 def branchPowerShearEquiv (e : ℕ) (c : R) :
     MvPolynomial (Fin 2) R ≃ₐ[R] MvPolynomial (Fin 2) R :=
   AlgEquiv.ofAlgHom (branchPowerShearHom e c) (branchPowerShearHom e (-c))
@@ -56,6 +58,8 @@ theorem branchPowerShear_irreducible (e : ℕ) (c : R)
     Irreducible (branchPowerShearHom e c p) :=
   (MulEquiv.irreducible_iff (f := (branchPowerShearEquiv e c).toMulEquiv)).mpr hp
 
+/-- Evaluating a sheared polynomial at `(t,y)` evaluates the original at
+`(t, y + c t^e)`. -/
 theorem branchPowerShear_eval (e : ℕ) (c : R) (p : MvPolynomial (Fin 2) R) (t y : R) :
     eval ![t, y] (branchPowerShearHom e c p) = eval ![t, y + c * t ^ e] p := by
   have hh : (eval ![t, y]).comp (branchPowerShearHom e c).toRingHom =
@@ -79,6 +83,7 @@ theorem branchMultiKronecker_two_natDegree_lower {p : MvPolynomial (Fin 2) R}
   exact (by rw [hdeg]; omega : e * p.degreeOf 1 ≤ s 0 + e * s 1).trans
     (Polynomial.le_natDegree_of_ne_zero hnz)
 
+/-- Restriction to the axis `Y = 0`. -/
 def branchAxisHom : MvPolynomial (Fin 2) R →+* Polynomial R :=
   eval₂Hom Polynomial.C ![Polynomial.X, 0]
 
@@ -106,8 +111,8 @@ lemma branchAxisHom_shear (p : MvPolynomial (Fin 2) R) (e : ℕ) :
     · fin_cases i <;> simp [branchAxisHom, branchMultiKronecker, branchPowerShearHom]
   exact DFunLike.congr_fun hh p
 
-/-- Raising the shear exponent raises total degree proportionally to the
-root-variable degree, with no genericity assumption on the coefficients. -/
+/-- If `e` exceeds the parameter degree, the unit shear has total degree at
+least `e` times the root-variable degree. -/
 theorem branchPowerShear_totalDegree_lower {p : MvPolynomial (Fin 2) R}
     (hp : p ≠ 0) {e : ℕ} (he : p.degreeOf 0 < e) :
     e * p.degreeOf 1 ≤ (branchPowerShearHom e 1 p).totalDegree := by
@@ -115,7 +120,7 @@ theorem branchPowerShear_totalDegree_lower {p : MvPolynomial (Fin 2) R}
   rw [← branchAxisHom_shear]
   exact branchAxisHom_natDegree_le _
 
-/-- The same substitution raises total degree by at most its exponent. -/
+/-- The shear multiplies the total degree by at most its exponent. -/
 theorem branchPowerShear_totalDegree_upper [Nontrivial R] (p : MvPolynomial (Fin 2) R)
     {e : ℕ} (he : 1 ≤ e) (c : R) :
     (branchPowerShearHom e c p).totalDegree ≤ e * p.totalDegree := by

@@ -21,6 +21,7 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset UniqueFactorizationMonoid
 
+/-- Kronecker substitution commutes with coefficient maps. -/
 theorem branchMultiKronecker_map {R S : Type*} [CommSemiring R] [CommSemiring S]
     (φ : R →+* S) (a n : ℕ) (p : MvPolynomial (Fin n) R) :
     (branchMultiKronecker a n p).map φ =
@@ -125,8 +126,9 @@ theorem branch_irreducible_factor_specialization_lifts
   rw [Polynomial.map_multiset_prod, hmap, prod_normalizedFactors_eq hg.ne_zero,
     hg.normalize_eq_self]
 
-/-- A candidate factorization of an irreducible family cannot become a
-proper factorization unless a nonzero coefficient of its residual vanishes. -/
+/-- If `f` is irreducible and `f = g h` after specializing at `t` with both
+factors nonunits, then some nonzero coefficient of the residual `f - g h`
+vanishes at `t`. -/
 theorem branch_factor_specialization_nonzero_residual
     {σ K : Type*} [Field K]
     (f g h : MvPolynomial σ K[X]) (hf : Irreducible f) (t : K)
@@ -155,9 +157,10 @@ theorem branch_factor_specialization_nonzero_residual
   simpa only [MvPolynomial.coeff_map, AddMonoidAlgebra.coeff_zero,
     Finsupp.zero_apply, Polynomial.coe_evalRingHom] using hc
 
-/-- A fixed finite family of candidate factorizations has a fixed finite
-set of nonzero coefficient obstructions. Their number is bounded by the
-number of candidates, and their degrees by the residual coefficient degrees. -/
+/-- For a finite family of pairs `(g i, h i)` there is a set `E` of at most
+`card ι` nonzero polynomials, of degree at most the residual coefficient
+degree bound, such that every `t` at which some pair specializes to a proper
+factorization of `f` is a root of a member of `E`. -/
 theorem branch_factor_family_coefficient_obstructions
     {σ ι K : Type*} [Field K] [Fintype ι]
     (f : MvPolynomial σ K[X]) (hf : Irreducible f)

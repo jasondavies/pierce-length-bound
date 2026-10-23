@@ -9,7 +9,9 @@ public import PierceLengthBound.BranchSieveSextic
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 import Mathlib.Tactic
 
-/-! Exact elimination of the two moment equations for the infinity locations. -/
+/-! Elimination of the two moment equations for the infinity locations: the
+resultant of the quadratic and cubic in the remaining location is
+`c₃² (c₃ + 1)` times the location sextic of `BranchSieveSextic`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -61,7 +63,8 @@ private theorem quadratic_cubic_resultant_formula (a0 a1 a2 b0 b1 b2 b3 : R) :
     Matrix.submatrix_apply, Fin.succAbove]
   ring
 
-/-- The complete resultant identity, valid before imposing any nondegeneracy conditions. -/
+/-- The resultant of the eliminated quadratic and cubic is `c₃² (c₃ + 1)` times
+the location sextic at `t`, over any commutative ring. -/
 theorem branchInfinity_resultant (c1 c2 c3 t : R) :
     resultant (branchInfinityQuadratic c1 c2 c3 t) (branchInfinityCubic c1 c2 c3 t) 2 3 =
       c3 ^ 2 * (c3 + 1) * (branchLocationSextic c1 c2 c3).eval t := by

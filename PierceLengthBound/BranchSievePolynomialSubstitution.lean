@@ -11,8 +11,8 @@ public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic
 
 /-! Uniform degree and height control under substitution into a fixed integer
-polynomial. The constants are allowed to depend on that fixed polynomial
-and on the input degrees, but never on the input coefficient height. -/
+polynomial. The constants depend on that fixed polynomial and on the input
+degree bound, and the height bound is polynomial in the input height. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -25,6 +25,7 @@ theorem branch_abs_sum_le_card_mul {ι : Type*} (s : Finset ι) (f : ι → ℤ)
     (h : ∀ i ∈ s, |f i| ≤ M) : |∑ i ∈ s, f i| ≤ s.card * M :=
   (abs_sum_le_sum_abs _ _).trans ((sum_le_sum h).trans_eq (by simp))
 
+/-- The coefficient height of a product is at most `(m+n+1) A B`. -/
 theorem branch_polynomial_mul_coeff_height (p q : Polynomial ℤ) {m n A B : ℕ}
     (hp : p.natDegree ≤ m) (hq : q.natDegree ≤ n)
     (hA : ∀ j, |p.coeff j| ≤ (A : ℤ)) (hB : ∀ j, |q.coeff j| ≤ (B : ℤ)) (j : ℕ) :
@@ -40,8 +41,9 @@ theorem branch_polynomial_mul_coeff_height (p q : Polynomial ℤ) {m n A B : ℕ
       ((Polynomial.natDegree_mul_le.trans (Nat.add_le_add hp hq)).trans_lt (by omega)), abs_zero]
     positivity
 
-/-- Substitution into any fixed expression has uniformly bounded degree and
-coefficient height polynomial in the input height. No external estimate is used. -/
+/-- Substituting polynomials of degree at most `D` and height at most `H` into a
+fixed integer polynomial gives degree at most `M` and height at most
+`C (H+1)^E`, with `M`, `E`, `C` independent of `H`. -/
 theorem branch_fixed_polynomial_substitution_bound {σ : Type*}
     (P : MvPolynomial σ ℤ) (D : ℕ) :
     ∃ M E C : ℕ, 0 < C ∧ ∀ (H : ℕ) (v : σ → Polynomial ℤ),

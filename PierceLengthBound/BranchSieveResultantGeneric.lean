@@ -7,8 +7,9 @@ module
 
 public import PierceLengthBound.BranchSieveResultantDegree
 
-/-! Generic irreducibility of the explicit specialization-compatible branch
-resultant, using the bounded primitive-element choice. -/
+/-! Generic irreducibility of the explicit branch resultant: the resultant
+annihilates the primitive label `t + cβ`, and for a slope `c ≤ 144` it is
+associated to that label's minimal polynomial. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -42,8 +43,7 @@ lemma branchGeneric_location_reconstruction_zero :
   rw [hD, hN, branchGenericThirdLocation, mul_div_cancel₀ _ branchGenericDenominator_ne_zero]
   exact neg_add_cancel _
 
-/-- The explicit resultant annihilates the primitive generic label `t + cβ`.
-The proof uses the original polynomial relations. -/
+/-- The explicit resultant annihilates the primitive generic label `t + cβ`. -/
 theorem branchGenericResultantLabel_root (a : ℚ) (ha : a ≠ 0) (c : ℕ) :
     Polynomial.aeval (branchGenericLocationInSignAlgebra a +
       (c : BranchGenericSignAlgebra a) * branchGenericSignRoot a)
@@ -115,8 +115,8 @@ theorem branchGenericResultantLabel_root (a : ℚ) (ha : a ≠ 0) (c : ℕ) :
   rw [ht] at hh
   exact hh
 
-/-- A bounded slope makes the explicit, specialization-compatible resultant
-irreducible of degree twelve for every nonzero rational dividend. -/
+/-- For every nonzero rational dividend some slope `c ≤ 144` makes the explicit
+resultant irreducible of degree twelve. -/
 theorem branchGeneric_exists_irreducible_resultant_label (a : ℚ) (ha : a ≠ 0) :
     ∃ c : ℕ, c ≤ 144 ∧ Irreducible (branchGenericResultantLabel a c) ∧
       (branchGenericResultantLabel a c).natDegree = 12 := by

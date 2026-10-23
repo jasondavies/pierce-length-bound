@@ -30,6 +30,7 @@ theorem ideal_span_unit_mul {R ι : Type*} [CommRing R]
       (↑u⁻¹ : R) (Ideal.mem_span_range_self (f := fun j => (u : R) * V j) (x := j))
     simpa using h
 
+/-- The consecutive gaps of three cumulative nodes. -/
 def independentNodeGaps {R : Type*} [CommRing R] (x : Fin 3 → R) : Fin 3 → R :=
   ![x 0, x 1 - x 0, x 2 - x 1]
 
@@ -61,6 +62,8 @@ def polarCumulativeBasePoint {K : Type*} [Field K] (ρ u v ρ' u' v' : K) : Fin 
   let z := polarBasePoint ρ u v ρ' u' v'
   ![z 0, z 0 + z 1, z 0 + z 1 + z 2]
 
+/-- When `G` is invertible, the polar forms evaluated at the gaps of `x`
+generate the ideal of the cumulative base point. -/
 theorem polar_cumulative_baseIdeal {K R : Type*} [Field K] [CommRing R] [Algebra K R]
     (ρ u v ρ' u' v' : K) (hG : (polarMatrix ρ u v).det ≠ 0) (x : Fin 3 → R) :
     Ideal.span (Set.range (polarVector (algebraMap K R ρ) (algebraMap K R u)

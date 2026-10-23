@@ -174,8 +174,8 @@ open scoped RatFunc
 attribute [local instance] Polynomial.algebra
 
 /-- For every nonzero rational dividend, the reconstructed generic location and branch
-sign give a field of degree twelve over `ℚ(c₁,c₂,c₃)(A)`.
-This does not yet identify `t + β` as a primitive element or count specializations. -/
+sign give a field of degree twelve over `ℚ(c₁,c₂,c₃)(A)`. A primitive element
+`t + cβ` is chosen in `branchGeneric_exists_degree_twelve_polynomial`. -/
 theorem branchGenericSignExtension_field_degree (a : ℚ) (ha : a ≠ 0) :
     IsField (AdjoinRoot (branchSignPolynomial
       (algebraMap ℚ BranchLocationExtension a) branchGenericDelta)) ∧
@@ -188,6 +188,7 @@ theorem branchGenericSignExtension_field_degree (a : ℚ) (ha : a ≠ 0) :
   exact ⟨branchSignExtension_isField haa branchGenericDelta_ne_zero,
     branchSignTower_finrank branchLocationExtension_finrank _ _⟩
 
+/-- The generic branch-sign polynomial is irreducible for every nonzero dividend. -/
 theorem branchGenericSignPolynomial_irreducible {a : ℚ} (ha : a ≠ 0) :
     Irreducible (branchSignPolynomial
       (algebraMap ℚ BranchLocationExtension a) branchGenericDelta) :=

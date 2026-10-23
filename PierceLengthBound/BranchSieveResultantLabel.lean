@@ -9,9 +9,12 @@ public import PierceLengthBound.BranchSieveBarycentric
 public import PierceLengthBound.BranchSieveReconstruction
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 
-/-! An explicit polynomial branch equation that commutes with every parameter
-specialization. The elimination uses only the sextic location equation, its
-linear subresultant, and the quadratic sign identity. -/
+/-! The explicit degree-twelve branch label polynomial, defined as a resultant
+whose coefficients are universal polynomials in the parameters, so that it
+commutes with every parameter specialization. The elimination uses the sextic
+location equation, its linear subresultant, and the quadratic sign identity.
+Every normalized orbit infinity branch has a root of the specialized label
+polynomial in its residue field. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -30,8 +33,9 @@ def branchLabelEliminand {R : Type*} [CommRing R] (a A c c1 c2 c3 : R) : (R[X])[
   C (C A) * ((branchLocationDenominator c1 c2 c3).map C) ^ 3 * (C X - X) ^ 2 -
     C (C (c ^ 2 * a)) * (branchDeltaNumerator c1 c2 c3).map C
 
-/-- The explicit degree-twelve candidate before normalizing its leading
-coefficient. Its coefficients are universal polynomials in all six parameters. -/
+/-- The explicit branch label polynomial: the resultant, in the location
+variable, of the sextic and the label eliminand. Its coefficients are universal
+polynomials in all six parameters; its leading coefficient is not normalized. -/
 def branchResultantLabel {R : Type*} [CommRing R] (a A c c1 c2 c3 : R) : R[X] :=
   ((branchLocationSextic c1 c2 c3).map C).resultant
     (branchLabelEliminand a A c c1 c2 c3) 6 11
@@ -71,8 +75,8 @@ lemma branchLabelEliminand_map {R S : Type*} [CommRing R] [CommRing S]
     Polynomial.map_pow, Polynomial.map_C, Polynomial.map_X, coe_mapRingHom, map_mul, map_pow,
     branchLocationDenominator_map, branchDeltaNumerator_map]
 
-/-- No injectivity is required: the explicit resultant family specializes at
-arbitrary parameter values. -/
+/-- The explicit resultant family commutes with every ring homomorphism applied
+to the parameters. -/
 theorem branchResultantLabel_map {R S : Type*} [CommRing R] [CommRing S]
     (φ : R →+* S) (a A c c1 c2 c3 : R) :
     (branchResultantLabel a A c c1 c2 c3).map φ =
@@ -96,8 +100,8 @@ lemma branch_resultant_zero_of_common_root {R : Type*} [CommRing R]
   have hh := congrArg (Polynomial.eval t) he
   simpa only [eval_add, eval_mul, eval_C, hft, hgt, zero_mul, zero_add] using hh.symm
 
-/-- The linear reconstruction equation clears exactly three Vandermonde
-factors, so no fourth power of its denominator is introduced. -/
+/-- Under the linear reconstruction equation, the cleared Vandermonde numerator
+equals the cube of the reconstruction denominator times the Vandermonde product. -/
 lemma branchDeltaNumerator_eval {R : Type*} [CommRing R] (c1 c2 c3 t y : R)
     (hy : (branchLocationDenominator c1 c2 c3).eval t * y +
       (branchLocationNumerator c1 c2 c3).eval t = 0) :
@@ -113,7 +117,8 @@ lemma branchDeltaNumerator_eval {R : Type*} [CommRing R] (c1 c2 c3 t y : R)
   unfold branchLocationDelta
   ring
 
-/-- Actual location/sign solutions satisfy the explicit label equation. -/
+/-- Every location/sign solution `(t, y, β)` gives a root `t + cβ` of the
+explicit label equation. -/
 theorem branchResultantLabel_root {R : Type*} [CommRing R]
     (a A c c1 c2 c3 t y β : R)
     (hE : (branchLocationSextic c1 c2 c3).eval t = 0)
@@ -146,8 +151,8 @@ theorem branchResultantLabel_root {R : Type*} [CommRing R]
     simp only [φ, coe_evalRingHom, eval_C, eval_X]
     linear_combination c ^ 2 * ((branchLocationDenominator c1 c2 c3).eval t) ^ 3 * hβ
 
-/-- The two original moment equations imply both the sextic and the linear
-reconstruction relation, with only the displayed scalar degeneracies excluded. -/
+/-- When `c3 ≠ 0` and `c3 + 1 ≠ 0`, the two moment equations imply both the
+sextic and the linear reconstruction relation. -/
 theorem branch_moments_imply_sextic_and_reconstruction {K : Type*} [Field K]
     (c1 c2 c3 t y : K) (hc3 : c3 ≠ 0) (hc31 : c3 + 1 ≠ 0)
     (h₂ : c1 + c2 * t ^ 2 + c3 * y ^ 2 + (-c1 - c2 * t - c3 * y) ^ 2 = 0)
@@ -169,8 +174,8 @@ theorem branch_moments_imply_sextic_and_reconstruction {K : Type*} [Field K]
   rw [hq, hg, mul_zero, mul_zero, sub_zero] at hl
   exact ⟨(mul_eq_zero.mp he).resolve_left hs, (mul_eq_zero.mp hl.symm).resolve_left hs⟩
 
-/-- Direct specialization-compatible root theorem from the original moment
-and sign equations. No rational-function-field specialization is assumed. -/
+/-- Over any field, a solution of the two moment equations and the sign
+equation gives a root `t + cβ` of the explicit label polynomial. -/
 theorem branchResultantLabel_root_of_moments {K : Type*} [Field K]
     (a A c c1 c2 c3 t y β : K) (hc3 : c3 ≠ 0) (hc31 : c3 + 1 ≠ 0)
     (h₂ : c1 + c2 * t ^ 2 + c3 * y ^ 2 + (-c1 - c2 * t - c3 * y) ^ 2 = 0)
@@ -180,14 +185,16 @@ theorem branchResultantLabel_root_of_moments {K : Type*} [Field K]
   obtain ⟨hE, hy⟩ := branch_moments_imply_sextic_and_reconstruction c1 c2 c3 t y hc3 hc31 h₂ h₃
   exact branchResultantLabel_root a A c c1 c2 c3 t y β hE hy hβ
 
-/-- The explicit rational branch polynomial attached to an actual orbit window. -/
+/-- The explicit rational branch label polynomial of the orbit window `(a, b, i)`
+with slope `c`. -/
 def orbitBranchLabelPolynomial (a b i : ℕ) (c : ℚ) : ℚ[X] :=
   branchResultantLabel a (Lz a b i : ℚ) c (-patternRhoQ a b i - patternUQ a b i)
     (patternUQ a b i - patternVQ a b i) (patternVQ a b i - 1)
 
-/-- Every actual normalized branch at infinity contains a root of the explicit
-rational label polynomial. This is the geometric input for the degree-24
-component theorem once the specialized polynomial is irreducible of degree 12. -/
+/-- The residue field of every normalized orbit branch at infinity contains a
+root of the explicit rational label polynomial. With an irreducible label
+polynomial of degree 12 this is the input to
+`component_degree_twenty_four_of_irreducible_infinity_labels`. -/
 theorem orbit_infinity_residue_label_root
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

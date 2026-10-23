@@ -11,9 +11,11 @@ public import PierceLengthBound.BranchSieveMultivariateHilbert
 import Mathlib.Tactic
 public import PierceLengthBound.BranchSieveDilation
 
-/-! The actual uniform branch sieve in scaled four-vertex boxes. Generic
-irreducibility is supplied by the explicit degree-twelve branch family;
-the arithmetic exceptional count is proved by Hilbert irreducibility. -/
+/-! The branch sieve in scaled four-vertex boxes. Generic irreducibility comes
+from the explicit monic degree-twelve family of `BranchSieveVertexMonic`.
+Vertices with nonzero first coordinate are counted by the multivariate monic
+specialization estimate (Theorem 10.4) applied to the dilated family; those
+with first coordinate zero are counted directly. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -21,6 +23,9 @@ noncomputable section
 open Finset
 
 open Classical in
+/-- For a common divisor `g` and radius `B`, both at most `2·10^16 a^7`, the
+vertices `x ∈ [-B,B]^4` for which `g x` is not branch-good number at most
+`R a · B^(7/2)`, with `R` slowly growing and independent of `g` and `B`. -/
 theorem branch_vertex_good_scaled_box_count_slow :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ a : ℕ, 0 < a → ∀ g B : ℕ,
       0 < g → g ≤ 2 * (10 ^ 16 * a ^ 7) → 0 < B → B ≤ 2 * (10 ^ 16 * a ^ 7) →

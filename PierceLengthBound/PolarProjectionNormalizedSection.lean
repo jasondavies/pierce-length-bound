@@ -9,9 +9,11 @@ public import PierceLengthBound.PolarProjectionNormalizationLength
 public import PierceLengthBound.NormalizedFiberOrders
 public import Mathlib.RingTheory.DedekindDomain.PID
 
-/-! Weighted branch orders are bounded by the colength of a section on a
-semilocal normalization. The algebraic counting argument is carried out in
-a principal ideal domain; a semilocal Dedekind normalization is such a ring. -/
+/-! Residue-weighted branch orders of a section are bounded by its colength.
+In a principal ideal domain the colength of an ideal is the sum of the
+colengths of its prime factors; the normalization of a one-dimensional local
+domain is semilocal Dedekind, hence principal, and has the same section
+colengths as the original ring. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -90,6 +92,8 @@ theorem ideal_product_section_finrank {K S : Type*} [Field K]
     exact (principal_ideal_product_section_finrank (K := K) I s.prod hsp).trans
         (congrArg (Module.finrank K (S ⧸ I) + ·) (ih hsp))
 
+/-- The colength of a nonzero ideal is the sum of the colengths of its
+normalized prime factors, with multiplicity. -/
 theorem ideal_section_finrank_eq_factor_sum {K S : Type*} [Field K]
     [CommRing S] [IsDomain S] [IsPrincipalIdealRing S] [Algebra K S]
     (I : Ideal S) (hI : I ≠ ⊥) [Module.Finite K (S ⧸ I)] :
@@ -141,8 +145,8 @@ theorem normalized_section_multiplicity_sum_le {K S : Type*} [Field K]
         exact IsDedekindDomain.HeightOneSpectrum.ext h
     _ ≤ _ := count_weight_sum_le _ _ _
 
-/-- The same upper bound in terms of normalized valuations, ready to compare
-common coordinate orders with any chosen hyperplane section. -/
+/-- If `m q` is at most the normalized order of `a` at each `q ∈ B`, then the
+residue-weighted sum of the `m q` is at most the colength of `(a)`. -/
 theorem normalized_section_order_sum_le {K S L : Type*} [Field K]
     [CommRing S] [IsDomain S] [IsPrincipalIdealRing S] [Algebra K S]
     [Field L] [Algebra S L] [IsFractionRing S L]
@@ -162,9 +166,9 @@ theorem normalized_section_order_sum_le {K S L : Type*} [Field K]
   rw [normalizedBranchOrder_eq_multiplicity q L ha] at h
   exact_mod_cast h
 
-/-- The residue-weighted order on the normalization is bounded by the
-colength of the original singular local section. All normalization and
-finite-defect comparisons are proved above. -/
+/-- On the normalization of a one-dimensional Noetherian local domain, the
+residue-weighted orders of `a` are bounded by the colength of `(a)` in the
+original local ring. -/
 theorem local_normalization_order_sum_le {K R S L : Type*} [Field K]
     [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R]
     [Ring.KrullDimLE 1 R] [Algebra K R]

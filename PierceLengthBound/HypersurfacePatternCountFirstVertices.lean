@@ -15,10 +15,12 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- The box `[-X, X]⁴` in `ℤ⁴`. -/
 def ibox4 (X : ℕ) : Finset (Fin 4 → ℤ) :=
   Fintype.piFinset fun _ => Finset.Icc (-(X : ℤ)) X
 
-/-- The ordinary four-variable polynomial grid estimate, with rational coefficients. -/
+/-- Schwartz–Zippel on the box: a nonzero rational polynomial `q` in four variables
+has at most `27 deg(q) R³` integral zeros in `[-R, R]⁴`. -/
 theorem polynomial_ibox4_count {q : MvPolynomial (Fin 4) ℚ} (hq : q ≠ 0)
     {R : ℕ} (hR : 1 ≤ R) :
     (((ibox4 R).filter fun x => eval (fun i => (x i : ℚ)) q = 0).card : ℝ) ≤
@@ -70,8 +72,9 @@ lemma ediv_mem_ibox4 {g X : ℕ} (hg : 0 < g) {x : Fin 4 → ℤ} (hx : x ∈ ib
   rw [← Int.natCast_div] at hab
   exact Finset.mem_Icc.mpr (abs_le.mp hab)
 
-/-- The number of zero first vertices divisible by `g` is `O(D (X/g)^3)`.
-Scaling the polynomial preserves nonzeroness, so this is uniform in `g`. -/
+/-- The zeros of `q` in `[-X, X]⁴` with all coordinates divisible by `g` number at
+most `27 deg(q) ⌊X/g⌋³`, uniformly in `g`: the substitution `x = g y` gives a nonzero
+polynomial of no larger degree. -/
 theorem polynomial_divisible_ibox4_count {q : MvPolynomial (Fin 4) ℚ} (hq : q ≠ 0)
     {g X : ℕ} (hg : 0 < g) (hgX : g ≤ X) :
     (((ibox4 X).filter fun x => (∀ i, (g : ℤ) ∣ x i) ∧

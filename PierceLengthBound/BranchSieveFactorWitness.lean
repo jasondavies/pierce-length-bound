@@ -24,8 +24,9 @@ open Polynomial
 
 variable {F L : Type*} [Field F] [Field L] [Algebra F L]
 
-/-- A nonconstant proper monic factor over an extension has a genuinely
-nonrational coefficient. No separability assumption is needed. -/
+/-- A monic factor over an extension of an irreducible polynomial over `F`,
+of degree strictly between zero and the degree of the polynomial, has a
+coefficient outside `F`. -/
 theorem branch_proper_factor_has_nonrational_coefficient
     {p : F[X]} (hp : Irreducible p) {q : L[X]} (hq : q.Monic)
     (hdiv : q ∣ p.map (algebraMap F L))

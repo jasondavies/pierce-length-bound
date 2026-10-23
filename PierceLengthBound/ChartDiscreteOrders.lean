@@ -8,8 +8,10 @@ module
 public import PierceLengthBound.JointLiftQuotientOrder
 public import PierceLengthBound.FixedDividendChartGeneration
 
-/-! Valuations centered on the actual infinity chart. Units modulo the infinity
-equation have order zero, and homogenization converts this into exact pole orders. -/
+/-! Orders at valuations that are nonnegative on the projective chart at infinity.
+Units, and units modulo the infinity equation, have order zero; homogenization
+turns this into lower bounds and exact values for the pole orders of polynomials
+in the affine coordinates. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -17,6 +19,7 @@ noncomputable section
 
 variable {R K : Type*} [CommRing R] [Field K]
 
+/-- A valuation nonnegative on the image of `φ` vanishes on the image of every unit. -/
 lemma discrete_order_unit (v : AddValuation K (WithTop ℤ)) (φ : R →+* K)
     (hregular : ∀ r, 0 ≤ v (φ r)) {r : R} (hr : IsUnit r) : v (φ r) = 0 := by
   obtain ⟨s, hs, _⟩ := isUnit_iff_exists.mp hr
@@ -56,8 +59,8 @@ theorem discrete_order_unit_mod_infinity (v : AddValuation K (WithTop ℤ))
   rw [map_mul, v.map_mul] at hzero
   exact le_antisymm ((le_add_of_nonneg_right (hregular s)).trans hzero.le) (hregular r)
 
-/-- Every degree-at-most-n polynomial has pole order at most n times the
-original infinity order. This also covers the zero function. -/
+/-- If `(ι l)⁻¹` has order `e`, every polynomial of total degree at most `n` has
+order at least `-n e`. This includes the zero function. -/
 theorem chart_polynomial_discrete_order_ge {F : Type*} [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial (Fin 3) K))
     (ι : (MvPolynomial (Fin 3) K ⧸ I) →ₐ[K] F)
@@ -78,8 +81,8 @@ theorem chart_polynomial_discrete_order_ge {F : Type*} [Field F] [Algebra K F]
   have heq : 0 ≤ r + (n : ℤ) * e := by exact_mod_cast hz
   exact_mod_cast (show -(n : ℤ) * e ≤ r by nlinarith)
 
-/-- A homogeneous polynomial that is a unit modulo infinity has exactly its
-homogeneous degree times the chart pole order in the original affine variables. -/
+/-- If `(ι l)⁻¹` has order `e > 0` and the degree-`n` homogenization of `f` is a
+unit modulo the infinity equation, then `f` has order exactly `-n e`. -/
 theorem chart_polynomial_discrete_order {F : Type*} [Field F] [Algebra K F]
     (I : Ideal (MvPolynomial (Fin 3) K))
     (ι : (MvPolynomial (Fin 3) K ⧸ I) →ₐ[K] F)

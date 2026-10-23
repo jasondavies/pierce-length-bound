@@ -18,8 +18,8 @@ open MvPolynomial
 open scoped IntermediateField
 noncomputable section
 
-/-- The actual curvature coordinates cannot vanish together as rational
-functions: their pairing with the polynomial moment row is the nonzero label. -/
+/-- The orbit curvature coordinates `W_j` do not all vanish in the function
+field: their pairing with the polynomial moment row is the nonzero label. -/
 theorem orbit_curvature_field_nonzero {F : Type*} [Field F] [Algebra ℚ F]
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ))
@@ -53,11 +53,11 @@ theorem orbit_curvature_field_nonzero {F : Type*} [Field F] [Algebra ℚ F]
   simp only [h, zero_mul, Finset.sum_const_zero] at he
   exact hA' he.symm
 
-/-- On a degree-24 component the actual curvature pole envelope has degree
-at least 56 once the weighted common-base contribution of `J W` is at most four.
-Subtracting the old-infinity curvature zero degree 36 leaves at least 20.
-The rank-five degree bound and coverage of every zero are proved from the
-component hypotheses; the common-base contribution is the only new numerical premise. -/
+/-- On a retained degree-24 component, if the weighted common-base contribution
+of `J W` is at most four, then the curvature pole envelope has degree at least 56;
+subtracting the old-infinity curvature zero degree 36 leaves at least 20. The
+rank-five degree `[F : ℚ(J)] ≥ 60` and the regularity of the zeros of `J` come
+from the component hypotheses. -/
 theorem retained_curvature_degree_lower_bound_of_base_degree_le_four
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -110,9 +110,9 @@ theorem retained_curvature_degree_lower_bound_of_base_degree_le_four
   have h60 : 60 ≤ Module.finrank ℚ⟮J⟯ F := hJdata.2.2
   constructor <;> omega
 
-/-- The actual powered graph, including an arbitrary invertible constant
-change of curvature coordinates, has degree at least `56m + 60n` on a
-retained degree-24 component with weighted common-base contribution at most four. -/
+/-- After any invertible constant change of curvature coordinates, the powered
+graph has degree at least `56m + 60n` on a retained degree-24 component with
+weighted common-base contribution at most four. -/
 theorem retained_polar_linearJointGraph_degree_of_base_degree_le_four
     {a b i δ N m n : ℕ} {c₀ : ℤ}
     (G : Matrix (Fin 3) (Fin 3) ℚ) (hG : IsUnit G.det) (hm : 0 < m) (hn : 0 < n)

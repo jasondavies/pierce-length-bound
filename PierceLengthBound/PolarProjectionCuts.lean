@@ -10,9 +10,9 @@ public import PierceLengthBound.JointLiftNormalizationCut
 public import PierceLengthBound.JointLiftPointBox
 public import PierceLengthBound.JointLiftGraphDegree
 
-/-! Polynomial cuts retaining the actual affine polar identities on prime curves.
-The three identities either hold on the whole component or cut out a uniformly
-bounded number of supported states of one complete minor pattern. -/
+/-! Polynomial cuts for the affine polar identities `J W_j = A² V_j` on prime
+curves. The three identities either hold on the whole component or cut out a
+uniformly bounded number of supported states of one complete minor pattern. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -100,7 +100,8 @@ lemma orbitPolarIdentityPolynomial_congr {a b i l : ℕ}
   simp only [orbitPolarIdentityPolynomial, jointRankFivePolynomial,
     hN, hD, hV, h0, hρ, hu, hv, hρ', hu', hv']
 
-/-- Any failed polar identity gives an absolute degree-250 section. -/
+/-- If one polar identity polynomial is not in the prime `I`, it is a section of
+degree at most 250, so at most `250 d` states of one pattern lie on the curve. -/
 theorem orbitPolarIdentityPolynomial_proper_cut {a b i d : ℕ} (hba : b < a)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
     (hd : ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,

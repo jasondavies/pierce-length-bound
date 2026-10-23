@@ -12,8 +12,7 @@ import Mathlib.Tactic
 
 /-! The quadratic extension which distinguishes the two branches above an infinity location.
 The absolute scale is an independent variable. Its odd rational-function degree proves that
-`a Δ / A` is not a square, for every nonzero dividend and every nonzero location invariant.
-These are unconditional algebraic statements; no specialization-counting estimate is assumed. -/
+`a Δ / A` is not a square, for every nonzero dividend and every nonzero location invariant. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

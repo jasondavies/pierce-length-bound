@@ -7,9 +7,10 @@ module
 
 public import PierceLengthBound.PolarProjectionExponent
 
-/-! Window reduction for polar projection. The counting estimate is an explicit input
-here and is proved in `PolarProjectionMain`. The arithmetic below includes all three
-bad-pattern box terms. -/
+/-! Window reduction for the polar projection. Each branch of the window
+count of Proposition 10.7 gives `T ≤ C (K + 1) Δ^e a^α`: good patterns through the
+lattice-joint branches at graph degree `60n + 56m`, bad patterns through the
+three terms of `X^{14/3} max(H, S, Y)^{1/17}`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -20,7 +21,7 @@ def PolarBadCountBranches (K T H X S Y : ℕ) : Prop :=
   T ^ 51 ≤ K * X ^ 238 * H ^ 3 ∨ T ^ 51 ≤ K * X ^ 238 * S ^ 3 ∨
     T ^ 51 ≤ K * X ^ 238 * Y ^ 3
 
-/-- Good patterns use degree `60n+56m`; bad patterns keep the old degree-17 graph. -/
+/-- Good patterns use degree `60n+56m`; bad patterns use the degree-17 unpowered graph. -/
 def PolarProjectionCountBranches (K T H X S Y m n : ℕ) : Prop :=
   LatticeJointCountBranches K T H X S Y (polarProjectionGraphDegree m n) m n ∨
     PolarBadCountBranches K T H X S Y
@@ -31,7 +32,7 @@ def polarBadWindowBase : ℕ :=
     ((56 * 8) ^ 3 + (9472 * 56 ^ 3) ^ 3 + (1259991040 * 56 ^ 10 * 8 ^ 5) ^ 3)
 
 set_option exponentiation.threshold 3000 in
-/-- The enlarged bad-pattern contribution is still below exponent `5/17`. -/
+/-- Each bad-pattern branch gives the window bound at every exponent `α ≥ 5/17`. -/
 theorem window_real_of_polar_bad_count {a A T Δ K : ℕ} {α : ℝ}
     (hα : (5 : ℝ) / 17 ≤ α) (hT : 36 ≤ T)
     (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3)
@@ -101,7 +102,9 @@ def polarProjectionWindowBase (m n : ℕ) : ℕ :=
 def polarProjectionWindowDeltaExponent (m n : ℕ) : ℕ :=
   latticeWindowDeltaExponent (polarProjectionGraphDegree m n) n + 491
 
-/-- Every polar counting branch implies the stated window exponent. -/
+/-- Each branch of `PolarProjectionCountBranches` gives the window bound at
+every exponent `α` that dominates `5/17` and the three lattice exponents at
+degree `60n + 56m`. -/
 theorem window_real_of_polar_projection_count {a A T Δ K m n : ℕ} {α : ℝ}
     (hm : 0 < m) (hα : (5 : ℝ) / 17 ≤ α)
     (hHexp : latticeExponentH (polarProjectionGraphDegree m n) ≤ α)

@@ -8,7 +8,7 @@ module
 public import PierceLengthBound.PolarProjectionNormalizedSection
 public import PierceLengthBound.PolarProjectionBaseDegree
 
-/-! Comparing the actual scalar-zero common-base contribution with a local
+/-! Comparing the scalar-zero common-base contribution with a local
 hyperplane section. A valuation-center condition transports precisely the
 branches where the common coordinates vanish to the local normalization. -/
 
@@ -52,9 +52,10 @@ theorem common_order_le_section_order {R L ι : Type*}
     rw [map_mul, ν.map_mul]
     simpa only [zero_add] using add_le_add (hR r) hx
 
-/-- A local section through the common base point bounds the actual
-residue-weighted common-base contribution. The center hypothesis concerns
-regularity on the local curve ring; no multiplicity is assumed. -/
+/-- A nonzero element `a` of the coordinate ideal of a one-dimensional local
+curve ring bounds the residue-weighted common-base contribution by the colength
+of `a`. The center hypothesis says that every zero branch of `D` on which the
+coordinates vanish is regular on the local ring. -/
 theorem functionCommonBaseDegree_le_local_section {R S L ι : Type*}
     [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R]
     [Ring.KrullDimLE 1 R] [Algebra ℚ R]

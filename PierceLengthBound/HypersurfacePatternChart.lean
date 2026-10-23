@@ -7,7 +7,9 @@ module
 
 public import PierceLengthBound.MinorCount
 
-/-! Rational maximal-minor charts and polynomial denominator clearing. -/
+/-! Rational maximal-minor charts of the Plücker cone, properness of a polynomial
+on the cone, and clearing of the chart denominator: a proper polynomial pulls
+back to a nonzero polynomial on every signed chart. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -71,6 +73,7 @@ lemma minorChartNumerator_w {R : Type*} [CommRing R]
   simp [minorChartNumerator, chartPivot_ne t i, chartCompanion_ne t i,
     (chartIndex_injective t).2.2.eq_iff]
 
+/-- On a Plücker vector, the chart numerators at pivot `t` are `p t * p j`. -/
 lemma minorChartNumerator_reconstruct {p : Fin 10 → ℚ} (hp : PluckerRel p)
     (t j : Fin 10) :
     minorChartNumerator t (p t) (uVec p t) (vVec p t) j = p t * p j := by
@@ -87,10 +90,11 @@ lemma minorChartNumerator_reconstruct {p : Fin 10 → ℚ} (hp : PluckerRel p)
   · rw [minorChartNumerator_w]
     exact (hp t i).symm
 
-/-- The rational chart reconstructs every Plücker vector whose chosen pivot is nonzero. -/
+/-- The rational point of the chart: the numerators divided by the pivot `m`. -/
 def minorChartPoint (t : Fin 10) (m : ℚ) (u v : Fin 3 → ℚ) (j : Fin 10) : ℚ :=
   minorChartNumerator t m u v j / m
 
+/-- The rational chart reconstructs every Plücker vector whose pivot is nonzero. -/
 lemma minorChartPoint_reconstruct {p : Fin 10 → ℚ} (hp : PluckerRel p)
     (t : Fin 10) (ht : p t ≠ 0) :
     minorChartPoint t (p t) (uVec p t) (vVec p t) = p := by
@@ -98,7 +102,8 @@ lemma minorChartPoint_reconstruct {p : Fin 10 → ℚ} (hp : PluckerRel p)
   rw [minorChartPoint, minorChartNumerator_reconstruct hp]
   exact mul_div_cancel_left₀ _ ht
 
-/-- Clear a common denominator in a polynomial substitution without a homogeneity assumption. -/
+/-- Clear a common denominator `d` in the substitution of `N / d` into an arbitrary
+polynomial `F`. -/
 theorem exists_cleared_polynomial {σ τ : Type*} (F : MvPolynomial σ ℚ)
     (d : MvPolynomial τ ℚ) (N : σ → MvPolynomial τ ℚ) :
     ∃ e : ℕ, ∃ B : MvPolynomial τ ℚ, ∀ x : τ → ℚ, eval x d ≠ 0 →
@@ -173,8 +178,10 @@ theorem properOnMinorCone_nonzero_pivot {F : MvPolynomial (Fin 10) ℚ}
   rw [map_mul, hP, eval_universalMinor] at hx
   exact ⟨fun r c => x (r, c), (mul_ne_zero_iff.mp hx).2, (mul_ne_zero_iff.mp hx).1⟩
 
-/-- Polynomial clearing of the rational chart, with a nonzero pullback on every pivot.
-The sign `s` may in particular be either `1` or `-1`. -/
+/-- Clearing denominators in the chart at pivot `t`, with pivot value `s m` for a
+fixed `s ≠ 0` (used with `s = ±1`), gives a nonzero polynomial `B` in `(v, m, u)`
+that vanishes at the chart coordinates of every integral Plücker vector with
+nonzero pivot on which `F` vanishes. -/
 theorem exists_minorChart_polynomial {F : MvPolynomial (Fin 10) ℚ}
     (hF : ProperOnMinorCone F) (t : Fin 10) (s : ℚ) (hs : s ≠ 0) :
     ∃ B : MvPolynomial (Fin 3 ⊕ Fin 4) ℚ, B ≠ 0 ∧

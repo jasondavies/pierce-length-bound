@@ -9,9 +9,10 @@ public import PierceLengthBound.PolarProjectionLocalEstimate
 public import PierceLengthBound.PolarProjectionOptimization
 public import PierceLengthBound.FixedDividendGlobalReduction
 
-/-! Global consequences of the local polar estimate. This module keeps the six-term estimate
-as an explicit input. `PolarProjectionMain` supplies its proof from the degree-24 branch sieve,
-the actual common-base bound and the exceptional-pattern counts. -/
+/-! Global consequences of the local polar estimate. The six-term estimate
+`PolarProjectionSixTermEstimate` is a hypothesis here; `PolarProjectionMain`
+proves it from the degree-twelve branch sieve, the common-base bound and the
+exceptional-pattern counts. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -47,7 +48,8 @@ theorem P_le_polar_projection_of_six_term_count (m n : ℕ) (hm : 0 < m)
     selectedAllMinorHeight, selectedRankFiveHeight] using
     hcount a b s _ (2 ^ k) hba W.mem hsT (by omega) hscale
 
-/-- The explicit rational polar exponent, conditional on its local counting estimate. -/
+/-- The rational polar exponent `4317/14677` (powers `m = 3`, `n = 2`), from the
+six-term estimate for these powers. -/
 theorem P_le_4317_14677_of_six_term_count {R : ℕ → ℕ} (hR : SlowGrowth R)
     (hcount : PolarProjectionSixTermEstimate 3 2 R) :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
@@ -55,7 +57,8 @@ theorem P_le_4317_14677_of_six_term_count {R : ℕ → ℕ} (hR : SlowGrowth R)
   simpa only [polarProjection_rational_example.2.2.2.2] using
     P_le_polar_projection_of_six_term_count 3 2 (by decide) hR hcount
 
-/-- Optimization over fixed powers, with each required local estimate explicit. -/
+/-- The optimized polar exponent, from the six-term estimates for all positive
+powers `m`, `n`. -/
 theorem P_le_polar_optimal_of_six_term_estimates
     (hcounts : ∀ m n : ℕ, 0 < m → 0 < n →
       ∃ R : ℕ → ℕ, SlowGrowth R ∧ PolarProjectionSixTermEstimate m n R) :

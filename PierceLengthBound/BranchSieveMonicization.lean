@@ -9,14 +9,17 @@ public import Mathlib.RingTheory.Polynomial.IntegralNormalization
 public import Mathlib.Algebra.Polynomial.AlgebraMap
 import Mathlib.Tactic
 
-/-! Fixed-degree integral normalization. Unlike normalization by the actual
-degree, this polynomial construction commutes with every specialization. -/
+/-! Fixed-degree integral normalization. Unlike `Polynomial.integralNormalization`,
+which uses the degree of `p`, it is built from the coefficients up to a fixed
+degree `n` and so commutes with every coefficient map. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset
 
+/-- `X^n + ∑_{j<n} p_j p_n^(n-1-j) X^j`, the integral normalization at fixed
+degree `n`. -/
 def branchMonicization {R : Type*} [CommSemiring R] (n : ℕ) (p : R[X]) : R[X] :=
   X ^ n + ∑ j ∈ range n, monomial j (p.coeff j * p.coeff n ^ (n - 1 - j))
 
@@ -83,6 +86,8 @@ theorem branchMonicization_irreducible_iff {K : Type*} [Field K]
   rw [branchMonicization_eq_integralNormalization n p hp hn]
   exact branch_integralNormalization_irreducible_iff p hp (by omega)
 
+/-- If the degree-`n` coefficient vanishes, the monicization is
+`X^(n-1) (X + p_(n-1))`. -/
 theorem branchMonicization_eq_of_leading_zero {R : Type*} [CommSemiring R]
     (n : ℕ) (p : R[X]) (hn : 1 ≤ n) (hz : p.coeff n = 0) :
     branchMonicization n p = X ^ (n - 1) * (X + C (p.coeff (n - 1))) := by
@@ -100,6 +105,8 @@ theorem branchMonicization_eq_of_leading_zero {R : Type*} [CommSemiring R]
   · intro hnot
     exact False.elim (hnot (Finset.mem_range.mpr (by omega)))
 
+/-- For `n ≥ 2`, an irreducible monicization has nonzero degree-`n`
+coefficient. -/
 theorem branchMonicization_leading_ne_zero_of_irreducible {K : Type*} [Field K]
     (n : ℕ) (p : K[X]) (hn : 2 ≤ n) (hir : Irreducible (branchMonicization n p)) :
     p.coeff n ≠ 0 := by

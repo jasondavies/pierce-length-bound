@@ -18,8 +18,8 @@ noncomputable section
 open Polynomial
 
 
-/-- The label degree of a determinant is bounded by the sum of bounds for its
-columns. This bound remains valid when the coefficient ring has zero divisors. -/
+/-- The label degree of a determinant over an arbitrary commutative ring is
+bounded by the sum of bounds for its columns. -/
 lemma branch_matrix_det_natDegree_le {R ι : Type*} [CommRing R]
     [Fintype ι] [DecidableEq ι] (M : Matrix ι ι (Polynomial R)) (d : ι → ℕ)
     (hd : ∀ i j, (M i j).natDegree ≤ d j) : M.det.natDegree ≤ ∑ j, d j := by
@@ -30,8 +30,8 @@ lemma branch_matrix_det_natDegree_le {R ι : Type*} [CommRing R]
   exact (Polynomial.natDegree_prod_le _ _).trans
     (Finset.sum_le_sum (fun j _ => hd (σ j) j))
 
-/-- Each coefficient in the eliminated location has degree at most two in the
-label, before imposing any genericity or nonvanishing conditions. -/
+/-- For arbitrary coefficients, each coefficient in the eliminated location has
+degree at most two in the label. -/
 lemma branchLabelEliminand_coeff_natDegree_le {R : Type*} [CommRing R]
     (a A c c1 c2 c3 : R) (j : ℕ) :
     ((branchLabelEliminand a A c c1 c2 c3).coeff j).natDegree ≤ 2 := by
@@ -79,6 +79,8 @@ lemma branchLabelEliminand_eval_C {K : Type*} [CommRing K]
   simp only [branchLabelEliminand, eval_sub, eval_mul, eval_C, eval_pow, eval_X,
     eval_map_apply, map_mul, map_pow]
 
+/-- With nonzero scale and nonzero reconstruction denominator at `t`, the
+evaluated eliminand is a quadratic in the label. -/
 lemma branchLabelEliminand_eval_C_natDegree {K : Type*} [Field K]
     (a A c c1 c2 c3 t : K) (hA : A ≠ 0)
     (hD : (branchLocationDenominator c1 c2 c3).eval t ≠ 0) :
@@ -182,8 +184,8 @@ lemma branchGeneric_sextic_denominator_coprime :
   apply branchGenericDenominator_ne_zero
   exact AdjoinRoot.mk_eq_zero.mpr hd
 
-/-- The explicit generic resultant is nonzero of degree twelve for every
-slope and dividend; these parameters do not affect its leading coefficient. -/
+/-- The generic resultant has degree twelve for every dividend `a` and slope
+`c`. -/
 theorem branchGenericResultantLabel_natDegree (a : ℚ) (c : ℕ) :
     (branchGenericResultantLabel a c).natDegree = 12 := by
   have he : (branchGenericLocationSextic.map

@@ -8,15 +8,19 @@ module
 public import PierceLengthBound.PolarProjectionGoodSection
 public import PierceLengthBound.PolarProjectionSectionCoordinates
 
-/-! The good axis section has colength four in its actual algebraic local
-ring. The proof uses the constructed formal section to determine the
-algebraic section ideal, rather than assuming a completion comparison. -/
+/-! The good axis section has colength four in its algebraic local ring. The
+formal section of `PolarProjectionGoodSection`, written in the section
+coordinates, has vanishing coefficients through order three and a nonzero
+fourth coefficient; `smoothSection_local_colength` turns this into the
+algebraic colength. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open MvPolynomial Matrix
 noncomputable section
 
+/-- Evaluating the section map at `(X, x₀ - z₀)` recovers the cumulative-node
+evaluation of a formal section whose last two gaps are linear in `X`. -/
 theorem polarSectionMap_formal_eval_of_gap_form {K : Type*} [CommRing K]
     (z : Fin 3 → K) (s t : K) (x : Fin 3 → PowerSeries K)
     (hx1 : x 1 = PowerSeries.C (z 1) + PowerSeries.C s * PowerSeries.X)
@@ -34,8 +38,10 @@ theorem polarSectionMap_formal_eval_of_gap_form {K : Type*} [CommRing K]
     fin_cases j <;> simp [hx1, hx2]
   rw [hgaps]
 
-/-- The formal coefficient calculation gives colength four in every model
-of the actual local quadratic section. -/
+/-- If a formal section through the polar base point, with gaps `z₁ + sX` and
+`z₂ + tX`, meets the curve equation with order exactly four, then the curve
+equation has colength four in every localization of the section ring at its
+base ideal. -/
 theorem polar_formal_section_local_colength_four {S : Type*}
     (q : Fin 6 → ℚ) (hguard : polarChartGuard q ≠ 0) (A b s t : ℚ)
     [CommRing S] [IsLocalRing S] [IsNoetherianRing S] [Algebra ℚ S]

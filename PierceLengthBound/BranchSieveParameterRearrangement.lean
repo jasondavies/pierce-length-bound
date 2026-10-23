@@ -10,7 +10,7 @@ public import Mathlib.Algebra.MvPolynomial.Equiv
 import Mathlib.Tactic
 
 /-! Put the first Hilbert parameter in the scalar polynomial ring while
-retaining all other parameters as variables. This is an actual algebra
+retaining all other parameters as variables. The rearrangement is an algebra
 equivalence, so it preserves irreducibility before Kronecker substitution. -/
 
 @[expose] public section

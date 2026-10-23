@@ -11,8 +11,9 @@ public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
 /-! The finite-fiber induction from a one-parameter irreducibility estimate
-to several parameters. Its input concerns one parameter with all remaining
-variables left unspecialized; the Kronecker argument supplies that input. -/
+to several parameters. The one-parameter input specializes the first parameter
+and keeps the remaining ones as variables; `BranchSieveMultivariateHilbert`
+supplies it by Kronecker substitution. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -69,8 +70,9 @@ theorem branch_integer_interval_card {B : ℕ} (S : Finset ℤ)
       obtain ⟨a, ha, rfl⟩ := mem_map.mp hx
       exact hS a ha
 
-/-- Separate exceptional first coordinates from fibers to which the
-induction hypothesis applies. This counts the actual finite set of tuples. -/
+/-- Split a finite set of integer tuples by first coordinate: the exceptional
+first coordinates contribute whole boxes, and every other fiber is bounded by
+the induction hypothesis. -/
 theorem branch_parameter_fiber_count {r B : ℕ} (hB : 1 ≤ B)
     (S : Finset (Fin (r + 1) → ℤ)) (hS : ∀ x ∈ S, ∀ j, |x j| ≤ (B : ℤ))
     (bad : ℤ → Prop) [DecidablePred bad] {Cbad Cgood : ℝ} (hgood0 : 0 ≤ Cgood)
@@ -140,8 +142,10 @@ theorem branch_specialized_log_height_bound (d H B : ℕ) (hB : 1 ≤ B) :
     mul_nonneg (show (0 : ℝ) ≤ d by positivity) hH,
     mul_nonneg (mul_nonneg (show (0 : ℝ) ≤ d by positivity) hH) hLB]
 
-/-- The one-parameter input leaves all other parameters as polynomial
-variables. It concerns irreducibility, not the final multidimensional count. -/
+/-- The one-parameter head estimate: specializing the first parameter at
+integers `|t| ≤ B`, with the other `r` parameters kept as polynomial
+variables, leaves the family irreducible over `ℚ[T₂, …, T_{r+1}]` for all
+but `O((1 + log (H+1))^4 √B (1 + log B))` values of `t`. -/
 def BranchHeadIrreducibilityEstimate (r d : ℕ) (C : ℝ) : Prop :=
   ∀ p : Polynomial (MvPolynomial (Fin (r + 1)) ℤ), p.Monic →
     Irreducible (branchFamilyRational p) → p.natDegree ≤ d →
@@ -153,6 +157,8 @@ def BranchHeadIrreducibilityEstimate (r d : ℕ) (C : ℝ) : Prop :=
       (S.card : ℝ) ≤ C * (1 + Real.log (H + 1 : ℕ)) ^ 4 *
         Real.sqrt B * (1 + Real.log B)
 
+/-- The size `(1 + log (H+1))^4 B^r / √B (1 + log B)^(4r+1)` of the bound in
+Theorem 10.4. -/
 def branchHilbertSize (r H B : ℕ) : ℝ :=
   (1 + Real.log (H + 1 : ℕ)) ^ 4 * ((B : ℝ) ^ r / Real.sqrt B) *
     (1 + Real.log B) ^ (4 * r + 1)
@@ -182,6 +188,9 @@ lemma branchFamilyEval_irreducible_zero
       exact Fin.elim0 i
   rwa [he] at h
 
+/-- The size bookkeeping of one induction step: the bad first coordinates
+and the good fibers, of specialized height `(d+1) H B^d`, together fit the
+size for `r + 1` parameters. -/
 theorem branch_parameter_induction_size (r d H B : ℕ) (hB : 1 ≤ B)
     {C₁ C₂ : ℝ} (hC₁ : 0 ≤ C₁) (hC₂ : 0 ≤ C₂) :
     C₁ * (1 + Real.log (H + 1 : ℕ)) ^ 4 * Real.sqrt B * (1 + Real.log B) *

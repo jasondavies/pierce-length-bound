@@ -18,6 +18,7 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset
 
+/-- The signed coefficients of `p` keep the coefficient degree bound. -/
 theorem branch_signed_coefficients_degree (p : ℤ[X][X]) (n D : ℕ)
     (hD : ∀ j, (p.coeff j).natDegree ≤ D) (i : Fin n) :
     (branchSignedCoefficients p n i).natDegree ≤ D := by
@@ -26,6 +27,7 @@ theorem branch_signed_coefficients_degree (p : ℤ[X][X]) (n D : ℕ)
   rw [he]
   exact (natDegree_C_mul_le _ _).trans (hD _)
 
+/-- The signed coefficients of `p` keep the coefficient height bound. -/
 theorem branch_signed_coefficients_height (p : ℤ[X][X]) (n H : ℕ)
     (hH : ∀ i j, |(p.coeff i).coeff j| ≤ (H : ℤ)) (i : Fin n) (j : ℕ) :
     |(branchSignedCoefficients p n i).coeff j| ≤ (H : ℤ) := by
@@ -34,6 +36,9 @@ theorem branch_signed_coefficients_height (p : ℤ[X][X]) (n H : ℕ)
   rw [he, coeff_C_mul, abs_mul, abs_pow]
   simpa using hH (n - (i.val + 1)) j
 
+/-- The universal resolvents of all factor-coefficient expressions, evaluated at
+the signed coefficients of `p`, are monic with total degree at most `M` and
+height at most `C (H + 1)^E`, with constants depending only on `n` and `D`. -/
 theorem branch_uniform_resolvent_bounds (n D : ℕ) :
     ∃ M E C : ℕ, 0 < C ∧ ∀ (p : ℤ[X][X]) (H : ℕ),
       (∀ j, (p.coeff j).natDegree ≤ D) →
@@ -71,6 +76,8 @@ theorem branch_uniform_resolvent_bounds (n D : ℕ) :
     have hC : c x ≤ C := (le_sup (mem_univ x)).trans (Nat.le_succ _)
     exact_mod_cast Nat.mul_le_mul hC (Nat.pow_le_pow_right (by omega) hE)
 
+/-- Minimal polynomials over `ℤ[X]` of the coefficients of monic factors of `p`
+have total degree and height bounded uniformly in terms of `n`, `D` and `H`. -/
 theorem branch_uniform_integral_minpoly_bounds (n D : ℕ) :
     ∃ M E C : ℕ, 0 < C ∧ ∀ (L : Type*) [Field L]
       [Algebra ℤ[X] L] [FaithfulSMul ℤ[X] L],

@@ -7,8 +7,9 @@ module
 public import PierceLengthBound.PolarProjectionOrbitBase
 public import PierceLengthBound.PolarProjectionLocalAxisBound
 
-/-! The actual residue-weighted polar common-base contribution is at most
-four on every retained component outside the fixed exceptional hypersurface. -/
+/-! The common-base divisor (Lemma 10.2): on every retained orbit component of
+a pattern with `polarChartGuard ≠ 0` and `polarInitialMinor ≠ 0`, the
+residue-weighted common-base degree of the polar coordinates is at most four. -/
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open MvPolynomial
@@ -19,6 +20,10 @@ set_option synthInstance.maxHeartbeats 400000 in
 -- The affine component, its local ring and both normalizations share a fraction field.
 set_option maxHeartbeats 400000 in
 -- Constructing these scalar towers takes about 160000 heartbeats; keep a margin.
+/-- The common-base degree of the polar coordinates `W` on a retained orbit
+component is at most four (Lemma 10.2). If the polar base point lies on the
+component, it is bounded by the colength of a centered node gap in the local
+ring there; otherwise it is zero. -/
 theorem retained_polar_base_degree_le_four
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

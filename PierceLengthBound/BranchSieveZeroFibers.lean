@@ -8,14 +8,16 @@ module
 public import PierceLengthBound.BranchSieveIntegralRootCount
 import Mathlib.Tactic
 
-/-! The finitely many identically zero fibers can be counted without assuming
-any nonvanishing leading coefficient at the parameters being counted. -/
+/-! A nonzero plane polynomial has at most its parameter degree many
+identically zero integer fibers. Hence the integral root count extends to all
+parameters, with an additive term equal to the parameter degree. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
 
+/-- Restriction of a plane polynomial to the horizontal line at height `y`. -/
 def branchHorizontalPolynomial (y : ℤ) : MvPolynomial (Fin 2) ℤ →+* Polynomial ℤ :=
   eval₂Hom Polynomial.C ![Polynomial.X, Polynomial.C y]
 
@@ -64,8 +66,8 @@ theorem branch_zero_fiber_card_le (p : MvPolynomial (Fin 2) ℤ) (hp : p ≠ 0)
   rw [show q.eval t = eval ![t, v 1] p from branchHorizontalPolynomial_eval _ _ _]
   rw [← branchFiberPolynomial_eval, hS t ht, Polynomial.eval_zero]
 
-/-- The root-count theorem includes every parameter; zero fibers contribute
-only the displayed additive parameter-degree term. -/
+/-- The integral root count over all parameters: those with identically zero
+fiber contribute at most the additive term `p.degreeOf 0`. -/
 theorem branch_integral_root_count_all_fibers :
     ∃ C : ℝ, 0 < C ∧ ∀ (p : MvPolynomial (Fin 2) ℤ),
       Irreducible (branchRationalPolynomial p) → ∀ H B e : ℕ,

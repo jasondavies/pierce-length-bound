@@ -37,7 +37,8 @@ coefficient contribution to the CCDN radius factor into an absolute constant. -/
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
-/-- The large coefficient factor costs only `exp 1` after degree amplification. -/
+/-- When `log K ≤ e` and `e n ≤ D`, the coefficient height `K` contributes at
+most a factor `exp 1` to the radius `(K B^e)^(1/D)`. -/
 theorem branch_sheared_radius_rpow_le {K B : ℝ} {e n D : ℕ}
     (hK : 1 ≤ K) (hB : 1 ≤ B) (he : 0 < e) (hn : 0 < n)
     (hD : e * n ≤ D) (hlog : Real.log K ≤ e) :
@@ -61,8 +62,9 @@ theorem branch_sheared_radius_rpow_le {K B : ℝ} {e n D : ℕ}
   rw [Real.mul_rpow (by linarith : 0 ≤ K) (by positivity : 0 ≤ B ^ e)]
   exact mul_le_mul hcoeff hparameter (by positivity) (Real.exp_pos 1).le
 
-/-- The complete degree-height tradeoff. The exponent of the parameter box
-is the reciprocal root-variable degree, independently of coefficient height. -/
+/-- The degree-height tradeoff for `CCDN.curveBound`: the exponent of the
+parameter box is the reciprocal root-variable degree `1/n`, independently of
+the coefficient height `K`. -/
 theorem branch_sheared_curveBound_le {K B : ℝ} {e n D d : ℕ}
     (hK : 1 ≤ K) (hB : 1 ≤ B) (he : 0 < e) (hn : 0 < n)
     (hDlo : e * n ≤ D) (hDhi : D ≤ e * d) (hlog : Real.log K ≤ e) :

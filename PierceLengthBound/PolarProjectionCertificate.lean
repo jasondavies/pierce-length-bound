@@ -7,16 +7,17 @@ module
 
 public import PierceLengthBound.PolarProjectionNewton
 
-/-! Exact rational certificate for the quartic initial forms at the polar base point.
-This module certifies the polynomial computations; it does not assume a theorem
-identifying a local initial form with the degree of a divisor on the normalization. -/
+/-! Exact rational certificate for the quartic initial forms at the polar base point
+of the rational data `(ρ, u, v, ρ', u', v') = (2, 5, -3, 3, 6, -5)`: the first Newton
+quartic, the first-order remainder and norm along the tangent plane, the expansion
+of their resultant, and the resulting nonzero two-axis minor. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open Polynomial Matrix
 noncomputable section
 
-/-- The current Newton quartic at the rational certificate's polar base point. -/
+/-- The first Newton quartic at the rational certificate's polar base point. -/
 def polarCertificateQuartic : ℚ[X] :=
   monicQuartic ![2, -669 / 112, 757 / 112, -20 / 7]
 
@@ -71,8 +72,8 @@ theorem polarCertificate_initial_minor :
   rw [polarCertificateInitialResultant_formula, polarCertificateInitialResultant_formula]
   norm_num [polarCertificateNormLinear]
 
-/-- A nonzero two-axis minor supplies one of two coordinate hyperplane
-sections for every dividend. No general hyperplane coordinate change is needed. -/
+/-- If the two-axis minor `N₀ D₁⁴ - N₁ D₀⁴` is nonzero, then for every `A ≠ 0`
+and every `b` one of the two axis combinations `A Nᵢ - b Dᵢ⁴` is nonzero. -/
 theorem polar_initial_axes_nonzero {K : Type*} [CommRing K] [IsDomain K]
     (N₀ N₁ D₀ D₁ A b : K) (hA : A ≠ 0)
     (hminor : N₀ * D₁ ^ 4 - N₁ * D₀ ^ 4 ≠ 0) :

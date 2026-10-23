@@ -9,10 +9,11 @@ public import PierceLengthBound.BranchSieveSpecialization
 public import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.Tactic
 
-/-! An explicit finite-field irreducibility certificate for the sextic specialization
-used in the branch-sieve argument. All modular arithmetic is checked by the Lean
-kernel. The proof excludes irreducible factors of degrees one, two, and three using
-Frobenius congruences and explicit Bézout identities. -/
+/-! The mod-71 irreducibility certificate for the specialized location sextic
+`E⋆` (Lemma 10.3, Appendix D). All modular arithmetic is checked by the Lean
+kernel. The proof excludes irreducible factors of degrees one, two and three
+using Frobenius congruences and explicit Bézout identities, then lifts
+irreducibility to `ℤ` and `ℚ` through the degree-preserving reduction. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -210,7 +211,7 @@ private lemma not_irreducible_factor_of_frobenius_certificate
     ring
   exact hg.not_isUnit (hcoprime.isUnit_of_dvd' hgf hr)
 
-/-- The sextic defining the six places at infinity is irreducible modulo 71. -/
+/-- The monic reduction of the sextic is irreducible modulo 71. -/
 theorem branchSexticMod71_irreducible : Irreducible branchSexticMod71 := by
   have hf1 : branchSexticMod71 ≠ 1 := by
     intro h
@@ -248,7 +249,7 @@ lemma branchSexticSpecialization_isPrimitive : branchSexticSpecialization.IsPrim
   convert dvd_sub (dvd_add h4 (h0.mul_left 36283)) (h6.mul_left 203743) using 1
   norm_num
 
-/-- The exact specialized sextic is irreducible over the integers. -/
+/-- The specialized sextic is irreducible over the integers. -/
 theorem branchSexticSpecialization_irreducible : Irreducible branchSexticSpecialization := by
   apply primitive_irreducible_of_degree_preserving_specialization (Int.castRingHom (ZMod 71))
     branchSexticSpecialization_isPrimitive
@@ -266,7 +267,8 @@ theorem branchSexticSpecialization_irreducible : Irreducible branchSexticSpecial
     apply IsUnit.mk0
     decide
 
-/-- The characteristic-zero specialization needed for the generic sextic argument. -/
+/-- The specialized sextic is irreducible over `ℚ`; this is the specialization
+used in the generic sextic argument. -/
 theorem branchSexticSpecialization_irreducible_rat :
     Irreducible (branchSexticSpecialization.map (Int.castRingHom ℚ)) :=
   (Polynomial.IsPrimitive.Int.irreducible_iff_irreducible_map_cast

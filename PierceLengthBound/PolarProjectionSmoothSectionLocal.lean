@@ -8,8 +8,11 @@ module
 public import PierceLengthBound.PolarProjectionSectionDVR
 public import PierceLengthBound.PolarProjectionLocalCenter
 
-/-! The local ring of the quadratic hyperplane section through the polar
-base point. Its parameter and formal embedding are constructed explicitly. -/
+/-! The local ring at the origin of the conic
+`a y² + (b₀ + b₁ x) y + c₁ x + c₂ x² = 0`, the restriction of the pattern quadric
+to a plane through the polar base point. When `b₀ ≠ 0`, `x` generates the
+maximal ideal, and a formal root `y(x)` gives a map to power series, so the
+colength of a section is the order of its formal expansion. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -21,6 +24,7 @@ def smoothSectionQuadric {K : Type*} [CommRing K] (a b₀ b₁ c₁ c₂ : K) :
     MvPolynomial (Fin 2) K :=
   C a * X 1 ^ 2 + (C b₀ + C b₁ * X 0) * X 1 + C c₁ * X 0 + C c₂ * X 0 ^ 2
 
+/-- The ideal of the conic `smoothSectionQuadric`. -/
 def smoothSectionIdeal {K : Type*} [CommRing K] (a b₀ b₁ c₁ c₂ : K) :
     Ideal (MvPolynomial (Fin 2) K) := Ideal.span {smoothSectionQuadric a b₀ b₁ c₁ c₂}
 
@@ -35,6 +39,7 @@ def smoothSectionPoint {K : Type*} [Field K] (a b₀ b₁ c₁ c₂ : K) :
     (MvPolynomial (Fin 2) K ⧸ smoothSectionIdeal a b₀ b₁ c₁ c₂) →ₐ[K] K :=
   coordinatePoint _ 0 (smoothSection_origin a b₀ b₁ c₁ c₂)
 
+/-- The maximal ideal of the origin on the conic. -/
 def smoothSectionBaseIdeal {K : Type*} [Field K] (a b₀ b₁ c₁ c₂ : K) :
     Ideal (MvPolynomial (Fin 2) K ⧸ smoothSectionIdeal a b₀ b₁ c₁ c₂) :=
   RingHom.ker (smoothSectionPoint a b₀ b₁ c₁ c₂).toRingHom
@@ -90,8 +95,8 @@ theorem smoothSection_local_formal_map {K R : Type*} [Field K]
 
 set_option synthInstance.maxHeartbeats 200000 in
 -- The quotient and localization use definitionally equal nested algebra carriers.
-/-- The first coordinate generates the maximal ideal of the actual local
-quadratic section whenever its second-coordinate derivative is nonzero. -/
+/-- The first coordinate generates the maximal ideal of the local ring at the
+origin when the derivative `b₀` in the second coordinate is nonzero. -/
 theorem smoothSection_local_parameter {K R : Type*} [Field K]
     (a b₀ b₁ c₁ c₂ : K) (hb₀ : b₀ ≠ 0) [CommRing R] [IsLocalRing R]
     [Algebra (MvPolynomial (Fin 2) K ⧸ smoothSectionIdeal a b₀ b₁ c₁ c₂) R]
@@ -139,9 +144,8 @@ theorem smoothSection_local_parameter {K R : Type*} [Field K]
     (ψ (C c₁) * ψ (X 0) + ψ (C c₂) * ψ (X 0) ^ 2) hm hb
     ⟨ψ (C c₁) + ψ (C c₂) * ψ (X 0), by ring⟩ he
 
-/-- A checked formal initial coefficient determines the colength in the
-actual local quadratic section. Its residue field is proved to be the
-ground field, and its domain property follows from the formal parameter. -/
+/-- If `b₀ ≠ 0` and `y` is a formal root with `y(0) = 0`, the colength of `f`
+in the local ring at the origin is the order `n` of `f(X, y)`. -/
 theorem smoothSection_local_colength {K R : Type*} [Field K]
     (a b₀ b₁ c₁ c₂ : K) (hb₀ : b₀ ≠ 0)
     [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [Algebra K R]

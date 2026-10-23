@@ -17,6 +17,7 @@ open MvPolynomial Matrix
 /-- Variables on the chart are split into the last vertex `v` and the first vertex `(m,u)`. -/
 abbrev HypersurfaceChartPolynomial := MvPolynomial (Fin 3 ⊕ Fin 4) ℚ
 
+/-- The first vertex `(m, u)` as a rational point. -/
 def chartFirstVertex (m : ℕ) (u : Fin 3 → ℤ) : Fin 4 → ℚ :=
   ![(m : ℚ), (u 0 : ℚ), (u 1 : ℚ), (u 2 : ℚ)]
 

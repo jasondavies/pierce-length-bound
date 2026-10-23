@@ -12,8 +12,11 @@ public import Mathlib.Algebra.MvPolynomial.Equiv
 public import Mathlib.Logic.Equiv.Fin.Rotate
 import Mathlib.Tactic
 
-/-! Kronecker substitution with the monic root variable assigned the highest
-radix digit. This guarantees that the encoded family is still monic. -/
+/-! Kronecker substitution with the root variable assigned the highest radix
+digit, so that a monic polynomial in the root variable has monic Kronecker image.
+The root variable is identified with the last of `n + 1` variables, and the
+degree, coefficient and base-change behaviour of this identification are
+recorded. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -46,10 +49,14 @@ theorem branchMultiKronecker_natDegree_lt {R : Type*} [CommSemiring R]
     (fun i => (le_degreeOf_of_mem_support i hs).trans_lt (hp i))
   omega
 
+/-- Kronecker substitution of the coefficients, with the root variable sent to
+`X ^ (a ^ n)`, the highest radix digit. -/
 def branchRootKronecker {R : Type*} [CommSemiring R] (a n : ℕ) :
     Polynomial (MvPolynomial (Fin n) R) →+* Polynomial R :=
   Polynomial.eval₂RingHom (branchMultiKronecker a n) (Polynomial.X ^ (a ^ n))
 
+/-- A monic polynomial whose coefficients have partial degrees below `a` has
+monic Kronecker image. -/
 theorem branchRootKronecker_monic {R : Type*} [CommSemiring R] [Nontrivial R]
     {a n : ℕ} (ha : 0 < a) (p : Polynomial (MvPolynomial (Fin n) R)) (hp : p.Monic)
     (hdeg : ∀ j i, (p.coeff j).degreeOf i < a) :
@@ -87,6 +94,8 @@ theorem branchRootKronecker_monic {R : Type*} [CommSemiring R] [Nontrivial R]
     _ = a ^ n * (j + 1) := by ring
     _ ≤ _ := hmul
 
+/-- Identifies polynomials in the root variable over `n` variables with
+polynomials in `n + 1` variables, the root variable becoming the last one. -/
 def branchRootLastEquiv (R : Type*) [CommSemiring R] (n : ℕ) :
     Polynomial (MvPolynomial (Fin n) R) ≃ₐ[R] MvPolynomial (Fin (n + 1)) R :=
   (MvPolynomial.finSuccEquiv R n).symm.trans
@@ -127,6 +136,8 @@ theorem branchRootLastEquiv_C {R : Type*} [CommSemiring R] (n : ℕ)
       rw [he, rename_X, rename_X, branch_rotate_symm_succ]
   exact DFunLike.congr_fun h p
 
+/-- The root Kronecker substitution is the `(n + 1)`-variable Kronecker
+substitution after `branchRootLastEquiv`. -/
 theorem branchRootKronecker_eq_multi {R : Type*} [CommSemiring R] (a n : ℕ)
     (p : Polynomial (MvPolynomial (Fin n) R)) :
     branchRootKronecker a n p = branchMultiKronecker a (n + 1) (branchRootLastEquiv R n p) := by

@@ -9,18 +9,22 @@ public import PierceLengthBound.PolarProjectionRankFiveDegree
 public import PierceLengthBound.PolarProjectionExceptionalPolynomial
 public import PierceLengthBound.PolarProjectionPointSection
 
-/-! Specialization of the base-point and local-normalization comparisons
-to the actual orbit component and its scalar-cleared polar coordinates. -/
+/-! The polar coordinates on a retained orbit component. The orbit pattern
+parameters are minor-vector ratios; the scalar-cleared polar cuts identify
+`N₀² V` with `J W` in the component's fraction field; and a component missing
+the polar base point contributes nothing to the common-base divisor. -/
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open MvPolynomial
 open scoped IntermediateField
 noncomputable section
 
+/-- The rational pattern parameters `(ρ, u, v, ρ', u', v')` at states `i` and `i + 1`. -/
 def orbitPolarParameters (a b i : ℕ) : Fin 6 → ℚ :=
   ![patternRhoQ a b i, patternUQ a b i, patternVQ a b i,
     patternRhoQ a b (i + 1), patternUQ a b (i + 1), patternVQ a b (i + 1)]
 
+/-- The orbit pattern parameters are read from the ten minor coordinates of `Mᵢ`. -/
 theorem orbitPolarParameters_eq_minor (a b i : ℕ) :
     orbitPolarParameters a b i = polarMinorParameters (fun j => (plk (Mi a b i) j : ℚ)) := by
   have ht := fun j => congrFun (theta_eq (a := a) (b := b) i) j
@@ -41,8 +45,8 @@ theorem orbitPolarParameters_eq_minor (a b i : ℕ) :
   fin_cases j <;> simp [orbitPolarParameters, polarMinorParameters,
     patternRhoQ, patternUQ, patternVQ, h0, h1, h2, h3, h4, h5, h6, Nat.add_assoc]
 
-/-- The retained scalar-zero branches are regular on the actual affine
-coordinate ring; the already proved normalization coverage supplies this. -/
+/-- Every branch at which the rank-five function vanishes is regular on the
+affine coordinate ring of the component. -/
 theorem retained_rank_five_zero_affine_regular
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -68,8 +72,8 @@ theorem retained_rank_five_zero_affine_regular
   change 0 ≤ ν (algebraMap C F (algebraMap A C r)) at hr
   rwa [← IsScalarTower.algebraMap_apply A C F] at hr
 
-/-- The actual retained polar cuts give the coordinate family used by the
-local intersection comparison, over the component's fraction field. -/
+/-- On a component satisfying the polar cuts, the scalar-cleared polar
+coordinates `N₀² V_j` equal `J W_j` in any field containing the coordinate ring. -/
 theorem retained_polar_coordinate_field_identity {a b i : ℕ}
     (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ))
@@ -102,8 +106,8 @@ theorem retained_polar_coordinate_field_identity {a b i : ℕ}
   rw [← map_mul] at he
   exact he.symm
 
-/-- A retained component missing the unique polar base point contributes
-zero to the common-base divisor. This case needs no containment theorem. -/
+/-- A retained component missing the polar base point contributes zero to
+the common-base divisor. -/
 theorem retained_polar_base_degree_zero_of_missing_point
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

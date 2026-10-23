@@ -17,7 +17,8 @@ namespace PierceLengthBound.FixedDividend
 open MvPolynomial Finset
 noncomputable section
 
-/-- The only variable coefficient in a fixed chart count is two divisor maxima. -/
+/-- A fixed nonzero chart polynomial has at most `K (1 + τ_max(X)²) X^(14/3)` zeros
+over the pivots `1 ≤ m ≤ X`. -/
 theorem chart_polynomial_count_tau {B : HypersurfaceChartPolynomial} (hB : B ≠ 0) :
     ∃ K : ℕ, ∀ X : ℕ, 1 ≤ X →
       (∑ m ∈ Icc 1 X, ((chartPolynomialZeros B m).card : ℝ)) ≤
@@ -41,8 +42,9 @@ theorem chart_polynomial_count_tau {B : HypersurfaceChartPolynomial} (hB : B ≠
         (X : ℝ) ^ (14 / 3 : ℝ) := by rw [sum_add_distrib]; nlinarith
     _ ≤ _ := mul_le_mul_of_nonneg_right hc (by positivity)
 
-/-- A fixed hypersurface has an explicit divisor-maximum coefficient at the
-exact exponent 14/3. Every common factor and the zero vector are retained. -/
+/-- A proper polynomial condition `F = 0` holds on at most
+`K (1 + τ_max(X)²) X^(14/3)` integral Plücker vectors of height at most `X`.
+The count includes non-primitive vectors and the zero vector. -/
 theorem hypersurface_pattern_count_tau {F : MvPolynomial (Fin 10) ℚ}
     (hF : ProperOnMinorCone F) :
     ∃ K : ℕ, ∀ X : ℕ, 1 ≤ X → ∀ S : Finset (Fin 10 → ℤ),
@@ -118,9 +120,9 @@ lemma tauMax_coeff_le_rpow : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ X : ℕ, 1 ≤ X
         mul_le_mul_of_nonneg_right h1 (Real.rpow_nonneg hXR.le _)
     _ = _ := by rw [Real.rpow_add hXR]; ring
 
-/-- A fixed nonzero chart polynomial removes one-third of a power from the ordinary
-five-dimensional pattern count. All common divisors and all identically-zero fibers are
-included. The epsilon absorbs only the two divisor-maximum factors. -/
+/-- The `X^(14/3+ε)` form of `chart_polynomial_count_tau`: a fixed nonzero chart
+polynomial has `O_ε(X^(14/3+ε))` zeros over the pivots `1 ≤ m ≤ X`, one-third of a
+power below the `X^5` count of all patterns. -/
 theorem chart_polynomial_count {B : HypersurfaceChartPolynomial} (hB : B ≠ 0) :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ X : ℕ, 1 ≤ X →
       (∑ m ∈ Icc 1 X, ((chartPolynomialZeros B m).card : ℝ)) ≤
@@ -132,8 +134,9 @@ theorem chart_polynomial_count {B : HypersurfaceChartPolynomial} (hB : B ≠ 0) 
   rw [mul_assoc, mul_assoc]
   exact mul_le_mul (by linarith) (hc X hX) (by positivity) (by positivity)
 
-/-- A proper fixed polynomial condition cuts the height-X integral Plücker cone in
-`O(F,ε)(X^(14/3+ε))` vectors. All signs and common factors, and the zero vector, are included. -/
+/-- The `X^(14/3+ε)` form of `hypersurface_pattern_count_tau`: a proper polynomial
+condition `F = 0` holds on `O_{F,ε}(X^(14/3+ε))` integral Plücker vectors of height
+at most `X`, counting non-primitive vectors and the zero vector. -/
 theorem hypersurface_pattern_count {F : MvPolynomial (Fin 10) ℚ}
     (hF : ProperOnMinorCone F) :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ X : ℕ, 1 ≤ X → ∀ S : Finset (Fin 10 → ℤ),

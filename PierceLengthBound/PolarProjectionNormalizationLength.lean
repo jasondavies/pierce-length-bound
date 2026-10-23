@@ -11,9 +11,10 @@ public import Mathlib.RingTheory.Localization.Integer
 public import Mathlib.RingTheory.Finiteness.Quotient
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 
-/-! Finite-colength sections are unchanged by an injective extension with
-finite-dimensional defect. This is the linear-algebra step in comparing a
-singular curve section with its normalization. -/
+/-! The colength of a nonzero section is unchanged under an injective algebra
+extension with finite-dimensional defect, in particular under a finite
+birational extension of a one-dimensional Noetherian local domain such as its
+normalization. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -57,8 +58,8 @@ theorem local_curve_section_finite {K R : Type*} [Field K]
     (isFiniteLength_quotient_span_singleton R (mem_nonZeroDivisors_iff_ne_zero.mpr ha))
 
 /-- Restricting an injective endomorphism to an invariant subspace of finite
-codimension preserves its cokernel dimension. Neither ambient space needs to
-be finite-dimensional. -/
+codimension preserves its cokernel dimension. The ambient spaces may be
+infinite-dimensional. -/
 theorem section_finrank_eq_of_finite_defect {K U V : Type*} [Field K]
     [AddCommGroup U] [Module K U] [AddCommGroup V] [Module K V]
     (j : U →ₗ[K] V) (hj : Function.Injective j)

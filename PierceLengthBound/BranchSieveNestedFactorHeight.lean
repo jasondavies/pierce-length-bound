@@ -24,6 +24,9 @@ theorem branch_nested_totalDegree_le_of_dvd {R : Type*} [CommRing R] [IsDomain R
   rw [CCDN.bivariateTotalDegree_mul q r (left_ne_zero_of_mul hp) (right_ne_zero_of_mul hp)]
   omega
 
+/-- A factor of a nonzero nested integer polynomial of total degree at most
+`d` and coefficient height at most `H` has coefficient height at most
+`2^((d+1)d) ((d+1)d + 1) (d+1)^2 H`. -/
 theorem branch_nested_factor_coeff_height (p : ℤ[X][X]) (hp : p ≠ 0) {d H : ℕ}
     (hd : CCDN.bivariateTotalDegree p ≤ d)
     (hH : ∀ i j, |(p.coeff i).coeff j| ≤ (H : ℤ))

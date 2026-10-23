@@ -14,7 +14,8 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Matrix
 
-/-- The unequal-side form of Schwartz--Zippel needed in a reduced lattice basis. -/
+/-- Schwartz–Zippel on a product grid with unequal sides: a nonzero ternary polynomial
+of degree `D` has at most `D (|S₀||S₁| + |S₀||S₂| + |S₁||S₂|)` zeros. -/
 theorem ternary_polynomial_grid_count {f : MvPolynomial (Fin 3) ℚ} (hf : f ≠ 0)
     (S : Fin 3 → Finset ℚ) (hS : ∀ i, (S i).Nonempty) :
     (((Fintype.piFinset S).filter fun x => eval x f = 0).card : ℝ) ≤
@@ -86,8 +87,9 @@ lemma rationalIntegerInterval_card {R : ℝ} (hR : 1 ≤ R) :
       ring
     _ ≤ 3 * R := by linarith [Int.floor_le R]
 
-/-- The rectangular integer grid contributes at most `243 D X² / L` zeros when every
-pair of basis lengths has product at least `L`. -/
+/-- On the integer grid with sides `[-3X/ℓᵢ, 3X/ℓᵢ]`, a nonzero ternary polynomial of
+degree `D` has at most `243 D X² / L` zeros when `ℓᵢ ≤ 3X` and every pair of lengths
+has product at least `L`. -/
 theorem ternary_polynomial_weighted_grid_count {f : MvPolynomial (Fin 3) ℚ} (hf : f ≠ 0)
     {X L : ℝ} (hX : 0 < X) (hL : 0 < L) (ℓ : Fin 3 → ℝ)
     (hℓ : ∀ i, 0 < ℓ i) (hsmall : ∀ i, ℓ i ≤ 3 * X)
@@ -124,8 +126,9 @@ theorem ternary_polynomial_weighted_grid_count {f : MvPolynomial (Fin 3) ℚ} (h
       linarith
     _ = _ := by ring
 
-/-- A finite set with bounded integral coordinates in an invertible rational basis obeys
-the weighted polynomial zero estimate. -/
+/-- If every point of `T` has integral coordinates `y` in an invertible rational basis
+with `ℓᵢ |yᵢ| ≤ 3X`, a nonzero ternary polynomial of degree `D` vanishes at most
+`243 D X² / L` times on `T`. -/
 theorem polynomial_integer_set_count_of_coordinates
     {f : MvPolynomial (Fin 3) ℚ} (hf : f ≠ 0)
     (T : Finset (Fin 3 → ℤ)) (C : Matrix (Fin 3) (Fin 3) ℚ) (hC : C.det ≠ 0)

@@ -10,16 +10,15 @@ public import PierceLengthBound.RawDeterminantTotalDegree
 public import PierceLengthBound.ChartDiscreteOrders
 public import PierceLengthBound.IntegralLiftQuotientNormalization
 
-/-! Exact raw Hankel determinant orders on the actual nonexceptional chart.
-The degree-six Vandermonde dominates its entire degree-at-most-five remainder. -/
+/-! Exact orders of the node differences and the raw Hankel determinants at
+valuations centered on the infinity section of a nonexceptional component.
+For the fourth determinant the degree-six Vandermonde term dominates the
+remainder of degree at most five. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open MvPolynomial
 noncomputable section
-
-/-! Exact orders of all original node differences at valuations centered on
-the actual nonexceptional infinity section. -/
 
 lemma completeDirection_mul_right {R : Type*} [CommRing R]
     (ρ u v : R) (z : Fin 3 → R) (w : R) (j : Fin 5) :
@@ -29,8 +28,8 @@ lemma completeDirection_mul_right {R : Type*} [CommRing R]
     Matrix.head_cons, Matrix.tail_cons, zero_mul]
   all_goals ring
 
-/-- Every pair of distinct original nodes has exactly the original infinity
-pole order, with no additional noncollision hypothesis on the valuation. -/
+/-- At a valuation nonnegative on the chart with `ord((ι l)⁻¹) = e > 0`, every
+difference of two distinct nodes has order exactly `-e`. -/
 theorem nonexceptional_node_difference_discrete_order
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)
@@ -87,10 +86,9 @@ theorem nonexceptional_node_difference_discrete_order
   congr 1
   omega
 
-/-- Both consecutive raw cubic determinants have order -3e and the fourth
-determinant has order -6e at every centered discrete
-valuation of an actual nonexceptional component. Their leading nonvanishing
-and the lower-term bounds are derived from the chart, not supplied as premises. -/
+/-- At a valuation nonnegative on the chart of a nonexceptional component with
+`ord((ι l)⁻¹) = e > 0`, both consecutive raw cubic determinants have order `-3e`
+and the fourth determinant has order `-6e`. -/
 theorem nonexceptional_raw_determinant_discrete_orders
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ)

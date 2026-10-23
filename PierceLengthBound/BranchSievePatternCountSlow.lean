@@ -8,8 +8,10 @@ module
 public import PierceLengthBound.BranchSievePatternCount
 public import PierceLengthBound.PolarProjectionCountAssembly
 
-/-! Absorb the completion logarithm on the actual polynomial-sized orbit
-windows. The vertex sieve and the geometric count have matching interfaces. -/
+/-! The bad-pattern count on selected orbit windows. Their minor height is at
+most `10^16 a^7`, so the completion logarithm is slowly growing in `a`, and the
+exponent `9/2` of the full-pattern count is raised to the `14/3` of
+`PolarBadPatternCount`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -17,6 +19,9 @@ noncomputable section
 open Finset
 
 open Classical in
+/-- A scaled-vertex sieve bound `R a · B^(7/2)` for dilations `g` and boxes `B`
+up to `2 · 10^16 a^7` gives `PolarBadPatternCount` for the patterns whose
+branch-sieve vertex is bad, with a slowly growing coefficient. -/
 theorem selected_branch_pattern_count_slow
     (good : ℕ → (Fin 4 → ℤ) → Prop) {R : ℕ → ℕ} (hR : SlowGrowth R)
     (hcount : ∀ a : ℕ, 0 < a → ∀ g B : ℕ,

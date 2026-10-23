@@ -8,7 +8,8 @@ module
 public import PierceLengthBound.HypersurfacePatternChart
 public import PierceLengthBound.HypersurfacePatternCountPolynomial
 
-/-! A finite cover of exceptional integral Plücker vectors by signed rational charts. -/
+/-! A finite cover of the integral Plücker vectors on a proper hypersurface by the
+twenty signed rational charts (pivot index and pivot sign). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -22,7 +23,8 @@ def minorChartSign (b : Bool) : ℚ := if b then 1 else -1
 lemma minorChartSign_ne_zero (b : Bool) : minorChartSign b ≠ 0 := by
   cases b <;> norm_num [minorChartSign]
 
-/-- Chart zeros with the actual cross-congruence and coordinate box. -/
+/-- Zeros of a chart polynomial at pivot `m` among the pairs `(u, v) ∈ crossSet m`
+(coordinate box and cross-congruence modulo `m`). -/
 def chartPolynomialZeros (B : HypersurfaceChartPolynomial) (m : ℕ) :
     Finset ((Fin 3 → ℤ) × (Fin 3 → ℤ)) :=
   (crossSet m).filter fun uv =>
@@ -52,6 +54,7 @@ lemma pivot_signed_natAbs (p : Fin 10 → ℤ) :
     rw [abs_of_nonpos (by omega)] at he
     exact_mod_cast (by omega : p (piv p) = -((p (piv p)).natAbs : ℤ))
 
+/-- The chart coordinates at the maximal pivot `t` lie in `crossSet |p t|`. -/
 lemma pivot_chart_crossSet {p : Fin 10 → ℤ} (hp : PluckerRel p) :
     (uVec p (piv p), vVec p (piv p)) ∈ crossSet (p (piv p)).natAbs := by
   let t := piv p
@@ -86,6 +89,7 @@ lemma pivot_chart_crossSet {p : Fin 10 → ℤ} (hp : PluckerRel p) :
     have h2 := (sign_sq t i).2.2
     linear_combination (-pwS t i) * h1 - (uVec p t ⨯₃ vVec p t) i * h2
 
+/-- Decoding the chart coordinates at the maximal pivot recovers `p`. -/
 lemma minorChartDecode_pivot {p : Fin 10 → ℤ} (hp : PluckerRel p)
     (ht : p (piv p) ≠ 0) :
     minorChartDecode (piv p) (decide (0 < p (piv p))) (p (piv p)).natAbs
@@ -121,7 +125,9 @@ theorem exists_minorChart_equations {F : MvPolynomial (Fin 10) ℚ}
   rw [chartFirstVertex_eq_cons]
   exact hB (piv p) (decide (0 < p (piv p))) p hp ht hFzero _ (pivot_signed_natAbs p)
 
-/-- The finite cover retains all common factors and both signs of the maximal pivot. -/
+/-- Plücker vectors of height at most `X` whose chart coordinates at the maximal pivot
+are zeros of the signed chart polynomials number at most the sum of the chart zero
+counts over all pivots, both signs and `1 ≤ m ≤ X`. Non-primitive vectors are included. -/
 theorem minor_patterns_card_le_chart_sum (B : Fin 10 → Bool → HypersurfaceChartPolynomial)
     {S : Finset (Fin 10 → ℤ)} {X : ℕ}
     (hS : ∀ p ∈ S, (∀ j, |p j| ≤ X) ∧ PluckerRel p ∧ p (piv p) ≠ 0 ∧

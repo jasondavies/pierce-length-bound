@@ -9,16 +9,19 @@ public import Mathlib.NumberTheory.MahlerMeasure
 public import Mathlib.Data.Nat.Choose.Bounds
 import Mathlib.Tactic
 
-/-! A coefficient-height bound for integer polynomial factors. The bound
-depends only on the original degree and coefficient height. It is needed
-when the universal factor-resolvent polynomial is split into irreducible
-components before applying the integral-root count. -/
+/-! A coefficient-height bound for integer polynomial factors via the Mahler
+measure. The bound depends only on the degree and coefficient height of the
+original polynomial. Through Kronecker substitution it gives the bivariate and
+nested factor-height bounds used when resolvents are split into irreducible
+factors. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset
 
+/-- The Mahler measure of an integer polynomial of degree at most `d` and
+height at most `H` is at most `(d + 1) H`. -/
 theorem branch_integer_polynomial_mahlerMeasure_le (p : ℤ[X]) {d H : ℕ}
     (hd : p.natDegree ≤ d) (hH : ∀ j, |p.coeff j| ≤ (H : ℤ)) :
     (p.map (Int.castRingHom ℂ)).mahlerMeasure ≤ ((d + 1) * H : ℕ) := by

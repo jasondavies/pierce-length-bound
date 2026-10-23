@@ -8,14 +8,17 @@ module
 public import PierceLengthBound.PolarProjectionBasePoint
 public import PierceLengthBound.FixedDividendCurveEquations
 
-/-! Newton division at the explicit polar base point. -/
+/-! Newton division at the polar base point. Dividing `X R₄` by `P₄` gives
+quotient `X + c_*` and a cubic remainder whose Newton coefficients vanish at the
+explicit base nodes, so the base point lies on the pattern quadric and on every
+fixed-dividend curve. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open Polynomial Matrix
 noncomputable section
 
-/-- Constant term in the quotient of the shifted quintic by the current quartic. -/
+/-- Constant term `c_*` of the quotient of the shifted quintic by the first quartic. -/
 def polarQuotientConstant {R : Type*} [CommRing R] (v v' : R) (s : Fin 4 → R) : R :=
   v' - v - s 3
 
@@ -34,7 +37,7 @@ def polarNewtonRemainder {R : Type*} [CommRing R]
   C (t 0) + C (t 1) * X + C (t 2) * X * (X - C (s 0)) +
     C (t 3) * X * (X - C (s 0)) * (X - C (s 1))
 
-/-- Exact Newton division, valid without imposing the quadric equation. -/
+/-- Exact Newton division over any commutative ring, for arbitrary nodes. -/
 theorem polar_newton_division {R : Type*} [CommRing R]
     (ρ u v ρ' u' v' : R) (s : Fin 4 → R) :
     X * nextNewtonQuartic (fun j : Fin 4 => coeffs ρ' u' v' j.castSucc) s -
@@ -55,6 +58,7 @@ def polarBaseGaps {K : Type*} [Field K] (ρ u v ρ' u' v' : K) : Fin 3 → K :=
   let s := polarBaseNodes ρ u v ρ' u' v'
   ![s 0, s 1 - s 0, s 2 - s 1]
 
+/-- The explicit base gaps are a zero of the polar vector. -/
 lemma polarBaseGaps_polarVector {K : Type*} [Field K] (ρ u v ρ' u' v' : K)
     (h1 : -ρ - u ≠ 0) (h2 : u - v ≠ 0) (h3 : v - 1 ≠ 0) :
     polarVector ρ u v ρ' u' v' (polarBaseGaps ρ u v ρ' u' v') = 0 := by
@@ -71,6 +75,7 @@ theorem polarBaseGaps_eq_basePoint {K : Type*} [Field K] (ρ u v ρ' u' v' : K)
   (polarVector_eq_zero_iff ρ u v ρ' u' v' hG _).mp
     (polarBaseGaps_polarVector ρ u v ρ' u' v' h1 h2 h3)
 
+/-- The Newton remainder coefficients vanish at the explicit base nodes. -/
 lemma polarBaseNodes_remainderCoefficients {K : Type*} [Field K]
     (ρ u v ρ' u' v' : K)
     (h1 : -ρ - u ≠ 0) (h2 : u - v ≠ 0) (h3 : v - 1 ≠ 0) :
@@ -80,8 +85,8 @@ lemma polarBaseNodes_remainderCoefficients {K : Type*} [Field K]
     simp [polarRemainderCoefficients, polarQuotientConstant, polarBaseNodes,
       h1, h2, h3, mul_div_cancel₀]
 
-/-- At the polar base point the translated next quartic equals the current one,
-so the quintic is precisely `X P`. -/
+/-- At the polar base point the next quartic equals the first one, so the
+quintic is precisely `X P₄`. -/
 theorem polarBaseNodes_newton_identity {K : Type*} [Field K]
     (ρ u v ρ' u' v' : K)
     (h1 : -ρ - u ≠ 0) (h2 : u - v ≠ 0) (h3 : v - 1 ≠ 0) :

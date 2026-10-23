@@ -9,12 +9,12 @@ public import PierceLengthBound.BranchSieveReconstruction
 public import Mathlib.FieldTheory.PrimitiveElement
 import Mathlib.Tactic
 
-/-! A bounded primitive-element choice.  In the degree-twelve generic branch
-algebra, the location plus `c` times the branch sign is primitive for some
-integer slope `c` between zero and 144.  The finite choice is useful when
-constructing a uniform family of branch polynomials: it avoids an uncontrolled
-primitive-element coefficient.  These results do not count reducible
-specializations. -/
+/-! A bounded primitive-element choice for the degree-twelve label
+(Lemma 10.3). In the degree-twelve generic branch algebra, the location plus
+`c` times the branch sign is primitive for some integer slope `0 ≤ c ≤ 144`;
+the bound is the square of the number of embeddings. The paper counts pairs of
+embeddings instead and obtains `0 ≤ c ≤ 66`. A bounded slope keeps the
+resulting family of branch polynomials uniform in the dividend. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -68,7 +68,7 @@ lemma branch_ratFunc_algebraMap_X {F L : Type*} [Field F] [Field L] [Algebra F L
   simp
 
 /-- Over the rational-function base field, homomorphisms are determined by the
-constant coefficient field. The common indeterminate already belongs to the base. -/
+constant coefficient field, since the common indeterminate lies in the base. -/
 theorem branch_ratFunc_algHom_ext {F L K : Type*} [Field F] [Field L] [Field K]
     [Algebra F L] [Algebra (RatFunc F) K]
     (φ ψ : RatFunc L →ₐ[RatFunc F] K)
@@ -89,7 +89,8 @@ instance branchLocationExtension_finiteDimensional :
     FiniteDimensional BranchLocationField BranchLocationExtension :=
   Module.finite_of_finrank_pos (by rw [branchLocationExtension_finrank]; norm_num)
 
-/-- The actual generic branch algebra, before selecting a primitive element. -/
+/-- The generic branch algebra: the branch sign adjoined to the generic
+location field with the absolute scale. -/
 abbrev BranchGenericSignAlgebra (a : ℚ) := AdjoinRoot
   (branchSignPolynomial (algebraMap ℚ BranchLocationExtension a) branchGenericDelta)
 

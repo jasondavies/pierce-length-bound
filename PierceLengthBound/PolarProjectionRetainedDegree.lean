@@ -9,17 +9,19 @@ public import PierceLengthBound.PolarProjectionRetainedBase
 public import PierceLengthBound.PolarProjectionDegreeReduction
 public import PierceLengthBound.BranchSieveResultantLabel
 
-/-! The polar graph degree on actual retained components. The local
-intersection contribution is proved from the explicit nonvanishing conditions;
-the degree-twelve branch polynomial supplies the component degree. -/
+/-! The powered graph degree bound `56m + 60n ≤ δ` on retained orbit
+components: on degree-24 components from the common-base bound of
+`PolarProjectionRetainedBase`, and in general from irreducibility of the
+degree-twelve label polynomial, which forces degree 24. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open MvPolynomial
 noncomputable section
 
-/-- On a degree-24 component the actual polar cuts and the explicit chart
-and quartic conditions imply the full powered graph degree bound. -/
+/-- On a retained degree-24 component satisfying the polar cuts, with
+`polarChartGuard ≠ 0` and `polarInitialMinor ≠ 0`, the powered graph has degree
+at least `56m + 60n`. -/
 theorem retained_polar_linearJointGraph_degree
     {a b i δ N m n : ℕ} {c₀ : ℤ}
     (G : Matrix (Fin 3) (Fin 3) ℚ) (hG : IsUnit G.det) (hm : 0 < m) (hn : 0 < n)
@@ -46,8 +48,8 @@ theorem retained_polar_linearJointGraph_degree
     (retained_polar_base_degree_le_four hba hi hne I hf hg hz hcut hguard hminor
       (by norm_num : 0 < 24) hdegree F)
 
-/-- Irreducibility of the actual degree-twelve label polynomial forces
-component degree 24, and hence the polar graph bound. -/
+/-- If the degree-twelve label polynomial is irreducible, the component has
+degree 24, and hence the powered graph has degree at least `56m + 60n`. -/
 theorem retained_polar_linearJointGraph_degree_of_irreducible_label
     {a b i d δ N m n : ℕ} {c₀ : ℤ}
     (G : Matrix (Fin 3) (Fin 3) ℚ) (hG : IsUnit G.det) (hm : 0 < m) (hn : 0 < n)

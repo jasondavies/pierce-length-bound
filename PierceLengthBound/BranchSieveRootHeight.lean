@@ -9,9 +9,9 @@ public import Mathlib.Analysis.Polynomial.CauchyBound
 public import Mathlib.Algebra.Polynomial.Bivariate
 import Mathlib.Tactic
 
-/-! Height bounds for integral roots in the one-parameter arithmetic sieve.
-These estimates bound the initially unbounded root coordinate before the
-degree-raising shear is applied. -/
+/-! The Cauchy bound for integer roots of an integer polynomial. In the
+one-parameter arithmetic sieve it bounds the root coordinate of a fiber before
+the degree-raising shear is applied. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
