@@ -7,15 +7,18 @@ module
 
 public import PierceLengthBound.FixedDividendMoments
 
-/-! Rational reconstruction identities from the normalized first two moments.
-The cofactor construction and its parameter-height bounds remain separate tasks. -/
+/-! Inputs to the cofactor reconstruction of the integral lift: a polynomial divisibility
+step (independence of the shifted orthogonality rows), strict positivity of the moment variance
+`h₀h₂ - h₁²`, and the first two moment normalizations `q h₀ + h₁ = 1`, `q h₁ + h₂ = 1` at an
+orbit state. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open Polynomial
 
-/-- The eight shifted orthogonality rows admit no nontrivial relation.
-This is the polynomial divisibility step in the cofactor reconstruction. -/
+/-- If `P ≠ 0` is coprime to `Z` and `deg V < deg P`, then `U P + V Z = 0` forces
+`U = V = 0`. This is the polynomial divisibility step showing that the eight shifted
+orthogonality rows of the cofactor reconstruction admit no nontrivial relation. -/
 theorem shifted_quartics_independent {K : Type*} [Field K] {P Z U V : K[X]}
     (hP : P ≠ 0) (hcop : IsCoprime P Z) (hV : V.natDegree < P.natDegree)
     (hrel : U * P + V * Z = 0) : U = 0 ∧ V = 0 := by
@@ -29,7 +32,7 @@ theorem shifted_quartics_independent {K : Type*} [Field K] {P Z U V : K[X]}
   rw [hv, zero_mul, add_zero] at hrel
   exact ⟨(mul_eq_zero.mp hrel).resolve_right hP, hv⟩
 
-/-- Strict variance of the actual positive moment model. -/
+/-- Strict Cauchy–Schwarz for the orbit moments: `h₁² < h₀ h₂`. -/
 lemma orbit_moment_variance {a b i : ℕ} (hba : b < a) (hi : i + 1 < P a b) :
     hm a b i 1 ^ 2 < hm a b i 0 * hm a b i 2 := by
   have h := (hankel_posDef hba (i := i) (r := 2) (by omega) (by omega)).det_pos
@@ -38,7 +41,8 @@ lemma orbit_moment_variance {a b i : ℕ} (hba : b < a) (hi : i + 1 < P a b) :
   norm_num at h
   nlinarith
 
-/-- The two normalizations hold at every sufficiently supported actual state. -/
+/-- The first two moment normalizations `q h₀ + h₁ = 1` and `q h₁ + h₂ = 1` at every orbit
+state `i` with `i + 1 < P(a,b)`. -/
 lemma orbit_moment_normalizations {a b i : ℕ} (hba : b < a) (hi : i + 1 < P a b) :
     (qq a b i : ℝ) * hm a b i 0 + hm a b i 1 = 1 ∧
       (qq a b i : ℝ) * hm a b i 1 + hm a b i 2 = 1 := by

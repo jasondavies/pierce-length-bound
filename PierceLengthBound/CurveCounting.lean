@@ -9,8 +9,9 @@ public import CCDN.AffineCurveBound
 public import PierceLengthBound.FixedDividendFilteredIntersection
 public import PierceLengthBound.FixedDividendComponents
 
-/-! Apply the proved external curve-counting theorem to the coordinate ideals
-and filtered Hilbert degrees used throughout the Pierce development. -/
+/-! The CCDN affine curve bound `CCDN.affineCurveBound`, stated for the coordinate ideals and
+filtered Hilbert functions of this development: a prime curve over `ℚ` in `n ≥ 2` coordinates,
+of degree `d`, has at most `C d³ B^{1/d} (log B + d)` integer points in the box `[-B, B]ⁿ`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -19,8 +20,10 @@ noncomputable section
 lemma coordinateZeroLocus_eq_external {n : ℕ} (I : Ideal (MvPolynomial (Fin n) ℚ)) :
     coordinateZeroLocus I = CCDN.idealZeroLocus I := rfl
 
-/-- One coefficient-uniform constant works for all prime curves in each fixed
-ambient dimension. This is a theorem, not a counting hypothesis. -/
+/-- For each `n ≥ 2` there is a constant `C` such that, for every prime
+`I ⊆ ℚ[x₁, …, xₙ]` whose Hilbert function is eventually `d m + c` with `0 < d` and every
+`B ≥ 1`, the zero locus of `I` has at most `C d³ B^{1/d} (log B + d)` integer points in the box
+`[-B, B]ⁿ`. The constant depends only on `n`. -/
 theorem affine_curve_counting (n : ℕ) (hn : 2 ≤ n) :
     ∃ C : ℝ, 0 < C ∧ ∀ I : Ideal (MvPolynomial (Fin n) ℚ), I.IsPrime →
       ∀ d : ℕ, 0 < d →
@@ -35,8 +38,8 @@ theorem affine_curve_counting (n : ℕ) (hn : 2 ≤ n) :
   have hh := hcount I hI d hd hdegree B hB
   simpa only [coordinateZeroLocus_eq_external, CCDN.curveBound, mul_assoc] using hh
 
-/-- The same bound applies directly to a finite family of distinct integer
-points satisfying the source ideal, in the form used by the orbit arguments. -/
+/-- The same bound for any finite set of integer points of the zero locus in the box
+`[-B, B]ⁿ`. -/
 theorem affine_curve_finite_points (n : ℕ) (hn : 2 ≤ n) :
     ∃ C : ℝ, 0 < C ∧ ∀ I : Ideal (MvPolynomial (Fin n) ℚ), I.IsPrime →
       ∀ d : ℕ, 0 < d →

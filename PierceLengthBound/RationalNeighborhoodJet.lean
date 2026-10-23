@@ -11,6 +11,8 @@ public import PierceLengthBound.RationalNeighborhood
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
+/-- The constant and linear coefficients of the power series `f x` are both rational
+near `p`. -/
 def RationalFirstJet {σ : Type*} (p : σ → ℚ) (f : (σ → ℚ) → PowerSeries ℚ) : Prop :=
   RationalNear p (fun x => PowerSeries.constantCoeff (f x)) ∧
     RationalNear p (fun x => PowerSeries.coeff 1 (f x))

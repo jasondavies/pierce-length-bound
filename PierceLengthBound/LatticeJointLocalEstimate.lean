@@ -108,10 +108,11 @@ theorem selected_lattice_box_rpow_le {m n hN : ℕ} (hh1 : (1 : ℝ) ≤ hN) (hm
   have hP := (selectedStart_spec hmem hsT hi).1
   exact lattice_box_rpow_le (shortR_pos (orbit_pattern_first hba (l := i) (by omega))) hh1 hm2
 
-/-- Summing the lattice boxes with the fractional lattice weights, shared by the five- and
-six-term estimates. The window bound `hT8` is `selected_count_le_pattern_sum`, and each box
-`Box p` is at most the split lattice box plus an extra term, whose sum is at most `Rb Q`. Each
-term is then at most `8 R (2 O + Ex + 8 W + Rb)` times the matching displayed term. -/
+/-- Summing the lattice boxes with the fractional lattice weights, shared by the lattice
+five-term and the polar six-term estimates. The window bound `hT8` is
+`selected_count_le_pattern_sum`, and each box `Box p` is at most the split lattice box plus an
+extra term, whose sum is at most `Rb Q`. Each term is then at most
+`8 R (2 O + Ex + 8 W + Rb)` times the matching displayed term. -/
 theorem lattice_terms_of_pattern_sum {m n hN : ℕ} (hh1 : (1 : ℝ) ≤ hN)
     (hm2 : (2 * m : ℝ) ≤ hN) {R : ℕ → ℕ} {a b s T A : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
@@ -218,7 +219,8 @@ theorem lattice_terms_of_pattern_sum {m n hN : ℕ} (hh1 : (1 : ℝ) ≤ hN)
   have := mul_le_mul_of_nonneg_left hterms (by positivity : (0 : ℝ) ≤ 8 * Ra)
   refine hbound.trans ((le_of_eq ?_).trans (this.trans (le_of_eq ?_))) <;> ring
 
-/-- The five-term local estimate on actual remainder windows. -/
+/-- The five-term local estimate on remainder windows (paper, `prop:latticewindow`): under the
+scale condition `124928 A⁴ H⁵ X < a³`, `T` is at most `R a` times the five displayed terms. -/
 def LatticeJointFiveTermEstimate (m n : ℕ) (R : ℕ → ℕ) : Prop :=
   ∀ a b s T A : ℕ, b < a →
     (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →

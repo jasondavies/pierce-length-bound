@@ -9,8 +9,10 @@ public import PierceLengthBound.ConicRawDeterminant
 import all PierceLengthBound.FixedDividendTotalDegree
 public import PierceLengthBound.FixedDividendLines
 
-/-! Degree bounds for the lower terms of the raw fourth determinant, for use
-on arbitrary curve components rather than only polynomial parametrizations. -/
+/-! Total-degree bounds for the lower terms `rawDetLower` of the raw fourth determinant in
+linear gap coordinates, and linearity of the five gaps `lineGaps` in the three node
+coordinates. They give the orders of the raw determinant at infinity on a curve component in
+`ChartRawDeterminantOrders`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

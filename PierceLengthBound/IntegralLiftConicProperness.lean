@@ -8,28 +8,40 @@ module
 public import PierceLengthBound.IntegralLiftPolynomialQuotient
 public import PierceLengthBound.IntegralLiftRawResolvent
 
-/-! The actual integral lift on a populated nonexceptional conic is proper. -/
+/-! Properness of the integral lift on a nonexceptional conic (the properness part of
+Lemma A.2, `lem:jointconicproper`). Along a quadratic parametrization `z` with polynomial
+quotient `q`, the raw resolvent formula gives the lift as `F / V` with `deg F = 9` and
+`deg V = 12`, once the resolvent cut vanishes; it vanishes when more than `492` orbit states of
+the same `θ` lie on the conic. Hence the reduced denominator of the lift has degree three more
+than its numerator, and at most twelve. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- `ρ_V - 1 - z₀ - z₁ - z₂`; at the free nodes it is the `X³` coefficient of the orbit Newton
+quartic. -/
 def orbitResolventP3 (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) : Polynomial ℚ :=
   C (patternVQ a b i - 1) - z 0 - z 1 - z 2
 
+/-- The resolvent numerator `a ((q - P₃) H₃(k) - H_mixed(k))` in the parametrized gaps `k`. -/
 def orbitResolventNumerator (a b i : ℕ) (z : Fin 3 → Polynomial ℚ)
     (q : Polynomial ℚ) : Polynomial ℚ :=
   let k := orbitParameterGaps a b i z
   C (a : ℚ) * ((q - orbitResolventP3 a b i z) * rawHankelThree (k 0) (k 1) (k 2) -
     rawHankelMixed (k 0) (k 1) (k 2) (k 3))
 
+/-- The resolvent denominator: the quartic `parabolaV` at the shifted quotients, which is the
+orbit Newton quartic evaluated at `-q`. -/
 def orbitResolventDenominator (a b i : ℕ) (z : Fin 3 → Polynomial ℚ)
     (q : Polynomial ℚ) : Polynomial ℚ :=
   parabolaV (fun j : Fin 4 => coeffs (patternRhoQ a b i) (patternUQ a b i)
     (patternVQ a b i) j.castSucc)
     (fun j => q + (![0, z 0, z 1, z 2] : Fin 4 → Polynomial ℚ) j)
 
+/-- The resolvent cut `N V - F D`, comparing the lift quotient `N / D` with the resolvent
+quotient `F / V` along the parametrization. -/
 def orbitResolventCut (a b i : ℕ) (z : Fin 3 → Polynomial ℚ)
     (q : Polynomial ℚ) : Polynomial ℚ :=
   MvPolynomial.aeval z (orbitLiftNumeratorQ a b i) * orbitResolventDenominator a b i z q -
@@ -72,6 +84,7 @@ lemma orbitResolventNumerator_eval {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a
   simp [orbitResolventNumerator, rawHankelThree, rawHankelMixed, hk, hq,
     orbitResolventP3_eval z t hz]
 
+/-- At the parameter of an orbit state, `I₃ · V = F` (the raw resolvent formula). -/
 lemma orbitResolvent_eval {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (z : Fin 3 → Polynomial ℚ) (q : Polynomial ℚ) (t : ℚ)
     (hz : ∀ j, (z j).eval t = orbitFreeNodesQ a b i j) (hq : q.eval t = (qq a b i : ℚ)) :
@@ -80,6 +93,7 @@ lemma orbitResolvent_eval {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
   rw [orbitResolventDenominator_eval z q t hz hq, orbitResolventNumerator_eval hba hi z q t hz hq]
   exact orbit_integralLift_raw_resolvent_Q hba hi
 
+/-- The resolvent cut vanishes at the parameter of every orbit state on the conic. -/
 lemma orbitResolventCut_eval {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (z : Fin 3 → Polynomial ℚ) (q : Polynomial ℚ) (t : ℚ)
     (hz : ∀ j, (z j).eval t = orbitFreeNodesQ a b i j) (hq : q.eval t = (qq a b i : ℚ)) :
@@ -123,7 +137,8 @@ lemma polynomial_quotient_eval_state {a b i l : ℕ} (hba : b < a) (hi : l + 7 <
   rw [he.2]
   exact (eq_div_iff he.1).mpr h
 
-/-- The additional cut identifying the lift has another absolute degree bound. -/
+/-- Along a quadratic parametrization with `deg F = 9` and `deg V = 12`, the resolvent cut has
+degree at most `492`. -/
 lemma orbitResolventCut_degree (a b i : ℕ) (z : Fin 3 → Polynomial ℚ)
     (hz : ∀ j, (z j).natDegree ≤ 2) (q : Polynomial ℚ)
     (hF : (orbitResolventNumerator a b i z q).natDegree = 9)
@@ -139,6 +154,8 @@ lemma orbitResolventCut_degree (a b i : ℕ) (z : Fin 3 → Polynomial ℚ)
   · exact natDegree_mul_le.trans (by omega)
   · exact natDegree_mul_le.trans (by omega)
 
+/-- The resolvent cut is identically zero when it vanishes at more than `492` distinct
+parameters of orbit states with the same `θ`. -/
 lemma orbitResolventCut_zero_of_many_states {a b i : ℕ} (hba : b < a)
     (z : Fin 3 → Polynomial ℚ) (hz : ∀ j, (z j).natDegree ≤ 2) (q : Polynomial ℚ)
     (hF : (orbitResolventNumerator a b i z q).natDegree = 9)
@@ -156,16 +173,16 @@ lemma orbitResolventCut_zero_of_many_states {a b i : ℕ} (hba : b < a)
       (polynomial_quotient_eval_state hba (hi j) (hθ j) z q (t j) (hp j) hq)
   · exact (orbitResolventCut_degree a b i z hz q hF hV).trans_lt hcard
 
-/-- The rational lift obtained by substituting the bounded conic parameter into
-its already verified universal numerator and denominator. -/
+/-- The rational lift along a parametrization `z`: the universal lift numerator over the lift
+denominator, both evaluated at `z`. -/
 def orbitLiftParameter (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) : RatFunc ℚ :=
   algebraMap (Polynomial ℚ) (RatFunc ℚ) (MvPolynomial.aeval z (orbitLiftNumeratorQ a b i)) /
     algebraMap (Polynomial ℚ) (RatFunc ℚ) (MvPolynomial.aeval z (orbitLiftDenominatorQ a b i))
 
-/-- The actual lift on a nonexceptional conic with more than 492 distinct actual
-parameter values is strictly proper. Its reduced denominator degree exceeds
-its reduced numerator degree by exactly three. Both polynomial identities and
-the cubic quotient have been derived from actual states. -/
+/-- On a quadratically parametrized nonexceptional conic through the free nodes at `i` and
+those of more than `492` orbit states with the same `θ`, at distinct parameters, the lift is
+strictly proper: its reduced denominator has degree three more than its reduced numerator,
+positive and at most twelve. -/
 theorem orbit_conic_integralLift_proper {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
     (z : Fin 3 → Polynomial ℚ) (hz : ∀ j, (z j).natDegree ≤ 2)

@@ -17,11 +17,16 @@ integer `L(i)` (`Lz`, equal to `I₄(i)`), and the cofactors `U₁(i)`, `U₂(i)
 *pattern* of `i` is `θ(i) = (L(i), L(i+1), L(i+2), U₁(i), U₂(i), U₁(i+1), U₂(i+1)) ∈ ℤ⁷`
 (`theta`) and its gaps are `κ(i) = (kᵢ, …, k_{i+4})` (`kap`).
 
-This module collects the vocabulary shared by the window theorems and the curve counts: the
-basic identities at a state (`Lz_pos`, `e0_at`, `e3_at`, `mult_at`), the good starts of a
-window run (`good_card`, `goodStarts`, `mem_goodStarts`) and their pattern hypotheses
-(`PatternHyps`, `goodStarts_patternHyps`), and the pattern as signed minors of the `3 × 5`
-matrix `𝓜ᵢ` (`Mi`, `projθ`, `theta_eq`).
+This module collects the vocabulary shared by the window theorems and the curve counts:
+
+* the basic facts at a state: `kq_pos`, `Lz_pos` (`L(i) ≥ 1`), the `k`- and `r`-relations
+  `e0_at`, `e3_at`, the division relations `div_rel`, the normalization identity `mult_at`
+  (Lemma 7.3), and `a_le_four` (`a ≤ 4 A qᵢ` when `bᵢ < 2A`);
+* the good starts of a window run (Lemma 7.6): `good_card`, `goodStarts`, `mem_goodStarts`,
+  with the telescoping `sum_kq` and the rounding lemma `abs_le_div`;
+* the hypotheses `PatternHyps` taken by the pattern counts, and `goodStarts_patternHyps`;
+* the pattern as signed minors of the `3 × 5` matrix `𝓜ᵢ` with rows `(dⱼ)`, `(kⱼ)`, `(rⱼ)`
+  (`Mi`, `projθ`, `theta_eq`, `theta_eq_of_plk_eq`, `orbit_pattern_first`).
 -/
 
 @[expose] public section
@@ -74,6 +79,7 @@ lemma kq_pos {i : ℕ} (h : i + 1 < P a b) : 1 ≤ kq a b i := by
   have := qq_lt (a := a) (b := b) h
   unfold kq; omega
 
+/-- `L(i) ≥ 1`: it is the positive Hankel invariant `I₄(i)`. -/
 lemma Lz_pos (hba : b < a) {i : ℕ} (h : i + 5 < P a b) : 1 ≤ Lz a b i := by
   have h4 := hankelInv_four hba h
   have hp := hankelInv_pos hba (i := i) (r := 4) (by omega) (by omega)
@@ -82,10 +88,12 @@ lemma Lz_pos (hba : b < a) {i : ℕ} (h : i + 5 < P a b) : 1 ≤ Lz a b i := by
     unfold Lz kq dq; exact_mod_cast hp
   omega
 
+/-- The `k`-relation `∑ₘ Uₘ(i) k_{i+m} = 0`. -/
 lemma e0_at (i : ℕ) : -Lz a b (i + 1) * kq a b i + U1z a b i * kq a b (i + 1) +
     U2z a b i * kq a b (i + 2) + Lz a b i * kq a b (i + 3) = 0 :=
   null_k _ _ _ _ _ _ _ _ _
 
+/-- The `r`-relation `∑ₘ Uₘ(i) r_m = 0`. -/
 lemma e3_at (i : ℕ) : -Lz a b (i + 1) * (kq a b i ^ 2 + kq a b (i + 1)) +
     U1z a b i * (kq a b (i + 1) * (2 * kq a b i + kq a b (i + 1)) + kq a b (i + 2)) +
     U2z a b i * (kq a b (i + 2) * (2 * kq a b i + 2 * kq a b (i + 1) + kq a b (i + 2)) +
@@ -110,6 +118,7 @@ lemma div_rel {i m : ℕ} (h : i + m < P a b) :
   push_cast at this
   linarith
 
+/-- The normalization identity `I₄(i) πᵢ(-qᵢ) = a H₄(kᵢ, …, k_{i+4})` at an orbit state. -/
 lemma mult_at {i : ℕ} (h : i + 4 < P a b) :
     quart (-Lz a b (i + 1)) (U1z a b i) (U2z a b i) (Lz a b i) (kq a b i) (kq a b (i + 1))
       (kq a b (i + 2)) (qq a b i) =
@@ -227,6 +236,7 @@ theorem good_card (hba : b < a) {s T A : ℕ}
     omega
   omega
 
+/-- `|z| n ≤ C` gives `|z| ≤ ⌊C / n⌋`. -/
 lemma abs_le_div {z : ℤ} {C n : ℕ} (hn : 0 < n) (h : |z| * n ≤ C) : |z| ≤ ((C / n : ℕ) : ℤ) := by
   rw [Int.natCast_div, Int.le_ediv_iff_mul_le (by exact_mod_cast hn)]
   exact h
@@ -320,9 +330,10 @@ section Minors
 
 variable {a b : ℕ}
 
-/-- The pattern as signed minors. -/
+/-- The pattern as signed minors: the coordinates of the minor vector forming `θ`. -/
 def projθ (p : Fin 10 → ℤ) : Fin 7 → ℤ := ![p 0, p 6, p 9, p 3, -p 1, p 8, -p 7]
 
+/-- The pattern `θ(i)` is the projection `projθ` of the `3 × 3` minors of `𝓜ᵢ`. -/
 theorem theta_eq (i : ℕ) : theta a b i = projθ (plk (Mi a b i)) := by
   funext t
   fin_cases t <;>

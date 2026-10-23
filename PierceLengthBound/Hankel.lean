@@ -15,14 +15,18 @@ define probability weights `wᵢ(j) > 0` on the points `pᵢ(j) = q_{i+j} - qᵢ
 `w_{N-1} = δ₀` and
 `wᵢ(0) = 1 - ∑_j w_{i+1}(j)/pᵢ(j+1)`, `wᵢ(j+1) = w_{i+1}(j)/pᵢ(j+1)`.
 The moments `hᵢ(s) = ∑_j wᵢ(j) pᵢ(j)^s / q_{i+j}` of the measure `νᵢ = μᵢ/(qᵢ + x)` satisfy
+(Lemma 6.1; the weights are positive and sum to `1` by `wt_spec`)
 
 * `hᵢ(0) = bᵢ/a` (`hm_zero`), so `bᵢ/a = E[1/(qᵢ + Xᵢ)]`;
 * `hᵢ(s+1) = ∑_t C(s,t) kᵢ^{s-t} h_{i+1}(t)` (`hm_succ`);
 * `hᵢ(s) = (-qᵢ)^s bᵢ/a + (integer)` (`hm_int`).
 
 Hence the Hankel invariants `Iᵣ(i) = a · det (hᵢ(j+l))_{j,l<r}` are positive integers for
-`1 ≤ r ≤ N - i` (`hankelInv_pos_int`). The first four are `bᵢ`, `bᵢ - b_{i+1}`, the curvature
-`D` and the six-step integer `L` (`hankelInv_one` … `hankelInv_four`).
+`1 ≤ r ≤ N - i` (`hankelInv_pos_int`, Theorem 6.2). The first four are `bᵢ`, `bᵢ - b_{i+1}`,
+the curvature `D` and the six-step integer `L` (`hankelInv_one` … `hankelInv_four`). These are
+computed from the moment recursion alone: `momSeq` generates the moments from the normalised
+remainders `βⱼ` and increments `kⱼ`, and `hankel2_alg`, `hankel3_alg`, `hankel4_alg` evaluate
+its small Hankel determinants modulo the division equations.
 -/
 
 @[expose] public section
@@ -768,6 +772,7 @@ theorem hankelInv_one (hba : b < a) {i : ℕ} (hi : i < P a b) : hankelInv a b i
   rw [hm_zero hba (P a b - i - 1) i (by omega)]
   field_simp
 
+/-- `I₂(i) = bᵢ - b_{i+1}`. -/
 theorem hankelInv_two (hba : b < a) {i : ℕ} (hi : i + 1 < P a b) :
     hankelInv a b i 2 = (orb a b i : ℝ) - orb a b (i + 1) := by
   have ha : (a : ℝ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
@@ -778,6 +783,7 @@ theorem hankelInv_two (hba : b < a) {i : ℕ} (hi : i + 1 < P a b) :
   simp only [add_zero]
   field_simp
 
+/-- `I₃(i) = dᵢ k_{i+1} - d_{i+1} kᵢ`, the curvature `D` of the block starting at `bᵢ`. -/
 theorem hankelInv_three (hba : b < a) {i : ℕ} (hi : i + 3 < P a b) :
     hankelInv a b i 3 = ((orb a b i : ℝ) - orb a b (i + 1)) * kv a b i 1 -
       ((orb a b (i + 1) : ℝ) - orb a b (i + 2)) * kv a b i 0 := by
@@ -790,6 +796,8 @@ theorem hankelInv_three (hba : b < a) {i : ℕ} (hi : i + 3 < P a b) :
   field_simp
   ring
 
+/-- `I₄(i) = L`, the six-step integer `sixL` of the increments `kᵢ, …, k_{i+3}` and the drops
+`dᵢ, d_{i+1}, d_{i+2}`. -/
 theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
     hankelInv a b i 4 = ((sixL ((qq a b (i + 1) : ℤ) - qq a b i)
         ((qq a b (i + 2) : ℤ) - qq a b (i + 1))

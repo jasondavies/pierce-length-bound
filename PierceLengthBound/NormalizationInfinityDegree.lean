@@ -10,15 +10,17 @@ public import PierceLengthBound.CurveNormalization
 
 /-! The branches of a transcendental parameter's fiber on the normalization:
 their residue-degree weighted orders sum to the dimension of the original
-fiber. -/
+fiber. For the reciprocal first node coordinate on the infinity chart this is
+`∑_{P ∣ ∞} e_P deg P = d` (§8.8). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open scoped BigOperators
 
-/-- The branches of a normalized parameter fiber, with multiplicities measured
-by the canonical normalized valuations. -/
+/-- For a domain `S` finite over `ℚ[w]`, `w` transcendental, the branches of the zero fiber of
+`w` on the integral closure `C` of `S` satisfy
+`∑_{q ∈ B} mult_q (w) · [C/q : ℚ] = dim_ℚ S/(w)`. -/
 theorem normalized_parameter_branches {S L : Type*}
     [CommRing S] [IsDomain S] [Algebra ℚ S]
     [Field L] [Algebra ℚ L] [Algebra S L] [IsScalarTower ℚ S L] [IsFractionRing S L]

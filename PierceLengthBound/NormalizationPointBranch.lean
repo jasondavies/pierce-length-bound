@@ -9,18 +9,24 @@ public import PierceLengthBound.NormalizationBranchCover
 public import Mathlib.RingTheory.Ideal.GoingUp
 
 /-! A nonzero function vanishing at an affine point has a zero on a branch of
-the normalization. Functions nonzero at that point have order zero there. -/
+the normalization. Functions nonzero at that point have order zero there. The zero is also
+realized on the normalization of a model finite over `1/t`, for `t` nonzero at the point,
+outside its fiber over infinity (the last step of the proof of Lemma 8.10). Functions with a
+zero or a pole at an order nonnegative on the constants are transcendental. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
+/-- A function with a pole at an order nonnegative on `K` is transcendental over `K`. -/
 theorem transcendental_of_negative_order {K L : Type*} [Field K] [Field L] [Algebra K L]
     (ν : AddValuation L (WithTop ℤ)) (hK : ∀ c : K, 0 ≤ ν (algebraMap K L c))
     {x : L} (hneg : ν x < 0) : Transcendental K x := by
   intro halg
   exact (not_lt_of_ge (branch_order_nonnegative_of_integral ν hK halg.isIntegral)) hneg
 
+/-- A nonzero function with a zero at an order nonnegative on `K` is transcendental over
+`K`. -/
 theorem transcendental_of_positive_order {K L : Type*} [Field K] [Field L] [Algebra K L]
     (ν : AddValuation L (WithTop ℤ)) (hK : ∀ c : K, 0 ≤ ν (algebraMap K L c))
     {x : L} (hx : x ≠ 0) (hpos : 0 < ν x) : Transcendental K x := by
@@ -33,6 +39,9 @@ theorem transcendental_of_positive_order {K L : Type*} [Field K] [Field L] [Alge
   have hnneg : 0 ≤ -n := by exact_mod_cast hh
   omega
 
+/-- Given a ring map `φ : R → K` to a field whose kernel contains a nonzero `r`, some branch
+of the normalization of `R` lies above `ker φ`: the elements of `R` with positive order there
+are exactly those with `φ s = 0`. -/
 theorem normalization_branch_above_point {R K L : Type*}
     [CommRing R] [IsDomain R] [Field K] [Field L] [Algebra R L] [IsFractionRing R L]
     [IsDedekindDomain (integralClosure R L)]
@@ -66,6 +75,8 @@ theorem normalization_branch_above_point {R K L : Type*}
     normalizedBranchOrder_positive_iff]
   exact hmem s
 
+/-- If `φ r = 0` with `r ≠ 0` and `φ s ≠ 0`, then `r / s` has a zero at a branch above `ker φ`
+at which every `t` with `φ t ≠ 0` has order zero. -/
 theorem normalization_branch_rational_zero {R K L : Type*}
     [CommRing R] [IsDomain R] [Field K] [Field L] [Algebra R L] [IsFractionRing R L]
     [IsDedekindDomain (integralClosure R L)]
@@ -88,8 +99,9 @@ theorem normalization_branch_rational_zero {R K L : Type*}
   rw [(normalizedBranchOrder p L).map_div, hzero s hsφ, sub_zero]
   exact (hp r).mpr hrφ
 
-/-- A zero at a point where t is nonzero also lies on the normalized chart
-finite over 1/t, and is disjoint from that chart's infinity fiber. -/
+/-- At a rational point `φ` with `φ r = 0`, `φ s ≠ 0` and `φ t ≠ 0`, the zero of `r / s` is
+realized on the normalization of a model `S` finite over `ℚ[w]`, `w = 1/t`, at a branch not in
+the zero fiber of `w` (the fiber over infinity). -/
 theorem rational_zero_on_reciprocal_parameter_model {R S L : Type*}
     [CommRing R] [IsDomain R] [Algebra ℚ R]
     [CommRing S] [IsDomain S] [Algebra ℚ S]

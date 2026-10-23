@@ -7,7 +7,9 @@ module
 
 public import PierceLengthBound.MinorCount
 
-/-! Primitive common directions for rank-one pairs of integer vectors. -/
+/-! Primitive common directions for rank-one pairs of integer vectors in `ℤ³`, used in the
+exceptional-pattern count of Lemma 8.5: a nonzero pair `a, b` with `a × b = 0` is
+`(r z, s z)` for a primitive `z`, and orthogonality to `a` and `b` passes to `z`. -/
 
 @[expose] public section
 namespace PierceLengthBound
@@ -62,8 +64,8 @@ theorem exists_primitive_direction {a : Fin 3 → ℤ} (ha : a ≠ 0) :
     linear_combination hb
   exact mul_left_cancel₀ (by exact_mod_cast hg.ne' : (g : ℤ) ≠ 0) he
 
-/-- Every nonzero rank-one pair, including nonprimitive pairs, has a common
-primitive integral direction. -/
+/-- Every nonzero rank-one pair `a, b` (`a × b = 0`) is `(r z, s z)` for a primitive integral
+direction `z` (with `c ⬝ᵥ z = 1`) and integers `r, s`, not both zero. -/
 theorem exists_common_primitive_direction {a b : Fin 3 → ℤ}
     (hne : a ≠ 0 ∨ b ≠ 0) (hcross : ∀ j, (a ⨯₃ b) j = 0) :
     ∃ (z c : Fin 3 → ℤ) (r s : ℤ), c ⬝ᵥ z = 1 ∧

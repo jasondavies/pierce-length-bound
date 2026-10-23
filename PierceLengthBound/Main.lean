@@ -20,6 +20,13 @@ Split the positive terms of the orbit according to `⌊log₂ bᵢ⌋ = k`. The 
 The last step is shared by all the main theorems: `P_le_of_real_visits` turns a window bound
 `T ≤ 35` or `T ≤ S(a) a^α`, with `S(a) ≪_η a^η` (`SlowGrowth S`), into
 `P(a, b) ≪_ε a^{α + ε}`, and `P_le_of_visits` is its case `T^N ≤ K S(a) a^r`, `α = r/N`.
+The final result is `P_le` (Theorem 1.4).
+
+The file also holds the helpers shared by the other window-to-`P(a, b)` reductions:
+`visits_run` (a dyadic window as a run `s, …, s + T - 1` with `s + T ≤ P(a, b)`), the divisor
+maximum `tauMax` with `tauMax_divBound`, `tauMax_slow` and `log_add_one_le_tauMax`, the
+`SlowGrowth` closure lemmas, the root extraction `root_le` and `window_real_bound_of_power`,
+and `P_le_of_exponent_le` (enlarging the exponent).
 -/
 
 @[expose] public section
@@ -28,7 +35,7 @@ namespace PierceLengthBound
 
 open Finset
 
-/-- The indices `i < P(a,b)` with `⌊log₂ bᵢ₊₁⌋ = k`, i.e. `2^k ≤ bᵢ₊₁ < 2^{k+1}`. -/
+/-- The indices `i < P(a,b)` with `⌊log₂ bᵢ⌋ = k`, i.e. `2^k ≤ bᵢ < 2^{k+1}`. -/
 def visits (a b k : ℕ) : Finset ℕ := (range (P a b)).filter fun i => Nat.log 2 (orb a b i) = k
 
 /-- `P(a, b)` is the total number of visits to the dyadic windows. -/
@@ -77,7 +84,8 @@ theorem visits_window {a b k : ℕ} (hba : b ≤ a) (h : (visits a b k).Nonempty
   · rw [← add_assoc]
     exact orb_succ_of_ne (hwin _ (hrun j (Nat.lt_of_succ_lt hj))).1
 
-/-- A nonempty dyadic window is a window run of the orbit, ending by `P(a, b)`. -/
+/-- A nonempty dyadic window is a window run `orb a b (s + j)`, `j < T`, with
+`s + T ≤ P(a, b)`. -/
 theorem visits_run {a b k : ℕ} (hba : b ≤ a) (hT : 0 < (visits a b k).card) :
     ∃ s, Window a (2 ^ k) (visits a b k).card (fun j => orb a b (s + j)) ∧
       s + (visits a b k).card ≤ P a b := by
@@ -130,6 +138,7 @@ def tauMax (X : ℕ) : ℕ := (range (X + 1)).sup fun n => n.divisors.card
 lemma tau_le_tauMax {n X : ℕ} (h : n ≤ X) : n.divisors.card ≤ tauMax X :=
   le_sup (f := fun n => n.divisors.card) (mem_range.mpr (by omega))
 
+/-- `τ*(32 a⁷)` bounds the divisor function on `[1, 32 a⁷]`. -/
 lemma tauMax_divBound (a : ℕ) : DivBound a (tauMax (32 * a ^ 7)) := fun _ _ hn => tau_le_tauMax hn
 
 /-- `max_{n ≤ X} τ(n)^k ≤ D X` from the divisor bound. -/
@@ -209,6 +218,7 @@ lemma SlowGrowth.pow {f : ℕ → ℕ} (hf : SlowGrowth f) (n : ℕ) : SlowGrowt
   | zero => simpa using slowGrowth_const 1
   | succ n ih => simpa only [pow_succ] using ih.mul hf
 
+/-- A function bounded by a slowly growing one grows slowly. -/
 lemma SlowGrowth.of_le {f g : ℕ → ℕ} (hg : SlowGrowth g) (h : ∀ a, 1 ≤ a → f a ≤ g a) :
     SlowGrowth f := by
   intro η hη
@@ -299,7 +309,7 @@ lemma P_le_of_exponent_le {β γ : ℝ} (hβγ : β ≤ γ)
   exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le
     (by exact_mod_cast (show 1 ≤ a by omega)) hβγ) hC.le
 
-/-- **Theorem 1.1 (the `3/10` bound).** `P(a, b) ≪_ε a^{3/10 + ε}` uniformly in `0 < b < a`. -/
+/-- **Theorem 1.4 (the `3/10` bound).** `P(a, b) ≪_ε a^{3/10 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((3 : ℝ) / 10 + ε) := by
   simpa only [Nat.cast_ofNat] using P_le_of_visits (N := 10) (r := 3) (K := 63700992) (by norm_num)

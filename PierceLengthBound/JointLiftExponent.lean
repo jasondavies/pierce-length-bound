@@ -7,17 +7,23 @@ module
 
 public import PierceLengthBound.FixedDividendSelection
 
-/-! Exact exponent arithmetic for the joint curvature/rank-five lift.
-The graph count and the invariant height bounds remain explicit premises. -/
+/-! # Height scales of the joint coordinates
+
+The height bounds `S` for the curvature coordinates and `Y` for the rank-five coordinate
+(Section 8.6), and the arithmetic eliminating the window scale `A` in the proof of
+Corollary 8.14: with `H A T ≤ C a` and `T² ≤ D A`, `S T³ ≪ a`, `max(H, S) T³ ≪ a` and
+`Y T²⁰ ≪ a⁶`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 
-/-- The curvature box uses the uniform 68/q^3 bound and q >= a/(4A). -/
+/-- The curvature height `S = ⌊4352 A³ H³ / a²⌋`, from the minor bound with constant `68` and
+`q ≥ a/(4A)` (`4352 = 68 · 4³`). -/
 def selectedCurvatureHeight (a A T : ℕ) : ℕ :=
   4352 * A ^ 3 * selectedGapHeight a A T ^ 3 / a ^ 2
 
-/-- The proposed rank-five box from the explicit Newton Gram bound. -/
+/-- The rank-five height `Y = ⌊1259991040 A⁵ H¹⁰ / a⁴⌋`, from the Newton Gram bound for `J`
+(Lemma 8.7). -/
 def selectedRankFiveHeight (a A T : ℕ) : ℕ :=
   1259991040 * A ^ 5 * selectedGapHeight a A T ^ 10 / a ^ 4
 
@@ -51,7 +57,7 @@ lemma max_curvature_height_times_cube {a A T C S H D K : ℕ} (hA : 0 < A) (hD :
   · rw [max_eq_left h]
     exact hH.trans (by gcongr; omega)
 
-/-- The rank-five height introduces a twentieth power of the window length. -/
+/-- If `Y a⁴ ≤ J A⁵ H¹⁰`, `H A T ≤ C a` and `T² ≤ D A`, then `Y T²⁰ ≤ J C¹⁰ D⁵ a⁶`. -/
 lemma rank_five_height_times_twenty {a A T C Y H D J : ℕ} (ha : 0 < a) (hA : 0 < A)
     (hgap : H * (A * T) ≤ C * a) (hY : Y * a ^ 4 ≤ J * A ^ 5 * H ^ 10)
     (hdrop : T ^ 2 ≤ D * A) :

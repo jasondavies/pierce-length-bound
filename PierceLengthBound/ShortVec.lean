@@ -15,11 +15,16 @@ For a minor vector `p` with pivot `τ` and `m = p_τ ≠ 0`, the five gaps are r
 three pivot gaps `k' = (k_{c₁}, k_{c₂}, k_{c₃})` by `m kᶜ = Lᶜ · k'` (`lift_row`), where the rows
 `Lᶜ` are `m eₐ` on pivot columns and `u`, `v` on the other two. So `k'` lies in the lattice
 `Λ_p = {x : m ∣ u·x, m ∣ v·x}` (`pivLat`). The rows in columns `1, 2, 3` have determinant
-`m² p₁₂₃` (`lift_det`).
+`m² p₁₂₃` (`lift_det`). This is Lemma 9.1 of the paper, with columns `1, 2, 3` in place of
+`0, 1, 2`.
 
-`Λ_p` has a nonzero vector of sup norm at most `L` once `(L+1)³ > |m|` (`pivLat_short`). The
-cross relation `m ∣ u × v` makes the index at most `|m|`. Few patterns have a short vector:
-`#{p : λ₁(Λ_p) ≤ R} ≤ 393660 R³ Y⁴ τ²` (`short_count`).
+The cross relation `m ∣ u × v` makes the index at most `|m|`, so `Λ_p` has a nonzero vector of
+sup norm at most `L` once `(L+1)³ > |m|` (`pivLat_short`, Lemma 9.3). Let `λ(p)` (`shortR`) be
+the least sup norm of a nonzero vector of `Λ_p`. Counting `n ∣ w·x` in a box
+(`card_dot_dvd_le`, Lemma 9.5) and the minor-vector encoding with this divisibility condition
+(`minor_vector_count_dot`) show that few patterns have a short vector:
+`#{p : λ(p) ≤ R} ≤ 393660 R³ Y⁴ τ₀²` for minor vectors of height `≤ Y`, where `τ(m) ≤ τ₀` for
+`m ≤ Y` (`short_count`, Proposition 9.6).
 -/
 
 @[expose] public section
@@ -43,7 +48,8 @@ def pcol (τ : Fin 10) : Fin 3 → Fin 5 := ![(trip τ).1, (trip τ).2.1, (trip 
 def Lrow (p : Fin 10 → ℤ) (τ : Fin 10) (c : Fin 5) : Fin 3 → ℤ :=
   ![![p τ, 0, 0], ![0, p τ, 0], ![0, 0, p τ], uVec p τ, vVec p τ] (role τ c)
 
-/-- **Lifting.** Each row of the matrix is recovered from its pivot columns. -/
+/-- **Lifting** (Lemma 9.1). Each row of the matrix is recovered from its pivot columns:
+`p_τ M_{rc} = L_c · (M_{r,c₁}, M_{r,c₂}, M_{r,c₃})`. -/
 theorem lift_row (M : Fin 3 → Fin 5 → ℤ) (τ : Fin 10) (r : Fin 3) (c : Fin 5) :
     plk M τ * M r c = Lrow (plk M) τ c ⬝ᵥ (fun a => M r (pcol τ a)) := by
   fin_cases τ <;> fin_cases c <;>
@@ -54,7 +60,7 @@ theorem lift_row (M : Fin 3 → Fin 5 → ℤ) (τ : Fin 10) (r : Fin 3) (c : Fi
         pcol, zero_mul, add_zero, zero_add, Fin.zero_eta] <;>
     fin_cases r <;> simp only [Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, Fin.isValue] <;> ring
 
-/-- **The determinant of the rows `1, 2, 3`.** -/
+/-- **The determinant of the rows `1, 2, 3`**: `det(L₁, L₂, L₃) = p_τ² p₁₂₃`. -/
 theorem lift_det (M : Fin 3 → Fin 5 → ℤ) (τ : Fin 10) :
     det3 (Lrow (plk M) τ 1) (Lrow (plk M) τ 2) (Lrow (plk M) τ 3) = plk M τ ^ 2 * plk M 6 := by
   fin_cases τ <;>
@@ -85,7 +91,8 @@ lemma pivLat_of_dvd {p : Fin 10 → ℤ} {x : Fin 3 → ℤ} (h : ∀ j, p (piv 
 /-- `Λ_p` has a nonzero vector of sup norm at most `R`. -/
 def HasShort (p : Fin 10 → ℤ) (R : ℕ) : Prop := ∃ x ∈ pivLat p, x ≠ 0 ∧ ∀ j, |x j| ≤ R
 
-/-- **Pigeonhole: the index is at most `|m|`.** -/
+/-- **Pigeonhole** (Lemma 9.3). The index of `Λ_p` is at most `|m|`, so if `(L+1)³ > |m|`, then
+`Λ_p` has a nonzero vector of sup norm at most `L`. -/
 theorem pivLat_short {p : Fin 10 → ℤ} (hpl : PluckerRel p) (hm : p (piv p) ≠ 0) {L : ℕ}
     (hL : (p (piv p)).natAbs < (L + 1) ^ 3) : HasShort p L := by
   classical
@@ -145,7 +152,7 @@ theorem pivLat_short {p : Fin 10 → ℤ} (hpl : PluckerRel p) (hm : p (piv p) �
     simp only [Pi.sub_apply]
     rw [abs_le]; constructor <;> linarith
 
-/-- The shortest sup norm of a nonzero vector of `Λ_p`. -/
+/-- The minimum `λ(p)`: the least sup norm of a nonzero vector of `Λ_p`. -/
 noncomputable def shortR (p : Fin 10 → ℤ) : ℕ := sInf {R : ℕ | HasShort p R}
 
 lemma hasShort_nonempty {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
@@ -155,7 +162,8 @@ lemma hasShort_nonempty {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
   · intro h; apply hm; simpa using congrFun h 0
   · fin_cases j <;> simp
 
-/-- **The shortest vector.** -/
+/-- **The shortest vector.** If `m ≠ 0`, then `λ(p) ≥ 1` is attained and every nonzero
+`x ∈ Λ_p` has `λ(p)² ≤ |x|²`. -/
 theorem shortR_spec {p : Fin 10 → ℤ} (hm : p (piv p) ≠ 0) :
     1 ≤ shortR p ∧ HasShort p (shortR p) ∧
       ∀ x ∈ pivLat p, x ≠ 0 → (shortR p : ℤ) ^ 2 ≤ nrm3 x := by
@@ -200,7 +208,8 @@ lemma shortR_le {p : Fin 10 → ℤ} {L : ℕ} (h : HasShort p L) : shortR p ≤
 
 /-! ### Counting patterns with a short vector -/
 
-/-- **Solutions of `n ∣ w·x` in a box**: at most `27 n² gcd(n, x)`. -/
+/-- **Solutions of `n ∣ w·x` in a box** (Lemma 9.5): at most `27 n² gcd(n, x)` of the
+`w ∈ [-n, n]³`. -/
 theorem card_dot_dvd_le {n : ℕ} (hn : 0 < n) (x : Fin 3 → ℤ) :
     ((ibox3 n).filter fun w => (n : ℤ) ∣ w ⬝ᵥ x).card ≤ 27 * n ^ 2 * gcd4 n x := by
   classical
@@ -438,7 +447,7 @@ theorem sum_gcd4_box_le {m : ℕ} (hm : 0 < m) (R : ℕ) :
           _ = 27 * R ^ 3 := by ring
     _ = 27 * R ^ 3 * m.divisors.card := by rw [sum_const, smul_eq_mul]; ring
 
-/-- **The admissible `(u, v)` with `m ∣ u·x`.** -/
+/-- **The admissible `(u, v)` with `m ∣ u·x`**: at most `729 m³ τ(m) gcd(m, x)`. -/
 theorem card_crossSet_dot {m : ℕ} (hm : 0 < m) (x : Fin 3 → ℤ) :
     ((crossSet m).filter fun uv => (m : ℤ) ∣ uv.1 ⬝ᵥ x).card ≤
       729 * m ^ 3 * m.divisors.card * gcd4 m x := by
@@ -466,7 +475,9 @@ theorem card_crossSet_dot {m : ℕ} (hm : 0 < m) (x : Fin 3 → ℤ) :
         Nat.mul_le_mul_left _ (sum_gcd4_sq_dot_le hm x)
     _ = 729 * m ^ 3 * m.divisors.card * gcd4 m x := by ring
 
-/-- **The minor-vector count with a divisibility condition.** -/
+/-- **The minor-vector count with a divisibility condition.** Minor vectors of height `≤ Y` with
+`m ∣ u·x` for the pivot entry `m` number at most `20 ∑_{m ≤ Y} #{(u, v) ∈ crossSet m : m ∣ u·x}`.
+-/
 theorem minor_vector_count_dot {S : Finset (Fin 10 → ℤ)} {Y : ℕ} (x : Fin 3 → ℤ)
     (hS : ∀ p ∈ S, (∀ t, |p t| ≤ Y) ∧ PluckerRel p ∧ p (piv p) ≠ 0 ∧
       p (piv p) ∣ uVec p (piv p) ⬝ᵥ x) :
@@ -474,7 +485,9 @@ theorem minor_vector_count_dot {S : Finset (Fin 10 → ℤ)} {Y : ℕ} (x : Fin 
   minor_vector_count_of (fun m u => (m : ℤ) ∣ u ⬝ᵥ x) fun p hp =>
     ⟨(hS p hp).1, (hS p hp).2.1, (hS p hp).2.2.1, Int.natAbs_dvd.mpr (hS p hp).2.2.2⟩
 
-/-- **Few patterns have a short vector.** -/
+/-- **Few patterns have a short vector** (Proposition 9.6). If `τ(m) ≤ τ₀` for `m ≤ Y`, the
+minor vectors of height `≤ Y` with nonzero pivot entry and `λ(p) ≤ R` number at most
+`393660 R³ Y⁴ τ₀²`. -/
 theorem short_count {S : Finset (Fin 10 → ℤ)} {Y R τ0 : ℕ}
     (hS : ∀ p ∈ S, (∀ t, |p t| ≤ Y) ∧ PluckerRel p ∧ p (piv p) ≠ 0)
     (hτ : ∀ m ∈ Icc 1 Y, m.divisors.card ≤ τ0) :

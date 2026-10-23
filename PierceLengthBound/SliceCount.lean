@@ -39,6 +39,7 @@ def ternN (α β γ d1 d0 e1 e0 f2 f1 f0 z : ℤ) : ℤ :=
   (β * (d1 * z + d0) - 2 * α * (e1 * z + e0)) ^ 2 +
     (β ^ 2 - 4 * α * γ) * (4 * α * (f2 * z ^ 2 + f1 * z + f0) - (d1 * z + d0) ^ 2)
 
+/-- **Completing squares.** `V² - Δ U² = N(z) - 4αΔ F(x, y, z)`. -/
 lemma slice_identity (α β γ d1 d0 e1 e0 f2 f1 f0 x y z : ℤ) :
     ((β ^ 2 - 4 * α * γ) * y + (β * (d1 * z + d0) - 2 * α * (e1 * z + e0))) ^ 2 -
       (β ^ 2 - 4 * α * γ) * (2 * α * x + β * y + (d1 * z + d0)) ^ 2 =
@@ -46,6 +47,7 @@ lemma slice_identity (α β γ d1 d0 e1 e0 f2 f1 f0 x y z : ℤ) :
       4 * α * (β ^ 2 - 4 * α * γ) * tern α β γ d1 d0 e1 e0 f2 f1 f0 x y z := by
   unfold ternN tern; ring
 
+/-- `N(z)` as a quadratic polynomial in `z`. -/
 lemma ternN_eq (α β γ d1 d0 e1 e0 f2 f1 f0 z : ℤ) :
     ternN α β γ d1 d0 e1 e0 f2 f1 f0 z =
       ((β * d1 - 2 * α * e1) ^ 2 + (β ^ 2 - 4 * α * γ) * (4 * α * f2 - d1 ^ 2)) * z ^ 2 +
@@ -176,7 +178,9 @@ lemma ternN_bound {α β γ d1 d0 e1 e0 f2 f1 f0 : ℤ} {K H : ℕ} (hH : 1 ≤ 
         add_le_add t1 t2
     _ = 116 * (K : ℤ) ^ 4 * (H : ℤ) ^ 2 := by ring
 
-/-- **The slice count** for either sign of the binary discriminant `Δ`. -/
+/-- **The slice count** for either sign of the binary discriminant `Δ`. If `α > 0`, `Δ ≠ 0`,
+the `z²` coefficient of `N` is nonzero, all coefficients are at most `K` and `W` bounds the norm
+counts for `0 < |N| ≤ 116 K⁴ H²`, then `F` has at most `(2H+1)(W+4)` zeros in `[-H, H]³`. -/
 theorem slice_count_ne {α β γ d1 d0 e1 e0 f2 f1 f0 : ℤ} {K H W : ℕ} (hH : 1 ≤ H)
     (hα : 0 < α) (hΔ : β ^ 2 - 4 * α * γ ≠ 0)
     (hlead : (β * d1 - 2 * α * e1) ^ 2 + (β ^ 2 - 4 * α * γ) * (4 * α * f2 - d1 ^ 2) ≠ 0)

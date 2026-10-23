@@ -9,7 +9,9 @@ public import PierceLengthBound.IntegralLiftResolvent
 public import PierceLengthBound.IntegralLiftInvariant
 public import PierceLengthBound.FixedDividendOrbit
 
-/-! The resolvent formula for the actual finite positive moment functionals. -/
+/-! The rank-three Hankel resolvent formula at an orbit state, with the denominator cleared:
+`I₃(i) Q_i(-q_i)` in terms of the rank-three and mixed Hankel minors of the raw moments
+`μ_i(Xʲ)`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -24,6 +26,7 @@ lemma monic_quartic_expansion {R : Type*} [CommRing R] (P : R[X])
   rw [hd] at he
   simpa [sum_range_succ, add_assoc] using he
 
+/-- Orthogonality of the orbit quartic as a linear recurrence for the moments `h_i(j)`. -/
 lemma orbit_quartic_moment_recurrence {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) :
     ∀ j < 3, (orbitQuartic a b i).coeff 0 * hm a b i j +
       (orbitQuartic a b i).coeff 1 * hm a b i (j + 1) +
@@ -35,6 +38,7 @@ lemma orbit_quartic_moment_recurrence {a b i : ℕ} (hba : b < a) (hi : i + 6 < 
   simp only [add_mul, mul_assoc, ← pow_succ', ← pow_add, nuF_add, nuF_C_mul, nuF_X_pow] at ho
   simpa only [Nat.add_comm, add_assoc, add_left_comm, add_comm] using ho
 
+/-- `q_i h_i(j) + h_i(j+1) = μ_i(Xʲ)`. -/
 lemma orbit_weighted_raw_moment {a b i : ℕ} (hba : b < a) (j : ℕ) :
     (qq a b i : ℝ) * hm a b i j + hm a b i (j + 1) = muF a b i (X ^ j) := by
   have h := nuF_mul_X_add hba i (X ^ j)
@@ -47,8 +51,9 @@ lemma integralLiftCoordinate_hankelThree {a b i : ℕ} (hba : b < a) (hi : i + 3
   unfold hankelInv hankelThree
   congr 1
 
-/-- The new resolvent formula is valid for every sufficiently supported actual
-orbit start, with the denominator cleared and the invariant identified in ℤ. -/
+/-- At every orbit state with `i + 6 < P(a,b)`,
+`I₃(i) Q_i(-q_i) = a ((q_i - [X³]Q_i) H₃(μ) - H_mixed(μ))`, where `Q_i` is the orbit quartic,
+`I₃(i)` the integral lift coordinate, and `μ = (μ_i(Xʲ))_j`. -/
 theorem orbit_integralLift_resolvent {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b) :
     (integralLiftCoordinate a b i : ℝ) *
         (orbitQuartic a b i).eval (-(qq a b i : ℝ)) =

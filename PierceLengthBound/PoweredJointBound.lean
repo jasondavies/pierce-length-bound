@@ -8,19 +8,24 @@ module
 public import PierceLengthBound.PoweredJointWindow
 public import PierceLengthBound.FixedDividendGlobalReduction
 
-/-! Unconditional optimized length bounds from fixed positive integer powers
-of the two joint invariants. -/
+/-! Length bounds from fixed positive integer powers `m, n` of the curvature coordinates and
+the rank-five invariant (paper, Corollary 8.14 `cor:jointexponent`): `P(a, b) ≪ a^{E(m,n) + ε}`
+(`P_le_powered_joint`), with the rational instances `2201/7480` (`m = 50`, `n = 51`) and
+`128/435` (the unpowered case `m = n = 1`), and the optimized exponent
+`α* = (1310 - √655)/4365` of Theorem 1.2 (`thm:joint`). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
-/-- The larger of the two powered window exponents. -/
+/-- The exponent `E(m, n)` of Corollary 8.14: the larger of the two powered window exponents,
+with `L = δ_min = 10n + 7m`. -/
 def poweredJointExponent (m n : ℕ) : ℝ :=
   let L := 10 * n + 7 * m
   max (((15 * L + m : ℕ) : ℝ) / (51 * L + 3 * m : ℕ))
     (((15 * L + 6 * n : ℕ) : ℝ) / (51 * L + 20 * n : ℕ))
 
+/-- `5/17 ≤ E(m, n)` for `m > 0`. -/
 lemma poweredJointExponent_ge_base {m n : ℕ} (hm : 0 < m) :
     (5 : ℝ) / 17 ≤ poweredJointExponent m n := by
   apply le_trans _ (le_max_left _ _)
@@ -30,8 +35,8 @@ lemma poweredJointExponent_ge_base {m n : ℕ} (hm : 0 < m) :
   apply (div_le_div_iff₀ (by norm_num) (by positivity)).mpr
   nlinarith
 
-/-- Every fixed pair of positive powers gives its asserted unconditional
-length exponent; all local geometry and curve counting are proved inputs. -/
+/-- **The powered joint bound** (paper, `cor:jointexponent`). For fixed positive powers
+`m, n`, `P(a, b) ≪ a^{E(m,n) + ε}`. -/
 theorem P_le_powered_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
       (P a b : ℝ) ≤ C * (a : ℝ) ^ (poweredJointExponent m n + ε) := by
@@ -59,7 +64,7 @@ theorem P_le_powered_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     selectedCurvatureHeight, selectedRankFiveHeight, L, Nat.cast_max, Nat.cast_pow] using
     hcount a b s _ (2 ^ k) hba W.mem hsT (by omega) hscale
 
-/-- The explicit rational choice m=50, n=51. -/
+/-- The choice `m = 50`, `n = 51` gives the exponent `2201/7480`. -/
 theorem P_le_2201_7480 :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
       (P a b : ℝ) ≤ C * (a : ℝ) ^ ((2201 : ℝ) / 7480 + ε) := by
@@ -67,7 +72,7 @@ theorem P_le_2201_7480 :
     show max ((12950 : ℝ) / 44010) ((13206 : ℝ) / 44880) = 2201 / 7480 by norm_num] using
     P_le_powered_joint 50 51 (by decide) (by decide)
 
-/-- The unpowered joint lift, the choice m=n=1. -/
+/-- The unpowered case `m = n = 1` gives the exponent `128/435`. -/
 theorem P_le_128_435 :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
       (P a b : ℝ) ≤ C * (a : ℝ) ^ ((128 : ℝ) / 435 + ε) := by
@@ -75,7 +80,8 @@ theorem P_le_128_435 :
     show max ((256 : ℝ) / 870) ((261 : ℝ) / 887) = 128 / 435 by norm_num] using
     P_le_powered_joint 1 1 (by decide) (by decide)
 
-/-- Optimizing fixed integer powers gives the algebraic exponent of the candidate. -/
+/-- **The joint-invariant bound** (paper, Theorem 1.2 `thm:joint`). Optimizing the ratio
+`n/m` of fixed integer powers gives `α* = jointOptimalExponent = (1310 - √655)/4365`. -/
 theorem P_le_joint_optimal :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
       (P a b : ℝ) ≤ C * (a : ℝ) ^ (jointOptimalExponent + ε) := by

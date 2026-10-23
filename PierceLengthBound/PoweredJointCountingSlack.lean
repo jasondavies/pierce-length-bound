@@ -8,14 +8,14 @@ module
 public import PierceLengthBound.PoweredJointPointCount
 public import PierceLengthBound.JointLiftCountingSlack
 
-/-! The actual joint box has polynomial height in the dividend. Consequently
-the logarithm in the proved curve theorem costs a proved subpolynomial factor. -/
+/-! The powered joint box has polynomial height in the dividend, so the logarithm in the curve
+point count is absorbed into a subpolynomial coefficient. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
-/-- For fixed powers the powered box remains polynomial in the dividend. -/
+/-- For fixed powers the powered box is polynomial in the dividend. -/
 lemma poweredJointPointBoxHeight_polynomial {a A T : ℕ} (ha : 1 ≤ a) (hA : A ≤ a)
     (m n : ℕ) : poweredJointPointBoxHeight a A T m n ≤
       (10 ^ 25) ^ (m + n + 1) * a ^ (15 * (m + n + 1)) := by
@@ -38,6 +38,7 @@ lemma poweredJointPointBoxHeight_polynomial {a A T : ℕ} (ha : 1 ≤ a) (hA : A
       exact Nat.pow_le_pow_left (jointPointBoxHeight_polynomial ha hA) _
     _ = _ := by simp only [mul_pow, ← pow_mul]
 
+/-- The powered point box is at most three times `max(H, Sᵐ, Yⁿ)`. -/
 lemma poweredJointPointBoxHeight_le (a A T m n : ℕ) :
     poweredJointPointBoxHeight a A T m n ≤
       3 * max (max (selectedGapHeight a A T) (selectedCurvatureHeight a A T ^ m))
@@ -55,8 +56,8 @@ lemma poweredJointPointBoxHeight_le (a A T m n : ℕ) :
         (selectedRankFiveHeight a A T ^ n)
       omega
 
-/-- For actual windows and fixed degree range, the curve theorem supplies the
-subpolynomial coefficient needed by the per-pattern counting argument. -/
+/-- For a fixed degree range `[lo, hi]` of the powered graph, the gap vectors of one pattern on
+one component number at most `R a · max(H, Sᵐ, Yⁿ)^{1/lo}` with `R` subpolynomial. -/
 theorem selected_poweredJointGraph_gap_count_slow (m n lo hi : ℕ)
     (hlo : 0 < lo) (hlohi : lo ≤ hi) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ {a b s T A i : ℕ}, b < a →

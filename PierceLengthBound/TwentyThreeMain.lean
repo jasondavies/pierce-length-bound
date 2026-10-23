@@ -19,11 +19,15 @@ As in `OrbitPattern`, for an orbit state `i` put `kᵢ = q_{i+1} - qᵢ`, `dᵢ 
 ∈ ℤ⁷` and its gaps are `κ(i) = (kᵢ, …, k_{i+4})`.
 
 In a window run of `T ≥ 36` terms in `[A, 2A)` take `H = ⌊28a/(AT)⌋ + 1`. At least `T/2`
-starts have their next seven increments `≤ H` (`good_card`). If `237568 A⁴ H⁵ ≤ a³`, their
-patterns are bounded by `M = ⌊172032 A⁴ H⁶ / a³⌋` (`state_bound`), so the counting lemma gives
-`T ≤ 16 (2M+1)⁷ H²` (`two_state_window_77`). Combined with the six-step bound and the drop bound,
-every window has `T⁷⁷ ≤ C₇₇ Δ²² a²³` (`window_77`), and the dyadic decomposition gives the
-theorem (`P_le_23_77`).
+starts have their next seven increments `≤ H` (`good_card`, Lemma 7.6 of the paper). The label
+bound in window form (`label_at`, Lemma 7.4) and `state_bound` show that, if
+`237568 A⁴ H⁵ ≤ a³`, their patterns are bounded by `M = ⌊172032 A⁴ H⁶ / a³⌋`
+(`goodStarts_theta_le`), so the counting lemma `pattern_count` gives `T ≤ 16 (2M+1)⁷ H²`
+(`two_state_window_77`). Combined with the six-step bound and the drop bound, every window has
+`T⁷⁷ ≤ C₇₇ Δ²² a²³` (`window_77`, `visits_77`), and the dyadic decomposition gives the theorem
+(`P_le_23_77`).
+
+This is the `23/77` row of the table in the paper's introduction; the paper omits its proof.
 -/
 
 @[expose] public section
@@ -36,7 +40,8 @@ section State
 
 variable {a b : ℕ}
 
-/-- **The label bound in window form.** `L(i) a³ ≤ 256 A⁴ gramP`. -/
+/-- **The label bound in window form** (Lemma 7.4). If `bᵢ < 2A`, then
+`L(i) a³ ≤ 256 A⁴ 𝒢(kᵢ, …, k_{i+4})`, where `𝒢 = gramP`. -/
 lemma label_at {A i : ℕ} (hba : b < a) (h : i + 6 < P a b) (hi : orb a b i < 2 * A) :
     Lz a b i * (a : ℤ) ^ 3 ≤ 256 * (A : ℤ) ^ 4 *
       gramP (kq a b i) (kq a b (i + 1)) (kq a b (i + 2)) (kq a b (i + 3)) (kq a b (i + 4)) := by
@@ -109,8 +114,9 @@ theorem goodStarts_theta_le (hba : b < a) {s T A H : ℕ}
   · exact cv _ SB1.1
   · exact cv _ SB1.2.1
 
-/-- **The window theorem.** Under the scale condition `237568 A⁴ H⁵ ≤ a³`,
-`T ≤ 16 (2M + 1)⁷ H²` with `M = ⌊172032 A⁴ H⁶ / a³⌋`. -/
+/-- **The window theorem.** For a window run of `T ≥ 36` terms in `[A, 2A)` and
+`H = ⌊28a/(AT)⌋ + 1`, the scale condition `237568 A⁴ H⁵ ≤ a³` gives `T ≤ 16 (2M + 1)⁷ H²` with
+`M = ⌊172032 A⁴ H⁶ / a³⌋`. -/
 theorem two_state_window_77 (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T)
@@ -133,7 +139,8 @@ section Exponent
 def C77 : ℕ := 122449 ^ 20 + (8 * 237568 * 56 ^ 5) ^ 11 + (64 * 50176) ^ 11 +
   8 ^ 16 * (16 * 3 ^ 7 * 172032 ^ 7) * 56 ^ 44
 
-/-- **The exponent arithmetic.** Every window run satisfies `T⁷⁷ ≤ C₇₇ Δ²² a²³`. -/
+/-- **The exponent arithmetic.** The six-step bound, the drop bound and the window theorem
+(for `T ≥ 36`) give `T⁷⁷ ≤ C₇₇ Δ²² a²³`. -/
 theorem window_77 {a A T Δ : ℕ} (hT : 36 ≤ T)
     (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hdrop : T * (T - 1) ≤ 4 * A * Δ)
     (hwin : 237568 * A ^ 4 * (28 * a / (A * T) + 1) ^ 5 ≤ a ^ 3 →

@@ -10,14 +10,20 @@ public import PierceLengthBound.IntegralLiftInvariant
 public import PierceLengthBound.FixedDividendRationalOrbit
 import all PierceLengthBound.FixedDividendTotalDegree
 
-/-! Polynomial cofactor coordinates, their degree bounds, and specialization.
-These are coordinate formulas, not a graph-degree or point-counting theorem. -/
+/-! The cofactor formula for the integral lift coordinate `I₃` on the pattern curve. The
+moment system of an orbit state is the specialization at the free nodes of a polynomial matrix
+`curveMomentSystem` over `ℚ[x₀, x₁, x₂]`, whose signed maximal minors `c_j` have total degree at
+most `40`. Then `I₃ = a det(c_{j+k})_{j,k<3} (c₁ - c₀)³ / (c₁² - c₀c₂)³`, with numerator and
+denominator `orbitLiftNumeratorQ`, `orbitLiftDenominatorQ` of total degree at most `240`, and
+the denominator is nonzero at the free nodes of every orbit state. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Matrix MvPolynomial
 
+/-- A determinant of multivariate polynomials of total degree at most `D` has total degree at
+most `n D`. -/
 lemma polynomial_det_totalDegree {R σ : Type*} [CommRing R] {n D : ℕ}
     (M : Matrix (Fin n) (Fin n) (MvPolynomial σ R))
     (hM : ∀ i j, (M i j).totalDegree ≤ D) : M.det.totalDegree ≤ n * D := by
@@ -116,6 +122,8 @@ lemma coeff_mul_X_pow_totalDegree {R σ : Type*} [CommRing R]
   · exact hf _
   · simp
 
+/-- The moment system built from the first Newton quartic and `X` times the next Newton
+quartic. -/
 def newtonMomentSystem {R : Type*} [CommRing R] (c e s : Fin 4 → R) :
     Matrix (Fin 8) (Fin 9) R :=
   momentSystem (firstNewtonQuartic c s) (Polynomial.X * nextNewtonQuartic e s)
@@ -134,8 +142,8 @@ lemma newtonMomentSystem_totalDegree {R σ : Type*} [CommRing R]
     rw [mul_comm Polynomial.X, ← pow_one Polynomial.X]
     exact coeff_mul_X_pow_totalDegree _ (nextNewtonQuartic_coeff_totalDegree e s hs) _ _
 
-/-- The uniform degree 40 used in the candidate follows even from the rough
-degree-four bound on each matrix entry (which gives degree 32). -/
+/-- The signed maximal minors of the Newton moment system with linear nodes have total degree
+at most `40` (the entrywise bound four gives `32`). -/
 theorem newtonMomentCofactors_totalDegree {R σ : Type*} [CommRing R]
     (c e : Fin 4 → R) (s : Fin 4 → MvPolynomial σ R)
     (hs : ∀ j, (s j).totalDegree ≤ 1) (j : Fin 9) :
@@ -144,17 +152,20 @@ theorem newtonMomentCofactors_totalDegree {R σ : Type*} [CommRing R]
     (by norm_num)
 
 
+/-- The `3 × 3` Hankel matrix `(c_{j+k})` of a cofactor vector. -/
 def cofactorHankel {R : Type*} (c : Fin 9 → R) : Matrix (Fin 3) (Fin 3) R :=
   fun i j => c ⟨i.val + j.val, by omega⟩
 
+/-- The numerator `a det(cofactorHankel c) (c₁ - c₀)³` of the cofactor formula for `I₃`. -/
 def cofactorLiftNumerator {R : Type*} [CommRing R] (a : R) (c : Fin 9 → R) : R :=
   a * (cofactorHankel c).det * (c 1 - c 0) ^ 3
 
+/-- The denominator `(c₁² - c₀ c₂)³` of the cofactor formula for `I₃`. -/
 def cofactorLiftDenominator {R : Type*} [CommRing R] (c : Fin 9 → R) : R :=
   (c 1 ^ 2 - c 0 * c 2) ^ 3
 
-/-- Both polynomials in the rational expression for I3 have uniformly bounded
-multivariate degree. This does not assert the degree of their graph. -/
+/-- For cofactors of total degree at most `40`, both polynomials in the cofactor formula for
+`I₃` have total degree at most `240`. -/
 theorem cofactorLift_totalDegree {R σ : Type*} [CommRing R]
     (a : R) (c : Fin 9 → MvPolynomial σ R) (hc : ∀ j, (c j).totalDegree ≤ 40) :
     (cofactorLiftNumerator (C a) c).totalDegree ≤ 240 ∧
@@ -176,8 +187,9 @@ theorem cofactorLift_totalDegree {R σ : Type*} [CommRing R]
     omega
   · exact (totalDegree_pow _ _).trans (by nlinarith)
 
-/-- Actual reconstruction of the integral lift coordinate using the explicit
-cofactor polynomials; its denominator is nonzero at every supported state. -/
+/-- The cofactor formula at an orbit state with `i + 7 < P(a,b)`: for the cofactors `c` of the
+orbit moment system, `cofactorLiftDenominator c ≠ 0` and
+`I₃ = cofactorLiftNumerator a c / cofactorLiftDenominator c`. -/
 theorem orbit_cofactorLift_reconstruction {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     let c := momentCofactors (orbitMomentSystem a b i)
     cofactorLiftDenominator c ≠ 0 ∧
@@ -209,6 +221,8 @@ lemma map_newtonMomentSystem {R S : Type*} [CommRing R] [CommRing S]
   rw [momentSystem_map, map_firstNewtonQuartic, Polynomial.map_mul,
     Polynomial.map_X, map_nextNewtonQuartic]
 
+/-- The moment system of the pattern `(ρ, u, v; ρ', u', v')` as a polynomial matrix in the three
+free nodes. -/
 def curveMomentSystem {R : Type*} [CommRing R] (ρ u v ρ' u' v' : R) :
     Matrix (Fin 8) (Fin 9) (MvPolynomial (Fin 3) R) :=
   newtonMomentSystem (fun j : Fin 4 => C (coeffs ρ u v j.castSucc))
@@ -229,11 +243,14 @@ lemma completeNodes_totalDegree {R : Type*} [Field R] (ρ u v : R) (j : Fin 4) :
   rw [he]
   exact linear_form_degree_le _ _ _
 
+/-- The cofactors of the curve moment system have total degree at most `40`. -/
 theorem curveMomentCofactors_totalDegree {R : Type*} [Field R]
     (ρ u v ρ' u' v' : R) (j : Fin 9) :
     (momentCofactors (curveMomentSystem ρ u v ρ' u' v') j).totalDegree ≤ 40 :=
   newtonMomentCofactors_totalDegree _ _ _ (completeNodes_totalDegree ρ u v) j
 
+/-- Evaluating the curve moment system at `x` gives the Newton moment system at the complete
+nodes of `x`. -/
 theorem eval_curveMomentSystem {R : Type*} [CommRing R]
     (ρ u v ρ' u' v' : R) (x : Fin 3 → R) :
     (curveMomentSystem ρ u v ρ' u' v').map (eval x) =
@@ -247,8 +264,8 @@ theorem eval_curveMomentSystem {R : Type*} [CommRing R]
   · funext j
     fin_cases j <;> simp [completeNodes, fourthNode]
 
-/-- The polynomial matrix specializes to the actual moment system, so the
-cofactor formulas are uniform in the three free node coordinates. -/
+/-- At the free nodes of an orbit state, the curve moment system of its pattern specializes
+to the orbit moment system, so the cofactor formulas are uniform in the three free nodes. -/
 theorem orbit_eval_curveMomentSystem {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     (curveMomentSystem (patternRho a b i) (patternU a b i) (patternV a b i)
       (patternRho a b (i + 1)) (patternU a b (i + 1)) (patternV a b (i + 1))).map
@@ -265,6 +282,7 @@ theorem orbit_eval_curveMomentSystem {a b i : ℕ} (hba : b < a) (hi : i + 7 < P
   rw [orbitQuartic_newton, nextQuartic_newton]
   rfl
 
+/-- The curve cofactors specialize to the cofactors of the orbit moment system. -/
 theorem orbit_eval_curveMomentCofactors {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (j : Fin 9) :
     eval (orbitFreeNodes a b i)
@@ -296,17 +314,21 @@ lemma map_curveMomentSystem {R S : Type*} [CommRing R] [CommRing S]
   · funext j; fin_cases j <;> simp [coeffs]
   · funext j; fin_cases j <;> simp [completeNodes, fourthNode]
 
+/-- The cofactors of the curve moment system of the rational pattern at `i`. -/
 def orbitCurveCofactorsQ (a b i : ℕ) : Fin 9 → MvPolynomial (Fin 3) ℚ :=
   momentCofactors (curveMomentSystem (patternRhoQ a b i) (patternUQ a b i)
     (patternVQ a b i) (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1))
     (patternVQ a b (i + 1)))
 
+/-- The numerator of the cofactor formula for `I₃`, as a polynomial in the free nodes. -/
 def orbitLiftNumeratorQ (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   cofactorLiftNumerator (C (a : ℚ)) (orbitCurveCofactorsQ a b i)
 
+/-- The denominator of the cofactor formula for `I₃`, as a polynomial in the free nodes. -/
 def orbitLiftDenominatorQ (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   cofactorLiftDenominator (orbitCurveCofactorsQ a b i)
 
+/-- The lift numerator and denominator have total degree at most `240`. -/
 theorem orbitLift_polynomial_degrees (a b i : ℕ) :
     (orbitLiftNumeratorQ a b i).totalDegree ≤ 240 ∧
       (orbitLiftDenominatorQ a b i).totalDegree ≤ 240 :=
@@ -330,8 +352,8 @@ lemma orbit_eval_curveCofactorsQ_cast {a b i : ℕ} (hba : b < a) (hi : i + 7 < 
   simp only [patternRhoQ_cast, patternUQ_cast, patternVQ_cast]
   exact orbit_eval_curveMomentCofactors hba hi j
 
-/-- The actual positive integer I3 is the evaluation of this rational function
-on the rational component coordinates. No reconstruction hypothesis remains. -/
+/-- At the free nodes of an orbit state with `i + 7 < P(a,b)`, the lift denominator is nonzero
+and the positive integer `I₃(i)` is the quotient of the lift numerator and denominator. -/
 theorem orbitLift_evaluation {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     eval (orbitFreeNodesQ a b i) (orbitLiftDenominatorQ a b i) ≠ 0 ∧
       (integralLiftCoordinate a b i : ℚ) =
@@ -365,8 +387,8 @@ theorem orbitLift_evaluation {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     rw [hn, hd]
     exact hval
 
-/-- A component through the supported orbit point cannot be contained in the
-pole-denominator zero set. This supplies the proper-section prerequisite. -/
+/-- The lift denominator does not lie in an ideal whose zero locus contains the free nodes of
+an orbit state. -/
 theorem orbitLift_denominator_not_mem {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ))
     (hx : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I) :

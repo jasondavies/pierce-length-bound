@@ -8,7 +8,8 @@ module
 public import PierceLengthBound.JointLiftExponent
 public import PierceLengthBound.WindowRealReduction
 
-/-! Exponent arithmetic with an arbitrary powered-graph degree. -/
+/-! Exponent arithmetic for the powered window branches, with an arbitrary powered-graph
+degree `L`, and the box bounds `max(H, Sᵐ) T^{3m} ≪ a^m` and `Yⁿ T^{20n} ≪ a^{6n}`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -25,7 +26,7 @@ theorem remainder_window_powered_box_exponent {T H X B A a C E D F K L u v : ℕ
     _ ≤ _ := h
     _ = _ := by ring
 
-/-- The original node radius can be absorbed in the powered curvature box,
+/-- The node radius `H` can be absorbed in the powered curvature box,
 using the drop estimate and a positive curvature power. -/
 lemma max_powered_curvature_height {a A T C S H D K m : ℕ} (hm : 0 < m)
     (hA : 0 < A) (hD : 1 ≤ D) (hH : 1 ≤ H)
@@ -43,6 +44,7 @@ lemma max_powered_curvature_height {a A T C S H D K m : ℕ} (hm : 0 < m)
     _ ≤ ((K * C ^ 3 + C) * D * a) ^ m := Nat.pow_le_pow_left hbox m
     _ = _ := mul_pow _ _ _
 
+/-- The powered rank-five box: `Yⁿ T^{20n} ≤ (J C¹⁰ D⁵)ⁿ a^{6n}`. -/
 lemma powered_rank_five_height {a A T C Y H D J n : ℕ} (ha : 0 < a) (hA : 0 < A)
     (hgap : H * (A * T) ≤ C * a) (hY : Y * a ^ 4 ≤ J * A ^ 5 * H ^ 10)
     (hdrop : T ^ 2 ≤ D * A) :

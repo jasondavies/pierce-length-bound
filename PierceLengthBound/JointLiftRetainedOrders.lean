@@ -9,15 +9,18 @@ public import PierceLengthBound.ChartNewtonOrders
 public import PierceLengthBound.ChartRawDeterminantOrders
 public import PierceLengthBound.JointLiftRetainedIdentities
 
-/-! Quotient and rank-three orders on retained components. The normalization
-and resolvent equations are ideal membership hypotheses; all determinant and
-coefficient orders are derived from the actual component and its chart. -/
+/-! # Orders of the reconstructed functions
+
+Lemma 8.6 of the paper: on a retained nonexceptional component (the cleared normalization and
+resolvent polynomials lie in its ideal), at a discrete valuation centered on the infinity chart
+with infinity multiplicity `e`, one has `e = 2t`, `ord Q = -3t` and `ord E₀ = 3t`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- The image of the gap polynomials under an algebra map is `lineGaps` of the images. -/
 lemma map_jointGapPolynomials {F : Type*} [Field F] [Algebra ℚ F]
     (ψ : MvPolynomial (Fin 3) ℚ →ₐ[ℚ] F) (a b i : ℕ) (j : Fin 5) :
     ψ (jointGapPolynomials a b i j) =
@@ -32,9 +35,10 @@ lemma map_jointGapPolynomials {F : Type*} [Field F] [Algebra ℚ F]
   rw [hc, hc, hc, hc, hc, hc]
   rfl
 
-/-- On every retained nonexceptional component through an actual supported
-point, the infinity multiplicity is even, q has order -3t, and I3 has order 3t.
-This statement assumes neither determinant orders nor coefficient bounds. -/
+/-- On a retained nonexceptional component through the free nodes of state `i`, at a discrete
+valuation centered on the infinity chart with infinity multiplicity `e`, one has `e = 2t` with
+`t > 0`, the reconstructed quotient `Q` has order `-3t`, and the reconstructed curvature `E₀`
+has order `3t`. -/
 theorem retained_quotient_and_rank_three_discrete_orders
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

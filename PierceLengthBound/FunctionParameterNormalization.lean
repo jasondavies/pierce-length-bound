@@ -8,9 +8,11 @@ module
 public import PierceLengthBound.NormalizedFiberOrders
 public import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
 
-/-! Normalizing the affine line in a finite function-field extension. The zero
-fiber degree is the field-extension degree; since the reciprocal parameter
-generates the same field, the pole fiber has the same degree. -/
+/-! The parameter normalization of a function: for `x` transcendental with `L` finite over
+`ℚ(x)`, the integral closure of `ℚ[x]` in `L` is a Dedekind domain with fraction field `L`, and
+its canonical branch orders give the order of `x` as a multiplicity. The zero fiber of `x`, with
+multiplicities and residue degrees, has degree `[L : ℚ(x)]`. Since `K(x⁻¹) = K(x)`, the pole
+fiber, the zero fiber of `x⁻¹`, has the same degree. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -31,6 +33,8 @@ def functionParameterElement {L : Type*} [Field L] [Algebra ℚ L] (x : L) :
 @[simp] theorem functionParameterElement_coe {L : Type*} [Field L] [Algebra ℚ L] (x : L) :
     (functionParameterElement x : L) = x := rfl
 
+/-- The parameter normalization is a Dedekind domain, finite over `ℚ[x]`, with fraction
+field `L`. -/
 theorem function_parameter_normalization {L : Type*} [Field L] [Algebra ℚ L]
     (x : L) (hx : Transcendental ℚ x) [FiniteDimensional ℚ⟮x⟯ L] :
     IsDedekindDomain (functionParameterNormalization x) ∧
@@ -56,6 +60,8 @@ def functionParameterBranchOrder {L : Type*} [Field L] [Algebra ℚ L]
     (function_parameter_normalization x hx).2.2
   normalizedBranchOrder q L
 
+/-- The order of `x` at a branch of its parameter normalization is the multiplicity of the
+branch in the principal ideal `(x)`. -/
 theorem functionParameterBranchOrder_parameter {L : Type*} [Field L] [Algebra ℚ L]
     (x : L) (hx : Transcendental ℚ x) [FiniteDimensional ℚ⟮x⟯ L]
     (q : IsDedekindDomain.HeightOneSpectrum (functionParameterNormalization x)) :
@@ -69,6 +75,7 @@ theorem functionParameterBranchOrder_parameter {L : Type*} [Field L] [Algebra �
     exact hx.ne_zero (congrArg (fun z : C => (z : L)) h)
   exact normalizedBranchOrder_eq_multiplicity q L hw
 
+/-- The order of `x⁻¹` is minus that multiplicity. -/
 theorem functionParameterBranchOrder_inverse {L : Type*} [Field L] [Algebra ℚ L]
     (x : L) (hx : Transcendental ℚ x) [FiniteDimensional ℚ⟮x⟯ L]
     (q : IsDedekindDomain.HeightOneSpectrum (functionParameterNormalization x)) :
@@ -76,6 +83,8 @@ theorem functionParameterBranchOrder_inverse {L : Type*} [Field L] [Algebra ℚ 
       ((-(multiplicity q.asIdeal (Ideal.span {functionParameterElement x}) : ℤ)) : WithTop ℤ) := by
   rw [AddValuation.map_inv, functionParameterBranchOrder_parameter]
 
+/-- An element of the parameter normalization has positive order exactly when it lies in the
+branch. -/
 theorem functionParameterBranchOrder_center {L : Type*} [Field L] [Algebra ℚ L]
     (x : L) (hx : Transcendental ℚ x) [FiniteDimensional ℚ⟮x⟯ L]
     (q : IsDedekindDomain.HeightOneSpectrum (functionParameterNormalization x))

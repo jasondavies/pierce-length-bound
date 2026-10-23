@@ -8,14 +8,21 @@ module
 public import PierceLengthBound.FixedDividendChart
 public import PierceLengthBound.CurveNormalization
 
-/-! Finite normalization of the original affine component. The same eventual
-generation which controls infinity makes the affine coordinate ring finite
-over its first-coordinate parameter. -/
+/-! Finite Dedekind normalization of a nonexceptional affine component.
+
+If `filteredCoordinateSpace I (n + 2)` is spanned by `filteredCoordinateSpace I (n + 1)` and its
+product with `l` for all large `n`, the coordinate ring is a finite module over `K[l]`; if the
+Hilbert function is moreover eventually `d n + b` with `0 < d`, then `l` is transcendental. For a
+nonexceptional component the first node coordinate has this property
+(`nonexceptional_eventual_first_node_generation`), so the integral closure of the coordinate ring
+in its fraction field is a Dedekind domain, finite over the coordinate ring. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
+/-- If multiplication by `l` eventually generates each filtered piece from the previous one,
+the coordinate ring `K[x]/I` is a finite module over `K[l]`. -/
 theorem coordinateRing_finite_over_parameter {K σ : Type*} [Field K] [Finite σ]
     (I : Ideal (MvPolynomial σ K)) (l : MvPolynomial σ K ⧸ I)
     {N : ℕ} (hspan : ∀ n ≥ N, filteredCoordinateSpace I (n + 1) ⊔
@@ -46,6 +53,9 @@ theorem coordinateRing_finite_over_parameter {K σ : Type*} [Field K] [Finite σ
     exact hmem f.totalDegree ⟨f, (MvPolynomial.mem_restrictTotalDegree _ _ _).mpr le_rfl, rfl⟩
   exact ⟨htop ▸ hfg⟩
 
+/-- Under the same eventual generation, a Hilbert function eventually equal to `d n + b`
+with `0 < d` forces `l` to be transcendental: otherwise `K[x]/I` would be finite-dimensional
+over `K`. -/
 theorem coordinate_parameter_transcendental {K σ : Type*} [Field K] [Finite σ]
     (I : Ideal (MvPolynomial σ K)) (l : MvPolynomial σ K ⧸ I)
     {d N M : ℕ} {b : ℤ} (hd : 0 < d)
@@ -71,8 +81,10 @@ theorem coordinate_parameter_transcendental {K σ : Type*} [Field K] [Finite σ]
   rw [hdegree n hnN] at hb
   nlinarith
 
-/-- Original nonexceptional affine components have finite Dedekind
-normalization in any realization of their fraction field. -/
+/-- Let `I` be a prime containing the pattern quadratic and the fixed-dividend equation of a
+nonexceptional pattern, with Hilbert function eventually `d n + b` and `0 < d`. Then the
+integral closure of `ℚ[x₀, x₁, x₂]/I` in any fraction field `F` is a Dedekind domain, finite
+over `ℚ[x₀, x₁, x₂]/I`. -/
 theorem nonexceptional_affine_normalization
     {ρ u v : ℚ} (hρ : 0 < ρ) (hu : 0 < u) (hv : v < 0)
     (hne : NonexceptionalPattern (ρ : ℝ) (u : ℝ) (v : ℝ)) (ρ' u' v' A a : ℚ) (ha : a ≠ 0)

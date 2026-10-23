@@ -7,13 +7,19 @@ module
 
 public import PierceLengthBound.IntegralBranchOrders
 
-/-! Comparing a centered discrete order with the canonical order of its
-Dedekind branch. The valuation ring determines a normalized integer order. -/
+/-! Comparing a centered discrete order with the canonical order of its Dedekind branch. An
+integer-valued order of the fraction field that attains `1`, is nonnegative on a Dedekind domain
+`R` and is positive exactly on the prime `p` equals `normalizedBranchOrder p`, since the
+valuation ring determines a normalized integer order. Consequently normalized branch orders are
+injective in `p`, and a branch at which `x` vanishes is a branch of the zero fiber of the
+parameter normalization of `x`, with the same order. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
+/-- An order nonnegative on `R`, positive exactly on `p` and attaining `1` has the same
+valuation ring as the `p`-adic valuation. -/
 theorem centered_branch_valuationSubring {R L : Type*} [CommRing R] [IsDedekindDomain R]
     [Field L] [Algebra R L] [IsFractionRing R L]
     (p : IsDedekindDomain.HeightOneSpectrum R) (ν : AddValuation L (WithTop ℤ))
@@ -41,6 +47,7 @@ theorem centered_branch_valuationSubring {R L : Type*} [CommRing R] [IsDedekindD
   rw [← p.valuationSubringAtPrime_eq_valuationSubring]
   exact ValuationSubring.eq_of_le_of_ne_top _ hle htop
 
+/-- `ν (x ^ n) = n · ν x` for integer powers. -/
 lemma discrete_order_zpow {L : Type*} [Field L] (ν : AddValuation L (WithTop ℤ))
     {x : L} {m : ℤ} (hx : ν x = (m : WithTop ℤ)) (n : ℤ) :
     ν (x ^ n) = ((n * m : ℤ) : WithTop ℤ) := by
@@ -121,6 +128,7 @@ theorem centered_branch_order_eq {R L : Type*} [CommRing R] [IsDedekindDomain R]
   rw [normalizedBranchOrder_valuationSubring]
   exact centered_branch_valuationSubring p ν hR hp hπ
 
+/-- Distinct height-one primes have distinct normalized orders. -/
 theorem normalizedBranchOrder_injective {R L : Type*} [CommRing R] [IsDedekindDomain R]
     [Field L] [Algebra R L] [IsFractionRing R L] :
     Function.Injective (fun p : IsDedekindDomain.HeightOneSpectrum R =>
@@ -133,8 +141,9 @@ theorem normalizedBranchOrder_injective {R L : Type*} [CommRing R] [IsDedekindDo
   rw [← normalizedBranchOrder_positive_iff p L r,
     ← normalizedBranchOrder_positive_iff q L r, h]
 
-/-- Transport a normalized branch where x vanishes to the zero fiber of the
-parameter normalization. Its canonical order is unchanged on the whole field. -/
+/-- An integer-valued order of `L` that is nonnegative on `ℚ`, attains `1` and is positive at
+`x` is the canonical order of a branch `q` in the zero fiber of the parameter normalization
+of `x`. -/
 theorem function_parameter_branch_transport {L : Type*} [Field L] [Algebra ℚ L]
     (ν : AddValuation L (WithTop ℤ)) (hQ : ∀ c : ℚ, 0 ≤ ν (algebraMap ℚ L c))
     (hπ : ∃ π : L, ν π = 1) (x : L) (hx : Transcendental ℚ x)

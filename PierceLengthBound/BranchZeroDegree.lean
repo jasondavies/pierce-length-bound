@@ -7,15 +7,20 @@ module
 
 public import PierceLengthBound.BranchResidueComparison
 
-/-! Weighted zero orders on any Dedekind model are bounded by the degree of
-the function as a parameter. Branch transport preserves the weights and is
-injective, so no zero is counted twice. -/
+/-! Weighted zero counts on a Dedekind model `R` of `L`: if `x` has zeros of order at least
+`m p > 0` at the branches `p ∈ B`, then `∑_{p ∈ B} m p · [R/p : ℚ] ≤ [L : ℚ(x)]`. Each branch is
+transported, injectively, to the zero fiber of the parameter normalization of `x`, preserving its
+order and residue degree. A further zero outside `B` adds at least one; with orders `3t` over a
+fiber of orders `2t` and degree `d` this gives `3d + 2 ≤ 2 [L : ℚ(x)]`, the zero count in the
+proof of Lemma 8.11. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open scoped IntermediateField BigOperators
 
+/-- Zero orders exactly `m p > 0` at the branches `p ∈ B` give
+`∑_{p ∈ B} m p · [R/p : ℚ] ≤ [L : ℚ(x)]`. -/
 theorem branch_zero_degree_le {R L : Type*}
     [CommRing R] [IsDedekindDomain R] [Algebra ℚ R]
     [Field L] [Algebra ℚ L] [Algebra R L] [IsScalarTower ℚ R L] [IsFractionRing R L]
@@ -65,8 +70,8 @@ theorem branch_zero_degree_le {R L : Type*}
     _ ≤ ∑ q ∈ Q, W q := Finset.sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => Nat.zero_le _)
     _ = Module.finrank ℚ⟮x⟯ L := hsumQ
 
-/-- Lower bounds for positive zero orders suffice for the weighted degree
-bound; cancellation may increase a zero order without invalidating the bound. -/
+/-- The bound of `branch_zero_degree_le` when the `m p > 0` are only lower bounds for the zero
+orders. -/
 theorem branch_zero_degree_lower_bounds {R L : Type*}
     [CommRing R] [IsDedekindDomain R] [Algebra ℚ R]
     [Field L] [Algebra ℚ L] [Algebra R L] [IsScalarTower ℚ R L] [IsFractionRing R L]
@@ -101,8 +106,9 @@ theorem branch_zero_degree_lower_bounds {R L : Type*}
   have := hmk p hp
   omega
 
-/-- One additional zero on a branch outside B contributes at least one more
-degree. This is the integer gain needed by the joint-lift argument. -/
+/-- A further zero of `x` at a branch `p ∉ B` adds at least one:
+`∑_{q ∈ B} m q · [R/q : ℚ] + 1 ≤ [L : ℚ(x)]`, since `[R/p : ℚ] ≥ 1`. This is the extra point
+`P₀` in the proof of Lemma 8.11. -/
 theorem branch_zero_degree_with_extra {R L : Type*}
     [CommRing R] [IsDedekindDomain R] [Algebra ℚ R] [Algebra.FiniteType ℚ R]
     [Field L] [Algebra ℚ L] [Algebra R L] [IsScalarTower ℚ R L] [IsFractionRing R L]
@@ -149,9 +155,9 @@ theorem branch_zero_degree_with_extra {R L : Type*}
   have := branch_residue_degree_pos p
   omega
 
-/-- Orders at least 3t, over a fiber whose orders are 2t and total degree d,
-give 3d/2 plus the contribution from a separate zero. The doubled form avoids
-rounding or rational casts. -/
+/-- If `∑_{q ∈ B} 2 t q · [R/q : ℚ] = d`, `x` has order at least `3 t q` at each `q ∈ B`, and
+`x` also vanishes at a branch `p ∉ B`, then `3d + 2 ≤ 2 [L : ℚ(x)]`, that is,
+`[L : ℚ(x)] ≥ 3d/2 + 1` (Lemma 8.11, with `e_P = 2t`). The doubled form avoids rational casts. -/
 theorem branch_zero_degree_three_halves {R L : Type*}
     [CommRing R] [IsDedekindDomain R] [Algebra ℚ R] [Algebra.FiniteType ℚ R]
     [Field L] [Algebra ℚ L] [Algebra R L] [IsScalarTower ℚ R L] [IsFractionRing R L]

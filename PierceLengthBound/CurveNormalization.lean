@@ -11,9 +11,9 @@ public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Mathlib.FieldTheory.Separable
 public import Mathlib.Algebra.CharP.Algebra
 
-/-! Finite normalization for rational curve charts finite over a transcendental
-parameter. The normalization is the integral closure in the chart's own
-fraction field, with no assumed normality or smoothness of the original chart. -/
+/-! Finite Dedekind normalization of a domain `S` over `ℚ` that is a finite module over `ℚ[w]`
+for a transcendental `w`: the integral closure of `S` in its fraction field is a Dedekind
+domain and a finite `S`-module. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -21,8 +21,8 @@ noncomputable section
 
 attribute [local instance] FractionRing.liftAlgebra
 
-/-- A finite rational curve algebra over a transcendental parameter has finite
-Dedekind normalization in its own fraction field. -/
+/-- If the domain `S` is finite over `ℚ[w]` with `w` transcendental, the integral closure of `S`
+in its fraction field `L` is a Dedekind domain, finite over `S`. -/
 theorem finite_parameter_normalization {S : Type*} [CommRing S] [IsDomain S] [Algebra ℚ S]
     (w : S) (hw : Transcendental ℚ w) [Module.Finite (Algebra.adjoin ℚ {w}) S]
     (L : Type*) [Field L] [Algebra S L] [IsFractionRing S L] :

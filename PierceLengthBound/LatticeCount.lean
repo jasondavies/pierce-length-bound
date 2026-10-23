@@ -13,12 +13,15 @@ public import PierceLengthBound.OrbitPattern
 /-!
 # Counting gap vectors of one minor vector through its lattice
 
-Fix a minor vector `p` with pivot `τ` and a reduced basis `b₁, b₂, b₃` of `Λ_p`. A state with
-minor vector `p` has pivot gaps `k' = ∑ yᵢ bᵢ`. Its five gaps are the matching combination of
-the lifted basis vectors, and its gaps `(k₁, k₂, k₃)` are `B̂ y` for an integer matrix `B̂` with
+Fix a minor vector `p` with pivot `τ` and a reduced basis `b₁, b₂, b₃` of `Λ_p`
+(`pattern_reduced_basis`, from `reduced_basis`). A state with minor vector `p` has pivot gaps
+`k' = ∑ yᵢ bᵢ`. Its five gaps are the matching combination of the lifted basis vectors
+(`liftv`), and its gaps `(k₁, k₂, k₃)` are `B̂ y` for an integer matrix `B̂` (`liftM`) with
 `det B̂ ≠ 0`. So `y` is a zero of the ternary quadratic `F_θ ∘ B̂`, and the reduced basis gives
-`λ₁ |yᵢ| ≤ 3H`. After a plane choice the slice count gives at most `(8 ⌊3H/λ₁⌋ + 3)(W + 4)`
-gap vectors (`lattice_fiber_count`). Summing over minor vectors gives `pattern_count_lattice`.
+`λ |yᵢ| ≤ 3H` with `λ = λ(p)` (`ycoord_spec`). After a plane choice (`TernComp`) the slice count
+gives at most `(8 ⌊3H/λ⌋ + 3)(W + 4)` gap vectors (`lattice_fiber_count`). Summing over minor
+vectors, with at most four states per pattern and gap vector, gives
+`#G ≤ ∑_p 4 (8 ⌊3H/λ(p)⌋ + 3)(W + 4)` (`pattern_count_lattice`).
 -/
 
 @[expose] public section
@@ -170,6 +173,7 @@ lemma ternv_thetaCoef (A A' A'' U V U' V' : ℤ) (v : Fin 3 → ℤ) :
     ternv (thetaCoef A A' A'' U V U' V') v = ternθ A A' A'' U V U' V' (v 0) (v 1) (v 2) := by
   simp [ternv, thetaCoef, ternθ]
 
+/-- `F_θ` is nondegenerate (`disc3 ≠ 0`) when `A, A', U > 0 > V`. -/
 lemma disc3_thetaCoef {A A' A'' U V U' V' : ℤ} (hA : 0 < A) (hA' : 0 < A') (hU : 0 < U)
     (hV : V < 0) : disc3 (thetaCoef A A' A'' U V U' V') ≠ 0 := by
   intro h
@@ -341,7 +345,10 @@ lemma liftM_det_ne {p : Fin 10 → ℤ} {Mx : Fin 3 → Fin 5 → ℤ} {b1 b2 b3
   rw [h0, mul_zero] at e
   exact mul_ne_zero (mul_ne_zero (pow_ne_zero 2 hm) h6) hD e.symm
 
-/-- **The gap vectors of one minor vector.** -/
+/-- **The gap vectors of one minor vector.** Let `p` have height `≤ M`, `p₀₁₂, p₁₂₃ ≥ 1` and
+`p₀₂₃, p₀₁₃ > 0`, so that `θ = projθ p` has `N₀, N₁ ≥ 1` and `u₁ > 0 > u₂`. If `W` bounds the
+norm counts, the gap vectors `k ∈ [1, H]⁵` of matrices with minor vector `p` and
+`F_θ(k₁, k₂, k₃) = 0` number at most `(8 ⌊3H/λ(p)⌋ + 3)(W + 4)`. -/
 theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (hpM : ∀ t, |p t| ≤ M)
     (hA : 1 ≤ p 0) (hA' : 1 ≤ p 6) (hU : 0 < p 3) (hV : 0 < p 1)
     {Vs : Finset (Fin 5 → ℤ)}
@@ -508,7 +515,9 @@ theorem lattice_fiber_count {p : Fin 10 → ℤ} {M H W : ℕ} (hM1 : 1 ≤ M) (
       omega
     gcongr
 
-/-- **The counting lemma through the pattern lattices.** -/
+/-- **The counting lemma through the pattern lattices.** If the pattern of each state in `G` is
+`projθ` of a minor vector `pm i` of height `≤ M` whose matrix has second row `κ i`, then
+`#G ≤ ∑_p 4 (8 ⌊3H/λ(p)⌋ + 3)(W + 4)` over the minor vectors `p` of `G`. -/
 theorem pattern_count_lattice {G : Finset ℕ} {θ : ℕ → Fin 7 → ℤ} {κ : ℕ → Fin 5 → ℤ}
     {pm : ℕ → Fin 10 → ℤ} {Q : ℕ → ℤ} {a : ℤ} {M H W : ℕ} (hM1 : 1 ≤ M)
     (hθ : ∀ i ∈ G, θ i = projθ (pm i))

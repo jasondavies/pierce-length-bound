@@ -9,8 +9,9 @@ public import PierceLengthBound.CurveCountingCoordinates
 public import PierceLengthBound.PoweredJointPointBox
 public import PierceLengthBound.OrbitGapCoordinates
 
-/-! Apply the proved affine-curve theorem to actual powered joint-lift points and
-count distinct gap vectors, the objects used in the pattern estimate. -/
+/-! The curve point count `affine_curve_points_finite_coordinates` applied to the integer
+points of the powered joint graph, counting distinct gap vectors, the objects used in the
+pattern estimate. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -26,8 +27,9 @@ lemma poweredJointPointBoxHeight_pos (a A T m n : ℕ) :
     (max (selectedCurvatureHeight a A T ^ m) (selectedRankFiveHeight a A T ^ n))
   omega
 
-/-- Uniform counting on the actual powered joint graph, for any specified
-bounded Hilbert-degree range. All box and orbit-membership inputs are proved. -/
+/-- Uniform counting of the gap vectors of one pattern on one component, when the powered
+joint graph has Hilbert degree in `[lo, hi]`: at most `C B^{1/lo} (log B + 1)`, where
+`B = poweredJointPointBoxHeight a A T m n`. -/
 theorem selected_poweredJointGraph_gap_count (m n lo hi : ℕ) (hlo : 0 < lo) (hlohi : lo ≤ hi) :
     ∃ C : ℝ, 0 < C ∧ ∀ {a b s T A i : ℕ}, b < a →
       (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →

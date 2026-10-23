@@ -11,9 +11,10 @@ public import PierceLengthBound.Window
 # Divisors in a dyadic range, counted over a short interval
 
 `dcount A n` is the number of divisors of `n` in `[A, 2A)`. The drop argument of
-`drop_bound` actually shows that a window run of length `T` satisfies
+`drop_bound` shows that a window run of length `T` satisfies
 `T ≤ 2 ∑_{1 ≤ h ≤ 2A/(T-1)} dcount A (a + h)` (`drop_count_bound`). Any bound for
-`∑_{x < n ≤ x + y} dcount A n` on short intervals therefore bounds `T`.
+`∑_{x < n ≤ x + y} dcount A n` on short intervals therefore bounds `T`
+(`drop_count_bound_short_interval`).
 -/
 
 @[expose] public section
@@ -25,7 +26,8 @@ open Finset
 /-- The number of divisors of `n` in `[A, 2A)`. -/
 def dcount (A n : ℕ) : ℕ := (n.divisors.filter fun d => A ≤ d ∧ d < 2 * A).card
 
-/-- **The drop bound, before applying any divisor estimate.** -/
+/-- **The drop bound, before any divisor estimate.** A window run of length `T ≥ 2` has
+`T ≤ 2 ∑_{1 ≤ h ≤ 2A/(T-1)} dcount A (a + h)`. -/
 theorem drop_count_bound {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT : 2 ≤ T) :
     T ≤ 2 * ∑ h ∈ Icc 1 (2 * A / (T - 1)), dcount A (a + h) := by
   classical
@@ -109,7 +111,8 @@ lemma sum_Icc_shift (f : ℕ → ℕ) (a Y : ℕ) :
   · intro n hn; simp only [mem_Ioc] at hn; omega
   · intro h _; rfl
 
-/-- The drop bound with the range padded to any `Y ≥ 2A/(T-1)`. -/
+/-- The drop bound over a short interval: `T ≤ 2 ∑_{a < n ≤ a + Y} dcount A n` for any
+`Y ≥ 2A/(T-1)`. -/
 theorem drop_count_bound_short_interval {a A T Y : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT : 2 ≤ T)
     (hY : 2 * A / (T - 1) ≤ Y) :
     T ≤ 2 * ∑ n ∈ Ioc a (a + Y), dcount A n := by

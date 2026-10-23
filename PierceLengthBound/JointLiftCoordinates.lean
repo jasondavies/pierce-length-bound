@@ -10,15 +10,20 @@ import all PierceLengthBound.FixedDividendTotalDegree
 public import PierceLengthBound.JointLiftAlgebra
 public import PierceLengthBound.IntegralLiftQuotientNormalization
 
-/-! Polynomial coordinates of the joint lift, with a common denominator.
-These bounds concern the defining rational functions, not the degree of their graph. -/
+/-! # Polynomial coordinates of the joint lift
+
+The joint coordinates `W₀, W₁, W₂, J` of Section 8.6 as quotients of polynomials in the three
+free nodes over one common denominator `Q · H₃ · k₁`, with total-degree bounds for numerators
+and denominator, and their values at the free nodes of an orbit state: the curvature-minor
+vector `W` and the rank-five coordinate `J = N₀ Ψ`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Matrix
 
-/-- All five gap functions are linear in the three free node coordinates. -/
+/-- The five gaps `k₀, …, k₄` of the pattern at state `i`, as linear polynomials in the three
+free nodes. -/
 def jointGapPolynomials (a b i : ℕ) : Fin 5 → MvPolynomial (Fin 3) ℚ :=
   lineGaps (C (patternRhoQ a b i)) (C (patternUQ a b i)) (C (patternVQ a b i))
     (C (patternRhoQ a b (i + 1))) (C (patternUQ a b (i + 1)))
@@ -44,7 +49,7 @@ lemma jointGapPolynomials_degree (a b i : ℕ) (j : Fin 5) :
     Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, cons_val_zero, cons_val_one, cons_val, ge_iff_le]
   all_goals fixed_dividend_mv_degree
 
-/-- The rank-five coordinate is polynomial in the original three variables. -/
+/-- The rank-five coordinate `J = N₀ Ψ`, a cubic polynomial in the three free nodes. -/
 def jointRankFivePolynomial (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   C (Lz a b i : ℚ) * curveNorm (patternRhoQ a b i) (patternUQ a b i) (patternVQ a b i)
     (patternRhoQ a b (i + 1)) (patternUQ a b (i + 1)) (patternVQ a b (i + 1))
@@ -72,12 +77,13 @@ lemma jointRankFivePolynomial_eval_cast {a b i : ℕ} (hba : b < a) (hi : i + 7 
     show orbitFreeNodes a b i 1 = pt a b i 2 from rfl,
     show orbitFreeNodes a b i 2 = pt a b i 3 from rfl, orbit_lineNorm_eq hba (by omega)]
 
-/-- Common denominator Q B0 k1 for the three curvature coordinates. -/
+/-- The common denominator `Q · H₃ · k₁` of the three curvature coordinates. -/
 def jointLiftDenominator (Q : MvPolynomial (Fin 3) ℚ)
     (k : Fin 5 → MvPolynomial (Fin 3) ℚ) : MvPolynomial (Fin 3) ℚ :=
   Q * rawHankelThree (k 0) (k 1) (k 2) * k 1
 
-/-- Common-denominator numerators for W0,W1,W2,J, in that order. -/
+/-- The numerators of `W₀, W₁, W₂, J`, in that order, over `jointLiftDenominator Q k`, where
+`P / Q` is the reconstructed curvature `E₀` and `A` is the label `N₀`. -/
 def jointLiftNumerators (P Q A J : MvPolynomial (Fin 3) ℚ)
     (k : Fin 5 → MvPolynomial (Fin 3) ℚ) : Fin 4 → MvPolynomial (Fin 3) ℚ :=
   let B0 := rawHankelThree (k 0) (k 1) (k 2)
@@ -138,7 +144,8 @@ theorem jointLift_polynomial_degrees (P Q J : MvPolynomial (Fin 3) ℚ) (A : ℚ
   · change (J * jointLiftDenominator Q k).totalDegree ≤ 247
     exact (totalDegree_mul _ _).trans (by omega)
 
-/-- The raw cubic gap expressions are exactly the two required row minors. -/
+/-- At an orbit state, `H₃ = k₀ r₁ - k₁ r₀` and `H₃' = k₁ r₂ - k₂ r₁` for the raw rank-three
+determinants `H₃, H₃'` of the gaps. -/
 lemma orbit_curvature_raw_minors (a b i : ℕ) :
     rawHankelThree (kq a b i) (kq a b (i + 1)) (kq a b (i + 2)) =
       kq a b i * rq a b i 1 - kq a b (i + 1) * rq a b i 0 ∧
@@ -150,15 +157,17 @@ lemma eval_rawHankelThree (z : Fin 3 → ℚ) (x y w : MvPolynomial (Fin 3) ℚ)
     eval z (rawHankelThree x y w) = rawHankelThree (eval z x) (eval z y) (eval z w) := by
   simp [rawHankelThree]
 
-/-- The uniform common denominator of the actual four-coordinate lift. -/
+/-- The common denominator of the four joint coordinates for the pattern at state `i`. -/
 def orbitJointDenominator (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   jointLiftDenominator (orbitLiftDenominatorQ a b i) (jointGapPolynomials a b i)
 
+/-- The numerators of the four joint coordinates `W₀, W₁, W₂, J` for the pattern at state
+`i`, over `orbitJointDenominator a b i`. -/
 def orbitJointNumerators (a b i : ℕ) : Fin 4 → MvPolynomial (Fin 3) ℚ :=
   jointLiftNumerators (orbitLiftNumeratorQ a b i) (orbitLiftDenominatorQ a b i)
     (C (Lz a b i : ℚ)) (jointRankFivePolynomial a b i) (jointGapPolynomials a b i)
 
-/-- The common denominator never vanishes at a supported orbit point. -/
+/-- The common denominator does not vanish at the free nodes of state `i`. -/
 theorem orbitJointDenominator_eval_ne_zero {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     eval (orbitFreeNodesQ a b i) (orbitJointDenominator a b i) ≠ 0 := by
   simp only [orbitJointDenominator, jointLiftDenominator, map_mul, eval_rawHankelThree,
@@ -176,7 +185,8 @@ theorem orbitJointDenominator_eval_ne_zero {a b i : ℕ} (hba : b < a) (hi : i +
       (kq_pos (a := a) (b := b) (by omega : i + 1 + 1 < P a b)))
   exact mul_ne_zero (mul_ne_zero (orbitLift_evaluation hba hi).1 hpQ.ne') hkQ.ne'
 
-/-- At actual states, the first three rational coordinates are exactly W. -/
+/-- At the free nodes of state `i`, the first three joint coordinates take the integer values
+of the curvature-minor vector `W = (D₁₂, -D₀₂, D₀₁)`. -/
 theorem orbitJoint_curvature_evaluation {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (j : Fin 3) :
     eval (orbitFreeNodesQ a b i) (orbitJointNumerators a b i j.castSucc) /
@@ -228,7 +238,7 @@ theorem orbitJoint_curvature_evaluation {a b i : ℕ} (hba : b < a) (hi : i + 7 
   · rw [hp, orbitCurvature_third]
     ring
 
-/-- The fourth coordinate is the polynomial rank-five invariant. -/
+/-- At the free nodes of state `i`, the fourth joint coordinate is the value of `J = N₀ Ψ`. -/
 theorem orbitJoint_rankFive_evaluation {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     eval (orbitFreeNodesQ a b i) (orbitJointNumerators a b i 3) /
       eval (orbitFreeNodesQ a b i) (orbitJointDenominator a b i) =

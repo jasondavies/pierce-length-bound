@@ -8,16 +8,18 @@ module
 public import PierceLengthBound.JointLiftCountingSlack
 public import PierceLengthBound.IntegralLiftOrbitConicProperness
 
-/-! Ordinary affine-curve counting on the original three node coordinates.
-This provides the square-root bound used for exceptional patterns. -/
+/-! Affine-curve counting in the three node coordinates, in the node box `3H`,
+`H = selectedGapHeight a A T`: a component of affine Hilbert degree between `2` and `24`
+carries `≪ a^ε H^{1/2}` gap vectors. This gives the square-root bound used for exceptional
+patterns (`selected_pattern_curve_gap_count_slow`). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
 
-/-- A bounded-degree component without lines has a uniform square-root gap
-count in the original node box. -/
+/-- A component of affine Hilbert degree between `2` and `24` (so not a line) has at most
+`C (3H)^{1/2} (log 3H + 1)` gap vectors in the node box. -/
 theorem selected_curve_gap_count :
     ∃ C : ℝ, 0 < C ∧ ∀ {a b s T A i : ℕ}, b < a →
       (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →
@@ -67,8 +69,8 @@ theorem selected_curve_gap_count :
     exact hz _ (hl j))
   rwa [hScard] at hc
 
-/-- The logarithmic cost of the original node box is subpolynomial uniformly
-in all selected windows. -/
+/-- `selected_curve_gap_count` with the logarithm absorbed into a subpolynomial
+coefficient, uniformly in all selected windows. -/
 theorem selected_curve_gap_count_slow :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ {a b s T A i : ℕ}, b < a →
       (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →

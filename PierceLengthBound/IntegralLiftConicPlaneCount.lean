@@ -7,13 +7,16 @@ module
 
 public import PierceLengthBound.IntegralLiftConicCount
 
-/-! The containing plane height is obtained from actual orbit points. -/
+/-! The conic count of `IntegralLiftConicCount` with the containing plane constructed from
+three of the orbit points (Lemma A.1, `lem:jointconicparameter`): free nodes are bounded by `a`,
+so the plane has height at most `24a³`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- The integer free nodes of an orbit state are bounded by `a`. -/
 lemma orbitFreeNodesZ_bound (a b i : ℕ) (j : Fin 3) : |orbitFreeNodesZ a b i j| ≤ a := by
   have h1 : qq a b (i + (j.val + 1)) ≤ a := Nat.div_le_self ..
   have h0 : qq a b i ≤ a := Nat.div_le_self ..
@@ -21,8 +24,9 @@ lemma orbitFreeNodesZ_bound (a b i : ℕ) (j : Fin 3) : |orbitFreeNodesZ a b i j
   rw [abs_le]
   constructor <;> omega
 
-/-- The conic bound uses no supplied plane or plane-height hypothesis. Three
-actual coordinate points produce the required plane with height at most `24a³`. -/
+/-- The conic count without a plane: three of the orbit points span an integer plane of
+height at most `24a³` containing the component, so the states number at most
+`492 + integerValueSlack D C e (conicInputHeight a X (24a³))`. -/
 theorem orbit_conic_points_bound :
     ∃ D C e : ℕ, 1 ≤ C ∧ ∀  {a b i : ℕ} (_hba : b < a)
     (_hi : i + 7 < P a b) {X : ℕ} (_hX : 1 ≤ X)

@@ -7,16 +7,20 @@ module
 
 public import PierceLengthBound.JointLiftResolventCut
 
-/-! The cleared cuts become the required rational identities in any field
-realization of a retained component. Denominators are explicitly nonzero. -/
+/-! # The retained identities in a field
+
+If the cleared normalization and resolvent polynomials vanish under a map `ψ` to a field in
+which the reconstruction denominators are nonzero, the identities `N₀ P₄(-Q) = a H₄` and
+`E₀ P₄(-Q) = a ((Q - p₃) H₃ - H₀₁₃)` hold in that field. On a component through the free nodes
+of an orbit state, both denominators are nonzero in every faithful field realization. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- A supported actual point keeps both reconstruction denominators nonzero
-in every faithful field realization of its component. -/
+/-- If the free nodes of state `i` lie on the component `I`, the denominators of `Q` and `E₀`
+stay nonzero under every injective algebra map from `ℚ[x]/I` to a field. -/
 theorem orbit_reconstruction_field_denominators {F : Type*} [Field F] [Algebra ℚ F]
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ))
@@ -44,8 +48,8 @@ lemma map_rawHankelMixed {R S : Type*} [CommRing R] [CommRing S]
     f (rawHankelMixed k0 k1 k2 k3) = rawHankelMixed (f k0) (f k1) (f k2) (f k3) := by
   simp only [rawHankelMixed, map_add, map_sub, map_mul, map_pow, map_ofNat]
 
-/-- Vanishing of the existing normalization cut gives A*P(-q)=a*H4 in the
-component field, with q equal to the actual reconstructed rational function. -/
+/-- If the cleared normalization polynomial vanishes under `ψ` and the denominator of `Q` does
+not, then `N₀ P₄(-Q) = a H₄` in `F`, with `Q` the reconstructed quotient. -/
 theorem jointNormalizationPolynomial_field_identity {F : Type*} [Field F] [Algebra ℚ F]
     (ψ : MvPolynomial (Fin 3) ℚ →ₐ[ℚ] F) (a b i : ℕ)
     (hd : ψ (orbitQuotientDenominatorQ a b i) ≠ 0)
@@ -67,8 +71,8 @@ theorem jointNormalizationPolynomial_field_identity {F : Type*} [Field F] [Algeb
   apply mul_right_cancel₀ (pow_ne_zero 4 hd)
   simpa only [mul_assoc] using hz
 
-/-- Vanishing of the raw-resolvent cut gives the rational identity used in the
-order calculation. This holds on the whole retained component. -/
+/-- If the cleared resolvent polynomial vanishes under `ψ` and the denominators of `Q` and `E₀`
+do not, then `E₀ P₄(-Q) = a ((Q - p₃) H₃ - H₀₁₃)` in `F`. -/
 theorem jointResolventPolynomial_field_identity {F : Type*} [Field F] [Algebra ℚ F]
     (ψ : MvPolynomial (Fin 3) ℚ →ₐ[ℚ] F) (a b i : ℕ)
     (hd : ψ (orbitQuotientDenominatorQ a b i) ≠ 0)

@@ -8,9 +8,10 @@ module
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 public import Mathlib
 
-/-! The integer-value lemma for rational functions in the conic refinement.
-A nonconstant denominator at an integral value divides the nonzero resultant.
-The bound is uniform in the interval containing the integer parameters. -/
+/-! The integer-value count behind Lemma A.3 (`lem:jointconicdivisors`): if `F, G ∈ ℤ[X]`
+are coprime over `ℚ` and `G` is nonconstant, then at every integer `t` with `G(t) ∣ F(t)` the
+value `G(t)` divides the nonzero resultant, so there are at most
+`2 deg G · τ(|Res(F, G)|)` such `t`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -47,7 +48,8 @@ lemma polynomial_eval_fiber_card (G : ℤ[X]) (hG : 0 < G.natDegree)
   have he := (mem_filter.mp ht).2
   exact (Polynomial.mem_roots hz).mpr (by simp [Polynomial.IsRoot, he])
 
-/-- Bezout identity version of the integer-value counting lemma. -/
+/-- Integer-value count from a Bezout identity `F U + G V = R` with `R ≠ 0`: at most
+`2 deg G · τ(|R|)` integers `t` satisfy `G(t) ∣ F(t)`. -/
 theorem integer_values_card_of_bezout (F G U V : ℤ[X]) {R : ℤ} (hR : R ≠ 0)
     (hG : 0 < G.natDegree) (hbez : F * U + G * V = C R)
     (S : Finset ℤ) (hdiv : ∀ t ∈ S, G.eval t ∣ F.eval t) :
@@ -67,7 +69,8 @@ theorem integer_values_card_of_bezout (F G U V : ℤ[X]) {R : ℤ} (hR : R ≠ 0
     _ ≤ G.natDegree * (2 * R.natAbs.divisors.card) := Nat.mul_le_mul_left _ (signedDivisors_card R)
     _ = _ := by ring
 
-/-- Resultant version, with no height or interval hypothesis on the parameters. -/
+/-- Integer-value count with the resultant as the Bezout constant: when `Res(F, G) ≠ 0`, at
+most `2 deg G · τ(|Res(F, G)|)` integers `t` satisfy `G(t) ∣ F(t)`. -/
 theorem integer_values_card_of_resultant (F G : ℤ[X]) (hG : 0 < G.natDegree)
     (hR : F.resultant G ≠ 0) (S : Finset ℤ)
     (hdiv : ∀ t ∈ S, G.eval t ∣ F.eval t) :
@@ -76,7 +79,7 @@ theorem integer_values_card_of_resultant (F G : ℤ[X]) (hG : 0 < G.natDegree)
     (m := F.natDegree) (n := G.natDegree) le_rfl le_rfl (Or.inr (by omega))
   exact integer_values_card_of_bezout F G U V hR hG hb S hdiv
 
-/-- Coprimality over the rationals supplies the required nonzero integral resultant. -/
+/-- Integer polynomials coprime over `ℚ` have nonzero resultant. -/
 lemma resultant_ne_zero_of_rat_coprime (F G : ℤ[X])
     (hcop : IsCoprime (F.map (Int.castRingHom ℚ)) (G.map (Int.castRingHom ℚ))) :
     F.resultant G ≠ 0 := by
@@ -87,7 +90,7 @@ lemma resultant_ne_zero_of_rat_coprime (F G : ℤ[X])
   intro hz
   exact hr (by rw [hz, map_zero])
 
-/-- The candidate's integer-value lemma for coprime rational numerator and denominator. -/
+/-- The integer-value count for `F, G` coprime over `ℚ` with `G` nonconstant. -/
 theorem integer_values_card (F G : ℤ[X]) (hG : 0 < G.natDegree)
     (hcop : IsCoprime (F.map (Int.castRingHom ℚ)) (G.map (Int.castRingHom ℚ)))
     (S : Finset ℤ) (hdiv : ∀ t ∈ S, G.eval t ∣ F.eval t) :

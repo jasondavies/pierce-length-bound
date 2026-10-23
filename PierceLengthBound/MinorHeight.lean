@@ -15,9 +15,9 @@ At a state `i` let `𝓜ᵢ` be the `3 × 5` integer matrix with rows `(d₀,…
 `(r₀,…,r₄)`. With `q = qᵢ` and `sⱼ = q_{i+j} - q`, the exact identity
 `1/(q+y) = 1/q - y/q² + y²/q³ - y³/(q³(q+y))` applied to `νᵢ₊ⱼ(1) = b_{i+j}/a` gives
 `b_{i+j}/a = 1/q - (1+sⱼ)/q² + (sⱼ² + 2sⱼ + kⱼ + 1)/q³ - eⱼ` with
-`0 ≤ eⱼ ≤ μ_{i+j}((X+sⱼ)³)/q⁴` (`nu_expand`). Hence the first row of `𝓜ᵢ` equals
-`a(q⁻² - q⁻³)·k - a q⁻³·r + O(aH³/q⁴)`, and every maximal minor is `O(aH⁶/q⁴)`
-(`minor_height`): `|p| a³ ≤ 3609600 A⁴ H⁶`.
+`0 ≤ eⱼ ≤ μ_{i+j}((X+sⱼ)³)/q⁴` (`nu_expand`, Lemma 7.7 of the paper). Hence the first row of
+`𝓜ᵢ` equals `a(q⁻² - q⁻³)·k - a q⁻³·r + O(aH³/q⁴)`, and every maximal minor is `O(aH⁶/q⁴)`
+(`minor_height`, Proposition 7.8): `|p| a³ ≤ 3609600 A⁴ H⁶`.
 -/
 
 @[expose] public section
@@ -33,6 +33,7 @@ noncomputable def nuErr (a b m : ℕ) (q : ℝ) : ℝ :=
   ∑ j ∈ range (P a b - m), wt a b m j * ((qq a b m - q) + pt a b m j) ^ 3 /
     (q ^ 3 * (q + ((qq a b m - q) + pt a b m j)))
 
+/-- `μₘ((X + s)²) = s² + 2s + kₘ + 1`. -/
 lemma muF_shift_sq (hba : b < a) {m : ℕ} (hm : m + 2 < P a b) (s : ℝ) :
     muF a b m ((X + C s) ^ 2) = s ^ 2 + 2 * s + kk a b m + 1 := by
   rw [show (X + C s) ^ 2 = X ^ 2 + C (2 * s) * X + C (s ^ 2) by
@@ -40,6 +41,7 @@ lemma muF_shift_sq (hba : b < a) {m : ℕ} (hm : m + 2 < P a b) (s : ℝ) :
     muF_X_sq hba hm, muF_X hba (by omega), muF_one hba (by omega)]
   ring
 
+/-- `μₘ((X + s)³)` in terms of `s`, `kₘ` and `kₘ₊₁`. -/
 lemma muF_shift_cube (hba : b < a) {m : ℕ} (hm : m + 3 < P a b) (s : ℝ) :
     muF a b m ((X + C s) ^ 3) = s ^ 3 + 3 * s ^ 2 + 3 * s * (kk a b m + 1) +
       (kk a b m ^ 2 + 2 * kk a b m + kk a b (m + 1) + 1) := by
@@ -49,7 +51,8 @@ lemma muF_shift_cube (hba : b < a) {m : ℕ} (hm : m + 3 < P a b) (s : ℝ) :
     muF_one hba (by omega)]
   ring
 
-/-- **The expansion of `b_m / a`.** -/
+/-- **The expansion of `b_m / a`** (Lemma 7.7). For `0 < q ≤ q_m` and `s = q_m - q`,
+`b_m/a = 1/q - (1+s)/q² + (s² + 2s + k_m + 1)/q³ - e` with `0 ≤ e ≤ μ_m((X+s)³)/q⁴`. -/
 theorem nu_expand (hba : b < a) {m : ℕ} (hm : m + 3 < P a b) {q : ℝ} (hq : 0 < q)
     (hqm : q ≤ qq a b m) :
     0 ≤ nuErr a b m q ∧
@@ -119,10 +122,12 @@ def rminor3 (x y z : Fin 5 → ℝ) (c1 c2 c3 : Fin 5) : ℝ :=
   x c1 * (y c2 * z c3 - y c3 * z c2) - x c2 * (y c1 * z c3 - y c3 * z c1) +
     x c3 * (y c1 * z c2 - y c2 * z c1)
 
+/-- Adding multiples of the other two rows to the first row does not change a minor. -/
 lemma rminor3_row (x y z : Fin 5 → ℝ) (α β : ℝ) (c1 c2 c3 : Fin 5) :
     rminor3 (fun c => x c - α * y c + β * z c) y z c1 c2 c3 = rminor3 x y z c1 c2 c3 := by
   unfold rminor3; ring
 
+/-- A minor of rows bounded by `X₀`, `Y₀`, `Z₀` is at most `6 X₀ Y₀ Z₀`. -/
 lemma rminor3_le {x y z : Fin 5 → ℝ} {X0 Y0 Z0 : ℝ} (hx : ∀ c, |x c| ≤ X0) (hy : ∀ c, |y c| ≤ Y0)
     (hz : ∀ c, |z c| ≤ Z0) (c1 c2 c3 : Fin 5) : |rminor3 x y z c1 c2 c3| ≤ 6 * X0 * Y0 * Z0 := by
   have h3 : ∀ c c' c'', |x c * y c' * z c''| ≤ X0 * Y0 * Z0 := fun c c' c'' => by
@@ -148,15 +153,18 @@ lemma rminor3_le {x y z : Fin 5 → ℝ} {X0 Y0 Z0 : ℝ} (hx : ∀ c, |x c| ≤
         linarith
     _ ≤ 6 * X0 * Y0 * Z0 := by linarith
 
+/-- The real cast of an integer minor. -/
 lemma plk_cast (M : Fin 3 → Fin 5 → ℤ) (t : Fin 10) :
     ((plk M t : ℤ) : ℝ) = rminor3 (fun c => (M 0 c : ℝ)) (fun c => (M 1 c : ℝ))
       (fun c => (M 2 c : ℝ)) (trip t).1 (trip t).2.1 (trip t).2.2 := by
   unfold plk minor3 rminor3; push_cast; ring
 
+/-- `sⱼ = kᵢ + ⋯ + k_{i+j-1}`. -/
 lemma sq_eq_sum (i j : ℕ) : sq a b i j = ∑ m ∈ Ico i (i + j), kq a b m := by
   rw [sum_kq]; rfl
 
-/-- **Every maximal minor of `𝓜ᵢ` is small.** -/
+/-- **Every maximal minor of `𝓜ᵢ` is small** (Proposition 7.8). If `i + 8 < N`, `bᵢ < 2A` and
+`1 ≤ k_{i+m} ≤ H` for `m < 7`, then every minor `p` has `|p| a³ ≤ 3609600 A⁴ H⁶`. -/
 theorem minor_height (hba : b < a) {A H i : ℕ} (hP : i + 8 < P a b) (hb : orb a b i < 2 * A)
     (hk : ∀ m, m < 7 → 1 ≤ kq a b (i + m) ∧ kq a b (i + m) ≤ H) (t : Fin 10) :
     |plk (Mi a b i) t| * (a : ℤ) ^ 3 ≤ 3609600 * (A : ℤ) ^ 4 * (H : ℤ) ^ 6 := by

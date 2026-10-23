@@ -23,7 +23,8 @@ open Finset
 abbrev latticeJointBox (m n : ℕ) (p : Fin 10 → ℤ) (a A T : ℕ) : ℝ :=
   (latticeJointBoxHeight p a A T m n : ℝ)
 
-/-- Every supported nonexceptional component has the lattice-box count. A component either
+/-- Every supported nonexceptional component has the lattice-box count. Conic components
+(`d = 2`) are counted by `orbit_conic_gap_count_slow`. A component of degree `d ≥ 4` either
 satisfies both retained identities, and then the graph count applies, or one of the cuts bounds
 its starts by `404 d ≤ 404 · 24 = 9696` (`jointResolventPolynomial_identity_or_card_bound`;
 the normalization cut gives `166 d`). -/
@@ -114,7 +115,7 @@ a constant plus the lattice graph count otherwise. -/
 def LatticeJointPatternEstimate (m n : ℕ) (R : ℕ → ℕ) : Prop :=
   JointPatternEstimate (latticeJointBox m n) (1 / ((10 * n + 7 * m : ℕ) : ℝ)) R
 
-/-- The lattice-box pattern estimate holds with a proved subpolynomial coefficient. -/
+/-- The lattice-box pattern estimate holds with a subpolynomial coefficient. -/
 theorem latticeJointPatternEstimate_exists (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ LatticeJointPatternEstimate m n R := by
   obtain ⟨Rc, hRc, hcount⟩ := selected_lattice_joint_component_gap_count_slow m n hm hn

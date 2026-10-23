@@ -13,7 +13,10 @@ public import PierceLengthBound.NormalizationPointBranch
 
 /-! The graph Hilbert degree bounds the residue-degree weighted coordinate
 pole envelope over any finite collection of distinct normalized branches,
-including branches represented on different affine charts. -/
+including branches represented on different affine charts. A generic rational combination of
+the graph coordinates attains every envelope, and its field degree is at most the Hilbert
+degree. This gives the lower bounds for the graph degrees in Lemmas 8.12 and 9.11
+(`LinearJointGraph`). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -21,6 +24,9 @@ noncomputable section
 open scoped IntermediateField
 universe u
 
+/-- For finitely many branches, on Dedekind models `R k`, with pairwise distinct normalized
+orders and positive pole envelopes of the graph coordinates, the envelopes weighted by residue
+degrees sum to at most the graph Hilbert degree `d`. -/
 theorem jointGraph_pole_envelope_degree_le_hilbert {σ τ κ F : Type*}
     [Field F] [Algebra ℚ F] [Fintype σ] [Fintype τ] [Fintype κ]
     (I : Ideal (MvPolynomial σ ℚ)) [I.IsPrime]
@@ -63,8 +69,8 @@ theorem jointGraph_pole_envelope_degree_le_hilbert {σ τ κ F : Type*}
     exact (branch_family_pole_degree_le R p hinj x hx
       (fun k => branchPoleEnvelope (ν k) W) hpos hc).trans hupper
 
-/-- It suffices to exhibit a coordinate with each claimed pole order; the
-generic linear combination attains at least these orders simultaneously. -/
+/-- If at each branch `k` some graph coordinate has pole order at least `m k > 0`, then
+`∑ₖ m k · [R k / p k : ℚ] ≤ d`. -/
 theorem jointGraph_branch_poles_degree_le {σ τ κ F : Type*}
     [Field F] [Algebra ℚ F] [Finite σ] [Finite τ] [Fintype κ]
     (I : Ideal (MvPolynomial σ ℚ)) [I.IsPrime]
@@ -94,8 +100,8 @@ theorem jointGraph_branch_poles_degree_le {σ τ κ F : Type*}
     hinj (fun k => (hm k).trans_le (hle k)))
   exact Finset.sum_le_sum (fun k _ => Nat.mul_le_mul_right _ (hle k))
 
-/-- The same comparison for two finite branch sets on different models.
-Only equality of their valuations could cause double counting. -/
+/-- The same bound for a branch set `B` on a model `R` and a branch set `E` on a model `S`,
+when no branch of `B` has the same normalized order as a branch of `E`. -/
 theorem jointGraph_two_model_poles_degree_le {σ τ F : Type*} {R S : Type u}
     [Field F] [Algebra ℚ F] [Finite σ] [Finite τ]
     [CommRing R] [IsDedekindDomain R] [Algebra ℚ R]

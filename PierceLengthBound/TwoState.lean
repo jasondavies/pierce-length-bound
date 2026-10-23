@@ -19,15 +19,18 @@ cofactor null vector `(U₀, U₁, U₂, U₃)`, where
 * `U₁ = pU1`, `U₂ = pU2`.
 
 The null-vector relations `∑ Uₘ dₘ = ∑ Uₘ kₘ = ∑ Uₘ rₘ = 0` are polynomial identities
-(`null_d`, `null_k`, `null_r`). The last two give the two counting facts:
+(`null_d`, `null_k`, `null_r`; Lemma 7.1). Two counting facts follow:
 
-* `quad_root`: if two states share `(U(i), U(i+1))`, the linear relations at `i` and `i+1`
-  eliminate `k₀` and `k₄`, and the quadratic relation at `i` becomes
+* `quad_root`: if two states share `(U(i), U(i+1))`, the `k`-relations at `i` and `i+1`
+  eliminate `k₀` and `k₄`, and the `r`-relation at `i` becomes
   `α k₃² + β k₃ + γ = 0` with `α = L(i) L(i+1) (L(i) + L(i+1)) > 0`;
 * `mult_identity`: `∑ₘ Uₘ Fₘ(-q)(-q - sₘ - 1) = a · H₄(k₀,…,k₄)`, modulo the division relations
-  `(q + sₘ) bₘ + bₘ₊₁ = a`. Here `Fₘ(x) = ∏_{l<m} (x - s_l)` and `H₄` is the Hankel determinant of
-  the moments of `μᵢ`. This is `I₄(i) pᵢ(-qᵢ) = a H₄(i)` for the orthogonal polynomial `pᵢ`, and is
-  a quartic equation for `qᵢ` with leading coefficient `U₃`.
+  `(q + sₘ) bₘ + bₘ₊₁ = a`. Here `Fₘ(x) = ∏_{l<m} (x - s_l)` and `H₄` (`muH4`) is the Hankel
+  determinant of the moments of `μᵢ`. This is the normalization identity `I₄(i) πᵢ(-qᵢ) = a H₄`
+  for the orthogonal quartic `πᵢ` (Lemma 7.3), and by `quart_eq` it is a quartic equation for
+  `qᵢ` with leading coefficient `U₃`.
+
+The root counts `card_le_two_of_quad` and `card_le_four_of_quartic` close the file.
 -/
 
 @[expose] public section
@@ -110,7 +113,8 @@ def muH4 {R : Type*} [CommRing R] (k0 k1 k2 k3 k4 : R) : R :=
       - k0*k3^2 - k1^4*k2 - 2*k1^3*k2^2 - 2*k1^3*k3 - k1^2*k2^3 + 2*k1^2*k2^2 - 3*k1^2*k2*k3
       - k1^2*k3^2 - k1^2*k4 + 2*k1*k2^3 + 2*k1*k2*k3 - k2^3
 
-/-- **The multiplicity identity** `I₄(i) pᵢ(-qᵢ) = a H₄(i)`, modulo the division relations. -/
+/-- **The multiplicity identity** `I₄(i) πᵢ(-qᵢ) = a H₄(k₀, …, k₄)`, modulo the division
+relations. -/
 theorem mult_identity (a q b0 b1 b2 b3 b4 k0 k1 k2 k3 k4 : ℤ)
     (f0 : q * b0 + b1 = a) (f1 : (q + k0) * b1 + b2 = a) (f2 : (q + (k0 + k1)) * b2 + b3 = a)
     (f3 : (q + (k0 + k1 + k2)) * b3 + b4 = a) :
@@ -186,6 +190,7 @@ def quartC (U0 U1 U2 U3 k0 k1 k2 : ℤ) : Fin 4 → ℤ := ![
       + U3*k1,
   -U2 + 3*U3*k0 + 2*U3*k1 + U3*k2 + U3]
 
+/-- `quart` as a quartic in `q` with leading coefficient `U₃`. -/
 lemma quart_eq (U0 U1 U2 U3 k0 k1 k2 q : ℤ) :
     quart U0 U1 U2 U3 k0 k1 k2 q = U3 * q ^ 4 + quartC U0 U1 U2 U3 k0 k1 k2 3 * q ^ 3 +
       quartC U0 U1 U2 U3 k0 k1 k2 2 * q ^ 2 + quartC U0 U1 U2 U3 k0 k1 k2 1 * q +

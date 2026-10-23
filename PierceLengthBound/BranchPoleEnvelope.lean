@@ -8,7 +8,11 @@ module
 public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import PierceLengthBound.NormalizedBranchValuation
 
-/-! Pole multiplicities and the pole envelope of a finite family of functions. -/
+/-! Pole multiplicities and the pole envelope of a finite family of functions. At a branch the
+envelope is the largest pole order among the coordinates `W j`; over a Dedekind model it has
+finite support, and `poleEnvelopeDegree` is its degree with residue-field degrees as weights;
+for the curvature coordinates this is `deg 𝓕` in §8.8. A combination of the coordinates with
+regular constant coefficients has pole order at most the envelope. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -83,6 +87,7 @@ theorem branchPoleEnvelope_pos_iff {L ι : Type*} [Field L] [Fintype ι]
   · rintro ⟨j, hj⟩
     exact hj.trans_le (pole_order_le_envelope ν W j)
 
+/-- A positive pole envelope is attained exactly by one of the coordinates. -/
 theorem branchPoleEnvelope_attained {L ι : Type*} [Field L] [Fintype ι]
     (ν : AddValuation L (WithTop ℤ)) (W : ι → L) (hpos : 0 < branchPoleEnvelope ν W) :
     ∃ j, ν (W j) = ((-(branchPoleEnvelope ν W : ℤ)) : WithTop ℤ) := by
@@ -128,6 +133,7 @@ theorem normalized_branch_poles_finite {R L : Type*} [CommRing R] [IsDedekindDom
   rw [← hab, AddValuation.map_div, hzero, sub_zero] at hp
   exact (not_lt_of_ge (normalizedBranchOrder_nonnegative p L a)) hp
 
+/-- Only finitely many branches of a Dedekind model have a positive pole envelope. -/
 theorem branch_pole_envelope_finite {R L ι : Type*} [CommRing R] [IsDedekindDomain R]
     [Field L] [Algebra R L] [IsFractionRing R L] [Fintype ι] (W : ι → L) :
     {p : IsDedekindDomain.HeightOneSpectrum R |

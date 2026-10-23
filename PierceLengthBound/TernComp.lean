@@ -14,10 +14,11 @@ A ternary quadratic is stored as its ten coefficients `c : Fin 10 → ℤ` in th
 `tcomp c C` is the quadratic `y ↦ F_c(C y)` (`ternv_tcomp`). Its discriminant
 `disc3 = det(2S)` of the quadratic part scales by `det(C)²` (`disc3_tcomp`).
 
-If `disc3 c ≠ 0`, a unimodular substitution with small inverse makes both the `x²` coefficient
-and the discriminant of the binary part in `(x, y)` nonzero (`plane_one`, `plane_two`). The
-slice count `slice_count_ne` then applies with the norm equation definite or indefinite
-(`slice_count_tv`).
+If `disc3 c ≠ 0`, a unimodular substitution with small entries and small inverse (`GoodSub`)
+makes both the `x²` coefficient and the discriminant of the binary part in `(x, y)` nonzero
+(`plane_one`, `plane_two`). The `z²` coefficient of the slice norm `N(z)` is `-2α disc3`
+(`lead_eq`), so the slice count `slice_count_ne` applies, with the norm equation definite or
+indefinite (`slice_count_tv`).
 -/
 
 @[expose] public section
@@ -58,6 +59,7 @@ def disc3 (c : Fin 10 → ℤ) : ℤ :=
 /-- The discriminant of the binary part in the first two variables. -/
 def bdisc (c : Fin 10 → ℤ) : ℤ := c 1 ^ 2 - 4 * c 0 * c 2
 
+/-- `F_{tcomp c C}(y) = F_c(C y)`. -/
 lemma ternv_tcomp (c : Fin 10 → ℤ) (C : Matrix (Fin 3) (Fin 3) ℤ) (y : Fin 3 → ℤ) :
     ternv (tcomp c C) y = ternv c (C *ᵥ y) := by
   simp only [ternv, tcomp, tern, quadv, bilv, linv, mulVec, dotProduct, Fin.sum_univ_three,
@@ -66,6 +68,7 @@ lemma ternv_tcomp (c : Fin 10 → ℤ) (C : Matrix (Fin 3) (Fin 3) ℤ) (y : Fin
   simp only [Matrix.cons_val]
   ring
 
+/-- `disc3 (tcomp c C) = disc3 c · det(C)²`. -/
 lemma disc3_tcomp (c : Fin 10 → ℤ) (C : Matrix (Fin 3) (Fin 3) ℤ) :
     disc3 (tcomp c C) = disc3 c * C.det ^ 2 := by
   simp only [disc3, tcomp, quadv, bilv, Matrix.det_fin_three, Matrix.cons_val_zero,
@@ -90,7 +93,8 @@ lemma mulVec_abs_le {M : Matrix (Fin 3) (Fin 3) ℤ} {k : ℤ} (hM : ∀ i, ∑ 
     _ = (∑ j, |M i j|) * Y := by rw [sum_mul]
     _ ≤ k * Y := mul_le_mul_of_nonneg_right (hM i) hY
 
-/-- A substitution with a small inverse. -/
+/-- A substitution `C` with entries in `[-1, 1]` and an integer inverse `Ci` whose rows have
+absolute sum at most `2`. -/
 def GoodSub (C Ci : Matrix (Fin 3) (Fin 3) ℤ) : Prop :=
   C * Ci = 1 ∧ (∀ i, ∑ j, |Ci i j| ≤ 2) ∧ ∀ i j, |C i j| ≤ 1
 
@@ -99,7 +103,8 @@ lemma GoodSub.det_sq {C Ci : Matrix (Fin 3) (Fin 3) ℤ} (h : GoodSub C Ci) : C.
   have h1 : C.det * Ci.det = 1 := by rw [← Matrix.det_mul, h.1, Matrix.det_one]
   rcases Int.eq_one_or_neg_one_of_mul_eq_one h1 with h2 | h2 <;> rw [h2] <;> norm_num
 
-/-- **Choosing the plane.** -/
+/-- **Choosing the plane.** If `disc3 c ≠ 0`, a substitution makes the binary discriminant
+nonzero. -/
 lemma plane_one (c : Fin 10 → ℤ) (hD : disc3 c ≠ 0) :
     ∃ C Ci, GoodSub C Ci ∧ bdisc (tcomp c C) ≠ 0 := by
   have key : bdisc c ≠ 0 ∨ c 3 ^ 2 - 4 * c 0 * c 7 ≠ 0 ∨ c 5 ^ 2 - 4 * c 2 * c 7 ≠ 0 ∨
@@ -137,7 +142,8 @@ lemma plane_one (c : Fin 10 → ℤ) (hD : disc3 c ≠ 0) :
     · convert h using 1
       simp [bdisc, tcomp, quadv, bilv]
 
-/-- **Choosing the first vector in the plane.** -/
+/-- **Choosing the first vector in the plane.** If the binary discriminant is nonzero, a
+substitution makes the `x²` coefficient nonzero and keeps the binary discriminant nonzero. -/
 lemma plane_two (c : Fin 10 → ℤ) (hΔ : bdisc c ≠ 0) :
     ∃ C Ci, GoodSub C Ci ∧ tcomp c C 0 ≠ 0 ∧ bdisc (tcomp c C) ≠ 0 := by
   by_cases h0 : c 0 ≠ 0
@@ -170,7 +176,9 @@ lemma plane_two (c : Fin 10 → ℤ) (hΔ : bdisc c ≠ 0) :
   · convert hΔ using 1
     simp [bdisc, tcomp, quadv, bilv]; try ring
 
-/-- **The slice count for a coefficient vector.** -/
+/-- **The slice count for a coefficient vector.** If `c₀ ≠ 0`, `bdisc c ≠ 0`, `disc3 c ≠ 0`,
+all coefficients are at most `K` and `W` bounds the norm counts, then `F_c` has at most
+`(2Y+1)(W+4)` zeros in `[-Y, Y]³`. -/
 theorem slice_count_tv {c : Fin 10 → ℤ} {K Y W : ℕ} (hY : 1 ≤ Y) (hα : c 0 ≠ 0)
     (hΔ : bdisc c ≠ 0) (hD : disc3 c ≠ 0) (hK : ∀ t, |c t| ≤ K)
     (hW : ∀ M : ℤ, M ≠ 0 → |M| ≤ 116 * K ^ 4 * Y ^ 2 →

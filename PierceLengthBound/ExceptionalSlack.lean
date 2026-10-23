@@ -9,7 +9,9 @@ public import PierceLengthBound.ExceptionalOrbitCount
 public import PierceLengthBound.FixedDividendCountAssembly
 public import PierceLengthBound.Main
 
-/-! Absorbing the proved exceptional-pattern logarithm on actual orbit windows. -/
+/-! The logarithm in the exceptional-pattern count is absorbed into a subpolynomial
+coefficient: on a selected orbit window the number of exceptional minor vectors is at most
+`exceptionalPatternSlack a * X⁴`, `X = selectedMinorHeight a A T`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -38,7 +40,7 @@ theorem polynomial_log_slow (c e : ℕ) :
     _ ≤ D * (C * (a : ℝ) ^ η) := by gcongr; exact hbound a ha
     _ = _ := by ring
 
-/-- A convenient simplified version of the exact exceptional-pattern constant. -/
+/-- Simplified form of the exceptional-pattern bound of `exceptional_minor_vector_count`. -/
 lemma exceptional_count_bound_simplify {X : ℕ} (hX : 1 ≤ X) :
     4 * ((6 * X + 1) ^ 3 + (Nat.log 2 (3 * X) + 1) * (273375 * (3 * X) ^ 4)) ≤
       88574872 * (Nat.log 2 (3 * X) + 1) * X ^ 4 := by
@@ -54,16 +56,17 @@ lemma exceptional_count_bound_simplify {X : ℕ} (hX : 1 ≤ X) :
       (Nat.log 2 (3 * X) + 1) * (273375 * (3 * X) ^ 4)) := by gcongr
     _ = _ := by ring
 
-/-- A proved subpolynomial coefficient for exceptional patterns. -/
+/-- The subpolynomial coefficient of `X⁴` in the exceptional-pattern count. -/
 def exceptionalPatternSlack (a : ℕ) : ℕ :=
   88574872 * (Nat.log 2 (3 * 10 ^ 16 * a ^ 7) + 1)
 
+/-- `exceptionalPatternSlack` grows subpolynomially. -/
 theorem exceptionalPatternSlack_slow : SlowGrowth exceptionalPatternSlack := by
   have hc : SlowGrowth (fun _ : ℕ => 88574872) := slowGrowth_const _
   exact hc.mul (polynomial_log_slow (3 * 10 ^ 16) 7)
 
-/-- The exceptional-pattern contribution now has a proved `X⁴` coefficient
-with subpolynomial dependence on the dividend. -/
+/-- The selected starts of a window have at most `exceptionalPatternSlack a * X⁴`
+exceptional minor vectors, `X = selectedMinorHeight a A T`. -/
 theorem selected_exceptional_pattern_count_slack {a b s T A : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hT : 36 ≤ T) :

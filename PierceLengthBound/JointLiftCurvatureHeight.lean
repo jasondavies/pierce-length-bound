@@ -24,6 +24,8 @@ def curvatureError (a b m : ℕ) (q : ℝ) : ℝ :=
   ∑ j ∈ range (P a b - m), wt a b m j * ((qq a b m - q) + pt a b m j) ^ 2 /
     (q ^ 2 * (q + ((qq a b m - q) + pt a b m j)))
 
+/-- For `0 < q ≤ q_m`, `b_m / a = 1/q - (1 + (q_m - q))/q² + ε` with
+`0 ≤ ε ≤ μ_m((x + q_m - q)²) / q³` (the expansion in the proof of Lemma 8.7). -/
 theorem curvature_reciprocal_expansion {a b m : ℕ} (hba : b < a)
     (hm : m + 2 < P a b) {q : ℝ} (hq : 0 < q) (hqm : q ≤ qq a b m) :
     0 ≤ curvatureError a b m q ∧
@@ -129,7 +131,7 @@ lemma curvature_drop_error {a b m : ℕ} (hba : b < a) (hm : m + 3 < P a b)
     _ = _ := by ring
 
 /-- The curvature minors among the first `c` columns have a uniform cubic height, without
-division by any gap; `c + 1` future gaps are used. The joint lift takes `c = 3` (constant `68`)
+division by any gap; `c + 1` later gaps are used. The joint lift takes `c = 3` (constant `68`)
 and the lattice coordinates take `c = 5` (constant `148`). -/
 theorem orbit_curvature_minor_height (c : ℕ) {a b i H j l : ℕ}
     (hba : b < a) (hi : i + c + 3 < P a b) (hH : 1 ≤ H)
@@ -168,7 +170,8 @@ theorem orbit_curvature_minor_height (c : ℕ) {a b i H j l : ℕ}
   convert h using 1
   ring
 
-/-- The three signed integer graph coordinates all satisfy the same height bound. -/
+/-- If the four gaps from state `i` are at most `H`, each coordinate of the curvature-minor
+vector satisfies `|W_j| q_i³ ≤ 68 a H³`. -/
 theorem orbitCurvature_height {a b i H : ℕ} (hba : b < a) (hi : i + 6 < P a b)
     (hH : 1 ≤ H) (hk : ∀ t < 4, kq a b (i + t) ≤ H) (j : Fin 3) :
     |orbitCurvatureVector a b i j| * (qq a b i : ℤ)^3 ≤ 68 * (a : ℤ) * H^3 := by
@@ -201,7 +204,8 @@ lemma le_cubic_height_div {e : ℤ} {q a A H K K' : ℕ} (he : 0 ≤ e) (ha : 0 
   have hd := Int.le_ediv_of_mul_le (by positivity : (0 : ℤ) < (a : ℤ) ^ 2) hb'
   simpa only [Int.natCast_div, Nat.cast_mul, Nat.cast_pow] using hd
 
-/-- All selected curvature coordinates lie in the exact joint-lift box. -/
+/-- At a selected start, each coordinate of the curvature-minor vector is at most the
+curvature height `S` in absolute value (Lemma 8.7). -/
 theorem selected_orbitCurvature_bound {a b s T A i : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hi : i ∈ selectedStarts a b s T A) (j : Fin 3) :

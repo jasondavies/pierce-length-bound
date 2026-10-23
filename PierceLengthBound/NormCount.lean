@@ -21,7 +21,10 @@ The bound is uniform in the coefficients.
   four modulo a prime power, multiplicatively by the Chinese remainder theorem.
 * Two solutions with the same `(g, t)` and the same sign of `ξ = u + w√d` have quotient
   `ξ/ξ' = r + s√d` with `r² - d s² = 1`. If `ξ/ξ' > 1` then `ξ/ξ' ≥ 3` (`unit_ge_three`). Since
-  `1/L ≤ |ξ| ≤ L`, the map `ξ ↦ log₃ ⌊L|ξ|⌋` is injective on such a class.
+  `1/L ≤ |ξ| ≤ L`, the map `ξ ↦ log₃ ⌊L|ξ|⌋` is injective on such a class (`class_card`).
+
+The sorting by `(g, t)` works for `d` of either sign (`card_le_of_class_card_le`); `DefiniteNorm`
+uses it for `-d`.
 -/
 
 @[expose] public section
@@ -35,6 +38,7 @@ open Finset
 /-- The square roots of `d` modulo `m`, as residues in `[0, m)`. -/
 def sqRoots (d : ℤ) (m : ℕ) : Finset ℕ := (range m).filter fun t => (m : ℤ) ∣ (t : ℤ) ^ 2 - d
 
+/-- If `M ∣ s - c` and `0 ≤ s < M`, then `s = c mod M`. -/
 lemma eq_emod_of_dvd {M s c : ℤ} (h0 : 0 ≤ s) (hs : s < M) (h : M ∣ s - c) : s = c % M := by
   have h1 : c ≡ s [ZMOD M] := Int.modEq_iff_dvd.mpr h
   unfold Int.ModEq at h1
@@ -257,6 +261,7 @@ noncomputable def xi (d : ℕ) (q : ℤ × ℤ) : ℝ := q.1 + q.2 * Real.sqrt d
 /-- The conjugate `u - w√d`. -/
 noncomputable def xiBar (d : ℕ) (q : ℤ × ℤ) : ℝ := q.1 - q.2 * Real.sqrt d
 
+/-- `ξ ξ̄ = u² - d w²`. -/
 lemma xi_mul_xiBar (d : ℕ) (q : ℤ × ℤ) : xi d q * xiBar d q
     = ((q.1 ^ 2 - d * q.2 ^ 2 : ℤ) : ℝ) := by
   unfold xi xiBar
@@ -489,6 +494,7 @@ structure Reduced (d : ℤ) (f : ℕ) (N : ℤ) (p : ℤ × ℤ) (g : ℕ) (u w 
   hn : n = u ^ 2 - d * w ^ 2
   cop : IsCoprime w n
 
+/-- A solution of `U² - f² d V² = N` with `N ≠ 0` reduces with `g = gcd(U, fV)`. -/
 lemma reduce {d : ℤ} {f : ℕ} (hf : 0 < f) {N : ℤ} (hN : N ≠ 0) {p : ℤ × ℤ}
     (hp : p.1 ^ 2 - (f : ℤ) ^ 2 * d * p.2 ^ 2 = N) :
     Reduced d f N p (Int.gcd p.1 (f * p.2)) (p.1 / Int.gcd p.1 (f * p.2))

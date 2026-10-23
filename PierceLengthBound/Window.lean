@@ -16,11 +16,21 @@ A *window run* is a run `g 0, g 1, …, g (T-1)` of consecutive terms of an orbi
 `[1, 32 a⁷]`:
 
 * `drop_bound`: `T (T - 1) ≤ 4 A Δ` (the Erdős–Shallit divisor argument);
-* `curvature_bound`: `T⁶ A² ≤ 995328 a³ Δ` for `T ≥ 12` (the curvature argument);
-* `window_bound`: hence `T¹⁰ ≤ 63700992 a³ Δ³` for `T ≥ 12`.
+* `curvature_bound`: `T⁶ A² ≤ 995328 a³ Δ` for `T ≥ 12` (the curvature argument,
+  Proposition 4.3);
+* `window_bound`: hence `T¹⁰ ≤ 63700992 a³ Δ³` for `T ≥ 12` (Corollary 4.4).
 
-The quotient increments `incr` and drops `drop` of a run, with their basic bounds, are shared
-by `SixStep.lean` and `Rises.lean`.
+The file also holds the window vocabulary shared by the later window bounds:
+
+* the structure `Window` with its monotonicity lemmas and the telescoping identities
+  `Window.sum_drops`, `Window.sum_triple_drops`, `Window.sum_five_drops`;
+* the divisor-bound predicate `DivBound`;
+* the quotient increments `incr` and drops `drop` of a run, with `Window.quot_lt`,
+  `Window.one_le_incr`, `Window.one_le_drop`, the size bound `Window.incr_mul_le` and the
+  quotient telescoping `Window.sum_incr`, `Window.sum_incr_le`;
+* the inequalities `le_four_mul`, `lt_three_mul` (from one division equation),
+  `drop_bound_sq` (`T² ≤ 8 A Δ`) and `gap_height_mul_le` (for the gap height
+  `H = ⌊28a/(AT)⌋ + 1` of the good-start lemmas).
 -/
 
 @[expose] public section

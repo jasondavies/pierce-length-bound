@@ -9,13 +9,17 @@ public import PierceLengthBound.ParameterFiberDegree
 public import PierceLengthBound.NormalizedBranchValuation
 public import Mathlib.RingTheory.RamificationInertia.Basic
 
-/-! Residue-degree weighted branch orders in a finite parameter fiber. -/
+/-! Residue-degree weighted branch orders in a finite parameter fiber. The normalized order of
+an element of a Dedekind domain is its multiplicity in the principal ideal it generates. For a
+Dedekind domain `C` finite over a polynomial ring `T ≅ K[X]`, the branches of the fiber of `X`,
+weighted by multiplicity and residue degree over `K`, sum to the rank of `C` over `T`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open scoped BigOperators
 
+/-- The normalized order of a nonzero `x ∈ R` at `p` is the multiplicity of `p` in `(x)`. -/
 theorem normalizedBranchOrder_eq_multiplicity {R : Type*} [CommRing R]
     [IsDedekindDomain R] (p : IsDedekindDomain.HeightOneSpectrum R)
     (L : Type*) [Field L] [Algebra R L] [IsFractionRing R L]

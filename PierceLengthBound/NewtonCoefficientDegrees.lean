@@ -8,8 +8,9 @@ module
 import all PierceLengthBound.FixedDividendTotalDegree
 public import PierceLengthBound.FixedDividendLineResultant
 
-/-! The Newton quartic has coefficient degree at most 4-j at x^j. These
-individual bounds are needed to prove strict leading-term dominance at infinity. -/
+/-! With linear node coordinates, the coefficient of `x^j` in the first Newton quartic has
+total degree at most `4 - j`. These bounds give the coefficient orders at infinity in
+`ChartNewtonOrders`, where the leading term dominates. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -39,8 +40,8 @@ theorem firstNewtonCoeffs_totalDegree_sharp {K σ : Type*} [Field K]
   · change (C (c 3) - (s 0 + s 1 + s 2)).totalDegree ≤ 1
     fixed_dividend_mv_degree
 
-/-- The explicit coefficient vector agrees with evaluation of the monic
-quartic in the format used by the discrete-order theorem. -/
+/-- Evaluation of the first Newton quartic at `-q` in terms of its coefficient vector:
+`q⁴ + ∑ⱼ cⱼ (-q)ʲ`, the form used in `ChartNewtonOrders`. -/
 lemma firstNewtonQuartic_eval_neg {K : Type*} [CommRing K]
     (c s : Fin 4 → K) (q : K) :
     (firstNewtonQuartic c s).eval (-q) =

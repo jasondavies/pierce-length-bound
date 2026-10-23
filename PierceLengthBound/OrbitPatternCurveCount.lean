@@ -8,16 +8,17 @@ module
 public import PierceLengthBound.OrbitCurveGapCount
 public import PierceLengthBound.OrbitPatternGeometry
 
-/-! The original curve cover and actual-window line exclusion give the
-square-root count for every pattern in the large-scale range. -/
+/-! The cover of the pattern curve by at most twenty-four components, and the exclusion of
+line components in the scale range `124928 A⁴ H⁵ X < a³` (Lemma 8.5), give the square-root
+count for every pattern. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
 
-/-- Square-root counting for any complete pattern in the large-scale range.
-In particular, this proves the exceptional branch of the joint-lift estimate. -/
+/-- Square-root counting `≪ a^ε H^{1/2}` for the gap vectors of any complete pattern in the
+scale range `124928 A⁴ H⁵ X < a³`. This is the exceptional branch of `JointPatternEstimate`. -/
 theorem selected_pattern_curve_gap_count_slow :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ {a b s T A i : ℕ}, b < a →
       (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →

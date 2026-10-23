@@ -9,15 +9,18 @@ public import PierceLengthBound.FixedDividendFilteredIntersection
 public import CCDN.Curve.CurveFunctionField
 public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 
-/-! The function-field degree of a transcendental linear coordinate is bounded
-by the affine Hilbert degree. This reuses the proved rank comparison from the
-external curve-counting development with the Pierce coordinate filtration. -/
+/-! The function-field degree of a transcendental linear coordinate is bounded by the affine
+Hilbert degree, via `CCDN.curve_functionField_finite_rank_le` applied to the filtration
+`filteredCoordinateSpace`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open scoped IntermediateField
 
+/-- If `I` is prime with Hilbert function eventually `d n + c`, and `x` in the fraction field
+`F` of `K[x]/I` is transcendental and the image of a polynomial of total degree at most one,
+then `F` is finite over `K(x)` with `[F : K(x)] ≤ d`. -/
 theorem linear_function_degree_le_hilbert {K F σ : Type*}
     [Field K] [Field F] [Algebra K F] [Finite σ]
     (I : Ideal (MvPolynomial σ K)) [I.IsPrime]

@@ -10,14 +10,18 @@ public import PierceLengthBound.JointLiftExponent
 public import PierceLengthBound.JointLiftAlgebra
 public import PierceLengthBound.FixedDividendWindow
 
-/-! The rank-five integer coordinate lies in the joint-lift box at actual selected states. -/
+/-! # Height of the rank-five coordinate
+
+The rank-five half of Lemma 8.7: Hadamard's inequality and the Newton Gram product give
+`I₅(i) q_i⁵ ≤ 1230460 a H¹⁰`, so at a selected start the rank-five integer `J = I₄(i) Ψ`
+satisfies `1 ≤ J ≤ Y`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset Polynomial
 
-/-- Positive moments preserve inequalities on their actual finite support. -/
+/-- `μᵢ` is monotone with respect to inequalities on its finite support. -/
 lemma muF_mono_on_support {a b i : ℕ} (hba : b < a) (hi : i < P a b)
     {f g : ℝ[X]} (hfg : ∀ t < P a b - i, f.eval (pt a b i t) ≤ g.eval (pt a b i t)) :
     muF a b i f ≤ muF a b i g := by
@@ -25,7 +29,8 @@ lemma muF_mono_on_support {a b i : ℕ} (hba : b < a) (hi : i < P a b)
   exact sum_le_sum fun t ht => mul_le_mul_of_nonneg_left
     (hfg t (mem_range.mp ht)) (hw t (mem_range.mp ht)).le
 
-/-- A Newton square is controlled by a shifted ordinary moment. -/
+/-- If the first `j` gaps from state `i` are at most `H`, the Newton square satisfies
+`μᵢ(Fⱼ²) ≤ μ_{i+j}((x + jH)ʲ)`. -/
 lemma newton_square_le_shift {a b i j : ℕ} (hba : b < a) (hij : i + j < P a b)
     {H : ℝ} (hk : ∀ t < j, kk a b (i + t) ≤ H) :
     muF a b i (nb a b i j * nb a b i j) ≤
@@ -61,6 +66,8 @@ lemma newton_square_le_shift {a b i j : ℕ} (hba : b < a) (hij : i + j < P a b)
 /-- The five explicit bounds used in the rank-five Newton Gram product. -/
 def rankFiveMomentConstant : Fin 5 → ℝ := ![1, 2, 10, 77, 799]
 
+/-- If seven consecutive gaps lie in `[0, H]` with `H ≥ 1`, then
+`μ_{i+j}((x + jH)ʲ) ≤ cⱼ Hʲ` for `j < 5`, with `cⱼ = rankFiveMomentConstant j`. -/
 lemma rankFive_shift_moment_bound {a b i : ℕ} (hba : b < a) (hi : i + 8 < P a b)
     {H : ℝ} (hH : 1 ≤ H) (hk : ∀ t < 7, 0 ≤ kk a b (i + t) ∧ kk a b (i + t) ≤ H)
     (j : Fin 5) :
@@ -107,7 +114,8 @@ lemma rankFive_shift_moment_bound {a b i : ℕ} (hba : b < a) (hi : i + 8 < P a 
     nlinarith [hpow 0 4 (by omega), hpow 1 4 (by omega),
       hpow 2 4 (by omega), hpow 3 4 (by omega)]
 
-/-- Uniform rank-five Newton Gram product, with the candidate's explicit constant. -/
+/-- If seven consecutive gaps lie in `[0, H]` with `H ≥ 1`, the rank-five Newton Gram product
+is at most `1230460 H¹⁰` (`1230460 = 1 · 2 · 10 · 77 · 799`). -/
 theorem rankFive_newton_product_bound {a b i : ℕ} (hba : b < a) (hi : i + 8 < P a b)
     {H : ℝ} (hH : 1 ≤ H) (hk : ∀ t < 7, 0 ≤ kk a b (i + t) ∧ kk a b (i + t) ≤ H) :
     (∏ j : Fin 5, muF a b i (nb a b i j * nb a b i j)) ≤ 1230460 * H ^ 10 := by
@@ -128,7 +136,7 @@ theorem rankFive_newton_product_bound {a b i : ℕ} (hba : b < a) (hi : i + 8 < 
       simp [Fin.prod_univ_succ, rankFiveMomentConstant]
       ring
 
-/-- The rank-five Hankel invariant has height O(a H^10 / q^5). -/
+/-- If seven consecutive gaps lie in `[1, H]`, then `I₅(i) q_i⁵ ≤ 1230460 a H¹⁰`. -/
 theorem rankFive_height {a b i H : ℕ} (hba : b < a) (hi : i + 8 < P a b)
     (hH : 1 ≤ H) (hk : ∀ t < 7, 1 ≤ kq a b (i + t) ∧ kq a b (i + t) ≤ H) :
     hankelInv a b i 5 * (qq a b i : ℝ) ^ 5 ≤ 1230460 * a * (H : ℝ) ^ 10 := by
@@ -149,7 +157,7 @@ theorem rankFive_height {a b i H : ℕ} (hba : b < a) (hi : i + 8 < P a b)
       exact rankFive_newton_product_bound hba hi (by exact_mod_cast hH) hkr
     _ = _ := by ring
 
-/-- The actual positive integer J=A D lies in the exact floored selected box. -/
+/-- At a selected start, an integer `J = I₄(i) Ψ` is at most the rank-five height `Y`. -/
 theorem selected_rankFive_bound {a b s T A i J : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hi : i ∈ selectedStarts a b s T A)
@@ -173,7 +181,7 @@ theorem selected_rankFive_bound {a b s T A i J : ℕ} (hba : b < a)
     convert hb using 1 <;> ring
   exact (Nat.le_div_iff_mul_le (by positivity : 0 < a ^ 4)).mpr hb'
 
-/-- Positivity, integrality, and height hold simultaneously at every selected state. -/
+/-- At a selected start, `I₄(i) Ψ` is a positive integer `J ≤ Y`. -/
 theorem selected_rankFive_positive_integer {a b s T A i : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hi : i ∈ selectedStarts a b s T A) :

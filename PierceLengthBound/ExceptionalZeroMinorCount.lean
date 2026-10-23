@@ -7,7 +7,9 @@ module
 
 public import PierceLengthBound.ExceptionalRankOneCount
 
-/-! The exceptional-pattern count with a specified vanishing maximal minor. -/
+/-! Counting minor vectors with a vanishing first maximal minor (Lemma 8.5). By Grassmann
+duality the nine remaining minors form three vectors `x, y, z ∈ ℤ³` with `x × y = 0` and
+`x ⬝ᵥ z = y ⬝ᵥ z = 0`, which are counted in `rank_one_orthogonal_count`. -/
 
 @[expose] public section
 namespace PierceLengthBound
@@ -58,8 +60,8 @@ theorem zeroMinorCoordinates_inj {p q : Fin 10 → ℤ} (hp : p 0 = 0) (hq : q 0
   funext j
   fin_cases j <;> first | exact hp.trans hq.symm | assumption
 
-/-- Decomposable integral three-vectors with a fixed zero maximal coordinate
-number `O(X⁴ log(2X))`, with no primitivity assumption. -/
+/-- Integral minor vectors of height `≤ X` satisfying the Plücker relations with first minor
+zero number at most `(2X + 1)³ + (log₂ X + 1) · 273375 X⁴`. -/
 theorem zero_minor_vector_count {S : Finset (Fin 10 → ℤ)} {X : ℕ} (hX : 1 ≤ X)
     (hS : ∀ p ∈ S, (∀ j, |p j| ≤ X) ∧ PluckerRel p ∧ p 0 = 0) :
     S.card ≤ (2 * X + 1) ^ 3 + (Nat.log 2 X + 1) * (273375 * X ^ 4) := by

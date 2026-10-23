@@ -109,6 +109,7 @@ lemma nb_succ (i j : ℕ) : nb a b i (j + 1) = X * (nb a b (i + 1) j).comp (X - 
   simp only [sub_comp, X_comp, C_comp, pt_succ, kk, map_add]
   ring
 
+/-- `μᵢ(Fᵢ,ⱼ g) = μ_{i+j}(g(X + pᵢ(j)))`. -/
 lemma muF_nb_mul : ∀ (j i : ℕ), i + j < P a b → ∀ g : ℝ[X],
     muF a b i (nb a b i j * g) = muF a b (i + j) (g.comp (X + C (pt a b i j))) := by
   intro j

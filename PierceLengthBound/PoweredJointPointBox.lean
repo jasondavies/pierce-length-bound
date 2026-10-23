@@ -8,20 +8,23 @@ module
 public import PierceLengthBound.PoweredJointGraph
 public import PierceLengthBound.JointLiftPointBox
 
-/-! Actual integer points on the powered joint graph, in the box with radii
-3H, S^m and Y^n. Powers introduce no additional pattern parameters. -/
+/-! Integer points on the powered joint graph: each selected start gives the point
+`(nodes, Wᵐ, Jⁿ)` of the powered graph of its pattern, in the box with radii `3H`, `Sᵐ` and
+`Yⁿ`. The powered graph depends on a start only through its pattern. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- The powered graph depends on the start only through its pattern. -/
 lemma orbitPoweredJointGraph_congr {a b i l : ℕ} (h : theta a b i = theta a b l)
     (m n : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ)) :
     orbitPoweredJointGraphIdeal a b i m n I = orbitPoweredJointGraphIdeal a b l m n I := by
   obtain ⟨hP, hD⟩ := orbitJoint_polynomials_congr h
   simp only [orbitPoweredJointGraphIdeal, orbitPoweredJointNumerators, hP, hD]
 
+/-- The integer point `(nodes, Wᵐ, Jⁿ)` of a state, with rank-five integer `J`. -/
 def orbitPoweredJointPoint (a b i J m n : ℕ) : Fin 3 ⊕ Fin 4 → ℤ :=
   Sum.elim (fun j => sq a b i (j.val + 1))
     (fun j => orbitJointPoint a b i J (Sum.inr j) ^ jointCoordinatePowers m n j)
@@ -36,6 +39,8 @@ lemma orbitFreeNodesQ_eq_of_poweredJointPoint_eq {a b i l J K m n : ℕ}
   dsimp only [orbitFreeNodesQ]
   exact_mod_cast he
 
+/-- A state's powered point lies on the powered graph over any component containing its
+nodes. -/
 lemma orbitPoweredJointGraph_point {a b i J : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (m n : ℕ) (I : Ideal (MvPolynomial (Fin 3) ℚ))
     (hz : orbitFreeNodesQ a b i ∈ coordinateZeroLocus I)
@@ -75,12 +80,13 @@ lemma orbitPoweredJointGraph_point {a b i J : ℕ} (hba : b < a) (hi : i + 7 < P
   rw [he] at hh
   exact hh
 
+/-- The box `max(3H, Sᵐ, Yⁿ)` of the powered points of a window. -/
 def poweredJointPointBoxHeight (a A T m n : ℕ) : ℕ :=
   max (3 * selectedGapHeight a A T)
     (max (selectedCurvatureHeight a A T ^ m) (selectedRankFiveHeight a A T ^ n))
 
-/-- Each selected state gives an integral powered point, uniformly in its
-complete minor pattern, with the two separate coordinate height powers. -/
+/-- Each selected start `l` with the pattern of `i` gives, for a positive rank-five integer
+`J`, an integer point of the powered graph of `i` in the box `poweredJointPointBoxHeight`. -/
 theorem selected_poweredJointGraph_integerPoint {a b s T A i l : ℕ}
     (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)

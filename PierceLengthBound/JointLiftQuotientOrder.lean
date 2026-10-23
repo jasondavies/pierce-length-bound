@@ -7,8 +7,10 @@ module
 
 public import PierceLengthBound.JointLiftLocalOrders
 
-/-! The monic normalization equation forces the exact quotient pole order and
-even infinity multiplicity. This is a discrete Newton-polygon calculation. -/
+/-! # The quotient order
+
+The first half of Lemma 8.6 in valuation form: if `P₄(-Q)` has order `-6e`, the leading term
+`Q⁴` dominates, so `ord Q = -3e/2` and `e` is even. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -22,9 +24,8 @@ lemma discrete_order_pow (v : AddValuation K (WithTop ℤ)) {q : K} {r : ℤ}
   rw [v.map_pow, hq]
   norm_cast
 
-/-- If a monic quartic with the original coordinate degree bounds has order
-`-6e` at `-q`, its leading term forces `ord(q) = -3e/2` and `e` even.
-The smaller coefficients may vanish identically. -/
+/-- If `ord pⱼ ≥ -(4 - j) e` and `q⁴ + ∑ⱼ pⱼ (-q)ʲ` has order `-6e` with `e > 0`, then
+`e = 2t` and `ord q = -3t`. The lower coefficients may vanish identically. -/
 theorem monic_quartic_quotient_discrete_order (v : AddValuation K (WithTop ℤ))
     (p : Fin 4 → K) (q : K) {e : ℤ} (he : 0 < e)
     (hp : ∀ j, ((-(4 - (j.val : ℤ)) * e : ℤ) : WithTop ℤ) ≤ v (p j))

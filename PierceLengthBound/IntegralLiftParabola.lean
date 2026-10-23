@@ -7,9 +7,10 @@ module
 
 public import PierceLengthBound.IntegralLiftResolvent
 
-/-! Degree calculations for the added invariant on a parabolic component.
-The hypotheses record the polynomial parametrization data; constructing these
-data uniformly for actual components is a separate obligation. -/
+/-! Degree calculations for the resolvent of the integral lift along a quadratic
+parametrization: the mixed raw minor has degree at most eight, the raw rank-three determinant
+has degree six when the leading gap coefficients are suitably nonzero, and the resolvent
+numerator `(q - p₃) H₃ - J` has degree nine when `q` is cubic. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -24,8 +25,8 @@ theorem rawHankelMixed_parabola_degree {K : Type*} [Field K]
   compute_degree
   omega
 
-/-- Distinct quadratic leading nodes give degree six for the raw rank-three
-determinant; its remaining terms have degree at most four. -/
+/-- If `k₀`, `k₁` and `k₀ + k₁` have degree two and `k₂` degree at most two, the raw rank-three
+determinant has degree six; its terms other than `k₀k₁(k₀ + k₁)` have degree at most four. -/
 theorem rawHankelThree_parabola_degree {K : Type*} [Field K]
     (k0 k1 k2 : K[X]) (h0 : k0.natDegree = 2) (h1 : k1.natDegree = 2)
     (h2 : k2.natDegree ≤ 2) (hs : (k0 + k1).natDegree = 2) :
@@ -42,8 +43,8 @@ theorem rawHankelThree_parabola_degree {K : Type*} [Field K]
       (k0 * k2 - k1 ^ 2) := by rw [rawHankelThree_leading]; ring
   rw [he, natDegree_add_eq_left_of_natDegree_lt (by omega), hlead]
 
-/-- The resolvent numerator has degree nine on a parabola. The mixed minor's
-degree is smaller, so cancellation of its leading term is impossible. -/
+/-- For cubic `q`, `deg p₃ ≤ 2`, `deg H₃ = 6` and `deg J ≤ 8`, the resolvent numerator
+`(q - p₃) H₃ - J` has degree nine. -/
 theorem integralLift_parabola_numerator_degree {K : Type*} [Field K]
     (q p3 H3 J : K[X]) (hq : q.natDegree = 3) (hp : p3.natDegree ≤ 2)
     (hH : H3.natDegree = 6) (hJ : J.natDegree ≤ 8) :

@@ -7,14 +7,19 @@ module
 
 public import PierceLengthBound.ExceptionalSlack
 
-/-! Ordinary pattern counting shared by the joint-lift and exterior-lattice local estimates.
-No weighted lattice incidence estimate occurs in the count or in its proof. -/
+/-! # Counting the patterns of a window
+
+The selected starts of a window have at most `ordinaryPatternSlack a · X⁵` distinct full
+patterns (Proposition 7.9), with a slowly growing divisor-count factor. Shared by the powered
+joint, exterior lattice and polar local estimates; `patternSlack` is the combined slack of the
+powered joint local estimate. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open Finset
 
-/-- The ordinary minor count, keeping a harmless divisor slack explicitly. -/
+/-- Minor vectors of height at most `X` satisfying the Plücker relations number at most
+`14581 τ X⁵`, where `τ` bounds the divisor counts of `1, …, X`. -/
 theorem ordinary_minor_count {S : Finset (Fin 10 → ℤ)} {X τ : ℕ}
     (hX : 1 ≤ X) (hτ : 1 ≤ τ)
     (hS : ∀ p ∈ S, (∀ t, |p t| ≤ X) ∧ PluckerRel p)
@@ -32,13 +37,15 @@ theorem ordinary_minor_count {S : Finset (Fin 10 → ℤ)} {X τ : ℕ}
   have hp : 1 ≤ X ^ 5 * τ := Nat.mul_pos (by positivity) (by omega)
   nlinarith
 
+/-- The slowly growing factor `14581 τ_max(10¹⁶ a⁷)` of the pattern count. -/
 def ordinaryPatternSlack (a : ℕ) : ℕ := 14581 * tauMax (10 ^ 16 * a ^ 7)
 
 lemma ordinaryPatternSlack_slow : SlowGrowth ordinaryPatternSlack := by
   have hc : SlowGrowth (fun _ : ℕ => 14581) := slowGrowth_const _
   exact hc.mul (tauMax_slow (10 ^ 16) 7)
 
-/-- The selected full patterns have an `X^5` count with proved subpolynomial slack. -/
+/-- The selected starts of a window have at most `ordinaryPatternSlack a · X⁵` distinct full
+patterns, where `X` is the minor height. -/
 theorem selected_ordinary_pattern_count {a b s T A : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hT : 36 ≤ T) :
@@ -55,7 +62,7 @@ theorem selected_ordinary_pattern_count {a b s T A : ℕ} (hba : b < a)
   · intro m hm
     exact tau_le_tauMax ((mem_Icc.mp hm).2.trans hXb)
 
-/-- The combined ordinary and exceptional pattern slack, with no lattice weights. -/
+/-- The combined slack `8 R(a) (ordinaryPatternSlack a + exceptionalPatternSlack a)`. -/
 def patternSlack (R : ℕ → ℕ) (a : ℕ) : ℕ :=
   8 * R a * (ordinaryPatternSlack a + exceptionalPatternSlack a)
 

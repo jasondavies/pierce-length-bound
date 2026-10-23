@@ -20,7 +20,11 @@ The integer `L = (vw + w² + z)D - (u² + (u-1)v)E - w(wf₀ - uf₂)` satisfies
 `q w L = J E + S₀ F` (`six_identity`), and `S(v,w,z) D - S₀ E = v L`. Since `E, F, J > 0`, we
 get `L ≥ 1`, hence `q w ≤ J E + S₀ F` (`six_core`). This bounds `q ≍ a/A` by a polynomial in the
 small parameters, with no divisor function, and gives `T⁶ A² ≤ 96·10⁶ a³`
-(`six_step_bound`).
+(`six_step_bound`, Proposition 5.3).
+
+Two consequences shared by the exponent arithmetic of the later window bounds close the file:
+`window_facts` (the six-step and drop bounds force `A, Δ, a ≥ 1` and give `T² ≤ 8 A Δ`) and
+`window_large_mean_gap` (`T⁴ ≤ 122449 a` when `A T > 28 a`).
 -/
 
 @[expose] public section
@@ -42,7 +46,8 @@ def sixL (u v w z f0 f1 f2 : ℤ) : ℤ :=
   (v * w + w ^ 2 + z) * (f0 * v - f1 * u) - (u ^ 2 + (u - 1) * v) * (f1 * w - f2 * v) -
     w * (w * f0 - u * f2)
 
-/-- The six-step identity `q w L = J E + S₀ F`, from the division equations. -/
+/-- The six-step identity `q w L = J E + S₀ F`, from the division equations
+(Lemma 5.1(2)). -/
 theorem six_identity (a q u v w z x0 x1 x2 x3 x4 : ℤ)
     (h0 : x0 * q + x1 = a) (h1 : x1 * (q + u) + x2 = a) (h2 : x2 * (q + u + v) + x3 = a)
     (h3 : x3 * (q + u + v + w) + x4 = a) :
@@ -57,7 +62,7 @@ theorem six_identity (a q u v w z x0 x1 x2 x3 x4 : ℤ)
       w ^ 2)) * h1 +
     (w * (v ^ 2 * w + v * w ^ 2 + v * z - w ^ 2)) * h0
 
-/-- `S(v,w,z) D - S(u,v,w) E = v L`: the integrality of `L` in the original form. -/
+/-- `S(v,w,z) D - S(u,v,w) E = v L` (Lemma 5.1(1)). -/
 theorem six_divisibility (u v w z f0 f1 f2 : ℤ) :
     sixS v w z * (f0 * v - f1 * u) - sixS u v w * (f1 * w - f2 * v) =
       v * sixL u v w z f0 f1 f2 := by
@@ -144,9 +149,10 @@ lemma sixS_le {u v w m : ℤ} (hu : 1 ≤ u) (hv : 1 ≤ v) (hw : 1 ≤ w)
   unfold sixS
   linarith
 
-/-- **The six-step inequality.** For six consecutive terms with quotient increments
-`u, v, w, z ≤ m`: the curvatures `E, F` of the second and third blocks are honest natural numbers,
-they satisfy the curvature bounds, and `q ≤ 9 m³ E + 3 m³ F`. -/
+/-- **The six-step inequality** (Corollary 5.2). For six consecutive terms with `q ≥ 1` and
+quotient increments `1 ≤ u, v, w, z ≤ m`, the curvatures `E, F` of the blocks starting at `x₁`
+and `x₂` (natural-number differences, which are positive) satisfy `E x₃ ≤ (v+1)(x₁-x₄)²`,
+`F x₄ ≤ (w+1)(x₂-x₅)²` and `q ≤ 9 m³ E + 3 m³ F`. -/
 theorem six_core (a q u v w z x0 x1 x2 x3 x4 x5 m : ℕ)
     (h0 : x0 * q + x1 = a) (h1 : x1 * (q + u) + x2 = a) (h2 : x2 * (q + u + v) + x3 = a)
     (h3 : x3 * (q + u + v + w) + x4 = a) (h4 : x4 * (q + u + v + w + z) + x5 = a)

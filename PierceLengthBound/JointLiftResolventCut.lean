@@ -8,14 +8,20 @@ module
 import all PierceLengthBound.FixedDividendTotalDegree
 public import PierceLengthBound.JointLiftNormalizationCut
 
-/-! A uniformly bounded multivariate cut for the actual raw resolvent identity. -/
+/-! # The resolvent cut
+
+The resolvent identity `E₀ P₄(-Q) = a ((Q - p₃) H₃ - H₀₁₃)`, with denominators cleared, is a
+polynomial of total degree at most `404` in the free nodes that vanishes at the free nodes of
+every state with the given pattern. On a prime component of degree `d` it either lies in the
+component's ideal or at most `404 d` states of the pattern have free nodes on the component
+(Lemma 8.2). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- The cubic coefficient of the monic Newton quartic. -/
+/-- The cubic coefficient `p₃ = ū₂ - 1 - s₁ - s₂ - s₃` of the monic Newton quartic `P₄`. -/
 def jointQuarticCubicCoefficient (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   C (patternVQ a b i - 1) - X 0 - X 1 - X 2
 
@@ -51,8 +57,8 @@ lemma rawHankelMixed_totalDegree (k : Fin 5 → MvPolynomial (Fin 3) ℚ)
     Lean.Elab.Tactic.replaceMainGoal [g']
   fixed_dividend_mv_degree
 
-/-- Clear both the reconstructed quotient and the integral-lift denominator
-in I3 P(-q) = a ((q-p3)H3-Hmixed). -/
+/-- The resolvent identity `E₀ P₄(-Q) = a ((Q - p₃) H₃ - H₀₁₃)` with the denominators of `Q`
+and `E₀` cleared, as a polynomial in the three free nodes. -/
 def jointResolventPolynomial (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   let n := orbitQuotientNumeratorQ a b i
   let q := orbitQuotientDenominatorQ a b i
@@ -64,7 +70,7 @@ def jointResolventPolynomial (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
       rawHankelThree (k 0) (k 1) (k 2) - rawHankelMixed (k 0) (k 1) (k 2) (k 3) * q) *
       q ^ 3 * orbitLiftDenominatorQ a b i
 
-/-- The resolvent cut has absolute degree at most 404. -/
+/-- The cleared resolvent polynomial has total degree at most `404`. -/
 theorem jointResolventPolynomial_degree (a b i : ℕ) :
     (jointResolventPolynomial a b i).totalDegree ≤ 404 := by
   have hq := orbitQuotient_polynomial_degrees a b i
@@ -103,7 +109,7 @@ theorem jointResolventPolynomial_degree (a b i : ℕ) :
       ((totalDegree_pow _ _).trans (Nat.mul_le_mul_left 3 hq.2))) hE.2).trans (by omega)
 
 
-/-- The cleared raw-resolvent cut vanishes at every supported actual state. -/
+/-- The cleared resolvent polynomial vanishes at the free nodes of state `i`. -/
 theorem jointResolventPolynomial_eval {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     eval (orbitFreeNodesQ a b i) (jointResolventPolynomial a b i) = 0 := by
   let ev := eval (orbitFreeNodesQ a b i)
@@ -161,8 +167,9 @@ lemma jointResolventPolynomial_congr {a b i l : ℕ} (h : theta a b i = theta a 
     orbitLiftDenominatorQ, orbitCurveCofactorsQ, jointGapPolynomials,
     hρ, hu, hv, hρ', hu', hv']
 
-/-- The raw resolvent is an identity on the component unless the component
-contains at most 404d distinct supported states of this pattern. -/
+/-- For a family of distinct states with the pattern of `i` whose free nodes lie on the prime
+component `I` of degree `d`, either the cleared resolvent polynomial lies in `I` or the family
+has at most `404 d` members. -/
 theorem jointResolventPolynomial_identity_or_card_bound {a b i d : ℕ} (hba : b < a)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]
     (hd : ∃ N : ℕ, ∃ c : ℤ, ∀ n ≥ N,

@@ -7,19 +7,25 @@ module
 
 public import PierceLengthBound.IntegralLiftCoordinateSystem
 
-/-! Actual quotient reconstruction and its monic quartic normalization. -/
+/-! The orbit quotient `q_i = (c₁ - c₂) / (c₁ - c₀)` as a quotient of polynomials in the free
+nodes (from the cofactors of the curve moment system), the cleared Newton quartic
+`clearedNewtonQuartic`, and the normalization identity `L_i π_i(-q_i) = a H₄(k)` written with the
+Newton quartic over `ℚ`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- The numerator `c₁ - c₂` of the reconstructed quotient, in the free nodes. -/
 def orbitQuotientNumeratorQ (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   orbitCurveCofactorsQ a b i 1 - orbitCurveCofactorsQ a b i 2
 
+/-- The denominator `c₁ - c₀` of the reconstructed quotient, in the free nodes. -/
 def orbitQuotientDenominatorQ (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=
   orbitCurveCofactorsQ a b i 1 - orbitCurveCofactorsQ a b i 0
 
+/-- The quotient numerator and denominator have total degree at most `40`. -/
 theorem orbitQuotient_polynomial_degrees (a b i : ℕ) :
     (orbitQuotientNumeratorQ a b i).totalDegree ≤ 40 ∧
       (orbitQuotientDenominatorQ a b i).totalDegree ≤ 40 := by
@@ -27,8 +33,8 @@ theorem orbitQuotient_polynomial_degrees (a b i : ℕ) :
     (max_le (curveMomentCofactors_totalDegree _ _ _ _ _ _ _)
       (curveMomentCofactors_totalDegree _ _ _ _ _ _ _))
 
-/-- The rational quotient reconstructed from the universal cofactors agrees
-with the actual quotient, with a nonzero denominator. -/
+/-- At the free nodes of an orbit state, the quotient denominator is nonzero and the
+reconstructed quotient is `q_i`. -/
 theorem orbitQuotient_evaluation {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     MvPolynomial.eval (orbitFreeNodesQ a b i) (orbitQuotientDenominatorQ a b i) ≠ 0 ∧
       (qq a b i : ℚ) =
@@ -65,8 +71,8 @@ lemma clearedNewtonQuartic_div {K : Type*} [Field K]
   field_simp
   ring
 
-/-- Scalar normalization of the explicit Newton form matches the previously
-proved integer quartic identity. -/
+/-- `A` times the Newton quartic with coefficients `B/A, U/A, V/A` at `-q` is the integer
+quartic `quart (-B) U V A k₀ k₁ k₂ q` of `TwoState`. -/
 lemma newtonQuartic_eval_cast (A B U V k0 k1 k2 q : ℤ) (hA : A ≠ 0) :
     (A : ℚ) * (firstNewtonQuartic
       (fun j : Fin 4 => coeffs ((B : ℚ) / A) ((U : ℚ) / A) ((V : ℚ) / A) j.castSucc)
@@ -80,7 +86,8 @@ lemma newtonQuartic_eval_cast (A B U V k0 k1 k2 q : ℤ) (hA : A ≠ 0) :
   field_simp
   ring
 
-/-- The actual supported orbit satisfies the monic normalization over `ℚ`. -/
+/-- The normalization identity `L_i π_i(-q_i) = a H₄(k_i, …, k_{i+4})` over `ℚ`, with `π_i` the
+monic first Newton quartic at the free nodes. -/
 theorem orbit_newton_normalization {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b) :
     (Lz a b i : ℚ) * (firstNewtonQuartic
       (fun j : Fin 4 => coeffs (patternRhoQ a b i) (patternUQ a b i)
@@ -112,12 +119,15 @@ lemma map_muH4 {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S)
     f (muH4 k0 k1 k2 k3 k4) = muH4 (f k0) (f k1) (f k2) (f k3) (f k4) := by
   simp only [muH4, map_add, map_sub, map_mul, map_pow, map_ofNat]
 
+/-- Ring homomorphisms commute with `lineGaps`. -/
 lemma map_lineGaps {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S)
     (ρ u v ρ' u' v' x y z : R) (j : Fin 5) :
     f (lineGaps ρ u v ρ' u' v' x y z j) =
       lineGaps (f ρ) (f u) (f v) (f ρ') (f u') (f v') (f x) (f y) (f z) j := by
   fin_cases j <;> simp [lineGaps, fourthNode]
 
+/-- At an orbit state, `lineGaps` of the rational pattern and free nodes gives the gaps
+`k_i, …, k_{i+4}`. -/
 lemma orbit_rational_lineGaps {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b)
     (j : Fin 5) :
     lineGaps (patternRhoQ a b i) (patternUQ a b i) (patternVQ a b i)
@@ -135,6 +145,7 @@ lemma orbit_rational_lineGaps {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a b)
   rw [orbit_lineGaps hba hi]
   simp [kk, kq]
 
+/-- Evaluating a substitution `f(z)` at `t` is evaluating `f` at `z(t)`. -/
 lemma polynomial_substitution_eval {K : Type*} [CommRing K]
     (z : Fin 3 → Polynomial K) (f : MvPolynomial (Fin 3) K) (t : K) :
     (MvPolynomial.aeval z f).eval t = MvPolynomial.eval (fun j => (z j).eval t) f := by

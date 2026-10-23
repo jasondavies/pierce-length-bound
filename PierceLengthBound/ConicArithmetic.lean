@@ -7,8 +7,9 @@ module
 
 public import Mathlib.Tactic
 
-/-! Algebraic identities and injective parameters for affine conics.
-The geometric reduction to such a conic remains a separate obligation. -/
+/-! Completion of the square for an affine binary quadratic, and the parabolic parameter
+`t = 2αx + βy + d` with `t² = (2βd - 4αe)y + d² - 4αf` on a conic of discriminant zero
+(the parameter of Lemma A.1, `lem:jointconicparameter`). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -25,7 +26,8 @@ theorem conic_square_identity {K : Type*} [CommRing K] (α β γ d e f x y : K) 
   unfold conicValue
   ring
 
-/-- Every point of a discriminant-zero conic has the proposed parabolic parameter. -/
+/-- At every point of a discriminant-zero conic, the parameter `t = 2αx + βy + d` satisfies
+`t² = (2βd - 4αe)y + d² - 4αf`. -/
 theorem parabola_parameter_identity {K : Type*} [CommRing K] (α β γ d e f x y : K)
     (hΔ : β ^ 2 - 4 * α * γ = 0) (hc : conicValue α β γ d e f x y = 0) :
     (2 * α * x + β * y + d) ^ 2 = (2 * β * d - 4 * α * e) * y + d ^ 2 - 4 * α * f := by

@@ -8,17 +8,20 @@ module
 public import PierceLengthBound.ConicIntegerReduction
 public import PierceLengthBound.ConicFactorHeight
 
-/-! Applying the integer-value theorem to a proper rational function represented
-by bounded integer polynomials. Common factors and parameter poles are handled. -/
+/-! Lemma A.3 (`lem:jointconicdivisors`) for a rational function with a nonconstant reduced
+denominator, represented by bounded integer polynomials that need not be coprime: common factors
+are cancelled (the reduction step of Lemma A.2, `lem:jointconicproper`), and integrality is
+read off any rational presentation whose denominator is nonzero at the counted parameters. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
-/-- Bounded integer representatives suffice for the divisor count, even before
-cancellation. Values are certified through any rational polynomial presentation
-whose denominator does not vanish at the parameters being counted. -/
+/-- Let `N / D = F / G` in `RatFunc ℚ`, with a nonconstant reduced denominator and `F, G`
+integer polynomials of degree at most `d` and height at most `H` (not necessarily coprime).
+The integers `t` with `D(t) ≠ 0` and `N(t)/D(t) ∈ ℤ` number at most
+`2d · τmax((2d)! (2^d (d+1) H)^(2d))`. -/
 theorem proper_integer_representation_card {F G : Polynomial ℤ} {N D : Polynomial ℚ}
     {d H : ℕ} (hD : D ≠ 0) (hH : 1 ≤ H)
     (hFd : F.natDegree ≤ d) (hGd : G.natDegree ≤ d)

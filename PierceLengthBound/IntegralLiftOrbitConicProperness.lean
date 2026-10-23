@@ -9,14 +9,17 @@ public import PierceLengthBound.IntegralLiftConicProperness
 public import PierceLengthBound.FixedDividendConicPolynomialIdentities
 public import PierceLengthBound.FixedDividendOrbitConicParameter
 
-/-! Actual degree-two components admit bounded integer parameters with proper lift,
-unless they contain at most 492 distinct supported orbit coordinate points. -/
+/-! Lemmas A.1 and A.2 (`lem:jointconicparameter`, `lem:jointconicproper`) for the orbit: a
+degree-two component of a nonexceptional pattern curve in a bounded integer plane, carrying the
+free nodes of more than `492` orbit states with the same `θ`, has a bounded integral parameter
+along which the integral lift is strictly proper. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- The free nodes `q_{i+j+1} - q_i`, `j < 3`, of an orbit state as integers. -/
 def orbitFreeNodesZ (a b i : ℕ) : Fin 3 → ℤ :=
   fun j => (qq a b (i + (j.val + 1)) : ℤ) - qq a b i
 
@@ -25,10 +28,14 @@ lemma orbitFreeNodesZ_cast (a b i : ℕ) :
   funext j
   simp [orbitFreeNodesZ, orbitFreeNodesQ]
 
-/-- Properness for the actual bounded integer conic parameter. The only point
-exception is explicit: at most 492 distinct coordinate points of supported
-actual states. Neither normalization, cubic quotient degree, nor a resolvent
-identity is assumed. -/
+/-- Let the pattern at `i` be nonexceptional and let `I` be a degree-two prime component of
+the pattern curve through the free nodes at `i`, contained in an integer plane of height at most
+`L`, whose zero locus contains the distinct free nodes of more than `492` states with the same
+`θ`. Then there is a coordinate permutation `σ`, a common denominator `E ≠ 0` and quadratic
+integer numerators `F` with the explicit heights of `orbit_bounded_integer_parameter`, giving an
+injective integer parameter on the integer points of `I`, and along `normalizedParameter σ E F`
+the lift has reduced denominator of degree three more than its numerator, positive and at most
+twelve. -/
 theorem orbit_bounded_integer_parameter_proper {a b i : ℕ} (hba : b < a)
     (hi : i + 7 < P a b) {X L : ℕ} (hX : 1 ≤ X) (hL : 1 ≤ L)
     (ht : ∀ j, |theta a b i j| ≤ X)

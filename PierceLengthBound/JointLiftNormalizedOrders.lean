@@ -11,18 +11,21 @@ public import PierceLengthBound.ChartFunctionField
 public import PierceLengthBound.NormalizedBranchValuation
 public import PierceLengthBound.JointLiftChartOrders
 
-/-! Constructed, normalized branch orders for the actual joint graph. The
-valuation and its chart center are proved from a prime of the normalization,
-rather than supplied as local order assumptions. -/
+/-! # Joint-coordinate orders on normalized branches
+
+For a height-one prime `p` of the normalized infinity chart that contains the infinity
+coordinate, the normalized branch order at `p` is a discrete valuation centered at `p` and
+nonnegative on the chart, and in it the joint coordinates have the orders of Corollary 8.8. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- Every normalized branch above old infinity carries a normalized discrete
-order with the proved joint-coordinate orders. The fraction presentation only
-identifies F as the component function field; no valuation is assumed. -/
+/-- On a retained nonexceptional component with function field `F`, every height-one prime `p`
+of the normalized infinity chart containing the infinity coordinate carries a valuation `ν`
+whose positive part is `p`, nonnegative on the chart and with a uniformizer, in which `1/s₁`
+has order `2t > 0`, `W₀` and `W₂` have order `3t`, `W₁` at least `3t` and `J` order `-5t`. -/
 theorem retained_normalized_branch_joint_orders
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

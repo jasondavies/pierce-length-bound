@@ -7,7 +7,7 @@ module
 
 public import PierceLengthBound.BranchPoleEnvelope
 
-/-! Integer powers multiply pole orders and coordinate pole envelopes. -/
+/-! Integer powers multiply pole orders. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

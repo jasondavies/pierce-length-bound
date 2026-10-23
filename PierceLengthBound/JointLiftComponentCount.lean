@@ -10,8 +10,13 @@ public import PierceLengthBound.OrbitConicGapCount
 public import PierceLengthBound.JointLiftCountingSlack
 public import PierceLengthBound.JointLiftGraphLowerDegree
 
-/-! Combine conic counting, bounded polynomial cuts, and the proved degree
-range of the retained joint graph on each actual nonexceptional component. -/
+/-! # Component count for the unpowered joint graph
+
+On one nonexceptional component of the pattern curve, the selected starts of a fixed pattern
+have at most `R(a) (1 + B^(1/17))` distinct gap vectors, where `B = max(H, S, Y)` is the
+joint-lift box and `R` grows slowly. Conics are counted by Proposition 8.9, components on which
+a retained identity fails by the polynomial cuts of Lemma 8.2, and retained components through
+the graph of the case `m = n = 1`, whose degree is at least `17` (Lemma 8.12). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -23,8 +28,10 @@ abbrev jointLiftBox (_p : Fin 10 → ℤ) (a A T : ℕ) : ℝ :=
   (max (max (selectedGapHeight a A T) (selectedCurvatureHeight a A T))
     (selectedRankFiveHeight a A T) : ℝ)
 
-/-- Every supported nonexceptional component has the required seventeenth-root
-count, including components on which either retained identity fails. -/
+/-- For a nonexceptional pattern and a prime component `I` of its pattern curve of degree
+`d ≤ 24` with `d = 2` or `4 ≤ d`, any set `G` of selected starts with this pattern whose free
+nodes lie on `I` has at most `R(a) (1 + B^(1/17))` distinct gap vectors `κ`, where `B` is the
+joint-lift box `max(H, S, Y)`. -/
 theorem selected_joint_component_gap_count_slow :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ {a b s T A i : ℕ}, b < a →
       (∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) →

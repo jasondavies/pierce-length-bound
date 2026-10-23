@@ -10,22 +10,28 @@ public import PierceLengthBound.JointLiftChartOrders
 public import PierceLengthBound.AffineNormalization
 public import PierceLengthBound.ChartParameterTranscendence
 
-/-! Every pole of a rational constant combination of the retained curvature
-coordinates lies on the original affine normalization. -/
+/-! # Poles of curvature combinations are affine
+
+On a retained nonexceptional component, a rational combination of the curvature coordinates
+has no pole above infinity, so each of its poles is centered on the normalization of the affine
+coordinate ring (the curvature pole envelope of Section 8.8 is supported over the affine
+part). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- The rational combination `∑ⱼ cⱼ Wⱼ` of the three curvature coordinates in a field `F`. -/
 def jointCurvatureCombination {F : Type*} [Field F] [Algebra ℚ F]
     (ψ : MvPolynomial (Fin 3) ℚ →ₐ[ℚ] F) (a b i : ℕ) (c : Fin 3 → ℚ) : F :=
   ∑ j, algebraMap ℚ F (c j) *
     (ψ (orbitJointNumerators a b i j.castSucc) / ψ (orbitJointDenominator a b i))
 
-/-- A pole of the original first coordinate makes the infinity parameter
-regular. Finiteness then makes the whole infinity chart regular, so the proved
-joint-coordinate orders rule out poles of curvature combinations there. -/
+/-- On a retained nonexceptional component, a rational curvature combination has nonnegative
+order at every valuation (nonnegative on `ℚ`) at which `s₁` has a pole: there `1/s₁` has
+positive order, the infinity chart is regular, and the curvature coordinates have order
+`3t > 0`. -/
 theorem retained_curvature_combination_regular_at_infinity
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
@@ -77,8 +83,9 @@ theorem retained_curvature_combination_regular_at_infinity
   rw [ν.map_mul]
   exact add_nonneg (hQ _) (hW j)
 
-/-- Any normalized branch where a retained curvature combination has a pole
-is represented on the original affine normalization. -/
+/-- If a rational curvature combination on a retained nonexceptional component has a pole at
+a discrete valuation `ν` (nonnegative on `ℚ`, with a uniformizer), then `ν` is nonnegative on
+the affine coordinate ring and is centered at a height-one prime of its normalization. -/
 theorem retained_curvature_pole_affine_center
     {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))

@@ -11,12 +11,19 @@ public import PierceLengthBound.TwentyThreeMain
 /-!
 # `P(a, b) ≪_ε a^{11/37 + ε}`
 
-The two-state pattern of `TwentyThreeMain.lean`, counted with the ternary quadratic of
-`ElevenCount.lean`, gives `T ≤ 24 (2M+1)⁷ H Ξ(a)` for a window run (`two_state_window_74`),
-where `Ξ(a) = 2 τ_max³ (log₃ P(a) + 1) + 4` collects the divisor and logarithm factors of
-`norm_count` over the polynomial range `[1, P(a)]`, `P(a) = 10³⁰⁰ a¹⁰⁰`. With the six-step
-and drop bounds this gives `T⁷⁴ ≤ C Δ¹⁹ Ξ(a)¹⁹ a²²` (`window_74`). Both `Δ` and `Ξ(a)` are
-`O_η(a^η)`, which gives the theorem (`P_le_11_37`).
+For a polynomial range `[1, N]`, `N = 10ᶜ aᵉ` (`PbigOf`), the slack factor
+`XiOf c e a = 2 τ_max(N)³ (log₃ N + 1) + 4` collects the divisor and logarithm factors of
+`norm_count` over the range, and is `O_η(a^η)` (`xiOf_slow`). `pbig_bounds` places the
+quantities of a slice count in the range, and `slack_le_range` bounds their factors by those of
+the range. `EightMain` and `FortyFiveMain` reuse these.
+
+The patterns of the good starts, bounded as in `TwentyThreeMain` and counted with the ternary
+quadratic of `ElevenCount`, give `T ≤ 24 (2M+1)⁷ H Ξ(a)` for a window run
+(`two_state_window_74`), where `Ξ(a) = XiOf 300 100 a` for the range `P(a) = 10³⁰⁰ a¹⁰⁰`. With
+the six-step and drop bounds this gives `T⁷⁴ ≤ C Δ¹⁹ Ξ(a)¹⁹ a²²` (`window_74`). Both `Δ` and
+`Ξ(a)` are `O_η(a^η)`, which gives the theorem (`P_le_11_37`).
+
+This is the `11/37` row of the table in the paper's introduction; the paper omits its proof.
 -/
 
 @[expose] public section
@@ -121,6 +128,9 @@ section Window
 
 variable {a b : ℕ}
 
+/-- **The window theorem with slices.** For a window run of `T ≥ 36` terms in `[A, 2A)` and
+`H = ⌊28a/(AT)⌋ + 1`, the scale condition `237568 A⁴ H⁵ ≤ a³` gives `T ≤ 24 (2M + 1)⁷ H Ξ(a)`
+with `M = ⌊172032 A⁴ H⁶ / a³⌋`. -/
 theorem two_state_window_74 (hba : b < a) {s T A : ℕ}
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A) (hsT : s + T ≤ P a b)
     (hT : 36 ≤ T)
@@ -149,7 +159,9 @@ section Exponent
 def C74 : ℕ := 122449 ^ 19 + (8 * 237568 * 56 ^ 5) ^ 11 + 10752 ^ 19 +
   8 ^ 15 * (24 * 3 ^ 7 * 172032 ^ 7) * 56 ^ 43
 
-/-- **The exponent arithmetic.** Every window run satisfies `T⁷⁴ ≤ C₇₄ Δ¹⁹ Ξ¹⁹ a²²`. -/
+/-- **The exponent arithmetic.** The six-step bound, the drop bound and the window theorem
+with a slack factor `X ≥ 1` in place of `Ξ(a)` (for `T ≥ 36`) give
+`T⁷⁴ ≤ C₇₄ Δ¹⁹ X¹⁹ a²²`. -/
 theorem window_74 {a A T Δ X : ℕ} (hX : 1 ≤ X)
     (hT : 36 ≤ T) (hsix : T ^ 6 * A ^ 2 ≤ 96000000 * a ^ 3) (hdrop : T * (T - 1) ≤ 4 * A * Δ)
     (hwin : 237568 * A ^ 4 * (28 * a / (A * T) + 1) ^ 5 ≤ a ^ 3 →

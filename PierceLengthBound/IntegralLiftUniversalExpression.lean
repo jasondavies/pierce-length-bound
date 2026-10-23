@@ -7,25 +7,30 @@ module
 
 public import PierceLengthBound.IntegralLiftConicProperness
 
-/-! A single fixed integer polynomial pair represents every substituted actual
-cofactor lift. This makes its uniform coefficient-height control concrete. -/
+/-! A single fixed pair of integer polynomials in ten variables, `universalLiftNumerator` and
+`universalLiftDenominator`, specializes to the orbit lift `orbitLiftParameter a b i z` along
+every parametrization `z`, for every dividend and pattern. Its coefficient heights along bounded
+parametrizations are controlled in `IntegralLiftCoefficientHeight`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- Variables zero through five are the two consecutive minor-ratio triples;
-six through eight are the free nodes, and nine is the fixed dividend. -/
+/-- The cofactors of the universal Newton moment system. Variables zero through five are the
+two consecutive pattern-ratio triples; six through eight are the free nodes, and nine is the
+dividend. -/
 def universalLiftCofactors : Fin 9 → MvPolynomial (Fin 10) ℤ :=
   momentCofactors (newtonMomentSystem
     (fun j : Fin 4 => coeffs (X 0) (X 1) (X 2) j.castSucc)
     (fun j : Fin 4 => coeffs (X 3) (X 4) (X 5) j.castSucc)
     (completeNodes (X 0) (X 1) (X 2) ![X 6, X 7, X 8]))
 
+/-- The universal numerator of the cofactor formula for `I₃`. -/
 def universalLiftNumerator : MvPolynomial (Fin 10) ℤ :=
   cofactorLiftNumerator (X 9) universalLiftCofactors
 
+/-- The universal denominator of the cofactor formula for `I₃`. -/
 def universalLiftDenominator : MvPolynomial (Fin 10) ℤ :=
   cofactorLiftDenominator universalLiftCofactors
 
@@ -46,7 +51,8 @@ lemma universalLiftCofactors_eval {R : Type*} [CommRing R] (v : Fin 10 → R) (j
   · funext k
     fin_cases k <;> simp [completeNodes, fourthNode]
 
-/-- The ten rational-function inputs for the actual polynomial parameter. -/
+/-- The ten rational-function inputs of the universal lift along a parametrization `z`: the
+pattern ratios at `i` and `i + 1`, the coordinates of `z`, and `a`. -/
 def orbitLiftInputs (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) : Fin 10 → RatFunc ℚ :=
   ![algebraMap ℚ (RatFunc ℚ) (patternRhoQ a b i),
     algebraMap ℚ (RatFunc ℚ) (patternUQ a b i),
@@ -79,7 +85,7 @@ lemma universalLiftCofactors_orbit (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) 
   · funext k
     fin_cases k <;> simp [orbitLiftInputs, φ, completeNodes, fourthNode]
 
-/-- The fixed universal pair specializes to the actual lifted rational function. -/
+/-- The universal pair specializes to the orbit lift `orbitLiftParameter a b i z`. -/
 theorem universalLift_orbit (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) :
     MvPolynomial.eval₂ (Int.castRingHom (RatFunc ℚ)) (orbitLiftInputs a b i z)
         universalLiftNumerator /

@@ -16,6 +16,8 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial Finset
 
+/-- Coefficient height of a product: `|[tⁿ](F G)| ≤ (d + e + 1) H K` for `deg F ≤ d`,
+`deg G ≤ e` and heights `H`, `K`. -/
 lemma integer_polynomial_mul_height {F G : Polynomial ℤ} {d e H K : ℕ}
     (hF : F.natDegree ≤ d) (hG : G.natDegree ≤ e)
     (hFH : ∀ n, |F.coeff n| ≤ H) (hGK : ∀ n, |G.coeff n| ≤ K) :

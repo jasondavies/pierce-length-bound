@@ -8,8 +8,10 @@ module
 public import PierceLengthBound.FunctionParameterNormalization
 public import Mathlib.RingTheory.Valuation.Integral
 
-/-! Extending regular branch orders to integral closures and constructing their
-centers. This is the first step in identifying branches on different normalizations. -/
+/-! Regular branch orders and their centers. An order nonnegative on a ring `R` is nonnegative
+on its integral closure, and on all of `R` when `R` is finite over a parameter algebra `K[t]`
+and `t` is regular. Such an order has a center on `R`, the prime of elements of positive order;
+at a zero of `x` the center on the parameter normalization of `x` lies in its zero fiber. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -55,6 +57,7 @@ theorem branchCenterIdeal_isPrime {R L : Type*} [CommRing R] [Field L] [Algebra 
     (branchCenterIdeal ν hR).IsPrime :=
   Ideal.IsPrime.comap (branchValuationMap ν hR)
 
+/-- If some nonzero element of `R` has positive order, the center is a nonzero prime. -/
 theorem branch_center_exists {R L : Type*} [CommRing R] [Field L] [Algebra R L]
     (ν : AddValuation L (WithTop ℤ)) (hR : ∀ r : R, 0 ≤ ν (algebraMap R L r))
     {x : R} (hx : x ≠ 0) (hpos : 0 < ν (algebraMap R L x)) :
@@ -68,6 +71,7 @@ theorem branch_center_exists {R L : Type*} [CommRing R] [Field L] [Algebra R L]
   exact ⟨⟨branchCenterIdeal ν hR, branchCenterIdeal_isPrime ν hR, hp0⟩,
     mem_branchCenterIdeal ν hR⟩
 
+/-- An order nonnegative on `K` and at `x` is nonnegative on `K[x]`. -/
 theorem branch_order_nonnegative_on_parameter_algebra {K L : Type*} [Field K] [CommRing L]
     [Algebra K L] (ν : AddValuation L (WithTop ℤ))
     (hK : ∀ c : K, 0 ≤ ν (algebraMap K L c)) {x : L} (hx : 0 ≤ ν x)

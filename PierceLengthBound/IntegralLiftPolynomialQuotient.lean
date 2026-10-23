@@ -8,7 +8,10 @@ module
 public import PierceLengthBound.IntegralLiftNormalizationCut
 public import PierceLengthBound.ConicParabola
 
-/-! The actual normalization cut forces a polynomial quotient of degree three. -/
+/-! On a quadratically parametrized nonexceptional conic of the orbit pattern, the
+normalization cut forces the orbit quotient to be a polynomial of degree three: the cleared
+Newton normalization is monic in the quotient, so a rational-function root is polynomial, and
+the degree twelve of the raw multiplicity polynomial fixes its degree. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -21,6 +24,7 @@ lemma map_clearedNewtonQuartic {R S : Type*} [CommRing R] [CommRing S]
       clearedNewtonQuartic (f ∘ c) (f ∘ s) (f n) (f d) := by
   simp only [clearedNewtonQuartic, map_add, map_sub, map_mul, map_pow, Function.comp_apply]
 
+/-- The first Newton quartic minus a constant is monic. -/
 lemma newtonNormalization_monic {R : Type*} [CommRing R]
     (c s : Fin 4 → R) (m : R) : (firstNewtonQuartic c s - C m).Monic := by
   rw [firstNewtonQuartic_eq]
@@ -30,6 +34,8 @@ lemma newtonNormalization_monic {R : Type*} [CommRing R]
     norm_num
   · simp [monicQuartic_coeff]
 
+/-- Evaluating the first Newton quartic at `-q` gives `parabolaV` at the shifted
+quotients `q, q + s₀, q + s₁, q + s₂`. -/
 lemma firstNewtonQuartic_eval_eq_parabolaV {K : Type*} [Field K]
     (c : Fin 4 → K) (s : Fin 3 → Polynomial K) (q : Polynomial K) :
     (firstNewtonQuartic (fun j => C (c j)) ![s 0, s 1, s 2, 0]).eval (-q) =
@@ -37,8 +43,8 @@ lemma firstNewtonQuartic_eval_eq_parabolaV {K : Type*} [Field K]
   simp [firstNewtonQuartic, parabolaV]
   ring
 
-/-- A nonzero polynomial denominator satisfying the cleared monic normalization
-cannot produce a genuinely rational quotient. -/
+/-- If `A · clearedNewtonQuartic c s n d = a M d⁴` with `A ≠ 0` and `d ≠ 0`, then `n / d`
+is a polynomial `q`, and `A · parabolaV c (q + s) = a M`. -/
 theorem normalization_polynomial_quotient {K : Type*} [Field K]
     (c : Fin 4 → K) (s : Fin 3 → Polynomial K) (n d M : Polynomial K)
     {A a : K} (hA : A ≠ 0) (hd : d ≠ 0)
@@ -88,6 +94,7 @@ theorem normalization_polynomial_quotient {K : Type*} [Field K]
     simpa [firstNewtonQuartic, map_add, map_sub, map_mul, map_neg,
       eval_add, eval_sub, eval_mul, eval_C, eval_X, Function.comp_def, hw, qf, f] using h'
 
+/-- A polynomial `q` equal to `n / d` in `RatFunc K` satisfies `q d = n`. -/
 lemma polynomial_quotient_mul {K : Type*} [Field K] (n d q : Polynomial K)
     (hd : d ≠ 0)
     (hq : algebraMap (Polynomial K) (RatFunc K) q =
@@ -98,9 +105,10 @@ lemma polynomial_quotient_mul {K : Type*} [Field K] (n d q : Polynomial K)
   rw [map_mul, hq, div_mul_cancel₀]
   simpa only [map_zero] using hf.ne hd
 
-/-- Outside an absolute finite exception, the quotient on an actual
-nonexceptional conic is a polynomial of degree exactly three. The normalization
-identity is derived from actual orbit states, not postulated on the conic. -/
+/-- Let `z` be a quadratic parametrization of a nonexceptional conic of the orbit pattern at
+`i`, through the free nodes at `i` and those of more than `332` orbit states `l j` with the
+same `θ`. Then the orbit quotient along `z` is a polynomial `q` of degree exactly three, and
+the quartic `parabolaV` in the shifted quotients has degree twelve. -/
 theorem orbit_conic_quotient_cubic {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
     (z : Fin 3 → Polynomial ℚ) (hz : ∀ j, (z j).natDegree ≤ 2)

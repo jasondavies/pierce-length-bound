@@ -8,18 +8,26 @@ module
 public import PierceLengthBound.IntegralLiftQuotientNormalization
 public import PierceLengthBound.FixedDividendConicLeadingNodes
 
-/-! A bounded-degree normalization cut, proved to vanish at actual orbit states. -/
+/-! The normalization cut along a quadratic parametrization `z`: the cleared form of the
+normalization identity `L_i π_i(-q_i) = a H₄(k)` (`mult_at`, Lemma 7.3), with the quotient and
+the gaps written as functions of the parameter. It has degree at most `332`, vanishes at the
+parameter of every orbit state with the same `θ` on `z`, and is therefore identically zero
+when there are more than `332` such states. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Polynomial
 
+/-- The five gaps `k_i, …, k_{i+4}` as polynomials in the parameter, from the pattern at `i`
+and `i + 1` and the parametrized free nodes. -/
 def orbitParameterGaps (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) : Fin 5 → Polynomial ℚ :=
   lineGaps (C (patternRhoQ a b i)) (C (patternUQ a b i)) (C (patternVQ a b i))
     (C (patternRhoQ a b (i + 1))) (C (patternUQ a b (i + 1)))
     (C (patternVQ a b (i + 1))) (z 0) (z 1) (z 2)
 
+/-- The normalization cut `L_i · clearedNewtonQuartic(n, d) - a H₄(k) d⁴`, where `n / d` is the
+quotient reconstructed from the cofactors along `z`. -/
 def orbitNormalizationCut (a b i : ℕ) (z : Fin 3 → Polynomial ℚ) : Polynomial ℚ :=
   let n := MvPolynomial.aeval z (orbitQuotientNumeratorQ a b i)
   let d := MvPolynomial.aeval z (orbitQuotientDenominatorQ a b i)
@@ -64,6 +72,7 @@ theorem orbitNormalizationCut_degree (a b i : ℕ) (z : Fin 3 → Polynomial ℚ
     have hright := natDegree_pow_le_of_le 4 hd
     omega
 
+/-- At the parameter of an orbit state, the parametrized gaps are its gaps. -/
 lemma orbitParameterGaps_eval {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (z : Fin 3 → Polynomial ℚ) (t : ℚ)
     (hz : ∀ j, (z j).eval t = orbitFreeNodesQ a b i j) (j : Fin 5) :
@@ -73,8 +82,7 @@ lemma orbitParameterGaps_eval {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
   simp only [coe_evalRingHom, eval_C, hz]
   exact orbit_rational_lineGaps (i := i) hba (by omega) j
 
-/-- This polynomial cut genuinely vanishes at every supported orbit state
-represented by the parameter. -/
+/-- The normalization cut vanishes at the parameter of every orbit state on `z`. -/
 theorem orbitNormalizationCut_eval {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a b)
     (z : Fin 3 → Polynomial ℚ) (t : ℚ)
     (hz : ∀ j, (z j).eval t = orbitFreeNodesQ a b i j) :
@@ -109,6 +117,8 @@ theorem orbitNormalizationCut_eval {a b i : ℕ} (hba : b < a) (hi : i + 7 < P a
   rw [clearedNewtonQuartic_div _ _ _ _ hq.1, ← hq.2, ← mul_assoc, hn]
   ring
 
+/-- States with the same `θ` have the same `L` and the same rational pattern ratios at the
+state and its successor. -/
 lemma orbit_pattern_eq_of_theta {a b i l : ℕ} (h : theta a b i = theta a b l) :
     Lz a b i = Lz a b l ∧
     patternRhoQ a b i = patternRhoQ a b l ∧
@@ -137,9 +147,8 @@ lemma orbitNormalizationCut_congr {a b i l : ℕ} (h : theta a b i = theta a b l
   simp only [orbitNormalizationCut, orbitQuotientNumeratorQ, orbitQuotientDenominatorQ,
     orbitCurveCofactorsQ, orbitParameterGaps, h0, hρ, hu, hv, hρ', hu', hv']
 
-/-- More than 332 distinct parameter values of actual states sharing a minor
-pattern force the full normalization identity. No identity on arbitrary
-component points is assumed. -/
+/-- If the parametrization passes through the free nodes of more than `332` orbit states with
+the same `θ`, at distinct parameters, then the normalization cut is identically zero. -/
 theorem orbitNormalizationCut_zero_of_many_states {a b i : ℕ} (hba : b < a)
     (z : Fin 3 → Polynomial ℚ) (hz : ∀ j, (z j).natDegree ≤ 2)
     {ι : Type*} [Fintype ι] (l : ι → ℕ) (t : ι → ℚ) (ht : Function.Injective t)

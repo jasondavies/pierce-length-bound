@@ -7,8 +7,12 @@ module
 
 public import PierceLengthBound.JointLiftGraphDegree
 
-/-! Nonconstancy of the projective curvature direction follows algebraically
-from the degree-two bound for plane sections of an irreducible quadratic. -/
+/-! # Nonconstant curvature direction
+
+On a component of degree at least three of an irreducible quadric, the curvature vector `W`
+is not a multiple of a fixed nonzero vector: with `W · k = 0` such a relation would put the
+component in a plane, and plane sections of the quadric have degree at most two (first step of
+the proof of Lemma 8.10). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -19,6 +23,7 @@ open MvPolynomial Finset
 def curvatureGapVariables (K : Type*) [CommRing K] : Fin 3 → MvPolynomial (Fin 3) K :=
   ![X 0, X 1 - X 0, X 2 - X 1]
 
+/-- The linear form `v₀ k₀ + v₁ k₁ + v₂ k₂` in the free nodes. -/
 def curvatureDirectionPlane {K : Type*} [CommRing K] (v : Fin 3 → K) :
     MvPolynomial (Fin 3) K := ∑ j, C (v j) * curvatureGapVariables K j
 
@@ -114,9 +119,9 @@ lemma jointGapPolynomials_first_three (a b i : ℕ) (j : Fin 3) :
     jointGapPolynomials a b i j.castSucc.castSucc = curvatureGapVariables ℚ j := by
   fin_cases j <;> simp [jointGapPolynomials, lineGaps, curvatureGapVariables]
 
-/-- The actual joint graph has nonconstant projective curvature direction.
-This establishes the algebraic part of the candidate's extra-degree argument;
-its divisor-degree conclusion requires the remaining curve theory. -/
+/-- On a component of degree at least three of an irreducible quadric through the free nodes
+of state `i`, the curvature coordinates on the joint graph are not of the form `t v` for a fixed
+nonzero rational vector `v`. -/
 theorem orbitJoint_curvature_direction_nonconstant {a b i d : ℕ}
     (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]

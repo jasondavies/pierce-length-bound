@@ -8,16 +8,17 @@ module
 public import PierceLengthBound.IntegralLiftConicSlack
 public import PierceLengthBound.OrbitGapCoordinates
 
-/-! The conic divisor estimate counts distinct complete gap vectors directly,
-without an additional injectivity assumption on the supplied actual states. -/
+/-! The conic divisor estimate (`orbit_conic_points_slow`) as a count of distinct complete gap
+vectors: one start is chosen for each gap vector (`gap_image_representatives`), and the node
+points of these starts are distinct. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open Finset
 
-/-- Uniform subpolynomial counting for all actual gap vectors on a fixed
-nonexceptional conic. Repeated starts with the same gaps are counted once. -/
+/-- Uniform subpolynomial counting for the gap vectors on a fixed nonexceptional conic
+(affine Hilbert degree `2`). Repeated starts with the same gaps are counted once. -/
 theorem orbit_conic_gap_count_slow :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀ {a b i : ℕ}, b < a → i + 7 < P a b →
       ∀ {X : ℕ}, 1 ≤ X → (∀ j, |theta a b i j| ≤ X) → X ≤ 10 ^ 16 * a ^ 7 →

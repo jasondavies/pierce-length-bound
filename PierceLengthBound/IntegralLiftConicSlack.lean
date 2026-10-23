@@ -7,12 +7,16 @@ module
 
 public import PierceLengthBound.IntegralLiftConicPlaneCount
 
-/-! Absorbing the actual conic coefficient heights into a proved divisor slack. -/
+/-! The per-conic bound of Proposition 8.9 (`prop:jointconic`): when the pattern height is at
+most `10¹⁶ a⁷`, a nonexceptional conic carries the free nodes of at most `R(a)` orbit states of
+the same pattern, with `R` of slow growth. The conic count of `IntegralLiftConicPlaneCount` is
+bounded by an explicit `conicPointSlack` in `a` alone. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 open Polynomial
 
+/-- `integerValueSlack d C e` is monotone. -/
 lemma integerValueSlack_mono (d C e : ℕ) {a b : ℕ} (h : a ≤ b) :
     integerValueSlack d C e a ≤ integerValueSlack d C e b := by
   apply Nat.mul_le_mul_left
@@ -23,6 +27,8 @@ lemma integerValueSlack_mono (d C e : ℕ) {a b : ℕ} (h : a ≤ b) :
     exact Nat.le_of_lt_succ (Finset.mem_range.mp hn)
   exact hn'.trans (Nat.mul_le_mul_left _ (Nat.pow_le_pow_left h _))
 
+/-- For `X ≤ c a^k`, the conic input height with plane height `24a³` is at most a fixed
+multiple of `a^(24k + 22)`. -/
 lemma conicInputHeight_polynomial_bound {a X c k : ℕ} (ha : 1 ≤ a) (hX : X ≤ c * a ^ k) :
     conicInputHeight a X (24 * a ^ 3) ≤
       (2 + c + 33 * 10 ^ 3 * 12 ^ 6 * 24 ^ 7 * c ^ 24) * a ^ (24 * k + 22) := by
@@ -50,11 +56,12 @@ lemma integerValueSlack_polynomial (d C e c k a : ℕ) :
     integerValueSlack d C e (c * a ^ k) = integerValueSlack d (C * c ^ e) (k * e) a := by
   simp only [integerValueSlack, mul_pow, ← pow_mul, mul_assoc]
 
-/-- The constants depend only on the fixed polynomial range for the minor height. -/
+/-- The conic count bound as a function of `a`, for pattern height `X ≤ c a^k`. -/
 def conicPointSlack (d C e c k a : ℕ) : ℕ :=
   492 + integerValueSlack d (C * (2 + c + 33 * 10 ^ 3 * 12 ^ 6 * 24 ^ 7 * c ^ 24) ^ e)
     ((24 * k + 22) * e) a
 
+/-- `conicPointSlack d C e c k` grows slowly in `a`. -/
 theorem conicPointSlack_slow (d C e c k : ℕ) : SlowGrowth (conicPointSlack d C e c k) := by
   intro η hη
   obtain ⟨B, hB, hb⟩ := integerValueSlack_slow d
@@ -66,6 +73,8 @@ theorem conicPointSlack_slow (d C e c k : ℕ) : SlowGrowth (conicPointSlack d C
   simp only [Nat.cast_add, Nat.cast_ofNat]
   nlinarith
 
+/-- For `X ≤ c a^k`, the conic count bound of `orbit_conic_points_bound` is at most
+`conicPointSlack d C e c k a`. -/
 theorem conic_count_le_slack {a X c k : ℕ} (ha : 1 ≤ a) (hX : X ≤ c * a ^ k)
     (d C e : ℕ) :
     492 + integerValueSlack d C e (conicInputHeight a X (24 * a ^ 3)) ≤
@@ -74,8 +83,10 @@ theorem conic_count_le_slack {a X c k : ℕ} (ha : 1 ≤ a) (hX : X ≤ c * a ^ 
   rw [integerValueSlack_polynomial] at h
   exact Nat.add_le_add_left h 492
 
-/-- The actual conic contribution has uniform subpolynomial growth in the
-dividend. Only the established polynomial range for the minor height is used. -/
+/-- There is a slowly growing `R` such that, for every nonexceptional pattern at `i` of height
+`X ≤ 10¹⁶ a⁷` and every degree-two prime component `I` of the pattern curve through the free
+nodes at `i`, the states with the same `θ` whose free nodes are distinct points of `I` number at
+most `R a`. -/
 theorem orbit_conic_points_slow :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ ∀  {a b i : ℕ} (_hba : b < a)
     (_hi : i + 7 < P a b) {X : ℕ} (_hX : 1 ≤ X)

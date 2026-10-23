@@ -7,16 +7,16 @@ module
 
 public import PierceLengthBound.LinearJointGraph
 
-/-! The degree range of the powered graph, as the case `G = 1` of the linearly changed graph of
-`LinearJointGraph`. -/
+/-! The degree range of the powered graph (paper, Lemma 8.12 `lem:jointpowereddegree`), as the
+case `G = 1` of the linearly changed graph of `LinearJointGraph`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
-/-- The actual retained powered graph has the degree range required by the
-curve theorem, uniformly over components of degree at least four. -/
+/-- The powered graph over a retained component of degree `d ≥ 4` has the degree range
+`10n + 7m ≤ δ ≤ ((m + n) 247 + 1) d` required by the curve theorem. -/
 theorem orbitPoweredJointGraph_retained_degree_range {a b i d m n : ℕ}
     (hm : 0 < m) (hn : 0 < n) (hba : b < a) (hi : i + 7 < P a b)
     (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i))
