@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendRationalCurves
+public import PierceLengthBound.FixedDividendParity
 
 /-!
 # Actual orbit points on rational components
@@ -44,6 +45,13 @@ lemma orbit_rational_pattern_signs {a b i : ℕ} (hba : b < a) (hi : i + 6 < P a
   have hu : (0 : ℝ) < (patternUQ a b i : ℝ) := by simpa using h.2.1
   have hv : (patternVQ a b i : ℝ) < 0 := by simpa using h.2.2
   exact ⟨by exact_mod_cast hρ, by exact_mod_cast hu, by exact_mod_cast hv⟩
+
+/-- The real nonexceptional pattern condition, restated for the rational pattern. -/
+lemma nonexceptionalPattern_ratCast {a b i : ℕ}
+    (hne : NonexceptionalPattern (patternRho a b i) (patternU a b i) (patternV a b i)) :
+    NonexceptionalPattern (patternRhoQ a b i : ℝ) (patternUQ a b i : ℝ)
+      (patternVQ a b i : ℝ) := by
+  simpa using hne
 
 /-- The actual rational first equation. -/
 def orbitCurveQuadraticQ (a b i : ℕ) : MvPolynomial (Fin 3) ℚ :=

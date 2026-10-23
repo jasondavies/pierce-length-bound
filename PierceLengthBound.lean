@@ -67,7 +67,6 @@ public import PierceLengthBound.FixedDividendComponentLineExclusion
 public import PierceLengthBound.ConicParabola
 public import PierceLengthBound.FixedDividendHyperplaneDegree
 public import PierceLengthBound.FixedDividendRationalOrbit
-public import PierceLengthBound.FixedDividendLocalParity
 public import PierceLengthBound.ExceptionalSlack
 public import PierceLengthBound.ConicPlaneHeight
 public import PierceLengthBound.FixedDividendLatticeCurveCover

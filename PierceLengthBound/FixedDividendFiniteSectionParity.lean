@@ -5,7 +5,8 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.FixedDividendLocalParity
+public import PierceLengthBound.FixedDividendHomogenization
+public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
 public import Mathlib.LinearAlgebra.Dimension.Finrank
 
 /-!

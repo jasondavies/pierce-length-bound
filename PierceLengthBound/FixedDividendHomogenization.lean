@@ -14,8 +14,9 @@ public import Mathlib.Algebra.Polynomial.Reverse
 
 Reversing the radial polynomial at the prescribed degree gives the homogeneous
 polynomial, with the new polynomial variable representing the infinity coordinate.
-The fixed-dividend equation has the exact square/fourth-power form, and the
-restrictions at infinity are the certified leading forms.
+The fixed-dividend equation has the exact square/fourth-power form, also after
+evaluation in any chart ring, and the restrictions at infinity are the certified
+leading forms.
 -/
 
 @[expose] public section
@@ -151,6 +152,18 @@ theorem nonexceptional_resultant_at_infinity_ne_zero {ρ u v : ℝ}
   rw [curveResultant_at_infinity]
   simpa [nodeVandermonde, completeNodes, completeDirection, fourthNode] using
     mul_ne_zero hc hV
+
+/-- The evaluated homogeneous equation yields the square/fourth-power identity
+in every chart ring. -/
+lemma map_curveEquation_homogenize {K R : Type*} [CommRing K] [Nontrivial K]
+    [CommRing R] (φ : Polynomial (MvPolynomial (Fin 3) K) →+* R)
+    (ρ u v ρ' u' v' A a : K)
+    (he : φ (curveHomogenize 12 (curveEquation ρ u v ρ' u' v' A a)) = 0) :
+    φ (C (MvPolynomial.C A)) * φ X ^ 2 *
+      φ (curveHomogenize 10 (curveResultant ρ u v ρ' u' v')) =
+    φ (C (MvPolynomial.C a)) * φ (curveHomogenize 3 (curveNorm ρ u v ρ' u' v')) ^ 4 := by
+  rw [curveEquation_homogenize, map_sub, sub_eq_zero] at he
+  simpa only [map_mul, map_pow] using he
 
 end
 end PierceLengthBound.FixedDividend
