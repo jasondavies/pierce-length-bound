@@ -479,8 +479,9 @@ lemma normSols_square {m : ℕ} (hm : 0 < m) {N : ℤ} (hN : N ≠ 0) (B : ℕ) 
       exact mul_left_cancel₀ hm' this
     exact Prod.ext h1 h2
 
-/-- The reduction of a solution: `g = gcd(U, fV)`, `u = U/g`, `w = fV/g`, `n = u² - d w²`. -/
-structure Reduced (d f : ℕ) (N : ℤ) (p : ℤ × ℤ) (g : ℕ) (u w n : ℤ) : Prop where
+/-- The reduction of a solution of `U² - f² d V² = N`, for `d` of either sign: `g = gcd(U, fV)`,
+`u = U/g`, `w = fV/g`, `n = u² - d w²`. -/
+structure Reduced (d : ℤ) (f : ℕ) (N : ℤ) (p : ℤ × ℤ) (g : ℕ) (u w n : ℤ) : Prop where
   g_pos : 0 < g
   hu : p.1 = g * u
   hw : (f : ℤ) * p.2 = g * w
@@ -488,8 +489,8 @@ structure Reduced (d f : ℕ) (N : ℤ) (p : ℤ × ℤ) (g : ℕ) (u w n : ℤ)
   hn : n = u ^ 2 - d * w ^ 2
   cop : IsCoprime w n
 
-lemma reduce {d f : ℕ} (hf : 0 < f) {N : ℤ} (hN : N ≠ 0) {p : ℤ × ℤ}
-    (hp : p.1 ^ 2 - ((f ^ 2 * d : ℕ) : ℤ) * p.2 ^ 2 = N) :
+lemma reduce {d : ℤ} {f : ℕ} (hf : 0 < f) {N : ℤ} (hN : N ≠ 0) {p : ℤ × ℤ}
+    (hp : p.1 ^ 2 - (f : ℤ) ^ 2 * d * p.2 ^ 2 = N) :
     Reduced d f N p (Int.gcd p.1 (f * p.2)) (p.1 / Int.gcd p.1 (f * p.2))
       ((f * p.2) / Int.gcd p.1 (f * p.2))
       ((p.1 / Int.gcd p.1 (f * p.2)) ^ 2 - d * ((f * p.2) / Int.gcd p.1 (f * p.2)) ^ 2) := by
@@ -507,12 +508,11 @@ lemma reduce {d f : ℕ} (hf : 0 < f) {N : ℤ} (hN : N ≠ 0) {p : ℤ × ℤ}
       (Int.mul_ediv_cancel' (Int.gcd_dvd_right _ _)).symm
   refine ⟨hg, hu, hw, ?_, rfl, ?_⟩
   · rw [← hp]
-    push_cast
     linear_combination (p.1 + g * (p.1 / g)) * hu -
-      (d : ℤ) * ((f : ℤ) * p.2 + g * ((f * p.2) / g)) * hw
+      d * ((f : ℤ) * p.2 + g * ((f * p.2) / g)) * hw
   · have h1 : IsCoprime (p.1 / g) ((f * p.2) / g) :=
       Int.isCoprime_iff_gcd_eq_one.mpr (Int.gcd_div_gcd_div_gcd hg)
-    have h2 := (h1.symm.pow_right (n := 2)).add_mul_left_right (-(d : ℤ) * ((f * p.2) / g))
+    have h2 := (h1.symm.pow_right (n := 2)).add_mul_left_right (-d * ((f * p.2) / g))
     convert h2 using 1
     ring
 
@@ -570,49 +570,37 @@ lemma reduced_size {d f B : ℕ} {N : ℤ} {p : ℤ × ℤ} {g : ℕ} {u w n : �
         add_le_add_right (mul_le_mul_of_nonneg_left hsq.le (Nat.cast_nonneg _)) _
     _ = B * (Nat.sqrt (f ^ 2 * d) + 2) := by ring
 
-/-- **The norm count.** For `D ≥ 1`, `N ≠ 0` the equation `U² - D V² = N` has at most
-`2 τ(|N|)³ (log₃ L² + 1)` solutions with `|U|, |V| ≤ B`, where `L = B (⌊√D⌋ + 2)`. -/
-theorem norm_count {D : ℕ} {N : ℤ} (B : ℕ) (hD : 1 ≤ D) (hN : N ≠ 0) :
-    (normSols D N B).card ≤
-      2 * N.natAbs.divisors.card ^ 3 * (Nat.log 3 ((B * (Nat.sqrt D + 2)) ^ 2) + 1) := by
+/-- **Counting by class keys.** Sort the solutions of `U² - f² d V² = N` (`d` squarefree, of either
+sign) by the key `(g, t)` of their reduction together with a label `c(u, w) ∈ β`. There are at
+most `τ(|N|)³` pairs `(g, t)`, so if every set of reduced solutions with a common `(n, t)` and a
+common label has at most `M` elements, there are at most `M |β| τ(|N|)³` solutions. -/
+theorem card_le_of_class_card_le {d : ℤ} (hsf : Squarefree d) {f : ℕ} (hf : 0 < f) {N : ℤ}
+    (hN : N ≠ 0) {S : Finset (ℤ × ℤ)} (hS : ∀ p ∈ S, p.1 ^ 2 - (f : ℤ) ^ 2 * d * p.2 ^ 2 = N)
+    {β : Type*} [Fintype β] (c : ℤ × ℤ → β) (M : ℕ)
+    (hM : ∀ n t : ℤ, n ≠ 0 → n ∣ t ^ 2 - d → ∀ b : β, ∀ Q : Finset (ℤ × ℤ),
+      (∀ q ∈ Q, c q = b ∧ n ∣ q.1 - t * q.2 ∧ ∃ p ∈ S, ∃ g, Reduced d f N p g q.1 q.2 n) →
+      Q.card ≤ M) :
+    S.card ≤ M * (Fintype.card β * N.natAbs.divisors.card ^ 3) := by
   classical
   have hNa : N.natAbs ≠ 0 := by simpa using hN
-  have hτ : 1 ≤ N.natAbs.divisors.card :=
-    card_pos.mpr ⟨1, Nat.one_mem_divisors.mpr hNa⟩
-  by_cases hsq : IsSquare D
-  · obtain ⟨m, hm⟩ := hsq
-    have hm0 : 0 < m := Nat.pos_of_ne_zero (by rintro rfl; simp at hm; omega)
-    rw [hm]
-    calc (normSols (m * m) N B).card ≤ 2 * N.natAbs.divisors.card := normSols_square hm0 hN B
-      _ ≤ 2 * N.natAbs.divisors.card ^ 3 * 1 := by
-          rw [mul_one]
-          exact Nat.mul_le_mul_left _ (Nat.le_self_pow (by norm_num) _)
-      _ ≤ _ := Nat.mul_le_mul_left _ (by omega)
-  obtain ⟨d, f, hd0, hf0, hDf, hsf⟩ := Nat.sq_mul_squarefree_of_pos (by omega : 0 < D)
-  have hdsq : ¬ IsSquare d := fun ⟨r, hr⟩ => hsq ⟨f * r, by rw [← hDf, hr]; ring⟩
-  have hsfZ : Squarefree (d : ℤ) := Int.squarefree_natCast.mpr hsf
-  subst hDf
-  set L := B * (Nat.sqrt (f ^ 2 * d) + 2)
   -- the reduced data of a solution
   set g : ℤ × ℤ → ℕ := fun p => Int.gcd p.1 (f * p.2)
   set u : ℤ × ℤ → ℤ := fun p => p.1 / g p
   set w : ℤ × ℤ → ℤ := fun p => (f * p.2) / g p
   set n : ℤ × ℤ → ℤ := fun p => u p ^ 2 - d * w p ^ 2
   set t : ℤ × ℤ → ℤ := fun p => (u p * Int.gcdA (w p) (n p)) % n p
-  set key : ℤ × ℤ → (ℕ × ℕ) × Bool := fun p => ((g p, (t p).toNat), decide (0 < xi d (u p, w p)))
-  have hR : ∀ p ∈ normSols (f ^ 2 * d) N B, Reduced d f N p (g p) (u p) (w p) (n p) := by
-    intro p hp
-    exact reduce hf0 hN (mem_filter.mp hp).2
-  have hn0 : ∀ p ∈ normSols (f ^ 2 * d) N B, n p ≠ 0 := by
+  set key : ℤ × ℤ → (ℕ × ℕ) × β := fun p => ((g p, (t p).toNat), c (u p, w p))
+  have hR : ∀ p ∈ S, Reduced d f N p (g p) (u p) (w p) (n p) := fun p hp =>
+    reduce hf hN (hS p hp)
+  have hn0 : ∀ p ∈ S, n p ≠ 0 := by
     intro p hp h0
     apply hN
     rw [(hR p hp).hN, h0, mul_zero]
-  have hkey : ∀ p ∈ normSols (f ^ 2 * d) N B, n p ∣ t p ^ 2 - d ∧ n p ∣ u p - t p * w p :=
+  have hkey : ∀ p ∈ S, n p ∣ t p ^ 2 - d ∧ n p ∣ u p - t p * w p :=
     fun p hp => class_key (hR p hp).hn (hR p hp).cop
-  have ht0 : ∀ p ∈ normSols (f ^ 2 * d) N B, 0 ≤ t p ∧ t p < (n p).natAbs := fun p hp =>
+  have ht0 : ∀ p ∈ S, 0 ≤ t p ∧ t p < (n p).natAbs := fun p hp =>
     ⟨Int.emod_nonneg _ (hn0 p hp), Int.emod_lt _ (hn0 p hp)⟩
-  have hnabs : ∀ p ∈ normSols (f ^ 2 * d) N B, (n p).natAbs = N.natAbs / g p ^ 2 ∧
-      g p ^ 2 ∣ N.natAbs := by
+  have hnabs : ∀ p ∈ S, (n p).natAbs = N.natAbs / g p ^ 2 ∧ g p ^ 2 ∣ N.natAbs := by
     intro p hp
     have e : N.natAbs = g p ^ 2 * (n p).natAbs := by
       rw [(hR p hp).hN, Int.natAbs_mul]; simp
@@ -620,23 +608,24 @@ theorem norm_count {D : ℕ} {N : ℤ} (B : ℕ) (hD : 1 ≤ D) (hN : N ≠ 0) :
     exact ⟨by rw [e, Nat.mul_div_cancel_left _ (by positivity)], ⟨_, e⟩⟩
   -- the keys
   set G := N.natAbs.divisors.filter fun g => g ^ 2 ∣ N.natAbs
-  set KS : Finset ((ℕ × ℕ) × Bool) :=
+  set KS : Finset ((ℕ × ℕ) × β) :=
     (G.biUnion fun g => (sqRoots d (N.natAbs / g ^ 2)).image fun t => (g, t)) ×ˢ univ
-  have hKS : KS.card ≤ 2 * N.natAbs.divisors.card ^ 3 := by
+  have hKS : KS.card ≤ Fintype.card β * N.natAbs.divisors.card ^ 3 := by
     have h1 : (G.biUnion fun g => (sqRoots d (N.natAbs / g ^ 2)).image fun t => (g, t)).card ≤
         N.natAbs.divisors.card * N.natAbs.divisors.card ^ 2 := by
       refine card_biUnion_le.trans ?_
       calc ∑ g ∈ G, ((sqRoots d (N.natAbs / g ^ 2)).image fun t => (g, t)).card
           ≤ ∑ _g ∈ G, N.natAbs.divisors.card ^ 2 := by
-            refine sum_le_sum fun g hg => card_image_le.trans ((card_sqRoots_le hsfZ _).trans ?_)
+            refine sum_le_sum fun g hg => card_image_le.trans ((card_sqRoots_le hsf _).trans ?_)
             have hdiv : N.natAbs / g ^ 2 ∣ N.natAbs := Nat.div_dvd_of_dvd (mem_filter.mp hg).2
             exact Nat.pow_le_pow_left (card_le_card (Nat.divisors_subset_of_dvd hNa hdiv)) 2
         _ = G.card * N.natAbs.divisors.card ^ 2 := by rw [sum_const, smul_eq_mul]
         _ ≤ _ := Nat.mul_le_mul_right _ (card_le_card (filter_subset _ _))
-    calc KS.card = _ * 2 := by rw [card_product, card_univ, Fintype.card_bool]
-      _ ≤ N.natAbs.divisors.card * N.natAbs.divisors.card ^ 2 * 2 := Nat.mul_le_mul_right _ h1
-      _ = 2 * N.natAbs.divisors.card ^ 3 := by ring
-  have hmaps : ∀ p ∈ normSols (f ^ 2 * d) N B, key p ∈ KS := by
+    calc KS.card = _ * Fintype.card β := by rw [card_product, card_univ]
+      _ ≤ N.natAbs.divisors.card * N.natAbs.divisors.card ^ 2 * Fintype.card β :=
+          Nat.mul_le_mul_right _ h1
+      _ = Fintype.card β * N.natAbs.divisors.card ^ 3 := by ring
+  have hmaps : ∀ p ∈ S, key p ∈ KS := by
     intro p hp
     obtain ⟨hna, hg2⟩ := hnabs p hp
     refine mem_product.mpr ⟨mem_biUnion.mpr ⟨g p, mem_filter.mpr ⟨Nat.mem_divisors.mpr
@@ -648,10 +637,9 @@ theorem norm_count {D : ℕ} {N : ℤ} (B : ℕ) (hD : 1 ≤ D) (hN : N ≠ 0) :
     · rw [Int.toNat_of_nonneg (ht0 p hp).1, Int.natCast_natAbs]
       exact (abs_dvd _ _).mpr (hkey p hp).1
   -- each key class is small
-  have hfib : ∀ k ∈ KS, ((normSols (f ^ 2 * d) N B).filter fun p => key p = k).card ≤
-      Nat.log 3 (L ^ 2) + 1 := by
+  have hfib : ∀ k ∈ KS, (S.filter fun p => key p = k).card ≤ M := by
     intro k _
-    set F := (normSols (f ^ 2 * d) N B).filter fun p => key p = k
+    set F := S.filter fun p => key p = k
     rcases F.eq_empty_or_nonempty with hF | ⟨p0, hp0⟩
     · rw [hF]; simp
     have hp0' := mem_filter.mp hp0
@@ -666,43 +654,63 @@ theorem norm_count {D : ℕ} {N : ℤ} (B : ℕ) (hD : 1 ≤ D) (hN : N ≠ 0) :
       simp only [Prod.mk.injEq] at h
       have R := hR p hp1.1
       have R' := hR p' hp1'.1
-      have hf' : (f : ℤ) ≠ 0 := by exact_mod_cast hf0.ne'
+      have hf' : (f : ℤ) ≠ 0 := by exact_mod_cast hf.ne'
       refine Prod.ext ?_ ?_
       · rw [R.hu, R'.hu, hgg, h.1]
       · apply mul_left_cancel₀ hf'
         rw [R.hw, R'.hw, hgg, h.2]
     rw [← card_image_of_injOn hinj]
     have R0 := hR p0 hp0'.1
-    refine class_card hdsq (hn0 p0 hp0'.1) (hkey p0 hp0'.1).1 (fun q hq => ?_)
-        (fun q hq q' hq' => ?_)
-    · obtain ⟨p, hp, rfl⟩ := mem_image.mp hq
-      have hp1 := mem_filter.mp hp
-      have R := hR p hp1.1
-      have hk := hp1.2.trans hp0'.2.symm
-      simp only [key, Prod.mk.injEq] at hk
-      obtain ⟨⟨hgg, htt⟩, -⟩ := hk
-      have hnn : n p = n p0 := by
-        have e := R.hN.symm.trans R0.hN
-        rw [hgg] at e
-        have hg0 : ((g p0 : ℕ) : ℤ) ^ 2 ≠ 0 := by have := R0.g_pos; positivity
-        exact mul_left_cancel₀ hg0 e
-      have htt' : t p = t p0 := by
-        have := congrArg (fun x : ℕ => (x : ℤ)) htt
-        rwa [Int.toNat_of_nonneg (ht0 p hp1.1).1, Int.toNat_of_nonneg (ht0 p0 hp0'.1).1] at this
-      refine ⟨by simp only; rw [← hnn], by simp only; rw [← hnn, ← htt']; exact (hkey p
-          hp1.1).2, ?_⟩
-      have hb := mem_filter.mp hp1.1
-      obtain ⟨hb1, hb2⟩ := mem_product.mp hb.1
-      exact reduced_size R (abs_le.mpr ⟨(mem_Icc.mp hb1).1, (mem_Icc.mp hb1).2⟩)
-        (abs_le.mpr ⟨(mem_Icc.mp hb2).1, (mem_Icc.mp hb2).2⟩)
-    · obtain ⟨p, hp, rfl⟩ := mem_image.mp hq
-      obtain ⟨p', hp', rfl⟩ := mem_image.mp hq'
-      have hk := (mem_filter.mp hp).2.trans (mem_filter.mp hp').2.symm
-      simp only [key, Prod.mk.injEq, decide_eq_decide] at hk
-      exact hk.2
-  calc (normSols (f ^ 2 * d) N B).card ≤ (Nat.log 3 (L ^ 2) + 1) * KS.card :=
-        card_le_mul_card_image_of_maps_to hmaps _ hfib
-    _ ≤ (Nat.log 3 (L ^ 2) + 1) * (2 * N.natAbs.divisors.card ^ 3) := Nat.mul_le_mul_left _ hKS
-    _ = _ := by ring
+    refine hM (n p0) (t p0) (hn0 p0 hp0'.1) (hkey p0 hp0'.1).1 (c (u p0, w p0)) _ fun q hq => ?_
+    obtain ⟨p, hp, rfl⟩ := mem_image.mp hq
+    have hp1 := mem_filter.mp hp
+    have R := hR p hp1.1
+    have hk := hp1.2.trans hp0'.2.symm
+    simp only [key, Prod.mk.injEq] at hk
+    obtain ⟨⟨hgg, htt⟩, hc⟩ := hk
+    have hnn : n p = n p0 := by
+      have e := R.hN.symm.trans R0.hN
+      rw [hgg] at e
+      have hg0 : ((g p0 : ℕ) : ℤ) ^ 2 ≠ 0 := by have := R0.g_pos; positivity
+      exact mul_left_cancel₀ hg0 e
+    have htt' : t p = t p0 := by
+      have := congrArg (fun x : ℕ => (x : ℤ)) htt
+      rwa [Int.toNat_of_nonneg (ht0 p hp1.1).1, Int.toNat_of_nonneg (ht0 p0 hp0'.1).1] at this
+    exact ⟨hc, by rw [← hnn, ← htt']; exact (hkey p hp1.1).2, p, hp1.1, g p, hnn ▸ R⟩
+  calc S.card ≤ M * KS.card := card_le_mul_card_image_of_maps_to hmaps _ hfib
+    _ ≤ _ := Nat.mul_le_mul_left _ hKS
+
+/-- **The norm count.** For `D ≥ 1`, `N ≠ 0` the equation `U² - D V² = N` has at most
+`2 τ(|N|)³ (log₃ L² + 1)` solutions with `|U|, |V| ≤ B`, where `L = B (⌊√D⌋ + 2)`. -/
+theorem norm_count {D : ℕ} {N : ℤ} (B : ℕ) (hD : 1 ≤ D) (hN : N ≠ 0) :
+    (normSols D N B).card ≤
+      2 * N.natAbs.divisors.card ^ 3 * (Nat.log 3 ((B * (Nat.sqrt D + 2)) ^ 2) + 1) := by
+  have hNa : N.natAbs ≠ 0 := by simpa using hN
+  have hτ : 1 ≤ N.natAbs.divisors.card :=
+    card_pos.mpr ⟨1, Nat.one_mem_divisors.mpr hNa⟩
+  by_cases hsq : IsSquare D
+  · obtain ⟨m, hm⟩ := hsq
+    have hm0 : 0 < m := Nat.pos_of_ne_zero (by rintro rfl; simp at hm; omega)
+    rw [hm]
+    calc (normSols (m * m) N B).card ≤ 2 * N.natAbs.divisors.card := normSols_square hm0 hN B
+      _ ≤ 2 * N.natAbs.divisors.card ^ 3 * 1 := by
+          rw [mul_one]
+          exact Nat.mul_le_mul_left _ (Nat.le_self_pow (by norm_num) _)
+      _ ≤ _ := Nat.mul_le_mul_left _ (by omega)
+  obtain ⟨d, f, hd0, hf0, hDf, hsf⟩ := Nat.sq_mul_squarefree_of_pos (by omega : 0 < D)
+  have hdsq : ¬ IsSquare d := fun ⟨r, hr⟩ => hsq ⟨f * r, by rw [← hDf, hr]; ring⟩
+  subst hDf
+  -- a class has a fixed sign of `ξ = u + w√d`, so `class_card` applies
+  refine (card_le_of_class_card_le (Int.squarefree_natCast.mpr hsf) hf0 hN
+    (fun p hp => by have := (mem_filter.mp hp).2; push_cast at this; exact this)
+    (fun q => decide (0 < xi d q)) _ fun n t hn ht b Q hQ =>
+      class_card hdsq hn ht (L := B * (Nat.sqrt (f ^ 2 * d) + 2)) (fun q hq => ?_)
+        fun q hq q' hq' => ?_).trans_eq ?_
+  · obtain ⟨-, hc, p, hp, g, R⟩ := hQ q hq
+    obtain ⟨hb1, hb2⟩ := mem_product.mp (mem_filter.mp hp).1
+    exact ⟨R.hn.symm, hc, reduced_size R (abs_le.mpr (mem_Icc.mp hb1))
+      (abs_le.mpr (mem_Icc.mp hb2))⟩
+  · exact decide_eq_decide.mp ((hQ q hq).1.trans (hQ q' hq').1.symm)
+  · rw [Fintype.card_bool]; ring
 
 end PierceLengthBound

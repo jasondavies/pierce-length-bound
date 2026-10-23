@@ -542,6 +542,196 @@ end Hankel
 
 section Identities
 
+/-- The moments generated from remainders `β` and increments `k` by the moment recursion
+`H_j(0) = β_j`, `H_j(s+1) = ∑_t C(s,t) k_j^{s-t} H_{j+1}(t)` (`hm_succ`). -/
+noncomputable def momSeq (β k : ℕ → ℝ) : ℕ → ℕ → ℝ
+  | j, 0 => β j
+  | j, s + 1 => ∑ t : Fin (s + 1), (s.choose t : ℝ) * k j ^ (s - t) * momSeq β k (j + 1) t
+termination_by _ s => s
+
+lemma momSeq_zero (β k : ℕ → ℝ) (j : ℕ) : momSeq β k j 0 = β j := by rw [momSeq]
+
+lemma momSeq_succ (β k : ℕ → ℝ) (j s : ℕ) : momSeq β k j (s + 1) =
+    ∑ t ∈ range (s + 1), (s.choose t : ℝ) * k j ^ (s - t) * momSeq β k (j + 1) t := by
+  rw [momSeq, Fin.sum_univ_eq_sum_range fun t => (s.choose t : ℝ) * k j ^ (s - t) *
+    momSeq β k (j + 1) t]
+
+/-- The rank-2 Hankel determinant, as an identity modulo the division relations. -/
+theorem hankel2_alg (β k : ℕ → ℝ) (q : ℝ)
+    (f : ∀ j < 2, (q + ∑ l ∈ range j, k l) * β j + β (j + 1) = 1) :
+    (Matrix.of fun j l : Fin 2 => momSeq β k 0 (j + l)).det = β 0 - β 1 := by
+  have f0 := f 0 (by norm_num)
+  have f1 := f 1 (by norm_num)
+  simp only [sum_range_succ, sum_range_zero, zero_add, add_zero] at f0 f1
+  simp [Matrix.det_fin_two, momSeq_zero, momSeq_succ, sum_range_succ]
+  linear_combination (β 0) * f1 + (-β 1) * f0
+
+/-- The rank-3 Hankel determinant, as an identity modulo the division relations. -/
+theorem hankel3_alg (β k : ℕ → ℝ) (q : ℝ)
+    (f : ∀ j < 4, (q + ∑ l ∈ range j, k l) * β j + β (j + 1) = 1) :
+    (Matrix.of fun j l : Fin 3 => momSeq β k 0 (j + l)).det = β 0*k 1 - β 1*k 0 - β 1*k 1
+      + β 2*k 0 := by
+  have f0 := f 0 (by norm_num)
+  have f1 := f 1 (by norm_num)
+  have f2 := f 2 (by norm_num)
+  have f3 := f 3 (by norm_num)
+  simp only [sum_range_succ, sum_range_zero, zero_add, add_zero] at f0 f1 f2 f3
+  simp [Matrix.det_fin_three, momSeq_zero, momSeq_succ, sum_range_succ, Nat.choose]
+  linear_combination (β 0*β 1*k 0 + β 0*β 2 - β 1^2) * f3 + (β 0*β 1*k 0*k 1 - β 0*β 1*k 0*q
+      - β 0*β 2*k 0 - β 0*β 3 - β 0 - β 1^2*k 1 + β 1^2*q + 2*β 1*β 2) * f2 + (β 0*β 2*k 0*q
+      + β 0*k 0*q + β 0*k 1 + β 0*q + β 0 - β 1*β 2*q + β 1*k 0 + 2*β 1 - β 2^2 - β 2 - k 0
+      - 1) * f1 + (-β 1*k 0^2 - β 1*k 0*q - 2*β 1*k 0 - β 1*k 1 - β 1*q - β 1 + k 0 + 1) * f0
+
+/-- The rank-4 Hankel determinant, as an identity modulo the division relations. -/
+theorem hankel4_alg (β k : ℕ → ℝ) (q : ℝ)
+    (f : ∀ j < 6, (q + ∑ l ∈ range j, k l) * β j + β (j + 1) = 1) :
+    (Matrix.of fun j l : Fin 4 => momSeq β k 0 (j + l)).det = β 0*k 1^2*k 2 + β 0*k 1*k 2^2
+      + β 0*k 1*k 3 - β 0*k 2^2 - β 1*k 0^2*k 2 - 2*β 1*k 0*k 1*k 2 - β 1*k 0*k 2^2 - β 1*k 0*k 3
+      - β 1*k 1^2*k 2 - β 1*k 1*k 2^2 + β 1*k 1*k 2 - β 1*k 1*k 3 + β 1*k 2^2 + β 2*k 0^2*k 1
+      + β 2*k 0^2*k 2 + β 2*k 0*k 1^2 + 2*β 2*k 0*k 1*k 2 + β 2*k 0*k 2^2 + β 2*k 0*k 2
+      + β 2*k 0*k 3 - β 2*k 1^2 - β 2*k 1*k 2 - β 3*k 0^2*k 1 - β 3*k 0*k 1^2 - β 3*k 0*k 2
+      + β 3*k 1^2 := by
+  have f0 := f 0 (by norm_num)
+  have f1 := f 1 (by norm_num)
+  have f2 := f 2 (by norm_num)
+  have f3 := f 3 (by norm_num)
+  have f4 := f 4 (by norm_num)
+  have f5 := f 5 (by norm_num)
+  simp only [sum_range_succ, sum_range_zero, zero_add, add_zero] at f0 f1 f2 f3 f4 f5
+  rw [Matrix.det_succ_row_zero]
+  simp [Fin.sum_univ_succ, Matrix.det_fin_three, Fin.succAbove, momSeq_zero, momSeq_succ,
+    sum_range_succ, Nat.choose]
+  linear_combination (β 0*β 1*β 2*k 0^2*k 1 + β 0*β 1*β 2*k 0*k 1^2 + β 0*β 1*β 3*k 0^2
+      + 2*β 0*β 1*β 3*k 0*k 1 + β 0*β 1*β 3*k 0*k 2 + β 0*β 1*β 4*k 0 - β 0*β 2^2*k 0^2
+      - β 0*β 2^2*k 0*k 1 - β 0*β 2*β 3*k 0 + β 0*β 2*β 3*k 2 + β 0*β 2*β 4 - β 0*β 3^2
+      - β 1^2*β 2*k 0*k 1 - β 1^2*β 2*k 1^2 - β 1^2*β 3*k 0 - 2*β 1^2*β 3*k 1 - β 1^2*β 3*k 2
+      - β 1^2*β 4 + β 1*β 2^2*k 0 + 2*β 1*β 2^2*k 1 + 2*β 1*β 2*β 3 - β 2^3) * f5
+      + (β 0*β 1*β 2*k 0^2*k 1^2 + 2*β 0*β 1*β 2*k 0^2*k 1*k 2 + β 0*β 1*β 2*k 0^2*k 1*k 3
+      - β 0*β 1*β 2*k 0^2*k 1*q + β 0*β 1*β 2*k 0*k 1^3 + 2*β 0*β 1*β 2*k 0*k 1^2*k 2
+      + β 0*β 1*β 2*k 0*k 1^2*k 3 - β 0*β 1*β 2*k 0*k 1^2*q - β 0*β 1*β 3*k 0^2*k 1
+      + β 0*β 1*β 3*k 0^2*k 3 - β 0*β 1*β 3*k 0^2*q + β 0*β 1*β 3*k 0*k 1*k 2
+      + 2*β 0*β 1*β 3*k 0*k 1*k 3 - 2*β 0*β 1*β 3*k 0*k 1*q + β 0*β 1*β 3*k 0*k 2*k 3
+      - β 0*β 1*β 3*k 0*k 2*q - β 0*β 1*β 4*k 0^2 - 2*β 0*β 1*β 4*k 0*k 1 - β 0*β 1*β 4*k 0*k 2
+      - β 0*β 1*β 5*k 0 - β 0*β 1*k 0 - β 0*β 2^2*k 0^2*k 1 - 2*β 0*β 2^2*k 0^2*k 2
+      - β 0*β 2^2*k 0^2*k 3 + β 0*β 2^2*k 0^2*q - β 0*β 2^2*k 0*k 1^2 - 2*β 0*β 2^2*k 0*k 1*k 2
+      - β 0*β 2^2*k 0*k 1*k 3 + β 0*β 2^2*k 0*k 1*q + 2*β 0*β 2*β 3*k 0^2 + β 0*β 2*β 3*k 0*k 1
+      - 2*β 0*β 2*β 3*k 0*k 2 - β 0*β 2*β 3*k 0*k 3 + β 0*β 2*β 3*k 0*q - β 0*β 2*β 3*k 1*k 2
+      + β 0*β 2*β 3*k 2*k 3 - β 0*β 2*β 3*k 2*q + β 0*β 2*β 4*k 0 - β 0*β 2*β 4*k 2 - β 0*β 2*β 5
+      - β 0*β 2 + 2*β 0*β 3^2*k 0 + β 0*β 3^2*k 1 - β 0*β 3^2*k 3 + β 0*β 3^2*q + 2*β 0*β 3*β 4
+      - β 1^2*β 2*k 0*k 1^2 - 2*β 1^2*β 2*k 0*k 1*k 2 - β 1^2*β 2*k 0*k 1*k 3 + β 1^2*β 2*k 0*k 1*q
+      - β 1^2*β 2*k 1^3 - 2*β 1^2*β 2*k 1^2*k 2 - β 1^2*β 2*k 1^2*k 3 + β 1^2*β 2*k 1^2*q
+      + β 1^2*β 3*k 0*k 1 - β 1^2*β 3*k 0*k 3 + β 1^2*β 3*k 0*q - β 1^2*β 3*k 1*k 2
+      - 2*β 1^2*β 3*k 1*k 3 + 2*β 1^2*β 3*k 1*q - β 1^2*β 3*k 2*k 3 + β 1^2*β 3*k 2*q
+      + β 1^2*β 4*k 0 + 2*β 1^2*β 4*k 1 + β 1^2*β 4*k 2 + β 1^2*β 5 + β 1^2 + β 1*β 2^2*k 0*k 1
+      + 2*β 1*β 2^2*k 0*k 2 + β 1*β 2^2*k 0*k 3 - β 1*β 2^2*k 0*q + 2*β 1*β 2^2*k 1^2
+      + 4*β 1*β 2^2*k 1*k 2 + 2*β 1*β 2^2*k 1*k 3 - 2*β 1*β 2^2*k 1*q - 2*β 1*β 2*β 3*k 0
+      - 2*β 1*β 2*β 3*k 1 + 2*β 1*β 2*β 3*k 2 + 2*β 1*β 2*β 3*k 3 - 2*β 1*β 2*β 3*q - 2*β 1*β 2*β 4
+      - 2*β 1*β 3^2 - β 2^3*k 1 - 2*β 2^3*k 2 - β 2^3*k 3 + β 2^3*q + 2*β 2^2*β 3) * f4
+      + (β 0*β 1*β 2*k 0^3*k 1*q + β 0*β 1*β 2*k 0^2*k 1^2*k 2 + β 0*β 1*β 2*k 0^2*k 1^2*q
+      + β 0*β 1*β 2*k 0^2*k 1*k 2^2 - β 0*β 1*β 2*k 0^2*k 1*k 2*q + β 0*β 1*β 2*k 0^2*k 1*q^2
+      + β 0*β 1*β 2*k 0*k 1^3*k 2 + β 0*β 1*β 2*k 0*k 1^2*k 2^2 - β 0*β 1*β 2*k 0*k 1^2*k 2*q
+      + β 0*β 1*β 2*k 0*k 1^2*q^2 - β 0*β 1*β 3*k 0^2*k 1^2 - β 0*β 1*β 3*k 0^2*k 1*k 2
+      + β 0*β 1*β 3*k 0^2*k 1*q - β 0*β 1*β 3*k 0*k 1^3 - β 0*β 1*β 3*k 0*k 1^2*k 2
+      + β 0*β 1*β 3*k 0*k 1^2*q + β 0*β 1*β 4*k 0^2*q - β 0*β 1*β 4*k 0*k 1^2
+      - β 0*β 1*β 4*k 0*k 1*k 2 + 2*β 0*β 1*β 4*k 0*k 1*q + β 0*β 1*β 4*k 0*k 2*q + β 0*β 1*k 0^2*q
+      - β 0*β 1*k 0*k 1^2 - β 0*β 1*k 0*k 1*k 2 + 2*β 0*β 1*k 0*k 1*q - β 0*β 1*k 0*k 1
+      + β 0*β 1*k 0*k 2*q + β 0*β 1*k 0*k 3 + β 0*β 1*k 0*q + β 0*β 1*k 0 - β 0*β 2^2*k 0^3*q
+      - β 0*β 2^2*k 0^2*k 1*k 2 - β 0*β 2^2*k 0^2*k 1*q - β 0*β 2^2*k 0^2*k 2^2
+      + β 0*β 2^2*k 0^2*k 2*q - β 0*β 2^2*k 0^2*q^2 - β 0*β 2^2*k 0*k 1^2*k 2
+      - β 0*β 2^2*k 0*k 1*k 2^2 + β 0*β 2^2*k 0*k 1*k 2*q - β 0*β 2^2*k 0*k 1*q^2
+      + β 0*β 2*β 3*k 0^2*k 1 + 2*β 0*β 2*β 3*k 0^2*k 2 - 2*β 0*β 2*β 3*k 0^2*q
+      + β 0*β 2*β 3*k 0*k 1^2 + 2*β 0*β 2*β 3*k 0*k 1*k 2 - 2*β 0*β 2*β 3*k 0*k 1*q
+      + β 0*β 2*β 4*k 0*k 1 + 2*β 0*β 2*β 4*k 0*k 2 - β 0*β 2*β 4*k 0*q + β 0*β 2*β 4*k 1*k 2
+      + β 0*β 2*β 4*k 2*q + β 0*β 2*k 0*k 1 + 2*β 0*β 2*k 0*k 2 - β 0*β 2*k 0*q + 2*β 0*β 2*k 0
+      + β 0*β 2*k 1*k 2 + β 0*β 2*k 1 + β 0*β 2*k 2*q + β 0*β 2*k 3 + β 0*β 2*q + β 0*β 2
+      - β 0*β 3^2*k 0^2 - β 0*β 3^2*k 0*k 1 - 2*β 0*β 3*β 4*k 0 - β 0*β 3*β 4*k 1 - β 0*β 3*β 4*q
+      - β 0*β 3*k 0 + β 0*β 3*k 2 + 2*β 0*β 3 - β 0*β 4^2 - β 0*β 4 - β 0 - β 1^2*β 2*k 0^2*k 1*q
+      - β 1^2*β 2*k 0*k 1^2*k 2 - β 1^2*β 2*k 0*k 1^2*q - β 1^2*β 2*k 0*k 1*k 2^2
+      + β 1^2*β 2*k 0*k 1*k 2*q - β 1^2*β 2*k 0*k 1*q^2 - β 1^2*β 2*k 1^3*k 2
+      - β 1^2*β 2*k 1^2*k 2^2 + β 1^2*β 2*k 1^2*k 2*q - β 1^2*β 2*k 1^2*q^2 + β 1^2*β 3*k 0*k 1^2
+      + β 1^2*β 3*k 0*k 1*k 2 - β 1^2*β 3*k 0*k 1*q + β 1^2*β 3*k 1^3 + β 1^2*β 3*k 1^2*k 2
+      - β 1^2*β 3*k 1^2*q - β 1^2*β 4*k 0*q + β 1^2*β 4*k 1^2 + β 1^2*β 4*k 1*k 2
+      - 2*β 1^2*β 4*k 1*q - β 1^2*β 4*k 2*q - β 1^2*k 0*q + β 1^2*k 1^2 + β 1^2*k 1*k 2
+      - 2*β 1^2*k 1*q + β 1^2*k 1 - β 1^2*k 2*q - β 1^2*k 3 - β 1^2*q - β 1^2 + β 1*β 2^2*k 0^2*q
+      + β 1*β 2^2*k 0*k 1*k 2 + 2*β 1*β 2^2*k 0*k 1*q + β 1*β 2^2*k 0*k 2^2 - β 1*β 2^2*k 0*k 2*q
+      + β 1*β 2^2*k 0*q^2 + 2*β 1*β 2^2*k 1^2*k 2 + 2*β 1*β 2^2*k 1*k 2^2 - 2*β 1*β 2^2*k 1*k 2*q
+      + 2*β 1*β 2^2*k 1*q^2 - 2*β 1*β 2*β 3*k 0*k 2 + 2*β 1*β 2*β 3*k 0*q - 2*β 1*β 2*β 3*k 1^2
+      - 4*β 1*β 2*β 3*k 1*k 2 + 4*β 1*β 2*β 3*k 1*q - 2*β 1*β 2*β 4*k 1 - 2*β 1*β 2*β 4*k 2
+      + 2*β 1*β 2*β 4*q - 2*β 1*β 2*k 1 - 2*β 1*β 2*k 2 + 2*β 1*β 2*q - 2*β 1*β 2 + β 1*β 3^2*k 0
+      + 2*β 1*β 3^2*k 1 + 2*β 1*β 3*β 4 + 2*β 1*β 3 - β 2^3*k 0*q - β 2^3*k 1*k 2 - β 2^3*k 2^2
+      + β 2^3*k 2*q - β 2^3*q^2 - β 2^2*β 3*k 0 + β 2^2*β 3*k 1 + 3*β 2^2*β 3*k 2 - 3*β 2^2*β 3*q
+      + β 2^2*β 4 + β 2^2 - 3*β 2*β 3^2) * f3 + (-β 0*β 1*β 3*k 0^3*k 1*q
+      - β 0*β 1*β 3*k 0^2*k 1^2*q - β 0*β 1*β 3*k 0^2*k 1*q^2 - β 0*β 1*β 3*k 0*k 1^2*q^2
+      - β 0*β 1*k 0^3*k 1*q - β 0*β 1*k 0^3*q - β 0*β 1*k 0^2*k 1^2*q - β 0*β 1*k 0^2*k 1*q^2
+      - 2*β 0*β 1*k 0^2*k 1*q - 2*β 0*β 1*k 0^2*k 2*q - β 0*β 1*k 0^2*q^2 - 2*β 0*β 1*k 0^2*q
+      + β 0*β 1*k 0*k 1^2*k 2 - β 0*β 1*k 0*k 1^2*q^2 + β 0*β 1*k 0*k 1^2 + β 0*β 1*k 0*k 1*k 2^2
+      - 2*β 0*β 1*k 0*k 1*k 2*q + 2*β 0*β 1*k 0*k 1*k 2 + β 0*β 1*k 0*k 1*k 3
+      - 2*β 0*β 1*k 0*k 1*q^2 - 2*β 0*β 1*k 0*k 1*q + β 0*β 1*k 0*k 1 - β 0*β 1*k 0*k 2^2*q
+      - β 0*β 1*k 0*k 2*q^2 - 2*β 0*β 1*k 0*k 2*q - β 0*β 1*k 0*k 3*q - β 0*β 1*k 0*q^2
+      - β 0*β 1*k 0*q + β 0*β 2*β 3*k 0^3*q + β 0*β 2*β 3*k 0^2*k 1*q + β 0*β 2*β 3*k 0^2*q^2
+      + β 0*β 2*β 3*k 0*k 1*q^2 - β 0*β 2*k 0^2*k 1*q - 2*β 0*β 2*k 0^2*q - β 0*β 2*k 0*k 1^2*q
+      - β 0*β 2*k 0*k 1*k 2 - 3*β 0*β 2*k 0*k 1*q - β 0*β 2*k 0*k 1 - β 0*β 2*k 0*k 2^2
+      - β 0*β 2*k 0*k 2*q - 2*β 0*β 2*k 0*k 2 - β 0*β 2*k 0*k 3 - β 0*β 2*k 0*q - β 0*β 2*k 0
+      + β 0*β 3^2*k 0^2*q + β 0*β 3^2*k 0*k 1*q + β 0*β 3*k 0^2*q + β 0*β 3*k 0*k 1*q
+      + β 0*β 3*k 0*q - β 0*β 3*k 1*k 2 - β 0*β 3*k 1 - β 0*β 3*k 2^2 - β 0*β 3*k 2*q
+      - 2*β 0*β 3*k 2 - β 0*β 3*k 3 - β 0*β 3*q - β 0*β 3 + β 0*k 0^2*q + β 0*k 0*k 1*q + β 0*k 0*q
+      - β 0*k 1*k 2 - β 0*k 2^2 - β 0*k 2*q - β 0*k 3 + β 0 + β 1^2*β 3*k 0^2*k 1*q
+      + β 1^2*β 3*k 0*k 1^2*q + β 1^2*β 3*k 0*k 1*q^2 + β 1^2*β 3*k 1^2*q^2 + β 1^2*k 0^2*k 1*q
+      + β 1^2*k 0^2*q + β 1^2*k 0*k 1^2*q + β 1^2*k 0*k 1*q^2 + 2*β 1^2*k 0*k 1*q
+      + 2*β 1^2*k 0*k 2*q + β 1^2*k 0*q^2 + 2*β 1^2*k 0*q - β 1^2*k 1^2*k 2 + β 1^2*k 1^2*q^2
+      - β 1^2*k 1^2 - β 1^2*k 1*k 2^2 + 2*β 1^2*k 1*k 2*q - 2*β 1^2*k 1*k 2 - β 1^2*k 1*k 3
+      + 2*β 1^2*k 1*q^2 + 2*β 1^2*k 1*q - β 1^2*k 1 + β 1^2*k 2^2*q + β 1^2*k 2*q^2 + 2*β 1^2*k 2*q
+      + β 1^2*k 3*q + β 1^2*q^2 + β 1^2*q - β 1*β 2*β 3*k 0^2*q - 2*β 1*β 2*β 3*k 0*k 1*q
+      - β 1*β 2*β 3*k 0*q^2 - 2*β 1*β 2*β 3*k 1*q^2 + β 1*β 2*k 0^2*k 1 + β 1*β 2*k 0^2
+      + β 1*β 2*k 0*k 1^2 + 2*β 1*β 2*k 0*k 1*q + 3*β 1*β 2*k 0*k 1 + 2*β 1*β 2*k 0*k 2
+      + 3*β 1*β 2*k 0*q + 2*β 1*β 2*k 0 + 2*β 1*β 2*k 1^2*q + 2*β 1*β 2*k 1*k 2 + 6*β 1*β 2*k 1*q
+      + 2*β 1*β 2*k 1 + 2*β 1*β 2*k 2^2 + 2*β 1*β 2*k 2*q + 4*β 1*β 2*k 2 + 2*β 1*β 2*k 3
+      + 2*β 1*β 2*q + 2*β 1*β 2 - β 1*β 3^2*k 0*k 1 - β 1*β 3^2*k 0*q - 2*β 1*β 3^2*k 1*q
+      - β 1*β 3*k 0*k 1 - β 1*β 3*k 0*q - β 1*β 3*k 0 - 2*β 1*β 3*k 1*q - 2*β 1*β 3*k 2
+      - 2*β 1*β 3*q - 2*β 1*β 3 - β 1*k 0*k 1 - β 1*k 0*q - β 1*k 0 - 2*β 1*k 1*q - 2*β 1*k 2
+      - 2*β 1*q + β 2^2*β 3*k 0*q + β 2^2*β 3*q^2 + β 2^2*k 0*k 1 + β 2^2*k 0 + β 2^2*k 1^2
+      + 3*β 2^2*k 1 + 2*β 2^2*k 2 - β 2^2*q + 2*β 2^2 + β 2*β 3^2*k 0 + 2*β 2*β 3^2*q - β 2*β 3*k 1
+      + β 2*β 3*q - 3*β 2*β 3 - β 2*k 0 - 2*β 2*k 1 - 3*β 2 + β 3^3 + β 3^2 + β 3 + k 0^2*k 1
+      + k 0*k 1^2 + k 0*k 2 - k 1^2 + 1) * f2 + (β 0*β 2*k 0^3*k 1*q + β 0*β 2*k 0^3*q
+      + 2*β 0*β 2*k 0^2*k 1^2*q + β 0*β 2*k 0^2*k 1*q^2 + 4*β 0*β 2*k 0^2*k 1*q
+      + 2*β 0*β 2*k 0^2*k 2*q + β 0*β 2*k 0^2*q^2 + 2*β 0*β 2*k 0^2*q + β 0*β 2*k 0*k 1^3*q
+      + β 0*β 2*k 0*k 1^2*q^2 + 3*β 0*β 2*k 0*k 1^2*q + 3*β 0*β 2*k 0*k 1*k 2*q
+      + 2*β 0*β 2*k 0*k 1*q^2 + 3*β 0*β 2*k 0*k 1*q + β 0*β 2*k 0*k 2^2*q + β 0*β 2*k 0*k 2*q^2
+      + 2*β 0*β 2*k 0*k 2*q + β 0*β 2*k 0*k 3*q + β 0*β 2*k 0*q^2 + β 0*β 2*k 0*q + β 0*k 0^3*k 1*q
+      + 2*β 0*k 0^2*k 1^2*q + β 0*k 0^2*k 1*q^2 + β 0*k 0^2*k 1*q + 2*β 0*k 0^2*k 2*q - β 0*k 0^2*q
+      + β 0*k 0*k 1^3*q + β 0*k 0*k 1^2*q^2 + β 0*k 0*k 1^2*q + 3*β 0*k 0*k 1*k 2*q
+      + β 0*k 0*k 1*q^2 - β 0*k 0*k 1*q + β 0*k 0*k 2^2*q + β 0*k 0*k 2*q^2 + 2*β 0*k 0*k 2*q
+      + β 0*k 0*k 3*q - β 0*k 0*q + β 0*k 1^2*k 2 + β 0*k 1*k 2^2 + 2*β 0*k 1*k 2*q + β 0*k 1*k 2
+      + β 0*k 1*k 3 + β 0*k 2^2*q + β 0*k 2*q^2 + β 0*k 2*q + β 0*k 3*q + β 0*k 3
+      - β 1*β 2*k 0^2*k 1*q - β 1*β 2*k 0^2*q - 2*β 1*β 2*k 0*k 1^2*q - β 1*β 2*k 0*k 1*q^2
+      - 4*β 1*β 2*k 0*k 1*q - 2*β 1*β 2*k 0*k 2*q - β 1*β 2*k 0*q^2 - 2*β 1*β 2*k 0*q
+      - β 1*β 2*k 1^3*q - β 1*β 2*k 1^2*q^2 - 3*β 1*β 2*k 1^2*q - 3*β 1*β 2*k 1*k 2*q
+      - 2*β 1*β 2*k 1*q^2 - 3*β 1*β 2*k 1*q - β 1*β 2*k 2^2*q - β 1*β 2*k 2*q^2 - 2*β 1*β 2*k 2*q
+      - β 1*β 2*k 3*q - β 1*β 2*q^2 - β 1*β 2*q + β 1*k 0^3*k 1 + 2*β 1*k 0^2*k 1^2
+      + β 1*k 0^2*k 1*q + 2*β 1*k 0^2*k 1 + 2*β 1*k 0^2*k 2 + β 1*k 0*k 1^3 + β 1*k 0*k 1^2*q
+      + 2*β 1*k 0*k 1^2 + 3*β 1*k 0*k 1*k 2 + 2*β 1*k 0*k 1*q + β 1*k 0*k 1 + β 1*k 0*k 2^2
+      + β 1*k 0*k 2*q + 4*β 1*k 0*k 2 + β 1*k 0*k 3 + β 1*k 0*q + β 1*k 1^2*q + 4*β 1*k 1*k 2
+      + 2*β 1*k 1*q + 2*β 1*k 2^2 + 2*β 1*k 2*q + 2*β 1*k 2 + 2*β 1*k 3 + β 1*q - β 2^2*k 0^2*k 1
+      - β 2^2*k 0^2 - 2*β 2^2*k 0*k 1^2 - β 2^2*k 0*k 1*q - 4*β 2^2*k 0*k 1 - 2*β 2^2*k 0*k 2
+      - β 2^2*k 0*q - 2*β 2^2*k 0 - β 2^2*k 1^3 - β 2^2*k 1^2*q - 3*β 2^2*k 1^2 - 3*β 2^2*k 1*k 2
+      - 2*β 2^2*k 1*q - 3*β 2^2*k 1 - β 2^2*k 2^2 - β 2^2*k 2*q - 2*β 2^2*k 2 - β 2^2*k 3 - β 2^2*q
+      - β 2^2 - β 2*k 0^2*k 1 - 2*β 2*k 0*k 1^2 - β 2*k 0*k 1*q - 2*β 2*k 0*k 2 + 2*β 2*k 0
+      - β 2*k 1^3 - β 2*k 1^2*q - 3*β 2*k 1*k 2 + 3*β 2*k 1 - β 2*k 2^2 - β 2*k 2*q - β 2*k 3
+      + β 2*q + 2*β 2 - k 0^3*k 1 - 2*k 0^2*k 1^2 - k 0^2*k 1*q - 2*k 0^2*k 1 - 2*k 0^2*k 2
+      - k 0*k 1^3 - k 0*k 1^2*q - 2*k 0*k 1^2 - 3*k 0*k 1*k 2 - k 0*k 1*q - k 0*k 2^2 - k 0*k 2*q
+      - 3*k 0*k 2 - k 0*k 3 + k 1^2 - 2*k 1*k 2 - k 2^2 - k 2*q - k 3 - 1) * f1 + (-β 1*k 0^4*k 1
+      - 2*β 1*k 0^3*k 1^2 - 2*β 1*k 0^3*k 1*q - 2*β 1*k 0^3*k 1 - 2*β 1*k 0^3*k 2 - β 1*k 0^2*k 1^3
+      - 3*β 1*k 0^2*k 1^2*q - 2*β 1*k 0^2*k 1^2 - 3*β 1*k 0^2*k 1*k 2 - β 1*k 0^2*k 1*q^2
+      - 3*β 1*k 0^2*k 1*q - β 1*k 0^2*k 1 - β 1*k 0^2*k 2^2 - 3*β 1*k 0^2*k 2*q - 4*β 1*k 0^2*k 2
+      - β 1*k 0^2*k 3 - β 1*k 0*k 1^3*q - β 1*k 0*k 1^2*q^2 - 2*β 1*k 0*k 1^2*q
+      - 3*β 1*k 0*k 1*k 2*q - 4*β 1*k 0*k 1*k 2 - β 1*k 0*k 1*q^2 - β 1*k 0*k 1*q - β 1*k 0*k 2^2*q
+      - 2*β 1*k 0*k 2^2 - β 1*k 0*k 2*q^2 - 4*β 1*k 0*k 2*q - 2*β 1*k 0*k 2 - β 1*k 0*k 3*q
+      - 2*β 1*k 0*k 3 - β 1*k 1^2*k 2 - β 1*k 1*k 2^2 - 2*β 1*k 1*k 2*q - β 1*k 1*k 2 - β 1*k 1*k 3
+      - β 1*k 2^2*q - β 1*k 2*q^2 - β 1*k 2*q - β 1*k 3*q - β 1*k 3 + k 0^3*k 1 + 2*k 0^2*k 1^2
+      + k 0^2*k 1*q + k 0^2*k 1 + 2*k 0^2*k 2 + k 0*k 1^3 + k 0*k 1^2*q + k 0*k 1^2 + 3*k 0*k 1*k 2
+      + k 0*k 1*q + k 0*k 2^2 + k 0*k 2*q + 2*k 0*k 2 + k 0*k 3 + 2*k 1*k 2 + k 2^2 + k 2*q
+      + k 3) * f0
+
 variable (a b : ℕ)
 
 /-- The normalised remainder `βⱼ = b_{i+j} / a`. -/
@@ -552,14 +742,45 @@ noncomputable def kv (i j : ℕ) : ℝ := (qq a b (i + j + 1) : ℝ) - qq a b (i
 
 variable {a b}
 
-/-- The division equation `q_{i+j} β_j + β_{j+1} = 1`. -/
-lemma rel_at (hba : b < a) {i j : ℕ} (hij : i + j < P a b) {Q : ℝ}
-    (hQ : (qq a b (i + j) : ℝ) = Q) : Q * βv a b i j + βv a b i (j + 1) = 1 := by
+/-- The moments `h_{i+j}(s)` are given by the moment recursion in `β` and `k`. -/
+lemma hm_eq_momSeq (hba : b < a) {i : ℕ} (s : ℕ) : ∀ j, i + j < P a b → i + j + s ≤ P a b →
+    hm a b (i + j) s = momSeq (βv a b i) (kv a b i) j s := by
+  induction s using Nat.strong_induction_on with
+  | _ s ih =>
+  intro j hj hs
+  rcases s with _ | s
+  · rw [momSeq_zero, hm_zero hba (P a b - (i + j) - 1) (i + j) (by omega), βv]
+  rw [momSeq_succ]
+  by_cases hl : i + j + 1 < P a b
+  · rw [hm_succ hl]
+    refine sum_congr rfl fun t ht => ?_
+    have := mem_range.mp ht
+    have h := ih t (by omega) (j + 1) (by omega) (by omega)
+    rw [← add_assoc] at h
+    rw [h, kv]
+  · obtain rfl : s = 0 := by omega
+    simp [hm_one hba hj, momSeq_zero, βv, add_assoc]
+
+/-- The Hankel matrix in terms of `β` and `k`. -/
+lemma hankel_eq_momSeq (hba : b < a) {i r : ℕ} (hi : i < P a b) (hr : i + 2 * (r - 1) ≤ P a b) :
+    hankel a b i r = Matrix.of fun j l : Fin r => momSeq (βv a b i) (kv a b i) 0 (j + l) := by
+  ext j l
+  have := j.isLt
+  have := l.isLt
+  simpa [hankel] using hm_eq_momSeq hba (j + l) 0 (by omega) (by omega)
+
+/-- The division equations `(qᵢ + k₀ + ⋯ + k_{j-1}) βⱼ + β_{j+1} = 1`. -/
+lemma rel_sum (hba : b < a) {i j : ℕ} (hij : i + j < P a b) :
+    ((qq a b i : ℝ) + ∑ l ∈ range j, kv a b i l) * βv a b i j + βv a b i (j + 1) = 1 := by
   have ha : (a : ℝ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
+  have hQ : ∀ j, (qq a b i : ℝ) + ∑ l ∈ range j, kv a b i l = qq a b (i + j) := by
+    intro j
+    induction j with
+    | zero => simp
+    | succ j ih => rw [sum_range_succ, ← add_assoc, ih, kv, ← add_assoc]; ring
   have e := orb_div (a := a) (b := b) (i := i + j) hij
   have e' : (orb a b (i + j) : ℝ) * qq a b (i + j) + orb a b (i + j + 1) = a := by exact_mod_cast e
-  unfold βv
-  rw [← hQ, show i + (j + 1) = i + j + 1 by ring]
+  rw [hQ, βv, βv, ← add_assoc]
   field_simp
   linarith
 
@@ -572,187 +793,12 @@ theorem hankelInv_one (hba : b < a) {i : ℕ} (hi : i < P a b) : hankelInv a b i
   rw [hm_zero hba (P a b - i - 1) i (by omega)]
   field_simp
 
-/-- The rank-2 Hankel determinant, as an identity modulo the division relations. -/
-theorem hankel2_alg (b0 b1 b2 q k0 : ℝ)
-    (f0 : (q) * b0 + b1 = 1)
-    (f1 : (q + k0) * b1 + b2 = 1) :
-    Matrix.det !![(b0), (b1); (b1), (b1*k0 + b2)] = b0 - b1 := by
-  rw [Matrix.det_fin_two_of]
-  linear_combination (b0) * f1 + (-b1) * f0
-
-/-- The rank-3 Hankel determinant, as an identity modulo the division relations. -/
-theorem hankel3_alg (b0 b1 b2 b3 b4 q k0 k1 k2 : ℝ)
-    (f0 : (q) * b0 + b1 = 1)
-    (f1 : (q + k0) * b1 + b2 = 1)
-    (f2 : (q + k0 + k1) * b2 + b3 = 1)
-    (f3 : (q + k0 + k1 + k2) * b3 + b4 = 1) :
-    Matrix.det !![(b0), (b1), (b1*k0 + b2); (b1), (b1*k0 + b2),
-        (b1*k0^2 + 2*b2*k0 + b2*k1 + b3); (b1*k0 + b2), (b1*k0^2 + 2*b2*k0 + b2*k1 + b3),
-        (b1*k0^3 + 3*b2*k0^2 + 3*b2*k0*k1 + b2*k1^2 + 3*b3*k0 + 2*b3*k1 + b3*k2 + b4)] = b0*k1
-        - b1*k0 - b1*k1 + b2*k0 := by
-  simp [Matrix.det_fin_three]
-  linear_combination (b0*b1*k0 + b0*b2 - b1^2) * f3 + (b0*b1*k0*k1 - b0*b1*k0*q - b0*b2*k0 - b0*b3
-      - b0 - b1^2*k1 + b1^2*q + 2*b1*b2) * f2 + (b0*b2*k0*q + b0*k0*q + b0*k1 + b0*q + b0 - b1*b2*q
-      + b1*k0 + 2*b1 - b2^2 - b2 - k0 - 1) * f1 + (-b1*k0^2 - b1*k0*q - 2*b1*k0 - b1*k1 - b1*q - b1
-      + k0 + 1) * f0
-
-/-- The rank-4 Hankel determinant, as an identity modulo the division relations. -/
-theorem hankel4_alg (b0 b1 b2 b3 b4 b5 b6 q k0 k1 k2 k3 k4 : ℝ)
-    (f0 : (q) * b0 + b1 = 1)
-    (f1 : (q + k0) * b1 + b2 = 1)
-    (f2 : (q + k0 + k1) * b2 + b3 = 1)
-    (f3 : (q + k0 + k1 + k2) * b3 + b4 = 1)
-    (f4 : (q + k0 + k1 + k2 + k3) * b4 + b5 = 1)
-    (f5 : (q + k0 + k1 + k2 + k3 + k4) * b5 + b6 = 1) :
-    Matrix.det !![(b0), (b1), (b1*k0 + b2), (b1*k0^2 + 2*b2*k0 + b2*k1 + b3); (b1), (b1*k0 + b2),
-        (b1*k0^2 + 2*b2*k0 + b2*k1 + b3), (b1*k0^3 + 3*b2*k0^2 + 3*b2*k0*k1 + b2*k1^2 + 3*b3*k0
-        + 2*b3*k1 + b3*k2 + b4); (b1*k0 + b2), (b1*k0^2 + 2*b2*k0 + b2*k1 + b3),
-        (b1*k0^3 + 3*b2*k0^2 + 3*b2*k0*k1 + b2*k1^2 + 3*b3*k0 + 2*b3*k1 + b3*k2 + b4),
-        (b1*k0^4 + 4*b2*k0^3 + 6*b2*k0^2*k1 + 4*b2*k0*k1^2 + b2*k1^3 + 6*b3*k0^2 + 8*b3*k0*k1
-        + 4*b3*k0*k2 + 3*b3*k1^2 + 3*b3*k1*k2 + b3*k2^2 + 4*b4*k0 + 3*b4*k1 + 2*b4*k2 + b4*k3
-        + b5); (b1*k0^2 + 2*b2*k0 + b2*k1 + b3), (b1*k0^3 + 3*b2*k0^2 + 3*b2*k0*k1 + b2*k1^2
-        + 3*b3*k0 + 2*b3*k1 + b3*k2 + b4), (b1*k0^4 + 4*b2*k0^3 + 6*b2*k0^2*k1 + 4*b2*k0*k1^2
-        + b2*k1^3 + 6*b3*k0^2 + 8*b3*k0*k1 + 4*b3*k0*k2 + 3*b3*k1^2 + 3*b3*k1*k2 + b3*k2^2 + 4*b4*k0
-        + 3*b4*k1 + 2*b4*k2 + b4*k3 + b5), (b1*k0^5 + 5*b2*k0^4 + 10*b2*k0^3*k1 + 10*b2*k0^2*k1^2
-        + 5*b2*k0*k1^3 + b2*k1^4 + 10*b3*k0^3 + 20*b3*k0^2*k1 + 10*b3*k0^2*k2 + 15*b3*k0*k1^2
-        + 15*b3*k0*k1*k2 + 5*b3*k0*k2^2 + 4*b3*k1^3 + 6*b3*k1^2*k2 + 4*b3*k1*k2^2 + b3*k2^3
-        + 10*b4*k0^2 + 15*b4*k0*k1 + 10*b4*k0*k2 + 5*b4*k0*k3 + 6*b4*k1^2 + 8*b4*k1*k2 + 4*b4*k1*k3
-        + 3*b4*k2^2 + 3*b4*k2*k3 + b4*k3^2 + 5*b5*k0 + 4*b5*k1 + 3*b5*k2 + 2*b5*k3 + b5*k4 + b6)]
-        = b0*k1^2*k2 + b0*k1*k2^2 + b0*k1*k3 - b0*k2^2 - b1*k0^2*k2 - 2*b1*k0*k1*k2 - b1*k0*k2^2
-        - b1*k0*k3 - b1*k1^2*k2 - b1*k1*k2^2 + b1*k1*k2 - b1*k1*k3 + b1*k2^2 + b2*k0^2*k1
-        + b2*k0^2*k2 + b2*k0*k1^2 + 2*b2*k0*k1*k2 + b2*k0*k2^2 + b2*k0*k2 + b2*k0*k3 - b2*k1^2
-        - b2*k1*k2 - b3*k0^2*k1 - b3*k0*k1^2 - b3*k0*k2 + b3*k1^2 := by
-  rw [Matrix.det_succ_row_zero]; simp [Fin.sum_univ_succ, Matrix.det_fin_three, Fin.succAbove]
-  linear_combination (b0*b1*b2*k0^2*k1 + b0*b1*b2*k0*k1^2 + b0*b1*b3*k0^2 + 2*b0*b1*b3*k0*k1
-      + b0*b1*b3*k0*k2 + b0*b1*b4*k0 - b0*b2^2*k0^2 - b0*b2^2*k0*k1 - b0*b2*b3*k0 + b0*b2*b3*k2
-      + b0*b2*b4 - b0*b3^2 - b1^2*b2*k0*k1 - b1^2*b2*k1^2 - b1^2*b3*k0 - 2*b1^2*b3*k1 - b1^2*b3*k2
-      - b1^2*b4 + b1*b2^2*k0 + 2*b1*b2^2*k1 + 2*b1*b2*b3 - b2^3) * f5
-      + (b0*b1*b2*k0^2*k1^2 + 2*b0*b1*b2*k0^2*k1*k2 + b0*b1*b2*k0^2*k1*k3 - b0*b1*b2*k0^2*k1*q
-      + b0*b1*b2*k0*k1^3 + 2*b0*b1*b2*k0*k1^2*k2 + b0*b1*b2*k0*k1^2*k3 - b0*b1*b2*k0*k1^2*q
-      - b0*b1*b3*k0^2*k1 + b0*b1*b3*k0^2*k3 - b0*b1*b3*k0^2*q + b0*b1*b3*k0*k1*k2
-      + 2*b0*b1*b3*k0*k1*k3 - 2*b0*b1*b3*k0*k1*q + b0*b1*b3*k0*k2*k3 - b0*b1*b3*k0*k2*q
-      - b0*b1*b4*k0^2 - 2*b0*b1*b4*k0*k1 - b0*b1*b4*k0*k2 - b0*b1*b5*k0 - b0*b1*k0 - b0*b2^2*k0^2*k1
-      - 2*b0*b2^2*k0^2*k2 - b0*b2^2*k0^2*k3 + b0*b2^2*k0^2*q - b0*b2^2*k0*k1^2 - 2*b0*b2^2*k0*k1*k2
-      - b0*b2^2*k0*k1*k3 + b0*b2^2*k0*k1*q + 2*b0*b2*b3*k0^2 + b0*b2*b3*k0*k1 - 2*b0*b2*b3*k0*k2
-      - b0*b2*b3*k0*k3 + b0*b2*b3*k0*q - b0*b2*b3*k1*k2 + b0*b2*b3*k2*k3 - b0*b2*b3*k2*q
-      + b0*b2*b4*k0 - b0*b2*b4*k2 - b0*b2*b5 - b0*b2 + 2*b0*b3^2*k0 + b0*b3^2*k1 - b0*b3^2*k3
-      + b0*b3^2*q + 2*b0*b3*b4 - b1^2*b2*k0*k1^2 - 2*b1^2*b2*k0*k1*k2 - b1^2*b2*k0*k1*k3
-      + b1^2*b2*k0*k1*q - b1^2*b2*k1^3 - 2*b1^2*b2*k1^2*k2 - b1^2*b2*k1^2*k3 + b1^2*b2*k1^2*q
-      + b1^2*b3*k0*k1 - b1^2*b3*k0*k3 + b1^2*b3*k0*q - b1^2*b3*k1*k2 - 2*b1^2*b3*k1*k3
-      + 2*b1^2*b3*k1*q - b1^2*b3*k2*k3 + b1^2*b3*k2*q + b1^2*b4*k0 + 2*b1^2*b4*k1 + b1^2*b4*k2
-      + b1^2*b5 + b1^2 + b1*b2^2*k0*k1 + 2*b1*b2^2*k0*k2 + b1*b2^2*k0*k3 - b1*b2^2*k0*q
-      + 2*b1*b2^2*k1^2 + 4*b1*b2^2*k1*k2 + 2*b1*b2^2*k1*k3 - 2*b1*b2^2*k1*q - 2*b1*b2*b3*k0
-      - 2*b1*b2*b3*k1 + 2*b1*b2*b3*k2 + 2*b1*b2*b3*k3 - 2*b1*b2*b3*q - 2*b1*b2*b4 - 2*b1*b3^2
-      - b2^3*k1 - 2*b2^3*k2 - b2^3*k3 + b2^3*q + 2*b2^2*b3) * f4
-      + (b0*b1*b2*k0^3*k1*q + b0*b1*b2*k0^2*k1^2*k2 + b0*b1*b2*k0^2*k1^2*q + b0*b1*b2*k0^2*k1*k2^2
-      - b0*b1*b2*k0^2*k1*k2*q + b0*b1*b2*k0^2*k1*q^2 + b0*b1*b2*k0*k1^3*k2 + b0*b1*b2*k0*k1^2*k2^2
-      - b0*b1*b2*k0*k1^2*k2*q + b0*b1*b2*k0*k1^2*q^2 - b0*b1*b3*k0^2*k1^2 - b0*b1*b3*k0^2*k1*k2
-      + b0*b1*b3*k0^2*k1*q - b0*b1*b3*k0*k1^3 - b0*b1*b3*k0*k1^2*k2 + b0*b1*b3*k0*k1^2*q
-      + b0*b1*b4*k0^2*q - b0*b1*b4*k0*k1^2 - b0*b1*b4*k0*k1*k2 + 2*b0*b1*b4*k0*k1*q
-      + b0*b1*b4*k0*k2*q + b0*b1*k0^2*q - b0*b1*k0*k1^2 - b0*b1*k0*k1*k2 + 2*b0*b1*k0*k1*q
-      - b0*b1*k0*k1 + b0*b1*k0*k2*q + b0*b1*k0*k3 + b0*b1*k0*q + b0*b1*k0 - b0*b2^2*k0^3*q
-      - b0*b2^2*k0^2*k1*k2 - b0*b2^2*k0^2*k1*q - b0*b2^2*k0^2*k2^2 + b0*b2^2*k0^2*k2*q
-      - b0*b2^2*k0^2*q^2 - b0*b2^2*k0*k1^2*k2 - b0*b2^2*k0*k1*k2^2 + b0*b2^2*k0*k1*k2*q
-      - b0*b2^2*k0*k1*q^2 + b0*b2*b3*k0^2*k1 + 2*b0*b2*b3*k0^2*k2 - 2*b0*b2*b3*k0^2*q
-      + b0*b2*b3*k0*k1^2 + 2*b0*b2*b3*k0*k1*k2 - 2*b0*b2*b3*k0*k1*q + b0*b2*b4*k0*k1
-      + 2*b0*b2*b4*k0*k2 - b0*b2*b4*k0*q + b0*b2*b4*k1*k2 + b0*b2*b4*k2*q + b0*b2*k0*k1
-      + 2*b0*b2*k0*k2 - b0*b2*k0*q + 2*b0*b2*k0 + b0*b2*k1*k2 + b0*b2*k1 + b0*b2*k2*q + b0*b2*k3
-      + b0*b2*q + b0*b2 - b0*b3^2*k0^2 - b0*b3^2*k0*k1 - 2*b0*b3*b4*k0 - b0*b3*b4*k1 - b0*b3*b4*q
-      - b0*b3*k0 + b0*b3*k2 + 2*b0*b3 - b0*b4^2 - b0*b4 - b0 - b1^2*b2*k0^2*k1*q
-      - b1^2*b2*k0*k1^2*k2 - b1^2*b2*k0*k1^2*q - b1^2*b2*k0*k1*k2^2 + b1^2*b2*k0*k1*k2*q
-      - b1^2*b2*k0*k1*q^2 - b1^2*b2*k1^3*k2 - b1^2*b2*k1^2*k2^2 + b1^2*b2*k1^2*k2*q
-      - b1^2*b2*k1^2*q^2 + b1^2*b3*k0*k1^2 + b1^2*b3*k0*k1*k2 - b1^2*b3*k0*k1*q + b1^2*b3*k1^3
-      + b1^2*b3*k1^2*k2 - b1^2*b3*k1^2*q - b1^2*b4*k0*q + b1^2*b4*k1^2 + b1^2*b4*k1*k2
-      - 2*b1^2*b4*k1*q - b1^2*b4*k2*q - b1^2*k0*q + b1^2*k1^2 + b1^2*k1*k2 - 2*b1^2*k1*q + b1^2*k1
-      - b1^2*k2*q - b1^2*k3 - b1^2*q - b1^2 + b1*b2^2*k0^2*q + b1*b2^2*k0*k1*k2 + 2*b1*b2^2*k0*k1*q
-      + b1*b2^2*k0*k2^2 - b1*b2^2*k0*k2*q + b1*b2^2*k0*q^2 + 2*b1*b2^2*k1^2*k2 + 2*b1*b2^2*k1*k2^2
-      - 2*b1*b2^2*k1*k2*q + 2*b1*b2^2*k1*q^2 - 2*b1*b2*b3*k0*k2 + 2*b1*b2*b3*k0*q - 2*b1*b2*b3*k1^2
-      - 4*b1*b2*b3*k1*k2 + 4*b1*b2*b3*k1*q - 2*b1*b2*b4*k1 - 2*b1*b2*b4*k2 + 2*b1*b2*b4*q
-      - 2*b1*b2*k1 - 2*b1*b2*k2 + 2*b1*b2*q - 2*b1*b2 + b1*b3^2*k0 + 2*b1*b3^2*k1 + 2*b1*b3*b4
-      + 2*b1*b3 - b2^3*k0*q - b2^3*k1*k2 - b2^3*k2^2 + b2^3*k2*q - b2^3*q^2 - b2^2*b3*k0
-      + b2^2*b3*k1 + 3*b2^2*b3*k2 - 3*b2^2*b3*q + b2^2*b4 + b2^2 - 3*b2*b3^2) * f3
-      + (-b0*b1*b3*k0^3*k1*q - b0*b1*b3*k0^2*k1^2*q - b0*b1*b3*k0^2*k1*q^2 - b0*b1*b3*k0*k1^2*q^2
-      - b0*b1*k0^3*k1*q - b0*b1*k0^3*q - b0*b1*k0^2*k1^2*q - b0*b1*k0^2*k1*q^2 - 2*b0*b1*k0^2*k1*q
-      - 2*b0*b1*k0^2*k2*q - b0*b1*k0^2*q^2 - 2*b0*b1*k0^2*q + b0*b1*k0*k1^2*k2 - b0*b1*k0*k1^2*q^2
-      + b0*b1*k0*k1^2 + b0*b1*k0*k1*k2^2 - 2*b0*b1*k0*k1*k2*q + 2*b0*b1*k0*k1*k2 + b0*b1*k0*k1*k3
-      - 2*b0*b1*k0*k1*q^2 - 2*b0*b1*k0*k1*q + b0*b1*k0*k1 - b0*b1*k0*k2^2*q - b0*b1*k0*k2*q^2
-      - 2*b0*b1*k0*k2*q - b0*b1*k0*k3*q - b0*b1*k0*q^2 - b0*b1*k0*q + b0*b2*b3*k0^3*q
-      + b0*b2*b3*k0^2*k1*q + b0*b2*b3*k0^2*q^2 + b0*b2*b3*k0*k1*q^2 - b0*b2*k0^2*k1*q
-      - 2*b0*b2*k0^2*q - b0*b2*k0*k1^2*q - b0*b2*k0*k1*k2 - 3*b0*b2*k0*k1*q - b0*b2*k0*k1
-      - b0*b2*k0*k2^2 - b0*b2*k0*k2*q - 2*b0*b2*k0*k2 - b0*b2*k0*k3 - b0*b2*k0*q - b0*b2*k0
-      + b0*b3^2*k0^2*q + b0*b3^2*k0*k1*q + b0*b3*k0^2*q + b0*b3*k0*k1*q + b0*b3*k0*q - b0*b3*k1*k2
-      - b0*b3*k1 - b0*b3*k2^2 - b0*b3*k2*q - 2*b0*b3*k2 - b0*b3*k3 - b0*b3*q - b0*b3 + b0*k0^2*q
-      + b0*k0*k1*q + b0*k0*q - b0*k1*k2 - b0*k2^2 - b0*k2*q - b0*k3 + b0 + b1^2*b3*k0^2*k1*q
-      + b1^2*b3*k0*k1^2*q + b1^2*b3*k0*k1*q^2 + b1^2*b3*k1^2*q^2 + b1^2*k0^2*k1*q + b1^2*k0^2*q
-      + b1^2*k0*k1^2*q + b1^2*k0*k1*q^2 + 2*b1^2*k0*k1*q + 2*b1^2*k0*k2*q + b1^2*k0*q^2
-      + 2*b1^2*k0*q - b1^2*k1^2*k2 + b1^2*k1^2*q^2 - b1^2*k1^2 - b1^2*k1*k2^2 + 2*b1^2*k1*k2*q
-      - 2*b1^2*k1*k2 - b1^2*k1*k3 + 2*b1^2*k1*q^2 + 2*b1^2*k1*q - b1^2*k1 + b1^2*k2^2*q
-      + b1^2*k2*q^2 + 2*b1^2*k2*q + b1^2*k3*q + b1^2*q^2 + b1^2*q - b1*b2*b3*k0^2*q
-      - 2*b1*b2*b3*k0*k1*q - b1*b2*b3*k0*q^2 - 2*b1*b2*b3*k1*q^2 + b1*b2*k0^2*k1 + b1*b2*k0^2
-      + b1*b2*k0*k1^2 + 2*b1*b2*k0*k1*q + 3*b1*b2*k0*k1 + 2*b1*b2*k0*k2 + 3*b1*b2*k0*q + 2*b1*b2*k0
-      + 2*b1*b2*k1^2*q + 2*b1*b2*k1*k2 + 6*b1*b2*k1*q + 2*b1*b2*k1 + 2*b1*b2*k2^2 + 2*b1*b2*k2*q
-      + 4*b1*b2*k2 + 2*b1*b2*k3 + 2*b1*b2*q + 2*b1*b2 - b1*b3^2*k0*k1 - b1*b3^2*k0*q
-      - 2*b1*b3^2*k1*q - b1*b3*k0*k1 - b1*b3*k0*q - b1*b3*k0 - 2*b1*b3*k1*q - 2*b1*b3*k2 - 2*b1*b3*q
-      - 2*b1*b3 - b1*k0*k1 - b1*k0*q - b1*k0 - 2*b1*k1*q - 2*b1*k2 - 2*b1*q + b2^2*b3*k0*q
-      + b2^2*b3*q^2 + b2^2*k0*k1 + b2^2*k0 + b2^2*k1^2 + 3*b2^2*k1 + 2*b2^2*k2 - b2^2*q + 2*b2^2
-      + b2*b3^2*k0 + 2*b2*b3^2*q - b2*b3*k1 + b2*b3*q - 3*b2*b3 - b2*k0 - 2*b2*k1 - 3*b2 + b3^3
-      + b3^2 + b3 + k0^2*k1 + k0*k1^2 + k0*k2 - k1^2 + 1) * f2
-      + (b0*b2*k0^3*k1*q + b0*b2*k0^3*q + 2*b0*b2*k0^2*k1^2*q + b0*b2*k0^2*k1*q^2
-      + 4*b0*b2*k0^2*k1*q + 2*b0*b2*k0^2*k2*q + b0*b2*k0^2*q^2 + 2*b0*b2*k0^2*q + b0*b2*k0*k1^3*q
-      + b0*b2*k0*k1^2*q^2 + 3*b0*b2*k0*k1^2*q + 3*b0*b2*k0*k1*k2*q + 2*b0*b2*k0*k1*q^2
-      + 3*b0*b2*k0*k1*q + b0*b2*k0*k2^2*q + b0*b2*k0*k2*q^2 + 2*b0*b2*k0*k2*q + b0*b2*k0*k3*q
-      + b0*b2*k0*q^2 + b0*b2*k0*q + b0*k0^3*k1*q + 2*b0*k0^2*k1^2*q + b0*k0^2*k1*q^2 + b0*k0^2*k1*q
-      + 2*b0*k0^2*k2*q - b0*k0^2*q + b0*k0*k1^3*q + b0*k0*k1^2*q^2 + b0*k0*k1^2*q + 3*b0*k0*k1*k2*q
-      + b0*k0*k1*q^2 - b0*k0*k1*q + b0*k0*k2^2*q + b0*k0*k2*q^2 + 2*b0*k0*k2*q + b0*k0*k3*q
-      - b0*k0*q + b0*k1^2*k2 + b0*k1*k2^2 + 2*b0*k1*k2*q + b0*k1*k2 + b0*k1*k3 + b0*k2^2*q
-      + b0*k2*q^2 + b0*k2*q + b0*k3*q + b0*k3 - b1*b2*k0^2*k1*q - b1*b2*k0^2*q - 2*b1*b2*k0*k1^2*q
-      - b1*b2*k0*k1*q^2 - 4*b1*b2*k0*k1*q - 2*b1*b2*k0*k2*q - b1*b2*k0*q^2 - 2*b1*b2*k0*q
-      - b1*b2*k1^3*q - b1*b2*k1^2*q^2 - 3*b1*b2*k1^2*q - 3*b1*b2*k1*k2*q - 2*b1*b2*k1*q^2
-      - 3*b1*b2*k1*q - b1*b2*k2^2*q - b1*b2*k2*q^2 - 2*b1*b2*k2*q - b1*b2*k3*q - b1*b2*q^2 - b1*b2*q
-      + b1*k0^3*k1 + 2*b1*k0^2*k1^2 + b1*k0^2*k1*q + 2*b1*k0^2*k1 + 2*b1*k0^2*k2 + b1*k0*k1^3
-      + b1*k0*k1^2*q + 2*b1*k0*k1^2 + 3*b1*k0*k1*k2 + 2*b1*k0*k1*q + b1*k0*k1 + b1*k0*k2^2
-      + b1*k0*k2*q + 4*b1*k0*k2 + b1*k0*k3 + b1*k0*q + b1*k1^2*q + 4*b1*k1*k2 + 2*b1*k1*q
-      + 2*b1*k2^2 + 2*b1*k2*q + 2*b1*k2 + 2*b1*k3 + b1*q - b2^2*k0^2*k1 - b2^2*k0^2 - 2*b2^2*k0*k1^2
-      - b2^2*k0*k1*q - 4*b2^2*k0*k1 - 2*b2^2*k0*k2 - b2^2*k0*q - 2*b2^2*k0 - b2^2*k1^3 - b2^2*k1^2*q
-      - 3*b2^2*k1^2 - 3*b2^2*k1*k2 - 2*b2^2*k1*q - 3*b2^2*k1 - b2^2*k2^2 - b2^2*k2*q - 2*b2^2*k2
-      - b2^2*k3 - b2^2*q - b2^2 - b2*k0^2*k1 - 2*b2*k0*k1^2 - b2*k0*k1*q - 2*b2*k0*k2 + 2*b2*k0
-      - b2*k1^3 - b2*k1^2*q - 3*b2*k1*k2 + 3*b2*k1 - b2*k2^2 - b2*k2*q - b2*k3 + b2*q + 2*b2
-      - k0^3*k1 - 2*k0^2*k1^2 - k0^2*k1*q - 2*k0^2*k1 - 2*k0^2*k2 - k0*k1^3 - k0*k1^2*q - 2*k0*k1^2
-      - 3*k0*k1*k2 - k0*k1*q - k0*k2^2 - k0*k2*q - 3*k0*k2 - k0*k3 + k1^2 - 2*k1*k2 - k2^2 - k2*q
-      - k3 - 1) * f1 + (-b1*k0^4*k1 - 2*b1*k0^3*k1^2 - 2*b1*k0^3*k1*q - 2*b1*k0^3*k1 - 2*b1*k0^3*k2
-      - b1*k0^2*k1^3 - 3*b1*k0^2*k1^2*q - 2*b1*k0^2*k1^2 - 3*b1*k0^2*k1*k2 - b1*k0^2*k1*q^2
-      - 3*b1*k0^2*k1*q - b1*k0^2*k1 - b1*k0^2*k2^2 - 3*b1*k0^2*k2*q - 4*b1*k0^2*k2 - b1*k0^2*k3
-      - b1*k0*k1^3*q - b1*k0*k1^2*q^2 - 2*b1*k0*k1^2*q - 3*b1*k0*k1*k2*q - 4*b1*k0*k1*k2
-      - b1*k0*k1*q^2 - b1*k0*k1*q - b1*k0*k2^2*q - 2*b1*k0*k2^2 - b1*k0*k2*q^2 - 4*b1*k0*k2*q
-      - 2*b1*k0*k2 - b1*k0*k3*q - 2*b1*k0*k3 - b1*k1^2*k2 - b1*k1*k2^2 - 2*b1*k1*k2*q - b1*k1*k2
-      - b1*k1*k3 - b1*k2^2*q - b1*k2*q^2 - b1*k2*q - b1*k3*q - b1*k3 + k0^3*k1 + 2*k0^2*k1^2
-      + k0^2*k1*q + k0^2*k1 + 2*k0^2*k2 + k0*k1^3 + k0*k1^2*q + k0*k1^2 + 3*k0*k1*k2 + k0*k1*q
-      + k0*k2^2 + k0*k2*q + 2*k0*k2 + k0*k3 + 2*k1*k2 + k2^2 + k2*q + k3) * f0
-
 theorem hankelInv_two (hba : b < a) {i : ℕ} (hi : i + 1 < P a b) :
     hankelInv a b i 2 = (orb a b i : ℝ) - orb a b (i + 1) := by
-  have r0 : ∀ s, hm a b i (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 0 ^ (s - t) * hm a b (i + 1) t := fun s => hm_succ (i := i) (by omega) s
-  have g1_0 : hm a b (i + 1) 0 = βv a b i 1 := hm_zero hba (P a b - ((i + 1)) - 1) (i + 1)
-      (by omega)
-  have g1_1 : hm a b (i + 1) 1 = βv a b i 2 := hm_one hba (i := (i + 1)) (by omega)
-  have g0_0 : hm a b i 0 = βv a b i 0 := hm_zero hba (P a b - (i) - 1) i (by omega)
-  have g0_1 : hm a b i 1 = βv a b i 1 := by
-    rw [r0 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0]
-    norm_num [Nat.choose]
-  have g0_2 : hm a b i 2 = βv a b i 1*kv a b i 0 + βv a b i 2 := by
-    rw [r0 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1]
-    norm_num [Nat.choose]; ring
-  have f0 : ((qq a b i : ℝ)) * βv a b i 0 + βv a b i 1
-      = 1 := rel_at hba (i := i) (j := 0) (by omega) (by simp only [add_zero])
-  have f1 : ((qq a b i : ℝ) + kv a b i 0) * βv a b i 1 + βv a b i 2
-      = 1 := rel_at hba (i := i) (j := 1) (by omega) (by simp only [kv, add_zero]; ring_nf)
-  have hH : hankel a b i 2 = !![(βv a b i 0), (βv a b i 1); (βv a b i 1),
-      (βv a b i 1*kv a b i 0 + βv a b i 2)] := by
-    ext j l; fin_cases j <;> fin_cases l <;> simp [hankel, g0_0, g0_1, g0_2]
   have ha : (a : ℝ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
   unfold hankelInv
-  rw [hH, hankel2_alg (βv a b i 0) (βv a b i 1) (βv a b i 2) (qq a b i : ℝ) (kv a b i 0) f0 f1]
+  rw [hankel_eq_momSeq hba (by omega) (by omega),
+    hankel2_alg _ _ _ fun j hj => rel_sum hba (by omega)]
   unfold βv
   simp only [add_zero]
   field_simp
@@ -760,72 +806,10 @@ theorem hankelInv_two (hba : b < a) {i : ℕ} (hi : i + 1 < P a b) :
 theorem hankelInv_three (hba : b < a) {i : ℕ} (hi : i + 3 < P a b) :
     hankelInv a b i 3 = ((orb a b i : ℝ) - orb a b (i + 1)) * kv a b i 1 -
       ((orb a b (i + 1) : ℝ) - orb a b (i + 2)) * kv a b i 0 := by
-  have r0 : ∀ s, hm a b i (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 0 ^ (s - t) * hm a b (i + 1) t := fun s => hm_succ (i := i) (by omega) s
-  have r1 : ∀ s, hm a b (i + 1) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 1 ^ (s - t) * hm a b (i + 2) t := fun s => hm_succ (i := (i + 1)) (by omega) s
-  have r2 : ∀ s, hm a b (i + 2) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 2 ^ (s - t) * hm a b (i + 3) t := fun s => hm_succ (i := (i + 2)) (by omega) s
-  have g3_0 : hm a b (i + 3) 0 = βv a b i 3 := hm_zero hba (P a b - ((i + 3)) - 1) (i + 3)
-      (by omega)
-  have g3_1 : hm a b (i + 3) 1 = βv a b i 4 := hm_one hba (i := (i + 3)) (by omega)
-  have g2_0 : hm a b (i + 2) 0 = βv a b i 2 := hm_zero hba (P a b - ((i + 2)) - 1) (i + 2)
-      (by omega)
-  have g2_1 : hm a b (i + 2) 1 = βv a b i 3 := by
-    rw [r2 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g3_0]
-    norm_num [Nat.choose]
-  have g2_2 : hm a b (i + 2) 2 = βv a b i 3*kv a b i 2 + βv a b i 4 := by
-    rw [r2 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g3_0, g3_1]
-    norm_num [Nat.choose]; ring
-  have g1_0 : hm a b (i + 1) 0 = βv a b i 1 := hm_zero hba (P a b - ((i + 1)) - 1) (i + 1)
-      (by omega)
-  have g1_1 : hm a b (i + 1) 1 = βv a b i 2 := by
-    rw [r1 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0]
-    norm_num [Nat.choose]
-  have g1_2 : hm a b (i + 1) 2 = βv a b i 2*kv a b i 1 + βv a b i 3 := by
-    rw [r1 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0, g2_1]
-    norm_num [Nat.choose]; ring
-  have g1_3 : hm a b (i + 1) 3 = βv a b i 2*kv a b i 1^2 + 2*βv a b i 3*kv a b i 1
-      + βv a b i 3*kv a b i 2 + βv a b i 4 := by
-    rw [r1 2]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0, g2_1, g2_2]
-    norm_num [Nat.choose]; ring
-  have g0_0 : hm a b i 0 = βv a b i 0 := hm_zero hba (P a b - (i) - 1) i (by omega)
-  have g0_1 : hm a b i 1 = βv a b i 1 := by
-    rw [r0 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0]
-    norm_num [Nat.choose]
-  have g0_2 : hm a b i 2 = βv a b i 1*kv a b i 0 + βv a b i 2 := by
-    rw [r0 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1]
-    norm_num [Nat.choose]; ring
-  have g0_3 : hm a b i 3 = βv a b i 1*kv a b i 0^2 + 2*βv a b i 2*kv a b i 0 + βv a b i 2*kv a b i 1
-      + βv a b i 3 := by
-    rw [r0 2]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1, g1_2]
-    norm_num [Nat.choose]; ring
-  have g0_4 : hm a b i 4 = βv a b i 1*kv a b i 0^3 + 3*βv a b i 2*kv a b i 0^2
-      + 3*βv a b i 2*kv a b i 0*kv a b i 1 + βv a b i 2*kv a b i 1^2 + 3*βv a b i 3*kv a b i 0
-      + 2*βv a b i 3*kv a b i 1 + βv a b i 3*kv a b i 2 + βv a b i 4 := by
-    rw [r0 3]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1, g1_2, g1_3]
-    norm_num [Nat.choose]; ring
-  have f0 : ((qq a b i : ℝ)) * βv a b i 0 + βv a b i 1
-      = 1 := rel_at hba (i := i) (j := 0) (by omega) (by simp only [add_zero])
-  have f1 : ((qq a b i : ℝ) + kv a b i 0) * βv a b i 1 + βv a b i 2
-      = 1 := rel_at hba (i := i) (j := 1) (by omega) (by simp only [kv, add_zero]; ring_nf)
-  have f2 : ((qq a b i : ℝ) + kv a b i 0 + kv a b i 1) * βv a b i 2 + βv a b i 3
-      = 1 := rel_at hba (i := i) (j := 2) (by omega) (by simp only [kv, add_zero]; ring_nf)
-  have f3 : ((qq a b i : ℝ) + kv a b i 0 + kv a b i 1 + kv a b i 2) * βv a b i 3 + βv a b i 4
-      = 1 := rel_at hba (i := i) (j := 3) (by omega) (by simp only [kv, add_zero]; ring_nf)
-  have hH : hankel a b i 3 = !![(βv a b i 0), (βv a b i 1),
-      (βv a b i 1*kv a b i 0 + βv a b i 2); (βv a b i 1), (βv a b i 1*kv a b i 0 + βv a b i 2),
-      (βv a b i 1*kv a b i 0^2 + 2*βv a b i 2*kv a b i 0 + βv a b i 2*kv a b i 1
-      + βv a b i 3); (βv a b i 1*kv a b i 0 + βv a b i 2),
-      (βv a b i 1*kv a b i 0^2 + 2*βv a b i 2*kv a b i 0 + βv a b i 2*kv a b i 1 + βv a b i 3),
-      (βv a b i 1*kv a b i 0^3 + 3*βv a b i 2*kv a b i 0^2 + 3*βv a b i 2*kv a b i 0*kv a b i 1
-      + βv a b i 2*kv a b i 1^2 + 3*βv a b i 3*kv a b i 0 + 2*βv a b i 3*kv a b i 1
-      + βv a b i 3*kv a b i 2 + βv a b i 4)] := by
-    ext j l; fin_cases j <;> fin_cases l <;> simp [hankel, g0_0, g0_1, g0_2, g0_3, g0_4]
   have ha : (a : ℝ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
   unfold hankelInv
-  rw [hH, hankel3_alg (βv a b i 0) (βv a b i 1) (βv a b i 2) (βv a b i 3) (βv a b i 4)
-      (qq a b i : ℝ) (kv a b i 0) (kv a b i 1) (kv a b i 2) f0 f1 f2 f3]
+  rw [hankel_eq_momSeq hba (by omega) (by omega),
+    hankel3_alg _ _ _ fun j hj => rel_sum hba (by omega)]
   unfold βv
   simp only [add_zero]
   field_simp
@@ -837,181 +821,10 @@ theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
       ((qq a b (i + 3) : ℤ) - qq a b (i + 2)) ((qq a b (i + 4) : ℤ) - qq a b (i + 3))
       ((orb a b i : ℤ) - orb a b (i + 1)) ((orb a b (i + 1) : ℤ) - orb a b (i + 2))
       ((orb a b (i + 2) : ℤ) - orb a b (i + 3)) : ℤ) : ℝ) := by
-  have r0 : ∀ s, hm a b i (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 0 ^ (s - t) * hm a b (i + 1) t := fun s => hm_succ (i := i) (by omega) s
-  have r1 : ∀ s, hm a b (i + 1) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 1 ^ (s - t) * hm a b (i + 2) t := fun s => hm_succ (i := (i + 1)) (by omega) s
-  have r2 : ∀ s, hm a b (i + 2) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 2 ^ (s - t) * hm a b (i + 3) t := fun s => hm_succ (i := (i + 2)) (by omega) s
-  have r3 : ∀ s, hm a b (i + 3) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 3 ^ (s - t) * hm a b (i + 4) t := fun s => hm_succ (i := (i + 3)) (by omega) s
-  have r4 : ∀ s, hm a b (i + 4) (s + 1) = ∑ t ∈ range (s + 1), (s.choose t : ℝ) *
-      kv a b i 4 ^ (s - t) * hm a b (i + 5) t := fun s => hm_succ (i := (i + 4)) (by omega) s
-  have g5_0 : hm a b (i + 5) 0 = βv a b i 5 := hm_zero hba (P a b - ((i + 5)) - 1) (i + 5)
-      (by omega)
-  have g5_1 : hm a b (i + 5) 1 = βv a b i 6 := hm_one hba (i := (i + 5)) (by omega)
-  have g4_0 : hm a b (i + 4) 0 = βv a b i 4 := hm_zero hba (P a b - ((i + 4)) - 1) (i + 4)
-      (by omega)
-  have g4_1 : hm a b (i + 4) 1 = βv a b i 5 := by
-    rw [r4 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g5_0]
-    norm_num [Nat.choose]
-  have g4_2 : hm a b (i + 4) 2 = βv a b i 5*kv a b i 4 + βv a b i 6 := by
-    rw [r4 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g5_0, g5_1]
-    norm_num [Nat.choose]; ring
-  have g3_0 : hm a b (i + 3) 0 = βv a b i 3 := hm_zero hba (P a b - ((i + 3)) - 1) (i + 3)
-      (by omega)
-  have g3_1 : hm a b (i + 3) 1 = βv a b i 4 := by
-    rw [r3 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g4_0]
-    norm_num [Nat.choose]
-  have g3_2 : hm a b (i + 3) 2 = βv a b i 4*kv a b i 3 + βv a b i 5 := by
-    rw [r3 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g4_0, g4_1]
-    norm_num [Nat.choose]; ring
-  have g3_3 : hm a b (i + 3) 3 = βv a b i 4*kv a b i 3^2 + 2*βv a b i 5*kv a b i 3
-      + βv a b i 5*kv a b i 4 + βv a b i 6 := by
-    rw [r3 2]; simp only [sum_range_succ, sum_range_zero, zero_add, g4_0, g4_1, g4_2]
-    norm_num [Nat.choose]; ring
-  have g2_0 : hm a b (i + 2) 0 = βv a b i 2 := hm_zero hba (P a b - ((i + 2)) - 1) (i + 2)
-      (by omega)
-  have g2_1 : hm a b (i + 2) 1 = βv a b i 3 := by
-    rw [r2 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g3_0]
-    norm_num [Nat.choose]
-  have g2_2 : hm a b (i + 2) 2 = βv a b i 3*kv a b i 2 + βv a b i 4 := by
-    rw [r2 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g3_0, g3_1]
-    norm_num [Nat.choose]; ring
-  have g2_3 : hm a b (i + 2) 3 = βv a b i 3*kv a b i 2^2 + 2*βv a b i 4*kv a b i 2
-      + βv a b i 4*kv a b i 3 + βv a b i 5 := by
-    rw [r2 2]; simp only [sum_range_succ, sum_range_zero, zero_add, g3_0, g3_1, g3_2]
-    norm_num [Nat.choose]; ring
-  have g2_4 : hm a b (i + 2) 4 = βv a b i 3*kv a b i 2^3 + 3*βv a b i 4*kv a b i 2^2
-      + 3*βv a b i 4*kv a b i 2*kv a b i 3 + βv a b i 4*kv a b i 3^2 + 3*βv a b i 5*kv a b i 2
-      + 2*βv a b i 5*kv a b i 3 + βv a b i 5*kv a b i 4 + βv a b i 6 := by
-    rw [r2 3]; simp only [sum_range_succ, sum_range_zero, zero_add, g3_0, g3_1, g3_2, g3_3]
-    norm_num [Nat.choose]; ring
-  have g1_0 : hm a b (i + 1) 0 = βv a b i 1 := hm_zero hba (P a b - ((i + 1)) - 1) (i + 1)
-      (by omega)
-  have g1_1 : hm a b (i + 1) 1 = βv a b i 2 := by
-    rw [r1 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0]
-    norm_num [Nat.choose]
-  have g1_2 : hm a b (i + 1) 2 = βv a b i 2*kv a b i 1 + βv a b i 3 := by
-    rw [r1 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0, g2_1]
-    norm_num [Nat.choose]; ring
-  have g1_3 : hm a b (i + 1) 3 = βv a b i 2*kv a b i 1^2 + 2*βv a b i 3*kv a b i 1
-      + βv a b i 3*kv a b i 2 + βv a b i 4 := by
-    rw [r1 2]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0, g2_1, g2_2]
-    norm_num [Nat.choose]; ring
-  have g1_4 : hm a b (i + 1) 4 = βv a b i 2*kv a b i 1^3 + 3*βv a b i 3*kv a b i 1^2
-      + 3*βv a b i 3*kv a b i 1*kv a b i 2 + βv a b i 3*kv a b i 2^2 + 3*βv a b i 4*kv a b i 1
-      + 2*βv a b i 4*kv a b i 2 + βv a b i 4*kv a b i 3 + βv a b i 5 := by
-    rw [r1 3]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0, g2_1, g2_2, g2_3]
-    norm_num [Nat.choose]; ring
-  have g1_5 : hm a b (i + 1) 5 = βv a b i 2*kv a b i 1^4 + 4*βv a b i 3*kv a b i 1^3
-      + 6*βv a b i 3*kv a b i 1^2*kv a b i 2 + 4*βv a b i 3*kv a b i 1*kv a b i 2^2
-      + βv a b i 3*kv a b i 2^3 + 6*βv a b i 4*kv a b i 1^2 + 8*βv a b i 4*kv a b i 1*kv a b i 2
-      + 4*βv a b i 4*kv a b i 1*kv a b i 3 + 3*βv a b i 4*kv a b i 2^2
-      + 3*βv a b i 4*kv a b i 2*kv a b i 3 + βv a b i 4*kv a b i 3^2 + 4*βv a b i 5*kv a b i 1
-      + 3*βv a b i 5*kv a b i 2 + 2*βv a b i 5*kv a b i 3 + βv a b i 5*kv a b i 4 + βv a b i 6 := by
-    rw [r1 4]; simp only [sum_range_succ, sum_range_zero, zero_add, g2_0, g2_1, g2_2, g2_3, g2_4]
-    norm_num [Nat.choose]; ring
-  have g0_0 : hm a b i 0 = βv a b i 0 := hm_zero hba (P a b - (i) - 1) i (by omega)
-  have g0_1 : hm a b i 1 = βv a b i 1 := by
-    rw [r0 0]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0]
-    norm_num [Nat.choose]
-  have g0_2 : hm a b i 2 = βv a b i 1*kv a b i 0 + βv a b i 2 := by
-    rw [r0 1]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1]
-    norm_num [Nat.choose]; ring
-  have g0_3 : hm a b i 3 = βv a b i 1*kv a b i 0^2 + 2*βv a b i 2*kv a b i 0 + βv a b i 2*kv a b i 1
-      + βv a b i 3 := by
-    rw [r0 2]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1, g1_2]
-    norm_num [Nat.choose]; ring
-  have g0_4 : hm a b i 4 = βv a b i 1*kv a b i 0^3 + 3*βv a b i 2*kv a b i 0^2
-      + 3*βv a b i 2*kv a b i 0*kv a b i 1 + βv a b i 2*kv a b i 1^2 + 3*βv a b i 3*kv a b i 0
-      + 2*βv a b i 3*kv a b i 1 + βv a b i 3*kv a b i 2 + βv a b i 4 := by
-    rw [r0 3]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1, g1_2, g1_3]
-    norm_num [Nat.choose]; ring
-  have g0_5 : hm a b i 5 = βv a b i 1*kv a b i 0^4 + 4*βv a b i 2*kv a b i 0^3
-      + 6*βv a b i 2*kv a b i 0^2*kv a b i 1 + 4*βv a b i 2*kv a b i 0*kv a b i 1^2
-      + βv a b i 2*kv a b i 1^3 + 6*βv a b i 3*kv a b i 0^2 + 8*βv a b i 3*kv a b i 0*kv a b i 1
-      + 4*βv a b i 3*kv a b i 0*kv a b i 2 + 3*βv a b i 3*kv a b i 1^2
-      + 3*βv a b i 3*kv a b i 1*kv a b i 2 + βv a b i 3*kv a b i 2^2 + 4*βv a b i 4*kv a b i 0
-      + 3*βv a b i 4*kv a b i 1 + 2*βv a b i 4*kv a b i 2 + βv a b i 4*kv a b i 3 + βv a b i 5 := by
-    rw [r0 4]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1, g1_2, g1_3, g1_4]
-    norm_num [Nat.choose]; ring
-  have g0_6 : hm a b i 6 = βv a b i 1*kv a b i 0^5 + 5*βv a b i 2*kv a b i 0^4
-      + 10*βv a b i 2*kv a b i 0^3*kv a b i 1 + 10*βv a b i 2*kv a b i 0^2*kv a b i 1^2
-      + 5*βv a b i 2*kv a b i 0*kv a b i 1^3 + βv a b i 2*kv a b i 1^4 + 10*βv a b i 3*kv a b i 0^3
-      + 20*βv a b i 3*kv a b i 0^2*kv a b i 1 + 10*βv a b i 3*kv a b i 0^2*kv a b i 2
-      + 15*βv a b i 3*kv a b i 0*kv a b i 1^2 + 15*βv a b i 3*kv a b i 0*kv a b i 1*kv a b i 2
-      + 5*βv a b i 3*kv a b i 0*kv a b i 2^2 + 4*βv a b i 3*kv a b i 1^3
-      + 6*βv a b i 3*kv a b i 1^2*kv a b i 2 + 4*βv a b i 3*kv a b i 1*kv a b i 2^2
-      + βv a b i 3*kv a b i 2^3 + 10*βv a b i 4*kv a b i 0^2 + 15*βv a b i 4*kv a b i 0*kv a b i 1
-      + 10*βv a b i 4*kv a b i 0*kv a b i 2 + 5*βv a b i 4*kv a b i 0*kv a b i 3
-      + 6*βv a b i 4*kv a b i 1^2 + 8*βv a b i 4*kv a b i 1*kv a b i 2
-      + 4*βv a b i 4*kv a b i 1*kv a b i 3 + 3*βv a b i 4*kv a b i 2^2
-      + 3*βv a b i 4*kv a b i 2*kv a b i 3 + βv a b i 4*kv a b i 3^2 + 5*βv a b i 5*kv a b i 0
-      + 4*βv a b i 5*kv a b i 1 + 3*βv a b i 5*kv a b i 2 + 2*βv a b i 5*kv a b i 3
-      + βv a b i 5*kv a b i 4 + βv a b i 6 := by
-    rw [r0 5]; simp only [sum_range_succ, sum_range_zero, zero_add, g1_0, g1_1, g1_2, g1_3, g1_4,
-        g1_5]
-    norm_num [Nat.choose]; ring
-  have f0 : ((qq a b i : ℝ)) * βv a b i 0 + βv a b i 1
-      = 1 := rel_at hba (i := i) (j := 0) (by omega) (by simp only [add_zero])
-  have f1 : ((qq a b i : ℝ) + kv a b i 0) * βv a b i 1 + βv a b i 2
-      = 1 := rel_at hba (i := i) (j := 1) (by omega) (by simp only [kv, add_zero]; ring_nf)
-  have f2 : ((qq a b i : ℝ) + kv a b i 0 + kv a b i 1) * βv a b i 2 + βv a b i 3
-      = 1 := rel_at hba (i := i) (j := 2) (by omega) (by simp only [kv, add_zero]; ring_nf)
-  have f3 : ((qq a b i : ℝ) + kv a b i 0 + kv a b i 1 + kv a b i 2) * βv a b i 3 + βv a b i 4
-      = 1 := rel_at hba (i := i) (j := 3) (by omega) (by simp only [kv, add_zero]; ring_nf)
-  have f4 : ((qq a b i : ℝ) + kv a b i 0 + kv a b i 1 + kv a b i 2 + kv a b i 3) * βv a b i 4
-      + βv a b i 5 = 1 := rel_at hba (i := i) (j := 4) (by omega)
-      (by simp only [kv, add_zero]; ring_nf)
-  have f5 : ((qq a b i : ℝ) + kv a b i 0 + kv a b i 1 + kv a b i 2 + kv a b i 3 + kv a b i 4)
-      * βv a b i 5 + βv a b i 6 = 1 := rel_at hba (i := i) (j := 5) (by omega)
-      (by simp only [kv, add_zero]; ring_nf)
-  have hH : hankel a b i 4 = !![(βv a b i 0), (βv a b i 1), (βv a b i 1*kv a b i 0 + βv a b i 2),
-      (βv a b i 1*kv a b i 0^2 + 2*βv a b i 2*kv a b i 0 + βv a b i 2*kv a b i 1
-      + βv a b i 3); (βv a b i 1), (βv a b i 1*kv a b i 0 + βv a b i 2),
-      (βv a b i 1*kv a b i 0^2 + 2*βv a b i 2*kv a b i 0 + βv a b i 2*kv a b i 1 + βv a b i 3),
-      (βv a b i 1*kv a b i 0^3 + 3*βv a b i 2*kv a b i 0^2 + 3*βv a b i 2*kv a b i 0*kv a b i 1
-      + βv a b i 2*kv a b i 1^2 + 3*βv a b i 3*kv a b i 0 + 2*βv a b i 3*kv a b i 1
-      + βv a b i 3*kv a b i 2 + βv a b i 4); (βv a b i 1*kv a b i 0 + βv a b i 2),
-      (βv a b i 1*kv a b i 0^2 + 2*βv a b i 2*kv a b i 0 + βv a b i 2*kv a b i 1 + βv a b i 3),
-      (βv a b i 1*kv a b i 0^3 + 3*βv a b i 2*kv a b i 0^2 + 3*βv a b i 2*kv a b i 0*kv a b i 1
-      + βv a b i 2*kv a b i 1^2 + 3*βv a b i 3*kv a b i 0 + 2*βv a b i 3*kv a b i 1
-      + βv a b i 3*kv a b i 2 + βv a b i 4), (βv a b i 1*kv a b i 0^4 + 4*βv a b i 2*kv a b i 0^3
-      + 6*βv a b i 2*kv a b i 0^2*kv a b i 1 + 4*βv a b i 2*kv a b i 0*kv a b i 1^2
-      + βv a b i 2*kv a b i 1^3 + 6*βv a b i 3*kv a b i 0^2 + 8*βv a b i 3*kv a b i 0*kv a b i 1
-      + 4*βv a b i 3*kv a b i 0*kv a b i 2 + 3*βv a b i 3*kv a b i 1^2
-      + 3*βv a b i 3*kv a b i 1*kv a b i 2 + βv a b i 3*kv a b i 2^2 + 4*βv a b i 4*kv a b i 0
-      + 3*βv a b i 4*kv a b i 1 + 2*βv a b i 4*kv a b i 2 + βv a b i 4*kv a b i 3
-      + βv a b i 5); (βv a b i 1*kv a b i 0^2 + 2*βv a b i 2*kv a b i 0 + βv a b i 2*kv a b i 1
-      + βv a b i 3), (βv a b i 1*kv a b i 0^3 + 3*βv a b i 2*kv a b i 0^2
-      + 3*βv a b i 2*kv a b i 0*kv a b i 1 + βv a b i 2*kv a b i 1^2 + 3*βv a b i 3*kv a b i 0
-      + 2*βv a b i 3*kv a b i 1 + βv a b i 3*kv a b i 2 + βv a b i 4),
-      (βv a b i 1*kv a b i 0^4 + 4*βv a b i 2*kv a b i 0^3 + 6*βv a b i 2*kv a b i 0^2*kv a b i 1
-      + 4*βv a b i 2*kv a b i 0*kv a b i 1^2 + βv a b i 2*kv a b i 1^3 + 6*βv a b i 3*kv a b i 0^2
-      + 8*βv a b i 3*kv a b i 0*kv a b i 1 + 4*βv a b i 3*kv a b i 0*kv a b i 2
-      + 3*βv a b i 3*kv a b i 1^2 + 3*βv a b i 3*kv a b i 1*kv a b i 2 + βv a b i 3*kv a b i 2^2
-      + 4*βv a b i 4*kv a b i 0 + 3*βv a b i 4*kv a b i 1 + 2*βv a b i 4*kv a b i 2
-      + βv a b i 4*kv a b i 3 + βv a b i 5), (βv a b i 1*kv a b i 0^5 + 5*βv a b i 2*kv a b i 0^4
-      + 10*βv a b i 2*kv a b i 0^3*kv a b i 1 + 10*βv a b i 2*kv a b i 0^2*kv a b i 1^2
-      + 5*βv a b i 2*kv a b i 0*kv a b i 1^3 + βv a b i 2*kv a b i 1^4 + 10*βv a b i 3*kv a b i 0^3
-      + 20*βv a b i 3*kv a b i 0^2*kv a b i 1 + 10*βv a b i 3*kv a b i 0^2*kv a b i 2
-      + 15*βv a b i 3*kv a b i 0*kv a b i 1^2 + 15*βv a b i 3*kv a b i 0*kv a b i 1*kv a b i 2
-      + 5*βv a b i 3*kv a b i 0*kv a b i 2^2 + 4*βv a b i 3*kv a b i 1^3
-      + 6*βv a b i 3*kv a b i 1^2*kv a b i 2 + 4*βv a b i 3*kv a b i 1*kv a b i 2^2
-      + βv a b i 3*kv a b i 2^3 + 10*βv a b i 4*kv a b i 0^2 + 15*βv a b i 4*kv a b i 0*kv a b i 1
-      + 10*βv a b i 4*kv a b i 0*kv a b i 2 + 5*βv a b i 4*kv a b i 0*kv a b i 3
-      + 6*βv a b i 4*kv a b i 1^2 + 8*βv a b i 4*kv a b i 1*kv a b i 2
-      + 4*βv a b i 4*kv a b i 1*kv a b i 3 + 3*βv a b i 4*kv a b i 2^2
-      + 3*βv a b i 4*kv a b i 2*kv a b i 3 + βv a b i 4*kv a b i 3^2 + 5*βv a b i 5*kv a b i 0
-      + 4*βv a b i 5*kv a b i 1 + 3*βv a b i 5*kv a b i 2 + 2*βv a b i 5*kv a b i 3
-      + βv a b i 5*kv a b i 4 + βv a b i 6)] := by
-    ext j l; fin_cases j <;> fin_cases l <;> simp [hankel, g0_0, g0_1, g0_2, g0_3, g0_4, g0_5, g0_6]
   have ha : (a : ℝ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
   unfold hankelInv
-  rw [hH, hankel4_alg (βv a b i 0) (βv a b i 1) (βv a b i 2) (βv a b i 3) (βv a b i 4) (βv a b i 5)
-      (βv a b i 6) (qq a b i : ℝ) (kv a b i 0) (kv a b i 1) (kv a b i 2) (kv a b i 3) (kv a b i 4)
-      f0 f1 f2 f3 f4 f5]
+  rw [hankel_eq_momSeq hba (by omega) (by omega),
+    hankel4_alg _ _ _ fun j hj => rel_sum hba (by omega)]
   unfold βv kv sixL
   simp only [add_zero]
   push_cast
