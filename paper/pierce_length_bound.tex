@@ -314,7 +314,8 @@ orbit terms they use exist. We also call a state $i$ a \emph{start}, regarding i
 first index of the block $b_i,b_{i+1},\dots$. We write
 $k_i=q_{i+1}-q_i$ for the quotient \emph{increments} and $d_i=b_i-b_{i+1}$ for the
 \emph{drops}.
-Let $\tau(n)$ be the number of positive divisors of $n$.
+Let $\tau(n)$ be the number of positive divisors of $n$, and
+$\tau_{\max}(Y)=\max_{1\le j\le Y}\tau(j)$.
 We write $F\ll_\eta G$ when $F\le C_\eta G$, with the constant uniform in the
 dividend and orbit. A factor denoted $a^{o(1)}$ is bounded by
 $C_\eta a^\eta$ for every fixed $\eta>0$; such factors include the divisor
@@ -513,7 +514,7 @@ they are small. The two agree at $B=a^{2/5}$, where both equal
 $a^{3/10+o(1)}$. Multiplying suitable powers of the two bounds eliminates $A$
 (Corollary~\ref{cor:window}), so no case split is needed. Throughout,
 \[
- \Delta=\Delta(a)=\max_{1\le n\le 2a}\tau(n)\ll_\eta a^\eta
+ \Delta=\Delta(a)=\tau_{\max}(2a)\ll_\eta a^\eta
 \]
 by Lemma~\ref{lem:div}. In this section $x_0,\dots,x_{T-1}$ is a window run in
 $[A,2A)$, and $q_j=\lfloor a/x_j\rfloor$ are its quotients.
@@ -716,7 +717,7 @@ $T\asymp a^{3/10}$ remainders in a window $[A,2A)$ with $A\asymp a^{3/5}$, quoti
 $q\asymp a^{2/5}$ and typical increments $k\asymp a^{1/10}$. At this scale the rank-four Hankel
 invariant $I_4(i)=L(i)$ has size $\asymp aH^6/q^4\asymp 1$, where $H$ bounds the increments.
 The idea is that a positive integer of bounded size carries information. The labels
-$I_4(i),I_4(i+1),I_4(i+2)$, together with four further integers of the same size, form a
+$I_4(i),I_4(i+1),I_4(i+2)$, together with seven further $3\times3$ minors of the same size, form a
 \emph{pattern} (made precise in Section~\ref{sec:minors}). States with a given pattern satisfy two linear equations and one quadratic
 equation in five consecutive increments (Lemma~\ref{lem:pattern}), and the quotient $q_i$ is a
 root of a quartic fixed by the pattern and the increments (Lemma~\ref{lem:multid}). So the
@@ -1036,7 +1037,8 @@ $D_{01}=I_3(i)$ is the curvature of Section~\ref{sec:curv};
 $W=(W_0,W_1,W_2)$ and $J$ the joint coordinates, and $S$, $Y$ their height
 bounds;
 \item $\operatorname{ord}_P$ is the order at a point $P$, positive at zeros and
-negative at poles, $e$ is a multiplicity at infinity, $d$ the degree of a component,
+negative at poles, $e$ is a multiplicity at infinity, $d$ the degree of a component (not to be
+confused with the drops $d_j$),
 $\delta$ the degree of a graph and $\delta_{\min}=10n+7m$ its lower bound
 (Lemma~\ref{lem:jointpowereddegree}).
 \end{itemize}
@@ -1088,7 +1090,9 @@ $\rho k_0=\varphi k_1+\chi k_2+k_3$. Let
 and let $\gamma'$ be the same expression in $\rho',\varphi',\chi'$. (For example,
 if $(\rho,\varphi,\chi)=(\rho',\varphi',\chi')=(\alpha,2\alpha+1,-\alpha-2)$, then
 $\sum_l\gamma_lz^l=(z-1)^3(z-\alpha)$, and constant increments $k_j=t$ satisfy the
-linear and quadratic relations for every $t$.) Put
+linear and quadratic relations for every $t$: since $z=1$ is a triple root,
+$\sum_l\gamma_ll^r=0$ for $r\le2$, and with $s_j=jt$ these sums are exactly the
+$k$- and $r$-relations.) Put
 \[
  P_4(x)=\sum_{j=0}^4\gamma_j\prod_{\ell=0}^{j-1}(x-s_\ell),
  \qquad
@@ -1147,12 +1151,12 @@ $\nu_i\bigl(xg(x)\bigr)=\nu_{i+1}\bigl(g(x+k_0)\bigr)$. Hence, for $j<4$,
 $\nu_i(x^jZ)=\nu_{i+1}\bigl((x+k_0)^j\pi_{i+1}(x)\bigr)=0$. So the monic
 quintic $Z$ differs from the monic orthogonal polynomial $\pi^{(5)}$ of degree
 five for $\nu_i$ by a multiple of $P_4$, and $\operatorname{Res}(P_4,Z)=
-\operatorname{Res}(P_4,\pi^{(5)})$. Let $n_j$ be the squared $\nu_i$-norm of
-the monic orthogonal polynomial of degree $j$. The three-term recurrence,
-whose coefficients are the ratios $n_j/n_{j-1}$, gives
+\operatorname{Res}(P_4,\pi^{(5)})$. Let $\|\pi^{(j)}\|^2$ be the squared $\nu_i$-norm of
+the monic orthogonal polynomial $\pi^{(j)}$ of degree $j$. The three-term recurrence,
+whose coefficients are the ratios $\|\pi^{(j)}\|^2/\|\pi^{(j-1)}\|^2$, gives
 \[
- \operatorname{Res}(P_4,\pi^{(5)})=\prod_{j=1}^4\Bigl(\frac{n_j}{n_{j-1}}\Bigr)^j
- =\frac{n_4^4}{n_0n_1n_2n_3}
+ \operatorname{Res}(P_4,\pi^{(5)})=\prod_{j=1}^4\Bigl(\frac{\|\pi^{(j)}\|^2}{\|\pi^{(j-1)}\|^2}\Bigr)^j
+ =\frac{\|\pi^{(4)}\|^8}{\prod_{j<4}\|\pi^{(j)}\|^2}
  =\frac{\Psi^4}{\det\bigl(\nu_i(x^{r+s})\bigr)_{r,s<4}}
  =\frac{a\Psi^4}{I_4(i)}.
 \]
@@ -1194,9 +1198,10 @@ deleting column $j$, and define
 At a good start the matrix annihilates the moment vector
 $(h_i(0),\dots,h_i(8))$ and has rank eight. Indeed, the resultant in
 \eqref{eq:jointcurve} is positive, so $P_4$ and $Z$ are coprime.
-The identities
-$q_ih_i(0)+h_i(1)=q_ih_i(1)+h_i(2)=1$, together with
-$h_i(0)h_i(2)>h_i(1)^2$, then give
+So the kernel is spanned by $(c_j)$, and $h_i(j)=\lambda c_j$ for some $\lambda$.
+The normalized division equations $q_ih_i(0)+h_i(1)=q_ih_i(1)+h_i(2)=1$ then
+determine $q_i$ and $\lambda$, and $h_i(0)h_i(2)>h_i(1)^2$ shows that the
+denominators below are nonzero. This gives
 \[
  h_i(j)=\frac{c_j(c_1-c_0)}{c_1^2-c_0c_2}\quad(0\le j\le8),\qquad
  Q=q_i,\qquad E_0=I_3(i).
@@ -1340,13 +1345,11 @@ We have $z_0=0$, and at least one of $z_1,z_2,z_3$ is nonzero.
 \emph{The leading nodes are distinct.}
 The definitions of the nodes give the moment equations of orders zero
 and one. The highest-degree part of $f=0$ gives the equation of order two.
-Finally, the highest-degree part of
-$N_0\operatorname{Res}(P_4,Z)=a\Psi^4$ gives the equation of order three:
-the resultant has total degree at most ten, whereas the cubic part of
-$\Psi$ is $\sum_j\gamma_js_j^3$. This gives~\eqref{eq:joint-leading-moments}.
-For the last of these, multiply the fixed-dividend equation by
-$\varpi^{12e}$ and evaluate at $P$; its left side vanishes and its right side
-is $a(\sum_j\gamma_jz_j^3)^4$.
+Finally, for the equation of order three, multiply the fixed-dividend
+equation by $\varpi^{12e}$ and evaluate at $P$: the left side vanishes because
+the resultant has total degree at most ten, and the right side is
+$a(\sum_j\gamma_jz_j^3)^4$, since the cubic part of $\Psi$ is
+$\sum_j\gamma_js_j^3$. This gives~\eqref{eq:joint-leading-moments}.
 
 If two nodes coincided, there would be at most four distinct values among
 the $z_j$. Grouping the sums in \eqref{eq:joint-leading-moments} by those
@@ -1373,7 +1376,7 @@ Here $[F]_r$ denotes the homogeneous part of total node degree $r$.
 For completeness, the degree-ten formula can be checked without expanding
 the resultant. In the Newton basis beginning at $s_1,s_2,s_3$, its
 $4\times4$ Bezout matrix for $P_4,R_4$ has entry degrees at most
-$4-\max(i,j)$, for $0\le i,j<4$. Only the diagonal term of its determinant
+$4-\max(\alpha,\beta)$, for $0\le\alpha,\beta<4$. Only the diagonal term of its determinant
 can have degree ten. Its four leading diagonal entries are
 \[
 \begin{split}
@@ -1439,40 +1442,40 @@ The other three relations follow by the same column additions and
 permutations.
 
 A fixed zero minor reduces the Pl\"ucker relations to a simple shape by
-Grassmann duality. Up to sign, the ten minors $p_{abc}$ are the Pl\"ucker
-coordinates $q_{de}$, $\{a,b,c,d,e\}=\{0,\dots,4\}$, of the orthogonal
+Grassmann duality. Up to sign, the ten minors $p_{c_1c_2c_3}$ are the Pl\"ucker
+coordinates $\pi_{c_4c_5}$, $\{c_1,\dots,c_5\}=\{0,\dots,4\}$, of the orthogonal
 complement of the row space, a $2$-plane in $\mathbb Q^5$. After permuting
-columns we may take the vanishing minor to be $q_{34}=0$. The Pl\"ucker
-relations $q_{ij}q_{kl}-q_{ik}q_{jl}+q_{il}q_{jk}=0$ then say exactly that
+columns we may take the vanishing minor to be $\pi_{34}=0$. The Pl\"ucker
+relations $\pi_{c_1c_2}\pi_{c_3c_4}-\pi_{c_1c_3}\pi_{c_2c_4}+\pi_{c_1c_4}\pi_{c_2c_3}=0$ then say exactly that
 the integer vectors
 \[
- \mathbf x=(q_{03},q_{13},q_{23}),\qquad \mathbf y=(q_{04},q_{14},q_{24}),\qquad
- \mathbf z=(q_{12},-q_{02},q_{01})
+ \mathbf x=(\pi_{03},\pi_{13},\pi_{23}),\qquad \mathbf y=(\pi_{04},\pi_{14},\pi_{24}),\qquad
+ \mathbf z=(\pi_{12},-\pi_{02},\pi_{01})
 \]
 satisfy $\mathbf x\times\mathbf y=0$ and
 $\mathbf x\cdot\mathbf z=\mathbf y\cdot\mathbf z=0$. They have height $O(X)$
 and are signed rearrangements of the nine remaining minors, so they determine
 the minor vector.
 The case $\mathbf x=\mathbf y=0$ has $O(X^3)$ choices. Otherwise write
-$\mathbf x=r\mathbf v$, $\mathbf y=s\mathbf v$ with $\mathbf v$ primitive.
+$\mathbf x=\mu\mathbf v$, $\mathbf y=\nu\mathbf v$ with $\mathbf v$ primitive.
 In a dyadic range $R\le|\mathbf v|_\infty<2R$, there are $O(R^3)$
-choices for $\mathbf v$ and $O((X/R)^2)$ for $(r,s)$.
+choices for $\mathbf v$ and $O((X/R)^2)$ for $(\mu,\nu)$.
 The equation $\mathbf v\cdot\mathbf z=0$ has $O(X^2/R)$ solutions
 in the box. Indeed, take a coordinate of absolute value
-$n=|\mathbf v|_\infty$. Primitivity gives $n$ admissible pairs of the
-other two coordinates modulo $n$, and the chosen coordinate is then
-determined. Since $R\le n\ll X$, this gives $O(X^2/n)$ choices.
+$N'=|\mathbf v|_\infty$. Primitivity gives $N'$ admissible pairs of the
+other two coordinates modulo $N'$, and the chosen coordinate is then
+determined. Since $R\le N'\ll X$, this gives $O(X^2/N')$ choices.
 Each range therefore contributes $O(X^4)$, and summing over $O(\log(2X))$
 ranges proves the pattern count. Since $X\le a^{O(1)}$, the logarithm is
 absorbed into $a^\eta$.
 
 Now suppose that a line contained in the zero set of~\eqref{eq:jointcurve} passes
-through the free-node triple $s$ of a good start, with direction $w$. Extend $w$ to the five
-nodes linearly, as in Section~\ref{sec:jointcurve}, and write $s(t)=s+tw$. Both equations
+through the free-node triple $\mathbf s$ of a good start, with direction $w$. Extend $w$ to the five
+nodes linearly, as in Section~\ref{sec:jointcurve}, and write $\mathbf s(t)=\mathbf s+tw$. Both equations
 of~\eqref{eq:jointcurve} hold identically in $t$.
 \begin{enumerate}
 \item The resultant has degree at most ten in $t$, so the $t^{12}$ coefficient of the second
-equation, $-a\bigl(\sum_j\gamma_jw_j^3\bigr)^4$, vanishes. Then $\Psi(s(t))$ has degree at most
+equation, $-a\bigl(\sum_j\gamma_jw_j^3\bigr)^4$, vanishes. Then $\Psi(\mathbf s(t))$ has degree at most
 two, so $\Psi^4$ has degree at most eight, and the $t^{10}$ coefficient
 $[\mathcal R]_{10}(w)$ of the resultant, given by~\eqref{eq:joint-resultant-leading}, vanishes
 too: two coordinates of $w$ coincide.
@@ -1490,9 +1493,9 @@ of~\eqref{eq:jointexceptional}, $w$ is one of
 follows from a row and column degree count in the Newton-basis Bezout matrix used in the proof
 of Lemma~\ref{lem:jointleading}, in which coinciding leading nodes lower the degrees of the
 corresponding entries. Hence
-$\Psi^4$ has degree at most six, $\Psi(s(t))$ is affine in $t$, and its second difference
-$\Psi(s+w)+\Psi(s-w)-2\Psi(s)$ vanishes.
-\item Expanding this second difference, and using $f=0$ at $s\pm w$, gives respectively
+$\Psi^4$ has degree at most six, $\Psi(\mathbf s(t))$ is affine in $t$, and its second difference
+$\Psi(\mathbf s+w)+\Psi(\mathbf s-w)-2\Psi(\mathbf s)$ vanishes.
+\item Expanding this second difference, and using $f=0$ at $\mathbf s\pm w$, gives respectively
 \[
  -2\rho s_3,\qquad 2(\rho+\varphi)(k_1-1),\qquad 2(\chi-1)(k_2-1),\qquad
  2\bigl((\varphi-\chi)-(s_4-s_1)\bigr).
@@ -1616,14 +1619,12 @@ integers are controlled by
 for suitable absolute constants $c_S,c_Y$.
 
 \begin{lemma}[Heights of the joint coordinates]\label{lem:jointheights}
-At good starts, all ten minors $D_{jl}=d_jk_l-d_lk_j$ with $0\le j<l\le4$ satisfy
+At good starts, all ten $2\times2$ minors $D_{jl}=d_jk_l-d_lk_j$ with $0\le j<l\le4$ satisfy
 $|D_{jl}|\le S$; in particular $|W_j|\le S$. Moreover $1\le J\le Y$.
 \end{lemma}
 \begin{proof}
 Write $q=q_i$, and recall $q\ge a/(4A)$ (Lemma~\ref{lem:fourAq}). The proof of
-Proposition~\ref{prop:allminors} gives
-$d_j/a=k_j/q^2-(r_j+k_j)/q^3+e_{j+1}-e_j$ with $|e_j|\ll H^3/q^4$ and
-$|r_j|\le10H^2$ for $j\le4$, so $d_j/a=k_j/q^2+\delta_j$ with $|\delta_j|\ll H^2/q^3$.
+Proposition~\ref{prop:allminors} gives $d_j/a=k_j/q^2+O(H^2/q^3)$ for $j\le4$.
 In $D_{jl}=d_jk_l-d_lk_j$ the leading terms cancel, so $|D_{jl}|q^3\ll aH^3$, and
 $q\ge a/(4A)$ gives $|D_{jl}|\le S$ for suitable $c_S$, including the floor because the
 minors are integers.
@@ -2176,10 +2177,10 @@ shows that $W'=G_pW$ for a constant matrix $G_p$. We use $W'$ rather than $G_pW$
 visibly integral, while $G_p$ has rational entries.
 
 \begin{lemma}[Coordinates in the reduced basis]\label{lem:latticecoords}
-There are matrices $B_p,G_p\in\mathrm{GL}_3(\mathbb Q)$, depending only on $p$, such that at
+There are matrices $\mathcal T_p,G_p\in\mathrm{GL}_3(\mathbb Q)$, depending only on $p$, such that at
 every good start with pattern $p$
 \[
- (s_1,s_2,s_3)=B_p\zeta,\qquad W'=G_pW,\qquad
+ (s_1,s_2,s_3)=\mathcal T_p\zeta,\qquad W'=G_pW,\qquad
  |\zeta|_\infty\le\frac{3H}{\lambda},\qquad |W'|_\infty\le\frac{8S}{3\lambda^2}.
 \]
 \end{lemma}
@@ -2188,7 +2189,7 @@ every good start with pattern $p$
 By Lemma~\ref{lem:lift}, $p_\pi(k_0,k_1,k_2)=\mathcal Lk_\pi$, where $\mathcal L$ has rows
 $L_0,L_1,L_2$ and $\det\mathcal L=p_\pi^2p_{012}\ne0$, since $p_{012}=N_0=I_4(i)\ge1$ at a good
 start. With $k_\pi=(\mathbf f_1\,\mathbf f_2\,\mathbf f_3)\zeta$ and the cumulative sums $s_j=k_0+\dots+k_{j-1}$,
-this gives $B_p$. Since $|k_\pi|^2\le3H^2$ and $|\mathbf f_i|\ge\lambda$, Lemma~\ref{lem:reduce} gives
+this gives $\mathcal T_p$. Since $|k_\pi|^2\le3H^2$ and $|\mathbf f_i|\ge\lambda$, Lemma~\ref{lem:reduce} gives
 $|\zeta_i|\le(8/3)H/\lambda\le3H/\lambda$.
 
 For the curvature, $W=(D_{12},-D_{02},D_{01})=(d_0,d_1,d_2)\times(k_0,k_1,k_2)$, and
@@ -2211,7 +2212,7 @@ graph of
 \[
  \bigl(s_1,s_2,s_3,(W'_1)^m,(W'_2)^m,(W'_3)^m,J^n\bigr)
 \]
-under the linear map that replaces the nodes $s$ by $\zeta=B_p^{-1}s$.
+under the linear map that replaces the nodes $s$ by $\zeta=\mathcal T_p^{-1}s$.
 
 \begin{lemma}[Degree of the lattice graph]\label{lem:latticedegree}
 The degree $\delta'$ of $\Gamma'_{m,n}$ satisfies
@@ -2388,7 +2389,7 @@ $(q_i+s_j)b_j+b_{j+1}=a$ by $\gamma_j$ and sum over $j\le4$. The terms in $a$
 and in $q_i$ cancel, and writing $b_j=b_0-S_j(\mathbf d)$ and $b_{j+1}=b_j-d_j$ leaves
 $-\sum_j\gamma_js_jS_j(\mathbf d)-\sum_j\gamma_jd_j=0$. Hence $\mathbf d\cdot V=0$.
 
-Since $W\cdot(r_0,r_1,r_2)=N_0>0$ by~\eqref{eq:jointdot}, $W\ne0$, so $\mathbf d$
+Since $W\cdot(r_0,r_1,r_2)=\det(\mathbf d,\mathbf k,\mathbf r)=p_{012}=N_0>0$, $W\ne0$, so $\mathbf d$
 and $\mathbf k$ are independent and $V$ is a multiple of $W=\mathbf d\times\mathbf k$.
 To find the multiple, expand: with $r_j=k_j(s_j+s_{j+1})+k_{j+1}$,
 \[
@@ -2421,11 +2422,11 @@ curve may pass through $\mathbf k_*$, where all three forms vanish and the
 zeros of $J$ need not be poles of $W$; Lemma~\ref{lem:polarbase} below bounds
 the loss there.
 
-We add the three denominator-cleared polar identities to the retained
-cuts of Section~\ref{sec:jointrecon}. They have bounded degree, so, as in
-Lemma~\ref{lem:jointcuts}, a cut that is not an identity on a component removes
-all but $O(1)$ of its points. Throughout this section, a \emph{retained}
-component satisfies the earlier cuts and these three new ones; on it,
+We add the three cleared polar identities to the cuts $\mathcal C_N,\mathcal C_R$ of
+Section~\ref{sec:jointrecon}. They have bounded degree, so, as in
+Lemma~\ref{lem:jointcuts}, a component on which one of them does not vanish
+identically contains $O(1)$ good starts. Throughout this section, \emph{retained}
+means that all five cuts vanish identically; on a retained component,
 \[
  JW=N_0^2(G\mathbf k+\ell)
 \]
@@ -2441,8 +2442,7 @@ the forms $G\mathbf k+\ell$ is
 summed over the affine points $P$ of the normalization of $C$; its degree
 weights $P$ by $[\mathbb Q(P):\mathbb Q]$. Since
 $G\mathbf k+\ell=G(\mathbf k-\mathbf k_*)$, it is supported over $\mathbf k_*$,
-and since $G$ is invertible the homogenized forms $G\mathbf k+\ell k_h$ have no
-common zero at infinity.
+the only common zero of the homogenized forms.
 
 \begin{lemma}[The base divisor]\label{lem:polarbase}
 There is a fixed rational polynomial $\Theta$ in the ten minor coordinates,
@@ -2461,12 +2461,15 @@ These conditions make the base point and its nodes well defined. Since
 $\nabla f(\mathbf k_*)=-\ell$ and $\ell_0\ne0$, the quadric is smooth at
 $\mathbf k_*$. Take $\xi_1=k_1-k_{*,1}$ and $\xi_2=k_2-k_{*,2}$ as local
 coordinates and solve $f=0$ for $k_0$ by formal power series.
-Let $R_1(x;\xi_1,\xi_2)$ be the linear part of the Newton remainder just computed,
+Let $R_1(x;\xi_1,\xi_2)$ be the linear part of the remainder of $Z$ modulo $P_4$
+computed after Proposition~\ref{prop:polaridentity},
 and let $\Psi_1(\xi_1,\xi_2)$ be the linear part of $\Psi$ on this tangent plane.
-The curve equation has order at least four and quartic initial form
+Let $F=N_0\operatorname{Res}(P_4,Z)-a\Psi^4$ be the fixed-dividend equation,
+restricted to the quadric $f=0$. It has order at least four at $\mathbf k_*$, with
+quartic initial form
 \begin{equation}\label{eq:polarinitial}
- N_0\mathcal I_4(\xi_1,\xi_2)-a\Psi_1(\xi_1,\xi_2)^4,\qquad
- \mathcal I_4(\xi_1,\xi_2)=\operatorname{Res}_{x}(P_{4,*},R_1).
+ N_0\mathcal R_*(\xi_1,\xi_2)-a\Psi_1(\xi_1,\xi_2)^4,\qquad
+ \mathcal R_*(\xi_1,\xi_2)=\operatorname{Res}_{x}(P_{4,*},R_1).
 \end{equation}
 To see that only first derivatives enter, compute the resultant as a
 $4\times4$ B\'ezout determinant. Each row vanishes at $\mathbf k_*$, so its term of
@@ -2476,7 +2479,7 @@ formal solution of $f=0$ cannot change~\eqref{eq:polarinitial}.
 \emph{Step 2: the polynomial $\Theta$.} Consider the rational function of the
 pattern parameters
 \[
- M=\mathcal I_4(1,0)\Psi_1(0,1)^4-\mathcal I_4(0,1)\Psi_1(1,0)^4.
+ M=\mathcal R_*(1,0)\Psi_1(0,1)^4-\mathcal R_*(0,1)\Psi_1(1,0)^4.
 \]
 If $M\ne0$ and $N_0\ne0$, the two axis coefficients in
 \eqref{eq:polarinitial} cannot both vanish, for any $a$. Now write $M$, the
@@ -2498,8 +2501,8 @@ the first derivatives, giving
 \]
 
 \emph{Step 3: from the initial form to the base divisor.}
-Let $\mathcal O$ be the local ring of the smooth quadric at $\mathbf k_*$ and let $F$ be the
-curve equation. Choose $g=\xi_1$ or $g=\xi_2$ so that the complementary axis in
+Let $\mathcal O$ be the local ring of the smooth quadric at $\mathbf k_*$, with $F$ as in
+Step~1. Choose $g=\xi_1$ or $g=\xi_2$ so that the complementary axis in
 \eqref{eq:polarinitial} has nonzero coefficient. The completion of
 $\mathcal O/(g)$ is a power-series ring in one variable, in which $F$ has order
 exactly four. Consequently
@@ -2580,7 +2583,7 @@ irreducibility certifies this, and which can be sieved over patterns.
 
 Let $P$ be a point above infinity on the normalization of a nonexceptional component.
 The five leading nodes are distinct by Lemma~\ref{lem:jointleading}.
-Scale them to $(0,1,t,y,z)$, and put
+Scale them to $(0,1,t,y,z)$. The first moment equation gives
 \[
  z=-\gamma_1-\gamma_2t-\gamma_3y.
 \]
@@ -2624,8 +2627,8 @@ Indeed, the identities
 $\gamma_j\prod_{l\ne j}(z_j-z_l)=\mathcal V_5$ for $0\le j<4$
 follow by evaluating the first four moment relations; their product is
 \eqref{eq:branchbarycentric}.
-Let $y_\infty=1/s_1$. The value
-$\psi_P=(y_\infty^5\Psi^2)(P)\in\mathbb Q(P)$ is defined and nonzero, because
+The value
+$\psi_P=(\Psi^2/s_1^5)(P)\in\mathbb Q(P)$ is defined and nonzero, because
 $\operatorname{ord}_P\Psi=-5e_P/2$.
 Taking leading terms in the curve equation gives
 $N_0R_0=a\psi_P^2$. Thus the residue field $\mathbb Q(P)$ contains
@@ -2641,9 +2644,9 @@ For a slope $c$ define
 \]
 and the label polynomial
 \begin{equation}\label{eq:branchlabel}
- L_{a,N_0,c,\gamma}(Y)=
+ L_{a,N_0,c,\gamma}(\zeta)=
  \operatorname{Res}_t\bigl(E_\gamma(t),
-       N_0\mathfrak d(t)^3(Y-t)^2-c^2aD_\gamma(t)\bigr).
+       N_0\mathfrak d(t)^3(\zeta-t)^2-c^2aD_\gamma(t)\bigr).
 \end{equation}
 Here the resultant means the Sylvester determinant with degree bounds $6$
 and $11$, padding missing coefficients with zero. This convention makes
@@ -2714,14 +2717,14 @@ logarithmic powers, is proved along the same lines in Appendix~\ref{app:hilbert}
 
 \begin{theorem}[Monic specialization estimate]\label{thm:monichilbert}
 For fixed integers $r,d\ge1$ there is a constant $C_{r,d}$ with the following
-property. Let $F\in\mathbb Z[T_1,\dots,T_r][Y]$ be monic in $Y$ and
-irreducible over $\mathbb Q(T_1,\dots,T_r)$. Suppose
-$\deg_YF\le d$, each coefficient of $F$ has total parameter degree at most
+property. Let $F\in\mathbb Z[u_1,\dots,u_r][\zeta]$ be monic in $\zeta$ and
+irreducible over $\mathbb Q(u_1,\dots,u_r)$. Suppose
+$\deg_\zeta F\le d$, each coefficient of $F$ has total parameter degree at most
 $d$, and every integer coefficient has absolute value at most $\mathcal H\ge1$.
 For every integer $B\ge1$,
 \[
- \#\{t\in[-B,B]^r\cap\mathbb Z^r:
-              F(t,Y)\text{ is reducible over }\mathbb Q\}
+ \#\{v\in[-B,B]^r\cap\mathbb Z^r:
+              F(v,\zeta)\text{ is reducible over }\mathbb Q\}
  \le C_{r,d}(1+\log(\mathcal H+1))^4 B^{r-1/2}(1+\log B)^{4r+1}.
 \]
 \end{theorem}
@@ -2741,12 +2744,12 @@ determines the independent parameters above:
 This change is birational. Substitute it in~\eqref{eq:branchlabel} and
 clear denominators by a fixed power of $p_{012}$. To make the resulting
 degree-twelve polynomial monic without changing its generic irreducibility,
-use the following polynomial operation. For $F(Y)=\sum_{i=0}^e F_iY^i$ put
+use the following polynomial operation. For $F(\zeta)=\sum_{i=0}^e F_i\zeta^i$ put
 \[
- \operatorname{mon}_e(F)(Y)=Y^e+\sum_{i<e}F_i F_e^{e-1-i}Y^i.
+ \operatorname{mon}_e(F)(\zeta)=\zeta^e+\sum_{i<e}F_i F_e^{e-1-i}\zeta^i.
 \]
-When $F_e\ne0$, this is $F_e^{e-1}F(Y/F_e)$.
-When $F_e=0$ and $e\ge2$, it is $Y^{e-1}(Y+F_{e-1})$, hence reducible.
+When $F_e\ne0$, this is $F_e^{e-1}F(\zeta/F_e)$.
+When $F_e=0$ and $e\ge2$, it is $\zeta^{e-1}(\zeta+F_{e-1})$, hence reducible.
 Thus irreducibility of a specialized monic normalization implies both
 preservation of degree and irreducibility of the original label.
 
@@ -2772,24 +2775,24 @@ branch-bad is $O_\eta(a^\eta X^{9/2})$.
 \end{lemma}
 \begin{proof}
 Partition the vertices into dyadic bands with
-$|\mathbf p_\square|_\infty\asymp M$, and choose a maximal coordinate as signed pivot $\kappa$.
+$|\mathbf p_\square|_\infty\asymp R$, and choose a maximal coordinate as signed pivot $\kappa$.
 The other three vertex coordinates form $\mathbf u$; put
 $g=\gcd(\kappa,\mathbf u)$. Completing the fifth column amounts to choosing
-$\mathbf w\in[-X,X]^3$ with $\kappa\mid\mathbf u\times\mathbf w$, as in the proof of
+$\mathbf v\in[-X,X]^3$ with $\kappa\mid\mathbf u\times\mathbf v$, as in the proof of
 Proposition~\ref{prop:minorvec}. Since $\kappa$ is maximal only among the
-first four columns, $\mathbf w$ ranges over the full $X$-box rather than
+first four columns, $\mathbf v$ ranges over the full $X$-box rather than
 $[-\kappa,\kappa]^3$, and the congruence count is
 \[
- O(X^3g^2/M^2).
+ O(X^3g^2/R^2).
 \]
 Apply~\eqref{eq:badvertices} after dilation by $g$.
-There are $O_\eta(a^\eta(M/g)^{7/2})$ bad vertices in this common-factor
+There are $O_\eta(a^\eta(R/g)^{7/2})$ bad vertices in this common-factor
 class; imposing the exact gcd only reduces this count. Their total
 contribution is at most
 \[
- O_\eta\left(a^\eta X^3M^{3/2}\sum_{g\ge1}g^{-3/2}\right).
+ O_\eta\left(a^\eta X^3R^{3/2}\sum_{g\ge1}g^{-3/2}\right).
 \]
-The series converges, and summing the bands $M\le X$ proves the claim.
+The series converges, and summing the bands $R\le X$ proves the claim.
 The finitely many pivot choices only change the constant.
 \end{proof}
 
@@ -2810,19 +2813,19 @@ The count includes nonprimitive vectors and the zero vector.
 \end{proposition}
 \begin{proof}
 Choose a minor of maximal absolute value $\kappa>0$ and record its sign.
-The six one-column replacements form $\mathbf u,\mathbf w\in[-\kappa,\kappa]^3$, and the other
-coordinates are signed entries of $(\mathbf u\times \mathbf w)/\kappa$.
+The six one-column replacements form $\mathbf u,\mathbf v\in[-\kappa,\kappa]^3$, and the other
+coordinates are signed entries of $(\mathbf u\times \mathbf v)/\kappa$.
 There are twenty signed pivot charts. In each chart, clearing denominators
-in $\Theta$ gives a nonzero polynomial $\Theta_\pi(\kappa,\mathbf u,\mathbf w)$.
+in $\Theta$ gives a nonzero polynomial $\Theta_\pi(\kappa,\mathbf u,\mathbf v)$.
 Indeed, the product of the pivot minor and $\Theta$ at the minor vector of $\mathcal M_0$
 is a nonzero polynomial in the matrix entries, so it is nonzero at some
 rational matrix; every pivot chart meets the nonvanishing locus.
 
 Put $g=\gcd(\kappa,\mathbf u)$, ${\bar\kappa}=\kappa/g$ and $\mathbf u_0=\mathbf u/g$.
-Since $\gcd({\bar\kappa},\mathbf u_0)=1$, the congruence $\mathbf u_0\times \mathbf w\equiv0\pmod {\bar\kappa}$
+Since $\gcd({\bar\kappa},\mathbf u_0)=1$, the congruence $\mathbf u_0\times \mathbf v\equiv0\pmod {\bar\kappa}$
 is equivalent to
 \[
- \mathbf w\in\Lambda:=\mathbb Z\mathbf u_0+{\bar\kappa}\mathbb Z^3.
+ \mathbf v\in\Lambda:=\mathbb Z\mathbf u_0+{\bar\kappa}\mathbb Z^3.
 \]
 This lattice contains ${\bar\kappa}\mathbb Z^3$, so Lemma~\ref{lem:reduce} gives a basis
 $\mathbf f_1,\mathbf f_2,\mathbf f_3$ of $\Lambda$. We need two bounds on their lengths.
@@ -2837,15 +2840,15 @@ normal lattice $\Lambda_{\bar\kappa}^\perp=\{z\in\mathbb Z^3:{\bar\kappa}\mid z\
 Indeed, if $x,y\in\Lambda$ are independent, then $x\times y={\bar\kappa}z$ for a nonzero
 $z\in\Lambda_{\bar\kappa}^\perp$, so $|x||y|\ge|x\times y|\ge {\bar\kappa}\lambda^\perp(\mathbf u_0)$.
 \end{enumerate}
-By Lemma~\ref{lem:reduce}, the vectors $\mathbf w\in\Lambda$ with
-$|\mathbf w|_\infty\le\kappa$ have basis coordinates in a box with sides
+By Lemma~\ref{lem:reduce}, the vectors $\mathbf v\in\Lambda$ with
+$|\mathbf v|_\infty\le\kappa$ have basis coordinates in a box with sides
 $B_i=O(\kappa/|\mathbf f_i|)$, and by~(a) and ${\bar\kappa}\le\kappa$ these sides are $\gg1$. A
 nonzero polynomial of bounded degree vanishes at
 $\ll B_1B_2B_3/\min_iB_i$ integer points of such a box (the polynomial
 grid-zero bound). Applied to a nonzero fiber $\Theta_\pi(\kappa,\mathbf u,\cdot)$
 in the basis coordinates, this and~(b) give
 \begin{equation}\label{eq:polarfiber}
- \#\{\mathbf w\in\Lambda\cap[-\kappa,\kappa]^3:\Theta_\pi(\kappa,\mathbf u,\mathbf w)=0\}
+ \#\{\mathbf v\in\Lambda\cap[-\kappa,\kappa]^3:\Theta_\pi(\kappa,\mathbf u,\mathbf v)=0\}
  \ll_\Theta\sum_{i<j}\frac{\kappa^2}{|\mathbf f_i||\mathbf f_j|}
  \ll_\Theta\frac{\kappa^2}{{\bar\kappa}\lambda^\perp(\mathbf u_0)}.
 \end{equation}
@@ -2873,8 +2876,7 @@ For fixed $\kappa,g$, equations~\eqref{eq:polarfiber} and
 \eqref{eq:normalreciprocal} bound the nonzero fibers by
 $O_\Theta(\tau({\bar\kappa})\kappa^2{\bar\kappa}^{5/3})$. Sum over $g\mid \kappa$ and $\kappa\le X$ to obtain
 \[
- O_\Theta\bigl(\tau_{\max}(X)^2X^{14/3}\bigr),\qquad
- \tau_{\max}(X)=\max_{1\le j\le X}\tau(j).
+ O_\Theta\bigl(\tau_{\max}(X)^2X^{14/3}\bigr).
 \]
 
 Finally, an identically zero fiber forces one fixed nonzero coefficient
@@ -2909,7 +2911,7 @@ Every window above satisfying~\eqref{eq:jointscale} obeys
 \end{equation}
 \end{proposition}
 \begin{proof}
-The earlier exceptional patterns, conics and bounded cuts contribute
+The earlier exceptional patterns, conics and non-retained components contribute
 $X^5+X^4H^{1/2}$, as in Proposition~\ref{prop:latticewindow}.
 Among the remaining patterns, Lemma~\ref{lem:branchpatterns} and
 Proposition~\ref{prop:polarpatterns} bound those that are branch-bad or
@@ -3052,8 +3054,8 @@ $\sum_jd_j=x_0-x_{T-1}\le A-1$ give the claim.
 and $3^4$ from the bound $a<3Aq$ below. Call an increment $h$ \emph{low} if
 $c_{\rm low}h^3A^4<a^3$. Five consecutive equal increments
 $h$ inside a stretch give six quotients in arithmetic progression. Lemma~\ref{lem:ap} then
-gives $q^4\le324h^3a$. On the other hand, $a<3Aq$, which follows from $a=qx_0+x_1$,
-$x_1<x_0<2A$ and $6A\le a$. Together these give $a^3\le c_{\rm low}h^3A^4$, so $h$ is not low.
+gives $q^4\le324h^3a$. On the other hand, $a<3Aq$, which follows from $a=qx_j+x_{j+1}$, where $x_j$ is the
+first term of the progression, $x_{j+1}<x_j<2A$ and $6A\le a$. Together these give $a^3\le c_{\rm low}h^3A^4$, so $h$ is not low.
 Within a stretch the increments are nonincreasing, so equal values are consecutive. Hence each
 low value occurs at most $4$ times per stretch, and at most $4(r+1)$ times in all.
 Lemma~\ref{lem:mult} bounds the number $\ell$ of low increments by
@@ -3169,7 +3171,7 @@ the source revision and the provenance of its other dependencies.
 The polar refinement brings the exponent close to $5/17$, but does not
 remove that threshold. As explained in Section~\ref{sec:intro}, $5/17$ is the
 exponent obtained if every pattern carries $O(1)$ starts, and the estimates
-here never do better than that: the bounded cuts and conics contribute
+here never do better than that: the non-retained components and conics contribute
 $a^{o(1)}$ starts for each of the $X^{5+o(1)}$ patterns, and the exceptional patterns and
 the windows where the line-exclusion condition~\eqref{eq:jointscale} fails
 also lead to exponent $5/17$, independently of the coordinate powers $m,n$.
@@ -3231,7 +3233,7 @@ The map
  \bigl(\xi_0(t),\xi_1(t),\xi_2(t)\bigr)/\Delta_c
 \]
 parametrizes $C$ over $\mathbb Q$. Its inverse takes an integer value at
-every integer point of $C$, and is injective on those points.
+every integer point of $C$.
 \end{lemma}
 \begin{proof}
 Every free node of a good start has absolute value at most $a$. Three distinct
@@ -3475,19 +3477,19 @@ We prove Theorem~\ref{thm:monichilbert}. The letters in this appendix are local 
 \begin{proof}[Proof of Theorem~\ref{thm:monichilbert}]
 Write $\operatorname{lg}(x)=1+\log(x+1)$. Implied constants depend only on $r,d$.
 
-\emph{Step 1: integer roots in one parameter.} Let $\mathcal A\in\mathbb Z[T][Z]$ be
-monic in $Z$, of $Z$-degree $e\ge2$, irreducible over $\mathbb Q(T)$, of total
+\emph{Step 1: integer roots in one parameter.} Let $\mathcal A\in\mathbb Z[u][Z]$ be
+monic in $Z$, of $Z$-degree $e\ge2$, irreducible over $\mathbb Q(u)$, of total
 degree at most $D$ and height at most $H_0$. We claim that
 \[
- \#\{t\in[-B,B]\cap\mathbb Z:\ \mathcal A(t,Z)\text{ has an integer root}\}
+ \#\{v\in[-B,B]\cap\mathbb Z:\ \mathcal A(v,Z)\text{ has an integer root}\}
  \ll_D\operatorname{lg}(H_0)^4B^{1/e}(1+\log B).
 \]
-An integer root $z$ of $\mathcal A(t,Z)$ satisfies $|z|\le1+(D+1)H_0B^D$. Choose an integer
-$k>D$ with $k\asymp_D\operatorname{lg}(H_0)$, and apply the shear $(T,Z)\mapsto(T,Z+T^k)$.
-The polynomial $\mathcal A_k(T,Z)=\mathcal A(T,Z-T^k)$ is irreducible in $\mathbb Q[T,Z]$, and its
-total degree is exactly $ke$: the term $(Z-T^k)^e$ contributes $\pm T^{ke}$,
+An integer root $z$ of $\mathcal A(v,Z)$ satisfies $|z|\le1+(D+1)H_0B^D$. Choose an integer
+$k>D$ with $k\asymp_D\operatorname{lg}(H_0)$, and apply the shear $(u,Z)\mapsto(u,Z+u^k)$.
+The polynomial $\mathcal A_k(u,Z)=\mathcal A(u,Z-u^k)$ is irreducible in $\mathbb Q[u,Z]$, and its
+total degree is exactly $ke$: the term $(Z-u^k)^e$ contributes $\pm u^{ke}$,
 while every other term has degree at most $D+k(e-1)<ke$. The points
-$(t,z+t^k)$ are integer points of the plane curve $\mathcal A_k=0$ in a box of size
+$(v,z+v^k)$ are integer points of the plane curve $\mathcal A_k=0$ in a box of size
 $B'\ll_DH_0B^k$. By~\eqref{eq:jointexternal} with $\delta=ke$ there are
 $\ll(ke)^3B'^{1/(ke)}(\log B'+ke)$ of them. Here
 $B'^{1/(ke)}\ll_DH_0^{1/(ke)}B^{1/e}\ll B^{1/e}$ by the choice of $k$, while
@@ -3495,68 +3497,68 @@ $ke\ll\operatorname{lg}(H_0)$ and $\log B'\ll\operatorname{lg}(H_0)(1+\log B)$. 
 the claim.
 
 \emph{Step 2: one parameter.} Let $r=1$, and let $y_1,\dots,y_e$ be the roots of
-$F$ in an algebraic closure of $\mathbb Q(T)$; they are integral over
-$\mathbb Z[T]$. For a nonempty proper subset $I\subset\{1,\dots,e\}$ and
+$F$ in an algebraic closure of $\mathbb Q(u)$; they are integral over
+$\mathbb Z[u]$. For a nonempty proper subset $I\subset\{1,\dots,e\}$ and
 $1\le j\le|I|$, let $\sigma_{I,j}$ be the $j$th elementary symmetric function of
-$(y_i)_{i\in I}$. Since $F$ is irreducible, $\prod_{i\in I}(Y-y_i)\notin\mathbb Q(T)[Y]$,
-so some $\sigma_I:=\sigma_{I,j(I)}$ lies outside $\mathbb Q(T)$. The resolvent
+$(y_i)_{i\in I}$. Since $F$ is irreducible, $\prod_{i\in I}(\zeta-y_i)\notin\mathbb Q(u)[\zeta]$,
+so some $\sigma_I:=\sigma_{I,j(I)}$ lies outside $\mathbb Q(u)$. The resolvent
 $\prod_{|I'|=|I|}(Z-\sigma_{I',j(I)})$ is monic in $Z$, and its coefficients are
 fixed integer polynomials in the coefficients of $F$; so it lies in
-$\mathbb Z[T][Z]$ with degree $O(1)$ and height $O(\mathcal H^{O(1)})$. Let $\mathcal A_I$ be its
-monic irreducible factor over $\mathbb Q(T)$ that vanishes at $\sigma_I$. By
-Gauss's lemma $\mathcal A_I\in\mathbb Z[T][Z]$; by Gelfond's factor-height inequality its
+$\mathbb Z[u][Z]$ with degree $O(1)$ and height $O(\mathcal H^{O(1)})$. Let $\mathcal A_I$ be its
+monic irreducible factor over $\mathbb Q(u)$ that vanishes at $\sigma_I$. By
+Gauss's lemma $\mathcal A_I\in\mathbb Z[u][Z]$; by Gelfond's factor-height inequality its
 height is $O(\mathcal H^{O(1)})$; and its $Z$-degree is at least two, because
-$\sigma_I\notin\mathbb Q(T)$.
+$\sigma_I\notin\mathbb Q(u)$.
 
-Now suppose that $F(t,Y)$ is reducible over $\mathbb Q$. By Gauss's lemma it has
-a monic factor $g\in\mathbb Z[Y]$ of degree $e'$ with $1\le e'<e$. Extend the specialization
-$T\mapsto t$ to a ring homomorphism $\phi$ from $\mathbb Z[T][y_1,\dots,y_e]$ to
+Now suppose that $F(v,\zeta)$ is reducible over $\mathbb Q$. By Gauss's lemma it has
+a monic factor $g\in\mathbb Z[\zeta]$ of degree $e'$ with $1\le e'<e$. Extend the specialization
+$u\mapsto v$ to a ring homomorphism $\phi$ from $\mathbb Z[u][y_1,\dots,y_e]$ to
 $\overline{\mathbb Q}$, which is possible because this ring is integral over
-$\mathbb Z[T]$. Then $F(t,Y)=\prod_i(Y-\phi(y_i))$, so the roots of $g$, with
+$\mathbb Z[u]$. Then $F(v,\zeta)=\prod_i(\zeta-\phi(y_i))$, so the roots of $g$, with
 multiplicity, are $\phi(y_i)$ for $i$ in some $I$ with $|I|=e'$, and the
 coefficients of $g$ are $\pm\phi(\sigma_{I,j})$. In particular $\phi(\sigma_I)$ is
-an integer root of $\mathcal A_I(t,Z)$. Step~1, applied to the $O(1)$ polynomials $\mathcal A_I$,
-bounds the number of such $t$ by $O(\operatorname{lg}(\mathcal H)^4B^{1/2}(1+\log B))$.
+an integer root of $\mathcal A_I(v,Z)$. Step~1, applied to the $O(1)$ polynomials $\mathcal A_I$,
+bounds the number of such $v$ by $O(\operatorname{lg}(\mathcal H)^4B^{1/2}(1+\log B))$.
 
 \emph{Step 3: one parameter, the others free.} Let $r\ge2$. We claim that for
-all but $O(\operatorname{lg}(\mathcal H)^4B^{1/2}(1+\log B))$ integers $t_1\in[-B,B]$, the
-polynomial $F(t_1,T_2,\dots,T_r,Y)$ is irreducible over $\mathbb Q(T_2,\dots,T_r)$.
+all but $O(\operatorname{lg}(\mathcal H)^4B^{1/2}(1+\log B))$ integers $v_1\in[-B,B]$, the
+polynomial $F(v_1,u_2,\dots,u_r,\zeta)$ is irreducible over $\mathbb Q(u_2,\dots,u_r)$.
 Fix an integer $b>d$ and let $\mathcal K$ be the Kronecker map
 \[
- T_2^{a_2}\cdots T_r^{a_r}Y^{a_{r+1}}\longmapsto\omega^{a_2+a_3b+\dots+a_{r+1}b^{r-1}}.
+ u_2^{a_2}\cdots u_r^{a_r}\zeta^{a_{r+1}}\longmapsto\omega^{a_2+a_3b+\dots+a_{r+1}b^{r-1}}.
 \]
 It is a
 linear bijection from polynomials with all partial degrees less than $b$ onto
 polynomials in $\omega$ of degree less than $b^r$, it commutes with specializing
-$T_1$, and it is multiplicative on products whose partial degrees stay below $b$.
-Since $Y$ occupies the highest position, $\mathcal K(F)\in\mathbb Z[T_1][\omega]$ is monic.
+$u_1$, and it is multiplicative on products whose partial degrees stay below $b$.
+Since $\zeta$ occupies the highest position, $\mathcal K(F)\in\mathbb Z[u_1][\omega]$ is monic.
 Factor $\mathcal K(F)=\prod_\nu \mathcal A_\nu$ into monic irreducible factors over
-$\mathbb Q(T_1)$. Again $\mathcal A_\nu$ lies in $\mathbb Z[T_1][\omega]$, with bounded
+$\mathbb Q(u_1)$. Again $\mathcal A_\nu$ lies in $\mathbb Z[u_1][\omega]$, with bounded
 degree and height $O(\mathcal H^{O(1)})$. By Step~2, outside an exceptional set of the stated size, every
-$\mathcal A_\nu(t_1,\omega)$ is irreducible over $\mathbb Q$.
+$\mathcal A_\nu(v_1,\omega)$ is irreducible over $\mathbb Q$.
 
-Let $t_1$ be outside this set, and suppose
-$F(t_1,\cdot)=gh$ with $g,h\in\mathbb Q[T_2,\dots,T_r][Y]$ monic in $Y$ of positive
-$Y$-degree. All partial degrees of $g$ and $h$ are at most those of $F$, hence
-less than $b$, so $\mathcal K(g)\mathcal K(h)=\prod_\nu \mathcal A_\nu(t_1,\omega)$, and by unique
-factorization $\mathcal K(g)=\prod_{\nu\in S}\mathcal A_\nu(t_1,\omega)$ for some set $S$ of
+Let $v_1$ be outside this set, and suppose
+$F(v_1,\cdot)=gh$ with $g,h\in\mathbb Q[u_2,\dots,u_r][\zeta]$ monic in $\zeta$ of positive
+$\zeta$-degree. All partial degrees of $g$ and $h$ are at most those of $F$, hence
+less than $b$, so $\mathcal K(g)\mathcal K(h)=\prod_\nu \mathcal A_\nu(v_1,\omega)$, and by unique
+factorization $\mathcal K(g)=\prod_{\nu\in S}\mathcal A_\nu(v_1,\omega)$ for some set $S$ of
 indices. Put $g_S=\mathcal K^{-1}\bigl(\prod_{\nu\in S}\mathcal A_\nu\bigr)$ and define
-$g_{S^c}$ likewise, so that $g_S(t_1)=g$ and $g_{S^c}(t_1)=h$. If
+$g_{S^c}$ likewise, so that $g_S(v_1)=g$ and $g_{S^c}(v_1)=h$. If
 $g_Sg_{S^c}=F$ identically, this is a factorization of $F$ over
-$\mathbb Q(T_1,\dots,T_r)$ into factors of positive $Y$-degree, which is impossible.
-Otherwise some coefficient of $g_Sg_{S^c}-F$ is a nonzero polynomial in $T_1$ of
-bounded degree vanishing at $t_1$. There are $O(1)$ sets $S$, so this adds
+$\mathbb Q(u_1,\dots,u_r)$ into factors of positive $\zeta$-degree, which is impossible.
+Otherwise some coefficient of $g_Sg_{S^c}-F$ is a nonzero polynomial in $u_1$ of
+bounded degree vanishing at $v_1$. There are $O(1)$ sets $S$, so this adds
 $O(1)$ exceptional values.
 
 \emph{Step 4: induction on $r$.} The case $r=1$ is Step~2. For $r\ge2$, the
-exceptional values $t_1$ of Step~3 contribute at most their number times
-$(2B+1)^{r-1}$. For every other $t_1\in[-B,B]$, the family
-$F(t_1,T_2,\dots,T_r,Y)$ is monic, irreducible over $\mathbb Q(T_2,\dots,T_r)$, of
+exceptional values $v_1$ of Step~3 contribute at most their number times
+$(2B+1)^{r-1}$. For every other $v_1\in[-B,B]$, the family
+$F(v_1,u_2,\dots,u_r,\zeta)$ is monic, irreducible over $\mathbb Q(u_2,\dots,u_r)$, of
 the same degree bounds, and of height at most $(d+1)\mathcal HB^d$. Since
 $\operatorname{lg}((d+1)\mathcal HB^d)\ll\operatorname{lg}(\mathcal H)(1+\log B)$, the induction hypothesis
 bounds its reducible specializations by
 $O(\operatorname{lg}(\mathcal H)^4B^{r-3/2}(1+\log B)^{4r+1})$. Summing over the $2B+1$
-values of $t_1$ gives the theorem.
+values of $v_1$ gives the theorem.
 \end{proof}
 
 \section{Certificates for the polar bound}\label{app:polarcertificates}
@@ -3583,13 +3585,13 @@ its remainder and the norm polynomial gives
 \end{align*}
 The resultant is
 \[
- \mathcal I_4(\xi_1,\xi_2)=\frac{
+ \mathcal R_*(\xi_1,\xi_2)=\frac{
  32233977\xi_1^4-95047956\xi_1^3\xi_2+147873750\xi_1^2\xi_2^2
              -111199572\xi_1\xi_2^3+31702169\xi_2^4}{6272}.
 \]
 In particular,
 \[
- \mathcal I_4(1,0)\Psi_1(0,1)^4-\mathcal I_4(0,1)\Psi_1(1,0)^4
+ \mathcal R_*(1,0)\Psi_1(0,1)^4-\mathcal R_*(0,1)\Psi_1(1,0)^4
  =\frac{26291112152499}{60236288}.
 \]
 The realizing matrix in Lemma~\ref{lem:polarbase} shows that $\Theta$ is
