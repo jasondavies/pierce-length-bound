@@ -45,6 +45,12 @@ whose quotient increments rarely rise. All results are formalized in Lean~4
 with Mathlib. Shallit's conjectured $O((\log a)^2)$ bound remains open.
 \end{abstract}
 
+\noindent\textbf{AI transparency statement.} This paper was produced entirely
+by artificial intelligence, including the discovery of the main results, their
+formalization in Lean, and the writing of the manuscript. The human author
+initiated the research and directed the AI systems, but did not write the text.
+Details are given at the end of the paper.
+
 \section{Introduction}\label{sec:intro}
 
 Let $a>b>0$ be integers. Put $b_0=b$ and $b_{i+1}=a\bmod b_i$ while $b_i>0$.
@@ -3645,22 +3651,41 @@ $T^{71^3}-T$. Every reducible sextic has an irreducible factor of degree at
 most three, so $q$ is irreducible. Reduction modulo $71$ preserves degree,
 and Gauss's lemma proves $E_\star$ irreducible over $\mathbb Q$.
 
+\section*{Declaration of AI-generated research and authorship}
+This manuscript is the product of an AI-driven research process. The human
+author initiated the investigation and directed AI systems throughout, and
+wrote no part of the manuscript or of the Lean code. GPT-6-Astra (OpenAI) found
+the results and the key steps of their proofs. These include the orthogonal
+polynomials and adjacent labels behind Section~\ref{sec:patterns}, the first
+proof of a bound $a^{3/10-\delta}$ through resultants, the use of
+Lemma~\ref{lem:multid} to bound the number of states per pattern, the sign
+identities of Lemma~\ref{lem:signs} and the slice count behind the $11/37$
+bound, the observation that the pattern integers form a Pl\"ucker vector, the
+weighting of minor vectors by the shortest vectors of their lattices behind
+the $45/152$ bound, the joint-invariant graphs with their normalization and
+valuation arguments, the exterior-lattice coordinates, and the polar identity
+and Hilbert sieve. The AI systems also developed the presentation, the
+formalization and the writing. The systems were GPT-6-Astra (OpenAI), used
+through Codex, and Claude Opus~5.5 (Anthropic), used through Claude Code. Both
+contributed to the Lean formalization and to the review and revision of the
+manuscript.
+
+The Lean development gives a machine-checkable version of the results. Lean's
+kernel checks the proofs, including the Mathlib results and the separate
+curve-counting library they use, relative to the axioms \lean{propext},
+\lean{Classical.choice} and \lean{Quot.sound} (Section~\ref{sec:lean}); the
+fifteen selected statements are also replayed by two independent kernels. The
+conditional refinement described in Section~\ref{sec:lean} assumes two
+published theorems as explicit hypotheses. These automated checks are not
+independent human peer review.
+
+This declaration distinguishes the provenance of the work from conventional
+AI-assisted writing. The human author accepts responsibility for the
+submission and for the accuracy of this disclosure.
+
 \section*{Acknowledgements}
-The argument was developed with the help of GPT-6-Astra. This includes the use of
-orthogonal polynomials and adjacent labels behind Section~\ref{sec:patterns}, the first proof of a
-bound $a^{3/10-\delta}$ through resultants, the use of Lemma~\ref{lem:multid} to bound the
-number of states per pattern, the sign identities of Lemma~\ref{lem:signs} and the slice count behind
-the $11/37$ bound, the observation that the pattern integers form a Pl\"ucker vector, and the
-proposal to weight minor vectors by the shortest vectors of their lattices, behind the $45/152$
-bound. Subsequent AI-assisted
-work developed and formalized the joint-invariant graphs, their normalization
-and valuation arguments, the powered-coordinate optimization, and the external
-affine-curve counting theorem. OpenAI Codex assisted with this formalization
-and with automated statement, dependency and submission checks. These checks
-are not independent human peer review. The unconditional results, including
-the polar refinement and its Hilbert sieve, and the stated conditional
-implications were verified in Lean~4 against Mathlib. We thank the Mathlib community, and the authors of \lean{openai/math}
-for the formalized divisor bound.
+We thank the Mathlib community, and the authors of \lean{openai/math} for the
+formalized divisor bound.
 
 \begin{thebibliography}{99}
 

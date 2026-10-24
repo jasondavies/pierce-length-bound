@@ -153,33 +153,43 @@ status:
 
 automation:
   methods:
-    - method: other
-      tool_setup: >-
-        AI-assisted mathematical development using GPT-6-Astra, as identified
-        by the maintainer, with contributions described in the paper's
-        acknowledgements. The division of implementation work in the original
-        development has not been recorded here.
     - method: agent
-      framework: "OpenAI Codex"
+      models: ["GPT-6-Astra (OpenAI)"]
+      framework: "Codex"
       tool_setup: >-
-        Repository review and Palomar preparation: statement and proof review,
-        exact-rational numerical checks, Lean builds and axiom audits,
-        module-system migration, independent Challenge and Comparator setup,
-        metadata, and CI preparation. Subsequent work formalized the rational curve
-        geometry, normalization and valuation arguments, joint-invariant graphs,
-        powered counting and the optimized joint-invariant exponent, the
-        exterior-lattice bounds, and the external curve-counting theorem. The
-        polar-projection work formalized the orbit identities, branch algebra,
-        hypersurface-pattern count, actual local intersection bound, effective
-        Hilbert irreducibility, specialization-compatible branch labels,
-        full-pattern completion count, and both unconditional polar exponents.
+        Found all the mathematical results and the key steps of their proofs, during
+        an investigation initiated by the author. Under the author's direction, wrote
+        and revised the Lean development (including the rational curve geometry,
+        normalization and valuation arguments, joint-invariant graphs, exterior-lattice
+        bounds, polar-projection identities, effective Hilbert irreducibility and the
+        external curve-counting theorem), the paper and the documentation, reviewed
+        them, and prepared the Palomar packaging and CI.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "local machine"
+    - method: agent
+      models: ["Claude Opus 5.5 (Anthropic)"]
+      framework: "Claude Code"
+      tool_setup: >-
+        Under the author's direction, revised the paper's exposition, restructured
+        parts of the Lean development (module consolidation, linting, the six-term
+        proof of the 3/10 bound, the divisor-bound range), revised the documentation
+        and CI, reviewed them, and ran the Comparator checks.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "local machine"
+  spend_usd: "not tracked"
   notes: >-
-    The paper credits AI language models with contributions to the orthogonal
-    polynomial and adjacent-label approach, the resultant bound, bounded
-    multiplicity, sign identities and slice counting, the Plücker-vector
-    interpretation, and weighting minor vectors by shortest lattice vectors.
-    Lean and Mathlib check the formal proofs. This is distinct from a human
-    review of the mathematical claims, definitions, or originality.
+    The work was produced entirely by AI systems. GPT-6-Astra found the results
+    during an investigation initiated by the human author, who then directed
+    GPT-6-Astra (via Codex) and Claude Opus 5.5 (via Claude Code) to formalize them
+    in Lean and to write the manuscript; both contributed to the formalization and
+    to the review and revision of the manuscript. The author wrote no part of the
+    text or the Lean code. Correctness of the formal results rests on Lean's kernel;
+    the statements compared by Palomar's comparator are also checked by its
+    independent kernels. The paper carries the same disclosure.
 
 fidelity:
   divergences: >-
@@ -193,7 +203,9 @@ fidelity:
 
 review:
   status: "agent-reviewed"
-  reviewers: ["OpenAI Codex"]
+  reviewers:
+    - "GPT-6-Astra (OpenAI), via Codex: AI review"
+    - "Claude Opus 5.5 (Anthropic), via Claude Code: AI review"
   notes: >-
     Latest run, October 23, 2026, with the CCDN dependency pinned to
     9ade6200d053ceef5f6ccc4154ae30c6056be150: the Lean build, both weighted-count
@@ -238,8 +250,9 @@ review:
     without LaTeX warnings, and its theorem numbers match the alignment below.
     The Lean theorem statements and proof bodies are unchanged by this revision.
     This is an automated review, not independent human peer review. The existing
-    provenance record reports no additional human review; the maintainer has
-    identified GPT-6-Astra but has not further specified personal review coverage.
+    provenance record reports no additional human review. The maintainer reports
+    that the results, the Lean code and the manuscript were produced entirely by AI
+    (GPT-6-Astra via Codex, Claude Opus 5.5 via Claude Code).
     Full Palomar mechanical preflight remains outstanding. No
     external endorsement is claimed.
 
@@ -314,6 +327,6 @@ alignment:
       note: "For i < P(a,b) and r ≤ P(a,b) - i, including r = 0."
 
 acknowledgements: >-
-  The Lean and Mathlib communities, the authors of openai/math for the
-  formalized divisor bound, and the AI contributions described above and in
-  the paper. Jason Davies is the human author and responsible maintainer.
+  The Lean and Mathlib communities, and the authors of openai/math for the
+  formalized divisor bound. The AI provenance is described above and in the
+  paper's declaration. Jason Davies is the human author and responsible maintainer.
