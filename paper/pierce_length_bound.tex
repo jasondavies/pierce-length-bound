@@ -626,7 +626,7 @@ With Lemma~\ref{lem:moments}(1) this gives the low moments
  \mu_j(x^3)=k_j^2+2k_j+k_{j+1}+1\qquad(j+3<N).
 \end{equation}
 Put $s_j=q_{i+j}-q_i$ (so $s_j=p_i(j)$) and $F_j(x)=\prod_{0\le l<j}(x-s_l)$, with
-$F_0=1$. Iterating this identity gives the \emph{shift rule}
+$F_0=1$. Iterating the identity $\mu_i(xg(x))=\mu_{i+1}(g(k_i+x))$ gives the \emph{shift rule}
 \begin{equation}\label{eq:moment-shift}
  \mu_i(F_j(x)g(x))=\mu_{i+j}\bigl(g(x+s_j)\bigr)
  \qquad(i+j<N).
@@ -1152,18 +1152,26 @@ $\nu_i(x^jZ)=\nu_{i+1}\bigl((x+k_0)^j\pi_{i+1}(x)\bigr)=0$. So the monic
 quintic $Z$ differs from the monic orthogonal polynomial $\pi^{(5)}$ of degree
 five for $\nu_i$ by a multiple of $P_4$, and $\operatorname{Res}(P_4,Z)=
 \operatorname{Res}(P_4,\pi^{(5)})$. Let $\|\pi^{(j)}\|^2$ be the squared $\nu_i$-norm of
-the monic orthogonal polynomial $\pi^{(j)}$ of degree $j$. The three-term recurrence,
-whose coefficients are the ratios $\|\pi^{(j)}\|^2/\|\pi^{(j-1)}\|^2$, gives
+the monic orthogonal polynomial $\pi^{(j)}$ of degree $j$, so $\pi^{(4)}=P_4$. The
+three-term recurrence
+$\pi^{(j+1)}=(x-\alpha_j)\pi^{(j)}-\beta_j\pi^{(j-1)}$, with
+$\beta_j=\|\pi^{(j)}\|^2/\|\pi^{(j-1)}\|^2$, gives
+$\pi^{(j+1)}\equiv-\beta_j\pi^{(j-1)}\pmod{\pi^{(j)}}$. Reducing repeatedly (the signs
+cancel),
 \[
- \operatorname{Res}(P_4,\pi^{(5)})=\prod_{j=1}^4\Bigl(\frac{\|\pi^{(j)}\|^2}{\|\pi^{(j-1)}\|^2}\Bigr)^j
- =\frac{\|\pi^{(4)}\|^8}{\prod_{j<4}\|\pi^{(j)}\|^2}
+ \operatorname{Res}(P_4,\pi^{(5)})=\prod_{j=1}^4\beta_j^j
+ =\frac{\|P_4\|^8}{\prod_{j<4}\|\pi^{(j)}\|^2}
  =\frac{\Psi^4}{\det\bigl(\nu_i(x^{r+s})\bigr)_{r,s<4}}
  =\frac{a\Psi^4}{I_4(i)}.
 \]
 Since $N_0=I_4(i)$, this is the second equation.
 
-(2) The degree bounds are immediate, since the resultant has total degree at
-most ten in the nodes. Note that $\gamma_1<0<\gamma_2$, $\gamma_3=\chi-1<-1$ and
+(2) The first equation has degree two. For the second, $\Psi$ is cubic, and
+the resultant has total degree at most ten in the nodes:
+$\operatorname{Res}(P_4,Z)=\pm\gamma_0\operatorname{Res}(P_4,R_4)$, and in the Newton
+basis beginning at $s_1,s_2,s_3$ the $4\times4$ Bezout matrix of $P_4$ and $R_4$ has entry
+degrees at most $4-\max(\alpha,\beta)$ for $0\le\alpha,\beta<4$, so its determinant has
+degree at most ten. Note that $\gamma_1<0<\gamma_2$, $\gamma_3=\chi-1<-1$ and
 $\gamma_0,\gamma_4>0$. Since $s_0=0$ and $\sum_j\gamma_js_j=0$, the quadratic part of $f$ is
 \[
  f_2=\gamma_1s_1^2+\gamma_2s_2^2+\gamma_3s_3^2+(\gamma_1s_1+\gamma_2s_2+\gamma_3s_3)^2,
@@ -1373,11 +1381,9 @@ The leading homogeneous parts needed below are
  \label{eq:joint-hankel-leading}
 \end{align}
 Here $[F]_r$ denotes the homogeneous part of total node degree $r$.
-For completeness, the degree-ten formula can be checked without expanding
-the resultant. In the Newton basis beginning at $s_1,s_2,s_3$, its
-$4\times4$ Bezout matrix for $P_4,R_4$ has entry degrees at most
-$4-\max(\alpha,\beta)$, for $0\le\alpha,\beta<4$. Only the diagonal term of its determinant
-can have degree ten. Its four leading diagonal entries are
+The degree-ten formula follows from the Bezout matrix in the proof of
+Lemma~\ref{lem:jointcurve}(2): by its entry degrees, only the diagonal term of its
+determinant can have degree ten. Its four leading diagonal entries are
 \[
 \begin{split}
  &-\gamma_1s_1(s_1-s_2)(s_1-s_3)(s_1-s_4),\\
@@ -1443,28 +1449,29 @@ permutations.
 
 A fixed zero minor reduces the Pl\"ucker relations to a simple shape by
 Grassmann duality. Up to sign, the ten minors $p_{c_1c_2c_3}$ are the Pl\"ucker
-coordinates $\pi_{c_4c_5}$, $\{c_1,\dots,c_5\}=\{0,\dots,4\}$, of the orthogonal
+coordinates $p^\perp_{c_4c_5}$, $\{c_1,\dots,c_5\}=\{0,\dots,4\}$, of the orthogonal
 complement of the row space, a $2$-plane in $\mathbb Q^5$. After permuting
-columns we may take the vanishing minor to be $\pi_{34}=0$. The Pl\"ucker
-relations $\pi_{c_1c_2}\pi_{c_3c_4}-\pi_{c_1c_3}\pi_{c_2c_4}+\pi_{c_1c_4}\pi_{c_2c_3}=0$ then say exactly that
+columns we may take the vanishing minor to be $p^\perp_{34}=0$. The Pl\"ucker
+relations $p^\perp_{c_1c_2}p^\perp_{c_3c_4}-p^\perp_{c_1c_3}p^\perp_{c_2c_4}+p^\perp_{c_1c_4}p^\perp_{c_2c_3}=0$ then say exactly that
 the integer vectors
 \[
- \mathbf x=(\pi_{03},\pi_{13},\pi_{23}),\qquad \mathbf y=(\pi_{04},\pi_{14},\pi_{24}),\qquad
- \mathbf z=(\pi_{12},-\pi_{02},\pi_{01})
+ \mathbf x=(p^\perp_{03},p^\perp_{13},p^\perp_{23}),\qquad \mathbf y=(p^\perp_{04},p^\perp_{14},p^\perp_{24}),\qquad
+ \mathbf z=(p^\perp_{12},-p^\perp_{02},p^\perp_{01})
 \]
 satisfy $\mathbf x\times\mathbf y=0$ and
 $\mathbf x\cdot\mathbf z=\mathbf y\cdot\mathbf z=0$. They have height $O(X)$
 and are signed rearrangements of the nine remaining minors, so they determine
 the minor vector.
 The case $\mathbf x=\mathbf y=0$ has $O(X^3)$ choices. Otherwise write
-$\mathbf x=\mu\mathbf v$, $\mathbf y=\nu\mathbf v$ with $\mathbf v$ primitive.
+$\mathbf x=\lambda_1\mathbf v$, $\mathbf y=\lambda_2\mathbf v$ with $\mathbf v$ primitive.
 In a dyadic range $R\le|\mathbf v|_\infty<2R$, there are $O(R^3)$
-choices for $\mathbf v$ and $O((X/R)^2)$ for $(\mu,\nu)$.
+choices for $\mathbf v$ and $O((X/R)^2)$ for $(\lambda_1,\lambda_2)$.
 The equation $\mathbf v\cdot\mathbf z=0$ has $O(X^2/R)$ solutions
-in the box. Indeed, take a coordinate of absolute value
-$N'=|\mathbf v|_\infty$. Primitivity gives $N'$ admissible pairs of the
-other two coordinates modulo $N'$, and the chosen coordinate is then
-determined. Since $R\le N'\ll X$, this gives $O(X^2/N')$ choices.
+in the box. Indeed, take a coordinate of $\mathbf v$ of absolute value
+$|\mathbf v|_\infty\in[R,2R)$. Primitivity gives $|\mathbf v|_\infty$ admissible pairs
+of the other two coordinates of $\mathbf z$ modulo $|\mathbf v|_\infty$, and the
+remaining coordinate is then determined. Since $|\mathbf v|_\infty\ll X$, this gives
+$O(X^2/R)$ choices.
 Each range therefore contributes $O(X^4)$, and summing over $O(\log(2X))$
 ranges proves the pattern count. Since $X\le a^{O(1)}$, the logarithm is
 absorbed into $a^\eta$.
@@ -2077,10 +2084,10 @@ $\ell\mid(j-j')e$, so $j=j'$, and then $y=y'$. Hence $|\mathcal K|\,\ell/e\le\el
 \end{proof}
 
 \begin{proposition}[Short vectors]\label{prop:short}
-Let $\mathcal S$ be a set of nonzero minor vectors with coordinates in $[-X,X]$, and let
-$\tau(j)\le\tau_0$ for $1\le j\le X$. Then for every $R\ge1$,
+Let $\mathcal S$ be a set of nonzero minor vectors with coordinates in $[-X,X]$.
+Then for every $R\ge1$,
 \[
-\#\{p\in\mathcal S:\lambda(p)\le R\}\ll R^3X^4\tau_0^2 .
+\#\{p\in\mathcal S:\lambda(p)\le R\}\ll R^3X^4\tau_{\max}(X)^2 .
 \]
 \end{proposition}
 
@@ -2112,10 +2119,10 @@ using $\sum_{\kappa\le X}\kappa^3\le X^4$.
 \end{proof}
 
 \begin{lemma}[Fractional weights]\label{lem:weights}
-Let $\mathcal S$ be a set of nonzero minor vectors with coordinates in $[-X,X]$, $X\ge1$, and
-let $\tau_0\ge1$ satisfy $\tau(j)\le\tau_0$ for $1\le j\le X$. Then for $0\le t\le1$,
+Let $\mathcal S$ be a set of nonzero minor vectors with coordinates in $[-X,X]$, $X\ge1$.
+Then for $0\le t\le1$,
 \[
- \sum_{p\in\mathcal S}\lambda(p)^{-t}\ll\tau_0^2X^{5-t/3}.
+ \sum_{p\in\mathcal S}\lambda(p)^{-t}\ll\tau_{\max}(X)^2X^{5-t/3}.
 \]
 \end{lemma}
 
@@ -2125,12 +2132,12 @@ for $p\in\mathcal S$. Writing $1/\lambda=1/K+\sum_{\lambda\le j<K}1/(j(j+1))$ an
 Proposition~\ref{prop:short} with $R=j$,
 \[
  K\sum_{p\in\mathcal S}\frac1{\lambda(p)}
- \le\#\mathcal S+O\Bigl(KX^4\tau_0^2\sum_{1\le j<K}\frac{j^2}{j+1}\Bigr)
- \le\#\mathcal S+O(X^4\tau_0^2K^3) .
+ \le\#\mathcal S+O\Bigl(KX^4\tau_{\max}(X)^2\sum_{1\le j<K}\frac{j^2}{j+1}\Bigr)
+ \le\#\mathcal S+O(X^4\tau_{\max}(X)^2K^3) .
 \]
 The proof of Proposition~\ref{prop:minorvec} gives
-$\#\mathcal S\ll\tau_0X^5$. Since $K^3\le8X$ and $\tau_0\ge1$,
-the right side is $O(\tau_0^2X^5)$. Dividing by $K\ge X^{1/3}$
+$\#\mathcal S\ll\tau_{\max}(X)X^5$. Since $K^3\le8X$ and $\tau_{\max}(X)\ge1$,
+the right side is $O(\tau_{\max}(X)^2X^5)$. Dividing by $K\ge X^{1/3}$
 proves the case $t=1$. For $0<t<1$, H\"older's inequality
 with exponents $1/(1-t)$ and $1/t$ gives
 $\sum\lambda^{-t}\le(\#\mathcal S)^{1-t}\bigl(\sum\lambda^{-1}\bigr)^t$, which is the claim;
@@ -2168,9 +2175,9 @@ is large while the curvature minors are small.
 Now fix a pattern $p$ that occurs at a good start, and let $\mathbf f_1,\mathbf f_2,\mathbf f_3$ be a
 basis of $\Lambda_p$ as in Lemma~\ref{lem:reduce}. Write $\lambda=\lambda(p)$. At a good start
 $i$ with pattern $p$, the pivot parts $d_\pi$ and $k_\pi$ of the drop and increment rows of
-$\widehat{\mathcal M}_i$ lie in $\Lambda_p$, with coordinates $\xi$ and $\zeta$. Put
+$\widehat{\mathcal M}_i$ lie in $\Lambda_p$, with coordinates $\xi$ and $\xi'$. Put
 \[
- W'=\xi\times\zeta,\qquad w=d_\pi\times k_\pi.
+ W'=\xi\times\xi',\qquad w=d_\pi\times k_\pi.
 \]
 The entries of $w$ are, up to sign, the minors $D_{jl}$ with $j,l$ pivot columns. The next lemma
 shows that $W'=G_pW$ for a constant matrix $G_p$. We use $W'$ rather than $G_pW$ because $W'$ is
@@ -2180,17 +2187,17 @@ visibly integral, while $G_p$ has rational entries.
 There are matrices $\mathcal T_p,G_p\in\mathrm{GL}_3(\mathbb Q)$, depending only on $p$, such that at
 every good start with pattern $p$
 \[
- (s_1,s_2,s_3)=\mathcal T_p\zeta,\qquad W'=G_pW,\qquad
- |\zeta|_\infty\le\frac{3H}{\lambda},\qquad |W'|_\infty\le\frac{8S}{3\lambda^2}.
+ (s_1,s_2,s_3)=\mathcal T_p\xi',\qquad W'=G_pW,\qquad
+ |\xi'|_\infty\le\frac{3H}{\lambda},\qquad |W'|_\infty\le\frac{8S}{3\lambda^2}.
 \]
 \end{lemma}
 
 \begin{proof}
 By Lemma~\ref{lem:lift}, $p_\pi(k_0,k_1,k_2)=\mathcal Lk_\pi$, where $\mathcal L$ has rows
 $L_0,L_1,L_2$ and $\det\mathcal L=p_\pi^2p_{012}\ne0$, since $p_{012}=N_0=I_4(i)\ge1$ at a good
-start. With $k_\pi=(\mathbf f_1\,\mathbf f_2\,\mathbf f_3)\zeta$ and the cumulative sums $s_j=k_0+\dots+k_{j-1}$,
+start. With $k_\pi=(\mathbf f_1\,\mathbf f_2\,\mathbf f_3)\xi'$ and the cumulative sums $s_j=k_0+\dots+k_{j-1}$,
 this gives $\mathcal T_p$. Since $|k_\pi|^2\le3H^2$ and $|\mathbf f_i|\ge\lambda$, Lemma~\ref{lem:reduce} gives
-$|\zeta_i|\le(8/3)H/\lambda\le3H/\lambda$.
+$|\xi'_i|\le(8/3)H/\lambda\le3H/\lambda$.
 
 For the curvature, $W=(D_{12},-D_{02},D_{01})=(d_0,d_1,d_2)\times(k_0,k_1,k_2)$, and
 $p_\pi(d_0,d_1,d_2)=\mathcal Ld_\pi$. Let $\operatorname{Cof}(\mathcal L)$ have rows
@@ -2212,7 +2219,7 @@ graph of
 \[
  \bigl(s_1,s_2,s_3,(W'_1)^m,(W'_2)^m,(W'_3)^m,J^n\bigr)
 \]
-under the linear map that replaces the nodes $s$ by $\zeta=\mathcal T_p^{-1}s$.
+under the linear map that replaces the nodes $s$ by $\xi'=\mathcal T_p^{-1}s$.
 
 \begin{lemma}[Degree of the lattice graph]\label{lem:latticedegree}
 The degree $\delta'$ of $\Gamma'_{m,n}$ satisfies
@@ -2259,8 +2266,8 @@ satisfying~\eqref{eq:jointscale},
 \begin{proof}
 The proof of Proposition~\ref{prop:jointwindow} applies, except for the remaining components of
 the nonexceptional patterns. For such a component of a pattern $p$, the good starts give
-integer points $(\zeta,(W'_1)^m,(W'_2)^m,(W'_3)^m,J^n)$ of $\Gamma'_{m,n}$, and distinct node triples
-give distinct points because $\zeta$ determines $s$. By Lemma~\ref{lem:latticecoords} they lie
+integer points $(\xi',(W'_1)^m,(W'_2)^m,(W'_3)^m,J^n)$ of $\Gamma'_{m,n}$, and distinct node triples
+give distinct points because $\xi'$ determines $s$. By Lemma~\ref{lem:latticecoords} they lie
 in the box of side
 \[
  \mathcal B_p=\max\Bigl(1,\frac{3H}{\lambda(p)},\Bigl(\frac{8S}{3\lambda(p)^2}\Bigr)^m,Y^n\Bigr).
@@ -2271,7 +2278,7 @@ $O_{m,n,\eta}(a^\eta\mathcal B_p^{1/\delta_{\min}})$ of them, and
  \mathcal B_p^{1/\delta_{\min}}\le1+3H^{1/\delta_{\min}}\lambda(p)^{-1/\delta_{\min}}+8S^{m/\delta_{\min}}\lambda(p)^{-2m/\delta_{\min}}+Y^{n/\delta_{\min}}.
 \]
 Sum over the $O_\eta(a^\eta X^5)$ patterns. Since $\delta_{\min}\ge2m$, both $1/\delta_{\min}$ and $2m/\delta_{\min}$ lie in
-$[0,1]$, and Lemma~\ref{lem:weights}, with $\tau_0=a^{o(1)}$, gives
+$[0,1]$, and Lemma~\ref{lem:weights}, with $\tau_{\max}(X)=a^{o(1)}$, gives
 $\sum_p\lambda(p)^{-1/\delta_{\min}}\ll a^\eta X^{5-1/(3\delta_{\min})}$ and
 $\sum_p\lambda(p)^{-2m/\delta_{\min}}\ll a^\eta X^{5-2m/(3\delta_{\min})}$.
 \end{proof}
@@ -2340,10 +2347,10 @@ The increment and drop rows of the pattern matrix satisfy the same linear relati
 \]
 and the same formulas express $d_3,d_4$ in terms of $\mathbf d$. For
 $\mathbf y\in\mathbb Q^3$ extend $\mathbf y$ to $(y_0,\dots,y_4)$ by these formulas,
-and let $S_j(\mathbf y)=y_0+\dots+y_{j-1}$, so that $S_j(\mathbf k)=s_j$ and
-$S_j(\mathbf d)=b_0-b_j$, with local indices. Define $G$ and $\ell$ by
+and let $\Sigma_j(\mathbf y)=y_0+\dots+y_{j-1}$, so that $\Sigma_j(\mathbf k)=s_j$ and
+$\Sigma_j(\mathbf d)=b_0-b_j$, with local indices. Define $G$ and $\ell$ by
 \[
- \sum_{j=0}^4\gamma_jS_j(\mathbf y)^2=\mathbf y^{\mathsf T}G\mathbf y,\qquad
+ \sum_{j=0}^4\gamma_j\Sigma_j(\mathbf y)^2=\mathbf y^{\mathsf T}G\mathbf y,\qquad
  \sum_{j=0}^4\gamma_jy_j=\ell^{\mathsf T}\mathbf y.
 \]
 Explicitly,
@@ -2372,22 +2379,22 @@ At every state $i$ with $i+7<N$,
 \[
  \Psi W=N_0V,\qquad JW=N_0^2V.
 \]
-In particular, $W$ is a positive multiple of $G\mathbf k+\ell$.
+In particular, $W$ is a positive multiple of $V$.
 \end{proposition}
 \begin{proof}
 The vector $V$ is orthogonal to $\mathbf k$, since $\mathbf k\cdot V=f=0$. It is
 also orthogonal to $\mathbf d$; this is where the division equations enter.
 By polarization,
 \[
- \mathbf d\cdot V=\sum_{j=0}^4\gamma_js_jS_j(\mathbf d)+\sum_{j=0}^4\gamma_jd_j.
+ \mathbf d\cdot V=\sum_{j=0}^4\gamma_js_j\Sigma_j(\mathbf d)+\sum_{j=0}^4\gamma_jd_j.
 \]
 The relations of Lemma~\ref{lem:pattern} give $\sum_j\gamma_j=0$ and
-$\sum_j\gamma_jS_j(\mathbf y)=\sum_ly_l(\gamma_{l+1}+\dots+\gamma_4)=0$ for
+$\sum_j\gamma_j\Sigma_j(\mathbf y)=\sum_ly_l(\gamma_{l+1}+\dots+\gamma_4)=0$ for
 $\mathbf y=\mathbf k,\mathbf d$ (Lemma~\ref{lem:orthquartic}), that is,
 $\sum_j\gamma_js_j=\sum_j\gamma_jb_j=0$. Multiply the division equations
 $(q_i+s_j)b_j+b_{j+1}=a$ by $\gamma_j$ and sum over $j\le4$. The terms in $a$
-and in $q_i$ cancel, and writing $b_j=b_0-S_j(\mathbf d)$ and $b_{j+1}=b_j-d_j$ leaves
-$-\sum_j\gamma_js_jS_j(\mathbf d)-\sum_j\gamma_jd_j=0$. Hence $\mathbf d\cdot V=0$.
+and in $q_i$ cancel, and writing $b_j=b_0-\Sigma_j(\mathbf d)$ and $b_{j+1}=b_j-d_j$ leaves
+$-\sum_j\gamma_js_j\Sigma_j(\mathbf d)-\sum_j\gamma_jd_j=0$. Hence $\mathbf d\cdot V=0$.
 
 Since $W\cdot(r_0,r_1,r_2)=\det(\mathbf d,\mathbf k,\mathbf r)=p_{012}=N_0>0$, $W\ne0$, so $\mathbf d$
 and $\mathbf k$ are independent and $V$ is a multiple of $W=\mathbf d\times\mathbf k$.
@@ -2428,27 +2435,27 @@ Lemma~\ref{lem:jointcuts}, a component on which one of them does not vanish
 identically contains $O(1)$ good starts. Throughout this section, \emph{retained}
 means that all five cuts vanish identically; on a retained component,
 \[
- JW=N_0^2(G\mathbf k+\ell)
+ JW=N_0^2V
 \]
 holds in the function field.
 
 \subsection{The base point and the graph degree}
 
 For an integral component $C$ of a pattern curve, the \emph{base divisor} of
-the forms $G\mathbf k+\ell$ is
+$V$ is
 \[
- \sum_P\Bigl(\min_j\operatorname{ord}_P(G\mathbf k+\ell)_j\Bigr)P,
+ \sum_P\Bigl(\min_j\operatorname{ord}_PV_j\Bigr)P,
 \]
 summed over the affine points $P$ of the normalization of $C$; its degree
 weights $P$ by $[\mathbb Q(P):\mathbb Q]$. Since
-$G\mathbf k+\ell=G(\mathbf k-\mathbf k_*)$, it is supported over $\mathbf k_*$,
+$V=G(\mathbf k-\mathbf k_*)$, it is supported over $\mathbf k_*$,
 the only common zero of the homogenized forms.
 
 \begin{lemma}[The base divisor]\label{lem:polarbase}
 There is a fixed rational polynomial $\Theta$ in the ten minor coordinates,
 independent of $a$ and not identically zero on the Pl\"ucker cone, with the
 following property. For every pattern with $\Theta\ne0$ and every integral
-component $C$ of the pattern curve, the base divisor of $G\mathbf k+\ell$ on
+component $C$ of the pattern curve, the base divisor of $V$ on
 $C$ has degree at most four.
 \end{lemma}
 \begin{proof}
@@ -2461,7 +2468,7 @@ These conditions make the base point and its nodes well defined. Since
 $\nabla f(\mathbf k_*)=-\ell$ and $\ell_0\ne0$, the quadric is smooth at
 $\mathbf k_*$. Take $\xi_1=k_1-k_{*,1}$ and $\xi_2=k_2-k_{*,2}$ as local
 coordinates and solve $f=0$ for $k_0$ by formal power series.
-Let $R_1(x;\xi_1,\xi_2)$ be the linear part of the remainder of $Z$ modulo $P_4$
+Let $Z_1(x;\xi_1,\xi_2)$ be the linear part of the remainder of $Z$ modulo $P_4$
 computed after Proposition~\ref{prop:polaridentity},
 and let $\Psi_1(\xi_1,\xi_2)$ be the linear part of $\Psi$ on this tangent plane.
 Let $F=N_0\operatorname{Res}(P_4,Z)-a\Psi^4$ be the fixed-dividend equation,
@@ -2469,7 +2476,7 @@ restricted to the quadric $f=0$. It has order at least four at $\mathbf k_*$, wi
 quartic initial form
 \begin{equation}\label{eq:polarinitial}
  N_0\mathcal R_*(\xi_1,\xi_2)-a\Psi_1(\xi_1,\xi_2)^4,\qquad
- \mathcal R_*(\xi_1,\xi_2)=\operatorname{Res}_{x}(P_{4,*},R_1).
+ \mathcal R_*(\xi_1,\xi_2)=\operatorname{Res}_{x}(P_{4,*},Z_1).
 \end{equation}
 To see that only first derivatives enter, compute the resultant as a
 $4\times4$ B\'ezout determinant. Each row vanishes at $\mathbf k_*$, so its term of
@@ -2528,7 +2535,7 @@ sequence therefore gives
 \]
 The final equality follows by factoring the ideal $(g)$ in the semilocal
 Dedekind ring $\overline{\mathcal O}_C$. Since $G$ is invertible, the coordinates of
-$G\mathbf k+\ell=G(\mathbf k-\mathbf k_*)$ generate the centered maximal ideal. Their minimum order
+$V=G(\mathbf k-\mathbf k_*)$ generate the centered maximal ideal. Their minimum order
 at each $P$ is at most $\operatorname{ord}_P g$. The weighted sum of these
 minimum orders, which is the degree of the base divisor, is therefore at most
 four. A component missing $\mathbf k_*$ has zero base divisor.
@@ -2548,10 +2555,10 @@ At each point at infinity,
 $\operatorname{ord}_P J=-5e_P/2$, by Corollary~\ref{cor:jointparity}, and
 $\sum e_P[\mathbb Q(P):\mathbb Q]=24$. Thus $J$ has pole divisor, and hence
 zero divisor, of degree $60$; all its zeros are affine. At an affine point $P$
-the forms $G\mathbf k+\ell$ are regular, and $W=N_0^2(G\mathbf k+\ell)/J$ gives
+the coordinates of $V$ are regular, and $W=N_0^2V/J$ gives
 \[
  \max_j\bigl(-\operatorname{ord}_PW_j\bigr)
- =\operatorname{ord}_PJ-\min_j\operatorname{ord}_P(G\mathbf k+\ell)_j,
+ =\operatorname{ord}_PJ-\min_j\operatorname{ord}_PV_j,
 \]
 where the subtracted term is the multiplicity of $P$ in the base divisor. Summing over
 affine points, Lemma~\ref{lem:polarbase} gives an affine curvature pole envelope
@@ -2583,11 +2590,12 @@ irreducibility certifies this, and which can be sieved over patterns.
 
 Let $P$ be a point above infinity on the normalization of a nonexceptional component.
 The five leading nodes are distinct by Lemma~\ref{lem:jointleading}.
-Scale them to $(0,1,t,y,z)$. The first moment equation gives
+Scale them to $(0,1,t,y,z)$. The moment equations~\eqref{eq:joint-leading-moments}
+of orders zero and one give $\gamma_0+\gamma_1+\gamma_2+\gamma_3+1=0$ and
 \[
  z=-\gamma_1-\gamma_2t-\gamma_3y.
 \]
-The second and third moment equations become
+Those of orders two and three become
 \[
  Q_2(t,y)=\gamma_1+\gamma_2t^2+\gamma_3y^2+z^2=0,\qquad
  Q_3(t,y)=\gamma_1+\gamma_2t^3+\gamma_3y^3+z^3=0.
@@ -2617,21 +2625,22 @@ Write
 \[
  \mathcal V_4=t y(t-1)(y-1)(y-t),\qquad \mathcal V_5=z(z-1)(z-t)(z-y).
 \]
-By~\eqref{eq:joint-resultant-leading}, the degree-ten leading resultant at
-these nodes is $R_0=\gamma_0\gamma_1\gamma_2\gamma_3\mathcal V_4\mathcal V_5$.
+By~\eqref{eq:joint-resultant-leading}, the value of the leading part
+$[\mathcal R]_{10}$ at these nodes is
+$\mathcal R_0=\gamma_0\gamma_1\gamma_2\gamma_3\mathcal V_4\mathcal V_5$.
 The four moment equations give the barycentric identity
 \begin{equation}\label{eq:branchbarycentric}
- R_0\mathcal V_4=\mathcal V_5^4.
+ \mathcal R_0\mathcal V_4=\mathcal V_5^4.
 \end{equation}
-Indeed, the identities
-$\gamma_j\prod_{l\ne j}(z_j-z_l)=\mathcal V_5$ for $0\le j<4$
-follow by evaluating the first four moment relations; their product is
-\eqref{eq:branchbarycentric}.
+Indeed, write the nodes as $z_0,\dots,z_3,z_4=z$, with $\gamma_4=1$. Taking
+$g=\prod_{l<4,\,l\ne j}(x-z_l)$ in $\sum_k\gamma_kg(z_k)=0$ (valid since $\deg g\le3$)
+gives $\gamma_j\prod_{l\ne j}(z_j-z_l)=\prod_{l<4}(z-z_l)=\mathcal V_5$ for $0\le j<4$;
+their product is~\eqref{eq:branchbarycentric}.
 The value
 $\psi_P=(\Psi^2/s_1^5)(P)\in\mathbb Q(P)$ is defined and nonzero, because
 $\operatorname{ord}_P\Psi=-5e_P/2$.
 Taking leading terms in the curve equation gives
-$N_0R_0=a\psi_P^2$. Thus the residue field $\mathbb Q(P)$ contains
+$N_0\mathcal R_0=a\psi_P^2$. Thus the residue field $\mathbb Q(P)$ contains
 \begin{equation}\label{eq:branchsign}
  \beta=\mathcal V_5^2/\psi_P,\qquad N_0\beta^2=a\mathcal V_4.
 \end{equation}
@@ -2682,7 +2691,10 @@ $K=\mathbb Q(\gamma_1,\gamma_2,\gamma_3)$: a factorization into two factors of p
 parameter ring would specialize to two factors of positive degree.
 Choose a root $t$ of $E_\gamma$, so $[K(t):K]=6$.
 In this field $\mathfrak d(t)\ne0$ since its degree is less than six, and
-$y=-\mathfrak n(t)/\mathfrak d(t)$. The same degree comparison shows $\mathcal V_4\ne0$.
+$y=-\mathfrak n(t)/\mathfrak d(t)$. Each factor $t$, $t-1$, $\mathfrak n$,
+$\mathfrak n+\mathfrak d$, $\mathfrak n+t\mathfrak d$ of
+$D_\gamma=\mathfrak d(t)^3\mathcal V_4$ is a nonzero polynomial of degree at most
+three, so none vanishes at $t$, and $\mathcal V_4\ne0$.
 
 Adjoin the independent parameter $N_0$. The element $a\mathcal V_4/N_0$ has
 odd valuation at $N_0=0$, so it is not a square in $K(t)(N_0)$.
@@ -3577,7 +3589,7 @@ its remainder and the norm polynomial gives
 \begin{align*}
  P_{4,*}(x)&=x^4-\frac{20}{7}x^3+\frac{757}{112}x^2
                          -\frac{669}{112}x+2,\\
- R_1(x;\xi_1,\xi_2)&=\frac{77\xi_1+7\xi_2}{14}
+ Z_1(x;\xi_1,\xi_2)&=\frac{77\xi_1+7\xi_2}{14}
        +\frac{-56\xi_1-124\xi_2}{14}x
        +\frac{-45\xi_1+157\xi_2}{14}x^2
        +\frac{28\xi_1-28\xi_2}{14}x^3,\\
