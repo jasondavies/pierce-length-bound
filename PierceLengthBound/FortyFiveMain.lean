@@ -14,7 +14,7 @@ public import PierceLengthBound.EightMain
 
 For each minor vector `p`, the gap vectors with that minor vector are counted through the
 lattice `Λ_p`: at most `(8 ⌊3H/λ(p)⌋ + 3) Ξ` of them (`pattern_count_lattice`). Few minor
-vectors have a short lattice vector (`short_count`, Proposition 9.6 of the paper), and every
+vectors have a short lattice vector (`short_count`, Proposition 9.5 of the paper), and every
 `Λ_p` has a nonzero vector of sup norm `≤ L` with `X ≤ L³ ≤ 8X` (`pivLat_short`,
 `exists_cube_root`). Partial summation (`abel_sum`, via `inv_telescope`) then gives
 `T ≪ Ξ³ (H X^{14/3} + X⁵)`, so `T³ ≤ C Ξ⁹ (H³X¹⁴ + X¹⁵)` (`arith_152`, `two_state_window_152`).
@@ -455,7 +455,7 @@ theorem visits_152 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
 theorem P_le_45_152 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((45 : ℝ) / 152 + ε) := by
   simpa only [Nat.cast_ofNat] using P_le_of_visits (N := 152) (r := 45) (K := C152)
-    (by norm_num) (((tauMax_slow 32 7).pow 39).mul (slack_le2.pow 117)) fun a b k _ hba =>
+    (by norm_num) ((tauMax_two_mul_slow.pow 39).mul (slack_le2.pow 117)) fun a b k _ hba =>
       (visits_152 (k := k) hba (tauMax_divBound a)).imp id fun h => h.trans_eq (by ring)
 
 end Global

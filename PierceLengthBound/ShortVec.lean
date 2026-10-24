@@ -19,12 +19,12 @@ three pivot gaps `k' = (k_{c₁}, k_{c₂}, k_{c₃})` by `m kᶜ = Lᶜ · k'` 
 `0, 1, 2`.
 
 The cross relation `m ∣ u × v` makes the index at most `|m|`, so `Λ_p` has a nonzero vector of
-sup norm at most `L` once `(L+1)³ > |m|` (`pivLat_short`, Lemma 9.3). Let `λ(p)` (`shortR`) be
+sup norm at most `L` once `(L+1)³ > |m|` (`pivLat_short`, Lemma 9.2). Let `λ(p)` (`shortR`) be
 the least sup norm of a nonzero vector of `Λ_p`. Counting `n ∣ w·x` in a box
-(`card_dot_dvd_le`, Lemma 9.5) and the minor-vector encoding with this divisibility condition
+(`card_dot_dvd_le`, Lemma 9.4) and the minor-vector encoding with this divisibility condition
 (`minor_vector_count_dot`) show that few patterns have a short vector:
 `#{p : λ(p) ≤ R} ≤ 393660 R³ Y⁴ τ₀²` for minor vectors of height `≤ Y`, where `τ(m) ≤ τ₀` for
-`m ≤ Y` (`short_count`, Proposition 9.6).
+`m ≤ Y` (`short_count`, Proposition 9.5).
 -/
 
 @[expose] public section
@@ -91,7 +91,7 @@ lemma pivLat_of_dvd {p : Fin 10 → ℤ} {x : Fin 3 → ℤ} (h : ∀ j, p (piv 
 /-- `Λ_p` has a nonzero vector of sup norm at most `R`. -/
 def HasShort (p : Fin 10 → ℤ) (R : ℕ) : Prop := ∃ x ∈ pivLat p, x ≠ 0 ∧ ∀ j, |x j| ≤ R
 
-/-- **Pigeonhole** (Lemma 9.3). The index of `Λ_p` is at most `|m|`, so if `(L+1)³ > |m|`, then
+/-- **Pigeonhole** (Lemma 9.2). The index of `Λ_p` is at most `|m|`, so if `(L+1)³ > |m|`, then
 `Λ_p` has a nonzero vector of sup norm at most `L`. -/
 theorem pivLat_short {p : Fin 10 → ℤ} (hpl : PluckerRel p) (hm : p (piv p) ≠ 0) {L : ℕ}
     (hL : (p (piv p)).natAbs < (L + 1) ^ 3) : HasShort p L := by
@@ -208,7 +208,7 @@ lemma shortR_le {p : Fin 10 → ℤ} {L : ℕ} (h : HasShort p L) : shortR p ≤
 
 /-! ### Counting patterns with a short vector -/
 
-/-- **Solutions of `n ∣ w·x` in a box** (Lemma 9.5): at most `27 n² gcd(n, x)` of the
+/-- **Solutions of `n ∣ w·x` in a box** (Lemma 9.4): at most `27 n² gcd(n, x)` of the
 `w ∈ [-n, n]³`. -/
 theorem card_dot_dvd_le {n : ℕ} (hn : 0 < n) (x : Fin 3 → ℤ) :
     ((ibox3 n).filter fun w => (n : ℤ) ∣ w ⬝ᵥ x).card ≤ 27 * n ^ 2 * gcd4 n x := by
@@ -485,7 +485,7 @@ theorem minor_vector_count_dot {S : Finset (Fin 10 → ℤ)} {Y : ℕ} (x : Fin 
   minor_vector_count_of (fun m u => (m : ℤ) ∣ u ⬝ᵥ x) fun p hp =>
     ⟨(hS p hp).1, (hS p hp).2.1, (hS p hp).2.2.1, Int.natAbs_dvd.mpr (hS p hp).2.2.2⟩
 
-/-- **Few patterns have a short vector** (Proposition 9.6). If `τ(m) ≤ τ₀` for `m ≤ Y`, the
+/-- **Few patterns have a short vector** (Proposition 9.5). If `τ(m) ≤ τ₀` for `m ≤ Y`, the
 minor vectors of height `≤ Y` with nonzero pivot entry and `λ(p) ≤ R` number at most
 `393660 R³ Y⁴ τ₀²`. -/
 theorem short_count {S : Finset (Fin 10 → ℤ)} {Y R τ0 : ℕ}

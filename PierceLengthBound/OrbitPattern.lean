@@ -21,7 +21,7 @@ This module collects the vocabulary shared by the window theorems and the curve 
 
 * the basic facts at a state: `kq_pos`, `Lz_pos` (`L(i) ≥ 1`), the `k`- and `r`-relations
   `e0_at`, `e3_at`, the division relations `div_rel`, the normalization identity `mult_at`
-  (Lemma 7.3), and `a_le_four` (`a ≤ 4 A qᵢ` when `bᵢ < 2A`);
+  (Lemma 7.3), and `a_le_four` (`a ≤ 4 A qᵢ` when `bᵢ < 2A`, Lemma 2.4);
 * the good starts of a window run (Lemma 7.6): `good_card`, `goodStarts`, `mem_goodStarts`,
   with the telescoping `sum_kq` and the rounding lemma `abs_le_div`;
 * the hypotheses `PatternHyps` taken by the pattern counts, and `goodStarts_patternHyps`;

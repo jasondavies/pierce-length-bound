@@ -16,7 +16,7 @@ has integer Cramer coordinates (`basis_of_min`). Among such bases, minimise `d�
 then `d₂ = |b₁|²|b₂|² - ⟨b₁, b₂⟩²`. Swapping and shearing the minimiser give `3d₁² ≤ 4d₂` and
 `3d₂² ≤ 4d₁I²`, and size reduction then gives a basis with
 `27 |b₁|²|b₂|²|b₃|² ≤ 64 I²` (`reduced_basis`). So every `w ∈ Λ` has coordinates with
-`27 |bᵢ|² yᵢ² ≤ 64 |w|²` (`reduced_coords`). This is Lemma 9.4 of the paper, proved in its
+`27 |bᵢ|² yᵢ² ≤ 64 |w|²` (`reduced_coords`). This is Lemma 9.3 of the paper, proved in its
 Appendix C.
 
 The proof uses only integer arithmetic.
@@ -233,7 +233,7 @@ lemma basis_of_min {I : ℕ} (hI : ∀ n, n < I → ¬ HasTri Λ n) {b1 b2 b3 : 
     rw [e1, e2] at this
     exact dvd_neg.mp (neg_dvd.mp this)
 
-/-- **The reduced basis** (Lemma 9.4). If `Λ ⊇ mℤ³` with `m ≥ 1`, then `Λ` has a basis
+/-- **The reduced basis** (Lemma 9.3). If `Λ ⊇ mℤ³` with `m ≥ 1`, then `Λ` has a basis
 `b₁, b₂, b₃` (every `w ∈ Λ` has integer Cramer coordinates) with `0 < |det| ≤ m³` and
 `27 |b₁|²|b₂|²|b₃|² ≤ 64 det²`. -/
 theorem reduced_basis {m : ℕ} (hm : 0 < m)

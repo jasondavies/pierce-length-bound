@@ -19,9 +19,9 @@ This file proves the window bounds; `RisesMain.lean` deduces `P(a, b) ≪ a^{1/4
 * `Window.drop_lt_of_not_rise` (Lemma 11.2): if `k_{i+1} ≤ kᵢ` then `d_{i+1} < dᵢ` (from the
   curvature `D ≥ 1`).
 * `sq_card_le_of_fiber` (Lemma 11.3): bounded multiplicity gives `|J|² ≤ 2M ∑ c_j`.
-* the window bounds of Proposition 11.4, with `ρ = windowRises a g T` the number of rises in
-  the run: `(T - 1)² ≤ 2(ρ + 1)(A - 1)` (`Window.rises_drop_bound`), `T - 1 ≤ a/A`
-  (`Window.rises_quot_bound`), and, if `6A ≤ a`, `T - 1 = ℓ + s` with `ℓ² ≤ 8(ρ + 1)(a/A)`
+* the window bounds of Proposition 11.4, with `r = windowRises a g T` the number of rises in
+  the run: `(T - 1)² ≤ 2(r + 1)(A - 1)` (`Window.rises_drop_bound`), `T - 1 ≤ a/A`
+  (`Window.rises_quot_bound`), and, if `6A ≤ a`, `T - 1 = ℓ + s` with `ℓ² ≤ 8(r + 1)(a/A)`
   and `s³ ≤ 26244 A` (`Window.rises_incr_bound`).
 -/
 
@@ -406,7 +406,7 @@ private lemma incr_le_of_lt_wEnd {j m : ℕ} (hjm : j ≤ m) (hm : m < wEnd a g 
     hjm hm
   exact ⟨not_lt.mp this.1, by omega⟩
 
-/-- **Proposition 11.4(1).** `(T - 1)² ≤ 2 (ρ + 1)(A - 1)`. -/
+/-- **Proposition 11.4(1).** `(T - 1)² ≤ 2 (r + 1)(A - 1)`. -/
 theorem rises_drop_bound (W : Window a A T g) (hT : 2 ≤ T) :
     (T - 1) ^ 2 ≤ 2 * (windowRises a g T + 1) * (A - 1) := by
   classical
@@ -496,7 +496,7 @@ private lemma not_low_of_five (W : Window a A T g) (h6 : 6 * A ≤ a) {j h : ℕ
   have h3 := lt_three_mul e0 l0 (W.mem j (by omega)).2 h6
   exact low_contra hq4 h3 hlow
 
-/-- **Proposition 11.4(3).** If `6A ≤ a` then `T - 1 = ℓ + s` with `ℓ² ≤ 8(ρ+1)(a/A)` and
+/-- **Proposition 11.4(3).** If `6A ≤ a` then `T - 1 = ℓ + s` with `ℓ² ≤ 8(r+1)(a/A)` and
 `s³ ≤ 26244 A`. -/
 theorem rises_incr_bound (W : Window a A T g) (hT : 2 ≤ T) (h6 : 6 * A ≤ a) :
     ∃ l s : ℕ, T - 1 = l + s ∧ l ^ 2 ≤ 8 * (windowRises a g T + 1) * (a / A) ∧

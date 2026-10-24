@@ -9,7 +9,7 @@ public import PierceLengthBound.LatticeJointOptimization
 
 /-! Top-level statements of the exterior-lattice length bounds: the optimized exponent
 `γ* = 471/1559 - 6√105/7795` (Theorem 1.3, `thm:lattice`) and the rational instance
-`153/520` (Corollary 9.13, `cor:latticeexponent`). -/
+`153/520` (Corollary 9.11, `cor:latticeexponent`). -/
 
 @[expose] public section
 namespace PierceLengthBound

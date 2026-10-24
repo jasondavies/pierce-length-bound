@@ -45,10 +45,10 @@ theorem P_le_powered_joint (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
   let K := fun a => (3 * (R a + 1)) ^ L
   let C₀ := poweredJointWindowBase m n L
   let q := 17 + 10 * L + 5 * n + m
-  let S := fun a => C₀ * (K a + 1) * tauMax (32 * a ^ 7) ^ q
+  let S := fun a => C₀ * (K a + 1) * tauMax (2 * a) ^ q
   have hK : SlowGrowth K := ((slowGrowth_const 3).mul (slowGrowth_add_one hR)).pow L
   have hS : SlowGrowth S := ((slowGrowth_const C₀).mul (slowGrowth_add_one hK)).mul
-    ((tauMax_slow 32 7).pow q)
+    (tauMax_two_mul_slow.pow q)
   have hα := poweredJointExponent_ge_base (n := n) hm
   apply P_le_of_real_visits hS (by linarith : 0 ≤ poweredJointExponent m n)
   intro a b k _hb hba

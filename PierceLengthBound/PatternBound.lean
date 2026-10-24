@@ -11,7 +11,7 @@ public import PierceLengthBound.Gram
 # Sizes of the pattern integers
 
 At a state whose increments `k₀,…,k₅` lie in `[1, H]`, with labels `L(i), L(i+1) ≥ 1` obeying
-the label bound `L · a³ ≤ 256 A⁴ gramP` (Lemma 7.4), whose cofactors satisfy the `k`- and
+the label bound `L · a³ ≤ 256 A⁴ gramP` (Lemmas 7.4 and 2.4), whose cofactors satisfy the `k`- and
 `r`-relations of Lemma 7.1, and under the scale condition `237568 A⁴ H⁵ ≤ a³`, the four pattern
 integers `L(i), L(i+1), U₁, U₂` are at most `172032 A⁴ H⁶ / a³` in absolute value
 (`state_bound`).

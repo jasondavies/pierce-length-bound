@@ -15,7 +15,7 @@ public import PierceLengthBound.NormalizationPointBranch
 pole envelope over any finite collection of distinct normalized branches,
 including branches represented on different affine charts. A generic rational combination of
 the graph coordinates attains every envelope, and its field degree is at most the Hilbert
-degree. This gives the lower bounds for the graph degrees in Lemmas 8.13 and 9.11
+degree. This gives the lower bounds for the graph degrees in Lemmas 8.13 and 9.9
 (`LinearJointGraph`). -/
 
 @[expose] public section

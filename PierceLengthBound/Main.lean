@@ -14,7 +14,7 @@ public import OAI.NumberTheory.Ostmann.Preliminaries.DivisorPowerBound
 Split the positive terms of the orbit according to `⌊log₂ bᵢ⌋ = k`. The terms with a given
 `k` are consecutive and lie in `[2^k, 2^{k+1})`, so they form a window run
 (`visits_window`), and `window_bound` gives `T¹⁰ ≪ a³ Δ²` when `T ≥ 10`, where
-`Δ = max_{n ≤ 32 a⁷} τ(n)`. The divisor bound `τ(n)^k ≪_k n` gives `Δ ≪_η a^η`
+`Δ = max_{n ≤ 2a} τ(n)`. The divisor bound `τ(n)^k ≪_k n` gives `Δ ≪_η a^η`
 (`tauMax_slow`), so `T ≪_η a^{3/10 + η}`, and there are `≤ log₂ a + 1` values of `k`.
 
 The last step is shared by all the main theorems: `P_le_of_real_visits` turns a window bound
@@ -138,8 +138,8 @@ def tauMax (X : ℕ) : ℕ := (range (X + 1)).sup fun n => n.divisors.card
 lemma tau_le_tauMax {n X : ℕ} (h : n ≤ X) : n.divisors.card ≤ tauMax X :=
   le_sup (f := fun n => n.divisors.card) (mem_range.mpr (by omega))
 
-/-- `τ*(32 a⁷)` bounds the divisor function on `[1, 32 a⁷]`. -/
-lemma tauMax_divBound (a : ℕ) : DivBound a (tauMax (32 * a ^ 7)) := fun _ _ hn => tau_le_tauMax hn
+/-- `τ*(2a)` bounds the divisor function on `[1, 2a]`. -/
+lemma tauMax_divBound (a : ℕ) : DivBound a (tauMax (2 * a)) := fun _ _ hn => tau_le_tauMax hn
 
 /-- `max_{n ≤ X} τ(n)^k ≤ D X` from the divisor bound. -/
 lemma tauMax_pow_le {k D : ℕ} (hk : k ≠ 0) (hdiv : ∀ n : ℕ, n ≠ 0 → n.divisors.card ^ k ≤ D * n)
@@ -238,6 +238,10 @@ lemma tauMax_slow (c e : ℕ) : SlowGrowth fun a => tauMax (c * a ^ e) := by
   have h := root_le (c := c) hk1 ha (tauMax_pow_le hk1 hdiv (c * a ^ e)) hkη
   nlinarith [Real.rpow_nonneg (Nat.cast_nonneg a) η]
 
+/-- The divisor maximum `τ*(2a)` of the window bounds grows slowly. -/
+lemma tauMax_two_mul_slow : SlowGrowth fun a => tauMax (2 * a) := by
+  simpa only [pow_one] using tauMax_slow 2 1
+
 /-- `log₂ n + 1 = τ(2^{⌊log₂ n⌋}) ≤ τ*(n)`. -/
 lemma log_add_one_le_tauMax {n : ℕ} (hn : n ≠ 0) : Nat.log 2 n + 1 ≤ tauMax n := by
   have h := tau_le_tauMax (Nat.pow_log_le_self 2 hn)
@@ -313,7 +317,7 @@ lemma P_le_of_exponent_le {β γ : ℝ} (hβγ : β ≤ γ)
 theorem P_le : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((3 : ℝ) / 10 + ε) := by
   simpa only [Nat.cast_ofNat] using P_le_of_visits (N := 10) (r := 3) (K := 6144000000)
-    (by norm_num) ((tauMax_slow 32 7).pow 2) fun a b k _ hba =>
+    (by norm_num) (tauMax_two_mul_slow.pow 2) fun a b k _ hba =>
       (visits_bound (k := k) hba.le (tauMax_divBound a)).imp (fun h => by omega)
         fun h => h.trans_eq (by ring)
 

@@ -276,7 +276,7 @@ theorem visits_74 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
 theorem P_le_11_37 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((11 : ℝ) / 37 + ε) := by
   have h := P_le_of_visits (N := 74) (r := 22) (K := C74) (by norm_num)
-    (((tauMax_slow 32 7).pow 19).mul (slack_le.pow 19)) fun a b k _ hba =>
+    ((tauMax_two_mul_slow.pow 19).mul (slack_le.pow 19)) fun a b k _ hba =>
       (visits_74 (k := k) hba (tauMax_divBound a)).imp id fun h => h.trans_eq (by ring)
   norm_num at h ⊢
   exact h

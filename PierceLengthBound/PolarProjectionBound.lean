@@ -27,10 +27,10 @@ theorem P_le_polar_projection_of_six_term_count (m n : ℕ) (hm : 0 < m)
   let K := fun a => polarProjectionCountSlack (R a) m n
   let C₀ := polarProjectionWindowBase m n
   let q := polarProjectionWindowDeltaExponent m n
-  let S := fun a => C₀ * (K a + 1) * tauMax (32 * a ^ 7) ^ q
+  let S := fun a => C₀ * (K a + 1) * tauMax (2 * a) ^ q
   have hK : SlowGrowth K := ((slowGrowth_const 10).mul (slowGrowth_add_one hR)).pow (3 * h + 51)
   have hS : SlowGrowth S := ((slowGrowth_const C₀).mul (slowGrowth_add_one hK)).mul
-    ((tauMax_slow 32 7).pow q)
+    (tauMax_two_mul_slow.pow q)
   have hα : (5 : ℝ) / 17 ≤ polarProjectionExponent m n := (le_max_left _ _).trans (le_max_left _ _)
   apply P_le_of_real_visits hS (by linarith : 0 ≤ polarProjectionExponent m n)
   intro a b k _hb hba

@@ -260,7 +260,7 @@ alignment:
       module: "PierceLengthBound.LatticeJointMain"
       status: proved
       note: "Uniform in a and b, including the proved external curve theorem."
-    - source: "Rational exterior-lattice bound, Corollary 9.13 with (m, n) = (3, 2)"
+    - source: "Rational exterior-lattice bound, Corollary 9.11 with (m, n) = (3, 2)"
       lean: "PierceLengthBound.P_le_153_520"
       module: "PierceLengthBound.LatticeJointMain"
       status: proved

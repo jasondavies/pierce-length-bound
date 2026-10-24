@@ -12,7 +12,7 @@ public import PierceLengthBound.Block
 
 A *window run* is a run `g 0, g 1, …, g (T-1)` of consecutive terms of an orbit of
 `x ↦ a mod x`, all lying in `[A, 2A)`. We prove, with `Δ` a bound for the divisor function on
-`[1, 32 a⁷]`:
+`[1, 2a]`:
 
 * `drop_bound`: `T (T - 1) ≤ 4 A Δ` (the Erdős–Shallit divisor argument, Proposition 5.1).
 
@@ -43,8 +43,8 @@ structure Window (a A T : ℕ) (g : ℕ → ℕ) : Prop where
   le_a : ∀ j < T, g j ≤ a
   step : ∀ j, j + 1 < T → g (j + 1) = a % g j
 
-/-- `Δ` bounds the divisor function on `[1, 32 a⁷]`. -/
-def DivBound (a Δ : ℕ) : Prop := ∀ n : ℕ, 0 < n → n ≤ 32 * a ^ 7 → n.divisors.card ≤ Δ
+/-- `Δ` bounds the divisor function on `[1, 2a]`. -/
+def DivBound (a Δ : ℕ) : Prop := ∀ n : ℕ, 0 < n → n ≤ 2 * a → n.divisors.card ≤ Δ
 
 namespace Window
 
@@ -255,12 +255,7 @@ theorem drop_bound {a A T Δ : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hΔ 
           have hi' := mem_range.mp (mem_filter.mp (mem_filter.mp (Finset.mem_coe.mp hi)).1).1
           have hj' := mem_range.mp (mem_filter.mp (mem_filter.mp (Finset.mem_coe.mp hj)).1).1
           exact W.injOn (by simp; omega) (by simp; omega) hij
-      _ ≤ Δ := by
-          apply hΔ _ (by omega)
-          have : a ≤ a ^ 7 := by
-            calc a = a ^ 1 := (pow_one a).symm
-              _ ≤ a ^ 7 := Nat.pow_le_pow_right ha (by norm_num)
-          omega
+      _ ≤ Δ := hΔ _ (by omega) (by omega)
   have hcard : Sel.card ≤ Δ * H := by
     have := card_le_mul_card_image_of_maps_to himg Δ hfib
     simpa using this

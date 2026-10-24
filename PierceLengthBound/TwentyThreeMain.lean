@@ -20,7 +20,7 @@ As in `OrbitPattern`, for an orbit state `i` put `kᵢ = q_{i+1} - qᵢ`, `dᵢ 
 
 In a window run of `T ≥ 36` terms in `[A, 2A)` take `H = ⌊28a/(AT)⌋ + 1`. At least `T/2`
 starts have their next seven increments `≤ H` (`good_card`, Lemma 7.6 of the paper). The label
-bound in window form (`label_at`, Lemma 7.4) and `state_bound` show that, if
+bound in window form (`label_at`, Lemmas 7.4 and 2.4) and `state_bound` show that, if
 `237568 A⁴ H⁵ ≤ a³`, their patterns are bounded by `M = ⌊172032 A⁴ H⁶ / a³⌋`
 (`goodStarts_theta_le`), so the counting lemma `pattern_count` gives `T ≤ 16 (2M+1)⁷ H²`
 (`two_state_window_77`). Combined with the six-step bound and the drop bound, every window has
@@ -40,7 +40,7 @@ section State
 
 variable {a b : ℕ}
 
-/-- **The label bound in window form** (Lemma 7.4). If `bᵢ < 2A`, then
+/-- **The label bound in window form** (Lemmas 7.4 and 2.4). If `bᵢ < 2A`, then
 `L(i) a³ ≤ 256 A⁴ 𝒢(kᵢ, …, k_{i+4})`, where `𝒢 = gramP`. -/
 lemma label_at {A i : ℕ} (hba : b < a) (h : i + 6 < P a b) (hi : orb a b i < 2 * A) :
     Lz a b i * (a : ℤ) ^ 3 ≤ 256 * (A : ℤ) ^ 4 *
@@ -253,7 +253,7 @@ theorem visits_77 {a b k Δ : ℕ} (hba : b < a) (hΔ : DivBound a Δ) :
 theorem P_le_23_77 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((23 : ℝ) / 77 + ε) := by
   simpa only [Nat.cast_ofNat] using P_le_of_visits (N := 77) (r := 23) (K := C77) (by norm_num)
-    ((tauMax_slow 32 7).pow 22) fun a b k _ hba => visits_77 (k := k) hba (tauMax_divBound a)
+    (tauMax_two_mul_slow.pow 22) fun a b k _ hba => visits_77 (k := k) hba (tauMax_divBound a)
 
 end Exponent
 
