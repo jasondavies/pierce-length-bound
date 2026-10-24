@@ -36,7 +36,8 @@ moment sequence, and these are small where the drops of the orbit are small.
 Grouping orbit states by such integers places the quotients of each group on
 curves of bounded degree, whose integer points we count with the uniform
 bounds of Castryck, Cluckers, Dittmann and Nguyen. The resulting exponent
-tends to $5/17$ as the degree of these curves grows. We raise the degree by
+approaches $5/17$ when these curves have large degree relative to the
+logarithmic size of the box. We raise the degree by
 adjoining further integer invariants, by an effective Hilbert irreducibility
 sieve, and by an exact identity for the direction of the curvature vector,
 and come within $1.6\cdot10^{-5}$ of $5/17$. We also give an
@@ -132,8 +133,10 @@ have their next few increments bounded by $H\asymp a/(AT)\le a^{1+o(1)}/T^3$.
 For such a start, form the $3\times5$ matrix whose rows are the next five
 drops, the increments, and a quadratic expression in the increments. Its ten
 maximal minors, among them $I_4(i)$, $I_4(i+1)$ and $I_4(i+2)$, are integers.
-To leading order the drop row is a combination of the other two rows, and
-subtracting that combination leaves entries of size $O(aH^3/q_i^4)$; so the
+To leading order the drop row is a combination of the other two rows, since
+the Pierce expansion gives $d_j/a=k_j/q_i^2-(r_j+k_j)/q_i^3+O(H^3/q_i^4)$ with
+$r_j$ the quadratic row (Proposition~\ref{prop:allminors}). Subtracting that
+combination leaves entries of size $O(aH^3/q_i^4)$; so the
 minors have absolute value at most
 \[
  X\asymp\frac{A^4H^6}{a^3}\asymp\frac{a^3}{A^2T^6}\le\frac{a^{3+o(1)}}{T^{10}}.
@@ -147,19 +150,21 @@ $T^{51}\le a^{15+o(1)}$, that is, $T\le a^{5/17+o(1)}$.
 
 The rest of the argument bounds the number of starts sharing a pattern. For
 a fixed pattern, three nodes $s_j=q_{i+j}-q_i$, $j=1,2,3$, determine the
-increments. The nodes satisfy a quadratic equation and, on retaining the
-fixed dividend $a$, a second equation of degree at most twelve. They
-therefore lie on a union of curves of total degree at most $24$. The
+increments. The pattern supplies a quadratic equation in the nodes. A second
+equation, of degree at most twelve, comes from comparing a resultant of the
+orthogonal quartics of states $i$ and $i+1$ with the Hankel determinant
+$I_4(i)$; it involves the dividend $a$. The nodes therefore lie on a union of curves of total degree at most $24$. The
 coefficient-uniform bound of Castryck, Cluckers, Dittmann and
 Nguyen~\cite{CCDN} says that an integral curve over $\mathbb Q$ of degree
 $\delta$ has at most $B^{1/\delta+o(1)}$ integer points in a box of size
 $B$, whatever its coefficients. So a pattern carries $B^{1/\delta+o(1)}$
-starts. Here $\delta\le24$, but the curves carry further integer-valued
-functions, and adjoining them as coordinates raises the degree without much
-enlarging the box. Since $B\le a^{O(1)}$, the factor $B^{1/\delta}$ becomes
-$a^{o(1)}$ as $\delta\to\infty$, so the exponent tends to $5/17$ as the degree
-grows. Every refinement below is a way of raising $\delta$, or of shrinking
-$B$, for almost all patterns.
+starts. If the degree could be made large with the box fixed, the factor
+$B^{1/\delta}$ would become $a^{o(1)}$ and the exponent would tend to $5/17$.
+A component has degree at most $24$, and the components of smallest degree
+govern the bound; but the curves carry further integer-valued functions.
+Adjoining powers of them as coordinates raises $\delta$ and $\log B$ together,
+and what matters is the ratio $\log B/\delta$ (Remark~\ref{rem:jointscales}). Every refinement below either gains more degree per
+unit of height or shrinks $B$, for almost all patterns.
 
 \subsection*{Raising the degree}
 We adjoin three integer curvature minors $W=(W_0,W_1,W_2)$ and the fifth
@@ -172,13 +177,18 @@ polynomial, and $W$ is expressed through the reconstructed curvature $I_3(i)$.
 On a component of degree $d$, $J$ has a pole of total order $5d/2$ at
 infinity, while the $W_j$ vanish there to total order $3d/2$. A suitable
 combination of the $W_j$ also vanishes at the node triple of one orbit
-state, so it has at least $3d/2+1$ zeros, hence as many poles, all affine. For fixed positive integers $m,n$, the graph
+state, so it has at least $3d/2+1$ zeros, hence as many poles, all affine.
+The degree of an affine curve is the pole degree of a generic linear
+combination of its coordinates, and on the graph below $J^n$ has poles only at
+infinity and the $W_j^m$ only at affine points, so their pole degrees add.
+For fixed positive integers $m,n$, the graph
 obtained by adjoining $W_0^m,W_1^m,W_2^m,J^n$ to the nodes therefore has
 degree at least $\frac{5n}2d+m\bigl(\frac{3d}2+1\bigr)$, and the box grows
 only to $\max(H,S^m,Y^n)$. Conics and components on which the reconstruction
 fails are counted separately. This gives Theorem~\ref{thm:joint} below.
 
-The pattern also determines a rank-three lattice. If $\lambda$ is the
+The pattern also determines a rank-three lattice (the rows satisfy
+congruences modulo the largest minor). If $\lambda$ is the
 smallest sup norm of a nonzero lattice vector, a reduced basis gives integer
 increment and curvature coordinates of sizes $O(H/\lambda)$ and
 $O(S/\lambda^2)$. Averaged bounds for short lattice vectors shrink the box
@@ -207,7 +217,9 @@ the powered graph has degree
 \[
  \deg\Gamma\ge\frac{5n}{2}\cdot24+m(60-4)=60n+56m,
 \]
-compared with $60n+37m$ from the general bound above.
+Without the sieve the general bound can use only $d\ge4$, which gives
+$10n+7m$; forcing $d=24$ would give $60n+37m$, and the polar identity raises
+the affine pole count from $37$ to $56$.
 
 The sieve and the
 degenerate set together discard $O_\eta(a^\eta X^{14/3})$ patterns, which
@@ -731,11 +743,18 @@ problem becomes one of counting patterns, and the states belonging to each patte
 latter with these equations alone already improves on $3/10$ (the first rows of the table in
 Section~\ref{sec:intro}). To go further, the linear and quadratic relations alone do not
 suffice: for some patterns they admit constant increments $k_j=t$ for every $t$
-(an example follows~\eqref{eq:jointbar}). Section~\ref{sec:joint} therefore adds
+(an example follows Lemma~\ref{lem:jointcurve}). Section~\ref{sec:joint} therefore adds
 the fixed-dividend equation, an equation in the nodes alone that involves $a$;
 it excludes such families.
 
-\subsection{The pattern matrix}
+The rest of this section builds the pattern matrix and identifies its
+cofactors with the orthogonal quartic of $\nu_i$ (Section~\ref{sec:patternmatrix}), ties $q_i$ to
+the pattern by a quartic equation (Section~\ref{sec:normid}), proves the signs and the
+supply of good starts used throughout Section~\ref{sec:joint} (Sections~\ref{sec:signs}
+and~\ref{sec:goodstarts}), and bounds the size and number of patterns
+(Sections~\ref{sec:minors} and~\ref{sec:minorcount}).
+
+\subsection{The pattern matrix}\label{sec:patternmatrix}
 Fix a state $i$ with $i+6<N$ and write, for $m\ge0$,
 \begin{gather*}
 k_m=q_{i+m+1}-q_{i+m},\qquad d_m=b_{i+m}-b_{i+m+1},\\
@@ -749,7 +768,10 @@ $3\times4$ integer matrix
 \mathcal M_i=\begin{pmatrix} d_0&d_1&d_2&d_3\\ k_0&k_1&k_2&k_3\\ r_0&r_1&r_2&r_3\end{pmatrix},
 \]
 and let $U_m(i)=(-1)^{m+1}\det(\mathcal M_i\text{ with column $m$ deleted})$ for
-$0\le m\le3$.
+$0\le m\le3$. The three rows are, up to sign and the factor $a$, the moments of
+$F_{m+1}-F_m$ against $\nu_i$, $x\mu_i$ and $(x^2-x)\mu_i$ (proof of
+Lemma~\ref{lem:orthquartic}); this is why the cofactor vector describes an
+orthogonal polynomial.
 
 \begin{lemma}[Cofactor relations]\label{lem:pattern}
 \begin{enumerate}
@@ -822,7 +844,7 @@ and the $k$-relations at $i$ and $i+1$ read
 N_1k_0=u_1k_1+u_2k_2+N_0k_3,\qquad N_1k_4=N_2k_1-v_1k_2-v_2k_3 .
 \]
 
-\subsection{The normalisation identity and the label bound}
+\subsection{The normalisation identity and the label bound}\label{sec:normid}
 
 \begin{lemma}[The normalisation identity]\label{lem:multid}
 Let $i+6<N$, let $\pi_i$ be as in Lemma~\ref{lem:orthquartic}, and let
@@ -884,7 +906,7 @@ rule~\eqref{eq:moment-shift} and the low moments~\eqref{eq:lowmoments}, the prod
 $\prod_{j<4}\mu_i(F_j^2)$ expands to the displayed formula.
 \end{proof}
 
-\subsection{Signs}
+\subsection{Signs}\label{sec:signs}
 Throughout this subsection the pattern and increments arise from the same state,
 so the cofactor relations of Lemma~\ref{lem:pattern} remain in force.
 Besides the polynomial $\sigma$ of Section~\ref{sec:six}, put
@@ -906,7 +928,7 @@ since the Cramer determinant is $k_1r_2-k_2r_1=\sigma(k_1,k_2,k_3)$.
 \end{proof}
 
 
-\subsection{Good starts}
+\subsection{Good starts}\label{sec:goodstarts}
 
 \begin{lemma}[Good starts]\label{lem:good}
 Let $b_s,\dots,b_{s+T-1}$ be a window run in $[A,2A)$ with $T\ge36$, and put
@@ -964,7 +986,7 @@ $|k_j|\le H$ and $|r_j|\le10H^2$, so $|p|\ll aH^6/q^4$. Finally $a<4Aq$
 (Lemma~\ref{lem:fourAq}).
 \end{proof}
 
-\subsection{Counting minor vectors}
+\subsection{Counting minor vectors}\label{sec:minorcount}
 
 \begin{proposition}[Minor vectors]\label{prop:minorvec}
 The number of vectors of minors of integer $3\times5$ matrices with all coordinates in $[-X,X]$ is
@@ -1017,7 +1039,9 @@ rational functions of the nodes. Components on which the reconstruction
 identities fail contribute $O(1)$ starts (Section~\ref{sec:jointrecon}).
 \item The directions at infinity of the curves are controlled by the
 Newton coefficients of the pattern. This makes nonexceptional
-components have even degree (Section~\ref{sec:jointinfinity}), shows
+components have even degree (Section~\ref{sec:jointinfinity}), so that the
+orders $3e/2$ and $5e/2$ below are integers and every component left after the
+conics has degree at least four; it also shows
 that exceptional patterns are few, and excludes lines
 (Section~\ref{sec:jointexc}).
 \item The reconstructed functions, and hence two families of new integer
@@ -1071,7 +1095,10 @@ Distinct good starts with the same pattern have distinct free-node triples:
 the pattern and the free nodes determine $q_i$ (it is the rational function $Q$
 of Section~\ref{sec:jointrecon}), and $q_i$ strictly increases along the orbit.
 
-For the pattern integers $\theta$, put
+We now write, as functions of the three free nodes, the objects that at a good
+start are the orthogonal quartics of states $i$ and $i+1$ and the norm
+$\nu_i(P_4^2)$; the pattern curve is cut out by the pattern quadratic and a
+resultant identity among them. For the pattern integers $\theta$, put
 \begin{equation}\label{eq:jointbar}
  (\rho,\varphi,\chi)=\frac{(N_1,u_1,u_2)}{N_0},\qquad
  (\rho',\varphi',\chi')=\frac{(N_2,v_1,v_2)}{N_1},
@@ -1093,12 +1120,7 @@ $\rho k_0=\varphi k_1+\chi k_2+k_3$. Let
 \[
  \gamma=(\rho,\,-\rho-\varphi,\,\varphi-\chi,\,\chi-1,\,1),
 \]
-and let $\gamma'$ be the same expression in $\rho',\varphi',\chi'$. (For example,
-if $(\rho,\varphi,\chi)=(\rho',\varphi',\chi')=(\alpha,2\alpha+1,-\alpha-2)$, then
-$\sum_l\gamma_lz^l=(z-1)^3(z-\alpha)$, and constant increments $k_j=t$ satisfy the
-linear and quadratic relations for every $t$: since $z=1$ is a triple root,
-$\sum_l\gamma_ll^r=0$ for $r\le2$, and with $s_j=jt$ these sums are exactly the
-$k$- and $r$-relations.) Put
+and let $\gamma'$ be the same expression in $\rho',\varphi',\chi'$. Put
 \[
  P_4(x)=\sum_{j=0}^4\gamma_j\prod_{\ell=0}^{j-1}(x-s_\ell),
  \qquad
@@ -1194,10 +1216,19 @@ equations have no common factor, their common zero set is a curve, and by B\'ezo
 its components over $\mathbb Q$ have total degree at most $2\cdot12$.
 \end{proof}
 
+This shows why the fixed-dividend equation is needed. If $(\rho,\varphi,\chi)=(\rho',\varphi',\chi')=(\alpha,2\alpha+1,-\alpha-2)$, then
+$\sum_l\gamma_lz^l=(z-1)^3(z-\alpha)$, and constant increments $k_j=t$ satisfy the
+linear and quadratic relations for every $t$: since $z=1$ is a triple root,
+$\sum_l\gamma_ll^r=0$ for $r\le2$, and with $s_j=jt$ these sums are exactly the
+$k$- and $r$-relations.
+
+
 \subsection{Reconstruction and retained components}\label{sec:jointrecon}
 
-Two further identities single out the components on which the later rational
-functions behave as required. The idea is that the two orthogonal polynomials $P_4$ and $Z$ determine the
+We need $q_i$ and $I_3(i)$ as rational functions on each component, with
+computable orders at infinity. This works only on components where two further
+identities hold identically; on any other component they cut out boundedly many
+good starts, which we count directly. The idea is that the two orthogonal polynomials $P_4$ and $Z$ determine the
 moment vector of $\nu_i$ up to scale, and the two normalised division
 equations fix the scale; this recovers $q_i$ and $I_3(i)$ as rational
 functions of the free nodes. Concretely, form the $8\times9$ matrix of
@@ -1313,6 +1344,11 @@ makes it uniform.
 
 \subsection{Directions at infinity}\label{sec:jointinfinity}
 
+At a point at infinity the leading nodes satisfy $\sum_j\gamma_jz_j^r=0$ for
+$r\le3$, and if some of them coincide, the $\gamma_j$ in each group of equal
+leading nodes sum to zero (Lemma~\ref{lem:jointleading}). Excluding vanishing
+pair sums therefore makes the five leading nodes distinct, which fixes the
+orders at infinity of everything below.
 Call a pattern \emph{exceptional} if two of the five Newton coefficients
 $\gamma_j$ sum to zero. Since $\rho>0$, $\varphi>0$ and $\chi<0$,
 every $\gamma_j$ is nonzero, and a pair sum can vanish only in one of the
@@ -1432,7 +1468,9 @@ are not needed here.
 \subsection{Exceptional patterns and line components}\label{sec:jointexc}
 
 Exceptional patterns may have components of odd degree, including lines, but
-there are fewer of them.
+there are fewer of them. Lines must be excluded because the curve bound saves
+nothing on them; outside the range~\eqref{eq:jointscale} below, the proof of
+Corollary~\ref{cor:jointexponent} gives $T\le a^{5/17+o(1)}$ directly.
 
 \begin{lemma}[Exceptional patterns and lines]\label{lem:jointcomponents}
 There are $O(X^4\log(2X))=O_\eta(a^\eta X^4)$ exceptional patterns. In the range
@@ -1482,6 +1520,10 @@ Each range therefore contributes $O(X^4)$, and summing over $O(\log(2X))$
 ranges proves the pattern count. Since $X\le a^{O(1)}$, the logarithm is
 absorbed into $a^\eta$.
 
+For the second claim the strategy is as follows: a line through a good start
+forces the pattern to be exceptional and the nodes to satisfy one of four
+special relations; each relation makes some increment at most $2X$, and then
+the label bound makes $q_i$ too small.
 Now suppose that a line contained in the zero set of~\eqref{eq:jointcurve} passes
 through the free-node triple $\mathbf s$ of a good start, with direction $w$. Extend $w$ to the five
 nodes linearly, as in Section~\ref{sec:jointcurve}, and write $\mathbf s(t)=\mathbf s+tw$. Both equations
@@ -1607,7 +1649,10 @@ and its shift are
  H_3'&=k_1r_2-k_2r_1=\sigma(k_1,k_2,k_3),
 \end{align*}
 with $\sigma$ as in Section~\ref{sec:six}. They are positive at every state at which they are
-defined. On a retained component, use the reconstructed function $E_0$ to define
+defined. At a good start, $W=(D_{12},-D_{02},D_{01})=\mathbf d\times\mathbf k$ satisfies
+$W\cdot\mathbf k=0$ and $W\cdot\mathbf r=\det(\mathbf d,\mathbf k,\mathbf r)=p_{012}=N_0$;
+these two linear equations determine $W$ from its last coordinate $D_{01}=I_3(i)$.
+Solving them with $E_0$ in place of $I_3(i)$, on a retained component, gives
 \[
  E_{12}=\frac{H_3'E_0-N_0k_1}{H_3},\qquad
  E_{02}=\frac{k_0E_{12}+k_2E_0}{k_1},\qquad
@@ -1972,7 +2017,7 @@ Corollary~\ref{cor:jointexponent} with loss $\varepsilon/2$.
 The powers and all constants depend only on $\varepsilon$, not on $a,b$.
 \end{proof}
 
-\begin{remark}
+\begin{remark}\label{rem:jointscales}
 In terms of the scales, at the critical point $T\approx a^{\alpha_*}$ one has
 $A\approx a^{2\alpha_*}$, $H\approx S\approx a^{1-3\alpha_*}\approx a^{0.117}$,
 $X\approx a^{3-10\alpha_*}\approx a^{0.057}$ and
@@ -1980,18 +2025,24 @@ $Y\approx a^{6-20\alpha_*}\approx a^{0.115}$. The pattern count $X^5\approx a^{0
 alone would give the exponent $5/17$. The graph term multiplies it by
 $\mathcal B^{1/\delta_{\min}}$, and at $n/m\approx r_*$ the two box radii $S^m$ and $Y^n$
 balance, at $\mathcal B\approx a^{0.117m}$. This gives the extra factor
-$a^{0.117/(10r_*+7)}\approx a^{0.0068}$.
+$a^{0.117/(10r_*+7)}\approx a^{0.0068}$. Scaling $m$ and $n$ together does not
+change it, since $\log\mathcal B$ and $\delta_{\min}$ grow in proportion.
 \end{remark}
 
 \section{Exterior lattice coordinates}\label{sec:lattice}
 
-We now prove Theorem~\ref{thm:lattice}. We keep the notation and the conventions on constants
+We now prove Theorem~\ref{thm:lattice}. The idea is that the pivot parts of the three rows of
+the pattern matrix satisfy congruences modulo the pivot minor fixed by the pattern, so they
+lie in a lattice $\Lambda_p$. In a reduced basis the increment row has coordinates
+$O(H/\lambda)$, and the curvature vector, a cross product, has coordinates
+$O(S/\lambda^2)$, even though the drop row itself is large; here $\lambda$ is the shortest
+vector of $\Lambda_p$. We keep the notation and the conventions on constants
 of Section~\ref{sec:joint}, and write $\delta_{\min}=10n+7m$ as there. Only the count of
 good starts on retained nonexceptional components of degree at least four changes.
 Proposition~\ref{prop:latticewindow} replaces the term $X^5\mathcal B^{1/\delta_{\min}}$ of
 Proposition~\ref{prop:jointwindow} by
 \[
- X^{5-1/(3\delta_{\min})}H^{1/\delta_{\min}}+X^{5-2m/(3\delta_{\min})}S^{m/\delta_{\min}}+X^5Y^{n/\delta_{\min}},
+ X^{5-1/(3\delta_{\min})}H^{1/\delta_{\min}}+X^{5-2m/(3\delta_{\min})}S^{m/\delta_{\min}}+X^5Y^{n/\delta_{\min}}.
 \]
 In effect $H$ is
 replaced by $H/X^{1/3}$ and $S$ by $S/X^{2/3}$, while $Y$ is unchanged. The node term stays
@@ -2412,6 +2463,8 @@ so $V\cdot r=\Psi$ while $W\cdot r=N_0$. Thus $\Psi W=N_0V$. Now use $J=N_0\Psi$
 and $\Psi>0$.
 \end{proof}
 
+One cannot hope that the pattern curve avoids the common zero of the three
+forms, where zeros of $J$ need not be poles of $W$: it always passes through it.
 In projective coordinates $[\mathbf k:k_h]$, the three homogeneous forms
 $G\mathbf k+\ell k_h$ have a unique common zero, the finite point
 $\mathbf k_*=-G^{-1}\ell$. Since $V(\mathbf k_*)=0$, the identities $f=\mathbf k\cdot V$
@@ -2430,13 +2483,12 @@ where $c_Z=\chi'-\chi-s_4$, and a remainder with Newton coefficients
  \gamma'_{j-1}-\gamma_{j-1}-\gamma_j(s_j+c_Z)\quad(1\le j\le3).
 \]
 They all vanish at $\mathbf k_*$, so $Z_*=x P_{4,*}$ and
-$N_0\operatorname{Res}(P_{4,*},Z_*)-a\Psi(\mathbf k_*)^4=0$. So the pattern
-curve may pass through $\mathbf k_*$, where all three forms vanish and the
-zeros of $J$ need not be poles of $W$; Lemma~\ref{lem:polarbase} below bounds
-the loss there.
+$N_0\operatorname{Res}(P_{4,*},Z_*)-a\Psi(\mathbf k_*)^4=0$. Hence $\mathbf k_*$ lies
+on every pattern curve, and Lemma~\ref{lem:polarbase} below bounds the loss there.
 
-We add the three cleared polar identities to the cuts $\mathcal C_N,\mathcal C_R$ of
-Section~\ref{sec:jointrecon}. They have bounded degree, so, as in
+We need $JW=N_0^2V$ as an identity in the function field, not only at good
+starts, so we add the three cleared polar identities to the cuts
+$\mathcal C_N,\mathcal C_R$ of Section~\ref{sec:jointrecon}. They have bounded degree, so, as in
 Lemma~\ref{lem:jointcuts}, a component on which one of them does not vanish
 identically contains $O(1)$ good starts. Throughout this section, \emph{retained}
 means that all five cuts vanish identically; on a retained component,
@@ -2495,7 +2547,8 @@ pattern parameters
  M=\mathcal R_*(1,0)\Psi_1(0,1)^4-\mathcal R_*(0,1)\Psi_1(1,0)^4.
 \]
 If $M\ne0$ and $N_0\ne0$, the two axis coefficients in
-\eqref{eq:polarinitial} cannot both vanish, for any $a$. Now write $M$, the
+\eqref{eq:polarinitial} cannot both vanish, for any $a$: if they did,
+multiplying the two equations crosswise would give $N_0M=0$. Now write $M$, the
 chart conditions and $N_0N_1$ as rational functions of the ten minor
 coordinates, by~\eqref{eq:jointbar}, each in lowest terms, and let $\Theta$ be
 the product of all their numerators and denominators. Then $\Theta\ne0$ implies
@@ -2747,8 +2800,11 @@ For every integer $B\ge1$,
 \]
 \end{theorem}
 
-To apply the theorem with $a$ fixed, call the four minors on the first four
-columns,
+The label polynomial~\eqref{eq:branchlabel} depends on the pattern only through
+$N_0$ and $\gamma_1,\gamma_2,\gamma_3$, which are functions of the four minors on the
+first four columns. We therefore sieve over these minors, and then count completions
+to full patterns (Lemma~\ref{lem:branchpatterns}). To apply the theorem with $a$
+fixed, call the four minors on the first four columns,
 \[
  \mathbf p_\square=(p_{012},p_{013},p_{023},p_{123}),
 \]
