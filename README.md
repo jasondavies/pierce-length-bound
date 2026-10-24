@@ -1,7 +1,7 @@
 # Hankel determinants and the length of finite Pierce expansions
 
 Paper: [`paper/pierce_length_bound.pdf`](paper/pierce_length_bound.pdf). This repository
-contains the paper and its complete Lean formalization.
+contains the paper and its complete Lean formalisation.
 
 For integers `a > b > 0` let `b₀ = b` and `b_{i+1} = a mod bᵢ` until zero, and let `P(a, b)` be
 the number of positive terms
@@ -26,7 +26,7 @@ proves, uniformly in `0 < b < a`:
   Erdős–Hooley `Δ`-function, and de la Bretèche–Tenenbaum, Acta Arith. 219 (2025)
   ([doi:10.4064/aa250107-13-2](https://doi.org/10.4064/aa250107-13-2)), Thm 1.1,
   `∑_{n≤x} Δ(n) ≪ x (log log x)^{5/2}`.
-  Both are stated in Lean as explicit hypotheses; their proofs are not formalized.
+  Both are stated in Lean as explicit hypotheses; their proofs are not formalised.
 * **Structured trajectories:** `P(a, b) ≪ a^{1/4} √R`, where `R − 1` is the number of rises
   `kᵢ < k_{i+1}` in the quotient increments. In particular nonincreasing increments give
   `P(a, b) ≪ a^{1/4}`.
@@ -246,7 +246,7 @@ and bounded polynomial cuts are counted separately, and exceptional patterns con
 `O(X⁴ log 2X)`. The affine-curve count on these graphs gives `128/435 = 0.2942528735…`.
 
 Raising the curvature coordinates to the power `m` and `J` to the power `n` gives degree
-`δ ≥ 10n + 7m` when `d ≥ 4`. Optimizing `n/m` gives `α*`, and `(m, n) = (50, 51)` gives
+`δ ≥ 10n + 7m` when `d ≥ 4`. Optimising `n/m` gives `α*`, and `(m, n) = (50, 51)` gives
 `2201/7480`.
 
 ### Exterior-lattice refinement
@@ -261,7 +261,7 @@ Summing over patterns with `∑_p λ(p)^{−t} ≪ a^{o(1)} X^{5−t/3}` (`0 ≤
 max(5/17, 45δ/(153δ − 1), (45δ − 3m)/(153δ − 11m), (15δ + 6n)/(51δ + 20n)),   δ = δ_min.
 ```
 
-The choice `(m, n) = (3, 2)` gives `153/520`, and optimizing at `n/m = √105/15` gives `γ*`.
+The choice `(m, n) = (3, 2)` gives `153/520`, and optimising at `n/m = √105/15` gives `γ*`.
 These bounds use the weighted lattice counts `short_count` and `reciprocal_sum_bound`; the
 weighted-count dependency audit checks that these are the only weighted counts they reach.
 
@@ -270,7 +270,7 @@ weighted-count dependency audit checks that these are the only weighted counts t
 Two facts raise the graph degree for almost all patterns.
 
 First, the exact orbit identity `Ψ W = N₀ V` (equivalently `J W = N₀² V`), where `V = G k + ℓ` is
-the polarization of the pattern quadratic, makes the curvature vector parallel to three
+the polarisation of the pattern quadratic, makes the curvature vector parallel to three
 affine-linear forms in the gaps. On a component of degree 24, `J` has 60 zeros, all affine, and
 each is a pole of `W` unless the forms also vanish there. Outside a fixed proper hypersurface
 `Θ = 0` of patterns, the base divisor of the forms has degree at most four. So `W` has at least
@@ -287,7 +287,7 @@ A completion count lifts this to `O(a^η X^{9/2})` branch-bad patterns, and the 
 `Θ = 0` carries `O(X^{14/3+η})` patterns.
 
 These `O(a^η X^{14/3})` exceptional patterns use the earlier unpowered graph; the rest use the
-lattice coordinates with degree `60n + 56m`. Optimizing `n/m` gives `β*`, and `(m, n) = (3, 2)`
+lattice coordinates with degree `60n + 56m`. Optimising `n/m` gives `β*`, and `(m, n) = (3, 2)`
 gives `4317/14677`. The paper's section "Exact polar projection and the Hilbert sieve" gives the
 details.
 
@@ -351,20 +351,20 @@ All modules are in `PierceLengthBound/`; the `.lean` extension is omitted.
 | `JointLiftDirection` | nonconstancy of the projective curvature direction on components of degree at least three of an irreducible quadric |
 | `JointLiftCurvatureNonvanishing` | the extra finite zero of a curvature combination |
 | `FixedDividendPolynomialSection` | at most `m·d` points on a proper degree-`m` polynomial cut |
-| `JointLiftNormalizationCut`, `JointLiftResolventCut`, `JointLiftRetainedIdentities` | the normalization and raw-resolvent cuts, of degrees at most 166 and 404, and the identities they impose on retained components |
-| `JointLiftInfinityOrder` | rank-five pole order `5e/2` and even infinity multiplicity at every valuation centered on the nonexceptional chart |
+| `JointLiftNormalizationCut`, `JointLiftResolventCut`, `JointLiftRetainedIdentities` | the normalisation and raw-resolvent cuts, of degrees at most 166 and 404, and the identities they impose on retained components |
+| `JointLiftInfinityOrder` | rank-five pole order `5e/2` and even infinity multiplicity at every valuation centred on the nonexceptional chart |
 | `JointLiftQuotientOrder`, `JointLiftLocalOrders` | quotient, resolvent and curvature orders from their local inputs |
 | `ChartNodeUnits`, `ChartRawDeterminantOrders` | exact node-difference orders from the resultant unit; orders `−3e` for both consecutive cubic determinants and `−6e` for the fourth |
-| `JointLiftRetainedOrders` | quotient and rank-three orders from the retained normalization and resolvent equations |
+| `JointLiftRetainedOrders` | quotient and rank-three orders from the retained normalisation and resolvent equations |
 | `JointLiftChartOrders` | orders `3t`, `≥ 3t`, `3t` and `−5t` of the four graph coordinates (`e = 2t`) |
-| `AffineNormalization` | finite Dedekind normalization of the affine chart ring |
-| `JointLiftNormalizedOrders` | normalized integer-valued branch orders, with the coordinate order calculations applied to them |
-| `NormalizationInfinityDegree`, `NormalizedFiberOrders` | in a normalized parameter fiber, multiplicities times residue degrees sum to the fiber dimension and equal the canonical branch orders |
-| `FunctionParameterNormalization`, `FunctionParameterChange` | the weighted zero fiber degree of a transcendental function is its field degree, and its reciprocal generates the same field; finite curve fraction fields are finite over every transcendental function |
-| `IntegralBranchOrders`, `BranchValuationComparison`, `BranchResidueComparison` | centers on parameter normalizations; branch transport preserves normalized orders and residue degrees |
+| `AffineNormalization` | finite Dedekind normalisation of the affine chart ring |
+| `JointLiftNormalizedOrders` | normalised integer-valued branch orders, with the coordinate order calculations applied to them |
+| `NormalizationInfinityDegree`, `NormalizedFiberOrders` | in a normalised parameter fibre, multiplicities times residue degrees sum to the fibre dimension and equal the canonical branch orders |
+| `FunctionParameterNormalization`, `FunctionParameterChange` | the weighted zero fibre degree of a transcendental function is its field degree, and its reciprocal generates the same field; finite curve fraction fields are finite over every transcendental function |
+| `IntegralBranchOrders`, `BranchValuationComparison`, `BranchResidueComparison` | centres on parameter normalisations; branch transport preserves normalised orders and residue degrees |
 | `BranchZeroDegree` | the weighted zero-count inequality, including the extra degree from one additional zero |
-| `JointLiftPoleCoverage`, `JointLiftPoleDegree` | every pole of a curvature combination lies on the affine normalization; its degree is bounded by the curvature pole envelope |
-| `JointLiftFiniteZero` | the extra normalized zero, outside the old infinity fiber |
+| `JointLiftPoleCoverage`, `JointLiftPoleDegree` | every pole of a curvature combination lies on the affine normalisation; its degree is bounded by the curvature pole envelope |
+| `JointLiftFiniteZero` | the extra normalised zero, outside the old infinity fibre |
 | `JointLiftCurvatureDegree` | `3d + 2 ≤ 2 deg(F)` for the curvature pole envelope on a retained component |
 | `GraphFunctionField`, `ValuationLinearCombination`, `GraphPoleDegree` | the coordinate pole envelope is bounded by the graph Hilbert degree |
 | `JointLiftGraphLowerDegree` | `4d + 1 ≤ δ` on retained graphs (the case `G = 1`, `m = n = 1` of `LinearJointGraph`), and `17 ≤ δ ≤ 247d` when `d ≥ 4` |
@@ -385,7 +385,7 @@ All modules are in `PierceLengthBound/`; the `.lean` extension is omitted.
 | `OrdinaryPatternCount` | the ordinary minor-pattern count `O(τ X⁵)`, the two-class pattern sum and the pattern slack, shared by the local estimates |
 | `PoweredJointExponent`, `PoweredJointWindow`, `WindowRealReduction` | window ranges and the window lemmas shared by the powered, lattice and polar chains (`window_real_large_mean_gap`, `window_branch_exponent`, `window_real_of_branch_power`) |
 | `RealPowerBounds` | elementary real-power inequalities: concavity over a finite sum, powers of maxima, one dominant term among five |
-| `PoweredJointBound` | the optimized exponent and its rational versions `m = 50`, `n = 51` (`2201/7480`) and `m = n = 1` (`128/435`) |
+| `PoweredJointBound` | the optimised exponent and its rational versions `m = 50`, `n = 51` (`2201/7480`) and `m = n = 1` (`128/435`) |
 
 ### Exterior-lattice chain
 
@@ -418,7 +418,7 @@ above.
 | `PolarProjectionRetainedBase`, `PolarProjectionRetainedDegree` | the base divisor has degree at most four, and the retained powered graph has degree at least `60n+56m` |
 | `PolarProjectionGeometryGoodPattern` | explicit branch irreducibility and the fixed proper exceptional polynomial imply the good-pattern geometric estimate |
 | `BranchSieveSextic`, `BranchSieveResultantLabel`, `BranchSievePrimitive` | the generically irreducible location sextic, the degree-12 label polynomial, and a primitive slope `0 ≤ c ≤ 144` |
-| `BranchSieveVertexMonic`, `BranchSieveArithmeticVertexCount` | the integer degree-12 family, generic irreducibility, specialization compatibility and the uniform scaled-vertex sieve |
+| `BranchSieveVertexMonic`, `BranchSieveArithmeticVertexCount` | the integer degree-12 family, generic irreducibility, specialisation compatibility and the uniform scaled-vertex sieve |
 | `BranchSievePatternCount`, `BranchSievePatternCountSlow` | completion to full minor patterns with all common divisors, and the bound on selected orbit windows |
 | `HypersurfacePatternCount`, `HypersurfacePatternCountSlow` | proper algebraic exceptional loci have pattern count `K (1 + τ_max(X)²) X^(14/3)`, hence exponent `14/3 + ε` |
 | `PolarProjectionWindow`, `PolarProjectionBound` | the six-term window reduction and the global polar bounds |
@@ -438,10 +438,10 @@ and the number of parameters. Both live in the namespace `PierceLengthBound.Fixe
 |---|---|
 | `FixedDividend*` | the fixed-dividend resultant identity, quadratic irreducibility, relative primality, a rational component cover of total degree at most 24, even degree of nonexceptional components, line exclusion, conic plane models, and filtered Hilbert-degree infinity charts |
 | `Exceptional*` | the exceptional-pattern count `O(X⁴ log 2X)` |
-| `IntegralLift*` | reconstruction of `I₃` from the cofactors of the eight-row moment system, the resolvent identities, monic quotient normalization, cubic quotient degree, and properness of the `I₃` lift after at most 492 exceptional points |
+| `IntegralLift*` | reconstruction of `I₃` from the cofactors of the eight-row moment system, the resolvent identities, monic quotient normalisation, cubic quotient degree, and properness of the `I₃` lift after at most 492 exceptional points |
 | `Conic*` | conic arithmetic, integer values of rational functions, and coefficient heights |
-| `Chart*`, `Branch*` (other than `BranchSieve*`), `Normalization*`, `NormalizedBranchValuation`, `CurveNormalization`, `ParameterFiberDegree`, `LinearFunctionDegree` | chart and normalization infrastructure for branch orders and function-field degrees |
-| `RationalNeighborhood`, `RationalNeighborhoodJet` | rational expressions cleared on a principal neighborhood of a rational point (`RationalNear`), and rational dependence of the first two coefficients of formal paths; used to build the exceptional polynomial `Θ` |
+| `Chart*`, `Branch*` (other than `BranchSieve*`), `Normalization*`, `NormalizedBranchValuation`, `CurveNormalization`, `ParameterFiberDegree`, `LinearFunctionDegree` | chart and normalisation infrastructure for branch orders and function-field degrees |
+| `RationalNeighborhood`, `RationalNeighborhoodJet` | rational expressions cleared on a principal neighbourhood of a rational point (`RationalNear`), and rational dependence of the first two coefficients of formal paths; used to build the exceptional polynomial `Θ` |
 | `NewtonCoefficientDegrees`, `RawDeterminantTotalDegree`, `OrbitPatternGeometry` | coefficient degrees of the Newton quartic and raw determinants; transport of component data within a pattern |
 
 ## Dependencies
@@ -470,8 +470,8 @@ original proved declarations; neither module imports the other.
 [formalization.yaml](formalization.yaml) records their scope, provenance, automation, and review
 status. The Palomar and Hexagon submission steps are in [SUBMISSION.md](SUBMISSION.md).
 
-## License
+## Licence
 
 Copyright 2026 Jason Davies. Licensed under the Apache License, Version 2.0; see
-[LICENSE](LICENSE). The vendored file keeps its own Apache-2.0 license
+[LICENSE](LICENSE). The vendored file keeps its own Apache-2.0 licence
 ([vendor/openai-math/LICENSE](vendor/openai-math/LICENSE)).

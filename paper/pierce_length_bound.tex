@@ -41,13 +41,13 @@ adjoining further integer invariants, by an effective Hilbert irreducibility
 sieve, and by an exact identity for the direction of the curvature vector,
 and come within $1.6\cdot10^{-5}$ of $5/17$. We also give an
 elementary proof of the exponent $3/10+\varepsilon$ and a bound for orbits
-whose quotient increments rarely rise. All results are formalized in Lean~4
+whose quotient increments rarely rise. All results are formalised in Lean~4
 with Mathlib. Shallit's conjectured $O((\log a)^2)$ bound remains open.
 \end{abstract}
 
 \noindent\textbf{AI transparency statement.} This paper was produced entirely
 by artificial intelligence, including the discovery of the main results, their
-formalization in Lean, and the writing of the manuscript. The human author
+formalisation in Lean, and the writing of the manuscript. The human author
 initiated the research and directed the AI systems, but did not write the text.
 Details are given at the end of the paper.
 
@@ -97,7 +97,7 @@ The curve-counting bounds of this paper (Theorems~\ref{thm:polar},
 \ref{thm:joint} and~\ref{thm:lattice}) all lie just above
 $5/17=0.2941176\ldots$, and Theorem~\ref{thm:polar} is within
 $1.6\cdot10^{-5}$ of it. We first introduce the integer invariants of an
-orbit, and then explain where $5/17$ comes from, since it organizes the whole
+orbit, and then explain where $5/17$ comes from, since it organises the whole
 argument.
 
 \subsection*{Integer invariants of an orbit}
@@ -192,7 +192,7 @@ of patterns, the pattern curve is irreducible over $\mathbb Q$, of the maximal
 degree $24$. Second, an exact
 identity, $JW=N_0^2(G\mathbf k+\ell)$, expresses the curvature vector through
 three affine-linear forms in the increments $\mathbf k=(k_0,k_1,k_2)$. Here $N_0$
-is a pattern coordinate, and $G\mathbf k+\ell$ arises by polarizing the
+is a pattern coordinate, and $G\mathbf k+\ell$ arises by polarising the
 pattern quadratic $f(\mathbf k)=\mathbf k\cdot(G\mathbf k+\ell)$: the
 division equations say exactly that the drop vector $\mathbf d$ is also
 orthogonal to $G\mathbf k+\ell$, so that $W=\mathbf d\times\mathbf k$ is
@@ -212,7 +212,7 @@ compared with $60n+37m$ from the general bound above.
 The sieve and the
 degenerate set together discard $O_\eta(a^\eta X^{14/3})$ patterns, which
 are handled by the earlier estimate. Applying the curve bound in the reduced
-lattice coordinates and optimizing the ratio $n/m$ gives $\beta_*$
+lattice coordinates and optimising the ratio $n/m$ gives $\beta_*$
 (Section~\ref{sec:polar}).
 
 \subsection*{Intermediate bounds}
@@ -236,7 +236,7 @@ joint-invariant bound, and $153/520$ of the exterior lattice bound; see
 Corollaries~\ref{cor:jointexponent} and~\ref{cor:latticeexponent}.
 The table records how the exponent approached $5/17$ during this work. The
 first four rows are superseded stages, recorded for orientation only; their
-proofs are formalized in the repository but omitted here.
+proofs are formalised in the repository but omitted here.
 \begin{center}\small
 \begin{tabular}{@{}lll@{}}
 \toprule
@@ -301,8 +301,8 @@ Appendix~\ref{app:hilbert} proves the effective Hilbert irreducibility estimate,
 and Appendix~\ref{app:polarcertificates} gives the certificates for the polar bound.
 
 All the unconditional results above, including their curve-counting and
-specialization inputs, are formalized in Lean~4~\cite{Lean} with
-Mathlib~\cite{Mathlib}. Section~\ref{sec:lean} identifies the proof artifact
+specialisation inputs, are formalised in Lean~4~\cite{Lean} with
+Mathlib~\cite{Mathlib}. Section~\ref{sec:lean} identifies the proof artefact
 and its verification scope. Section~\ref{sec:limits} explains the present
 $5/17$ barrier.
 
@@ -611,7 +611,7 @@ $h_{N-1}(s)=0$ for $s\ge1$.
 $N-i-1\ge2$, the term $j=1$ has $p_i(2)\ge2$; if $i=N-2$, the last increment satisfies
 $q_{N-1}\ge q_{N-2}+2$, because $b_{N-1}\mid a$ gives
 $q_{N-1}-q_{N-2}-1=q_{N-2}(b_{N-2}-b_{N-1})/b_{N-1}\ge1$. (2) Since $p_i(j+1)=q_{i+j+1}-q_i$, the definitions give
-$q_ih_i(0)+h_{i+1}(0)=1$, which is the normalized division equation; and
+$q_ih_i(0)+h_{i+1}(0)=1$, which is the normalised division equation; and
 $h_{N-1}(0)=1/q_{N-1}=b_{N-1}/a$; since $\mu_{N-1}=\delta_0$, also $h_{N-1}(s)=0$ for $s\ge1$.
 (3) Use $p_i(j+1)=k_i+p_{i+1}(j)$ and the binomial theorem.
 (4) For $i=N-1$ this holds with $z=-(-q_{N-1})^sb_{N-1}/a=-(-1)^sq_{N-1}^{s-1}$ for $s\ge1$, since
@@ -822,9 +822,9 @@ and the $k$-relations at $i$ and $i+1$ read
 N_1k_0=u_1k_1+u_2k_2+N_0k_3,\qquad N_1k_4=N_2k_1-v_1k_2-v_2k_3 .
 \]
 
-\subsection{The normalization identity and the label bound}
+\subsection{The normalisation identity and the label bound}
 
-\begin{lemma}[The normalization identity]\label{lem:multid}
+\begin{lemma}[The normalisation identity]\label{lem:multid}
 Let $i+6<N$, let $\pi_i$ be as in Lemma~\ref{lem:orthquartic}, and let
 $H_4=\det\bigl(\mu_i(x^{j+l})\bigr)_{j,l<4}$, a polynomial in $k_0,\dots,k_4$
 independent of $i$. Then
@@ -1003,7 +1003,7 @@ $\sum_{\mathbf u} g^2\le\sum_{e\mid\kappa}e^2(3\kappa/e)^3\le27\kappa^3\tau(\kap
 $729\kappa^4\tau(\kappa)$ pairs $(\mathbf u,\mathbf v)$. There are ten pivots and two signs.
 \end{proof}
 
-\section{Joint integer invariants and the optimized bound}\label{sec:joint}
+\section{Joint integer invariants and the optimised bound}\label{sec:joint}
 
 We now prove Theorem~\ref{thm:joint}. Fix a window run in $[A,2A)$ with $T\ge36$
 terms. Throughout this section constants may depend on fixed positive integers
@@ -1034,7 +1034,7 @@ exponent (Sections~\ref{sec:jointgraph} and~\ref{sec:jointcount}).
 \begin{itemize}
 \item $\theta=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)$ are the pattern integers of
 Section~\ref{sec:patterns}, with $N_0=I_4(i)$, and $\rho,\varphi,\chi$ and
-$\rho',\varphi',\chi'$ the normalized parameters~\eqref{eq:jointbar};
+$\rho',\varphi',\chi'$ the normalised parameters~\eqref{eq:jointbar};
 \item $s_j$ are the nodes, $k_j$ the increments, $P_4,R_4$ the two orthogonal
 quartics, $\Psi$ the quartic norm and $f$ the pattern quadratic;
 \item $D_{jl}=d_jk_l-d_lk_j$ are the $2\times2$ minors of drops and increments, so that
@@ -1076,7 +1076,7 @@ For the pattern integers $\theta$, put
  (\rho,\varphi,\chi)=\frac{(N_1,u_1,u_2)}{N_0},\qquad
  (\rho',\varphi',\chi')=\frac{(N_2,v_1,v_2)}{N_1},
 \end{equation}
-the \emph{normalized parameters} of the pattern. Then $\rho>0$, and
+the \emph{normalised parameters} of the pattern. Then $\rho>0$, and
 $\varphi>0>\chi$ by Lemma~\ref{lem:signs}.
 Treat the free nodes $s_1,s_2,s_3$ as coordinates and define
 \[
@@ -1123,7 +1123,7 @@ the squared norm $\nu_i(P_4^2)$ of the orthogonal quartic
 The degree of an affine curve is that of its projective closure, equivalently
 the leading coefficient of its affine Hilbert function.
 ``Integral'' means that the defining ideal is prime over $\mathbb Q$; it does
-not assert geometric irreducibility or a rational parametrization.
+not assert geometric irreducibility or a rational parametrisation.
 
 \begin{lemma}[The pattern curve]\label{lem:jointcurve}
 \begin{enumerate}
@@ -1198,7 +1198,7 @@ its components over $\mathbb Q$ have total degree at most $2\cdot12$.
 
 Two further identities single out the components on which the later rational
 functions behave as required. The idea is that the two orthogonal polynomials $P_4$ and $Z$ determine the
-moment vector of $\nu_i$ up to scale, and the two normalized division
+moment vector of $\nu_i$ up to scale, and the two normalised division
 equations fix the scale; this recovers $q_i$ and $I_3(i)$ as rational
 functions of the free nodes. Concretely, form the $8\times9$ matrix of
 coefficients of $P_4,xP_4,x^2P_4,x^3P_4,Z,xZ,x^2Z,x^3Z$ in the basis
@@ -1213,7 +1213,7 @@ At a good start the matrix annihilates the moment vector
 $(h_i(0),\dots,h_i(8))$ and has rank eight. Indeed, the resultant in
 \eqref{eq:jointcurve} is positive, so $P_4$ and $Z$ are coprime.
 So the kernel is spanned by $(c_j)$, and $h_i(j)=\lambda c_j$ for some $\lambda$.
-The normalized division equations $q_ih_i(0)+h_i(1)=q_ih_i(1)+h_i(2)=1$ then
+The normalised division equations $q_ih_i(0)+h_i(1)=q_ih_i(1)+h_i(2)=1$ then
 determine $q_i$ and $\lambda$, and $h_i(0)h_i(2)>h_i(1)^2$ shows that the
 denominators below are nonzero. This gives
 \[
@@ -1239,7 +1239,7 @@ weight recursion in Section~\ref{sec:hankel}. Set
 \]
 This $H_4$ is the polynomial of Lemma~\ref{lem:multid}. With
 $p_3=\chi-1-s_1-s_2-s_3$, the coefficient of $x^3$ in $P_4$, consider the
-\emph{normalization} and \emph{resolvent identities}
+\emph{normalisation} and \emph{resolvent identities}
 \begin{equation}\label{eq:jointcuts}
  N_0P_4(-Q)=aH_4,\qquad
  E_0P_4(-Q)=a\bigl((Q-p_3)H_3-H_{013}\bigr).
@@ -1326,7 +1326,7 @@ $N_1+u_2=N_0$, $N_1+u_2=0$, $u_1=N_0$ or $N_1+u_1=N_0$.
 \begin{lemma}[Leading nodes and determinant orders]\label{lem:jointleading}
 Let $C$ be an integral component of positive degree of
 \eqref{eq:jointcurve}. Let $P$ be a closed point above infinity on the
-normalization of the projective closure of $C$, write
+normalisation of the projective closure of $C$, write
 $\operatorname{ord}=\operatorname{ord}_P$, and let $e>0$ be the
 multiplicity of the hyperplane at infinity at $P$.
 For a local parameter $\varpi$ at $P$, let $z_j\in\mathbb Q(P)$ be the value
@@ -1588,7 +1588,7 @@ retained identity by $P_4(-Q)$ therefore gives
 \[
  \operatorname{ord}E_0=-9e/2-(-6e)=3e/2.
 \]
-The argument uses the discrete valuation on the normalization, so it
+The argument uses the discrete valuation on the normalisation, so it
 also covers branches above singular points of the original curve.
 \end{proof}
 
@@ -1705,7 +1705,7 @@ least four. Fix such a component $C$ of degree $d$. The additional
 integer coordinates will increase its degree without increasing their
 heights too much. The key is one extra zero over the affine part of $C$.
 
-All divisors in this argument are on the normalization $\widetilde C$
+All divisors in this argument are on the normalisation $\widetilde C$
 of the projective closure of $C$, over $\mathbb Q$.
 For a closed point $P$ of $\widetilde C$, write
 $\deg P=[\mathbb Q(P):\mathbb Q]$, where $\mathbb Q(P)$ is the residue field; thus
@@ -1751,10 +1751,10 @@ $W=(W_l/w_l)w$, contradicting the preceding paragraph.
 Take such a function for $\Phi$.  It has rational coefficients and
 satisfies $\Phi(\mathbf s_*)=0$.
 
-This zero survives normalization even if $\mathbf s_*$ is singular.
+This zero survives normalisation even if $\mathbf s_*$ is singular.
 Indeed, write $\Phi=g/g_0$ near $\mathbf s_*$, with $g$ not identically zero on $C$,
 $g(\mathbf s_*)=0$ and $g_0(\mathbf s_*)\ne0$.
-The finite normalization has a closed point $P_0$ above $\mathbf s_*$.
+The finite normalisation has a closed point $P_0$ above $\mathbf s_*$.
 In its discrete valuation ring the numerator is in the maximal ideal
 and the denominator is a unit, so $\operatorname{ord}_{P_0}(\Phi)>0$.
 Since $\mathbf s_*$ is affine, $P_0$ does not lie in $E_\infty$.
@@ -1836,8 +1836,8 @@ Choosing coefficients outside their union gives the asserted
 simultaneous absence of cancellation, also when $\mathbb Q(P)\ne\mathbb Q$.
 
 As a linear function on $\Gamma_{m,n}$, $\psi$ has degree at most
-$\delta$.  Indeed, homogenize it on the projective closure of the
-graph: its pencil with the homogenizing coordinate consists of
+$\delta$.  Indeed, homogenise it on the projective closure of the
+graph: its pencil with the homogenising coordinate consists of
 hyperplane sections of degree $\delta$.  Removing common zeros can
 only decrease the degree of the resulting map to $\mathbb P^1$.
 Birational projection identifies its function field with $\mathbb Q(C)$,
@@ -2009,7 +2009,7 @@ that few patterns have a short vector in $\Lambda_p$. Section~\ref{sec:latticeex
 the nodes and the curvature coordinates in the reduced basis.
 Section~\ref{sec:latticegraph} checks that this linear change of coordinates keeps the degree
 bounds of Lemma~\ref{lem:jointpowereddegree}, and Section~\ref{sec:latticecount} sums over
-patterns and optimizes the exponent.
+patterns and optimises the exponent.
 
 \subsection{The lattice of a pattern}\label{sec:latticepattern}
 Let $p\ne0$ be the minor vector of a $3\times5$ integer matrix $\mathcal M$, with pivot $\pi$
@@ -2258,7 +2258,7 @@ This gives (1) for $W'$, and it shows that the pole envelope of $W'$ is $\mathca
 which gives (4). The proof of Lemma~\ref{lem:jointpowereddegree} therefore applies unchanged.
 \end{proof}
 
-\subsection{The window bound and the optimized exponent}\label{sec:latticecount}
+\subsection{The window bound and the optimised exponent}\label{sec:latticecount}
 
 \begin{proposition}[Lattice window bound]\label{prop:latticewindow}
 Fix positive integers $m,n$ and $\eta>0$. For a window run in $[A,2A)$ with $T\ge36$
@@ -2339,7 +2339,7 @@ degenerate patterns that these steps exclude, and obtain Theorem~\ref{thm:polar}
 
 \subsection{An exact identity at orbit states}
 
-Recall the normalized parameters~\eqref{eq:jointbar}, with $\rho,\varphi>0>\chi$ and
+Recall the normalised parameters~\eqref{eq:jointbar}, with $\rho,\varphi>0>\chi$ and
 $\gamma=(\rho,-\rho-\varphi,\varphi-\chi,\chi-1,1)$; primes indicate the next state.
 We retain the notation $N_0$, $\Psi$, $P_4$, $R_4$ and $D_{jl}$ from
 Section~\ref{sec:joint}. Write $\mathbf k=(k_0,k_1,k_2)^{\mathsf T}$ and
@@ -2376,7 +2376,7 @@ Put
 \[
  V=G\mathbf k+\ell,\qquad\text{so that}\qquad f=\mathbf k\cdot V.
 \]
-The linear form $\mathbf y\mapsto\mathbf y\cdot V$ is the polarization of $f$
+The linear form $\mathbf y\mapsto\mathbf y\cdot V$ is the polarisation of $f$
 at $\mathbf k$: it is $\mathbf y^{\mathsf T}G\mathbf k+\ell^{\mathsf T}\mathbf y$,
 and it recovers $f$ at $\mathbf y=\mathbf k$. We call $V$ the \emph{polar vector}.
 
@@ -2390,7 +2390,7 @@ In particular, $W$ is a positive multiple of $V$.
 \begin{proof}
 The vector $V$ is orthogonal to $\mathbf k$, since $\mathbf k\cdot V=f=0$. It is
 also orthogonal to $\mathbf d$; this is where the division equations enter.
-By polarization,
+By polarisation,
 \[
  \mathbf d\cdot V=\sum_{j=0}^4\gamma_js_j\Sigma_j(\mathbf d)+\sum_{j=0}^4\gamma_jd_j.
 \]
@@ -2452,10 +2452,10 @@ $V$ is
 \[
  \sum_P\Bigl(\min_j\operatorname{ord}_PV_j\Bigr)P,
 \]
-summed over the affine points $P$ of the normalization of $C$; its degree
+summed over the affine points $P$ of the normalisation of $C$; its degree
 weights $P$ by $[\mathbb Q(P):\mathbb Q]$. Since
 $V=G(\mathbf k-\mathbf k_*)$, it is supported over $\mathbf k_*$,
-the only common zero of the homogenized forms.
+the only common zero of the homogenised forms.
 
 \begin{lemma}[The base divisor]\label{lem:polarbase}
 There is a fixed rational polynomial $\Theta$ in the ten minor coordinates,
@@ -2465,7 +2465,7 @@ component $C$ of the pattern curve, the base divisor of $V$ on
 $C$ has degree at most four.
 \end{lemma}
 \begin{proof}
-\emph{Step 1: the quartic initial form.} We work on the chart where $N_0N_1\ne0$, so that the normalized parameters are
+\emph{Step 1: the quartic initial form.} We work on the chart where $N_0N_1\ne0$, so that the normalised parameters are
 defined, and
 \[
  \gamma_1\gamma_2\gamma_3\,\det G\,G_{00}\,\ell_0\ne0.
@@ -2527,7 +2527,7 @@ quotient with $F\in I_C$, so
 \]
 In particular, $g$ is nonzero on this one-dimensional integral local ring.
 
-Let $\overline{\mathcal O}_C$ be its finite normalization. The quotient
+Let $\overline{\mathcal O}_C$ be its finite normalisation. The quotient
 $\overline{\mathcal O}_C/\mathcal O_C$ is finite-dimensional over $\mathbb Q$.
 Apply multiplication by $g$ to
 $0\to\mathcal O_C\to\overline{\mathcal O}_C\to\overline{\mathcal O}_C/\mathcal O_C\to0$.
@@ -2541,7 +2541,7 @@ sequence therefore gives
 \]
 The final equality follows by factoring the ideal $(g)$ in the semilocal
 Dedekind ring $\overline{\mathcal O}_C$. Since $G$ is invertible, the coordinates of
-$V=G(\mathbf k-\mathbf k_*)$ generate the centered maximal ideal. Their minimum order
+$V=G(\mathbf k-\mathbf k_*)$ generate the centred maximal ideal. Their minimum order
 at each $P$ is at most $\operatorname{ord}_P g$. The weighted sum of these
 minimum orders, which is the degree of the base divisor, is therefore at most
 four. A component missing $\mathbf k_*$ has zero base divisor.
@@ -2594,7 +2594,7 @@ least twelve; since its multiplicity $e$ is even, the component then has the
 maximal degree $24$. The \emph{label} below is a polynomial whose
 irreducibility certifies this, and which can be sieved over patterns.
 
-Let $P$ be a point above infinity on the normalization of a nonexceptional component.
+Let $P$ be a point above infinity on the normalisation of a nonexceptional component.
 The five leading nodes are distinct by Lemma~\ref{lem:jointleading}.
 Scale them to $(0,1,t,y,z)$. The moment equations~\eqref{eq:joint-leading-moments}
 of orders zero and one give $\gamma_0+\gamma_1+\gamma_2+\gamma_3+1=0$ and
@@ -2625,7 +2625,7 @@ $\mathfrak d(t)y+\mathfrak n(t)=0$, where
        +\gamma_1(\gamma_1+1)(\gamma_1+\gamma_3+1).
 \end{align*}
 These are polynomial identities, so the cleared relation remains valid when
-a specialized denominator vanishes.
+a specialised denominator vanishes.
 
 Write
 \[
@@ -2665,7 +2665,7 @@ and the label polynomial
 \end{equation}
 Here the resultant means the Sylvester determinant with degree bounds $6$
 and $11$, padding missing coefficients with zero. This convention makes
-\eqref{eq:branchlabel} a polynomial family under every specialization.
+\eqref{eq:branchlabel} a polynomial family under every specialisation.
 The relation $\mathfrak d(t)y+\mathfrak n(t)=0$ gives $D_\gamma(t)=\mathfrak d(t)^3\mathcal V_4$, so
 \eqref{eq:branchsign} implies
 \[
@@ -2678,7 +2678,7 @@ Fix $a\in\mathbb Q^\times$, and regard $N_0,\gamma_1,\gamma_2,\gamma_3$
 as independent parameters. For some integer $c$ with $0\le c\le144$,
 $L_{a,N_0,c,\gamma}$ is irreducible of degree twelve over
 $\mathbb Q(N_0,\gamma_1,\gamma_2,\gamma_3)$.
-For a specialized nonexceptional pattern, if one such label polynomial is
+For a specialised nonexceptional pattern, if one such label polynomial is
 irreducible of degree twelve over $\mathbb Q$, every integral component of
 its pattern curve has degree twenty-four; that is, the pattern curve is
 irreducible over $\mathbb Q$.
@@ -2691,10 +2691,10 @@ At $(\gamma_1,\gamma_2,\gamma_3)=(-7,8,-4)$, the sextic in
                   +125636t^2-64680t+13475.
 \]
 Appendix~\ref{app:polarcertificates} proves $E_\star$ irreducible modulo $71$.
-This specialization preserves degree six. Gauss's lemma therefore shows
+This specialisation preserves degree six. Gauss's lemma therefore shows
 that $E_\gamma$ is irreducible over
-$K=\mathbb Q(\gamma_1,\gamma_2,\gamma_3)$: a factorization into two factors of positive $t$-degree over the
-parameter ring would specialize to two factors of positive degree.
+$K=\mathbb Q(\gamma_1,\gamma_2,\gamma_3)$: a factorisation into two factors of positive $t$-degree over the
+parameter ring would specialise to two factors of positive degree.
 Choose a root $t$ of $E_\gamma$, so $[K(t):K]=6$.
 In this field $\mathfrak d(t)\ne0$ since its degree is less than six, and
 $y=-\mathfrak n(t)/\mathfrak d(t)$. Each factor $t$, $t-1$, $\mathfrak n$,
@@ -2714,7 +2714,7 @@ of degree twelve. This argument holds for each fixed nonzero $a$; the
 chosen slope may depend on $a$.
 
 For an actual pattern, the residue field at any branch at infinity contains
-the root $t+c\beta$. Irreducibility of the specialized degree-twelve label
+the root $t+c\beta$. Irreducibility of the specialised degree-twelve label
 forces $[\mathbb Q(P):\mathbb Q]\ge12$.
 Corollary~\ref{cor:jointparity} gives $e_P\ge2$, so
 \[
@@ -2733,7 +2733,7 @@ $L_{a,N_0,c(a),\gamma}$ is irreducible of degree twelve over $\mathbb Q$, and
 The following monic variant of~\cite[Theorem~1.10]{CDHNV}, with explicit
 logarithmic powers, is proved along the same lines in Appendix~\ref{app:hilbert}.
 
-\begin{theorem}[Monic specialization estimate]\label{thm:monichilbert}
+\begin{theorem}[Monic specialisation estimate]\label{thm:monichilbert}
 For fixed integers $r,d\ge1$ there is a constant $C_{r,d}$ with the following
 property. Let $F\in\mathbb Z[u_1,\dots,u_r][\zeta]$ be monic in $\zeta$ and
 irreducible over $\mathbb Q(u_1,\dots,u_r)$. Suppose
@@ -2768,7 +2768,7 @@ use the following polynomial operation. For $F(\zeta)=\sum_{i=0}^e F_i\zeta^i$ p
 \]
 When $F_e\ne0$, this is $F_e^{e-1}F(\zeta/F_e)$.
 When $F_e=0$ and $e\ge2$, it is $\zeta^{e-1}(\zeta+F_{e-1})$, hence reducible.
-Thus irreducibility of a specialized monic normalization implies both
+Thus irreducibility of a specialised monic normalisation implies both
 preservation of degree and irreducibility of the original label.
 
 For each fixed positive integer $a$, use the slope $c(a)$ and set $e=12$.
@@ -2863,7 +2863,7 @@ $|\mathbf v|_\infty\le\kappa$ have basis coordinates in a box with sides
 $B_i=O(\kappa/|\mathbf f_i|)$, and by~(a) and ${\bar\kappa}\le\kappa$ these sides are $\gg1$. A
 nonzero polynomial of bounded degree vanishes at
 $\ll B_1B_2B_3/\min_iB_i$ integer points of such a box (the polynomial
-grid-zero bound). Applied to a nonzero fiber $\Theta_\pi(\kappa,\mathbf u,\cdot)$
+grid-zero bound). Applied to a nonzero fibre $\Theta_\pi(\kappa,\mathbf u,\cdot)$
 in the basis coordinates, this and~(b) give
 \begin{equation}\label{eq:polarfiber}
  \#\{\mathbf v\in\Lambda\cap[-\kappa,\kappa]^3:\Theta_\pi(\kappa,\mathbf u,\mathbf v)=0\}
@@ -2891,17 +2891,17 @@ Partial summation up to $K\asymp {\bar\kappa}^{1/3}$ now bounds the reciprocal s
 $O({\bar\kappa}^3/K+\tau({\bar\kappa}){\bar\kappa}^2K^2)$, proving~\eqref{eq:normalreciprocal}.
 
 For fixed $\kappa,g$, equations~\eqref{eq:polarfiber} and
-\eqref{eq:normalreciprocal} bound the nonzero fibers by
+\eqref{eq:normalreciprocal} bound the nonzero fibres by
 $O_\Theta(\tau({\bar\kappa})\kappa^2{\bar\kappa}^{5/3})$. Sum over $g\mid \kappa$ and $\kappa\le X$ to obtain
 \[
  O_\Theta\bigl(\tau_{\max}(X)^2X^{14/3}\bigr).
 \]
 
-Finally, an identically zero fiber forces one fixed nonzero coefficient
+Finally, an identically zero fibre forces one fixed nonzero coefficient
 polynomial $\Theta_0(\kappa,\mathbf u)$ to vanish. For fixed $g$, the polynomial
 $\Theta_0(g{\bar\kappa},g\mathbf u_0)$ is still nonzero. The four-variable grid-zero bound supplies
 $O_\Theta((X/g)^3)$ possible pairs $({\bar\kappa},\mathbf u_0)$. Each has
-$O(\kappa g^2)\le O(Xg^2)$ completions in its $\kappa$-box, so these fibers total
+$O(\kappa g^2)\le O(Xg^2)$ completions in its $\kappa$-box, so these fibres total
 \[
  O_\Theta\left(X^4\sum_{g\le X}\frac1g\right)
  =O_\Theta(X^4\log(2X)).
@@ -2964,7 +2964,7 @@ where, with $\delta_{\rm pol}=60n+56m$,
  \frac{45\delta_{\rm pol}-3m}{153\delta_{\rm pol}-11m},\frac{15\delta_{\rm pol}+6n}{51\delta_{\rm pol}+20n}\right\}.
 \]
 For $(m,n)=(3,2)$ this exponent is $4317/14677$.
-Optimizing over the fixed powers gives
+Optimising over the fixed powers gives
 \[
  P(a,b)\ll_\varepsilon a^{\beta_*+\varepsilon},\qquad
  \beta_*=\frac{41301-3\sqrt{82849}}{137480}
@@ -2983,7 +2983,7 @@ the factor $a^\eta$ absorb the remaining losses.
 
 For $(m,n)=(3,2)$, $\delta_{\rm pol}=288$ and the last three fractions are
 $12960/44063$, $4317/14677$ and $1083/3682$.
-For optimization put $r=n/m$. The curvature and rank-five fractions become
+For optimisation put $r=n/m$. The curvature and rank-five fractions become
 \[
  E_S^{\rm pol}(r)=\frac{2700r+2517}{9180r+8557},\qquad
  E_Y^{\rm pol}(r)=\frac{906r+840}{3080r+2856}.
@@ -3121,7 +3121,7 @@ Proposition~\ref{prop:rises}(3) says more: inside the critical window $A\asymp a
 run of $T\asymp a^{3/10}$ remainders must contain $\gg a^{1/5}$ rises.
 \end{remark}
 
-\section{The Lean formalization}\label{sec:lean}
+\section{The Lean formalisation}\label{sec:lean}
 
 The source repository is
 \url{https://github.com/jasondavies/pierce-length-bound}
@@ -3167,7 +3167,7 @@ $P(a,b)\ll a^{3/10}\sqrt{\log\log3a}$ from two explicit hypotheses: the
 short-sum estimate for the Erd\H{o}s--Hooley function from~\cite{NT}, over
 intervals $(x,x+y]$ with $y\ge x^{1/4}$, and the mean-value estimate
 from~\cite{BT}. Their statements include the constants and thresholds; their
-proofs are not formalized here. This result is weaker than
+proofs are not formalised here. This result is weaker than
 Theorem~\ref{thm:polar} and is not used elsewhere.
 
 The proof library contains no \lean{sorry} and uses no \lean{native_decide}.
@@ -3250,7 +3250,7 @@ The map
  t\longmapsto
  \bigl(\xi_0(t),\xi_1(t),\xi_2(t)\bigr)/\Delta_c
 \]
-parametrizes $C$ over $\mathbb Q$. Its inverse takes an integer value at
+parametrises $C$ over $\mathbb Q$. Its inverse takes an integer value at
 every integer point of $C$.
 \end{lemma}
 \begin{proof}
@@ -3278,14 +3278,14 @@ the plane would be a component of the irreducible pattern quadric.
 It has degree two because it contains $C$, and hence defines $C$ in
 that plane.
 
-The pullback of the hyperplane at infinity to the normalization of $C$
+The pullback of the hyperplane at infinity to the normalisation of $C$
 has degree two. Corollary~\ref{cor:jointparity} says
 that each of its positive multiplicities is even. Counting residue
 degrees, there is therefore just one branch over infinity, of
 multiplicity two and residue degree one. Consequently the leading
 binary quadratic in \eqref{eq:jointconicplane} is a nonzero rational
 scalar times the square of a rational linear form. Indeed, the
-normalization map is finite and surjective, so the projective conic
+normalisation map is finite and surjective, so the projective conic
 meets the line at infinity only at the image of this rational point.
 Its leading binary quadratic therefore has a single rational zero,
 of multiplicity two. Interchanging $x$ and $y$ if necessary gives
@@ -3339,7 +3339,7 @@ nonconstant. At the parameter $t$ of every good start, $G_E(t)\ne0$ and
 $F_E(t)/G_E(t)=I_3(i)$ is an integer.
 \end{lemma}
 \begin{proof}
-The explicit parametrization identifies $C$ with the affine line and
+The explicit parametrisation identifies $C$ with the affine line and
 its smooth projective model with $\mathbb P^1$. Its point at infinity
 has hyperplane multiplicity two. Lemma~\ref{lem:joint-infinity-orders} therefore gives
 \[
@@ -3457,7 +3457,7 @@ $(\kappa\mathbf e_1,\kappa\mathbf e_2,\kappa\mathbf e_3)$ gives $V\le\kappa^3$. 
 $(\mathbf f_1,\mathbf f_2,\mathbf f_3)$ with $|\det|=V$ is a basis: if not, some $x\in\Lambda$ has a Cramer
 coordinate that is not an integer, say the first, $\det(x,\mathbf f_2,\mathbf f_3)/\det(\mathbf f_1,\mathbf f_2,
 \mathbf f_3)$, and subtracting the integer part of that coordinate times $\mathbf f_1$ from $x$ gives a
-triple with smaller nonzero determinant. Among all bases (all have $|\det|=V$) minimize
+triple with smaller nonzero determinant. Among all bases (all have $|\det|=V$) minimise
 $g_1=|\mathbf f_1|^2$, and then the Gram determinant
 $g_2=g_1|\mathbf f_2|^2-\langle\mathbf f_1,\mathbf f_2\rangle^2$. Put $g_3=V^2$.
 
@@ -3529,7 +3529,7 @@ height is $O(\mathcal H^{O(1)})$; and its $Z$-degree is at least two, because
 $\sigma_I\notin\mathbb Q(u)$.
 
 Now suppose that $F(v,\zeta)$ is reducible over $\mathbb Q$. By Gauss's lemma it has
-a monic factor $g\in\mathbb Z[\zeta]$ of degree $e'$ with $1\le e'<e$. Extend the specialization
+a monic factor $g\in\mathbb Z[\zeta]$ of degree $e'$ with $1\le e'<e$. Extend the specialisation
 $u\mapsto v$ to a ring homomorphism $\phi$ from $\mathbb Z[u][y_1,\dots,y_e]$ to
 $\overline{\mathbb Q}$, which is possible because this ring is integral over
 $\mathbb Z[u]$. Then $F(v,\zeta)=\prod_i(\zeta-\phi(y_i))$, so the roots of $g$, with
@@ -3547,7 +3547,7 @@ Fix an integer $b>d$ and let $\mathcal K$ be the Kronecker map
 \]
 It is a
 linear bijection from polynomials with all partial degrees less than $b$ onto
-polynomials in $\omega$ of degree less than $b^r$, it commutes with specializing
+polynomials in $\omega$ of degree less than $b^r$, it commutes with specialising
 $u_1$, and it is multiplicative on products whose partial degrees stay below $b$.
 Since $\zeta$ occupies the highest position, $\mathcal K(F)\in\mathbb Z[u_1][\omega]$ is monic.
 Factor $\mathcal K(F)=\prod_\nu \mathcal A_\nu$ into monic irreducible factors over
@@ -3559,10 +3559,10 @@ Let $v_1$ be outside this set, and suppose
 $F(v_1,\cdot)=gh$ with $g,h\in\mathbb Q[u_2,\dots,u_r][\zeta]$ monic in $\zeta$ of positive
 $\zeta$-degree. All partial degrees of $g$ and $h$ are at most those of $F$, hence
 less than $b$, so $\mathcal K(g)\mathcal K(h)=\prod_\nu \mathcal A_\nu(v_1,\omega)$, and by unique
-factorization $\mathcal K(g)=\prod_{\nu\in S}\mathcal A_\nu(v_1,\omega)$ for some set $S$ of
+factorisation $\mathcal K(g)=\prod_{\nu\in S}\mathcal A_\nu(v_1,\omega)$ for some set $S$ of
 indices. Put $g_S=\mathcal K^{-1}\bigl(\prod_{\nu\in S}\mathcal A_\nu\bigr)$ and define
 $g_{S^c}$ likewise, so that $g_S(v_1)=g$ and $g_{S^c}(v_1)=h$. If
-$g_Sg_{S^c}=F$ identically, this is a factorization of $F$ over
+$g_Sg_{S^c}=F$ identically, this is a factorisation of $F$ over
 $\mathbb Q(u_1,\dots,u_r)$ into factors of positive $\zeta$-degree, which is impossible.
 Otherwise some coefficient of $g_Sg_{S^c}-F$ is a nonzero polynomial in $u_1$ of
 bounded degree vanishing at $v_1$. There are $O(1)$ sets $S$, so this adds
@@ -3574,7 +3574,7 @@ $(2B+1)^{r-1}$. For every other $v_1\in[-B,B]$, the family
 $F(v_1,u_2,\dots,u_r,\zeta)$ is monic, irreducible over $\mathbb Q(u_2,\dots,u_r)$, of
 the same degree bounds, and of height at most $(d+1)\mathcal HB^d$. Since
 $\operatorname{lg}((d+1)\mathcal HB^d)\ll\operatorname{lg}(\mathcal H)(1+\log B)$, the induction hypothesis
-bounds its reducible specializations by
+bounds its reducible specialisations by
 $O(\operatorname{lg}(\mathcal H)^4B^{r-3/2}(1+\log B)^{4r+1})$. Summing over the $2B+1$
 values of $v_1$ gives the theorem.
 \end{proof}
@@ -3612,12 +3612,12 @@ In particular,
  \mathcal R_*(1,0)\Psi_1(0,1)^4-\mathcal R_*(0,1)\Psi_1(1,0)^4
  =\frac{26291112152499}{60236288}.
 \]
-The realizing matrix in Lemma~\ref{lem:polarbase} shows that $\Theta$ is
+The realising matrix in Lemma~\ref{lem:polarbase} shows that $\Theta$ is
 nonzero on the Pl\"ucker cone; no orbit with these parameters is required.
 
 \subsection{The irreducible sextic}
 
-The specialization $E_\gamma=24E_\star$ at
+The specialisation $E_\gamma=24E_\star$ at
 $(\gamma_1,\gamma_2,\gamma_3)=(-7,8,-4)$ reduces modulo $71$ to a nonzero
 scalar multiple of
 \[
@@ -3662,12 +3662,12 @@ Lemma~\ref{lem:multid} to bound the number of states per pattern, the sign
 identities of Lemma~\ref{lem:signs} and the slice count behind the $11/37$
 bound, the observation that the pattern integers form a Pl\"ucker vector, the
 weighting of minor vectors by the shortest vectors of their lattices behind
-the $45/152$ bound, the joint-invariant graphs with their normalization and
+the $45/152$ bound, the joint-invariant graphs with their normalisation and
 valuation arguments, the exterior-lattice coordinates, and the polar identity
 and Hilbert sieve. The AI systems also developed the presentation, the
-formalization and the writing. The systems were GPT-6-Astra (OpenAI), used
+formalisation and the writing. The systems were GPT-6-Astra (OpenAI), used
 through Codex, and Claude Opus~5.5 (Anthropic), used through Claude Code. Both
-contributed to the Lean formalization and to the review and revision of the
+contributed to the Lean formalisation and to the review and revision of the
 manuscript.
 
 The Lean development gives a machine-checkable version of the results. Lean's
@@ -3685,7 +3685,7 @@ submission and for the accuracy of this disclosure.
 
 \section*{Acknowledgements}
 We thank the Mathlib community, and the authors of \lean{openai/math} for the
-formalized divisor bound.
+formalised divisor bound.
 
 \begin{thebibliography}{99}
 
