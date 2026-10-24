@@ -121,7 +121,7 @@ We count the $T$ orbit terms in a remainder window $[A,2A)$, then sum over
 dyadic $A$. The total drop across the window is less than $A$, and
 Erd\H{o}s and Shallit's divisor argument shows that a drop value can repeat
 only $a^{o(1)}$ times; hence $A\ge T^{2-o(1)}$. Similarly the quotients
-increase by at most $a/A$ across the window, so a fixed proportion of starts
+increase by at most $a/A$ across the window, so a fixed proportion of starts (orbit states, viewed as the first index of a block)
 have their next few increments bounded by $H\asymp a/(AT)\le a^{1+o(1)}/T^3$.
 For such a start, form the $3\times5$ matrix whose rows are the next five
 drops, the increments, and a quadratic expression in the increments. Its ten
@@ -162,7 +162,7 @@ Hankel invariant $J=I_5(i)$, whose sizes satisfy
  |W_j|\ll S:=A^3H^3/a^2,\qquad |J|\ll Y:=A^5H^{10}/a^4.
 \]
 On each component they are rational functions of the nodes: $J$ is a
-polynomial, and $W$ is expressed through the reconstructed $q_i$ and $I_3(i)$.
+polynomial, and $W$ is expressed through the reconstructed curvature $I_3(i)$.
 On a component of degree $d$, $J$ has a pole of total order $5d/2$ at
 infinity, while the $W_j$ vanish there to total order $3d/2$. A suitable
 combination of the $W_j$ also vanishes at the node triple of one orbit
@@ -195,7 +195,7 @@ parallel to it.
 On a component of degree $24$, $J$ has $60$ zeros,
 all affine. Since $W=N_0^2(G\mathbf k+\ell)/J$, each zero of $J$ is a pole
 of $W$ unless the three linear forms also vanish there, and outside a fixed
-proper algebraic exceptional set of patterns this happens at most four times,
+proper algebraic set of \emph{degenerate} patterns this happens at most four times,
 counted with multiplicity. So $W$ has at least $60-4=56$ affine poles, and
 the powered graph has degree
 \[
@@ -204,7 +204,7 @@ the powered graph has degree
 compared with $60n+37m$ from the general bound above.
 
 The sieve and the
-exceptional set together discard $O_\eta(a^\eta X^{14/3})$ patterns, which
+degenerate set together discard $O_\eta(a^\eta X^{14/3})$ patterns, which
 are handled by the earlier estimate. Applying the curve bound in the reduced
 lattice coordinates and optimizing the ratio $n/m$ gives $\beta_*$
 (Section~\ref{sec:polar}).
@@ -262,8 +262,9 @@ $\tau(n)\ll_\eta n^\eta$. For a window of $T$ remainders in $[A,2A)$,
 \end{align}
 where $\Delta\ll_\eta a^\eta$ is a maximum of the divisor function. The first
 is the Erd\H{o}s--Shallit drop argument. The second follows from the six-term
-identity: for most blocks the increments and curvatures are small, and they
-bound the quotient $q\asymp a/A$, with no divisor loss. Multiplying the second
+identity: some block of six terms has total drop at most $10A/T$, which bounds
+its increments and curvatures, and these bound the quotient $q\asymp a/A$,
+with no divisor loss. Multiplying the second
 bound by the square of the first eliminates $A$ and gives
 $T^{10}\ll a^3\Delta^2$ (Section~\ref{sec:proof310}). The six-term bound is
 also used in all the later arguments.
@@ -309,8 +310,8 @@ a=q_ib_i+b_{i+1},\qquad 0\le b_{i+1}<b_i\qquad(0\le i<P).
 \]
 An index $i$ of the orbit is also called a \emph{state}; quantities ``at state $i$'' are
 computed from $b_i,b_{i+1},\dots$ and $q_i,q_{i+1},\dots$, and are defined whenever the
-orbit terms they use exist. When we count states, we also call a state a
-\emph{start}, of the block of terms that begins there. We write
+orbit terms they use exist. We also call a state $i$ a \emph{start}, regarding it as the
+first index of the block $b_i,b_{i+1},\dots$. We write
 $k_i=q_{i+1}-q_i$ for the quotient \emph{increments} and $d_i=b_i-b_{i+1}$ for the
 \emph{drops}.
 Let $\tau(n)$ be the number of positive divisors of $n$.
@@ -461,7 +462,7 @@ This is an identity of polynomials in $a$, $q$, the $x_j$ and the increments.
 \end{proof}
 
 \begin{corollary}\label{cor:six}
-Suppose $q\ge1$ and $k_0,\dots,k_3\le K$. Then $E,F\ge1$, $L\ge1$, and
+Suppose $k_0,\dots,k_3\le K$. Then $E,F\ge1$, $L\ge1$, and
 \[
 q\le 9K^3E+3K^3F .
 \]
@@ -469,8 +470,8 @@ q\le 9K^3E+3K^3F .
 
 \begin{proof}
 Lemma~\ref{lem:curv}, applied to the blocks starting at $x_1$ and $x_2$, gives $E,F\ge1$.
-Clearly $\omega>0$ and $\sigma\ge0$, so by Lemma~\ref{lem:six}(2) $qk_2L>0$. Since $L$ is an integer,
-$L\ge1$ and $qk_2\le \omega E+\sigma F$. Bounding each monomial gives $\omega\le 9K^3k_2$ and
+Clearly $\omega>0$ and $\sigma\ge0$, so by Lemma~\ref{lem:six}(2) $qk_2L>0$. Since $q\ge1$ (as
+$x_0<a$) and $L$ is an integer, $L\ge1$ and $qk_2\le \omega E+\sigma F$. Bounding each monomial, using $k_2\ge1$, gives $\omega\le 9K^3k_2$ and
 $\sigma(k_0,k_1,k_2)\le 3K^3k_2$. Dividing by $k_2$ gives the claim.
 \end{proof}
 
@@ -512,10 +513,9 @@ they are small. The two agree at $B=a^{2/5}$, where both equal
 $a^{3/10+o(1)}$. Multiplying suitable powers of the two bounds eliminates $A$
 (Corollary~\ref{cor:window}), so no case split is needed. Throughout,
 \[
- \Delta=\Delta(a)=\max_{1\le n\le 32a^7}\tau(n)\ll_\eta a^\eta
+ \Delta=\Delta(a)=\max_{1\le n\le 2a}\tau(n)\ll_\eta a^\eta
 \]
-by Lemma~\ref{lem:div}; every integer to which we apply the divisor bound is
-at most $32a^7$. In this section $x_0,\dots,x_{T-1}$ is a window run in
+by Lemma~\ref{lem:div}. In this section $x_0,\dots,x_{T-1}$ is a window run in
 $[A,2A)$, and $q_j=\lfloor a/x_j\rfloor$ are its quotients.
 
 \begin{proposition}[Drop bound; after Erd\H{o}s--Shallit]\label{prop:drop}
@@ -529,7 +529,7 @@ $2A/(T-1)$. The remaining set $\mathcal S$ has $2|\mathcal S|\ge T$.
 
 For $j\in\mathcal S$ we have $1\le h_j\le\bar h:=\lfloor 2A/(T-1)\rfloor$. Also
 $a+h_j=q_jx_j+x_{j+1}+x_j-x_{j+1}=(q_j+1)x_j$, so $x_j\mid a+h_j$. Moreover
-$a+h_j\le 2a\le 32a^7$. Since $j\mapsto x_j$ is injective, at most $\tau(a+h)\le\Delta$ indices
+$a+h_j\le 2a$. Since $j\mapsto x_j$ is injective, at most $\tau(a+h)\le\Delta$ indices
 in $\mathcal S$ have $h_j=h$. Hence $|\mathcal S|\le\bar h\Delta$, and
 \[
 T(T-1)\le 2|\mathcal S|(T-1)\le 2\Delta\,\bar h(T-1)\le 4A\Delta. \qedhere
@@ -624,7 +624,7 @@ With Lemma~\ref{lem:moments}(1) this gives the low moments
  \mu_j(1)=\mu_j(x)=1,\qquad \mu_j(x^2)=k_j+1,\qquad
  \mu_j(x^3)=k_j^2+2k_j+k_{j+1}+1\qquad(j+3<N).
 \end{equation}
-Put $s_j=q_{i+j}-q_i$ and $F_j(x)=\prod_{0\le l<j}(x-s_l)$, with
+Put $s_j=q_{i+j}-q_i$ (so $s_j=p_i(j)$) and $F_j(x)=\prod_{0\le l<j}(x-s_l)$, with
 $F_0=1$. Iterating this identity gives the \emph{shift rule}
 \begin{equation}\label{eq:moment-shift}
  \mu_i(F_j(x)g(x))=\mu_{i+j}\bigl(g(x+s_j)\bigr)
@@ -713,7 +713,7 @@ $N=P(a,b)$, and $q_i=\lfloor a/b_i\rfloor$.
 \subsection{Heuristics}
 The exponent $3/10$ of Theorem~\ref{thm:main} comes from a single balanced configuration:
 $T\asymp a^{3/10}$ remainders in a window $[A,2A)$ with $A\asymp a^{3/5}$, quotients
-$q\asymp a^{2/5}$ and typical increments $k\asymp a^{1/10}$. At this scale the four-term Hankel
+$q\asymp a^{2/5}$ and typical increments $k\asymp a^{1/10}$. At this scale the rank-four Hankel
 invariant $I_4(i)=L(i)$ has size $\asymp aH^6/q^4\asymp 1$, where $H$ bounds the increments.
 The idea is that a positive integer of bounded size carries information. The labels
 $I_4(i),I_4(i+1),I_4(i+2)$, together with four further integers of the same size, form a
@@ -723,11 +723,10 @@ root of a quartic fixed by the pattern and the increments (Lemma~\ref{lem:multid
 problem becomes one of counting patterns, and the states belonging to each pattern. Counting the
 latter with these equations alone already improves on $3/10$ (the first rows of the table in
 Section~\ref{sec:intro}). To go further, the linear and quadratic relations alone do not
-suffice: if $\pi_i$ has Newton coefficients $(\alpha,-3\alpha-1,3\alpha+3,-\alpha-3,1)$
-(Lemma~\ref{lem:orthquartic}), so that $\sum_l\gamma_lz^l=(z-1)^3(z-\alpha)$, then
-constant increments $k_j=t$ satisfy them for every $t$. Section~\ref{sec:joint} therefore
-adds the fixed-dividend equation, an equation in the nodes alone that involves $a$; it
-excludes such families.
+suffice: for some patterns they admit constant increments $k_j=t$ for every $t$
+(an example follows~\eqref{eq:jointbar}). Section~\ref{sec:joint} therefore adds
+the fixed-dividend equation, an equation in the nodes alone that involves $a$;
+it excludes such families.
 
 \subsection{The pattern matrix}
 Fix a state $i$ with $i+6<N$ and write, for $m\ge0$,
@@ -1001,7 +1000,7 @@ $729\kappa^4\tau(\kappa)$ pairs $(\mathbf u,\mathbf v)$. There are ten pivots an
 
 We now prove Theorem~\ref{thm:joint}. Fix a window run in $[A,2A)$ with $T\ge36$
 terms. Throughout this section constants may depend on fixed positive integers
-$m,n$ (the powers of Section~\ref{sec:jointcount}) and on a loss $\eta>0$, but
+$m,n$ (the powers of Section~\ref{sec:jointgraph}) and on a loss $\eta>0$, but
 never on the dividend, the orbit or the pattern. The argument has six steps.
 \begin{enumerate}
 \item For a fixed pattern, the nodes of every good start lie on at most
@@ -1086,7 +1085,10 @@ $\rho k_0=\varphi k_1+\chi k_2+k_3$. Let
 \[
  \gamma=(\rho,\,-\rho-\varphi,\,\varphi-\chi,\,\chi-1,\,1),
 \]
-and let $\gamma'$ be the same expression in $\rho',\varphi',\chi'$. Put
+and let $\gamma'$ be the same expression in $\rho',\varphi',\chi'$. (For example,
+if $(\rho,\varphi,\chi)=(\rho',\varphi',\chi')=(\alpha,2\alpha+1,-\alpha-2)$, then
+$\sum_l\gamma_lz^l=(z-1)^3(z-\alpha)$, and constant increments $k_j=t$ satisfy the
+linear and quadratic relations for every $t$.) Put
 \[
  P_4(x)=\sum_{j=0}^4\gamma_j\prod_{\ell=0}^{j-1}(x-s_\ell),
  \qquad
@@ -1255,16 +1257,16 @@ $(M_{j+3}+(p_3-q_i)M_{j+2};0)$. Expanding along the last row gives
 and $a\det(h_{r+s})_{r,s<3}=I_3(i)$.
 \end{proof}
 
-So both identities~\eqref{eq:jointcuts} hold at good starts. Among components
-containing a good start, we call a component \emph{retained} if both
-identities, after clearing denominators, hold identically on it. We call such
-cleared polynomial identities \emph{cuts}.
+So both identities~\eqref{eq:jointcuts} hold at good starts. Clearing
+denominators turns them into polynomial equations $\mathcal C_N=0$ and
+$\mathcal C_R=0$ in the free nodes, the \emph{cuts} (written out in the proof
+below). A component containing a good start is \emph{retained} if both cuts
+vanish identically on it.
 
 \begin{lemma}[Removing components by polynomial equations]\label{lem:jointcuts}
-After clearing denominators, the two identities in \eqref{eq:jointcuts} are
-polynomial equations in the free nodes of degree at most an absolute
-constant $D_{\rm cut}$. On a degree-$d$ component, each identity either holds
-everywhere or holds at no more than $D_{\rm cut}d$ good starts. Consequently each
+The cuts have degree at most an absolute constant $D_{\rm cut}$ in the free
+nodes. On a degree-$d$ component, each cut either vanishes identically or
+vanishes at no more than $D_{\rm cut}d$ good starts. Consequently each
 component that is not retained contributes $O(1)$ good starts.
 \end{lemma}
 \begin{proof}
@@ -1273,8 +1275,8 @@ the nodes, so the cofactors $c_j$ have bounded degree. Write
 $Q=Q_{\mathrm n}/Q_{\mathrm d}$ and $E_0=E_{\mathrm n}/E_{\mathrm d}$ using the
 formulas above, and clear denominators:
 \begin{align*}
- \Phi_N&=N_0\widehat P-aH_4Q_{\mathrm d}^4,\\
- \Phi_R&=E_{\mathrm n}\widehat P
+ \mathcal C_N&=N_0\widehat P-aH_4Q_{\mathrm d}^4,\\
+ \mathcal C_R&=E_{\mathrm n}\widehat P
  -a\bigl((Q_{\mathrm n}-p_3Q_{\mathrm d})H_3-H_{013}Q_{\mathrm d}\bigr)Q_{\mathrm d}^3E_{\mathrm d},
 \end{align*}
 where $\widehat P=Q_{\mathrm d}^4P_4(-Q_{\mathrm n}/Q_{\mathrm d})$. Every factor
@@ -1614,17 +1616,14 @@ integers are controlled by
 for suitable absolute constants $c_S,c_Y$.
 
 \begin{lemma}[Heights of the joint coordinates]\label{lem:jointheights}
-At good starts, $|W_j|\le S$ and $1\le J\le Y$.
+At good starts, all ten minors $D_{jl}=d_jk_l-d_lk_j$ with $0\le j<l\le4$ satisfy
+$|D_{jl}|\le S$; in particular $|W_j|\le S$. Moreover $1\le J\le Y$.
 \end{lemma}
 \begin{proof}
-Write $q=q_i$, and recall $q\ge a/(4A)$ (Lemma~\ref{lem:fourAq}). For $j\le3$, apply
-$\mu_{i+j}$ to the identity $(q+y)^{-1}=q^{-1}-yq^{-2}+y^2/(q^2(q+y))$ with $y=s_j+x$, as in
-Lemma~\ref{lem:expand}. Since $\mu_{i+j}((s_j+x)^2)=s_j^2+2s_j+k_j+1\ll H^2$, this gives
-\[
- \frac{b_{i+j}}a=\frac1q-\frac{s_j+1}{q^2}+\epsilon_j,
- \qquad 0\le\epsilon_j\ll H^2/q^3.
-\]
-Subtracting consecutive expansions, $d_j/a=k_j/q^2+\delta_j$ with $|\delta_j|\ll H^2/q^3$.
+Write $q=q_i$, and recall $q\ge a/(4A)$ (Lemma~\ref{lem:fourAq}). The proof of
+Proposition~\ref{prop:allminors} gives
+$d_j/a=k_j/q^2-(r_j+k_j)/q^3+e_{j+1}-e_j$ with $|e_j|\ll H^3/q^4$ and
+$|r_j|\le10H^2$ for $j\le4$, so $d_j/a=k_j/q^2+\delta_j$ with $|\delta_j|\ll H^2/q^3$.
 In $D_{jl}=d_jk_l-d_lk_j$ the leading terms cancel, so $|D_{jl}|q^3\ll aH^3$, and
 $q\ge a/(4A)$ gives $|D_{jl}|\le S$ for suitable $c_S$, including the floor because the
 minors are integers.
@@ -1978,9 +1977,9 @@ good starts on retained nonexceptional components of degree at least four change
 Proposition~\ref{prop:latticewindow} replaces the term $X^5\mathcal B^{1/\delta_{\min}}$ of
 Proposition~\ref{prop:jointwindow} by
 \[
- X^{5-1/(3\delta_{\min})}H^{1/\delta_{\min}}+X^{5-2m/(3\delta_{\min})}S'^{\,m/\delta_{\min}}+X^5Y^{n/\delta_{\min}},
+ X^{5-1/(3\delta_{\min})}H^{1/\delta_{\min}}+X^{5-2m/(3\delta_{\min})}S^{m/\delta_{\min}}+X^5Y^{n/\delta_{\min}},
 \]
-where $S'$ differs from $S$ only in its constant (Lemma~\ref{lem:allcurv}). In effect $H$ is
+In effect $H$ is
 replaced by $H/X^{1/3}$ and $S$ by $S/X^{2/3}$, while $Y$ is unchanged. The node term stays
 below the critical exponent, so of the two fractions balanced in the proof of
 Theorem~\ref{thm:joint} only the curvature fraction improves, and the crossing moves from
@@ -2165,27 +2164,6 @@ The lemma replaces the bounds $|\xi|\ll|x|/\lambda$ and $|\xi'|\ll|x'|/\lambda$,
 $|c|\ll|x||x'|/\lambda^2$, by $|c|\ll|x\times x'|/\lambda^2$. This matters because the drop row
 is large while the curvature minors are small.
 
-The pivot columns of a pattern may include columns $3$ and $4$, so the cross product of the
-pivot parts involves minors $D_{jl}$ with $l\ge3$. We therefore bound all ten minors, not only
-the three of Lemma~\ref{lem:jointheights}.
-
-\begin{lemma}[All curvature minors]\label{lem:allcurv}
-At a good start, all ten minors $D_{jl}=d_jk_l-d_lk_j$ with $0\le j<l\le4$ satisfy
-\[
- |D_{jl}|\le S':=\left\lfloor\frac{c_{S'}A^3H^3}{a^2}\right\rfloor,
-\]
-for a suitable absolute constant $c_{S'}$.
-\end{lemma}
-
-\begin{proof}
-Argue as in Lemma~\ref{lem:jointheights}, using the expansions for $j\le5$, hence $d_j$ for
-$j\le4$. The increments $k_0,\dots,k_5$ are at most
-$H$, so $s_j\le5H$ and
-$\mu_{i+j}((s_j+x)^2)=s_j^2+2s_j+k_j+1\ll H^2$. This gives
-$d_j/a=k_j/q^2+\delta_j$ with $|\delta_j|\ll H^2/q^3$ for $j\le4$, hence
-$|D_{jl}|q^3\ll aH^3$, and $q\ge a/(4A)$ gives $|D_{jl}|\ll A^3H^3/a^2$.
-\end{proof}
-
 Now fix a pattern $p$ that occurs at a good start, and let $\mathbf f_1,\mathbf f_2,\mathbf f_3$ be a
 basis of $\Lambda_p$ as in Lemma~\ref{lem:reduce}. Write $\lambda=\lambda(p)$. At a good start
 $i$ with pattern $p$, the pivot parts $d_\pi$ and $k_\pi$ of the drop and increment rows of
@@ -2202,7 +2180,7 @@ There are matrices $B_p,G_p\in\mathrm{GL}_3(\mathbb Q)$, depending only on $p$, 
 every good start with pattern $p$
 \[
  (s_1,s_2,s_3)=B_p\zeta,\qquad W'=G_pW,\qquad
- |\zeta|_\infty\le\frac{3H}{\lambda},\qquad |W'|_\infty\le\frac{8S'}{3\lambda^2}.
+ |\zeta|_\infty\le\frac{3H}{\lambda},\qquad |W'|_\infty\le\frac{8S}{3\lambda^2}.
 \]
 \end{lemma}
 
@@ -2222,8 +2200,8 @@ rows of $\mathcal L$, gives $(\mathcal Lx)\times(\mathcal Ly)=\operatorname{Cof}
 y)$, so $p_\pi^2W=\operatorname{Cof}(\mathcal L)\,w$. Lemma~\ref{lem:exterior} gives
 $VW'=(\mathbf f_1\,\mathbf f_2\,\mathbf f_3)^{\mathsf T}w$. Together,
 $W'=p_\pi^2V^{-1}(\mathbf f_1\,\mathbf f_2\,\mathbf f_3)^{\mathsf T}\operatorname{Cof}(\mathcal L)^{-1}W$,
-which defines $G_p$. Finally $|w|^2\le3S'^2$ by Lemma~\ref{lem:allcurv}, and
-Lemma~\ref{lem:exterior} gives $3\lambda^2|W'_i|\le8S'$.
+which defines $G_p$. Finally $|w|^2\le3S^2$ by Lemma~\ref{lem:jointheights}, and
+Lemma~\ref{lem:exterior} gives $3\lambda^2|W'_i|\le8S$.
 \end{proof}
 
 \subsection{The lattice graph}\label{sec:latticegraph}
@@ -2273,7 +2251,7 @@ Fix positive integers $m,n$ and $\eta>0$. For a window run in $[A,2A)$ with $T\g
 satisfying~\eqref{eq:jointscale},
 \[
  T\ll_{m,n,\eta}a^\eta\left(X^5+X^4H^{1/2}+X^{5-1/(3\delta_{\min})}H^{1/\delta_{\min}}
- +X^{5-2m/(3\delta_{\min})}S'^{\,m/\delta_{\min}}+X^5Y^{n/\delta_{\min}}\right).
+ +X^{5-2m/(3\delta_{\min})}S^{m/\delta_{\min}}+X^5Y^{n/\delta_{\min}}\right).
 \]
 \end{proposition}
 
@@ -2284,12 +2262,12 @@ integer points $(\zeta,(W'_1)^m,(W'_2)^m,(W'_3)^m,J^n)$ of $\Gamma'_{m,n}$, and 
 give distinct points because $\zeta$ determines $s$. By Lemma~\ref{lem:latticecoords} they lie
 in the box of side
 \[
- \mathcal B_p=\max\Bigl(1,\frac{3H}{\lambda(p)},\Bigl(\frac{8S'}{3\lambda(p)^2}\Bigr)^m,Y^n\Bigr).
+ \mathcal B_p=\max\Bigl(1,\frac{3H}{\lambda(p)},\Bigl(\frac{8S}{3\lambda(p)^2}\Bigr)^m,Y^n\Bigr).
 \]
 By Lemma~\ref{lem:latticedegree} and~\eqref{eq:jointexternal}, there are
 $O_{m,n,\eta}(a^\eta\mathcal B_p^{1/\delta_{\min}})$ of them, and
 \[
- \mathcal B_p^{1/\delta_{\min}}\le1+3H^{1/\delta_{\min}}\lambda(p)^{-1/\delta_{\min}}+8S'^{\,m/\delta_{\min}}\lambda(p)^{-2m/\delta_{\min}}+Y^{n/\delta_{\min}}.
+ \mathcal B_p^{1/\delta_{\min}}\le1+3H^{1/\delta_{\min}}\lambda(p)^{-1/\delta_{\min}}+8S^{m/\delta_{\min}}\lambda(p)^{-2m/\delta_{\min}}+Y^{n/\delta_{\min}}.
 \]
 Sum over the $O_\eta(a^\eta X^5)$ patterns. Since $\delta_{\min}\ge2m$, both $1/\delta_{\min}$ and $2m/\delta_{\min}$ lie in
 $[0,1]$, and Lemma~\ref{lem:weights}, with $\tau_0=a^{o(1)}$, gives
@@ -2308,11 +2286,10 @@ where $\delta_{\min}=10n+7m$. In particular $E'(3,2)=153/520$.
 \end{corollary}
 
 \begin{proof}
-Argue as in the proof of Corollary~\ref{cor:jointexponent}, with $S'\ll a/T^3$ in place of $S$
-in~\eqref{eq:jointscales}. The first two terms and the windows in which~\eqref{eq:jointscale}
+Argue as in the proof of Corollary~\ref{cor:jointexponent}. The first two terms and the windows in which~\eqref{eq:jointscale}
 fails give the exponent $5/17$. For the third term, $T^{3\delta_{\min}}\ll a^{O(\eta)}X^{15\delta_{\min}-1}H^3$, and
 \eqref{eq:jointscales} gives $T^{153\delta_{\min}-1}\ll a^{45\delta_{\min}+O(\eta)}$. For the fourth,
-$T^{3\delta_{\min}}\ll a^{O(\eta)}X^{15\delta_{\min}-2m}S'^{\,3m}$ gives $T^{153\delta_{\min}-11m}\ll a^{45\delta_{\min}-3m+O(\eta)}$. For the
+$T^{3\delta_{\min}}\ll a^{O(\eta)}X^{15\delta_{\min}-2m}S^{3m}$ gives $T^{153\delta_{\min}-11m}\ll a^{45\delta_{\min}-3m+O(\eta)}$. For the
 fifth, $T^{\delta_{\min}}\ll a^{O(\eta)}X^{5\delta_{\min}}Y^n$ gives $T^{51\delta_{\min}+20n}\ll a^{15\delta_{\min}+6n+O(\eta)}$. For
 $(m,n)=(3,2)$, $\delta_{\min}=41$ and the last three fractions are $1845/6272$, $153/520$ and $627/2131$.
 \end{proof}
@@ -2343,8 +2320,8 @@ from the single common zero of $G\mathbf k+\ell$, every zero of $J$ is
 therefore a pole of $W$, and this raises the graph degree provided that
 (i) little cancellation occurs at that base point and (ii) the pattern curve is
 irreducible, of the full degree $24$. A local intersection calculation gives~(i), and a sieve
-for branches at infinity gives~(ii). We then count the additional
-exceptional patterns and obtain Theorem~\ref{thm:polar}.
+for branches at infinity gives~(ii). We then count the branch-bad and
+degenerate patterns that these steps exclude, and obtain Theorem~\ref{thm:polar}.
 
 \subsection{An exact identity at orbit states}
 
@@ -2390,26 +2367,26 @@ at $\mathbf k$: it is $\mathbf y^{\mathsf T}G\mathbf k+\ell^{\mathsf T}\mathbf y
 and it recovers $f$ at $\mathbf y=\mathbf k$. We call $V$ the \emph{polar vector}.
 
 \begin{proposition}[Polar identity]\label{prop:polaridentity}
-At every orbit state with initial index $i$ satisfying $i+7<N$,
+At every state $i$ with $i+7<N$,
 \[
  \Psi W=N_0V,\qquad JW=N_0^2V.
 \]
-In particular, $[W]=[G\mathbf k+\ell]$.
+In particular, $W$ is a positive multiple of $G\mathbf k+\ell$.
 \end{proposition}
 \begin{proof}
 The vector $V$ is orthogonal to $\mathbf k$, since $\mathbf k\cdot V=f=0$. It is
 also orthogonal to $\mathbf d$; this is where the division equations enter.
 By polarization,
 \[
- \mathbf d\cdot V=\sum_{j=0}^4\gamma_js_jt_j+\sum_{j=0}^4\gamma_jd_j,\qquad t_j=b_0-b_j.
+ \mathbf d\cdot V=\sum_{j=0}^4\gamma_js_jS_j(\mathbf d)+\sum_{j=0}^4\gamma_jd_j.
 \]
 The relations of Lemma~\ref{lem:pattern} give $\sum_j\gamma_j=0$ and
 $\sum_j\gamma_jS_j(\mathbf y)=\sum_ly_l(\gamma_{l+1}+\dots+\gamma_4)=0$ for
 $\mathbf y=\mathbf k,\mathbf d$ (Lemma~\ref{lem:orthquartic}), that is,
 $\sum_j\gamma_js_j=\sum_j\gamma_jb_j=0$. Multiply the division equations
 $(q_i+s_j)b_j+b_{j+1}=a$ by $\gamma_j$ and sum over $j\le4$. The terms in $a$
-and in $q_i$ cancel, and writing $b_j=b_0-t_j$ and $b_{j+1}=b_j-d_j$ leaves
-$-\sum_j\gamma_js_jt_j-\sum_j\gamma_jd_j=0$. Hence $\mathbf d\cdot V=0$.
+and in $q_i$ cancel, and writing $b_j=b_0-S_j(\mathbf d)$ and $b_{j+1}=b_j-d_j$ leaves
+$-\sum_j\gamma_js_jS_j(\mathbf d)-\sum_j\gamma_jd_j=0$. Hence $\mathbf d\cdot V=0$.
 
 Since $W\cdot(r_0,r_1,r_2)=N_0>0$ by~\eqref{eq:jointdot}, $W\ne0$, so $\mathbf d$
 and $\mathbf k$ are independent and $V$ is a multiple of $W=\mathbf d\times\mathbf k$.
@@ -2423,18 +2400,20 @@ and $\Psi>0$.
 
 In projective coordinates $[\mathbf k:k_h]$, the three homogeneous forms
 $G\mathbf k+\ell k_h$ have a unique common zero, the finite point
-$\mathbf k_*=-G^{-1}\ell$. It lies on $f=\Psi=0$, and also on the
-fixed-dividend curve for every $a$. Indeed, its nodes are
+$\mathbf k_*=-G^{-1}\ell$. Since $V(\mathbf k_*)=0$, the identities $f=\mathbf k\cdot V$
+and $V\cdot r-\Psi=-(s_4+1+\chi-\chi')f$ from the proof of
+Proposition~\ref{prop:polaridentity} give $f(\mathbf k_*)=\Psi(\mathbf k_*)=0$. The
+point also lies on the fixed-dividend curve for every $a$. Indeed, its nodes are
 \[
  s_0^*=0,\qquad
  s_j^*=\frac{\gamma'_{j-1}-\gamma_{j-1}}{\gamma_j}\ (1\le j\le3),
  \qquad s_4^*=\chi'-\chi.
 \]
-Dividing $Z(x)=x R_4(x)$ by $P_4(x)$ gives quotient $x+c$,
-where $c=\chi'-\chi-s_4$, and a remainder with Newton coefficients
+Dividing $Z(x)=x R_4(x)$ by $P_4(x)$ gives quotient $x+c_Z$,
+where $c_Z=\chi'-\chi-s_4$, and a remainder with Newton coefficients
 \[
- -c\gamma_0,\qquad
- \gamma'_{j-1}-\gamma_{j-1}-\gamma_j(s_j+c)\quad(1\le j\le3).
+ -c_Z\gamma_0,\qquad
+ \gamma'_{j-1}-\gamma_{j-1}-\gamma_j(s_j+c_Z)\quad(1\le j\le3).
 \]
 They all vanish at $\mathbf k_*$, so $Z_*=x P_{4,*}$ and
 $N_0\operatorname{Res}(P_{4,*},Z_*)-a\Psi(\mathbf k_*)^4=0$. So the pattern
@@ -2480,14 +2459,14 @@ defined, and
 \]
 These conditions make the base point and its nodes well defined. Since
 $\nabla f(\mathbf k_*)=-\ell$ and $\ell_0\ne0$, the quadric is smooth at
-$\mathbf k_*$. Take $s=k_1-k_{*,1}$ and $t=k_2-k_{*,2}$ as local
+$\mathbf k_*$. Take $\xi_1=k_1-k_{*,1}$ and $\xi_2=k_2-k_{*,2}$ as local
 coordinates and solve $f=0$ for $k_0$ by formal power series.
-Let $R_1(x;s,t)$ be the linear part of the Newton remainder just computed,
-and let $\Psi_1(s,t)$ be the linear part of $\Psi$ on this tangent plane.
+Let $R_1(x;\xi_1,\xi_2)$ be the linear part of the Newton remainder just computed,
+and let $\Psi_1(\xi_1,\xi_2)$ be the linear part of $\Psi$ on this tangent plane.
 The curve equation has order at least four and quartic initial form
 \begin{equation}\label{eq:polarinitial}
- N_0\mathcal R_4(s,t)-a\Psi_1(s,t)^4,\qquad
- \mathcal R_4(s,t)=\operatorname{Res}_{x}(P_{4,*},R_1).
+ N_0\mathcal I_4(\xi_1,\xi_2)-a\Psi_1(\xi_1,\xi_2)^4,\qquad
+ \mathcal I_4(\xi_1,\xi_2)=\operatorname{Res}_{x}(P_{4,*},R_1).
 \end{equation}
 To see that only first derivatives enter, compute the resultant as a
 $4\times4$ B\'ezout determinant. Each row vanishes at $\mathbf k_*$, so its term of
@@ -2497,7 +2476,7 @@ formal solution of $f=0$ cannot change~\eqref{eq:polarinitial}.
 \emph{Step 2: the polynomial $\Theta$.} Consider the rational function of the
 pattern parameters
 \[
- M=\mathcal R_4(1,0)\Psi_1(0,1)^4-\mathcal R_4(0,1)\Psi_1(1,0)^4.
+ M=\mathcal I_4(1,0)\Psi_1(0,1)^4-\mathcal I_4(0,1)\Psi_1(1,0)^4.
 \]
 If $M\ne0$ and $N_0\ne0$, the two axis coefficients in
 \eqref{eq:polarinitial} cannot both vanish, for any $a$. Now write $M$, the
@@ -2520,7 +2499,7 @@ the first derivatives, giving
 
 \emph{Step 3: from the initial form to the base divisor.}
 Let $\mathcal O$ be the local ring of the smooth quadric at $\mathbf k_*$ and let $F$ be the
-curve equation. Choose $g=s$ or $g=t$ so that the complementary axis in
+curve equation. Choose $g=\xi_1$ or $g=\xi_2$ so that the complementary axis in
 \eqref{eq:polarinitial} has nonzero coefficient. The completion of
 $\mathcal O/(g)$ is a power-series ring in one variable, in which $F$ has order
 exactly four. Consequently
@@ -2551,6 +2530,8 @@ at each $P$ is at most $\operatorname{ord}_P g$. The weighted sum of these
 minimum orders, which is the degree of the base divisor, is therefore at most
 four. A component missing $\mathbf k_*$ has zero base divisor.
 \end{proof}
+
+Call a pattern \emph{degenerate} if $\Theta=0$ at its minor vector.
 
 \begin{lemma}[The polar graph degree]\label{lem:polargraphdegree}
 Let $\Theta\ne0$, and let $C$ be a retained nonexceptional component of degree
@@ -2639,17 +2620,17 @@ The four moment equations give the barycentric identity
 \begin{equation}\label{eq:branchbarycentric}
  R_0\mathcal V_4=\mathcal V_5^4.
 \end{equation}
-For example, the identities
+Indeed, the identities
 $\gamma_j\prod_{l\ne j}(z_j-z_l)=\mathcal V_5$ for $0\le j<4$
 follow by evaluating the first four moment relations; their product is
 \eqref{eq:branchbarycentric}.
 Let $y_\infty=1/s_1$. The value
-$\eta_P=(y_\infty^5\Psi^2)(P)\in\mathbb Q(P)$ is defined and nonzero, because
+$\psi_P=(y_\infty^5\Psi^2)(P)\in\mathbb Q(P)$ is defined and nonzero, because
 $\operatorname{ord}_P\Psi=-5e_P/2$.
 Taking leading terms in the curve equation gives
-$N_0R_0=a\eta_P^2$. Thus the residue field $\mathbb Q(P)$ contains
+$N_0R_0=a\psi_P^2$. Thus the residue field $\mathbb Q(P)$ contains
 \begin{equation}\label{eq:branchsign}
- \beta=\mathcal V_5^2/\eta_P,\qquad N_0\beta^2=a\mathcal V_4.
+ \beta=\mathcal V_5^2/\psi_P,\qquad N_0\beta^2=a\mathcal V_4.
 \end{equation}
 So $\mathbb Q(P)$ contains $\mathbb Q(t,\beta)$, which generically has degree
 twelve, not just six.
@@ -2660,9 +2641,9 @@ For a slope $c$ define
 \]
 and the label polynomial
 \begin{equation}\label{eq:branchlabel}
- L_{a,N_0,c,\gamma}(Z)=
+ L_{a,N_0,c,\gamma}(Y)=
  \operatorname{Res}_t\bigl(E_\gamma(t),
-       N_0\mathfrak d(t)^3(Z-t)^2-c^2aD_\gamma(t)\bigr).
+       N_0\mathfrak d(t)^3(Y-t)^2-c^2aD_\gamma(t)\bigr).
 \end{equation}
 Here the resultant means the Sylvester determinant with degree bounds $6$
 and $11$, padding missing coefficients with zero. This convention makes
@@ -2706,8 +2687,7 @@ Thus $(t,\beta)$ generates an extension of degree twelve over $K(N_0)$.
 Among its twelve embeddings, equality of two values $t+c\beta$ excludes
 at most one slope per pair, so at most $12^2=144$ slopes are excluded and one of
 $0,\dots,144$ gives a primitive element. (Counting only unordered pairs of distinct
-embeddings shows that one of $0,\dots,66$ already suffices; we state the cruder
-range because it is the one formalized.) Its minimal polynomial divides~\eqref{eq:branchlabel},
+embeddings shows that one of $0,\dots,66$ already suffices.) Its minimal polynomial divides~\eqref{eq:branchlabel},
 whose degree is at most twelve; hence that label polynomial is irreducible
 of degree twelve. This argument holds for each fixed nonzero $a$; the
 chosen slope may depend on $a$.
@@ -2729,25 +2709,22 @@ $L_{a,N_0,c(a),\gamma}$ is irreducible of degree twelve over $\mathbb Q$, and
 
 \subsection{The Hilbert sieve}
 
-We prove a monic variant of the effective Hilbert irreducibility theorem
-of~\cite[Theorem~1.10]{CDHNV} along the same lines, with explicit
-logarithmic powers.
+The following monic variant of~\cite[Theorem~1.10]{CDHNV}, with explicit
+logarithmic powers, is proved along the same lines in Appendix~\ref{app:hilbert}.
 
 \begin{theorem}[Monic specialization estimate]\label{thm:monichilbert}
 For fixed integers $r,d\ge1$ there is a constant $C_{r,d}$ with the following
 property. Let $F\in\mathbb Z[T_1,\dots,T_r][Y]$ be monic in $Y$ and
 irreducible over $\mathbb Q(T_1,\dots,T_r)$. Suppose
 $\deg_YF\le d$, each coefficient of $F$ has total parameter degree at most
-$d$, and every integer coefficient has absolute value at most $H\ge1$.
+$d$, and every integer coefficient has absolute value at most $\mathcal H\ge1$.
 For every integer $B\ge1$,
 \[
  \#\{t\in[-B,B]^r\cap\mathbb Z^r:
               F(t,Y)\text{ is reducible over }\mathbb Q\}
- \le C_{r,d}(1+\log(H+1))^4 B^{r-1/2}(1+\log B)^{4r+1}.
+ \le C_{r,d}(1+\log(\mathcal H+1))^4 B^{r-1/2}(1+\log B)^{4r+1}.
 \]
 \end{theorem}
-We prove it in
-Appendix~\ref{app:hilbert}.
 
 To apply the theorem with $a$ fixed, call the four minors on the first four
 columns,
@@ -2816,9 +2793,9 @@ The series converges, and summing the bands $M\le X$ proves the claim.
 The finitely many pivot choices only change the constant.
 \end{proof}
 
-\subsection{Counting the geometric exceptional locus}
+\subsection{Counting degenerate patterns}
 
-The patterns on the hypersurface $\Theta=0$ must be counted with a saving over
+The degenerate patterns, on the hypersurface $\Theta=0$, must be counted with a saving over
 the $X^{5+o(1)}$ patterns in total. The following estimate saves $X^{1/3}$.
 
 \begin{proposition}[Hypersurface pattern count]\label{prop:polarpatterns}
@@ -2848,14 +2825,13 @@ is equivalent to
  \mathbf w\in\Lambda:=\mathbb Z\mathbf u_0+{\bar\kappa}\mathbb Z^3.
 \]
 This lattice contains ${\bar\kappa}\mathbb Z^3$, so Lemma~\ref{lem:reduce} gives a basis
-$\mathbf f_1,\mathbf f_2,\mathbf f_3$ of $\Lambda$; write $\ell_i=|\mathbf f_i|$.
-We need two bounds on these lengths.
+$\mathbf f_1,\mathbf f_2,\mathbf f_3$ of $\Lambda$. We need two bounds on their lengths.
 \begin{enumerate}
-\item[(a)] $\ell_i\ll {\bar\kappa}$. The vectors ${\bar\kappa}\mathbf e_1,{\bar\kappa}\mathbf e_2,{\bar\kappa}\mathbf e_3$ lie
+\item[(a)] $|\mathbf f_i|\ll {\bar\kappa}$. The vectors ${\bar\kappa}\mathbf e_1,{\bar\kappa}\mathbf e_2,{\bar\kappa}\mathbf e_3$ lie
 in $\Lambda$ and span a sublattice of full rank, so for each $i$ one of them
 has a nonzero $i$th coordinate in the basis, and the coordinate bound of
-Lemma~\ref{lem:reduce} gives $27\ell_i^2\le64{\bar\kappa}^2$.
-\item[(b)] $\ell_i\ell_j\ge {\bar\kappa}\lambda^\perp(\mathbf u_0)$ for $i\ne j$, where
+Lemma~\ref{lem:reduce} gives $27|\mathbf f_i|^2\le64{\bar\kappa}^2$.
+\item[(b)] $|\mathbf f_i||\mathbf f_j|\ge {\bar\kappa}\lambda^\perp(\mathbf u_0)$ for $i\ne j$, where
 $\lambda^\perp(\mathbf u_0)$ is the least sup norm of a nonzero vector of the
 normal lattice $\Lambda_{\bar\kappa}^\perp=\{z\in\mathbb Z^3:{\bar\kappa}\mid z\cdot\mathbf u_0\}$.
 Indeed, if $x,y\in\Lambda$ are independent, then $x\times y={\bar\kappa}z$ for a nonzero
@@ -2863,14 +2839,14 @@ $z\in\Lambda_{\bar\kappa}^\perp$, so $|x||y|\ge|x\times y|\ge {\bar\kappa}\lambd
 \end{enumerate}
 By Lemma~\ref{lem:reduce}, the vectors $\mathbf w\in\Lambda$ with
 $|\mathbf w|_\infty\le\kappa$ have basis coordinates in a box with sides
-$B_i=O(\kappa/\ell_i)$, and by~(a) and ${\bar\kappa}\le\kappa$ these sides are $\gg1$. A
+$B_i=O(\kappa/|\mathbf f_i|)$, and by~(a) and ${\bar\kappa}\le\kappa$ these sides are $\gg1$. A
 nonzero polynomial of bounded degree vanishes at
 $\ll B_1B_2B_3/\min_iB_i$ integer points of such a box (the polynomial
 grid-zero bound). Applied to a nonzero fiber $\Theta_\pi(\kappa,\mathbf u,\cdot)$
 in the basis coordinates, this and~(b) give
 \begin{equation}\label{eq:polarfiber}
  \#\{\mathbf w\in\Lambda\cap[-\kappa,\kappa]^3:\Theta_\pi(\kappa,\mathbf u,\mathbf w)=0\}
- \ll_\Theta\sum_{i<j}\frac{\kappa^2}{\ell_i\ell_j}
+ \ll_\Theta\sum_{i<j}\frac{\kappa^2}{|\mathbf f_i||\mathbf f_j|}
  \ll_\Theta\frac{\kappa^2}{{\bar\kappa}\lambda^\perp(\mathbf u_0)}.
 \end{equation}
 
@@ -2903,8 +2879,8 @@ $O_\Theta(\tau({\bar\kappa})\kappa^2{\bar\kappa}^{5/3})$. Sum over $g\mid \kappa
 
 Finally, an identically zero fiber forces one fixed nonzero coefficient
 polynomial $\Theta_0(\kappa,\mathbf u)$ to vanish. For fixed $g$, the polynomial
-$\Theta_0(g{\bar\kappa},g\mathbf u')$ is still nonzero. The four-variable grid-zero bound supplies
-$O_\Theta((X/g)^3)$ possible pairs $({\bar\kappa},\mathbf u')$. Each has
+$\Theta_0(g{\bar\kappa},g\mathbf u_0)$ is still nonzero. The four-variable grid-zero bound supplies
+$O_\Theta((X/g)^3)$ possible pairs $({\bar\kappa},\mathbf u_0)$. Each has
 $O(\kappa g^2)\le O(Xg^2)$ completions in its $\kappa$-box, so these fibers total
 \[
  O_\Theta\left(X^4\sum_{g\le X}\frac1g\right)
@@ -2916,7 +2892,7 @@ Summing the charts and adding the zero vector completes the proof.
 
 \subsection{The window estimate and the polar exponent}
 
-Retain the window notation $[A,2A)$, $T\ge36$, and the heights $H$, $X$, $S'$
+Retain the window notation $[A,2A)$, $T\ge36$, and the heights $H$, $X$, $S$
 and $Y$ of Sections~\ref{sec:joint} and~\ref{sec:lattice}.
 Only windows satisfying~\eqref{eq:jointscale} need the new estimate.
 
@@ -2926,9 +2902,9 @@ Every window above satisfying~\eqref{eq:jointscale} obeys
 \begin{equation}\label{eq:polarsix}
 \begin{split}
  T\ll_{m,n,\eta}a^\eta\bigl(&X^5+X^4H^{1/2}
- +X^{14/3}\max(H,S',Y)^{1/17}\\
+ +X^{14/3}\max(H,S,Y)^{1/17}\\
  &+X^{5-1/(3\delta_{\rm pol})}H^{1/\delta_{\rm pol}}
- +X^{5-2m/(3\delta_{\rm pol})}(S')^{m/\delta_{\rm pol}}+X^5Y^{n/\delta_{\rm pol}}\bigr).
+ +X^{5-2m/(3\delta_{\rm pol})}S^{m/\delta_{\rm pol}}+X^5Y^{n/\delta_{\rm pol}}\bigr).
 \end{split}
 \end{equation}
 \end{proposition}
@@ -2937,20 +2913,20 @@ The earlier exceptional patterns, conics and bounded cuts contribute
 $X^5+X^4H^{1/2}$, as in Proposition~\ref{prop:latticewindow}.
 Among the remaining patterns, Lemma~\ref{lem:branchpatterns} and
 Proposition~\ref{prop:polarpatterns} bound those that are branch-bad or
-satisfy $\Theta=0$ by $O_\eta(a^\eta X^{14/3})$.
+degenerate by $O_\eta(a^\eta X^{14/3})$.
 Here $X\ll a^7$, so the extra $X^\eta$ loss is absorbed into $a^\eta$.
 For these patterns use the unpowered graph of Section~\ref{sec:joint}
-($m=n=1$, so $\delta_{\min}=17$), whose box has size $\max(H,S',Y)$; this gives
+($m=n=1$, so $\delta_{\min}=17$), whose box has size $\max(H,S,Y)$; this gives
 the third term of~\eqref{eq:polarsix}.
 
 For each remaining retained component, Lemma~\ref{lem:branchlabel}
 gives degree $24$, and Lemma~\ref{lem:polargraphdegree} gives graph degree
 at least $\delta_{\rm pol}$. Its upper degree is bounded in terms of $m,n$ by
-Lemma~\ref{lem:jointpowereddegree}. The coefficient-uniform curve bound
+Lemma~\ref{lem:latticedegree}. The coefficient-uniform curve bound
 and Lemma~\ref{lem:latticecoords} therefore give, for a pattern with shortest
 lattice length $\lambda$, a contribution
 \[
- \ll_{m,n,\eta}a^\eta\bigl((H/\lambda)^{1/\delta_{\rm pol}}+(S'/\lambda^2)^{m/\delta_{\rm pol}}+Y^{n/\delta_{\rm pol}}\bigr).
+ \ll_{m,n,\eta}a^\eta\bigl((H/\lambda)^{1/\delta_{\rm pol}}+(S/\lambda^2)^{m/\delta_{\rm pol}}+Y^{n/\delta_{\rm pol}}\bigr).
 \]
 Summing with Lemma~\ref{lem:weights}, at exponents $1/\delta_{\rm pol}$ and $2m/\delta_{\rm pol}$,
 produces the last three terms.
@@ -2977,9 +2953,9 @@ Optimizing over the fixed powers gives
 \end{theorem}
 \begin{proof}
 Apply the window argument of Section~\ref{sec:lattice} to
-\eqref{eq:polarsix}. The three terms from the exceptional contribution
-$X^{14/3}\max(H,S',Y)^{1/17}$ give exponents
-$717/2440$ (twice, since $H$ and $S'$ satisfy the same bound $\ll a^{1+o(1)}/T^3$) and $732/2491$, all below $5/17$.
+\eqref{eq:polarsix}. The three terms from the contribution
+$X^{14/3}\max(H,S,Y)^{1/17}$ of branch-bad and degenerate patterns give exponents
+$717/2440$ (twice, since $H$ and $S$ satisfy the same bound $\ll a^{1+o(1)}/T^3$) and $732/2491$, all below $5/17$.
 The other terms give the displayed maximum. Windows with $AT>28a$, or
 failing~\eqref{eq:jointscale}, are handled as in the proof of
 Corollary~\ref{cor:jointexponent} and give at most $5/17$; dyadic summation and
@@ -3003,7 +2979,7 @@ Theorem~\ref{thm:polar}.
 \section{Rises in the quotient increments}\label{sec:rises}
 
 Throughout this section $k_i=q_{i+1}-q_i\ge1$, $d_i=b_i-b_{i+1}\ge1$, and a
-\emph{rise} is an index $0\le i\le P(a,b)-3$ with $k_i<k_{i+1}$.
+\emph{rise} is an index $0\le i\le N-3$ with $k_i<k_{i+1}$.
 
 \begin{lemma}[Six quotients in arithmetic progression]\label{lem:ap}
 Let $q,h\ge1$ and $x_0>x_1>\dots>x_6\ge0$ satisfy $x_j(q+jh)+x_{j+1}=a$ for $0\le j\le5$. Then
@@ -3052,22 +3028,22 @@ $|J|\le Mc_{j_0}$. Removing $j_0$ and using $|J|^2=(|J|-1)^2+2|J|-1$ completes t
 \end{proof}
 
 \begin{proposition}[Rises in a window]\label{prop:rises}
-Let $x_0,\dots,x_{T-1}$ be a window run in $[A,2A)$ with $T\ge2$, and let $\rho$ be the number
+Let $x_0,\dots,x_{T-1}$ be a window run in $[A,2A)$ with $T\ge2$, and let $r$ be the number
 of rises among its $T-1$ increments. Then:
 \begin{enumerate}
-\item $(T-1)^2\le 2(\rho+1)(A-1)$;
+\item $(T-1)^2\le 2(r+1)(A-1)$;
 \item $T-1\le\lfloor a/A\rfloor$;
-\item if $6A\le a$, then $T-1=\ell+s$ with $\ell^2\le 8(\rho+1)\lfloor a/A\rfloor$ and
+\item if $6A\le a$, then $T-1=\ell+s$ with $\ell^2\le 8(r+1)\lfloor a/A\rfloor$ and
 $s^3\le c_{\rm low}A$, where $c_{\rm low}=324\cdot3^4=26244$.
 \end{enumerate}
 \end{proposition}
 
 \begin{proof}
-Split the increments into \emph{runs}: maximal stretches containing no rise. There are at most
-$\rho+1$ runs.
+Split the increments into \emph{stretches}: maximal blocks containing no rise. There are at most
+$r+1$ stretches.
 
-(1) By Lemma~\ref{lem:norise}, the drops strictly decrease along a run, so each value of $d_j$
-occurs at most once per run, hence at most $\rho+1$ times. Lemma~\ref{lem:mult} and
+(1) By Lemma~\ref{lem:norise}, the drops strictly decrease along a stretch, so each value of $d_j$
+occurs at most once per stretch, hence at most $r+1$ times. Lemma~\ref{lem:mult} and
 $\sum_jd_j=x_0-x_{T-1}\le A-1$ give the claim.
 
 (2) The increments are $\ge1$, and they sum to $q_{T-1}-q_0\le\lfloor a/A\rfloor$.
@@ -3075,13 +3051,13 @@ $\sum_jd_j=x_0-x_{T-1}\le A-1$ give the claim.
 (3) In $c_{\rm low}=324\cdot3^4$, the factor $324$ comes from Lemma~\ref{lem:ap}
 and $3^4$ from the bound $a<3Aq$ below. Call an increment $h$ \emph{low} if
 $c_{\rm low}h^3A^4<a^3$. Five consecutive equal increments
-$h$ inside the run give six quotients in arithmetic progression. Lemma~\ref{lem:ap} then
+$h$ inside a stretch give six quotients in arithmetic progression. Lemma~\ref{lem:ap} then
 gives $q^4\le324h^3a$. On the other hand, $a<3Aq$, which follows from $a=qx_0+x_1$,
 $x_1<x_0<2A$ and $6A\le a$. Together these give $a^3\le c_{\rm low}h^3A^4$, so $h$ is not low.
-Within a run the increments are nonincreasing, so equal values are consecutive. Hence each
-low value occurs at most $4$ times per run, and at most $4(\rho+1)$ times in all.
+Within a stretch the increments are nonincreasing, so equal values are consecutive. Hence each
+low value occurs at most $4$ times per stretch, and at most $4(r+1)$ times in all.
 Lemma~\ref{lem:mult} bounds the number $\ell$ of low increments by
-$\ell^2\le8(\rho+1)\sum_jk_j\le8(\rho+1)\lfloor a/A\rfloor$. Let $s$ be the number of high
+$\ell^2\le8(r+1)\sum_jk_j\le8(r+1)\lfloor a/A\rfloor$. Let $s$ be the number of high
 increments. If $s=0$, its bound is immediate. Otherwise let $h_*$ be their
 smallest value. Then $sh_*\le\lfloor a/A\rfloor$ and
 $a^3\le c_{\rm low}h_*^3A^4$, so $s^3a^3\le c_{\rm low}A^4(a/A)^3=c_{\rm low}Aa^3$.
@@ -3103,7 +3079,7 @@ so they sum to at most $M/(1-2^{-s})$.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:rises}]
-The rises inside a window are rises of the orbit, so $\rho+1\le R$. Combining the three parts
+The rises inside a window are rises of the orbit, so $r+1\le R$. Combining the three parts
 of Proposition~\ref{prop:rises} gives, for the window $[2^k,2^{k+1})$,
 \[
 T_k\le 1+\sqrt R\,\min\bigl(\sqrt{8a}\,2^{-k/2},\ \sqrt2\,2^{k/2}\bigr)
@@ -3120,7 +3096,7 @@ gives the theorem.
 \end{proof}
 
 \begin{remark}
-By Theorem~\ref{thm:rises}, an orbit with $P(a,b)\asymp a^{3/10}$ must have $R\gg a^{1/10}$.
+By Theorem~\ref{thm:rises}, an orbit with $N\asymp a^{3/10}$ must have $R\gg a^{1/10}$.
 Proposition~\ref{prop:rises}(3) says more: inside the critical window $A\asymp a^{3/5}$, a
 run of $T\asymp a^{3/10}$ remainders must contain $\gg a^{1/5}$ rises.
 \end{remark}
@@ -3132,7 +3108,7 @@ The source repository is
 (private during manuscript preparation).
 
 The proof baseline is commit
-\lean{dcb5d8d05c8db7c020073bf14ee45a749f03c37f}.
+\lean{6759785d753b04252be123d1ab17a7559f6a3d0b}.
 The development uses Lean~4 \lean{v4.35.0} and Mathlib \lean{v4.35.0}.
 Every theorem stated in this paper is proved there in full; the one
 conditional result in the repository is described below.
@@ -3197,7 +3173,7 @@ here never do better than that: the bounded cuts and conics contribute
 $a^{o(1)}$ starts for each of the $X^{5+o(1)}$ patterns, and the exceptional patterns and
 the windows where the line-exclusion condition~\eqref{eq:jointscale} fails
 also lead to exponent $5/17$, independently of the coordinate powers $m,n$.
-The branch-bad patterns and those with $\Theta=0$ give only the exponents
+The branch-bad and degenerate patterns give only the exponents
 $717/2440$ and $732/2491$, below this threshold.
 
 The improved graph degree gives
@@ -3526,10 +3502,10 @@ $(y_i)_{i\in I}$. Since $F$ is irreducible, $\prod_{i\in I}(Y-y_i)\notin\mathbb 
 so some $\sigma_I:=\sigma_{I,j(I)}$ lies outside $\mathbb Q(T)$. The resolvent
 $\prod_{|I'|=|I|}(Z-\sigma_{I',j(I)})$ is monic in $Z$, and its coefficients are
 fixed integer polynomials in the coefficients of $F$; so it lies in
-$\mathbb Z[T][Z]$ with degree $O(1)$ and height $O(H^{O(1)})$. Let $\mathcal A_I$ be its
+$\mathbb Z[T][Z]$ with degree $O(1)$ and height $O(\mathcal H^{O(1)})$. Let $\mathcal A_I$ be its
 monic irreducible factor over $\mathbb Q(T)$ that vanishes at $\sigma_I$. By
 Gauss's lemma $\mathcal A_I\in\mathbb Z[T][Z]$; by Gelfond's factor-height inequality its
-height is $O(H^{O(1)})$; and its $Z$-degree is at least two, because
+height is $O(\mathcal H^{O(1)})$; and its $Z$-degree is at least two, because
 $\sigma_I\notin\mathbb Q(T)$.
 
 Now suppose that $F(t,Y)$ is reducible over $\mathbb Q$. By Gauss's lemma it has
@@ -3540,10 +3516,10 @@ $\mathbb Z[T]$. Then $F(t,Y)=\prod_i(Y-\phi(y_i))$, so the roots of $g$, with
 multiplicity, are $\phi(y_i)$ for $i$ in some $I$ with $|I|=e'$, and the
 coefficients of $g$ are $\pm\phi(\sigma_{I,j})$. In particular $\phi(\sigma_I)$ is
 an integer root of $\mathcal A_I(t,Z)$. Step~1, applied to the $O(1)$ polynomials $\mathcal A_I$,
-bounds the number of such $t$ by $O(\operatorname{lg}(H)^4B^{1/2}(1+\log B))$.
+bounds the number of such $t$ by $O(\operatorname{lg}(\mathcal H)^4B^{1/2}(1+\log B))$.
 
 \emph{Step 3: one parameter, the others free.} Let $r\ge2$. We claim that for
-all but $O(\operatorname{lg}(H)^4B^{1/2}(1+\log B))$ integers $t_1\in[-B,B]$, the
+all but $O(\operatorname{lg}(\mathcal H)^4B^{1/2}(1+\log B))$ integers $t_1\in[-B,B]$, the
 polynomial $F(t_1,T_2,\dots,T_r,Y)$ is irreducible over $\mathbb Q(T_2,\dots,T_r)$.
 Fix an integer $b>d$ and let $\mathcal K$ be the Kronecker map
 \[
@@ -3556,7 +3532,7 @@ $T_1$, and it is multiplicative on products whose partial degrees stay below $b$
 Since $Y$ occupies the highest position, $\mathcal K(F)\in\mathbb Z[T_1][\omega]$ is monic.
 Factor $\mathcal K(F)=\prod_\nu \mathcal A_\nu$ into monic irreducible factors over
 $\mathbb Q(T_1)$. Again $\mathcal A_\nu$ lies in $\mathbb Z[T_1][\omega]$, with bounded
-degree and height $O(H^{O(1)})$. By Step~2, outside an exceptional set of the stated size, every
+degree and height $O(\mathcal H^{O(1)})$. By Step~2, outside an exceptional set of the stated size, every
 $\mathcal A_\nu(t_1,\omega)$ is irreducible over $\mathbb Q$.
 
 Let $t_1$ be outside this set, and suppose
@@ -3576,10 +3552,10 @@ $O(1)$ exceptional values.
 exceptional values $t_1$ of Step~3 contribute at most their number times
 $(2B+1)^{r-1}$. For every other $t_1\in[-B,B]$, the family
 $F(t_1,T_2,\dots,T_r,Y)$ is monic, irreducible over $\mathbb Q(T_2,\dots,T_r)$, of
-the same degree bounds, and of height at most $(d+1)HB^d$. Since
-$\operatorname{lg}((d+1)HB^d)\ll\operatorname{lg}(H)(1+\log B)$, the induction hypothesis
+the same degree bounds, and of height at most $(d+1)\mathcal HB^d$. Since
+$\operatorname{lg}((d+1)\mathcal HB^d)\ll\operatorname{lg}(\mathcal H)(1+\log B)$, the induction hypothesis
 bounds its reducible specializations by
-$O(\operatorname{lg}(H)^4B^{r-3/2}(1+\log B)^{4r+1})$. Summing over the $2B+1$
+$O(\operatorname{lg}(\mathcal H)^4B^{r-3/2}(1+\log B)^{4r+1})$. Summing over the $2B+1$
 values of $t_1$ gives the theorem.
 \end{proof}
 
@@ -3589,9 +3565,9 @@ values of $t_1$ gives the theorem.
 
 At $(\rho,\varphi,\chi,\rho',\varphi',\chi')=(2,5,-3,3,6,-5)$ the polar base point is
 $\mathbf k_*=(-1/7,-3/28,-1/2)$ and $\nabla f(\mathbf k_*)=(-4,9,-5)$.
-Use tangent coordinates $(s,t)$ with first-order displacement
+Use tangent coordinates $(\xi_1,\xi_2)$ with first-order displacement
 \[
- \delta\mathbf k=((9s-5t)/4,s,t).
+ \delta\mathbf k=((9\xi_1-5\xi_2)/4,\xi_1,\xi_2).
 \]
 Thus the two axes used in Lemma~\ref{lem:polarbase} have tangent vectors
 $(9/4,1,0)$ and $(-5/4,0,1)$. Direct substitution in the Newton quartic,
@@ -3599,21 +3575,21 @@ its remainder and the norm polynomial gives
 \begin{align*}
  P_{4,*}(x)&=x^4-\frac{20}{7}x^3+\frac{757}{112}x^2
                          -\frac{669}{112}x+2,\\
- R_1(x;s,t)&=\frac{77s+7t}{14}
-       +\frac{-56s-124t}{14}x
-       +\frac{-45s+157t}{14}x^2
-       +\frac{28s-28t}{14}x^3,\\
- \Psi_1(s,t)&=\frac{3s+85t}{28}.
+ R_1(x;\xi_1,\xi_2)&=\frac{77\xi_1+7\xi_2}{14}
+       +\frac{-56\xi_1-124\xi_2}{14}x
+       +\frac{-45\xi_1+157\xi_2}{14}x^2
+       +\frac{28\xi_1-28\xi_2}{14}x^3,\\
+ \Psi_1(\xi_1,\xi_2)&=\frac{3\xi_1+85\xi_2}{28}.
 \end{align*}
 The resultant is
 \[
- \mathcal R_4(s,t)=\frac{
- 32233977s^4-95047956s^3t+147873750s^2t^2
-             -111199572st^3+31702169t^4}{6272}.
+ \mathcal I_4(\xi_1,\xi_2)=\frac{
+ 32233977\xi_1^4-95047956\xi_1^3\xi_2+147873750\xi_1^2\xi_2^2
+             -111199572\xi_1\xi_2^3+31702169\xi_2^4}{6272}.
 \]
 In particular,
 \[
- \mathcal R_4(1,0)\Psi_1(0,1)^4-\mathcal R_4(0,1)\Psi_1(1,0)^4
+ \mathcal I_4(1,0)\Psi_1(0,1)^4-\mathcal I_4(0,1)\Psi_1(1,0)^4
  =\frac{26291112152499}{60236288}.
 \]
 The realizing matrix in Lemma~\ref{lem:polarbase} shows that $\Theta$ is
