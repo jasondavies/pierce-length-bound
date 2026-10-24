@@ -9,7 +9,7 @@ public import PierceLengthBound.JointLiftLocalOrders
 
 /-! # The quotient order
 
-The first half of Lemma 8.6 in valuation form: if `P₄(-Q)` has order `-6e`, the leading term
+The first half of Lemma 8.7 in valuation form: if `P₄(-Q)` has order `-6e`, the leading term
 `Q⁴` dominates, so `ord Q = -3e/2` and `e` is even. -/
 
 @[expose] public section

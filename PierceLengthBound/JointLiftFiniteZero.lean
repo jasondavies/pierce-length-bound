@@ -11,7 +11,7 @@ public import PierceLengthBound.ChartFunctionField
 
 /-! # The additional affine zero on the normalization
 
-The last step of Lemma 8.10: the curvature combination vanishing at the free nodes of an orbit
+The last step of Lemma 8.11: the curvature combination vanishing at the free nodes of an orbit
 state has a zero of positive order at a height-one prime of the normalized infinity chart that
 does not lie over infinity, and it is transcendental over `ℚ`. Also the infinity chart of a
 nonexceptional component has the component's function field and a finite Dedekind

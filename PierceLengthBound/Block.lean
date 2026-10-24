@@ -15,9 +15,7 @@ Let `x = bᵢ`, `y = b_{i+1} = a mod x`, `z = b_{i+2} = a mod y`, `w = b_{i+3} =
 `d = x - y`, `e = y - z`, `f = z - w`. The *curvature* of the block is `D = dv - eu`.
 
 * `curvature_identity`: `D z = df + ude + (u-1)e²`, hence `D ≥ 1` (`one_le_bD`; Lemma 3.2);
-* `block_fiber_eq`: `x M(q) = a N(q) + D` with `M(q) = uq² + (u²+u+v)q + v`,
-  `N(q) = uq + u² + v` (Lemma 3.3);
-* `bu_mul_le`, `bv_mul_le`, `bD_mul_le`: the size bounds used in the counting (Lemma 3.4).
+* `bu_mul_le`, `bv_mul_le`, `bD_mul_le`: the size bounds (Lemma 3.3).
 -/
 
 @[expose] public section
@@ -45,14 +43,6 @@ theorem curvature_identity (a w f e d q u v : ℤ)
       * h2 +
     (-a + (q + u) * (w + f + e) + (w + f + e)) * h1
 
-/-- **The fiber equation.** `D = M(q) x - a N(q)`. -/
-theorem fiber_identity (a w f e d q u v : ℤ)
-    (h1 : (w + f + e + d) * q + (w + f + e) = a)
-    (h2 : (w + f + e) * (q + u) + (w + f) = a) :
-    d * v - e * u = (w + f + e + d) * (u * q ^ 2 + (u ^ 2 + u + v) * q + v) -
-      a * (u * q + (u ^ 2 + v)) := by
-  linear_combination u * h2 + (q * (q + u) + q - (q + u) ^ 2 - (q + u + v)) * h1
-
 /-- `u y = q d + e`. -/
 theorem increment_identity (a w f e d q u : ℤ)
     (h1 : (w + f + e + d) * q + (w + f + e) = a)
@@ -66,15 +56,12 @@ theorem block_core (a w f e d q u v : ℕ) (hf : 0 < f) (hd : 0 < d) (hu : 1 ≤
     (h2 : (w + f + e) * (q + u) + (w + f) = a)
     (h3 : (w + f) * (q + u + v) + w = a) :
     e * u < d * v ∧
-    (d * v - e * u) * (w + f) ≤ (u + 1) * (d + e + f) ^ 2 ∧
-    (w + f + e + d) * (u * q ^ 2 + (u ^ 2 + u + v) * q + v) =
-      a * u * q + (a * (u ^ 2 + v) + (d * v - e * u)) := by
+    (d * v - e * u) * (w + f) ≤ (u + 1) * (d + e + f) ^ 2 := by
   have h1' : ((w + f + e + d : ℕ) : ℤ) * q + (w + f + e : ℕ) = a := by exact_mod_cast h1
   have h2' : ((w + f + e : ℕ) : ℤ) * ((q + u : ℕ) : ℤ) + (w + f : ℕ) = a := by exact_mod_cast h2
   have h3' : ((w + f : ℕ) : ℤ) * ((q + u + v : ℕ) : ℤ) + w = a := by exact_mod_cast h3
   push_cast at h1' h2' h3'
   have hc := curvature_identity a w f e d q u v h1' h2' h3'
-  have hfib := fiber_identity a w f e d q u v h1' h2'
   have hw0 : (0 : ℤ) ≤ w := by positivity
   have he0 : (0 : ℤ) ≤ e := by positivity
   have hf0 : (0 : ℤ) < f := by exact_mod_cast hf
@@ -92,25 +79,19 @@ theorem block_core (a w f e d q u v : ℕ) (hf : 0 < f) (hd : 0 < d) (hu : 1 ≤
     exact_mod_cast this
   have hcast : ((d * v - e * u : ℕ) : ℤ) = (d : ℤ) * v - e * u := by
     rw [Nat.cast_sub hlt.le]; push_cast; ring
-  refine ⟨hlt, ?_, ?_⟩
-  · have : (((d * v - e * u) * (w + f) : ℕ) : ℤ) ≤ (((u + 1) * (d + e + f) ^ 2 : ℕ) : ℤ) := by
-      push_cast
-      rw [hcast, hc]
-      have hd0' : (0 : ℤ) ≤ d := hd0.le
-      have hf0' : (0 : ℤ) ≤ f := hf0.le
-      have hu0' : (0 : ℤ) ≤ u := by linarith
-      nlinarith [mul_nonneg hd0' he0, mul_nonneg hd0' hf0', mul_nonneg he0 hf0',
-        mul_nonneg (mul_nonneg hd0' he0) hu0', mul_nonneg (mul_nonneg hd0' hf0') hu0',
-        mul_nonneg (mul_nonneg he0 hf0') hu0', mul_nonneg (mul_nonneg hd0' hd0') hu0',
-        mul_nonneg (mul_nonneg hf0' hf0') hu0', mul_nonneg hd0' hd0', mul_nonneg hf0' hf0',
-        mul_nonneg he0 he0, mul_nonneg (mul_nonneg he0 he0) hu0']
-    exact_mod_cast this
-  · have : (((w + f + e + d) * (u * q ^ 2 + (u ^ 2 + u + v) * q + v) : ℕ) : ℤ) =
-        ((a * u * q + (a * (u ^ 2 + v) + (d * v - e * u)) : ℕ) : ℤ) := by
-      push_cast
-      rw [hcast, hfib]
-      ring
-    exact_mod_cast this
+  refine ⟨hlt, ?_⟩
+  have : (((d * v - e * u) * (w + f) : ℕ) : ℤ) ≤ (((u + 1) * (d + e + f) ^ 2 : ℕ) : ℤ) := by
+    push_cast
+    rw [hcast, hc]
+    have hd0' : (0 : ℤ) ≤ d := hd0.le
+    have hf0' : (0 : ℤ) ≤ f := hf0.le
+    have hu0' : (0 : ℤ) ≤ u := by linarith
+    nlinarith [mul_nonneg hd0' he0, mul_nonneg hd0' hf0', mul_nonneg he0 hf0',
+      mul_nonneg (mul_nonneg hd0' he0) hu0', mul_nonneg (mul_nonneg hd0' hf0') hu0',
+      mul_nonneg (mul_nonneg he0 hf0') hu0', mul_nonneg (mul_nonneg hd0' hd0') hu0',
+      mul_nonneg (mul_nonneg hf0' hf0') hu0', mul_nonneg hd0' hd0', mul_nonneg hf0' hf0',
+      mul_nonneg he0 he0, mul_nonneg (mul_nonneg he0 he0) hu0']
+  exact_mod_cast this
 
 /-- `u · y · x ≤ a (d + e)`, from `u y = q d + e`, `q x ≤ a` and `x ≤ a`. -/
 theorem increment_core (a w f e d q u : ℕ) (hxa : w + f + e + d ≤ a)
@@ -199,22 +180,10 @@ lemma bD_mul_le (hx : 0 < x) (hy : a % x ≠ 0) (hz : a % (a % x) ≠ 0) :
     bD a x * (a % (a % x)) ≤ (bu a x + 1) * (x - a % (a % (a % x))) ^ 2 := by
   obtain ⟨w, f, e, d, u, v, hf, hd, hu, -, hw, hz', hy, hx', hbu, hbv, h1, h2, h3⟩ :=
     block_data hx hy hz
-  have := (block_core a w f e d (a / x) u v hf hd hu h1 h2 h3).2.1
+  have := (block_core a w f e d (a / x) u v hf hd hu h1 h2 h3).2
   rw [bD_eq, hbu, hbv, hw, hz', hy, hx']
   rw [show w + f + e + d - (w + f + e) = d by omega, show w + f + e - (w + f) = e by omega,
     show w + f + e + d - w = d + e + f by omega]
-  exact this
-
-/-- **The fiber equation.** `x M(q) = a N(q) + D` with `q = ⌊a/x⌋`. -/
-lemma block_fiber_eq (hx : 0 < x) (hy : a % x ≠ 0) (hz : a % (a % x) ≠ 0) :
-    x * (bu a x * (a / x) ^ 2 + (bu a x ^ 2 + bu a x + bv a x) * (a / x) + bv a x) =
-      a * bu a x * (a / x) + (a * (bu a x ^ 2 + bv a x) + bD a x) := by
-  obtain ⟨w, f, e, d, u, v, hf, hd, hu, -, hw, hz', hy, hx', hbu, hbv, h1, h2, h3⟩ :=
-    block_data hx hy hz
-  have := (block_core a w f e d (a / x) u v hf hd hu h1 h2 h3).2.2
-  rw [bD_eq, hbu, hbv, hz', hy]
-  rw [show x - (w + f + e) = d by omega, show w + f + e - (w + f) = e by omega]
-  rw [← hx'] at this
   exact this
 
 /-- **Size of `u`.** `u · y · x ≤ a (x - z)` when `x ≤ a`. -/

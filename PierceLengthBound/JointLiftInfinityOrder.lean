@@ -11,8 +11,8 @@ public import PierceLengthBound.FixedDividendChartResultant
 /-! # Resultant and rank-five orders at infinity
 
 At a discrete valuation centered on the infinity chart of a nonexceptional component, with
-`ν(1/s₁) = e > 0`, the resultant `Res(P₄, Z)` has order `-10e` (Lemma 8.3), `e = 2t` is even,
-and the rank-five coordinate `J = N₀ Ψ` has order `-5t` (Corollary 8.4). The valuation may lie
+`ν(1/s₁) = e > 0`, the resultant `Res(P₄, Z)` has order `-10e` (Lemma 8.4), `e = 2t` is even,
+and the rank-five coordinate `J = N₀ Ψ` has order `-5t` (Corollary 8.5). The valuation may lie
 over a singular point; only its center on this chart is used. -/
 
 @[expose] public section

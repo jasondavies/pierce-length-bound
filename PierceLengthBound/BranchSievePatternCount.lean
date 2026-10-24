@@ -7,7 +7,7 @@ module
 
 public import PierceLengthBound.BranchSieveVertexCount
 
-/-! Branch-bad full minor patterns (Lemma 10.5). The branch-sieve vertex of a
+/-! Branch-bad full minor patterns (Lemma 10.6). The branch-sieve vertex of a
 pattern consists of its minors `0, 1, 3, 6`. On each of the four Plücker charts
 pivoted at one of these minors, the vertex is a signed permutation of the
 chart coordinates `(m, u)`. Choosing the pivot of largest absolute value among these

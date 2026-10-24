@@ -11,9 +11,9 @@ public import PierceLengthBound.PolarProjectionGeometryGoodPattern
 public import PierceLengthBound.PolarProjectionBound
 
 /-! The polar-projection length bounds (Theorems 1.1 and 10.8). The scaled-vertex
-sieve and its completion to full patterns (Lemma 10.5) bound the branch-bad
+sieve and its completion to full patterns (Lemma 10.6) bound the branch-bad
 patterns; together with the retained-component geometry this gives the six-term
-window estimate (Proposition 10.7) for all positive powers `m`, `n`. -/
+window estimate (Proposition 10.8) for all positive powers `m`, `n`. -/
 
 @[expose] public section
 namespace PierceLengthBound
@@ -23,7 +23,7 @@ open Finset
 namespace FixedDividend
 
 /-- Branch-bad full patterns in a selected window number at most a slowly
-growing factor times `X^{14/3}`, from the scaled-vertex sieve and Lemma 10.5. -/
+growing factor times `X^{14/3}`, from the scaled-vertex sieve and Lemma 10.6. -/
 theorem polar_branch_bad_pattern_count_slow :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ PolarBadPatternCount PolarBranchGood R := by
   classical
@@ -41,7 +41,7 @@ theorem polar_branch_bad_pattern_count_slow :
     (by have := (selectedStart_spec hmem hsT hi).1; omega)
   exact not_congr (polarBranchGood_iff_vertex hp0)
 
-/-- The six-term polar window estimate (Proposition 10.7) for positive powers `m`, `n`. -/
+/-- The six-term polar window estimate (Proposition 10.8) for positive powers `m`, `n`. -/
 theorem polar_projection_six_term_estimates (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     ∃ R : ℕ → ℕ, SlowGrowth R ∧ PolarProjectionSixTermEstimate m n R := by
   obtain ⟨R, hR, hbad⟩ := polar_branch_bad_pattern_count_slow
@@ -50,7 +50,7 @@ theorem polar_projection_six_term_estimates (m n : ℕ) (hm : 0 < m) (hn : 0 < n
 end FixedDividend
 
 /-- The rational polar-projection bound `P(a,b) ≪ a^{4317/14677+ε}`, with
-curvature power three and rank-five-invariant power two (Theorem 10.8 at
+curvature power three and rank-five-invariant power two (Theorem 10.9 at
 `(m, n) = (3, 2)`). -/
 theorem P_le_4317_14677 :
     ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →

@@ -19,7 +19,7 @@ proves, uniformly in `0 < b < a`:
   instances `2201/7480 + ε` and `128/435 + ε`.
 * **Pattern bounds:** `45/152 + ε`, and before it `8/27`, `11/37` and `23/77`.
 * **The `3/10` bound:** `P(a, b) ≤ C_ε · a^{3/10 + ε}`, improving Chase–Pandey's
-  `a^{1/3 − 2/177 + ε}` ([arXiv:2211.08374](https://arxiv.org/abs/2211.08374)). Its six-step identity is reused by every later bound.
+  `a^{1/3 − 2/177 + ε}` ([arXiv:2211.08374](https://arxiv.org/abs/2211.08374)). Its six-term identity is reused by every later bound.
 * **Assuming two published theorems:** `P(a, b) ≪ a^{3/10} √(log log 3a)`. The theorems are
   Nair–Tenenbaum, Acta Math. 180 (1998)
   ([doi:10.1007/BF02392880](https://doi.org/10.1007/BF02392880)), on short sums of the
@@ -196,10 +196,11 @@ The outlines follow the paper's order; each chain reuses the one before it.
 ### The `3/10` bound
 
 The `3/10` bound rests on two exact identities. For three consecutive steps the curvature
-`D = dv − eu` is a positive integer. For six consecutive steps a further positive integer `L`
-satisfies `q k₂ L = χE + σF` (in Lean, `q w L = J E + S₀ F`), which bounds the quotient by the
+`D = dv − eu` is a positive integer. For six consecutive terms a further positive integer `L`
+satisfies `q k₂ L = ωE + σF` (in Lean, `q w L = J E + S₀ F`), which bounds the quotient by the
 parameters of a single block. This gives `T⁶ A² ≤ 96·10⁶ a³` for the number `T` of remainders in
-`[A, 2A)`, with no divisor-function loss.
+`[A, 2A)`, with no divisor-function loss. Multiplying by the square of the Erdős–Shallit drop
+bound `T(T − 1) ≤ 4AΔ` eliminates `A` and gives `T¹⁰ ≪ a³Δ²`.
 
 ### The pattern bounds
 
@@ -287,7 +288,7 @@ A completion count lifts this to `O(a^η X^{9/2})` branch-bad patterns, and the 
 
 These `O(a^η X^{14/3})` exceptional patterns use the earlier unpowered graph; the rest use the
 lattice coordinates with degree `60n + 56m`. Optimizing `n/m` gives `β*`, and `(m, n) = (3, 2)`
-gives `4317/14677`. The paper's section "Exact polar projection and the branch sieve" gives the
+gives `4317/14677`. The paper's section "Exact polar projection and the Hilbert sieve" gives the
 details.
 
 ## Module maps
@@ -299,11 +300,10 @@ All modules are in `PierceLengthBound/`; the `.lean` extension is omitted.
 | Module | Contents |
 |---|---|
 | `Defs` | `P`, the orbit `orb`, `P ≤ b` (`P_le_self`), the quotients `qq` with `bᵢqᵢ + bᵢ₊₁ = a` and strict monotonicity (`qq_lt`, `qq_strictMono`); check `P 35 22 = 7` |
-| `Block` | curvature `D = dv − eu`: identity `Dz = df + ude + (u−1)e²`, `D ≥ 1`, fiber equation `x M(q) = a N(q) + D`, size bounds |
-| `Fiber` | a fixed `(u, v, D)` allows at most `max_{n ≤ 32a⁷} τ(n)` starting points |
-| `Window` | a run of `T` terms in `[A, 2A)`: increments, drops and telescoping sums, `T(T−1) ≤ 4AΔ` (`T ≥ 2`), `T⁶A² ≤ 995328 a³Δ` (`T ≥ 12`), hence `T¹⁰ ≤ 63700992 a³Δ³`, and shared estimates such as `drop_bound_sq` |
+| `Block` | curvature `D = dv − eu`: identity `Dz = df + ude + (u−1)e²`, `D ≥ 1`, size bounds |
+| `Window` | a run of `T` terms in `[A, 2A)`: increments, drops and telescoping sums, the drop bound `T(T−1) ≤ 4AΔ` (`T ≥ 2`), and shared estimates such as `drop_bound_sq` |
 | `Main` | dyadic decomposition (`visits_run`), `P_le_of_real_visits` and `P_le_of_visits` (window bounds `T ≤ S(a) a^α`, or `T^N ≤ K S(a) aʳ`, with `S(a) ≪ a^η` give `P ≪ a^{α+ε}`, resp. `a^{r/N+ε}`), and the unconditional theorem `P_le` |
-| `SixStep` | the six-step identity (`six_identity`), `L ≥ 1`, the window preamble `window_facts`, and `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10`, hence `T⁴ ≤ 122449 a` when `AT > 28a` (`window_large_mean_gap`) |
+| `SixStep` | the six-term identity (`six_identity`), `L ≥ 1`, the window preamble `window_facts`, `six_step_bound`: `T⁶A² ≤ 96·10⁶ a³` for `T ≥ 10`, hence `T⁴ ≤ 122449 a` when `AT > 28a` (`window_large_mean_gap`), and the `3/10` window bound `T¹⁰ ≤ 6144000000 a³Δ²` (`window_bound`) |
 | `ShortSum` | the drop count `T ≤ 2 ∑_{a<n≤a+Y} #{d ∣ n : A ≤ d < 2A}` |
 | `Geometric` | `∑_k min(α 2^{−k/3}, β 2^{k/2}) ≤ 9 α^{3/5} β^{2/5}`, and the general form `∑_k min(α 2^{−sk}, β 2^{tk}) ≪ α^{t/(s+t)} β^{s/(s+t)}` (`sum_min_le_gen`) |
 | `Conditional` | any short-interval divisor bound `≪ y G(x)` for `x^{1/4} ≤ y ≤ x`, with `1 ≤ G(x) ≪ x^{1/40}`, gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
@@ -316,7 +316,7 @@ All modules are in `PierceLengthBound/`; the `.lean` extension is omitted.
 | `TwoState` | the cofactors, null relations, reduced quadratic, the multiplicity identity, root counting |
 | `PatternBound` | `state_bound`: the four pattern integers of a state are `≤ 172032 A⁴H⁶/a³` under the scale condition (applied at `i` and `i+1` for all seven) |
 | `PatternCount` | the counting lemma `#G ≤ 8 (2M+1)⁷ H²` |
-| `OrbitPattern` | the orbit-state vocabulary: integer increments and drops (`kq`, `dq`), the six-step integer `Lz`, the cofactors, the pattern `theta`, the good starts (`goodStarts`), and the matrix `𝓜ᵢ` (`Mi`) whose signed minors are the pattern (`theta_eq`) |
+| `OrbitPattern` | the orbit-state vocabulary: integer increments and drops (`kq`, `dq`), the six-term integer `Lz`, the cofactors, the pattern `theta`, the good starts (`goodStarts`), and the matrix `𝓜ᵢ` (`Mi`) whose signed minors are the pattern (`theta_eq`) |
 | `TwentyThreeMain` | the label bound in window form, the pattern height at good starts, the window theorem, `T⁷⁷ ≤ C Δ²² a²³`, and `P_le_23_77` |
 | `NormCount` | the norm-equation lemma: square roots mod `m` (`≤ τ(m)²`), norm-one separation, and `norm_count` |
 | `SliceCount` | the slice lemma: slices of a ternary quadratic via completing squares, for either sign of the binary discriminant (`slice_count_ne`, `slice_count`) |

@@ -7,7 +7,7 @@ module
 
 public import PierceLengthBound.LinearJointGraph
 
-/-! The degree range of the powered graph (paper, Lemma 8.12 `lem:jointpowereddegree`), as the
+/-! The degree range of the powered graph (paper, Lemma 8.13 `lem:jointpowereddegree`), as the
 case `G = 1` of the linearly changed graph of `LinearJointGraph`. -/
 
 @[expose] public section

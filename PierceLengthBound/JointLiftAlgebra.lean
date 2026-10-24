@@ -15,7 +15,7 @@ The curvature-minor vector `W = (D₁₂, -D₀₂, D₀₁)` of drops and gaps,
 identities `W · k = 0` and `W · r = det (d, k, r)` (at an orbit state, `W · r = I₄(i)`), and the
 rank-five identity `I₅(i) = I₄(i) · Ψ` expressing the rank-five Hankel invariant as the label
 times the quartic norm (Section 8.6), and the cancellation bound for the minors used in the
-height estimate (Lemma 8.7). -/
+height estimate (Lemma 8.8). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

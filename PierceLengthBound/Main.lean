@@ -5,7 +5,7 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.Window
+public import PierceLengthBound.SixStep
 public import OAI.NumberTheory.Ostmann.Preliminaries.DivisorPowerBound
 
 /-!
@@ -13,7 +13,7 @@ public import OAI.NumberTheory.Ostmann.Preliminaries.DivisorPowerBound
 
 Split the positive terms of the orbit according to `⌊log₂ bᵢ⌋ = k`. The terms with a given
 `k` are consecutive and lie in `[2^k, 2^{k+1})`, so they form a window run
-(`visits_window`), and `window_bound` gives `T¹⁰ ≪ a³ Δ³` when `T ≥ 12`, where
+(`visits_window`), and `window_bound` gives `T¹⁰ ≪ a³ Δ²` when `T ≥ 10`, where
 `Δ = max_{n ≤ 32 a⁷} τ(n)`. The divisor bound `τ(n)^k ≪_k n` gives `Δ ≪_η a^η`
 (`tauMax_slow`), so `T ≪_η a^{3/10 + η}`, and there are `≤ log₂ a + 1` values of `k`.
 
@@ -96,10 +96,10 @@ theorem visits_run {a b k : ℕ} (hba : b ≤ a) (hT : 0 < (visits a b k).card) 
     (i := (visits a b k).min' hne + ((visits a b k).card - 1)) (W.pos (by omega))
   omega
 
-/-- The number of visits to a window is `≤ 11` or satisfies `T¹⁰ ≤ 63700992 a³ Δ³`. -/
+/-- The number of visits to a window is `≤ 9` or satisfies `T¹⁰ ≤ 6144000000 a³ Δ²`. -/
 theorem visits_bound {a b k Δ : ℕ} (hba : b ≤ a) (hΔ : DivBound a Δ) :
-    (visits a b k).card ≤ 11 ∨ (visits a b k).card ^ 10 ≤ 63700992 * a ^ 3 * Δ ^ 3 := by
-  by_cases hT : (visits a b k).card ≤ 11
+    (visits a b k).card ≤ 9 ∨ (visits a b k).card ^ 10 ≤ 6144000000 * a ^ 3 * Δ ^ 2 := by
+  by_cases hT : (visits a b k).card ≤ 9
   · exact Or.inl hT
   · right
     have h : (visits a b k).Nonempty := by
@@ -312,8 +312,8 @@ lemma P_le_of_exponent_le {β γ : ℝ} (hβγ : β ≤ γ)
 /-- **Theorem 1.4 (the `3/10` bound).** `P(a, b) ≪_ε a^{3/10 + ε}` uniformly in `0 < b < a`. -/
 theorem P_le : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((3 : ℝ) / 10 + ε) := by
-  simpa only [Nat.cast_ofNat] using P_le_of_visits (N := 10) (r := 3) (K := 63700992) (by norm_num)
-    ((tauMax_slow 32 7).pow 3) fun a b k _ hba =>
+  simpa only [Nat.cast_ofNat] using P_le_of_visits (N := 10) (r := 3) (K := 6144000000)
+    (by norm_num) ((tauMax_slow 32 7).pow 2) fun a b k _ hba =>
       (visits_bound (k := k) hba.le (tauMax_divBound a)).imp (fun h => by omega)
         fun h => h.trans_eq (by ring)
 

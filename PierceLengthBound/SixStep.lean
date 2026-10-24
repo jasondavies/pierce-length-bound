@@ -20,7 +20,8 @@ The integer `L = (vw + w² + z)D - (u² + (u-1)v)E - w(wf₀ - uf₂)` satisfies
 `q w L = J E + S₀ F` (`six_identity`), and `S(v,w,z) D - S₀ E = v L`. Since `E, F, J > 0`, we
 get `L ≥ 1`, hence `q w ≤ J E + S₀ F` (`six_core`). This bounds `q ≍ a/A` by a polynomial in the
 small parameters, with no divisor function, and gives `T⁶ A² ≤ 96·10⁶ a³`
-(`six_step_bound`, Proposition 5.3).
+(`six_step_bound`, Proposition 4.3). With the drop bound it gives the `3/10` window bound
+`T¹⁰ ≤ 6144000000 a³ Δ²` (`window_bound`, Corollary 5.2), which proves Theorem 1.4.
 
 Two consequences shared by the exponent arithmetic of the later window bounds close the file:
 `window_facts` (the six-step and drop bounds force `A, Δ, a ≥ 1` and give `T² ≤ 8 A Δ`) and
@@ -47,7 +48,7 @@ def sixL (u v w z f0 f1 f2 : ℤ) : ℤ :=
     w * (w * f0 - u * f2)
 
 /-- The six-step identity `q w L = J E + S₀ F`, from the division equations
-(Lemma 5.1(2)). -/
+(Lemma 4.1(2)). -/
 theorem six_identity (a q u v w z x0 x1 x2 x3 x4 : ℤ)
     (h0 : x0 * q + x1 = a) (h1 : x1 * (q + u) + x2 = a) (h2 : x2 * (q + u + v) + x3 = a)
     (h3 : x3 * (q + u + v + w) + x4 = a) :
@@ -62,7 +63,7 @@ theorem six_identity (a q u v w z x0 x1 x2 x3 x4 : ℤ)
       w ^ 2)) * h1 +
     (w * (v ^ 2 * w + v * w ^ 2 + v * z - w ^ 2)) * h0
 
-/-- `S(v,w,z) D - S(u,v,w) E = v L` (Lemma 5.1(1)). -/
+/-- `S(v,w,z) D - S(u,v,w) E = v L` (Lemma 4.1(1)). -/
 theorem six_divisibility (u v w z f0 f1 f2 : ℤ) :
     sixS v w z * (f0 * v - f1 * u) - sixS u v w * (f1 * w - f2 * v) =
       v * sixL u v w z f0 f1 f2 := by
@@ -149,7 +150,7 @@ lemma sixS_le {u v w m : ℤ} (hu : 1 ≤ u) (hv : 1 ≤ v) (hw : 1 ≤ w)
   unfold sixS
   linarith
 
-/-- **The six-step inequality** (Corollary 5.2). For six consecutive terms with `q ≥ 1` and
+/-- **The six-step inequality** (Corollary 4.2). For six consecutive terms with `q ≥ 1` and
 quotient increments `1 ≤ u, v, w, z ≤ m`, the curvatures `E, F` of the blocks starting at `x₁`
 and `x₂` (natural-number differences, which are positive) satisfy `E x₃ ≤ (v+1)(x₁-x₄)²`,
 `F x₄ ≤ (w+1)(x₂-x₅)²` and `q ≤ 9 m³ E + 3 m³ F`. -/
@@ -177,8 +178,8 @@ theorem six_core (a q u v w z x0 x1 x2 x3 x4 x5 m : ℕ)
     (by rw [show x5 + (x4 - x5) + (x3 - x4) = x3 by omega, show x5 + (x4 - x5) = x4 by omega]
         exact h3)
     (by rw [show x5 + (x4 - x5) = x4 by omega]; exact h4)
-  obtain ⟨hEpos, hEle, -⟩ := bE
-  obtain ⟨hFpos, hFle, -⟩ := bF
+  obtain ⟨hEpos, hEle⟩ := bE
+  obtain ⟨hFpos, hFle⟩ := bF
   rw [show x4 + (x3 - x4) = x3 by omega,
     show x1 - x2 + (x2 - x3) + (x3 - x4) = x1 - x4 by omega] at hEle
   rw [show x5 + (x4 - x5) = x4 by omega,
@@ -401,6 +402,22 @@ theorem six_step_bound {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hT 
       _ ≤ 4 * (24000000 * a ^ 4) := Nat.mul_le_mul_left _ k2
       _ = 96000000 * a ^ 3 * a := by ring
   exact Nat.le_of_mul_le_mul_right k3 (by omega)
+
+/-- **The window bound.** `T¹⁰ ≤ 6144000000 a³ Δ²` for `T ≥ 10` (Corollary 5.2): the six-step
+bound times the square of the drop bound eliminates `A`. -/
+theorem window_bound {a A T Δ : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hΔ : DivBound a Δ)
+    (hT : 10 ≤ T) : T ^ 10 ≤ 6144000000 * a ^ 3 * Δ ^ 2 := by
+  have h1 := drop_bound W hΔ (by omega)
+  have h2 := six_step_bound W hT
+  have hA := W.one_le
+  have h3 : T ≤ 2 * (T - 1) := by omega
+  have key : T ^ 10 * A ^ 2 ≤ 6144000000 * a ^ 3 * Δ ^ 2 * A ^ 2 := by
+    calc T ^ 10 * A ^ 2 = T ^ 6 * A ^ 2 * T ^ 2 * T ^ 2 := by ring
+      _ ≤ T ^ 6 * A ^ 2 * T ^ 2 * (2 * (T - 1)) ^ 2 := by gcongr
+      _ = 4 * (T ^ 6 * A ^ 2) * (T * (T - 1)) ^ 2 := by ring
+      _ ≤ 4 * (96000000 * a ^ 3) * (4 * A * Δ) ^ 2 := by gcongr
+      _ = 6144000000 * a ^ 3 * Δ ^ 2 * A ^ 2 := by ring
+  exact Nat.le_of_mul_le_mul_right key (by positivity)
 
 /-- The size facts shared by the exponent arithmetic of the window bounds: the six-step and drop
 bounds force `A, Δ, a ≥ 1`, and give `T² ≤ 8 A Δ`. -/

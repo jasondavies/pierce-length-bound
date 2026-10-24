@@ -7,7 +7,7 @@ module
 
 public import PierceLengthBound.ExceptionalPlaneCount
 
-/-! Parameter sets for the rank-one/orthogonality count of Lemma 8.5: a primitive direction
+/-! Parameter sets for the rank-one/orthogonality count of Lemma 8.6: a primitive direction
 `z` with `|z|_∞` in a dyadic range `[Z, 2Z]`, two scalars of size `≤ X / Z` and an integer
 point of the plane `z ⬝ᵥ t = 0`. Each dyadic range has `O(X⁴)` parameter tuples. -/
 

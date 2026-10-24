@@ -14,7 +14,7 @@ The resolvent identity `E₀ P₄(-Q) = a ((Q - p₃) H₃ - H₀₁₃)`, with 
 polynomial of total degree at most `404` in the free nodes that vanishes at the free nodes of
 every state with the given pattern. On a prime component of degree `d` it either lies in the
 component's ideal or at most `404 d` states of the pattern have free nodes on the component
-(Lemma 8.2). -/
+(Lemma 8.3). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

@@ -18,7 +18,7 @@ public import PierceLengthBound.JointLiftPointBox
 Replace the three curvature coordinates `W` by `G W` for a constant invertible matrix `G`. An
 invertible constant matrix leaves the pole envelope unchanged at every branch, so the powered
 graph `(nodes, (G W)ᵐ, Jⁿ)` satisfies `2δ ≥ (5n + 3m) d + 2m` and `10n + 7m ≤ δ ≤
-((m + n) 247 + 1) d` (paper, Lemma 8.12 `lem:jointpowereddegree` and Lemma 9.11
+((m + n) 247 + 1) d` (paper, Lemma 8.13 `lem:jointpowereddegree` and Lemma 9.11
 `lem:latticedegree`). The powered graph of `PoweredJointGraph` is the case `G = 1`
 (`orbitLinearJointGraphIdeal_one`), and `PoweredJointGraphLowerDegree` derives its bounds from
 the ones here.

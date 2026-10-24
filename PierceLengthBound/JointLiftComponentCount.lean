@@ -14,9 +14,9 @@ public import PierceLengthBound.JointLiftGraphLowerDegree
 
 On one nonexceptional component of the pattern curve, the selected starts of a fixed pattern
 have at most `R(a) (1 + B^(1/17))` distinct gap vectors, where `B = max(H, S, Y)` is the
-joint-lift box and `R` grows slowly. Conics are counted by Proposition 8.9, components on which
-a retained identity fails by the polynomial cuts of Lemma 8.2, and retained components through
-the graph of the case `m = n = 1`, whose degree is at least `17` (Lemma 8.12). -/
+joint-lift box and `R` grows slowly. Conics are counted by Proposition 8.10, components on which
+a retained identity fails by the polynomial cuts of Lemma 8.3, and retained components through
+the graph of the case `m = n = 1`, whose degree is at least `17` (Lemma 8.13). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

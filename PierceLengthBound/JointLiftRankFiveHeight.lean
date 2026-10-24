@@ -12,7 +12,7 @@ public import PierceLengthBound.FixedDividendWindow
 
 /-! # Height of the rank-five coordinate
 
-The rank-five half of Lemma 8.7: Hadamard's inequality and the Newton Gram product give
+The rank-five half of Lemma 8.8: Hadamard's inequality and the Newton Gram product give
 `I₅(i) q_i⁵ ≤ 1230460 a H¹⁰`, so at a selected start the rank-five integer `J = I₄(i) Ψ`
 satisfies `1 ≤ J ≤ Y`. -/
 

@@ -9,7 +9,7 @@ public import PierceLengthBound.PoweredJointWindow
 public import PierceLengthBound.FixedDividendGlobalReduction
 
 /-! Length bounds from fixed positive integer powers `m, n` of the curvature coordinates and
-the rank-five invariant (paper, Corollary 8.14 `cor:jointexponent`): `P(a, b) ≪ a^{E(m,n) + ε}`
+the rank-five invariant (paper, Corollary 8.15 `cor:jointexponent`): `P(a, b) ≪ a^{E(m,n) + ε}`
 (`P_le_powered_joint`), with the rational instances `2201/7480` (`m = 50`, `n = 51`) and
 `128/435` (the unpowered case `m = n = 1`), and the optimized exponent
 `α* = (1310 - √655)/4365` of Theorem 1.2 (`thm:joint`). -/
@@ -18,7 +18,7 @@ the rank-five invariant (paper, Corollary 8.14 `cor:jointexponent`): `P(a, b) �
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 
-/-- The exponent `E(m, n)` of Corollary 8.14: the larger of the two powered window exponents,
+/-- The exponent `E(m, n)` of Corollary 8.15: the larger of the two powered window exponents,
 with `L = δ_min = 10n + 7m`. -/
 def poweredJointExponent (m n : ℕ) : ℝ :=
   let L := 10 * n + 7 * m

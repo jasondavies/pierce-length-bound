@@ -11,7 +11,7 @@ public import PierceLengthBound.BranchSieveRootFactors
 public import PierceLengthBound.BranchSieveMonicFactorization
 
 /-! A one-parameter Hilbert estimate for multivariate polynomial families
-(Step 3 in the proof of Theorem 10.4): factor the Kronecker substitution into
+(Step 3 in the proof of Theorem 10.5): factor the Kronecker substitution into
 monic irreducible factors and add the nonzero coefficient cuts of
 `branch_kronecker_coefficient_obstructions`. -/
 

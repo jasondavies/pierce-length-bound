@@ -11,7 +11,7 @@ public import PierceLengthBound.IntegralLiftResolvent
 /-! # Valuation arithmetic for the joint lift
 
 Order computations for an additive valuation `K → WithTop ℤ` (value `⊤` at `0`), as used in
-Lemma 8.6 and Corollary 8.8: the rank-three Hankel determinant has order `-3e`, the
+Lemma 8.7 and Corollary 8.9: the rank-three Hankel determinant has order `-3e`, the
 reconstructed curvature has order `3t` when `e = 2t`, and the curvature coordinates `E₁₂` and
 `E₀` have order `3t` while `-E₀₂` has order at least `3t`. -/
 
@@ -65,7 +65,7 @@ theorem rawHankelThree_discrete_order (v : AddValuation K (WithTop ℤ))
 
 /-- If `q` has order `-3t`, `p₃` at least `-2t`, `H₃` exactly `-6t`, `M` at least `-8t` and
 `P` exactly `-12t`, then `a ((q - p₃) H₃ - M) / P` has order `3t`, because `(q - p₃) H₃` is the
-unique term of lowest order. With `e = 2t` this is `ord E₀ = 3e/2` (Lemma 8.6). -/
+unique term of lowest order. With `e = 2t` this is `ord E₀ = 3e/2` (Lemma 8.7). -/
 theorem resolvent_discrete_order (v : AddValuation K (WithTop ℤ))
     {a q p3 H3 M P : K} {t : ℤ} (ht : 0 < t)
     (ha : v a = 0) (hq : v q = ((-3 * t : ℤ) : WithTop ℤ))
@@ -90,7 +90,7 @@ theorem resolvent_discrete_order (v : AddValuation K (WithTop ℤ))
   norm_cast
   omega
 
-/-- Corollary 8.8 in valuation form: `E₁₂` and `E₀` have order `3t`, and `-E₀₂` has order at
+/-- Corollary 8.9 in valuation form: `E₁₂` and `E₀` have order `3t`, and `-E₀₂` has order at
 least `3t` (cancellation in the middle coordinate can only increase its order). -/
 theorem curvature_discrete_orders (v : AddValuation K (WithTop ℤ))
     {A B0 B1 E0 k0 k1 k2 : K} {t : ℤ} (ht : 0 < t)

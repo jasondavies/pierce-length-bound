@@ -12,7 +12,7 @@ public import PierceLengthBound.JointLiftGraphDegree
 On a component of degree at least three of an irreducible quadric, the curvature vector `W`
 is not a multiple of a fixed nonzero vector: with `W · k = 0` such a relation would put the
 component in a plane, and plane sections of the quadric have degree at most two (first step of
-the proof of Lemma 8.10). -/
+the proof of Lemma 8.11). -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

@@ -7,7 +7,7 @@ module
 
 public import PierceLengthBound.IntegralLiftConicPlaneCount
 
-/-! The per-conic bound of Proposition 8.9 (`prop:jointconic`): when the pattern height is at
+/-! The per-conic bound of Proposition 8.10 (`prop:jointconic`): when the pattern height is at
 most `10¹⁶ a⁷`, a nonexceptional conic carries the free nodes of at most `R(a)` orbit states of
 the same pattern, with `R` of slow growth. The conic count of `IntegralLiftConicPlaneCount` is
 bounded by an explicit `conicPointSlack` in `a` alone. -/

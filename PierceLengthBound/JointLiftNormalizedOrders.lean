@@ -15,7 +15,7 @@ public import PierceLengthBound.JointLiftChartOrders
 
 For a height-one prime `p` of the normalized infinity chart that contains the infinity
 coordinate, the normalized branch order at `p` is a discrete valuation centered at `p` and
-nonnegative on the chart, and in it the joint coordinates have the orders of Corollary 8.8. -/
+nonnegative on the chart, and in it the joint coordinates have the orders of Corollary 8.9. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

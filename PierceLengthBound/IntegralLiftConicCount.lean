@@ -9,7 +9,7 @@ public import PierceLengthBound.IntegralLiftCoefficientHeight
 public import PierceLengthBound.ConicRepresentationCount
 public import PierceLengthBound.IntegralLiftOrbitConicProperness
 
-/-! The count of Proposition 8.9 (`prop:jointconic`) for one nonexceptional conic in a given
+/-! The count of Proposition 8.10 (`prop:jointconic`) for one nonexceptional conic in a given
 bounded integer plane. Along the bounded integral parameter of the conic, the orbit lift
 parameter is a proper rational function with bounded integer representatives and takes the
 integer value `I₃` at every orbit state on the conic, so Lemma A.3 (`lem:jointconicdivisors`)

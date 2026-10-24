@@ -9,7 +9,7 @@ public import PierceLengthBound.OrbitCurveGapCount
 public import PierceLengthBound.OrbitPatternGeometry
 
 /-! The cover of the pattern curve by at most twenty-four components, and the exclusion of
-line components in the scale range `124928 A⁴ H⁵ X < a³` (Lemma 8.5), give the square-root
+line components in the scale range `124928 A⁴ H⁵ X < a³` (Lemma 8.6), give the square-root
 count for every pattern. -/
 
 @[expose] public section

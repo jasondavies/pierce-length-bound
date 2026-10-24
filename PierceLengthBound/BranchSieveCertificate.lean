@@ -10,7 +10,7 @@ public import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.Tactic
 
 /-! The mod-71 irreducibility certificate for the specialized location sextic
-`E⋆` (Lemma 10.3, Appendix D). All modular arithmetic is checked by the Lean
+`E⋆` (Lemma 10.4, Appendix E). All modular arithmetic is checked by the Lean
 kernel. The proof excludes irreducible factors of degrees one, two and three
 using Frobenius congruences and explicit Bézout identities, then lifts
 irreducibility to `ℤ` and `ℚ` through the degree-preserving reduction. -/

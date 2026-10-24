@@ -9,7 +9,7 @@ public import PierceLengthBound.LinearJointGraph
 
 /-! # Lower degree bound for the unpowered joint graph
 
-Lemma 8.12 for `m = n = 1`: the poles of the rank-five coordinate over infinity and the affine
+Lemma 8.13 for `m = n = 1`: the poles of the rank-five coordinate over infinity and the affine
 poles of the curvature coordinates lie on distinct normalized branches, and together they give
 graph degree at least `4d + 1`. The argument is the one of `LinearJointGraph` with first powers
 and `G = 1`. -/

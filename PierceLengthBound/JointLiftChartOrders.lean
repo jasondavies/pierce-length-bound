@@ -11,7 +11,7 @@ public import PierceLengthBound.JointLiftInfinityOrder
 
 /-! # Orders of the joint coordinates at infinity
 
-Corollary 8.8 of the paper for the four coordinates `W₀, W₁, W₂, J` of the joint graph, at an
+Corollary 8.9 of the paper for the four coordinates `W₀, W₁, W₂, J` of the joint graph, at an
 arbitrary discrete valuation centered on the infinity chart of a retained nonexceptional
 component, including valuations lying above singular points. -/
 

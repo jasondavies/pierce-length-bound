@@ -8,7 +8,7 @@ module
 public import PierceLengthBound.ExceptionalZeroMinorCount
 
 /-! Bounded integral column changes for the four exceptional minor relations
-(Lemma 8.5). Each change turns one relation into the vanishing of the first maximal minor;
+(Lemma 8.6). Each change turns one relation into the vanishing of the first maximal minor;
 the induced maps on the ten minors are injective, with explicit inverses, and increase the
 height by at most a factor of three. Combined with `zero_minor_vector_count` this gives the
 `O(X⁴ log 2X)` count of exceptional minor vectors. -/
@@ -17,7 +17,7 @@ height by at most a factor of three. Combined with `zero_minor_vector_count` thi
 namespace PierceLengthBound
 open Finset
 
-/-- The four exceptional relations of Lemma 8.5, in the ten-minor indexing used by this
+/-- The four exceptional relations of Lemma 8.6, in the ten-minor indexing used by this
 project. -/
 def ExceptionalMinorRelation (p : Fin 10 → ℤ) (d : Fin 4) : Prop :=
   ![p 6 - p 1 - p 0, p 6 - p 1, p 3 - p 0, p 0 - p 6 - p 3] d = 0

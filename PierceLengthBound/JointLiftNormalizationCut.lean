@@ -15,7 +15,7 @@ public import PierceLengthBound.JointLiftCoordinates
 The normalization identity `N₀ P₄(-Q) = a H₄`, with denominators cleared, is a polynomial of
 total degree at most `166` in the free nodes that vanishes at the free nodes of every state with
 the given pattern. On a prime component of degree `d` it either lies in the component's ideal
-or at most `166 d` states of the pattern have free nodes on the component (Lemma 8.2). Within
+or at most `166 d` states of the pattern have free nodes on the component (Lemma 8.3). Within
 one pattern the free nodes determine the state. -/
 
 @[expose] public section

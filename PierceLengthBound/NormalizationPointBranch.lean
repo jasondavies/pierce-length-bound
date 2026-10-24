@@ -11,7 +11,7 @@ public import Mathlib.RingTheory.Ideal.GoingUp
 /-! A nonzero function vanishing at an affine point has a zero on a branch of
 the normalization. Functions nonzero at that point have order zero there. The zero is also
 realized on the normalization of a model finite over `1/t`, for `t` nonzero at the point,
-outside its fiber over infinity (the last step of the proof of Lemma 8.10). Functions with a
+outside its fiber over infinity (the last step of the proof of Lemma 8.11). Functions with a
 zero or a pole at an order nonnegative on the constants are transcendental. -/
 
 @[expose] public section

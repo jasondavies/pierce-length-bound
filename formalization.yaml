@@ -251,7 +251,7 @@ alignment:
       module: "PierceLengthBound.PolarProjectionMain"
       status: proved
       note: "Uniform in a and b, including proved curve counting and effective Hilbert irreducibility."
-    - source: "Rational polar-projection bound, Theorem 10.8 with (m, n) = (3, 2)"
+    - source: "Rational polar-projection bound, Theorem 10.9 with (m, n) = (3, 2)"
       lean: "PierceLengthBound.P_le_4317_14677"
       module: "PierceLengthBound.PolarProjectionMain"
       status: proved
@@ -269,11 +269,11 @@ alignment:
       module: "PierceLengthBound.JointLiftMain"
       status: proved
       note: "Uniform in a and b, including the proved external curve theorem."
-    - source: "Rational powered joint-invariant bound, Corollary 8.14 with (m, n) = (50, 51)"
+    - source: "Rational powered joint-invariant bound, Corollary 8.15 with (m, n) = (50, 51)"
       lean: "PierceLengthBound.P_le_2201_7480"
       module: "PierceLengthBound.JointLiftMain"
       status: proved
-    - source: "Unpowered joint-invariant bound, Corollary 8.14 with (m, n) = (1, 1)"
+    - source: "Unpowered joint-invariant bound, Corollary 8.15 with (m, n) = (1, 1)"
       lean: "PierceLengthBound.P_le_128_435"
       module: "PierceLengthBound.JointLiftMain"
       status: proved

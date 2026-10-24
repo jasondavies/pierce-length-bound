@@ -11,7 +11,7 @@ public import PierceLengthBound.FixedDividendSelection
 
 The height bounds `S` for the curvature coordinates and `Y` for the rank-five coordinate
 (Section 8.6), and the arithmetic eliminating the window scale `A` in the proof of
-Corollary 8.14: with `H A T ≤ C a` and `T² ≤ D A`, `S T³ ≪ a`, `max(H, S) T³ ≪ a` and
+Corollary 8.15: with `H A T ≤ C a` and `T² ≤ D A`, `S T³ ≪ a`, `max(H, S) T³ ≪ a` and
 `Y T²⁰ ≪ a⁶`. -/
 
 @[expose] public section
@@ -23,7 +23,7 @@ def selectedCurvatureHeight (a A T : ℕ) : ℕ :=
   4352 * A ^ 3 * selectedGapHeight a A T ^ 3 / a ^ 2
 
 /-- The rank-five height `Y = ⌊1259991040 A⁵ H¹⁰ / a⁴⌋`, from the Newton Gram bound for `J`
-(Lemma 8.7). -/
+(Lemma 8.8). -/
 def selectedRankFiveHeight (a A T : ℕ) : ℕ :=
   1259991040 * A ^ 5 * selectedGapHeight a A T ^ 10 / a ^ 4
 

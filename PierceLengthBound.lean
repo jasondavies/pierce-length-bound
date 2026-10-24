@@ -7,7 +7,6 @@ module
 
 public import PierceLengthBound.Defs
 public import PierceLengthBound.Block
-public import PierceLengthBound.Fiber
 public import PierceLengthBound.Window
 public import PierceLengthBound.Main
 public import PierceLengthBound.SixStep

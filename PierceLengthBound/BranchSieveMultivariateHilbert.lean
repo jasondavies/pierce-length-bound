@@ -11,7 +11,7 @@ public import PierceLengthBound.BranchSieveParameterInduction
 public import PierceLengthBound.BranchSieveRootKronecker
 
 /-! The fixed-degree monic Hilbert estimate in any number of integer
-parameters (Theorem 10.4). Kronecker encoding of the remaining parameters
+parameters (Theorem 10.5). Kronecker encoding of the remaining parameters
 proves the one-parameter head estimate; the finite-fiber induction of
 `BranchSieveParameterInduction` then counts the integer parameter points
 whose rational fiber is reducible. -/

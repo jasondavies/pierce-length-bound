@@ -7,7 +7,7 @@ module
 
 public import PierceLengthBound.ExceptionalRankOneCount
 
-/-! Counting minor vectors with a vanishing first maximal minor (Lemma 8.5). By Grassmann
+/-! Counting minor vectors with a vanishing first maximal minor (Lemma 8.6). By Grassmann
 duality the nine remaining minors form three vectors `x, y, z ∈ ℤ³` with `x × y = 0` and
 `x ⬝ᵥ z = y ⬝ᵥ z = 0`, which are counted in `rank_one_orthogonal_count`. -/
 

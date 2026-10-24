@@ -12,7 +12,7 @@ public import PierceLengthBound.BranchResidueComparison
 transported, injectively, to the zero fiber of the parameter normalization of `x`, preserving its
 order and residue degree. A further zero outside `B` adds at least one; with orders `3t` over a
 fiber of orders `2t` and degree `d` this gives `3d + 2 ≤ 2 [L : ℚ(x)]`, the zero count in the
-proof of Lemma 8.11. -/
+proof of Lemma 8.12. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -108,7 +108,7 @@ theorem branch_zero_degree_lower_bounds {R L : Type*}
 
 /-- A further zero of `x` at a branch `p ∉ B` adds at least one:
 `∑_{q ∈ B} m q · [R/q : ℚ] + 1 ≤ [L : ℚ(x)]`, since `[R/p : ℚ] ≥ 1`. This is the extra point
-`P₀` in the proof of Lemma 8.11. -/
+`P₀` in the proof of Lemma 8.12. -/
 theorem branch_zero_degree_with_extra {R L : Type*}
     [CommRing R] [IsDedekindDomain R] [Algebra ℚ R] [Algebra.FiniteType ℚ R]
     [Field L] [Algebra ℚ L] [Algebra R L] [IsScalarTower ℚ R L] [IsFractionRing R L]
@@ -157,7 +157,7 @@ theorem branch_zero_degree_with_extra {R L : Type*}
 
 /-- If `∑_{q ∈ B} 2 t q · [R/q : ℚ] = d`, `x` has order at least `3 t q` at each `q ∈ B`, and
 `x` also vanishes at a branch `p ∉ B`, then `3d + 2 ≤ 2 [L : ℚ(x)]`, that is,
-`[L : ℚ(x)] ≥ 3d/2 + 1` (Lemma 8.11, with `e_P = 2t`). The doubled form avoids rational casts. -/
+`[L : ℚ(x)] ≥ 3d/2 + 1` (Lemma 8.12, with `e_P = 2t`). The doubled form avoids rational casts. -/
 theorem branch_zero_degree_three_halves {R L : Type*}
     [CommRing R] [IsDedekindDomain R] [Algebra ℚ R] [Algebra.FiniteType ℚ R]
     [Field L] [Algebra ℚ L] [Algebra R L] [IsScalarTower ℚ R L] [IsFractionRing R L]

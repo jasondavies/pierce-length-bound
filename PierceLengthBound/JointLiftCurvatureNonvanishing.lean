@@ -11,7 +11,7 @@ public import PierceLengthBound.JointLiftDirection
 
 The cleared identity behind `W · (r₀, r₁, r₂) = N₀`, which shows that the curvature
 coordinates have no common zero on the affine joint graph, and the construction of
-Lemma 8.10: on a component of degree at least three of an irreducible quadric through the free
+Lemma 8.11: on a component of degree at least three of an irreducible quadric through the free
 nodes of an orbit state, a nonzero rational combination of `W₀, W₁, W₂` vanishes at that
 point. -/
 
@@ -80,7 +80,7 @@ theorem exists_curvature_combination_vanishing {K R ι : Type*} [Field K]
 
 /-- On a component of degree at least three of an irreducible quadric through the free nodes
 of state `i`, some nonzero rational combination of the curvature coordinates on the joint graph
-vanishes at that point (Lemma 8.10). -/
+vanishes at that point (Lemma 8.11). -/
 theorem orbitJoint_exists_curvature_combination_vanishing {a b i d : ℕ}
     (hba : b < a) (hi : i + 7 < P a b)
     (I : Ideal (MvPolynomial (Fin 3) ℚ)) [I.IsPrime]

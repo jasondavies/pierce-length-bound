@@ -11,7 +11,7 @@ public import PierceLengthBound.BranchResidueComparison
 
 /-! The degree `[L : ℚ(x)]` of a rational combination `x = ∑ cⱼ Wⱼ` is at most the pole
 envelope degree of the coordinates `W` on a Dedekind model `R`, provided every pole of `x` lies on
-`R`. This is the inequality `deg (φ)_∞ ≤ deg 𝓕` in the proof of Lemma 8.11. -/
+`R`. This is the inequality `deg (φ)_∞ ≤ deg 𝓕` in the proof of Lemma 8.12. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

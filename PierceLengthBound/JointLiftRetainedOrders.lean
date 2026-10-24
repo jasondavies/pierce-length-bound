@@ -11,7 +11,7 @@ public import PierceLengthBound.JointLiftRetainedIdentities
 
 /-! # Orders of the reconstructed functions
 
-Lemma 8.6 of the paper: on a retained nonexceptional component (the cleared normalization and
+Lemma 8.7 of the paper: on a retained nonexceptional component (the cleared normalization and
 resolvent polynomials lie in its ideal), at a discrete valuation centered on the infinity chart
 with infinity multiplicity `e`, one has `e = 2t`, `ord Q = -3t` and `ord E₀ = 3t`. -/
 

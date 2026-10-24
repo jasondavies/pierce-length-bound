@@ -9,12 +9,12 @@ public import PierceLengthBound.JointLiftFiniteZero
 public import PierceLengthBound.NormalizationInfinityDegree
 
 /-! Residue-field labels at infinity bound the degree of an orbit component
-from below (the second part of Lemma 10.3). The file sets up the chart at
+from below (the second part of Lemma 10.4). The file sets up the chart at
 infinity of the first coordinate, its normalization in the function field and
 the normalized branches over infinity. If every such branch has a residue root
 of an irreducible polynomial of degree `r`, the component has degree at least
 `2r`: the branch multiplicities times residue degrees sum to the degree, every
-multiplicity is even (Corollary 8.4) and every residue degree is at least `r`. -/
+multiplicity is even (Corollary 8.5) and every residue degree is at least `r`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

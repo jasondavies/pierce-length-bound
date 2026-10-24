@@ -10,7 +10,7 @@ public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 import Mathlib.Tactic
 
 /-! The monic one-parameter Hilbert estimate (Step 2 in the proof of
-Theorem 10.4): for monic `p ∈ ℤ[T][Y]`, irreducible over `ℚ(T)`, of total
+Theorem 10.5): for monic `p ∈ ℤ[T][Y]`, irreducible over `ℚ(T)`, of total
 degree at most `d` and height at most `H`, the integers `t ∈ [-B,B]` with `p(t, Y)` reducible
 over `ℚ` number at most `C (1 + log(H+1))^4 B^(1/2) (1 + log B)`. -/
 

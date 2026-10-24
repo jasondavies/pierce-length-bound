@@ -158,7 +158,7 @@ def BranchHeadIrreducibilityEstimate (r d : ℕ) (C : ℝ) : Prop :=
         Real.sqrt B * (1 + Real.log B)
 
 /-- The size `(1 + log (H+1))^4 B^r / √B (1 + log B)^(4r+1)` of the bound in
-Theorem 10.4. -/
+Theorem 10.5. -/
 def branchHilbertSize (r H B : ℕ) : ℝ :=
   (1 + Real.log (H + 1 : ℕ)) ^ 4 * ((B : ℝ) ^ r / Real.sqrt B) *
     (1 + Real.log B) ^ (4 * r + 1)

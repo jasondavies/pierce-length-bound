@@ -12,7 +12,7 @@ import Mathlib.Tactic
 public import PierceLengthBound.BranchSieveShear
 
 /-! A coefficient-uniform integral-root count from the CCDN plane-curve bound
-(Step 1 in the proof of Theorem 10.4). After the power shear, the parameters
+(Step 1 in the proof of Theorem 10.5). After the power shear, the parameters
 whose fiber has an integral root inject into the integral points of an
 irreducible plane curve; the shear trades coefficient height for degree. -/
 

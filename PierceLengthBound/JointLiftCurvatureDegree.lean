@@ -12,9 +12,9 @@ public import PierceLengthBound.BranchZeroDegree
 
 /-! # The curvature pole degree
 
-Lemma 8.11 of the paper. On a retained nonexceptional component of degree `d ≥ 3`, each branch
+Lemma 8.12 of the paper. On a retained nonexceptional component of degree `d ≥ 3`, each branch
 above infinity has multiplicity `2t` and every rational curvature combination vanishes there to
-order at least `3t`; together with the additional affine zero of Lemma 8.10 this gives a
+order at least `3t`; together with the additional affine zero of Lemma 8.11 this gives a
 curvature combination of function-field degree at least `3d/2 + 1`, and hence the same lower
 bound for the degree of the curvature pole envelope. -/
 
@@ -184,7 +184,7 @@ theorem retained_curvature_function_degree_lower_bound {a b i d N : ℕ} {c₀ :
       _ = d := hsum.trans hdim
   · exact fun hp => hout ((hB p).mp hp)
 
-/-- Lemma 8.11: on a retained nonexceptional component of degree `d ≥ 3` lying on an
+/-- Lemma 8.12: on a retained nonexceptional component of degree `d ≥ 3` lying on an
 irreducible quadric, the pole envelope of the three curvature coordinates on the affine
 normalization has degree at least `3d/2 + 1`. -/
 theorem retained_curvature_pole_degree_lower_bound {a b i d N : ℕ} {c₀ : ℤ}

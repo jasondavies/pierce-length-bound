@@ -25,7 +25,7 @@ def curvatureError (a b m : ℕ) (q : ℝ) : ℝ :=
     (q ^ 2 * (q + ((qq a b m - q) + pt a b m j)))
 
 /-- For `0 < q ≤ q_m`, `b_m / a = 1/q - (1 + (q_m - q))/q² + ε` with
-`0 ≤ ε ≤ μ_m((x + q_m - q)²) / q³` (the expansion in the proof of Lemma 8.7). -/
+`0 ≤ ε ≤ μ_m((x + q_m - q)²) / q³` (the expansion in the proof of Lemma 8.8). -/
 theorem curvature_reciprocal_expansion {a b m : ℕ} (hba : b < a)
     (hm : m + 2 < P a b) {q : ℝ} (hq : 0 < q) (hqm : q ≤ qq a b m) :
     0 ≤ curvatureError a b m q ∧
@@ -205,7 +205,7 @@ lemma le_cubic_height_div {e : ℤ} {q a A H K K' : ℕ} (he : 0 ≤ e) (ha : 0 
   simpa only [Int.natCast_div, Nat.cast_mul, Nat.cast_pow] using hd
 
 /-- At a selected start, each coordinate of the curvature-minor vector is at most the
-curvature height `S` in absolute value (Lemma 8.7). -/
+curvature height `S` in absolute value (Lemma 8.8). -/
 theorem selected_orbitCurvature_bound {a b s T A i : ℕ} (hba : b < a)
     (hmem : ∀ j < T, A ≤ orb a b (s + j) ∧ orb a b (s + j) < 2 * A)
     (hsT : s + T ≤ P a b) (hi : i ∈ selectedStarts a b s T A) (j : Fin 3) :

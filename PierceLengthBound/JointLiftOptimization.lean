@@ -15,7 +15,7 @@ The two fractions `E_S(r)` and `E_Y(r)` of the powered exponent `E(m, n)` as fun
 `r = n/m`, their crossing at `r_* = (5 + √655)/30` with common value
 `α_* = (1310 - √655)/4365`, and the choice of positive integer powers `m, n` with
 `E(m, n) < α_* + ε` (proof of Theorem 1.2). Also the degree bound `δ ≥ 10n + 7m` of
-Lemma 8.12 from `2δ ≥ (5n + 3m) d + 2m` and `d ≥ 4`. -/
+Lemma 8.13 from `2δ ≥ (5n + 3m) d + 2m` and `d ≥ 4`. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend
@@ -114,7 +114,7 @@ theorem jointOptimal_rational_approximation {ε : ℝ} (hε : 0 < ε) :
     (continuousAt_ratio (ne_of_gt (by linarith [jointOptimalRatio_pos]))) jointOptimal_crossing.1
     jointOptimal_crossing.2 hε
 
-/-- If `2δ ≥ (5n + 3m) d + 2m` and `d ≥ 4`, then `δ ≥ 10n + 7m` (Lemma 8.12). -/
+/-- If `2δ ≥ (5n + 3m) d + 2m` and `d ≥ 4`, then `δ ≥ 10n + 7m` (Lemma 8.13). -/
 lemma joint_powered_degree_minimum {d m n δ : ℕ} (hd : 4 ≤ d)
     (hdegree : (5 * n + 3 * m) * d + 2 * m ≤ 2 * δ) : 10 * n + 7 * m ≤ δ := by
   have h := Nat.mul_le_mul_left (5 * n + 3 * m) hd

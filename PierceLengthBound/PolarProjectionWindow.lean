@@ -8,7 +8,7 @@ module
 public import PierceLengthBound.PolarProjectionExponent
 
 /-! Window reduction for the polar projection. Each branch of the window
-count of Proposition 10.7 gives `T ≤ C (K + 1) Δ^e a^α`: good patterns through the
+count of Proposition 10.8 gives `T ≤ C (K + 1) Δ^e a^α`: good patterns through the
 lattice-joint branches at graph degree `60n + 56m`, bad patterns through the
 three terms of `X^{14/3} max(H, S, Y)^{1/17}`. -/
 

@@ -12,7 +12,7 @@ component, the second and third moment equations give a polynomial identity
 between the homogenized resultant, the location factor `Δ` and the
 fifth-location product. Scaling the residue sign of `BranchSieveResidueSigns`
 by the square of that product gives a square root of `(a/A)·Δ`, the quadratic
-extension in the degree-twelve label of Lemma 10.3. -/
+extension in the degree-twelve label of Lemma 10.4. -/
 
 @[expose] public section
 namespace PierceLengthBound.FixedDividend

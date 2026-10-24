@@ -14,7 +14,7 @@ public import PierceLengthBound.BranchSieveDilation
 /-! The branch sieve in scaled four-vertex boxes. Generic irreducibility comes
 from the explicit monic degree-twelve family of `BranchSieveVertexMonic`.
 Vertices with nonzero first coordinate are counted by the multivariate monic
-specialization estimate (Theorem 10.4) applied to the dilated family; those
+specialization estimate (Theorem 10.5) applied to the dilated family; those
 with first coordinate zero are counted directly. -/
 
 @[expose] public section

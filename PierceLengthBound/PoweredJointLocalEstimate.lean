@@ -10,7 +10,7 @@ public import PierceLengthBound.JointPatternAssembly
 public import PierceLengthBound.OrdinaryPatternCount
 
 /-! The powered joint pattern estimate for every fixed pair of positive powers, its assembly
-into the three-term window estimate (paper, Proposition 8.13 `prop:jointwindow`)
+into the three-term window estimate (paper, Proposition 8.14 `prop:jointwindow`)
 `T ≪ a^ε (X⁵ + X⁴H^{1/2} + X⁵ B^{1/(10n + 7m)})`, `B = max(H, Sᵐ, Yⁿ)`, and the three
 integer-power count branches with the same exponents. -/
 

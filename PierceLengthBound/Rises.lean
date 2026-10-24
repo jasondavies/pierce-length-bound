@@ -85,8 +85,8 @@ theorem ap_bound {a q h x0 x1 x2 x3 x4 x5 x6 : ℕ} (hq : 1 ≤ q) (hh : 1 ≤ h
       show q + 2 * h + h = q + 3 * h by ring]; exact e3)
     (by rw [show x5 + (x4 - x5) = x4 by omega, show q + 2 * h + h + h = q + 4 * h by ring]
         exact e4)
-  obtain ⟨hEpos, hEle, -⟩ := bE
-  obtain ⟨hFpos, hFle, -⟩ := bF
+  obtain ⟨hEpos, hEle⟩ := bE
+  obtain ⟨hFpos, hFle⟩ := bF
   rw [show x4 + (x3 - x4) = x3 by omega,
     show x1 - x2 + (x2 - x3) + (x3 - x4) = x1 - x4 by omega] at hEle
   rw [show x5 + (x4 - x5) = x4 by omega,

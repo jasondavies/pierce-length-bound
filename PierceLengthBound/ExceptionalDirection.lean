@@ -8,7 +8,7 @@ module
 public import PierceLengthBound.MinorCount
 
 /-! Primitive common directions for rank-one pairs of integer vectors in `ℤ³`, used in the
-exceptional-pattern count of Lemma 8.5: a nonzero pair `a, b` with `a × b = 0` is
+exceptional-pattern count of Lemma 8.6: a nonzero pair `a, b` with `a × b = 0` is
 `(r z, s z)` for a primitive `z`, and orthogonality to `a` and `b` passes to `z`. -/
 
 @[expose] public section

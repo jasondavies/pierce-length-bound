@@ -5,7 +5,6 @@ Authors: Jason Davies
 -/
 module
 
-public import PierceLengthBound.Fiber
 public import PierceLengthBound.Block
 
 /-!
@@ -15,15 +14,13 @@ A *window run* is a run `g 0, g 1, …, g (T-1)` of consecutive terms of an orbi
 `x ↦ a mod x`, all lying in `[A, 2A)`. We prove, with `Δ` a bound for the divisor function on
 `[1, 32 a⁷]`:
 
-* `drop_bound`: `T (T - 1) ≤ 4 A Δ` (the Erdős–Shallit divisor argument);
-* `curvature_bound`: `T⁶ A² ≤ 995328 a³ Δ` for `T ≥ 12` (the curvature argument,
-  Proposition 4.3);
-* `window_bound`: hence `T¹⁰ ≤ 63700992 a³ Δ³` for `T ≥ 12` (Corollary 4.4).
+* `drop_bound`: `T (T - 1) ≤ 4 A Δ` (the Erdős–Shallit divisor argument, Proposition 5.1).
 
-The file also holds the window vocabulary shared by the later window bounds:
+Combined with the six-step bound it gives the `3/10` window bound (`window_bound` in
+`SixStep`). The file also holds the window vocabulary shared by the later window bounds:
 
 * the structure `Window` with its monotonicity lemmas and the telescoping identities
-  `Window.sum_drops`, `Window.sum_triple_drops`, `Window.sum_five_drops`;
+  `Window.sum_drops`, `Window.sum_five_drops`;
 * the divisor-bound predicate `DivBound`;
 * the quotient increments `incr` and drops `drop` of a run, with `Window.quot_lt`,
   `Window.one_le_incr`, `Window.one_le_drop`, the size bound `Window.incr_mul_le` and the
@@ -86,20 +83,6 @@ lemma sum_drops (W : Window a A T g) :
     rw [sum_range_succ]
     have := ih (by omega)
     have := (W.succ_lt (j := m) (by omega)).le
-    omega
-
-/-- Telescoping for triple drops. -/
-lemma sum_triple_drops (W : Window a A T g) :
-    ∀ m, m + 3 ≤ T → ∑ j ∈ range m, (g j - g (j + 3)) + g m + g (m + 1) + g (m + 2) =
-      g 0 + g 1 + g 2 := by
-  intro m
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    intro hm
-    rw [sum_range_succ, show m + 1 + 1 = m + 2 by ring, show m + 1 + 2 = m + 3 by ring]
-    have := ih (by omega)
-    have := (W.lt_of_lt (i := m) (j := m + 3) (by omega) (by omega)).le
     omega
 
 lemma le_of_le (W : Window a A T g) {i j : ℕ} (hij : i ≤ j) (hj : j < T) : g j ≤ g i := by
@@ -301,205 +284,5 @@ lemma gap_height_mul_le {a A T : ℕ} (h : A * T ≤ 28 * a) :
   have := Nat.div_mul_le_self (28 * a) (A * T)
   rw [add_mul, one_mul]
   omega
-
-/-- The three successors of a term of a window run with `j + 3 < T`. -/
-private lemma Window.succ3 {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) {j : ℕ} (hj : j + 3 < T) :
-    a % g j = g (j + 1) ∧ a % (a % g j) = g (j + 2) ∧ a % (a % (a % g j)) = g (j + 3) := by
-  have e1 : a % g j = g (j + 1) := (W.step j (by omega)).symm
-  have e2 : a % (a % g j) = g (j + 2) := by rw [e1]; exact (W.step (j + 1) (by omega)).symm
-  have e3 : a % (a % (a % g j)) = g (j + 3) := by rw [e2]; exact (W.step (j + 2) (by omega)).symm
-  exact ⟨e1, e2, e3⟩
-
-/-- **The block parameters are small.** For a block of drop `s` with `s T ≤ 12 A`:
-`u A T ≤ 12 a`, `v A T ≤ 12 a` and `D T³ ≤ 3456 a`. -/
-private lemma block_small {a A T : ℕ} {g : ℕ → ℕ} (W : Window a A T g) {j : ℕ} (hj : j + 3 < T)
-    (hsT : (g j - g (j + 3)) * T ≤ 12 * A) :
-    1 ≤ bu a (g j) ∧ 1 ≤ bv a (g j) ∧ 1 ≤ bD a (g j) ∧
-    bu a (g j) * (A * T) ≤ 12 * a ∧ bv a (g j) * (A * T) ≤ 12 * a ∧
-    bD a (g j) * T ^ 3 ≤ 3456 * a := by
-  obtain ⟨e1, e2, e3⟩ := W.succ3 hj
-  have hA := W.one_le
-  have m0 := W.mem j (by omega)
-  have m1 := W.mem (j + 1) (by omega)
-  have m2 := W.mem (j + 2) (by omega)
-  have m3 := W.mem (j + 3) (by omega)
-  have hx : 0 < g j := by omega
-  have hy : a % g j ≠ 0 := by rw [e1]; omega
-  have hz : a % (a % g j) ≠ 0 := by rw [e2]; omega
-  have hw : a % (a % (a % g j)) ≠ 0 := by rw [e3]; omega
-  have l32 := (W.lt_of_lt (i := j + 2) (j := j + 3) (by omega) hj).le
-  have l21 := (W.lt_of_lt (i := j + 1) (j := j + 2) (by omega) (by omega)).le
-  have l10 := (W.lt_of_lt (i := j) (j := j + 1) (by omega) (by omega)).le
-  set sj := g j - g (j + 3) with hsj
-  have hu1 := one_le_bu hx hy
-  have hv1 := one_le_bv hy hz
-  have hD1 := one_le_bD hx hy hz
-  have hu := bu_mul_le hx hy hz (W.le_a j (by omega))
-  have hv := bv_mul_le hy hz hw
-  have hD := bD_mul_le hx hy hz
-  rw [e2, e1] at hu
-  rw [e3, e2, e1] at hv
-  rw [e3, e2] at hD
-  rw [← hsj] at hD
-  set u := bu a (g j)
-  set v := bv a (g j)
-  set D := bD a (g j)
-  have hAA : A * A ≤ g (j + 1) * g j := Nat.mul_le_mul m1.1 m0.1
-  have hAA' : A * A ≤ g (j + 2) * g (j + 1) := Nat.mul_le_mul m2.1 m1.1
-  -- `u A² ≤ a s` and `v A² ≤ a s`
-  have hu2 : u * (A * A) ≤ a * sj :=
-    (Nat.mul_le_mul_left u hAA).trans (hu.trans (Nat.mul_le_mul_left a (by omega)))
-  have hv2 : v * (A * A) ≤ a * sj :=
-    (Nat.mul_le_mul_left v hAA').trans (hv.trans (Nat.mul_le_mul_left a (by omega)))
-  have cancel : ∀ w : ℕ, w * (A * A) ≤ a * sj → w * (A * T) ≤ 12 * a := by
-    intro w hw'
-    have : w * (A * T) * A ≤ 12 * a * A := by
-      calc w * (A * T) * A = w * (A * A) * T := by ring
-        _ ≤ a * sj * T := Nat.mul_le_mul_right _ hw'
-        _ = a * (sj * T) := by ring
-        _ ≤ a * (12 * A) := Nat.mul_le_mul_left _ hsT
-        _ = 12 * a * A := by ring
-    exact Nat.le_of_mul_le_mul_right this (by omega)
-  have huAT := cancel u hu2
-  refine ⟨hu1, hv1, hD1, huAT, cancel v hv2, ?_⟩
-  -- `D A ≤ 2 u s²`
-  have hDA : D * A ≤ 2 * u * sj ^ 2 :=
-    (Nat.mul_le_mul_left D m2.1).trans (hD.trans (Nat.mul_le_mul_right _ (by omega)))
-  have h1 : D * T ^ 2 * A ≤ 288 * u * A * A := by
-    calc D * T ^ 2 * A = D * A * T ^ 2 := by ring
-      _ ≤ 2 * u * sj ^ 2 * T ^ 2 := Nat.mul_le_mul_right _ hDA
-      _ = 2 * u * (sj * T) ^ 2 := by ring
-      _ ≤ 2 * u * (12 * A) ^ 2 := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hsT 2)
-      _ = 288 * u * A * A := by ring
-  have h2 : D * T ^ 2 ≤ 288 * u * A := Nat.le_of_mul_le_mul_right h1 (by omega)
-  calc D * T ^ 3 = D * T ^ 2 * T := by ring
-    _ ≤ 288 * u * A * T := Nat.mul_le_mul_right _ h2
-    _ = 288 * (u * (A * T)) := by ring
-    _ ≤ 288 * (12 * a) := Nat.mul_le_mul_left _ huAT
-    _ = 3456 * a := by ring
-
-/-- **The curvature bound.** `T⁶ A² ≤ 995328 a³ Δ` for `T ≥ 12`. -/
-theorem curvature_bound {a A T Δ : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hΔ : DivBound a Δ)
-    (hT : 12 ≤ T) : T ^ 6 * A ^ 2 ≤ 995328 * a ^ 3 * Δ := by
-  classical
-  set J := range (T - 3)
-  set s : ℕ → ℕ := fun j => g j - g (j + 3) with hs
-  have ha := W.one_le_a (by omega)
-  have hA := W.one_le
-  have hsum : ∑ j ∈ J, s j ≤ 3 * A - 3 := by
-    have := W.sum_triple_drops (T - 3) (by omega)
-    have := W.mem 0 (by omega); have := W.mem 1 (by omega); have := W.mem 2 (by omega)
-    have := W.mem (T - 3) (by omega); have := W.mem (T - 3 + 1) (by omega)
-    have := W.mem (T - 3 + 2) (by omega)
-    simp only [J, hs]
-    omega
-  set Sel := J.filter fun j => s j * T ≤ 12 * A
-  set Bad := J.filter fun j => ¬ (s j * T ≤ 12 * A)
-  have hsplit : Sel.card + Bad.card = T - 3 := by
-    rw [card_filter_add_card_filter_not, card_range]
-  have hbad : 4 * Bad.card < T := by
-    have h1 : Bad.card * (12 * A + 1) ≤ ∑ j ∈ Bad, s j * T := by
-      rw [← smul_eq_mul]
-      exact card_nsmul_le_sum _ _ _ fun j hj => by
-        have := (mem_filter.mp hj).2; omega
-    have h2 : ∑ j ∈ Bad, s j * T ≤ ∑ j ∈ J, s j * T :=
-      sum_le_sum_of_subset (filter_subset _ _)
-    have h3 : ∑ j ∈ J, s j * T ≤ (3 * A - 3) * T := by
-      rw [← sum_mul]; exact Nat.mul_le_mul_right _ hsum
-    have h4 := h1.trans (h2.trans h3)
-    by_contra hcon
-    push Not at hcon
-    have : T * (12 * A + 1) ≤ 4 * Bad.card * (12 * A + 1) := Nat.mul_le_mul_right _ hcon
-    have : 4 * (3 * A - 3) * T < T * (12 * A + 1) := by
-      have : 4 * (3 * A - 3) < 12 * A + 1 := by omega
-      calc 4 * (3 * A - 3) * T < (12 * A + 1) * T :=
-            Nat.mul_lt_mul_of_pos_right this (by omega)
-        _ = _ := by ring
-    nlinarith
-  have hsel : T ≤ 2 * Sel.card := by omega
-  set U := 12 * a / (A * T) with hU
-  set Dm := 3456 * a / T ^ 3 with hDm
-  have hAT : 12 ≤ A * T := by nlinarith
-  have hUa : U ≤ a := by
-    calc U ≤ 12 * a / 12 := Nat.div_le_div_left hAT (by norm_num)
-      _ = a := by omega
-  have hT3 : 1728 ≤ T ^ 3 := by
-    calc 1728 = 12 ^ 3 := by norm_num
-      _ ≤ T ^ 3 := Nat.pow_le_pow_left hT 3
-  have hDma : Dm ≤ 2 * a := by
-    calc Dm ≤ 3456 * a / 1728 := Nat.div_le_div_left hT3 (by norm_num)
-      _ = 2 * a := by omega
-  set φ : ℕ → ℕ × ℕ × ℕ := fun j => (bu a (g j), bv a (g j), bD a (g j)) with hφ
-  set box := Icc 1 U ×ˢ (Icc 1 U ×ˢ Icc 1 Dm)
-  have hmaps : ∀ j ∈ Sel, φ j ∈ box := by
-    intro j hj
-    obtain ⟨hjJ, hjs⟩ := mem_filter.mp hj
-    have hjT := mem_range.mp hjJ
-    obtain ⟨hu1, hv1, hD1, hu, hv, hD⟩ := block_small W (j := j) (by omega) hjs
-    simp only [box, φ, mem_product, mem_Icc]
-    refine ⟨⟨hu1, (Nat.le_div_iff_mul_le (by omega)).mpr hu⟩,
-      ⟨hv1, (Nat.le_div_iff_mul_le (by omega)).mpr hv⟩,
-      ⟨hD1, (Nat.le_div_iff_mul_le (by positivity)).mpr hD⟩⟩
-  have hfib : ∀ t ∈ box, (Sel.filter fun j => φ j = t).card ≤ Δ := by
-    rintro ⟨u, v, D⟩ ht
-    simp only [box, mem_product, mem_Icc] at ht
-    obtain ⟨⟨hu1, huU⟩, ⟨hv1, hvU⟩, ⟨hD1, hDD⟩⟩ := ht
-    set F := Sel.filter fun j => φ j = (u, v, D)
-    have hFj : ∀ j ∈ F, j + 3 < T ∧ bu a (g j) = u ∧ bv a (g j) = v ∧ bD a (g j) = D := by
-      intro j hj
-      obtain ⟨hjS, hjt⟩ := mem_filter.mp hj
-      have hjT := mem_range.mp (mem_filter.mp hjS).1
-      simp only [φ, Prod.mk.injEq] at hjt
-      exact ⟨by omega, hjt.1, hjt.2.1, hjt.2.2⟩
-    have hfeq : ∀ j ∈ F, g j * (u * (a / g j) ^ 2 + (u ^ 2 + u + v) * (a / g j) + v) =
-        a * u * (a / g j) + (a * (u ^ 2 + v) + D) := by
-      intro j hj
-      obtain ⟨hjT, rfl, rfl, rfl⟩ := hFj j hj
-      obtain ⟨e1, e2, -⟩ := W.succ3 hjT
-      have m1 := W.mem (j + 1) (by omega)
-      have m2 := W.mem (j + 2) (by omega)
-      exact block_fiber_eq (W.pos (by omega)) (by rw [e1]; omega) (by rw [e2]; omega)
-    have hinj : Set.InjOn (fun j => a / g j) (F : Set ℕ) := by
-      intro i hi j hj hij
-      simp only at hij
-      have hi' := hfeq i hi
-      have hj' := hfeq j hj
-      rw [hij] at hi'
-      have hMpos : 0 < u * (a / g j) ^ 2 + (u ^ 2 + u + v) * (a / g j) + v := by positivity
-      have hg : g i = g j := Nat.eq_of_mul_eq_mul_right hMpos (hi'.trans hj'.symm)
-      exact W.injOn (by simp; have := (hFj i hi).1; omega)
-        (by simp; have := (hFj j hj).1; omega) hg
-    rw [← card_image_of_injOn hinj]
-    apply fiber_card_le a u v D Δ ha hu1 (huU.trans hUa) hv1 (hvU.trans hUa)
-      (hDD.trans hDma) hΔ
-    intro q hq
-    obtain ⟨j, hj, rfl⟩ := mem_image.mp hq
-    exact ⟨g j, W.pos (by have := (hFj j hj).1; omega), hfeq j hj⟩
-  have hcard : Sel.card ≤ Δ * (U * (U * Dm)) := by
-    have := card_le_mul_card_image_of_maps_to hmaps Δ hfib
-    simpa [box, card_product] using this
-  have hUAT : U * (A * T) ≤ 12 * a := Nat.div_mul_le_self _ _
-  have hDmT : Dm * T ^ 3 ≤ 3456 * a := Nat.div_mul_le_self _ _
-  calc T ^ 6 * A ^ 2 = T * ((A * T) * (A * T) * T ^ 3) := by ring
-    _ ≤ (2 * (Δ * (U * (U * Dm)))) * ((A * T) * (A * T) * T ^ 3) :=
-        Nat.mul_le_mul_right _ (hsel.trans (by omega))
-    _ = 2 * Δ * ((U * (A * T)) * (U * (A * T)) * (Dm * T ^ 3)) := by ring
-    _ ≤ 2 * Δ * ((12 * a) * (12 * a) * (3456 * a)) := by gcongr
-    _ = 995328 * a ^ 3 * Δ := by ring
-
-/-- **The window bound.** `T¹⁰ ≤ 63700992 a³ Δ³` for `T ≥ 12`. -/
-theorem window_bound {a A T Δ : ℕ} {g : ℕ → ℕ} (W : Window a A T g) (hΔ : DivBound a Δ)
-    (hT : 12 ≤ T) : T ^ 10 ≤ 63700992 * a ^ 3 * Δ ^ 3 := by
-  have h1 := drop_bound W hΔ (by omega)
-  have h2 := curvature_bound W hΔ hT
-  have hA := W.one_le
-  have h3 : T ≤ 2 * (T - 1) := by omega
-  have key : T ^ 10 * A ^ 2 ≤ 63700992 * a ^ 3 * Δ ^ 3 * A ^ 2 := by
-    calc T ^ 10 * A ^ 2 = T ^ 6 * A ^ 2 * T ^ 2 * T ^ 2 := by ring
-      _ ≤ T ^ 6 * A ^ 2 * T ^ 2 * (2 * (T - 1)) ^ 2 := by gcongr
-      _ = 4 * (T ^ 6 * A ^ 2) * (T * (T - 1)) ^ 2 := by ring
-      _ ≤ 4 * (995328 * a ^ 3 * Δ) * (4 * A * Δ) ^ 2 := by gcongr
-      _ = 63700992 * a ^ 3 * Δ ^ 3 * A ^ 2 := by ring
-  exact Nat.le_of_mul_le_mul_right key (by positivity)
 
 end PierceLengthBound

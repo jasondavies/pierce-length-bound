@@ -10,7 +10,7 @@ public import PierceLengthBound.FixedDividendParity
 public import PierceLengthBound.FixedDividendSelection
 public import PierceLengthBound.FixedDividendCoordinates
 
-/-! Exceptional-pattern counting on selected orbit windows (Lemma 8.5): exceptional orbit
+/-! Exceptional-pattern counting on selected orbit windows (Lemma 8.6): exceptional orbit
 patterns satisfy one of the four integer minor relations, and the selected starts of a
 window have `O(X⁴ log 2X)` exceptional minor vectors, `X = selectedMinorHeight a A T`. -/
 
