@@ -102,7 +102,7 @@ theorem P_le_23_77 : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b <
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((23 : ℝ) / 77 + ε) := by
   sorry
 
-/-- The unconditional `3/10` bound, proved using the three-step curvature count. -/
+/-- The unconditional `3/10` bound, proved using the six-term window bound. -/
 theorem P_le : ∀ ε > (0 : ℝ), ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a →
     (P a b : ℝ) ≤ C * (a : ℝ) ^ ((3 : ℝ) / 10 + ε) := by
   sorry
