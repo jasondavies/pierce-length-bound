@@ -33,14 +33,14 @@ Pierce expansion of $b/a$. We prove
 improving the exponent $1/3-2/177$ of Chase and Pandey. The tail of an orbit
 carries a sequence of positive integers, the Hankel determinants of a natural
 moment sequence, and these are small where the drops of the orbit are small.
-Grouping orbit states by such integers places the quotients of each group on
+Grouping orbit states by such integers places the quotient differences of each group on
 curves of bounded degree, whose integer points we count with the uniform
 bounds of Castryck, Cluckers, Dittmann and Nguyen. The resulting exponent
 approaches $5/17$ when these curves have large degree relative to the
 logarithmic size of the box. We raise the degree by
 adjoining further integer invariants, by an effective Hilbert irreducibility
 sieve, and by an exact identity for the direction of the curvature vector,
-and come within $1.6\cdot10^{-5}$ of $5/17$. We also give an
+and come within $1.61\cdot10^{-5}$ of $5/17$. We also give an
 elementary proof of the exponent $3/10+\varepsilon$ and a bound for orbits
 whose quotient increments rarely rise. All results are formalised in Lean~4
 with Mathlib. Shallit's conjectured $O((\log a)^2)$ bound remains open.
@@ -98,7 +98,7 @@ rational exponent $4317/14677=0.2941336785\ldots$
 The curve-counting bounds of this paper (Theorems~\ref{thm:polar},
 \ref{thm:joint} and~\ref{thm:lattice}) all lie just above
 $5/17=0.2941176\ldots$, and Theorem~\ref{thm:polar} is within
-$1.6\cdot10^{-5}$ of it. We first introduce the integer invariants of an
+$1.61\cdot10^{-5}$ of it. We first introduce the integer invariants of an
 orbit, and then explain where $5/17$ comes from, since it organises the whole
 argument.
 
@@ -147,16 +147,19 @@ minors have absolute value at most
 Their vector is the \emph{pattern} of the start. It is an integral point of
 the affine cone over the Grassmannian $\mathrm{Gr}(3,5)$, and there are
 $X^{5+o(1)}$ such points (Section~\ref{sec:patterns}); the exponent $5$ is
-the Fano index of $\mathrm{Gr}(3,5)$, so this count cannot be improved. If
+the Fano index of $\mathrm{Gr}(3,5)$, so this count of all integral points of
+the cone cannot be improved (orbit patterns could in principle be sparser). If
 every pattern were shared by $O(1)$ starts, then $T\ll X^5$ would give
 $T^{51}\le a^{15+o(1)}$, that is, $T\le a^{5/17+o(1)}$.
 
 The rest of the argument bounds the number of starts sharing a pattern. For
 a fixed pattern, three nodes $s_j=q_{i+j}-q_i$, $j=1,2,3$, determine the
-increments. The pattern supplies a quadratic equation in the nodes. A second
-equation, of degree at most twelve, comes from comparing a resultant of the
-orthogonal quartics of states $i$ and $i+1$ with the Hankel determinant
-$I_4(i)$; it involves the dividend $a$. The nodes therefore lie on a union of curves of total degree at most $24$. The
+increments (the pattern supplies two linear relations, which give $k_3$ and
+$k_4$). The pattern also supplies a quadratic equation in the nodes. A second
+equation, of degree at most twelve, says that $I_4(i)$ times the resultant of
+the orthogonal quartic of state $i$ and $x$ times that of state $i+1$ equals
+$a$ times the fourth power of the squared norm of the first quartic; it
+involves the dividend $a$. The nodes therefore lie on a union of curves of total degree at most $24$. The
 coefficient-uniform bound of Castryck, Cluckers, Dittmann and
 Nguyen~\cite{CCDN} says that an integral curve over $\mathbb Q$ of degree
 $\delta$ has at most $B^{1/\delta+o(1)}$ integer points in a box of size
@@ -176,8 +179,10 @@ Hankel invariant $J=I_5(i)$, whose sizes satisfy
  |W_j|\ll S:=A^3H^3/a^2,\qquad |J|\ll Y:=A^5H^{10}/a^4.
 \]
 On each component they are rational functions of the nodes: $J$ is a
-polynomial, and $W$ is a rational function obtained by solving the curve
-equations for the curvature $I_3(i)$ (its \emph{reconstruction}).
+polynomial, and $W$ is obtained by recovering the moments of $\nu_i$ from the
+two orthogonal polynomials and the division equations, which gives the
+curvature $I_3(i)$ as a rational function of the nodes (its
+\emph{reconstruction}).
 On a component of degree $d$, $J$ has a pole of total order $5d/2$ at
 infinity, while the $W_j$ vanish there to total order $3d/2$. A suitable
 combination of the $W_j$ also vanishes at the node triple of one orbit
@@ -227,8 +232,9 @@ $10n+7m$; forcing $d=24$ would give $60n+37m$, and the polar identity raises
 the affine pole count from $37$ to $56$.
 
 The sieve and the
-degenerate set together discard $O_\eta(a^\eta X^{14/3})$ patterns, which
-are handled by the earlier estimate. Applying the curve bound in the reduced
+degenerate set together discard $O_\eta(a^\eta X^{14/3})$ patterns. These are
+counted with the unpowered graph of Section~\ref{sec:joint}, of degree at least
+$17$, which gives the exponents $717/2440$ and $732/2491$, both below $5/17$. Applying the curve bound in the reduced
 lattice coordinates and optimising the ratio $n/m$ gives $\beta_*$
 (Section~\ref{sec:polar}).
 
@@ -307,15 +313,20 @@ curve-counting refinements.
 
 \subsection*{Reading guide and formal verification}
 Sections~\ref{sec:curv}--\ref{sec:proof310} establish the elementary identities and
-bound. Sections~\ref{sec:hankel}--\ref{sec:patterns} construct the integer
-invariants and their patterns. Section~\ref{sec:joint} builds the enlarged
-curves, Section~\ref{sec:lattice} reduces their lattice coordinates, and
-Section~\ref{sec:polar} completes the main theorem. The independent rise
-bound is proved in Section~\ref{sec:rises}. The conic count, graph-degree
+prove Theorem~\ref{thm:main}. Sections~\ref{sec:hankel}--\ref{sec:patterns} construct the
+integer invariants and their patterns. Section~\ref{sec:joint} builds the enlarged
+curves and proves Theorem~\ref{thm:joint}, and Section~\ref{sec:lattice} reduces their
+lattice coordinates and proves Theorem~\ref{thm:lattice}. Section~\ref{sec:polar} proves
+Theorem~\ref{thm:polar} by rerunning the window bound of Section~\ref{sec:lattice} with a
+larger graph degree, so it depends on all of
+Sections~\ref{sec:hankel}--\ref{sec:lattice}. The independent rise bound,
+Theorem~\ref{thm:rises}, is proved in Section~\ref{sec:rises} and uses only
+Sections~\ref{sec:curv} and~\ref{sec:six}. The conic count, graph-degree
 upper bound, and three-dimensional lattice reduction are proved in
 Appendices~\ref{app:conic}, \ref{app:degree} and~\ref{app:reduction}.
 Appendix~\ref{app:hilbert} proves the effective Hilbert irreducibility estimate,
-and Appendix~\ref{app:polarcertificates} gives the certificates for the polar bound.
+Appendix~\ref{app:linecertificates} records the degree certificates used to exclude
+lines, and Appendix~\ref{app:polarcertificates} gives the certificates for the polar bound.
 
 All the unconditional results above, including their curve-counting and
 specialisation inputs, are formalised in Lean~4~\cite{Lean} with
@@ -346,9 +357,10 @@ $C_\eta a^\eta$ for every fixed $\eta>0$; such factors include the divisor
 losses below. We write $F\asymp G$ when both $F\ll G$ and $G\ll F$ hold.
 Absolute constants play no role in the exponents, and we do not track them:
 implied constants are absolute unless their dependence is indicated, and a
-letter $c$ or $D$ with a descriptive subscript denotes a suitable absolute
+letter $c$ or $C$ with a descriptive subscript denotes a suitable absolute
 constant introduced where it is needed. Explicit values of all
-constants are recorded in the Lean development.
+constants are recorded in the Lean development; a few of them are sharper than
+the ones derived here.
 
 \begin{lemma}[Quotients increase]\label{lem:quot}
 If $b_{i+1}>0$ then $q_{i+1}\ge q_i+1$.
@@ -711,12 +723,51 @@ of $\nu_{i+l}$ follow from the same rule. For $r=3$ the matrix is
 Using $y_{j+1}=1-q_{i+j}y_j$ for $0\le j\le3$ to express every entry in
 terms of $y_0$, $q_i$ and the increments, and expanding, gives $a$ times its
 determinant as
-$(b_i-b_{i+1})k_{i+1}-(b_{i+1}-b_{i+2})k_i=D_i$. The case $r=4$ is the same
-computation with $F_0,\dots,F_3$; its entries involve $y_0,\dots,y_6$,
-and the same reduction to $y_0$, $q_i$ and the increments gives $L_i$. This
-expansion is mechanical but long; it is checked in Lean as
-\lean{hankelInv_four}. At the end of the orbit these
-computations use $h_{N-1}(s)=0$ for $s\ge1$, that is, $b_N=0$.
+$(b_i-b_{i+1})k_{i+1}-(b_{i+1}-b_{i+2})k_i=D_i$. At the end of the orbit
+this computation uses $h_{N-1}(s)=0$ for $s\ge1$, that is, $b_N=0$.
+
+For $r=4$ we avoid the analogous $4\times4$ expansion by passing through the
+orthogonal cubic of $\nu_i$. Let $i+5<N$, and for $m\le2$ write
+$k_m=k_{i+m}$, $d_m=d_{i+m}$, $r_m=k_m(s_m+s_{m+1})+k_{m+1}$ and
+$G_m=F_{m+1}-F_m=F_m(x)(x-s_m-1)$. The shift rule, $\nu_{i+m}(1)=b_{i+m}/a$,
+$\nu_{i+m}(x)=b_{i+m+1}/a$ and the low moments~\eqref{eq:lowmoments} at
+$j=i+m$ give
+\[
+ a\,\nu_i(G_m)=-d_m,\quad \mu_i(G_m)=0,\quad \mu_i(xG_m)=k_m,\quad
+ \mu_i(x^2G_m)=r_m+k_m\qquad(m\le2).
+\]
+Put $\mathbf d=(d_0,d_1,d_2)$, $\mathbf k=(k_0,k_1,k_2)$,
+$\mathbf r=(r_0,r_1,r_2)$ and $W=\mathbf d\times\mathbf k$, whose last
+coordinate is $W_2=d_0k_1-d_1k_0=D_i\ge1$. The monic cubic
+$\pi=\sum_{m\le2}(W_m/W_2)G_m$ satisfies $\nu_i(\pi)=-\mathbf d\cdot W/(aW_2)=0$,
+$\mu_i(\pi)=0$ and $\mu_i(x\pi)=\mathbf k\cdot W/W_2=0$. Since
+$\mu_i=(q_i+x)\nu_i$, we have $\nu_i(xg)=\mu_i(g)-q_i\nu_i(g)$, so
+$\nu_i(x\pi)=\nu_i(x^2\pi)=0$: $\pi$ is the monic orthogonal cubic of $\nu_i$.
+Hence
+\[
+ \nu_i(\pi^2)=\nu_i(x^3\pi)=\mu_i(x^2\pi)-q_i\nu_i(x^2\pi)
+ =\frac{\mathbf r\cdot W+\mathbf k\cdot W}{W_2}
+ =\frac{\det(\mathbf d,\mathbf k,\mathbf r)}{D_i}.
+\]
+In the basis $1,x,x^2,\pi$ the Gram matrix of $\nu_i$ is block diagonal and has
+the same determinant as the Hankel matrix, so
+$I_4(i)=I_3(i)\,\nu_i(\pi^2)=\det(\mathbf d,\mathbf k,\mathbf r)$, using
+$I_3(i)=D_i$.
+Finally $\det(\mathbf d,\mathbf k,\mathbf r)=L_i$. Expanding, with the nodes
+cancelling,
+\[
+ k_1r_2-k_2r_1=\sigma(k_1,k_2,k_3),\qquad k_0r_1-k_1r_0=\sigma(k_0,k_1,k_2),
+\]
+and $k_1(k_0r_2-k_2r_0)=k_0(k_1r_2-k_2r_1)+k_2(k_0r_1-k_1r_0)$. Multiplying
+the expansion of $\det(\mathbf d,\mathbf k,\mathbf r)$ along its first row by
+$k_1$ therefore gives
+\[
+ k_1\det(\mathbf d,\mathbf k,\mathbf r)
+ =(d_0k_1-d_1k_0)\,\sigma(k_1,k_2,k_3)-(d_1k_2-d_2k_1)\,\sigma(k_0,k_1,k_2)
+ =k_1L_i
+\]
+by Lemma~\ref{lem:six}(1), since $d_0k_1-d_1k_0$ and $d_1k_2-d_2k_1$ are the
+curvatures $D$ and $E$ of that lemma.
 \end{proof}
 
 The ranges $i+3<N$ and $i+5<N$ cannot be relaxed to all $i$ at which $D_i$ or $L_i$ is defined.
@@ -771,7 +822,16 @@ s_m=k_0+\dots+k_{m-1},\qquad r_m=k_m(s_m+s_{m+1})+k_{m+1}.
 \end{gather*}
 All indices here are local to the chosen state, and the definitions apply
 whenever the indicated orbit entries exist; the empty sum gives $s_0=0$.
-So $s_m=q_{i+m}-q_i$, $r_0=k_0^2+k_1$, $r_1=k_1(2k_0+k_1)+k_2$, and so on. Consider the
+So $s_m=q_{i+m}-q_i$, $r_0=k_0^2+k_1$, $r_1=k_1(2k_0+k_1)+k_2$, and so on.
+In this local notation the low moments~\eqref{eq:lowmoments} at state $i+m$ read
+$\mu_{i+m}(x^2)=k_m+1$ and $\mu_{i+m}(x^3)=k_m^2+2k_m+k_{m+1}+1$.
+
+The \emph{pattern} $p(i)$ of the state is the vector of the ten $3\times3$
+minors of the $3\times5$ matrix with rows $(d_0,\dots,d_4)$, $(k_0,\dots,k_4)$
+and $(r_0,\dots,r_4)$ (Section~\ref{sec:minors}). Every object built from the
+pattern below (the pattern integers, the normalised parameters, the Newton
+coefficients $\gamma$ and, in Section~\ref{sec:polar}, $G$ and $\ell$) is a
+function of $p(i)$. Consider the
 $3\times4$ integer matrix
 \[
 \mathcal M_i=\begin{pmatrix} d_0&d_1&d_2&d_3\\ k_0&k_1&k_2&k_3\\ r_0&r_1&r_2&r_3\end{pmatrix},
@@ -792,11 +852,11 @@ Lemma~\ref{lem:six}.
 
 \begin{proof}
 (2) is the Laplace expansion of a $4\times4$ determinant with a repeated row. For (1), the
-identity $\det(\text{columns }0,1,2)=L_i$ holds as a polynomial identity in
-$d_0,d_1,d_2,k_0,\dots,k_3$, by direct expansion; and $L_i=I_4(i)$ by
+identity $\det(\text{columns }0,1,2)=L_i=I_4(i)$ was proved in the case $r=4$ of
 Theorem~\ref{thm:hankel}. Passing from $i$ to $i+1$ shifts the $d$- and $k$-rows by one
 column, and, since $s_m(i+1)=s_{m+1}(i)-k_0$, it replaces $r_m$ by $r_{m+1}-2k_0k_{m+1}$. This
-row operation does not change the determinant, so $\det(\text{columns }1,2,3)=L_{i+1}$.
+row operation, which subtracts $2k_0$ times the $k$-row, does not change the determinant, so
+$\det(\text{columns }1,2,3)=L_{i+1}$.
 \end{proof}
 
 For example, the positive part of the orbit with $(a,b)=(95,61)$ is
@@ -805,7 +865,7 @@ $61,34,27,14,11,7,4,3,2,1$. Its first pattern matrix and cofactor vector are
  \mathcal M_0=\begin{pmatrix}27&7&13&3\\1&1&3&2\\2&6&23&29\end{pmatrix},
  \qquad U(0)=(-81,833,-296,68).
 \]
-Thus $L(0)=68$, $L(1)=81$, and each row of $\mathcal M_0$ is orthogonal
+Thus $L_0=68$, $L_1=81$, and each row of $\mathcal M_0$ is orthogonal
 to $U(0)$.
 
 The cofactor vector has a meaning, which is the source of everything that
@@ -846,7 +906,8 @@ The \emph{pattern integers} of $i$ are the seven integers
 \[
 \theta(i)=\bigl(L_i,\,L_{i+1},\,L_{i+2},\,U_1(i),\,U_2(i),\,U_1(i+1),\,U_2(i+1)\bigr),
 \]
-and we write $\theta(i)=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)$. By Lemma~\ref{lem:pattern},
+and we write $\theta(i)=(N_0,N_1,N_2,u_1,u_2,v_1,v_2)$; the subscripted $N_j$ have
+nothing to do with the orbit length $N$. By Lemma~\ref{lem:pattern},
 $\theta(i)$ determines $U(i)=(-N_1,u_1,u_2,N_0)$ and $U(i+1)=(-N_2,v_1,v_2,N_1)$ completely,
 and the $k$-relations at $i$ and $i+1$ read
 \[
@@ -927,8 +988,15 @@ If $N_0,N_1\ge1$ and $k_0,\dots,k_4\ge1$, then $u_1>0>u_2$.
 \end{lemma}
 
 \begin{proof}
-Solving the $k$- and $r$-relations of Lemma~\ref{lem:pattern} for $(u_1,u_2)$ by Cramer's rule
-gives the exact identities
+The $2\times2$ minors of the $k$- and $r$-rows do not involve the nodes: expanding
+$r_m=k_m(s_m+s_{m+1})+k_{m+1}$ with $s_{m+1}=s_m+k_m$ gives
+\[
+ k_mr_{m+1}-k_{m+1}r_m=\sigma(k_m,k_{m+1},k_{m+2}),\qquad
+ k_mr_{m+2}-k_{m+2}r_m=\tilde\sigma(k_m,k_{m+1},k_{m+2},k_{m+3}).
+\]
+The $k$- and $r$-relations of Lemma~\ref{lem:pattern} read
+$u_1k_1+u_2k_2=N_1k_0-N_0k_3$ and $u_1r_1+u_2r_2=N_1r_0-N_0r_3$. Solving them for
+$(u_1,u_2)$ by Cramer's rule and using these minors gives the exact identities
 \begin{align*}
 u_1\sigma(k_1,k_2,k_3)&=N_1\tilde\sigma(k_0,k_1,k_2,k_3)+N_0\sigma(k_2,k_3,k_4),\\
 -u_2\sigma(k_1,k_2,k_3)&=N_1\sigma(k_0,k_1,k_2)+N_0\tilde\sigma(k_1,k_2,k_3,k_4),
@@ -940,15 +1008,15 @@ since the Cramer determinant is $k_1r_2-k_2r_1=\sigma(k_1,k_2,k_3)$.
 \subsection{Good starts}\label{sec:goodstarts}
 
 \begin{lemma}[Good starts]\label{lem:good}
-Let $b_s,\dots,b_{s+T-1}$ be a window run in $[A,2A)$ with $T\ge36$, and put
-$H=\lfloor 28a/(AT)\rfloor+1$. Call a start $i$ \emph{good} if $s\le i$, $i+9\le s+T$ and
+Let $b_{i_0},\dots,b_{i_0+T-1}$ be a window run in $[A,2A)$ with $T\ge36$, and put
+$H=\lfloor 28a/(AT)\rfloor+1$. Call a start $i$ \emph{good} if $i_0\le i$, $i+9\le i_0+T$ and
 $q_{j+1}-q_j\le H$ for $i\le j\le i+6$, that is, $k_0,\dots,k_6\le H$ at state $i$. Then at least
 $T/2$ starts are good, and every good start satisfies $i+8<N$ and $b_i,b_{i+1},b_{i+2}<2A$.
 \end{lemma}
 
 \begin{proof}
-Let $\mathcal B$ be the set of $j\in[s,s+T-1)$ with $q_{j+1}-q_j>H$. Then
-$|\mathcal B|(H+1)\le q_{s+T-1}-q_s\le a/A$. Since $H\cdot AT>28a$, this gives
+Let $\mathcal B$ be the set of $j\in[i_0,i_0+T-1)$ with $q_{j+1}-q_j>H$. Then
+$|\mathcal B|(H+1)\le q_{i_0+T-1}-q_{i_0}\le a/A$. Since $H\cdot AT>28a$, this gives
 $28|\mathcal B|\le T$. Each $j\in\mathcal B$ spoils at most seven starts, so at least
 $T-9-7|\mathcal B|\ge T/2$ starts are good, as $T\ge36$. The last assertion is immediate,
 since the states $i,\dots,i+8$ lie in the window.
@@ -1101,8 +1169,10 @@ points of the measure $\mu_i$ of Section~\ref{sec:hankel}, and the
 interpolation nodes of the Newton polynomials of Section~\ref{sec:patterns}. The
 three \emph{free nodes} $s_1,s_2,s_3$ of a good start are integers in $[0,3H]$.
 Distinct good starts with the same pattern have distinct free-node triples:
-the pattern and the free nodes determine $q_i$ (it is the rational function $Q$
-of Section~\ref{sec:jointrecon}), and $q_i$ strictly increases along the orbit.
+the pattern and the free nodes determine $q_i$, which strictly increases along
+the orbit. (That $q_i$ is determined is shown in Section~\ref{sec:jointrecon},
+where it is the rational function $Q$; the argument there uses only
+Lemma~\ref{lem:jointcurve}(1) below.)
 
 We now write, as functions of the three free nodes, the objects that at a good
 start are the orthogonal quartics of states $i$ and $i+1$ and the norm
@@ -1155,6 +1225,11 @@ The degree of an affine curve is that of its projective closure, equivalently
 the leading coefficient of its affine Hilbert function.
 ``Integral'' means that the defining ideal is prime over $\mathbb Q$; it does
 not assert geometric irreducibility or a rational parametrisation.
+For a monic polynomial $g$ we write
+$\operatorname{Res}(g,h)=\prod_{g(\theta)=0}h(\theta)$, the product over the
+roots of $g$ with multiplicity. For monic $g,h$ of degrees $m,n$ this is
+$(-1)^{mn}\operatorname{Res}(h,g)$, and
+$\operatorname{Res}(g,h)=\operatorname{Res}(g,h+ug)$ for every polynomial $u$.
 
 \begin{lemma}[The pattern curve]\label{lem:jointcurve}
 \begin{enumerate}
@@ -1178,7 +1253,8 @@ $\sum_mU_m(i)r_m=0$ of Lemma~\ref{lem:pattern}. Next, the shift rule
 $\mu_i\bigl(g\prod_{\ell<j}(x-s_\ell)\bigr)=\mu_{i+j}\bigl(g(x+s_j)\bigr)$ and
 the low moments~\eqref{eq:lowmoments} give
 $\mu_i(x^3P_4)=\sum_j\gamma_j\bigl(s_j^3+3s_j^2+3s_j(1+k_j)+(1+k_j)^2+k_{j+1}\bigr)$.
-Eliminating $k_5$ with the $r$-relation at state $i+1$ turns this into $\Psi$.
+Eliminating $k_5$ with the $r$-relation at state $i+1$, together with the
+$k$-relation at $i+1$ that defines $k_4$, turns this into $\Psi$.
 Since $\nu_i(xg)=\mu_i(g)-q_i\nu_i(g)$ and $P_4$ is orthogonal to $x^3$,
 $\nu_i(P_4^2)=\nu_i(x^4P_4)=\mu_i(x^3P_4)=\Psi$, and this is positive as in
 the proof of Theorem~\ref{thm:hankel}.
@@ -1191,24 +1267,65 @@ five for $\nu_i$ by a multiple of $P_4$, and $\operatorname{Res}(P_4,Z)=
 \operatorname{Res}(P_4,\pi^{(5)})$. Let $\|\pi^{(j)}\|^2$ be the squared $\nu_i$-norm of
 the monic orthogonal polynomial $\pi^{(j)}$ of degree $j$, so $\pi^{(4)}=P_4$. The
 three-term recurrence
-$\pi^{(j+1)}=(x-\alpha_j)\pi^{(j)}-\beta_j\pi^{(j-1)}$, with
-$\beta_j=\|\pi^{(j)}\|^2/\|\pi^{(j-1)}\|^2$, gives
-$\pi^{(j+1)}\equiv-\beta_j\pi^{(j-1)}\pmod{\pi^{(j)}}$. Reducing repeatedly (the signs
-cancel),
+$\pi^{(j+1)}=(x-\mathfrak a_j)\pi^{(j)}-\mathfrak b_j\pi^{(j-1)}$, with
+$\mathfrak b_j=\|\pi^{(j)}\|^2/\|\pi^{(j-1)}\|^2$, gives
+$\pi^{(j+1)}\equiv-\mathfrak b_j\pi^{(j-1)}\pmod{\pi^{(j)}}$, so
+$\operatorname{Res}(\pi^{(j)},\pi^{(j+1)})
+=(-\mathfrak b_j)^j(-1)^{j(j-1)}\operatorname{Res}(\pi^{(j-1)},\pi^{(j)})$.
+Reducing from $j=4$ down to $j=1$, the signs multiply to $(-1)^{4+3+2+1}=1$, and
 \[
- \operatorname{Res}(P_4,\pi^{(5)})=\prod_{j=1}^4\beta_j^j
+ \operatorname{Res}(P_4,\pi^{(5)})=\prod_{j=1}^4\mathfrak b_j^j
  =\frac{\|P_4\|^8}{\prod_{j<4}\|\pi^{(j)}\|^2}
- =\frac{\Psi^4}{\det\bigl(\nu_i(x^{r+s})\bigr)_{r,s<4}}
+ =\frac{\Psi^4}{\det\bigl(\nu_i(x^{j+l})\bigr)_{j,l<4}}
  =\frac{a\Psi^4}{I_4(i)}.
 \]
 Since $N_0=I_4(i)$, this is the second equation.
 
-(2) The first equation has degree two. For the second, $\Psi$ is cubic, and
-the resultant has total degree at most ten in the nodes:
-$\operatorname{Res}(P_4,Z)=\pm\gamma_0\operatorname{Res}(P_4,R_4)$, and in the Newton
-basis beginning at $s_1,s_2,s_3$ the $4\times4$ Bezout matrix of $P_4$ and $R_4$ has entry
-degrees at most $4-\max(\alpha,\beta)$ for $0\le\alpha,\beta<4$, so its determinant has
-degree at most ten. Note that $\gamma_1<0<\gamma_2$, $\gamma_3=\chi-1<-1$ and
+(2) The first equation has degree two. For the second, $\Psi$ is cubic, and we
+show that the resultant has total degree at most ten in the nodes. Since
+$Z=xR_4$ and the product of the roots of $P_4$ is $P_4(0)=\gamma_0$ (every term
+with $j\ge1$ has the factor $x-s_0=x$),
+$\operatorname{Res}(P_4,Z)=\gamma_0\operatorname{Res}(P_4,R_4)$.
+
+We use the Newton basis $N_\alpha(x)=\prod_{1\le l\le\alpha}(x-s_l)$ at the
+nodes $s_1,\dots,s_4$. From $F_{j+1}=xN_j=N_{j+1}+s_{j+1}N_j$,
+\[
+ P_4=\sum_{j\le4}a_jN_j,\qquad R_4-P_4=\sum_{\alpha\le3}c_\alpha N_\alpha,\qquad
+ a_j=\gamma_j+\gamma_{j+1}s_{j+1},\quad c_\alpha=\gamma'_\alpha-a_\alpha,
+\]
+with $\gamma_5=0$, so $a_4=1$; every $a_j$ and $c_\alpha$ has degree at most one
+in the nodes, with top-degree parts $[a_j]_1=\gamma_{j+1}s_{j+1}$ and
+$[c_\alpha]_1=-\gamma_{\alpha+1}s_{\alpha+1}$. The \emph{B\'ezout matrix}
+$\mathcal B=(\mathcal B_{\alpha\beta})_{\alpha,\beta<4}$ is defined by
+\begin{equation}\label{eq:bezout}
+ \frac{P_4(x)R_4(y)-P_4(y)R_4(x)}{x-y}
+ =\sum_{\alpha,\beta<4}\mathcal B_{\alpha\beta}N_\alpha(x)N_\beta(y).
+\end{equation}
+Its determinant is $\operatorname{Res}(P_4,R_4)$: in the monomial basis this is
+the classical B\'ezout formula for two monic quartics, and the change to the
+Newton basis is unitriangular in both variables. Since
+$R_4=P_4+\sum_\alpha c_\alpha N_\alpha$, the left side of~\eqref{eq:bezout} is
+$\sum_{j>k}(a_jc_k-a_kc_j)K_{jk}$, where $c_4=0$ and
+$K_{jk}=(N_j(x)N_k(y)-N_j(y)N_k(x))/(x-y)$. For $j>k$, telescoping
+$\prod_{l=k+1}^j(x-s_l)-\prod_{l=k+1}^j(y-s_l)$ gives
+\begin{equation}\label{eq:bezoutK}
+ K_{jk}=\sum_{m=k+1}^{j}N_{m-1}(x)\,Y_{kmj}(y),\qquad
+ Y_{kmj}(y)=N_k(y)\prod_{l=m+1}^{j}(y-s_l).
+\end{equation}
+The polynomial $Y_{kmj}$ is monic of degree $k+j-m$, homogeneous of that degree
+in $y$ and the nodes, and divisible by $N_k$. So its coefficient of $N_\beta$
+is homogeneous of degree $k+j-m-\beta$ in the nodes, and vanishes unless
+$\beta\ge k$. Thus the triple $(j,k,m)$ contributes to $\mathcal B_{\alpha\beta}$
+only when $\alpha=m-1$ and $k\le\min(\alpha,\beta)$, and its contribution has
+degree at most $\deg(a_jc_k-a_kc_j)+k+j-1-\alpha-\beta$. For $j=4$ we have
+$a_4c_k-a_kc_4=c_k$, of degree at most one, and otherwise $j\le3$; in both cases
+the degree is at most $4+k-\alpha-\beta\le4-\max(\alpha,\beta)$. Hence
+\begin{equation}\label{eq:bezoutdeg}
+ \deg\mathcal B_{\alpha\beta}\le4-\max(\alpha,\beta),
+\end{equation}
+and each term $\prod_\alpha\mathcal B_{\alpha\sigma(\alpha)}$ of the determinant
+has degree at most $\sum_\alpha(4-\max(\alpha,\sigma(\alpha)))\le10$, with
+equality possible only for the identity permutation. Note that $\gamma_1<0<\gamma_2$, $\gamma_3=\chi-1<-1$ and
 $\gamma_0,\gamma_4>0$. Since $s_0=0$ and $\sum_j\gamma_js_j=0$, the quadratic part of $f$ is
 \[
  f_2=\gamma_1s_1^2+\gamma_2s_2^2+\gamma_3s_3^2+(\gamma_1s_1+\gamma_2s_2+\gamma_3s_3)^2,
@@ -1217,16 +1334,24 @@ whose Hessian determinant is $8\gamma_1\gamma_2\gamma_3(1+\gamma_1+\gamma_2+\gam
 =-8\gamma_0\gamma_1\gamma_2\gamma_3\ne0$. A ternary quadratic form of rank three is not a
 product of linear forms, so $f_2$, and hence $f$, is irreducible. The degree-twelve part of
 the second equation is $-ac^4$ with $c=\sum_j\gamma_js_j^3$. If $f$ divided the second
-equation, the irreducible form $f_2$ would divide $c^4$, hence $c$. Divide $c$ by $f_2$ as
+equation, the irreducible form $f_2$ would divide $c^4$, hence $c$. Here
+$s_4=-(\gamma_1s_1+\gamma_2s_2+\gamma_3s_3)$. Divide $c$ by $f_2$ as
 polynomials in $s_3$; the $s_3^2$ coefficient of $f_2$ is $\gamma_3(1+\gamma_3)\ne0$. The
-coefficients of the remainder vanish only if
-$\gamma_1\gamma_2\gamma_3^2(\gamma_3^2-1)=0$, which the signs above exclude. So the two
+remainder is $\mathfrak r_1s_3+\mathfrak r_0$, with $\mathfrak r_0,\mathfrak r_1$ forms in $s_1,s_2$ and
+\[
+ \mathfrak r_1=\frac{\gamma_3-1}{\gamma_3+1}\bigl(\gamma_1(\gamma_1+\gamma_3+1)s_1^2
+ +2\gamma_1\gamma_2s_1s_2+\gamma_2(\gamma_2+\gamma_3+1)s_2^2\bigr),
+\]
+as one checks by multiplying out the quotient
+$-\bigl((\gamma_3+2)(\gamma_1s_1+\gamma_2s_2)+(\gamma_3^2-1)s_3\bigr)/(\gamma_3+1)$.
+The $s_1s_2$ coefficient $2\gamma_1\gamma_2(\gamma_3-1)/(\gamma_3+1)$ of $\mathfrak r_1$ is
+nonzero by the signs above, so $f_2\nmid c$. So the two
 equations have no common factor, their common zero set is a curve, and by B\'ezout's theorem
 its components over $\mathbb Q$ have total degree at most $2\cdot12$.
 \end{proof}
 
-The following example shows why the fixed-dividend equation is needed. If $(\rho,\varphi,\chi)=(\rho',\varphi',\chi')=(\alpha,2\alpha+1,-\alpha-2)$, then
-$\sum_l\gamma_lz^l=(z-1)^3(z-\alpha)$, and constant increments $k_j=t$ satisfy the
+The following example shows why the fixed-dividend equation is needed. If $(\rho,\varphi,\chi)=(\rho',\varphi',\chi')=(\vartheta,2\vartheta+1,-\vartheta-2)$ with $\vartheta>0$, then
+$\sum_l\gamma_lz^l=(z-1)^3(z-\vartheta)$, and constant increments $k_j=t$ satisfy the
 linear and quadratic relations for every $t$: since $z=1$ is a triple root,
 $\sum_l\gamma_ll^r=0$ for $r\le2$, and with $s_j=jt$ these sums are exactly the
 $k$- and $r$-relations.
@@ -1237,7 +1362,8 @@ $k$- and $r$-relations.
 We need $q_i$ and $I_3(i)$ as rational functions on each component, with
 computable orders at infinity. This works only on components where two further
 identities hold identically; on any other component they cut out boundedly many
-good starts, which we count directly. The idea is that the two orthogonal polynomials $P_4$ and $Z$ determine the
+good starts, which we count directly. The idea is that the polynomials $P_4$ and $Z$, both orthogonal to
+$1,x,x^2,x^3$ in $L^2(\nu_i)$, determine the
 moment vector of $\nu_i$ up to scale, and the two normalised division
 equations fix the scale; this recovers $q_i$ and $I_3(i)$ as rational
 functions of the free nodes. Concretely, form the $8\times9$ matrix of
@@ -1323,9 +1449,9 @@ below). A component containing a good start is \emph{retained} if both cuts
 vanish identically on it.
 
 \begin{lemma}[Removing components by polynomial equations]\label{lem:jointcuts}
-The cuts have degree at most an absolute constant $D_{\rm cut}$ in the free
+The cuts have degree at most an absolute constant $C_{\rm cut}$ in the free
 nodes. On a degree-$d$ component, each cut either vanishes identically or
-vanishes at no more than $D_{\rm cut}d$ good starts. Consequently each
+vanishes at no more than $C_{\rm cut}d$ good starts. Consequently each
 component that is not retained contributes $O(1)$ good starts.
 \end{lemma}
 \begin{proof}
@@ -1373,8 +1499,9 @@ Let $C$ be an integral component of positive degree of
 \eqref{eq:jointcurve}. Let $P$ be a closed point above infinity on the
 normalisation of the projective closure of $C$, write
 $\operatorname{ord}=\operatorname{ord}_P$, and let $e>0$ be the
-multiplicity of the hyperplane at infinity at $P$.
-For a local parameter $\varpi$ at $P$, let $z_j\in\mathbb Q(P)$ be the value
+multiplicity of the hyperplane at infinity at $P$; equivalently,
+$e=\max_{1\le j\le3}(-\operatorname{ord}s_j)$.
+For a local parameter (uniformiser) $\varpi$ at $P$, let $z_j\in\mathbb Q(P)$ be the value
 at $P$ of the regular function $\varpi^es_j$, $0\le j\le4$; we call $z_j$ the
 \emph{leading node}.
 Then the $z_j$ are not all equal and satisfy
@@ -1391,13 +1518,10 @@ For a nonexceptional pattern, therefore,
 \end{lemma}
 
 \begin{proof}
-All nonzero rational constants have order zero. The multiplicity $e$ can
-equivalently be written as
-\[
- e=\max_{1\le j\le3}\{-\operatorname{ord}s_j\}>0.
-\]
-Thus a polynomial of total node degree at most $r$ has order at least
-$-re$. The values $z_j$ lie in the residue field $\mathbb Q(P)$; we do not
+All nonzero rational constants have order zero. By the description of $e$ in
+the statement, each $\varpi^es_j$ is regular at $P$, and $s_4$ is a linear
+combination of $s_1,s_2,s_3$. Thus a polynomial of total node degree at most $r$
+has order at least $-re$. The values $z_j$ lie in the residue field $\mathbb Q(P)$; we do not
 require $P$ to be rational.
 We have $z_0=0$, and at least one of $z_1,z_2,z_3$ is nonzero.
 
@@ -1432,25 +1556,57 @@ The leading homogeneous parts needed below are
  \label{eq:joint-hankel-leading}
 \end{align}
 Here $[F]_r$ denotes the homogeneous part of total node degree $r$.
-The degree-ten formula follows from the Bezout matrix in the proof of
-Lemma~\ref{lem:jointcurve}(2): by its entry degrees, only the diagonal term of its
-determinant can have degree ten. Its four leading diagonal entries are
+
+For the degree-ten formula we use the B\'ezout matrix of the proof of
+Lemma~\ref{lem:jointcurve}(2). By~\eqref{eq:bezoutdeg}, only the diagonal
+term of its determinant can have degree ten, so
+$[\operatorname{Res}(P_4,R_4)]_{10}=\prod_{\alpha<4}[\mathcal B_{\alpha\alpha}]_{4-\alpha}$.
+By the degree count there, a contribution of degree $4-\alpha$ to
+$\mathcal B_{\alpha\alpha}$ needs $k=\alpha$, hence $m=\alpha+1$, and $j\in\{3,4\}$.
+The coefficient of $N_\alpha$ in $Y_{\alpha,\alpha+1,j}=N_\alpha\prod_{l=\alpha+2}^{j}(y-s_l)$
+is $\prod_{l=\alpha+2}^{j}(s_{\alpha+1}-s_l)$. For $j=3$ the degree-two part of
+$a_3c_\alpha-a_\alpha c_3$ is
+$s_4(-\gamma_{\alpha+1}s_{\alpha+1})-\gamma_{\alpha+1}s_{\alpha+1}(-s_4)=0$, so only
+$j=4$ contributes, and
 \[
-\begin{split}
- &-\gamma_1s_1(s_1-s_2)(s_1-s_3)(s_1-s_4),\\
- &-\gamma_2s_2(s_2-s_3)(s_2-s_4),\\
- &-\gamma_3s_3(s_3-s_4),\qquad -s_4.
-\end{split}
+ [\mathcal B_{\alpha\alpha}]_{4-\alpha}=[c_\alpha]_1\prod_{l=\alpha+2}^{4}(s_{\alpha+1}-s_l)
+ =-\gamma_{\alpha+1}s_{\alpha+1}\prod_{l=\alpha+2}^{4}(s_{\alpha+1}-s_l).
 \]
-Their product gives the stated Vandermonde; the additional factor
-$x$ in the second polynomial contributes
-$P_4(0)=\gamma_0$.
-The raw-moment recurrence gives
+The product of these four entries is
+$\gamma_1\gamma_2\gamma_3\prod_{0\le j<l\le4}(s_l-s_j)$, recalling $s_0=0$ and $\gamma_4=1$, and
+$\operatorname{Res}(P_4,Z)=\gamma_0\operatorname{Res}(P_4,R_4)$
+gives~\eqref{eq:joint-resultant-leading}.
+
+For the Hankel polynomials, let $\mathcal L^{(l)}$ be the linear functional on
+polynomials in $x$ with $\mathcal L^{(l)}(x^r)=M_r(k_l,k_{l+1},\dots)$. The
+recurrence defining the $M_r$ says exactly that
+$\mathcal L^{(l)}(xg(x))=\mathcal L^{(l+1)}(g(x+k_l))$, so, as for $\mu_i$ in
+Section~\ref{sec:hankel},
+$\mathcal L^{(0)}(F_jF_l)=\mathcal L^{(l)}\bigl(\prod_{m<j}(x+s_l-s_m)\bigr)$ for
+$j\le l$. Since $M_r$ has degree $r-1$ for $r\ge1$ and $M_0=1$, the coefficient
+of $x^t$ contributes degree at most $j-1$ when $t\ge1$, and
+\begin{equation}\label{eq:gramtop}
+ \deg\mathcal L^{(0)}(F_jF_l)\le\min(j,l),\qquad
+ [\mathcal L^{(0)}(F_jF_l)]_j=\prod_{m<j}(s_l-s_m)\quad(j\le l).
+\end{equation}
+The unitriangular change from $1,x,x^2,x^3$ to $F_0,\dots,F_3$ shows that
+$H_4=\det\bigl(\mathcal L^{(0)}(F_jF_l)\bigr)_{j,l<4}$. By~\eqref{eq:gramtop},
+only the diagonal term can have degree six, so
+$[H_4]_6=\prod_{l<4}\prod_{m<l}(s_l-s_m)$, which is the displayed product since
+$s_1=k_0$, $s_2=k_0+k_1$ and $s_3=k_0+k_1+k_2$. For $H_3$ the same Gram matrix
+with $j,l<3$ is explicit,
 \[
- H_3=k_0k_1(k_0+k_1)+k_0k_2-k_1^2,
+ \begin{pmatrix}1&1&1\\1&1+s_1&1+s_2\\1&1+s_2&k_2+1+2s_2-s_1+s_2(s_2-s_1)\end{pmatrix},
+ \qquad\text{so}\qquad
+ H_3=k_0k_1(k_0+k_1)+k_0k_2-k_1^2.
 \]
-and gives the displayed degree-six part of $H_4$, with remainder of
-degree at most five. These are finite polynomial identities.
+Finally, $x^3=F_3+(s_1+s_2)x^2-s_1s_2x$; in the minor $H_{013}$ the multiple of
+the column of $x$ can be removed, so
+$H_{013}=(s_1+s_2)H_3+\det\bigl(\mathcal L^{(0)}(F_jF_l)\bigr)_{j<3,\,l\in\{0,1,3\}}$,
+and by~\eqref{eq:gramtop} the last determinant has degree at most three. Hence
+\begin{equation}\label{eq:H013top}
+ [H_{013}]_4=(s_1+s_2)[H_3]_3=(2k_0+k_1)k_0k_1(k_0+k_1).
+\end{equation}
 
 Every factor in these leading products has order $-e$ by
 \eqref{eq:joint-node-orders}. The lower-degree terms have strictly larger
@@ -1462,7 +1618,8 @@ proves~\eqref{eq:joint-determinant-orders}.
 Every positive-degree nonexceptional component of \eqref{eq:jointcurve}
 has even degree. At each point above infinity its hyperplane multiplicity
 $e$ is even, and
-$\operatorname{ord}(N_0\Psi)=-5e/2$.
+$\operatorname{ord}\Psi=-5e/2$; so the function $J=N_0\Psi$ of
+Section~\ref{sec:jointcoords} also has order $-5e/2$.
 \end{corollary}
 \begin{proof}
 Taking orders in the fixed-dividend equation and using
@@ -1478,8 +1635,11 @@ are not needed here.
 
 Exceptional patterns may have components of odd degree, including lines, but
 there are fewer of them. Lines must be excluded because the curve bound saves
-nothing on them; outside the range~\eqref{eq:jointscale} below, the proof of
-Corollary~\ref{cor:jointexponent} gives $T\le a^{5/17+o(1)}$ directly.
+nothing on them. We exclude them only in the range~\eqref{eq:jointscale}
+below. Outside that range, $c_{\rm L}A^4H^5X\ge a^3$ together with
+$X\asymp A^4H^6/a^3$ and $H\asymp a/(AT)$ already gives
+$T^{17}\le a^{5+o(1)}$ (first case in the proof of
+Corollary~\ref{cor:jointexponent}).
 
 \begin{lemma}[Exceptional patterns and lines]\label{lem:jointcomponents}
 There are $O(X^4\log(2X))=O_\eta(a^\eta X^4)$ exceptional patterns. In the range
@@ -1553,37 +1713,56 @@ of~\eqref{eq:jointexceptional}, $w$ is one of
  (0,1,1,0,1),\quad (0,1,1,0,0),\quad
  (0,0,1,1,0),\quad (0,1,0,0,1).
 \]
-\item For each of these four directions the resultant has degree at most six in $t$. This
-follows from a row and column degree count in the Newton-basis Bezout matrix used in the proof
-of Lemma~\ref{lem:jointleading}, in which coinciding leading nodes lower the degrees of the
-corresponding entries (Lean module \lean{FixedDividendLineResultant}). Hence
-$\Psi^4$ has degree at most six, $\Psi(\mathbf s(t))$ is affine in $t$, and its second difference
-$\Psi(\mathbf s+w)+\Psi(\mathbf s-w)-2\Psi(\mathbf s)$ vanishes.
-\item Expanding this second difference, and using $f=0$ at $\mathbf s\pm w$, gives respectively
+\item For each of these four directions the resultant has degree at most six in $t$. Here the
+B\'ezout matrix of~\eqref{eq:bezout} is not fine enough, because its degree bound ignores the
+coinciding nodes. Instead write the B\'ezout matrix of $P_4$ and $R_4$ in a Newton basis
+$\prod_{l<\alpha}(x-n_l)$ whose nodes $n_0,n_1,n_2$ are adapted to the direction. Along the
+line, its $(\alpha,\beta)$ entry then has $t$-degree at most $\varrho_\alpha+\kappa_\beta$, with
+weights summing to six, so every term of the determinant has degree at most six.
+Appendix~\ref{app:linecertificates} lists the nodes and weights; the bounds hold for all values
+of the $\gamma_j$ and $\gamma'_j$. Hence $\Psi^4$ has degree at most six, $\Psi(\mathbf s(t))$
+is affine in $t$, and its second difference $\Psi(\mathbf s+w)+\Psi(\mathbf s-w)-2\Psi(\mathbf s)$
+vanishes.
+\item In each case, imposing the corresponding relation~\eqref{eq:jointexceptional} and expanding
+the cubic $\Psi$ gives the polynomial identity
 \[
- -2\rho s_3,\qquad 2(\rho+\varphi)(k_1-1),\qquad 2(\chi-1)(k_2-1),\qquad
+ \Psi(\mathbf s+w)+\Psi(\mathbf s-w)-2\Psi(\mathbf s)=E_w(\mathbf s)+c_w\,\nabla f(\mathbf s)\cdot w,
+\]
+in the free nodes and the pattern parameters, with $c_w=4,2,2,4$ and respectively
+\[
+ E_w=-2\rho s_3,\qquad 2(\rho+\varphi)(k_1-1),\qquad 2(\chi-1)(k_2-1),\qquad
  2\bigl((\varphi-\chi)-(s_4-s_1)\bigr).
 \]
+The quadratic part of $f$ vanishes at $w$ (the moment equation of order two), so
+$f(\mathbf s\pm w)=f(\mathbf s)\pm\nabla f(\mathbf s)\cdot w$, and $f=0$ along the line gives
+$\nabla f(\mathbf s)\cdot w=0$. Hence $E_w(\mathbf s)=0$.
 The factors $\rho$, $\rho+\varphi$ and $\chi-1$ are nonzero, so respectively
 \[
  s_3=0,\qquad k_1=1,\qquad k_2=1,\qquad s_4-s_1=\varphi-\chi.
 \]
 \end{enumerate}
-The first case is impossible at a good start, where $s_3\ge3$. The polynomial $\mathcal G$ in
-Lemma~\ref{lem:labels} satisfies, by expanding it and bounding each monomial
-(\lean{gramP_le_middle_gaps} in Lean),
+The first case is impossible at a good start, where $s_3\ge3$. Next bound the polynomial
+$\mathcal G$ of Lemma~\ref{lem:labels}. At a good start $1\le k_j\le H$ and $s_j\le jH$, so its
+three factors satisfy $k_0+1\le2H$,
 \[
- \mathcal G\le H^5(12k_1+464),\qquad \mathcal G\le H^5(12k_2+464).
+ k_1s_2+s_2+k_1+k_2+1\le k_1(2H+2)+2H+1\le7Hk_1\le7H^2,
+\]
+and $k_2(k_1+k_2)s_3+g_3\le6H^2k_2+28H^2\le34H^2k_2\le34H^3$, since the five groups of terms
+of $g_3$ are at most $6H^2$, $3H^2$, $2H^2$, $12H^2$ and $5H^2$ in turn (the last for
+$k_3^2+2k_3+k_4+1$). Hence
+\[
+ \mathcal G\le476\,H^5k_1,\qquad \mathcal G\le476\,H^5k_2.
 \]
 In the last obstruction, $k_1+k_2+k_3=\varphi-\chi=(u_1-u_2)/N_0\le2X$.
 Thus each surviving case gives $k_1\le2X$ or $k_2\le2X$.
 The label bound $N_0q_i^4\le a\mathcal G$, with $N_0\ge1$, now gives
 \[
- q_i^4\le aH^5(24X+464).
+ q_i^4\le952\,aH^5X.
 \]
-But $q_i\ge a/(4A)$ (Lemma~\ref{lem:fourAq}) and $24X+464\le488X$ for $X\ge1$, so
-$a^3\le4^4\cdot488\,A^4H^5X$. Condition~\eqref{eq:jointscale} with
-$c_{\rm L}=4^4\cdot488$ gives the strict reverse inequality.
+But $q_i\ge a/(4A)$ (Lemma~\ref{lem:fourAq}), so $a^3\le4^4\cdot952\,A^4H^5X$.
+Condition~\eqref{eq:jointscale} with $c_{\rm L}=4^4\cdot952$ gives the strict reverse
+inequality. (The formalisation expands $\mathcal G$ more carefully, as
+$\mathcal G\le H^5(12k_1+464)$, and uses $c_{\rm L}=4^4\cdot488$.)
 \end{proof}
 
 \subsection{Orders of the reconstructed functions}\label{sec:jointorders}
@@ -1626,9 +1805,8 @@ $4r=-6e$, or $\operatorname{ord}Q=-3e/2$.
 
 \emph{The reconstructed curvature order.}
 The coefficient $p_3=\chi-1-s_1-s_2-s_3$ has order at least $-e$.
-The raw-moment recurrence also shows that $H_{013}$ has degree at most
-four: its degree-four part is
-$(2k_0+k_1)k_0k_1(k_0+k_1)$.
+By the proof of Lemma~\ref{lem:jointleading}, $H_{013}$ has degree at most
+four, with degree-four part~\eqref{eq:H013top}.
 Consequently
 \[
  \operatorname{ord}(Q-p_3)=-3e/2,\qquad
@@ -1692,7 +1870,9 @@ $|D_{jl}|\le S$; in particular $|W_j|\le S$. Moreover $1\le J\le Y$.
 \end{lemma}
 \begin{proof}
 Write $q=q_i$, and recall $q\ge a/(4A)$ (Lemma~\ref{lem:fourAq}). The proof of
-Proposition~\ref{prop:allminors} gives $d_j/a=k_j/q^2+O(H^2/q^3)$ for $j\le4$.
+Proposition~\ref{prop:allminors} gives $d_j/a=k_j/q^2+O(H^2/q^3)$ for $j\le4$,
+the error terms of Lemma~\ref{lem:expand} being absorbed because
+$H\le1+28a/(AT)\le29a/A\le116q$.
 In $D_{jl}=d_jk_l-d_lk_j$ the leading terms cancel, so $|D_{jl}|q^3\ll aH^3$, and
 $q\ge a/(4A)$ gives $|D_{jl}|\le S$ for suitable $c_S$, including the floor because the
 minors are integers.
@@ -1744,7 +1924,7 @@ Consequently all nonexceptional conics together contribute $O_\eta(a^\eta X^5)$ 
 
 In outline: a component that is not retained contributes $O(1)$ good starts
 (Lemma~\ref{lem:jointcuts}). A retained conic through three free-node triples of good starts
-lies in a plane, and Corollary~\ref{cor:jointparity} leaves it a single rational branch at
+lies in a plane with integer coefficients of size $a^{O(1)}$, and Corollary~\ref{cor:jointparity} leaves it a single rational branch at
 infinity, of multiplicity two. So it is a parabola, the image of a quadratic polynomial map
 $t\mapsto(\xi_0(t),\xi_1(t),\xi_2(t))/\Delta_c$ whose parameter $t$ is an integer at every
 integer point. By Lemma~\ref{lem:joint-infinity-orders}, the reconstructed curvature $E_0$ is
@@ -1861,7 +2041,7 @@ If $\delta=\deg\Gamma_{m,n}$, then
  \qquad
  \delta\ge10n+7m=:\delta_{\min}.
 \end{equation}
-Moreover $\delta\le D_{\rm gr}(m+n)d$ for an absolute constant $D_{\rm gr}$.
+Moreover $\delta\le C_{\rm gr}(m+n)d$ for an absolute constant $C_{\rm gr}$.
 For $m=n=1$ the lower bound reads $\delta\ge4d+1\ge17$.
 \end{lemma}
 
@@ -1883,7 +2063,7 @@ coordinates is therefore
 There is a single rational linear combination $\psi$ of the seven
 coordinates whose pole divisor is $\mathcal F_{m,n}$.  To see this, fix a point $P$
 in the finite support of $\mathcal F_{m,n}$ and multiply all seven coordinates by a
-local uniformizer to the power $\mathcal F_{m,n}(P)$.  Their values in $\mathbb Q(P)$
+local uniformiser to the power $\mathcal F_{m,n}(P)$.  Their values in $\mathbb Q(P)$
 are not all zero.  Cancellation of the leading pole is therefore a
 proper $\mathbb Q$-linear condition on the seven coefficients.
 The finitely many such proper subspaces do not cover $\mathbb Q^7$.
@@ -1928,8 +2108,12 @@ in $\mathbb A^r$, with $r\ge2$ fixed, has
  N_{\rm aff}(C,B)\ll_r \delta^3 B^{1/\delta}(\log B+\delta),\qquad B\ge1,
 \end{equation}
 integer points in the box $[-B,B]^r$, with an implied constant
-independent of the coefficients of $C$. Its formal proof is discussed in
-Section~\ref{sec:lean}.
+independent of the coefficients of $C$. We use it in the form proved in the
+library cited in Section~\ref{sec:lean}: ``integral'' means prime over
+$\mathbb Q$, and $B\ge1$. These two points need no new input: a curve that is
+integral over $\mathbb Q$ but not geometrically integral has at most $\delta^2$
+rational points, which lie in the intersection of its conjugate components, and
+the range $1\le B<2$ follows from $B=2$.
 
 \begin{proposition}[Window bound]\label{prop:jointwindow}
 Fix positive integers $m,n$ and $\eta>0$, and put $\mathcal B=\max(H,S^m,Y^n)$.
@@ -1961,7 +2145,7 @@ occur, by Lemma~\ref{lem:jointcomponents}, and odd degrees do not occur, by
 Corollary~\ref{cor:jointparity}, so these components have degree $d\ge4$.
 Their good starts give distinct integer points of $\Gamma_{m,n}\subseteq\mathbb A^7$ in a box of
 side $\max(3H,S^m,Y^n)\le3\mathcal B$. By Lemma~\ref{lem:jointpowereddegree}, the degree
-$\delta$ of $\Gamma_{m,n}$ satisfies $\delta_{\min}\le\delta\le24D_{\rm gr}(m+n)$, so
+$\delta$ of $\Gamma_{m,n}$ satisfies $\delta_{\min}\le\delta\le24C_{\rm gr}(m+n)$, so
 \eqref{eq:jointexternal} gives $O_{m,n,\eta}(a^\eta\mathcal B^{1/\delta_{\min}})$
 good starts per component. This gives the term $X^5\mathcal B^{1/\delta_{\min}}$.
 \end{itemize}
@@ -2055,8 +2239,9 @@ Proposition~\ref{prop:jointwindow} by
  X^{5-1/(3\delta_{\min})}H^{1/\delta_{\min}}+X^{5-2m/(3\delta_{\min})}S^{m/\delta_{\min}}+X^5Y^{n/\delta_{\min}}.
 \]
 In effect $H$ is
-replaced by $H/X^{1/3}$ and $S$ by $S/X^{2/3}$, while $Y$ is unchanged. The node term stays
-below the critical exponent, so of the two fractions balanced in the proof of
+replaced by $H/X^{1/3}$ and $S$ by $S/X^{2/3}$, while $Y$ is unchanged. The node term $X^{5-1/(3\delta_{\min})}H^{1/\delta_{\min}}$ gives the exponent
+$45\delta_{\min}/(153\delta_{\min}-1)$, which is below $\gamma_*$ once
+$\delta_{\min}\ge18$, so of the two fractions balanced in the proof of
 Theorem~\ref{thm:joint} only the curvature fraction improves, and the crossing moves from
 $\alpha_*=0.2942513\ldots$ to $\gamma_*=0.2942294\ldots$. Every pattern has
 $\lambda(p)\ll X^{1/3}$ (Lemma~\ref{lem:index}), and the weighted count of
@@ -2088,19 +2273,19 @@ $\lambda(p)$ be the least sup norm of a nonzero vector of $\Lambda_p$. Then
 $|x|\ge\lambda(p)$ for every nonzero $x\in\Lambda_p$.
 
 \begin{lemma}[Lifting]\label{lem:lift}
-For a column $l$, let $L_l\in\mathbb Z^3$ be $p_\pi\mathbf e_r$ if $l=j_r$ is a pivot column,
+For a column $l$, let $\mathbf L_l\in\mathbb Z^3$ be $p_\pi\mathbf e_r$ if $l=j_r$ is a pivot column,
 $\mathbf u$ if $l=j_4$ and $\mathbf v$ if $l=j_5$, where $\mathbf e_1,\mathbf e_2,\mathbf e_3$ is the standard
-basis. For every row $x$ of $\mathcal M$ and every column $l$, $p_\pi x_l=L_l\cdot x_\pi$.
-Moreover $\det(L_0,L_1,L_2)=p_\pi^2p_{012}$,
-and $|L_l|_\infty\le\kappa$.
+basis. For every row $x$ of $\mathcal M$ and every column $l$, $p_\pi x_l=\mathbf L_l\cdot x_\pi$.
+Moreover $\det(\mathbf L_0,\mathbf L_1,\mathbf L_2)=p_\pi^2p_{012}$,
+and $|\mathbf L_l|_\infty\le\kappa$.
 \end{lemma}
 
 \begin{proof}
-The vectors $L_l$ are the rows of $\mathcal M^{\mathsf T}\operatorname{adj}(\mathcal M_\pi^{\mathsf T})$,
+The vectors $\mathbf L_l$ are the rows of $\mathcal M^{\mathsf T}\operatorname{adj}(\mathcal M_\pi^{\mathsf T})$,
 where $\mathcal M_\pi$ is the pivot $3\times3$ block, and the first identity is Cramer's rule
 for the system $\mathcal M_\pi c=(\text{column }l)$, whose solution is
-$c=L_l/p_\pi$. Taking the rows $l=0,1,2$ gives
-$\det(L_0,L_1,L_2)=p_{012}\det\operatorname{adj}(\mathcal M_\pi^{\mathsf T})=p_{012}p_\pi^2$. The
+$c=\mathbf L_l/p_\pi$. Taking the rows $l=0,1,2$ gives
+$\det(\mathbf L_0,\mathbf L_1,\mathbf L_2)=p_{012}\det\operatorname{adj}(\mathcal M_\pi^{\mathsf T})=p_{012}p_\pi^2$. The
 bound holds because the coordinates of $\mathbf u$ and $\mathbf v$ are, up to sign, coordinates
 of $p$, and $|p_\pi|$ is maximal.
 \end{proof}
@@ -2261,16 +2446,16 @@ every good start with pattern $p$
 
 \begin{proof}
 By Lemma~\ref{lem:lift}, $p_\pi(k_0,k_1,k_2)=\mathcal Lk_\pi$, where $\mathcal L$ has rows
-$L_0,L_1,L_2$ and $\det\mathcal L=p_\pi^2p_{012}\ne0$, since $p_{012}=N_0=I_4(i)\ge1$ at a good
+$\mathbf L_0,\mathbf L_1,\mathbf L_2$ and $\det\mathcal L=p_\pi^2p_{012}\ne0$, since $p_{012}=N_0=I_4(i)\ge1$ at a good
 start. With $k_\pi=(\mathbf f_1\,\mathbf f_2\,\mathbf f_3)\xi'$ and the cumulative sums $s_j=k_0+\dots+k_{j-1}$,
 this gives $\mathcal T_p$. Since $|k_\pi|^2\le3H^2$ and $|\mathbf f_i|\ge\lambda$, Lemma~\ref{lem:reduce} gives
 $|\xi'_i|\le(8/3)H/\lambda\le3H/\lambda$.
 
 For the curvature, $W=(D_{12},-D_{02},D_{01})=(d_0,d_1,d_2)\times(k_0,k_1,k_2)$, and
 $p_\pi(d_0,d_1,d_2)=\mathcal Ld_\pi$. Let $\operatorname{Cof}(\mathcal L)$ have rows
-$L_1\times L_2$, $L_2\times L_0$, $L_0\times L_1$; its determinant is
+$\mathbf L_1\times \mathbf L_2$, $\mathbf L_2\times \mathbf L_0$, $\mathbf L_0\times \mathbf L_1$; its determinant is
 $(\det\mathcal L)^2\ne0$. The Binet--Cauchy identity
-$(L\cdot x)(L'\cdot y)-(L'\cdot x)(L\cdot y)=(L\times L')\cdot(x\times y)$, applied to pairs of
+$(\mathbf L\cdot x)(\mathbf L'\cdot y)-(\mathbf L'\cdot x)(\mathbf L\cdot y)=(\mathbf L\times\mathbf L')\cdot(x\times y)$, applied to pairs of
 rows of $\mathcal L$, gives $(\mathcal Lx)\times(\mathcal Ly)=\operatorname{Cof}(\mathcal L)(x\times
 y)$, so $p_\pi^2W=\operatorname{Cof}(\mathcal L)\,w$. Lemma~\ref{lem:exterior} gives
 $(\det\Lambda_p)W'=(\mathbf f_1\,\mathbf f_2\,\mathbf f_3)^{\mathsf T}w$. Together,
@@ -2290,7 +2475,7 @@ under the linear map that replaces the nodes $s$ by $\xi'=\mathcal T_p^{-1}s$.
 
 \begin{lemma}[Degree of the lattice graph]\label{lem:latticedegree}
 The degree $\delta'$ of $\Gamma'_{m,n}$ satisfies
-$\delta_{\min}\le\delta'\le D_{\rm gr}(m+n)d$.
+$\delta_{\min}\le\delta'\le C_{\rm gr}(m+n)d$.
 \end{lemma}
 
 \begin{proof}
@@ -2305,7 +2490,7 @@ coordinates only through the following facts.
 $\deg\mathcal F\ge3d/2+1$ (Lemma~\ref{lem:jointpoledegree}).
 \item Some rational linear combination of the seven graph coordinates has pole divisor
 $\frac{5n}2E_\infty+m\mathcal F$; its construction uses only this envelope.
-\item The $W_j$ have a common denominator $\Omega$ and numerators of degree at most $D_W$
+\item The $W_j$ have a common denominator $\Omega$ and numerators of degree at most $C_W$
 (Appendix~\ref{app:degree}).
 \end{enumerate}
 Each of these is unchanged when $W$ is replaced by $W'=\Upsilon_pW$ for a constant invertible matrix
@@ -2414,10 +2599,10 @@ The increment and drop rows of the pattern matrix satisfy the same linear relati
 \]
 and the same formulas express $d_3,d_4$ in terms of $\mathbf d$. For
 $\mathbf y\in\mathbb Q^3$ extend $\mathbf y$ to $(y_0,\dots,y_4)$ by these formulas,
-and let $\Sigma_j(\mathbf y)=y_0+\dots+y_{j-1}$, so that $\Sigma_j(\mathbf k)=s_j$ and
-$\Sigma_j(\mathbf d)=b_0-b_j$, with local indices. Define $G$ and $\ell$ by
+and let $\langle\mathbf y\rangle_j=y_0+\dots+y_{j-1}$ be its partial sums, so that
+$\langle\mathbf k\rangle_j=s_j$ and $\langle\mathbf d\rangle_j=b_i-b_{i+j}$. Define $G$ and $\ell$ by
 \[
- \sum_{j=0}^4\gamma_j\Sigma_j(\mathbf y)^2=\mathbf y^{\mathsf T}G\mathbf y,\qquad
+ \sum_{j=0}^4\gamma_j\langle\mathbf y\rangle_j^2=\mathbf y^{\mathsf T}G\mathbf y,\qquad
  \sum_{j=0}^4\gamma_jy_j=\ell^{\mathsf T}\mathbf y.
 \]
 Explicitly,
@@ -2453,23 +2638,28 @@ The vector $V$ is orthogonal to $\mathbf k$, since $\mathbf k\cdot V=f=0$. It is
 also orthogonal to $\mathbf d$; this is where the division equations enter.
 By polarisation,
 \[
- \mathbf d\cdot V=\sum_{j=0}^4\gamma_js_j\Sigma_j(\mathbf d)+\sum_{j=0}^4\gamma_jd_j.
+ \mathbf d\cdot V=\sum_{j=0}^4\gamma_js_j\langle\mathbf d\rangle_j+\sum_{j=0}^4\gamma_jd_j.
 \]
-The relations of Lemma~\ref{lem:pattern} give $\sum_j\gamma_j=0$ and
-$\sum_j\gamma_j\Sigma_j(\mathbf y)=\sum_ly_l(\gamma_{l+1}+\dots+\gamma_4)=0$ for
+By the definition of $\gamma$, $\sum_j\gamma_j=0$. The relations of
+Lemma~\ref{lem:pattern} give
+$\sum_j\gamma_j\langle\mathbf y\rangle_j=\sum_ly_l(\gamma_{l+1}+\dots+\gamma_4)=0$ for
 $\mathbf y=\mathbf k,\mathbf d$ (Lemma~\ref{lem:orthquartic}), that is,
-$\sum_j\gamma_js_j=\sum_j\gamma_jb_j=0$. Multiply the division equations
-$(q_i+s_j)b_j+b_{j+1}=a$ by $\gamma_j$ and sum over $j\le4$. The terms in $a$
-and in $q_i$ cancel, and writing $b_j=b_0-\Sigma_j(\mathbf d)$ and $b_{j+1}=b_j-d_j$ leaves
-$-\sum_j\gamma_js_j\Sigma_j(\mathbf d)-\sum_j\gamma_jd_j=0$. Hence $\mathbf d\cdot V=0$.
+$\sum_j\gamma_js_j=\sum_j\gamma_jb_{i+j}=0$. Multiply the division equations
+$(q_i+s_j)b_{i+j}+b_{i+j+1}=a$ by $\gamma_j$ and sum over $j\le4$. The terms in $a$
+and in $q_i$ cancel, and writing $b_{i+j}=b_i-\langle\mathbf d\rangle_j$ and
+$b_{i+j+1}=b_{i+j}-d_j$ leaves
+$-\sum_j\gamma_js_j\langle\mathbf d\rangle_j-\sum_j\gamma_jd_j=0$. Hence $\mathbf d\cdot V=0$.
 
 Since $W\cdot(r_0,r_1,r_2)=\det(\mathbf d,\mathbf k,\mathbf r)=p_{012}=N_0>0$, $W\ne0$, so $\mathbf d$
 and $\mathbf k$ are independent and $V$ is a multiple of $W=\mathbf d\times\mathbf k$.
-To find the multiple, expand: with $r_j=k_j(s_j+s_{j+1})+k_{j+1}$,
+To find the multiple, put $r_j=k_j(s_j+s_{j+1})+k_{j+1}$. Substituting the
+definitions of $s_4$, $k_0,\dots,k_4$, $r_0,r_1,r_2$, $G$, $\ell$ and $\Psi$ and
+expanding gives the polynomial identity
 \[
- V\cdot(r_0,r_1,r_2)-\Psi=-(s_4+1+\chi-\chi')f,
+ V\cdot(r_0,r_1,r_2)-\Psi=-(s_4+1+\chi-\chi')f
 \]
-so $V\cdot r=\Psi$ while $W\cdot r=N_0$. Thus $\Psi W=N_0V$. Now use $J=N_0\Psi$
+in $s_1,s_2,s_3$ and the six normalised parameters; both sides are cubic in the
+nodes. At an orbit state $f=0$, so $V\cdot r=\Psi$ while $W\cdot r=N_0$. Thus $\Psi W=N_0V$. Now use $J=N_0\Psi$
 and $\Psi>0$.
 \end{proof}
 
@@ -2484,14 +2674,19 @@ point also lies on the fixed-dividend curve for every $a$. Indeed, its nodes are
 \[
  s_0^*=0,\qquad
  s_j^*=\frac{\gamma'_{j-1}-\gamma_{j-1}}{\gamma_j}\ (1\le j\le3),
- \qquad s_4^*=\chi'-\chi.
+ \qquad s_4^*=\chi'-\chi,
 \]
-Dividing $Z(x)=x R_4(x)$ by $P_4(x)$ gives quotient $x+c_Z$,
-where $c_Z=\chi'-\chi-s_4$, and a remainder with Newton coefficients
+as one checks by substituting them in $V$. Divide $Z(x)=x R_4(x)$ by $P_4(x)$
+in the Newton basis $F_0,\dots,F_4$ at $s_0,\dots,s_3$, with $F_5=F_4(x-s_4)$.
+Since $s_0=0$, we have $xN_j=F_{j+1}$ for the Newton polynomials $N_j$ of $R_4$,
+so $Z=\sum_j\gamma'_jF_{j+1}$, while $xF_j=F_{j+1}+s_jF_j$. Hence, with
+$c_Z=\chi'-\chi-s_4$, the quotient is $x+c_Z$ and the remainder
+$Z-(x+c_Z)P_4$ has the Newton coefficients
 \[
  -c_Z\gamma_0,\qquad
- \gamma'_{j-1}-\gamma_{j-1}-\gamma_j(s_j+c_Z)\quad(1\le j\le3).
+ \gamma'_{j-1}-\gamma_{j-1}-\gamma_j(s_j+c_Z)\quad(1\le j\le3);
 \]
+the coefficient of $F_4$ is $\gamma'_3-\gamma_3-s_4-c_Z=0$.
 They all vanish at $\mathbf k_*$, so $Z_*=x P_{4,*}$ and
 $N_0\operatorname{Res}(P_{4,*},Z_*)-a\Psi(\mathbf k_*)^4=0$. Hence $\mathbf k_*$ lies
 on every pattern curve, and Lemma~\ref{lem:polarbase} below bounds the loss there.
@@ -2530,7 +2725,7 @@ $C$ has degree at most four.
 \emph{Step 1: the quartic initial form.} We work on the chart where $N_0N_1\ne0$, so that the normalised parameters are
 defined, and
 \[
- \gamma_1\gamma_2\gamma_3\,\det G\,G_{00}\,\ell_0\ne0.
+ \gamma_1\gamma_2\gamma_3\cdot\det(G)\cdot G_{00}\cdot\ell_0\ne0.
 \]
 Here $\det G\ne0$ defines the base point $\mathbf k_*$, and
 $\gamma_1\gamma_2\gamma_3\ne0$ defines its nodes below. Since
@@ -2706,8 +2901,12 @@ The four moment equations give the barycentric identity
 \end{equation}
 Indeed, write the nodes as $z_0,\dots,z_3,z_4=z$, with $\gamma_4=1$. Taking
 $g=\prod_{l<4,\,l\ne j}(x-z_l)$ in $\sum_k\gamma_kg(z_k)=0$ (valid since $\deg g\le3$)
-gives $\gamma_j\prod_{l\ne j}(z_j-z_l)=\prod_{l<4}(z-z_l)=\mathcal V_5$ for $0\le j<4$;
-their product is~\eqref{eq:branchbarycentric}.
+gives $\gamma_j\prod_{l<4,\,l\ne j}(z_j-z_l)=-\prod_{l<4,\,l\ne j}(z-z_l)$, and multiplying
+by $z_j-z$ gives $\gamma_j\prod_{l\le4,\,l\ne j}(z_j-z_l)=\prod_{l<4}(z-z_l)=\mathcal V_5$ for
+$0\le j<4$. In the product of these four identities each pair $l<m<4$ contributes
+$-(z_m-z_l)^2$, and $\prod_{j<4}(z_j-z)=\mathcal V_5$, so the product is
+$\gamma_0\gamma_1\gamma_2\gamma_3\mathcal V_4^2\mathcal V_5=\mathcal V_5^4$,
+which is~\eqref{eq:branchbarycentric}.
 The value
 $\psi_P=(\Psi^2/s_1^5)(P)\in\mathbb Q(P)$ is defined and nonzero, because
 $\operatorname{ord}_P\Psi=-5e_P/2$.
@@ -2725,7 +2924,7 @@ For a slope $c$ define
 \]
 and the label polynomial
 \begin{equation}\label{eq:branchlabel}
- L_{a,N_0,c,\gamma}(\zeta)=
+ \mathfrak L_{a,N_0,c,\gamma}(\zeta)=
  \operatorname{Res}_t\bigl(E_\gamma(t),
        N_0\mathfrak d(t)^3(\zeta-t)^2-c^2aD_\gamma(t)\bigr).
 \end{equation}
@@ -2735,14 +2934,14 @@ and $11$, padding missing coefficients with zero. This convention makes
 The relation $\mathfrak d(t)y+\mathfrak n(t)=0$ gives $D_\gamma(t)=\mathfrak d(t)^3\mathcal V_4$, so
 \eqref{eq:branchsign} implies
 \[
- L_{a,N_0,c,\gamma}(t+c\beta)=0
+ \mathfrak L_{a,N_0,c,\gamma}(t+c\beta)=0
 \]
 in every such residue field, including when $\mathfrak d(t)=0$.
 
 \begin{lemma}[The degree-twelve label]\label{lem:branchlabel}
 Fix $a\in\mathbb Q^\times$, and regard $N_0,\gamma_1,\gamma_2,\gamma_3$
 as independent parameters. For some integer $c$ with $0\le c\le144$,
-$L_{a,N_0,c,\gamma}$ is irreducible of degree twelve over
+$\mathfrak L_{a,N_0,c,\gamma}$ is irreducible of degree twelve over
 $\mathbb Q(N_0,\gamma_1,\gamma_2,\gamma_3)$.
 For a specialised nonexceptional pattern, if one such label polynomial is
 irreducible of degree twelve over $\mathbb Q$, every integral component of
@@ -2792,7 +2991,7 @@ Lemma~\ref{lem:jointcurve} gives the reverse inequality.
 
 For each $a$, fix a slope $c(a)\in\{0,\dots,144\}$ given by
 Lemma~\ref{lem:branchlabel}. Call a pattern \emph{branch-good} if
-$L_{a,N_0,c(a),\gamma}$ is irreducible of degree twelve over $\mathbb Q$, and
+$\mathfrak L_{a,N_0,c(a),\gamma}$ is irreducible of degree twelve over $\mathbb Q$, and
 \emph{branch-bad} otherwise.
 
 \subsection{The Hilbert sieve}
@@ -2843,9 +3042,9 @@ preservation of degree and irreducibility of the original label.
 
 For each fixed positive integer $a$, use the slope $c(a)$ and set $e=12$.
 We obtain a generically irreducible monic integer family in the vertex,
-with uniformly bounded degree and coefficient height at most $C(a+1)^D$,
-for absolute constants $C,D$. The same is true after dilation
-$\mathbf p_\square=g\mathbf z$, with height at most $C(a+1)^Dg^D$.
+with uniformly bounded degree and coefficient height at most $C(a+1)^{C'}$,
+for absolute constants $C,C'$. The same is true after dilation
+$\mathbf p_\square=g\mathbf z$, with height at most $C(a+1)^{C'}g^{C'}$.
 The slope may depend on $a$, but the bounds are uniform because there are
 only $145$ choices. Counting vertices with $p_{012}=0$ as bad, which adds the
 $O(B^3)$ points of that slice, Theorem~\ref{thm:monichilbert} gives
@@ -2854,16 +3053,19 @@ $O(B^3)$ points of that slice, Theorem~\ref{thm:monichilbert} gives
                   g\mathbf z\text{ is branch-bad}\}
  \ll_\eta a^\eta B^{7/2}
 \end{equation}
-whenever $1\le g,B\ll a^7$. This range contains all the dilations and boxes
-used for orbit patterns below.
+whenever $1\le g,B\le a^7$. Any fixed power of $a$ would do here: the
+range only has to contain the dilations and boxes used for orbit patterns
+below, which are at most the pattern height $X\ll a^3$
+(by~\eqref{eq:jointscales}, or directly from $X\ll A^4H^6/a^3$ and
+$H\ll a/A$).
 
 \begin{lemma}[Branch-bad full patterns]\label{lem:branchpatterns}
-Among the minor vectors of coordinate height at most $X$, the number that are
-branch-bad is $O_\eta(a^\eta X^{9/2})$.
+Among the minor vectors of coordinate height at most $X$ with $p_{012}\ne0$,
+the number that are branch-bad is $O_\eta(a^\eta X^{9/2})$.
 \end{lemma}
 \begin{proof}
-Partition the vertices into dyadic bands with
-$|\mathbf p_\square|_\infty\asymp R$, and choose a maximal coordinate as signed pivot $\kappa$.
+Since $p_{012}\ne0$, the vertex is nonzero. Partition the vertices into dyadic
+bands with $|\mathbf p_\square|_\infty\asymp R$, $1\le R\le X$, and choose a maximal coordinate as signed pivot $\kappa$.
 The other three vertex coordinates form $\mathbf u$; put
 $g=\gcd(\kappa,\mathbf u)$. Completing the fifth column amounts to choosing
 $\mathbf v\in[-X,X]^3$ with $\kappa\mid\mathbf u\times\mathbf v$, as in the proof of
@@ -3003,8 +3205,9 @@ The earlier exceptional patterns, conics and non-retained components contribute
 $X^5+X^4H^{1/2}$, as in Proposition~\ref{prop:latticewindow}.
 Among the remaining patterns, Lemma~\ref{lem:branchpatterns} and
 Proposition~\ref{prop:polarpatterns} bound those that are branch-bad or
-degenerate by $O_\eta(a^\eta X^{14/3})$.
-Here $X\ll a^7$, so the extra $X^\eta$ loss is absorbed into $a^\eta$.
+degenerate by $O_\eta(a^\eta X^{14/3})$; orbit patterns have $p_{012}=N_0\ge1$, as
+Lemma~\ref{lem:branchpatterns} requires.
+Here $X\ll a^3$, so the extra $X^\eta$ loss is absorbed into $a^\eta$.
 For these patterns use the unpowered graph of Section~\ref{sec:joint}
 ($m=n=1$, so $\delta_{\min}=17$), whose box has size $\max(H,S,Y)$; this gives
 the third term of~\eqref{eq:polarsix}.
@@ -3041,7 +3244,7 @@ Optimising over the fixed powers gives
         =0.2941336553\ldots.
 \]
 \end{theorem}
-\begin{proof}
+\begin{proof}[Proof of Theorems~\ref{thm:polarconditional} and~\ref{thm:polar}]
 Apply the window argument of Section~\ref{sec:lattice} to
 \eqref{eq:polarsix}. The three terms from the contribution
 $X^{14/3}\max(H,S,Y)^{1/17}$ of branch-bad and degenerate patterns give exponents
@@ -3403,10 +3606,10 @@ In the parameter of Lemma~\ref{lem:jointconicparameter}, write
 The polynomials may be chosen so that
 \[
  \deg G_E-\deg F_E=3,\qquad
- \max(\deg F_E,\deg G_E)\le D_0,\qquad
- \max_k\bigl(|[t^k]F_E|,|[t^k]G_E|\bigr)\le C_0a^{K_0},
+ \max(\deg F_E,\deg G_E)\le C_{\rm deg},\qquad
+ \max_k\bigl(|[t^k]F_E|,|[t^k]G_E|\bigr)\le C_{\rm ht}a^{C_{\rm exp}},
 \]
-for absolute constants $D_0,C_0,K_0$. In particular, $G_E$ is
+for absolute constants $C_{\rm deg},C_{\rm ht},C_{\rm exp}$. In particular, $G_E$ is
 nonconstant. At the parameter $t$ of every good start, $G_E(t)\ne0$ and
 $F_E(t)/G_E(t)=I_3(i)$ is an integer.
 \end{lemma}
@@ -3423,8 +3626,8 @@ is $\deg G_E-\deg F_E$, proving properness.
 
 We next bound the coefficients uniformly in the component, including
 after cancellation. The six rational pattern coordinates, the three coordinate
-polynomials $\xi_j/\Delta_c$, and the dividend $a$ have the common nonzero
-denominator $N_0N_1\Delta_c$, and their numerators are polynomials in $t$ of
+polynomials $\xi_j/\Delta_c$, and the integer $a$ can be written over the common
+nonzero denominator $N_0N_1\Delta_c$, and their numerators are polynomials in $t$ of
 degree at most two with coefficients of size $(aX)^{O(1)}$. The cofactor
 formula defining $E_0$ is a quotient of two fixed polynomials in these inputs.
 Substituting and clearing a fixed power of the common denominator gives
@@ -3435,10 +3638,10 @@ Choose a primitive $\Pi\in\mathbb Z[t]$ representing
 $\gcd_{\mathbb Q[t]}(\tilde n,\tilde d)$. By Gauss's lemma, $\Pi$ divides both
 $\tilde n$ and $\tilde d$ in $\mathbb Z[t]$, so $F_E=\tilde n/\Pi$ and
 $G_E=\tilde d/\Pi$ are coprime integer polynomials with the same ratio. Every
-integer factor of a nonzero integer polynomial of degree at most $D_0$ and
-height $\mathcal H$ has height at most $2^{D_0}(D_0+1)\mathcal H$, by
+integer factor of a nonzero integer polynomial of degree at most $C_{\rm deg}$ and
+height $\mathcal H$ has height at most $2^{C_{\rm deg}}(C_{\rm deg}+1)\mathcal H$, by
 comparing Mahler measures; so cancellation preserves the bound
-$(aX)^{O(1)}$. Since $X\le a^{O(1)}$, this is the asserted $C_0a^{K_0}$.
+$(aX)^{O(1)}$. Since $X\le a^{O(1)}$, this is the asserted $C_{\rm ht}a^{C_{\rm exp}}$.
 Finally, the reconstruction denominator is nonzero at every good start, hence
 so are $\tilde d$ and its factor $G_E$ at the corresponding parameter, and the
 reconstruction identity gives $F_E(t)/G_E(t)=I_3(i)\in\mathbb Z$.
@@ -3446,10 +3649,10 @@ reconstruction identity gives $F_E(t)/G_E(t)=I_3(i)\in\mathbb Z$.
 
 \begin{lemma}[Integer values of a rational function]\label{lem:jointconicdivisors}
 Let $F_E,G_E\in\mathbb Z[t]$ be coprime over $\mathbb Q$, of degrees at most
-$D_0$, with $G_E$ nonconstant and coefficient heights at most
-$C_0a^{K_0}$. For every $\eta>0$, the number of integers $t$ such that
+$C_{\rm deg}$, with $G_E$ nonconstant and coefficient heights at most
+$C_{\rm ht}a^{C_{\rm exp}}$. For every $\eta>0$, the number of integers $t$ such that
 $G_E(t)\ne0$ and $F_E(t)/G_E(t)\in\mathbb Z$ is $O_\eta(a^\eta)$.
-The implied constant depends only on $\eta,D_0,C_0,K_0$.
+The implied constant depends only on $\eta,C_{\rm deg},C_{\rm ht},C_{\rm exp}$.
 \end{lemma}
 \begin{proof}
 The integer resultant $R=\operatorname{Res}(F_E,G_E)$ is nonzero.
@@ -3457,14 +3660,14 @@ The adjugate of the Sylvester matrix gives $U,V\in\mathbb Z[t]$ with
 $UF_E+VG_E=R$. At any parameter in question, $G_E(t)\mid F_E(t)$, and hence
 $G_E(t)\mid R$. There are $2\tau(|R|)$ possible signed values of $G_E(t)$.
 For each such value $v$, the nonzero polynomial $G_E-v$ has at most
-$\deg G_E\le D_0$ roots. Thus the number of parameters is at most
+$\deg G_E\le C_{\rm deg}$ roots. Thus the number of parameters is at most
 \[
- 2D_0\tau(|R|).
+ 2C_{\rm deg}\tau(|R|).
 \]
-The Sylvester matrix has size at most $2D_0$, and its entries are
-bounded by $C_0a^{K_0}$. Expanding its determinant gives
+The Sylvester matrix has size at most $2C_{\rm deg}$, and its entries are
+bounded by $C_{\rm ht}a^{C_{\rm exp}}$. Expanding its determinant gives
 \[
- 1\le |R|\le(2D_0)!\bigl(C_0a^{K_0}\bigr)^{2D_0}.
+ 1\le |R|\le(2C_{\rm deg})!\bigl(C_{\rm ht}a^{C_{\rm exp}}\bigr)^{2C_{\rm deg}}.
 \]
 The divisor estimate $\tau(n)\ll_\varepsilon n^\varepsilon$, with
 $\varepsilon$ chosen in terms of $\eta$ and the fixed degree and height
@@ -3494,8 +3697,8 @@ and denominator of $E_0=E_{\mathrm n}/E_{\mathrm d}$. Since $H_3,H_3'$ have
 degree at most three and the increments have degree one, the three curvature
 coordinates have the common denominator $\Omega=E_{\mathrm d}H_3k_1$, and
 $\Omega$ and the numerators $\mathcal N_0,\mathcal N_1,\mathcal N_2$ have
-degree at most an absolute constant $D_W$. The numerator for $J$ with this
-denominator is $\mathcal N_3=J\Omega$, of degree at most $D_W+3$. The
+degree at most an absolute constant $C_W$. The numerator for $J$ with this
+denominator is $\mathcal N_3=J\Omega$, of degree at most $C_W+3$. The
 denominator is nonzero on $C$, since it is nonzero at a good start.
 
 Put $\bar m=m+n$, and represent the powered coordinates with denominator
@@ -3506,16 +3709,16 @@ $\Omega^{\bar m}$ and numerators
  \mathcal N_3^n\Omega^{\bar m-n}.
 \]
 All these numerators, and those of the node coordinates written with the same
-denominator, have degree at most $(D_W+3)\bar m+1$. So multiplying a
+denominator, have degree at most $(C_W+3)\bar m+1$. So multiplying a
 polynomial of degree at most $t$ in the graph coordinates by $\Omega^{\bar mt}$
 gives a polynomial in the original nodes of degree at most
-$\bigl((D_W+3)\bar m+1\bigr)t$. This operation is injective on the
+$\bigl((C_W+3)\bar m+1\bigr)t$. This operation is injective on the
 corresponding spaces of functions on $C$, because $\Omega$ is nonzero in
 $\mathbb Q(C)$. Comparing affine Hilbert functions gives
 \[
- \delta t+O(1)\le d\bigl((D_W+3)\bar m+1\bigr)t+O(1),
+ \delta t+O(1)\le d\bigl((C_W+3)\bar m+1\bigr)t+O(1),
 \]
-and hence the asserted bound with $D_{\rm gr}=D_W+4$.
+and hence the asserted bound with $C_{\rm gr}=C_W+4$.
 \end{proof}
 
 \section{A reduced basis in dimension three}\label{app:reduction}
@@ -3650,6 +3853,40 @@ bounds its reducible specialisations by
 $O(\operatorname{lg}(\mathcal H)^4B^{r-3/2}(1+\log B)^{4r+1})$. Summing over the $2B+1$
 values of $v_1$ gives the theorem.
 \end{proof}
+
+\section{Degree certificates along the line directions}\label{app:linecertificates}
+
+This appendix records the certificates used in step~3 of the proof of
+Lemma~\ref{lem:jointcomponents}. Fix one of the four directions $w$, write the nodes along
+the line as $s_j+tw_j$, and expand
+\[
+ \frac{P_4(x)R_4(y)-P_4(y)R_4(x)}{x-y}
+ =\sum_{\alpha,\beta<4}\mathcal B'_{\alpha\beta}M_\alpha(x)M_\beta(y),\qquad
+ M_\alpha(x)=\prod_{l<\alpha}(x-n_l),
+\]
+with the nodes $n_0,n_1,n_2$ below. As for~\eqref{eq:bezout},
+$\det\mathcal B'=\operatorname{Res}(P_4,R_4)$, and
+$\operatorname{Res}(P_4,Z)=\gamma_0\operatorname{Res}(P_4,R_4)$ has the same degree in $t$.
+In each case the entry $\mathcal B'_{\alpha\beta}$ has $t$-degree at most
+$\varrho_\alpha+\kappa_\beta$, for all values of the $\gamma_j$, the $\gamma'_j$ and the
+nodes $s_j$; since $\sum_\alpha\varrho_\alpha+\sum_\beta\kappa_\beta=6$, every term of the
+determinant has $t$-degree at most six.
+\begin{center}\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+Direction $w$ & Nodes $(n_0,n_1,n_2)$ & Row weights $\varrho$ & Column weights $\kappa$\\
+\midrule
+$(0,1,1,0,1)$ & $(s_1,s_2,0)$ & $(1,1,0,0)$ & $(1,1,1,1)$\\
+$(0,1,1,0,0)$ & $(s_1,0,s_2)$ & $(2,1,1,0)$ & $(1,1,0,0)$\\
+$(0,0,1,1,0)$ & $(s_1,s_2,0)$ & $(1,1,1,0)$ & $(1,1,1,0)$\\
+$(0,1,0,0,1)$ & $(0,s_1,s_2)$ & $(2,1,1,1)$ & $(1,0,0,0)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Each entry is an explicit polynomial of degree at most four in $t$, so each bound is a finite
+expansion. We checked all sixteen entries in each case with a computer algebra system, and
+the bounds are formalised as \lean{line_resultant_natDegree_le_six}. For generic
+coefficients the determinant has degree exactly six in each case.
 
 \section{Certificates for the polar bound}\label{app:polarcertificates}
 
