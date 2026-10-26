@@ -18,17 +18,16 @@ import sys
 import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
-# CCDN's own lakefile.toml still declares the package name from its original repository
-# name, and Lake requires the [[require]] name to match it.
+# Lake requires the [[require]] name to match the package name in CCDN's own lakefile.toml.
 DEPENDENCY_NAME = "ccdn_dimension_growth"
-DEPENDENCY_URL = "https://github.com/jasondavies/ccdn-linear-growth"
+DEPENDENCY_URL = "https://github.com/jasondavies/ccdn-dimension-growth"
 DEPENDENCY_DIRECTORY = ROOT / ".lake" / "packages" / DEPENDENCY_NAME
 FULL_SHA = re.compile(r"[0-9a-f]{40}")
 # Files that must cite the full pinned SHA, and any GitHub tree/commit/blob link to CCDN in
 # them must use it.
 CITING_FILES = ("README.md", "formalization.yaml")
 PAPER = Path("paper") / "pierce_length_bound.tex"
-CCDN_LINK = re.compile(r"ccdn-linear-growth/(?:tree|commit|blob)/([0-9a-f]{7,40})")
+CCDN_LINK = re.compile(r"ccdn-(?:linear|dimension)-growth/(?:tree|commit|blob)/([0-9a-f]{7,40})")
 
 
 def named_entry(entries: list[dict], name: str, location: str) -> dict:

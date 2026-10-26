@@ -7,7 +7,7 @@ module
 
 import Mathlib.Tactic
 public import ArithmeticHeights.Absolute
-public import CCDN.Plane.Plane
+public import CCDN.Statements
 public import Mathlib.Tactic.NormNum.RealSqrt
 public import Mathlib.Tactic.NormNum.Ordinal
 public import Mathlib.Tactic.NormNum.NatSqrt

@@ -118,8 +118,9 @@ theorem PierceLengthBound.hankelInv_first_four (hba : b < a) :
 
 The project uses Lean `v4.35.0` and Mathlib `v4.35.0`. The curve-counting library is the Lake
 package `ccdn_dimension_growth` (the name CCDN's own `lakefile.toml` declares), a Git dependency
-on [`jasondavies/ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth) pinned in
-`lakefile.toml` to commit `9ade6200d053ceef5f6ccc4154ae30c6056be150`.
+on [`jasondavies/ccdn-dimension-growth`](https://github.com/jasondavies/ccdn-dimension-growth) pinned in
+`lakefile.toml` to commit `bb025e7207f3a35a21b898629f5678b72aa7e44f`, the revision registered in the Palomar registry as
+[`PALOMAR-2026-10-22-000015`, version 1](https://palomar-registry.org/entry?id=PALOMAR-2026-10-22-000015&version=1).
 `scripts/check-curve-counting-dependency.py` checks that `lake-manifest.json`, this README,
 `formalization.yaml` and the paper agree with that pin, and with `--checkout` that the fetched
 checkout in `.lake/packages` uses the same Lean toolchain and Mathlib revision as this project.
@@ -452,7 +453,7 @@ and the number of parameters. Both live in the namespace `PierceLengthBound.Fixe
 ## Dependencies
 
 * [Mathlib](https://github.com/leanprover-community/mathlib4) `v4.35.0`.
-* CCDN ([`ccdn-linear-growth`](https://github.com/jasondavies/ccdn-linear-growth)), pinned as
+* CCDN ([`ccdn-dimension-growth`](https://github.com/jasondavies/ccdn-dimension-growth)), pinned as
   described under [Building and checking](#building-and-checking). `CCDN.affineCurveBound` gives
   at most `C(n) d³ B^{1/d} (log B + d)` integer points in a box of size `B ≥ 1` on every prime
   affine curve over `ℚ` of affine Hilbert degree `d` in ambient dimension `n ≥ 2`. Its proof

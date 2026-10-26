@@ -21,7 +21,11 @@ theorem branch_nested_totalDegree_le_of_dvd {R : Type*} [CommRing R] [IsDomain R
     {p q : R[X][X]} (hp : p ≠ 0) (hdiv : q ∣ p) :
     CCDN.bivariateTotalDegree q ≤ CCDN.bivariateTotalDegree p := by
   obtain ⟨r, rfl⟩ := hdiv
-  rw [CCDN.bivariateTotalDegree_mul q r (left_ne_zero_of_mul hp) (right_ne_zero_of_mul hp)]
+  have hne {f : R[X][X]} (hf : f ≠ 0) : (CCDN.bivariatePolynomialEquiv R).symm f ≠ 0 :=
+    (map_ne_zero_iff _ (CCDN.bivariatePolynomialEquiv R).symm.injective).mpr hf
+  unfold CCDN.bivariateTotalDegree
+  rw [map_mul, MvPolynomial.totalDegree_mul_of_isDomain (hne (left_ne_zero_of_mul hp))
+    (hne (right_ne_zero_of_mul hp))]
   omega
 
 /-- A factor of a nonzero nested integer polynomial of total degree at most

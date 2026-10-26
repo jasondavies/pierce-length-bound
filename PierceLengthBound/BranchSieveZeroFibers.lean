@@ -6,6 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveIntegralRootCount
+public import CCDN.Algebra.IntegerPolynomialAvoidance
 import Mathlib.Tactic
 
 /-! A nonzero plane polynomial has at most its parameter degree many

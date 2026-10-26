@@ -16,6 +16,24 @@ namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial
 
+/-- A polynomial in `σ` variables of total degree `d` has at most `(d+1)^|σ|` monomials. -/
+private lemma polynomial_support_card_le {R σ : Type*} [CommSemiring R] [Fintype σ]
+    (f : MvPolynomial σ R) :
+    f.support.card ≤ (f.totalDegree + 1) ^ Fintype.card σ := by
+  classical
+  have hb (e : σ →₀ ℕ) (he : e ∈ f.support) (i : σ) : e i ≤ f.totalDegree := by
+    have hh := (degreeOf_le_iff.mp (le_refl (f.degreeOf i))) e he
+    exact hh.trans (degreeOf_le_totalDegree f i)
+  let ψ : {e // e ∈ f.support} → σ → Fin (f.totalDegree + 1) :=
+    fun e i => ⟨e.val i, Nat.lt_succ_of_le (hb e.val e.property i)⟩
+  have hi : Function.Injective ψ := by
+    intro e e' h
+    apply Subtype.ext
+    apply Finsupp.ext
+    intro i
+    exact congrArg (fun v => (v i).val) h
+  simpa using Fintype.card_le_of_injective ψ hi
+
 /-- For an integer polynomial `p(t,y)` of total degree at most `d`, irreducible
 over `ℚ` and of degree at least two in `y`, the number of `|t| ≤ B` with an
 integer root `y` is `O_d((1 + log (H + 1))^4 B^(1/2) (1 + log B))`, where `H`
@@ -48,7 +66,7 @@ theorem branch_uniform_integral_root_bound (d : ℕ) :
   have hHreal : (1 : ℝ) ≤ (H + 1 : ℕ) := by exact_mod_cast (show 1 ≤ H + 1 by omega)
   have hlogH : 0 ≤ Real.log (H + 1 : ℕ) := Real.log_nonneg hHreal
   have hcard : p.support.card ≤ (d + 1) ^ 2 := by
-    apply (CCDN.polynomial_support_card_le p).trans
+    apply (polynomial_support_card_le p).trans
     simpa using Nat.pow_le_pow_left (Nat.add_le_add_right hd 1) 2
   have hKpos : (0 : ℝ) < (p.support.card * H + 2 : ℕ) := by positivity
   have hKbound : ((p.support.card * H + 2 : ℕ) : ℝ) ≤ Kd * (H + 1 : ℕ) := by

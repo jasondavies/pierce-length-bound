@@ -16,12 +16,12 @@ name = "openai_math"
 path = "vendor/openai-math"
 
 # The CCDN curve-counting library. Its own lakefile.toml declares the package name
-# `ccdn_dimension_growth` (from its original repository name), which this name must match.
+# `ccdn_dimension_growth`, which this name must match.
 # scripts/check-curve-counting-dependency.py treats this rev as the single source of truth.
 [[require]]
 name = "ccdn_dimension_growth"
-git = "https://github.com/jasondavies/ccdn-linear-growth"
-rev = "9ade6200d053ceef5f6ccc4154ae30c6056be150"
+git = "https://github.com/jasondavies/ccdn-dimension-growth"
+rev = "bb025e7207f3a35a21b898629f5678b72aa7e44f"
 
 [[lean_lib]]
 name = "PierceLengthBound"

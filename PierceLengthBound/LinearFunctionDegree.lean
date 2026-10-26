@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.FixedDividendFilteredIntersection
-public import CCDN.Curve.CurveFunctionField
+public import CCDN.Hilbert.CurveFunctionField
 public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 
 /-! The function-field degree of a transcendental linear coordinate is bounded by the affine

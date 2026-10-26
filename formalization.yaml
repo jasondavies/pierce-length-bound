@@ -63,9 +63,10 @@ sources:
     relationship: other
     note: >-
       The coefficient-uniform affine-curve estimate is proved in the separate
-      ccdn-linear-growth project and imported as the Lake package
-      ccdn_dimension_growth, a Git dependency pinned to commit
-      9ade6200d053ceef5f6ccc4154ae30c6056be150. It is not an unproved hypothesis or axiom.
+      ccdn-dimension-growth project, registered in the Palomar registry as
+      PALOMAR-2026-10-22-000015 (version 1), and imported as the Lake package
+      ccdn_dimension_growth, a Git dependency pinned to the registered commit
+      bb025e7207f3a35a21b898629f5678b72aa7e44f. It is not an unproved hypothesis or axiom.
   - title: "Improvements on dimension growth results and effective Hilbert's irreducibility theorem"
     authors: ["Raf Cluckers", "Pierre Dèbes", "Yotam I. Hendel", "Kien Huu Nguyen", "Floris Vermeulen"]
     type: article
@@ -117,11 +118,13 @@ sources:
       results, not as a formal dependency or a claim of independent review.
 
 related_formalizations:
-  - id: "https://github.com/jasondavies/ccdn-linear-growth/tree/9ade6200d053ceef5f6ccc4154ae30c6056be150"
+  - id: "https://github.com/jasondavies/ccdn-dimension-growth/tree/bb025e7207f3a35a21b898629f5678b72aa7e44f"
     relationship: builds-on
     note: >-
       The coefficient-uniform affine-curve theorem CCDN.affineCurveBound, imported as
-      the pinned Lake dependency ccdn_dimension_growth. That project itself vendors
+      the pinned Lake dependency ccdn_dimension_growth. The pinned commit is the one
+      registered in the Palomar registry as PALOMAR-2026-10-22-000015, version 1
+      (https://palomar-registry.org/entry?id=PALOMAR-2026-10-22-000015&version=1). That project itself vendors
       the Bombieri–Vaaler development of rwst/Subspace-Theorems at commit
       09835cb23557ae5ae0cf55a9c4ab9055f5d60338 and adapts Mertens' first theorem from
       PrimeNumberTheoremAnd at commit c39a751132c88b6e8080b74c74023fd95b3d8be0, with
@@ -207,30 +210,27 @@ review:
     - "GPT-6-Astra (OpenAI), via Codex: AI review"
     - "Claude Opus 5.5 (Anthropic), via Claude Code: AI review"
   notes: >-
-    On October 26, 2026, after hankelInv_first_four (the first four Hankel
-    invariants) was added to the compared statements, the Lean build and axiom
-    audit passed and the standard sandboxed Comparator accepted all sixteen
-    selected statements with Lean, NanoDa and con-ron; con-ron verified 91,314
-    declarations. The other checks below were not rerun for this addition.
-    Full run, October 23, 2026, with the CCDN dependency pinned to
-    9ade6200d053ceef5f6ccc4154ae30c6056be150: the Lean build, both weighted-count
-    dependency audits and the axiom audit passed. The axiom audit covers every
-    exported PierceLengthBound, CCDN and vendored ArithmeticHeights declaration and
-    allows only propext, Classical.choice and Quot.sound. In an isolated copy with
-    matching Lean sources and dependency configuration, the standard sandboxed
-    Comparator accepted all fifteen selected statements with Lean, NanoDa and con-ron;
-    con-ron verified 91,574 declarations. The axiom audit covered 3,953
-    PierceLengthBound, 1,196 CCDN and 555 ArithmeticHeights declarations.
-    The new scripts/check-polar-projection.py independently recomputed the
+    Latest run, October 26, 2026, with hankelInv_first_four among the compared
+    statements and the CCDN dependency pinned to the Palomar-registered commit
+    bb025e7207f3a35a21b898629f5678b72aa7e44f: the Lean build, both weighted-count
+    dependency audits, the CCDN metadata and checkout checks and the axiom audit
+    passed. The axiom audit covers every exported PierceLengthBound, CCDN and
+    vendored ArithmeticHeights declaration and allows only propext,
+    Classical.choice and Quot.sound; it covered 3,498 PierceLengthBound, 455 CCDN
+    and 554 ArithmeticHeights declarations. In an isolated copy with matching Lean
+    sources and dependency configuration, the standard sandboxed Comparator
+    accepted all sixteen selected statements with Lean, NanoDa and con-ron;
+    con-ron verified 91,407 declarations.
+    In the same run, scripts/verify-polar-kernels.py accepted its thirty principal
+    polar endpoints with Lean, NanoDa and con-ron at their standard limits; con-ron
+    verified 90,395 declarations and NanoDa checked 92,993 with no typechecker
+    errors. These include the proved six-term estimate, its arithmetic sieve, the
+    actual common-base bound, and the general exponent reductions. These
+    supplementary statements are not independently compared with Challenge; the
+    sixteen public statements are checked separately by Comparator.
+    Also on October 26, scripts/check-polar-projection.py independently recomputed the
     polar and base-point identities, quartic certificate, irreducible sextic
     specialisation and polar exponent arithmetic using SymPy.
-    The additional scripts/verify-polar-kernels.py replay accepted thirty-two
-    principal polar endpoints with Lean, NanoDa and con-ron at their standard
-    limits; con-ron verified 90,565 declarations and NanoDa checked 93,163.
-    This includes the proved six-term estimate, its arithmetic sieve, the actual
-    common-base bound, and the general exponent reductions. These supplementary
-    statements are not independently compared with Challenge; the sixteen public
-    statements are checked separately by Comparator.
     Earlier checker resource failures were repaired by making coefficient
     conversions explicit and separating monic irreducibility transfer into
     smaller lemmas, without changing hypotheses or checker limits.

@@ -9,7 +9,8 @@ public import PierceLengthBound.BranchSieveUniformRootBound
 public import Mathlib.FieldTheory.RatFunc.Basic
 public import Mathlib.RingTheory.Localization.LocalizationLocalization
 public import Mathlib.RingTheory.Localization.Integral
-public import CCDN.Plane.PlaneGridHeight
+public import CCDN.Plane.GridHeight
+public import CCDN.Noether.ShearNormalization
 public import Mathlib.RingTheory.Polynomial.GaussLemma
 import Mathlib.Tactic
 

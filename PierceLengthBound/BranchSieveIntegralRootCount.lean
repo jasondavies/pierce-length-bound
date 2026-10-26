@@ -6,7 +6,7 @@ Authors: Jason Davies
 module
 
 public import PierceLengthBound.BranchSieveFiberHeight
-public import CCDN.Plane.PlaneCount
+public import CCDN.Plane.CurveCount
 public import CCDN.Height.PolynomialBoxHeight
 import Mathlib.Tactic
 public import PierceLengthBound.BranchSieveShear
@@ -20,6 +20,19 @@ irreducible plane curve; the shear trades coefficient height for degree. -/
 namespace PierceLengthBound.FixedDividend
 noncomputable section
 open MvPolynomial Finset
+
+/-- A nonzero nonunit polynomial over a field has positive total degree. -/
+private lemma totalDegree_pos_of_nonzero_nonunit {k : Type*} [Field k] {n : ℕ}
+    (f : MvPolynomial (Fin n) k) (hf : f ≠ 0) (hu : ¬ IsUnit f) : 0 < f.totalDegree := by
+  by_contra hd
+  have he := totalDegree_eq_zero_iff_eq_C.mp (Nat.eq_zero_of_not_pos hd)
+  apply hu
+  have hc : f.coeff 0 ≠ 0 := by
+    intro h
+    apply hf
+    simpa only [h, map_zero] using he
+  rw [he]
+  exact (isUnit_iff_ne_zero.mpr hc).map C
 
 /-- An integer polynomial in two variables, viewed over `ℚ`. -/
 abbrev branchRationalPolynomial (p : MvPolynomial (Fin 2) ℤ) :
@@ -108,7 +121,7 @@ theorem branch_integral_root_count :
   refine ⟨C, hC, ?_⟩
   intro p hp H B e hH hB he S hS
   have hir := branchPowerShear_irreducible e (1 : ℚ) hp
-  have hd := CCDN.totalDegree_pos_of_nonzero_nonunit _ hir.ne_zero hir.not_isUnit
+  have hd := totalDegree_pos_of_nonzero_nonunit _ hir.ne_zero hir.not_isUnit
   have hR : 1 ≤ (p.support.card * H + 2) * B ^ e := by
     exact (Nat.one_le_pow _ _ hB).trans (Nat.le_mul_of_pos_left _ (by omega))
   have hcard := branch_integral_root_card_le_sheared_count p hH hB he S hS
