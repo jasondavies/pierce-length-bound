@@ -31,8 +31,9 @@ proves, uniformly in `0 < b < a`:
   `kᵢ < k_{i+1}` in the quotient increments. In particular nonincreasing increments give
   `P(a, b) ≪ a^{1/4}`.
 * **The Hankel hierarchy:** an exact positive moment model of the orbit gives positive integer
-  Hankel determinants `I_r(i)` for every `r`, with `I₁ = bᵢ`, `I₂ = dᵢ`, `I₃ = Dᵢ` (for
-  `i + 3 < P(a, b)`) and `I₄ = Lᵢ` (for `i + 5 < P(a, b)`), indexing from zero.
+  Hankel determinants `I_r(i)` for `i < P(a, b)` and `1 ≤ r ≤ P(a, b) − i`,
+  with `I₁ = bᵢ`, `I₂ = dᵢ`, `I₃ = Dᵢ` (for `i + 3 < P(a, b)`) and
+  `I₄ = Lᵢ` (for `i + 5 < P(a, b)`), indexing from zero.
 
 ## Main theorem statements
 
@@ -157,7 +158,7 @@ python3 scripts/verify-polar-kernels.py                     # manual: additional
   and con-ron, as Palomar does. The sandboxed Comparator needs Linux; a successful macOS Lean
   build alone does not establish a Palomar verification pass.
 
-`scripts/verify-polar-kernels.py` exports thirty-two further polar results, including the
+`scripts/verify-polar-kernels.py` exports thirty further polar results, including the
 base-divisor bound, the hypersurface pattern count, the effective Hilbert theorem, the arithmetic
 sieve, the graph-degree reduction and the global reductions, and replays their proofs with Lean,
 NanoDa and con-ron at their standard settings. These statements are not compared with an
