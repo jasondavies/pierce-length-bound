@@ -127,7 +127,8 @@ on [`jasondavies/ccdn-dimension-growth`](https://github.com/jasondavies/ccdn-dim
 checkout in `.lake/packages` uses the same Lean toolchain and Mathlib revision as this project.
 
 The check scripts require Python 3.11+ (standard library only, except the three SymPy scripts
-marked below). CI runs the source and metadata checks, Lean build and axiom audit,
+marked below); `check-curve-counting-dependency.py --checkout` also runs CCDN's own provenance
+script, which needs Python 3.12+. CI runs the source and metadata checks, Lean build and axiom audit,
 dependency checks, and the sixteen-statement Comparator check. The supplementary polar
 replay, exact-arithmetic checks, and paper build are manual release checks.
 
