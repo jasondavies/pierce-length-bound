@@ -25,8 +25,9 @@ namespace PierceLengthBound
 
 open Finset
 
-/-- The quotient increment `kᵢ` of the orbit. Its body is fixed by `Challenge.lean`; it is the
-window increment `incr` of the orbit (`incrO_eq_incr`). -/
+/-- The quotient increment `kᵢ` of the orbit. Its body is fixed by
+`PierceLengthBoundPalomar/Challenge.lean`; it is the window increment `incr` of the orbit
+(`incrO_eq_incr`). -/
 def incrO (a b i : ℕ) : ℕ := a / orb a b (i + 1) - a / orb a b i
 
 lemma incrO_eq_incr (a b i : ℕ) : incrO a b i = incr a (orb a b) i := rfl

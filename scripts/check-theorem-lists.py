@@ -3,7 +3,7 @@
 
 comparator.json `theorem_names` is the source of truth and must be nonempty. The same
 names, in the same order, must be the `theorem` declarations of the Challenge module, the
-first `#print axioms` checks in Axioms.lean, the `lean` entries of the formalization.yaml
+first `#print axioms` checks in PierceLengthBoundPalomar/Axioms.lean, the `lean` entries of the formalization.yaml
 alignment, and the theorems in the first Lean code block after README.md's "Main theorem
 statements" heading (at any heading level).
 """
@@ -73,7 +73,7 @@ def main() -> int:
     lists = {
         challenge.name + " theorems": challenge_theorems(challenge),
         "Axioms.lean first #print axioms checks":
-            axiom_checks(ROOT / "Axioms.lean")[:len(expected)],
+            axiom_checks(ROOT / "PierceLengthBoundPalomar" / "Axioms.lean")[:len(expected)],
         "formalization.yaml alignment": alignment_entries(ROOT / "formalization.yaml"),
         "README.md main theorem statements": readme_theorems(ROOT / "README.md"),
     }

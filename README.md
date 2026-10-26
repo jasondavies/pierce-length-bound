@@ -103,9 +103,10 @@ theorem PierceLengthBound.hankelInv_first_four (hba : b < a) :
 * `PierceLengthBound/` and `PierceLengthBound.lean`: the Lean 4 / Mathlib proofs of the results
   and explicitly conditional reductions above, with no `sorry`. The [module maps](#module-maps)
   below locate each step.
-* `Challenge.lean`, `Solution.lean`, `comparator.json`: the independent statements, the proved
-  declarations, and the Comparator configuration for [Palomar](#palomar).
-* `Axioms.lean`: the axiom audit, built by `lake build`.
+* `PierceLengthBoundPalomar/`: `Challenge.lean` and `Solution.lean`, the independent statements and the proved
+  declarations named by `comparator.json` for [Palomar](#palomar), and `Axioms.lean`, the axiom
+  audit built by `lake build`.
+* `comparator.json`: the Comparator configuration.
 * `formalization.yaml`: Palomar metadata (scope, provenance, automation, and review status).
 * `paper/pierce_length_bound.tex` (and `.pdf`): the paper.
 * `scripts/`: source, metadata, dependency, and exact-arithmetic checks.
@@ -145,10 +146,11 @@ python3 scripts/verify-polar-kernels.py                     # manual: additional
 ```
 
 * `lake build` runs Mathlib's standard linters (`weak.linter.mathlibStandardSet`) and builds the
-  Palomar `Challenge` and `Solution` modules. The `sorry` warnings in `Challenge.lean`, one per
-  selected theorem, are deliberate statement holes; the proof development has none.
-* `lake build` also builds `Axioms.lean` (or run `lake env lean Axioms.lean`). Its `#guard_msgs`
-  checks show that every theorem in `comparator.json` depends only on `propext`,
+  Palomar modules `PierceLengthBoundPalomar.Challenge` and `PierceLengthBoundPalomar.Solution`.
+  The `sorry` warnings in `Challenge.lean`, one per selected theorem, are deliberate statement
+  holes; the proof development has none.
+* `lake build` also builds `PierceLengthBoundPalomar/Axioms.lean` (or run
+  `lake env lean PierceLengthBoundPalomar/Axioms.lean`). Its `#guard_msgs` checks show that every theorem in `comparator.json` depends only on `propext`,
   `Classical.choice` and `Quot.sound`, and it audits every exported declaration of
   `PierceLengthBound`, of CCDN, and of CCDN's vendored Bombieri–Vaaler development
   (`ArithmeticHeights`) for nonstandard axioms. `P_le_loglog` depends on the two analytic papers
@@ -469,10 +471,13 @@ and the number of parameters. Both live in the namespace `PierceLengthBound.Fixe
 
 ## Palomar
 
-[Challenge.lean](Challenge.lean) independently states every theorem selected in
+[Challenge.lean](PierceLengthBoundPalomar/Challenge.lean) independently states every theorem selected in
 [comparator.json](comparator.json), using only Mathlib imports and complete mathematical
-definitions; their proofs are deliberate holes. [Solution.lean](Solution.lean) exposes the
-original proved declarations; neither module imports the other.
+definitions; their proofs are deliberate holes. [Solution.lean](PierceLengthBoundPalomar/Solution.lean) exposes the
+original proved declarations; neither module imports the other. Both live under `PierceLengthBoundPalomar/`
+rather than at the top level: CCDN, a dependency, has its own top-level `Challenge`, `Solution`
+and `Axioms`, and Palomar refuses a Challenge whose top-level name a dependency shares
+(`challenge.module_root_shadowed`).
 [formalization.yaml](formalization.yaml) records their scope, provenance, automation, and review
 status.
 

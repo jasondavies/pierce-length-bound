@@ -1,6 +1,6 @@
 name = "pierce_length_bound"
 version = "0.1.0"
-defaultTargets = ["PierceLengthBound", "Challenge", "Solution", "Axioms"]
+defaultTargets = ["PierceLengthBound", "PierceLengthBoundPalomar"]
 
 [leanOptions]
 autoImplicit = false
@@ -26,11 +26,11 @@ rev = "bb025e7207f3a35a21b898629f5678b72aa7e44f"
 [[lean_lib]]
 name = "PierceLengthBound"
 
+# The Palomar statement surface, its proved counterpart and the axiom checks. They live under
+# a project-specific top-level directory because Palomar refuses a Challenge whose top-level
+# name is also a top-level entry of a dependency (CCDN has its own Challenge, Solution and
+# Axioms). The three roots are independent: Challenge and Solution never import each other.
 [[lean_lib]]
-name = "Challenge"
-
-[[lean_lib]]
-name = "Solution"
-
-[[lean_lib]]
-name = "Axioms"
+name = "PierceLengthBoundPalomar"
+roots = ["PierceLengthBoundPalomar.Challenge", "PierceLengthBoundPalomar.Solution",
+  "PierceLengthBoundPalomar.Axioms"]

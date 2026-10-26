@@ -142,7 +142,7 @@ status:
     Comparator is configured for the main theorems listed in alignment below.
     Their definitions are given in full in the independent Mathlib-only
     Challenge module. The proof development has no sorry holes or custom
-    axioms. The deliberate theorem holes in Challenge.lean are excluded
+    axioms. The deliberate theorem holes in PierceLengthBoundPalomar/Challenge.lean are excluded
     from these counts. NairTenenbaumDelta and BretecheTenenbaumMean are
     unproved propositions passed as hypotheses, not axioms. The selected
     polar-projection bounds are unconditional: PolarProjectionMain supplies

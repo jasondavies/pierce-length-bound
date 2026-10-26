@@ -11,11 +11,11 @@ import Lean.Util.CollectAxioms
 /-!
 # Axiom check
 
-`lake env lean Axioms.lean` (also run by `lake build`) fails unless each theorem selected in
-`comparator.json` depends only on the three standard axioms `propext`, `Classical.choice` and
-`Quot.sound`. Further `#print axioms` checks cover selected intermediate results: the moment
-and line identities, the orbit identities and resultant degree bounds, and the polar identities,
-certificates and reductions. The final check audits every exported declaration of
+`lake env lean PierceLengthBoundPalomar/Axioms.lean` (also run by `lake build`) fails unless
+each theorem selected in `comparator.json` depends only on the three standard axioms `propext`,
+`Classical.choice` and `Quot.sound`. Further `#print axioms` checks cover selected intermediate
+results: the moment and line identities, the orbit identities and resultant degree bounds, and the
+polar identities, certificates and reductions. The final check audits every exported declaration of
 `PierceLengthBound`, of the CCDN library, and of CCDN's vendored Bombieri–Vaaler development
 (`ArithmeticHeights`).
 -/
