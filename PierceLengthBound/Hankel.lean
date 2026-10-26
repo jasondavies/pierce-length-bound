@@ -23,7 +23,8 @@ The moments `hᵢ(s) = ∑_j wᵢ(j) pᵢ(j)^s / q_{i+j}` of the measure `νᵢ 
 
 Hence the Hankel invariants `Iᵣ(i) = a · det (hᵢ(j+l))_{j,l<r}` are positive integers for
 `1 ≤ r ≤ N - i` (`hankelInv_pos_int`, Theorem 6.2). The first four are `bᵢ`, `bᵢ - b_{i+1}`,
-the curvature `D` and the six-step integer `L` (`hankelInv_one` … `hankelInv_four`). These are
+the curvature `D` and the six-step integer `L` (`hankelInv_one` … `hankelInv_four`, stated
+together with integer-valued `dropAt`, `curvAt` and `sixAt` as `hankelInv_first_four`). These are
 computed from the moment recursion alone: `momSeq` generates the moments from the normalised
 remainders `βⱼ` and increments `kⱼ`, and `hankel2_alg`, `hankel3_alg`, `hankel4_alg` evaluate
 its small Hankel determinants modulo the division equations.
@@ -815,5 +816,49 @@ theorem hankelInv_four (hba : b < a) {i : ℕ} (hi : i + 5 < P a b) :
   ring
 
 end Identities
+
+section Invariants
+
+variable (a b : ℕ)
+
+/-- The drop `dᵢ = bᵢ - b_{i+1}`. -/
+def dropAt (i : ℕ) : ℤ := (orb a b i : ℤ) - orb a b (i + 1)
+
+/-- The quotient increment `kᵢ = q_{i+1} - qᵢ`. -/
+def incrAt (i : ℕ) : ℤ := (qq a b (i + 1) : ℤ) - qq a b i
+
+/-- The curvature `Dᵢ = dᵢ k_{i+1} - d_{i+1} kᵢ` of the block starting at `bᵢ`. -/
+def curvAt (i : ℕ) : ℤ :=
+  dropAt a b i * incrAt a b (i + 1) - dropAt a b (i + 1) * incrAt a b i
+
+/-- The six-term integer
+`Lᵢ = (k_{i+1}k_{i+2} + k_{i+2}² + k_{i+3}) Dᵢ - (kᵢ² + (kᵢ-1)k_{i+1}) D_{i+1}
+  - k_{i+2}(k_{i+2}dᵢ - kᵢd_{i+2})`. -/
+def sixAt (i : ℕ) : ℤ :=
+  (incrAt a b (i + 1) * incrAt a b (i + 2) + incrAt a b (i + 2) ^ 2 + incrAt a b (i + 3)) *
+      curvAt a b i -
+    (incrAt a b i ^ 2 + (incrAt a b i - 1) * incrAt a b (i + 1)) * curvAt a b (i + 1) -
+    incrAt a b (i + 2) * (incrAt a b (i + 2) * dropAt a b i - incrAt a b i * dropAt a b (i + 2))
+
+variable {a b}
+
+/-- The first four Hankel invariants are `bᵢ`, `dᵢ`, `Dᵢ` and `Lᵢ` (Theorem 6.2). -/
+theorem hankelInv_first_four (hba : b < a) {i : ℕ} :
+    (i < P a b → hankelInv a b i 1 = orb a b i) ∧
+    (i + 1 < P a b → hankelInv a b i 2 = dropAt a b i) ∧
+    (i + 3 < P a b → hankelInv a b i 3 = curvAt a b i) ∧
+    (i + 5 < P a b → hankelInv a b i 4 = sixAt a b i) := by
+  refine ⟨hankelInv_one hba, fun hi => ?_, fun hi => ?_, fun hi => ?_⟩
+  · rw [hankelInv_two hba hi, dropAt]
+    push_cast
+    ring
+  · rw [hankelInv_three hba hi]
+    simp only [curvAt, dropAt, incrAt, kv, kk, add_zero]
+    push_cast
+    ring
+  · rw [hankelInv_four hba hi]
+    simp only [sixAt, curvAt, dropAt, incrAt, sixL]
+
+end Invariants
 
 end PierceLengthBound

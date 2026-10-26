@@ -18,8 +18,9 @@ including `(1310 - sqrt 655)/4365`, and earlier exponents are also included.
 The conjectured `O((log a)^2)` bound remains open.
 
 Two further results give a conditional logarithmic refinement and a bound in terms
-of rises in the quotient increments. The final theorem states positivity and
-integrality of the entire Hankel hierarchy of the orbit's exact moment model.
+of rises in the quotient increments. The final two theorems state positivity and
+integrality of the entire Hankel hierarchy of the orbit's exact moment model, and identify
+its first four levels with the remainder, drop, curvature and six-term integer.
 
 All mathematical definitions below are supplied in full. Only the proofs of the theorems
 selected in `comparator.json` have deliberate holes. In particular, the two analytic inputs
@@ -185,6 +186,40 @@ The statement also includes `r = 0`, when the empty determinant is one. -/
 theorem hankelInv_pos_int {a b : ℕ} (hba : b < a) {i r : ℕ}
     (hi : i < P a b) (hr : r ≤ P a b - i) :
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n := by
+  sorry
+
+section Invariants
+
+variable (a b : ℕ)
+
+/-- The drop `dᵢ = bᵢ - b_{i+1}`. -/
+def dropAt (i : ℕ) : ℤ := (orb a b i : ℤ) - orb a b (i + 1)
+
+/-- The quotient increment `kᵢ = q_{i+1} - qᵢ`. -/
+def incrAt (i : ℕ) : ℤ := (qq a b (i + 1) : ℤ) - qq a b i
+
+/-- The curvature `Dᵢ = dᵢ k_{i+1} - d_{i+1} kᵢ` of the block starting at `bᵢ`. -/
+def curvAt (i : ℕ) : ℤ :=
+  dropAt a b i * incrAt a b (i + 1) - dropAt a b (i + 1) * incrAt a b i
+
+/-- The six-term integer
+`Lᵢ = (k_{i+1}k_{i+2} + k_{i+2}² + k_{i+3}) Dᵢ - (kᵢ² + (kᵢ-1)k_{i+1}) D_{i+1}
+  - k_{i+2}(k_{i+2}dᵢ - kᵢd_{i+2})`. -/
+def sixAt (i : ℕ) : ℤ :=
+  (incrAt a b (i + 1) * incrAt a b (i + 2) + incrAt a b (i + 2) ^ 2 + incrAt a b (i + 3)) *
+      curvAt a b i -
+    (incrAt a b i ^ 2 + (incrAt a b i - 1) * incrAt a b (i + 1)) * curvAt a b (i + 1) -
+    incrAt a b (i + 2) * (incrAt a b (i + 2) * dropAt a b i - incrAt a b i * dropAt a b (i + 2))
+
+end Invariants
+
+/-- The first four Hankel invariants are the remainder `bᵢ`, the drop `dᵢ`, the curvature `Dᵢ`
+and the six-term integer `Lᵢ`, each where the terms it uses are positive. -/
+theorem hankelInv_first_four {a b : ℕ} (hba : b < a) {i : ℕ} :
+    (i < P a b → hankelInv a b i 1 = orb a b i) ∧
+    (i + 1 < P a b → hankelInv a b i 2 = dropAt a b i) ∧
+    (i + 3 < P a b → hankelInv a b i 3 = curvAt a b i) ∧
+    (i + 5 < P a b → hankelInv a b i 4 = sixAt a b i) := by
   sorry
 
 end PierceLengthBound

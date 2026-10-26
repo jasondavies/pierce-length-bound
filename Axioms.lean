@@ -82,6 +82,10 @@ open PierceLengthBound
 #guard_msgs in
 #print axioms hankelInv_pos_int
 
+/-- info: 'PierceLengthBound.hankelInv_first_four' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms hankelInv_first_four
+
 /-! Orthogonality of the Newton quartic and the rank-four resultant. -/
 
 /-- info: 'PierceLengthBound.newtonQuartic_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound] -/

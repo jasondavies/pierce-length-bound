@@ -90,6 +90,12 @@ theorem PierceLengthBound.P_le_rises : ∃ C > 0, ∀ a b : ℕ, 0 < b → b < a
 
 theorem PierceLengthBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr : r ≤ P a b - i) :
     ∃ n : ℕ, 0 < n ∧ hankelInv a b i r = n
+
+theorem PierceLengthBound.hankelInv_first_four (hba : b < a) :
+    (i < P a b → hankelInv a b i 1 = orb a b i) ∧
+    (i + 1 < P a b → hankelInv a b i 2 = dropAt a b i) ∧
+    (i + 3 < P a b → hankelInv a b i 3 = curvAt a b i) ∧
+    (i + 5 < P a b → hankelInv a b i 4 = sixAt a b i)
 ```
 
 ## Repository layout
@@ -106,8 +112,6 @@ theorem PierceLengthBound.hankelInv_pos_int (hba : b < a) (hi : i < P a b) (hr :
 * `.github/workflows/`: `ci.yml` checks metadata, builds and audits the proofs (skipped when only
   `paper/` or Markdown files change), and runs Comparator on `main`, pull requests and manual
   runs; `palomar-preflight.yml` runs the manual Full Palomar mechanical preflight.
-* `SUBMISSION.md`, `SUBMISSION_REVIEW.txt`: the Palomar and Hexagon submission steps, and the
-  record of the last pre-submission review.
 * `vendor/openai-math/`: one vendored file, described under [Dependencies](#dependencies).
 
 ## Building and checking
@@ -122,7 +126,7 @@ checkout in `.lake/packages` uses the same Lean toolchain and Mathlib revision a
 
 The check scripts require Python 3.11+ (standard library only, except the three SymPy scripts
 marked below). CI runs the source and metadata checks, Lean build and axiom audit,
-dependency checks, and the fifteen-statement Comparator check. The supplementary polar
+dependency checks, and the sixteen-statement Comparator check. The supplementary polar
 replay, exact-arithmetic checks, and paper build are manual release checks.
 
 Build and check, in order:
@@ -162,7 +166,7 @@ python3 scripts/verify-polar-kernels.py                     # manual: additional
 base-divisor bound, the hypersurface pattern count, the effective Hilbert theorem, the arithmetic
 sieve, the graph-degree reduction and the global reductions, and replays their proofs with Lean,
 NanoDa and con-ron at their standard settings. These statements are not compared with an
-independent Challenge and are outside the fifteen selected Comparator statements.
+independent Challenge and are outside the sixteen selected Comparator statements.
 
 Exact-arithmetic checks supplement the formal proof; finite numerical checks do not establish
 the asymptotic bounds. `scripts/check-math.py` (standard library only) checks the moment
@@ -310,7 +314,7 @@ All modules are in `PierceLengthBound/`; the `.lean` extension is omitted.
 | `Conditional` | any short-interval divisor bound `≪ y G(x)` for `x^{1/4} ≤ y ≤ x`, with `1 ≤ G(x) ≪ x^{1/40}`, gives `P ≪ a^{3/10} G(a)^{1/5}` (`P_le_of_shortDivisorBound`) |
 | `Rises` | the arithmetic-progression bound `q⁴ ≤ 324 h³ a`, runs, the multiplicity lemma, and the three window bounds |
 | `RisesMain` | `P_le_rises`: `P ≪ a^{1/4} √R` |
-| `Hankel` | the moment model, `I_r(i) ∈ ℤ_{>0}` (`hankelInv_pos_int`), the real increments `kk` (with `kv a b i j = kk a b (i + j)`), and `I₁ = b`, `I₂ = d`, `I₃ = D`, `I₄ = L` |
+| `Hankel` | the moment model, `I_r(i) ∈ ℤ_{>0}` (`hankelInv_pos_int`), the real increments `kk` (with `kv a b i j = kk a b (i + j)`), and `I₁ = b`, `I₂ = d`, `I₃ = D`, `I₄ = L` (`hankelInv_first_four`) |
 | `Hadamard` | Hadamard's inequality `det G ≤ ∏ Gᵢᵢ` for positive definite real matrices |
 | `Functional` | the moment functionals `μᵢ`, `νᵢ` on polynomials, the Newton basis, shift rules, `νᵢ(f²) ≤ μᵢ(f²)/qᵢ` |
 | `Gram` | `Iᵣ(i) ≤ a ∏ⱼ μᵢ(Fⱼ²)/qᵢʳ`, and the label bound `L(i) qᵢ⁴ ≤ a · gramP` |
@@ -469,7 +473,7 @@ and the number of parameters. Both live in the namespace `PierceLengthBound.Fixe
 definitions; their proofs are deliberate holes. [Solution.lean](Solution.lean) exposes the
 original proved declarations; neither module imports the other.
 [formalization.yaml](formalization.yaml) records their scope, provenance, automation, and review
-status. The Palomar and Hexagon submission steps are in [SUBMISSION.md](SUBMISSION.md).
+status.
 
 ## Licence
 

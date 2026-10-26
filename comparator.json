@@ -16,7 +16,8 @@
     "PierceLengthBound.P_le",
     "PierceLengthBound.P_le_loglog",
     "PierceLengthBound.P_le_rises",
-    "PierceLengthBound.hankelInv_pos_int"
+    "PierceLengthBound.hankelInv_pos_int",
+    "PierceLengthBound.hankelInv_first_four"
   ],
   "definition_names": [],
   "permitted_axioms": [

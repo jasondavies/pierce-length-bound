@@ -207,7 +207,12 @@ review:
     - "GPT-6-Astra (OpenAI), via Codex: AI review"
     - "Claude Opus 5.5 (Anthropic), via Claude Code: AI review"
   notes: >-
-    Latest run, October 23, 2026, with the CCDN dependency pinned to
+    On October 26, 2026, after hankelInv_first_four (the first four Hankel
+    invariants) was added to the compared statements, the Lean build and axiom
+    audit passed and the standard sandboxed Comparator accepted all sixteen
+    selected statements with Lean, NanoDa and con-ron; con-ron verified 91,314
+    declarations. The other checks below were not rerun for this addition.
+    Full run, October 23, 2026, with the CCDN dependency pinned to
     9ade6200d053ceef5f6ccc4154ae30c6056be150: the Lean build, both weighted-count
     dependency audits and the axiom audit passed. The axiom audit covers every
     exported PierceLengthBound, CCDN and vendored ArithmeticHeights declaration and
@@ -224,7 +229,7 @@ review:
     limits; con-ron verified 90,565 declarations and NanoDa checked 93,163.
     This includes the proved six-term estimate, its arithmetic sieve, the actual
     common-base bound, and the general exponent reductions. These supplementary
-    statements are not independently compared with Challenge; the fifteen public
+    statements are not independently compared with Challenge; the sixteen public
     statements are checked separately by Comparator.
     Earlier checker resource failures were repaired by making coefficient
     conversions explicit and separating monic irreducibility transfer into
@@ -325,6 +330,11 @@ alignment:
       module: "PierceLengthBound.Hankel"
       status: proved
       note: "For i < P(a,b) and r ≤ P(a,b) - i, including r = 0."
+    - source: "First four Hankel invariants, Theorem 6.2"
+      lean: "PierceLengthBound.hankelInv_first_four"
+      module: "PierceLengthBound.Hankel"
+      status: proved
+      note: "I_1 = b_i, I_2 = d_i, I_3 = D_i (i + 3 < P(a,b)) and I_4 = L_i (i + 5 < P(a,b))."
 
 acknowledgements: >-
   The Lean and Mathlib communities, and the authors of openai/math for the

@@ -4,7 +4,7 @@
 Run after the normal build/check setup in README.md. This checks proof terms for
 the listed additional endpoints, including the explicitly conditional bounds. It does
 not compare their statements with an independent Challenge; that separate check
-for the fifteen selected main statements is scripts/verify-comparator.sh.
+for the sixteen selected main statements is scripts/verify-comparator.sh.
 """
 import json
 import subprocess
