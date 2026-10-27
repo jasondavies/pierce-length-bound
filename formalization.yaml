@@ -258,8 +258,8 @@ review:
     provenance record reports no additional human review. The maintainer reports
     that the results, the Lean code and the manuscript were produced entirely by AI
     (GPT-6-Astra via Codex, Claude Opus 5.5 via Claude Code).
-    Full Palomar mechanical preflight remains outstanding. No
-    external endorsement is claimed.
+    The full Palomar mechanical verification passed at commit 6da6511, registered
+    as PALOMAR-2026-10-27-000017 version 1. No external endorsement is claimed.
 
 alignment:
   namespace: "PierceLengthBound"

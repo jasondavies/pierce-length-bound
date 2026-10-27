@@ -1,7 +1,9 @@
 # Hankel determinants and the length of finite Pierce expansions
 
-Paper: [`paper/pierce_length_bound.pdf`](paper/pierce_length_bound.pdf). This repository
-contains the paper and its complete Lean formalisation.
+Paper: [`paper/pierce_length_bound.pdf`](paper/pierce_length_bound.pdf), also on Hexagon as
+[hexagon:2610.00588](https://hexagonmath.org/2610.00588v1). This repository contains the paper and
+its complete Lean formalisation, registered in the Palomar registry as
+[`PALOMAR-2026-10-27-000017`, version 1](https://palomar-registry.org/entry?id=PALOMAR-2026-10-27-000017&version=1).
 
 For integers `a > b > 0` let `b₀ = b` and `b_{i+1} = a mod bᵢ` until zero, and let `P(a, b)` be
 the number of positive terms
@@ -196,7 +198,8 @@ Inspect `/tmp/pierce-paper/pierce_length_bound.pdf`, then copy it to
 
 The latest verification run is recorded in `review.notes` of
 [formalization.yaml](formalization.yaml). It is an agent review, not an independent human
-review, and the full Palomar mechanical preflight is still outstanding.
+review. Palomar's mechanical verification passed at commit `6da6511`, registered as
+[`PALOMAR-2026-10-27-000017`, version 1](https://palomar-registry.org/entry?id=PALOMAR-2026-10-27-000017&version=1).
 
 ## Proof outlines
 
@@ -480,7 +483,8 @@ rather than at the top level: CCDN, a dependency, has its own top-level `Challen
 and `Axioms`, and Palomar refuses a Challenge whose top-level name a dependency shares
 (`challenge.module_root_shadowed`).
 [formalization.yaml](formalization.yaml) records their scope, provenance, automation, and review
-status.
+status. Commit `6da6511` is registered as
+[`PALOMAR-2026-10-27-000017`, version 1](https://palomar-registry.org/entry?id=PALOMAR-2026-10-27-000017&version=1).
 
 ## Licence
 
