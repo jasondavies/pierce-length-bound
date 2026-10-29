@@ -1,6 +1,6 @@
 # Hankel determinants and the length of finite Pierce expansions
 
-Paper: [`paper/pierce_length_bound.pdf`](paper/pierce_length_bound.pdf), also on Hexagon as
+Paper: [`paper/pierce_length_bound.pdf`](paper/pierce_length_bound.pdf), also at
 [hexagon:2610.00588](https://hexagonmath.org/2610.00588v1). This repository contains the paper and
 its complete Lean formalisation, registered in the Palomar registry as
 [`PALOMAR-2026-10-27-000017`, version 1](https://palomar-registry.org/entry?id=PALOMAR-2026-10-27-000017&version=1).
